@@ -1,0 +1,2585 @@
+#+BIBLIOGRAPHY: refs plain
+
+* Meta-concerns
+** Style
+Des haiku pour chaque chapitre, un tl;dr
+
+"JavaScript est complexe / Les navigateurs aussi / Nous sommes tous cuits"
+
+** Guidelines
+Ideally, I want my thesis manuscript to read like a reference on JS security via
+language mechanisms.  I want to point people to it and say "This is the only
+document I wanted to read when doing my PhD".
+
+As a side note, it would be nice for it to be self-contained: most references
+which are not academic may not be easily found in a couple of years (especially
+web pages).  I try to save them using the Mozilla Archive Format, but having
+them on print (in an appendix) would make the thesis a definitive reference, if
+only for historical purposes.  There is the issue of copyright for existing
+content though ...
+
+*** Examples
+Lots of.
+
+I love discussing and arguing style and patterns.  But I often do that based on
+examples that I have on my mind.  I need extract them from my mind and give them
+to the readers, so they can appreciate the discussion even more.  It won’t seem
+so abstract now.
+
+*** Exhaustivity vs. relevance
+I’d like the manuscript to be a definitive guide.  But at the same time, this is
+an unrealistic goal, both because of time constraints and rapid obsolescence of
+the field.
+
+Thus, I should focus on the relevance of the current works, how they relate to
+each other, and what insight can we gain from abstracting the examples a little.
+
+Maybe if I can’t do an in-depth analyses of all the related works, I can focus
+on the truly relevant for my discourse, and then at least cite all the others.
+
+** Annotated bibliography
+Don’t just put the references here, but add context:
+- state how it influenced the manuscript
+- describe what the reader may find inside
+
+An example would be:
+
+Clear and simple as the truth ~ Writing classic prose Francis-Noël Thomas, Mark
+Turner
+
+On the surface, this book is about the /classic style/ of writing attributed to
+French authors like Descartes and de Montesquieu, but which can be found in
+authors from other countries, other times and in other languages.  This style’s
+virtue is exhibiting the truth in a direct manner, shunning abstract discourse
+and hedges.  Authors following this style present the most sophisticated ideas
+to the reader as naturally as if they were describing a scene of nature.
+
+I think that the characteristics of classic style apply to programming
+languages.
+
+Programming is not the act of typing keys on the keyboard in a certain order.
+Programming is describing an often complex process undertaken by the computer,
+in a program that should be clear and simple to the human reader.  The
+programmer conveys its meaning by combining the features of the chosen
+programming language in a way that, ideally, directly reflects the process he is
+implementing.  An example would be to use functional composition to implement a
+pipeline process; a function is an adequate representation of the pipe, since
+both have one output that results from transforming their inputs.
+
+Consider the problem of counting letter frequencies in a text.  Given an input
+text in English, give, for each 26 letter of the alphabet, the number of
+occurrences of the letter over the total number of letters in the text (the
+frequency of the letter relative to the text).
+
+First, the programmer would find an algorithm for the problem: divide the text
+in letters, normalize it (remove non alphabetic characters and flatten the
+case), count each letter separately, then compute the frequency (n_a / \sum_{i}n_i).
+
+At this stage, we can write this process in code, in an idealized language.
+This is a hazardous exercise, as we are trying to find just the right level of
+specification to avoid over-specifying, while still being as precise as we can.
+
+#+BEGIN_EXAMPLE
+text-freq = normalize | count
+
+normalize = filter not-alpha | lowercase
+
+count nil freqs = freqs
+count letter:text freqs = count text (freqs[letter] + 1)
+
+freq letter freqs = freqs[letter] / sum(freqs)
+#+END_EXAMPLE
+
+Here, a vertical bar =|= takes the input of the left and feed it to the right.
+We rely heavily on Haskell syntax to provide the necessary context in order to
+help the reader fill the blanks.  But we do not explicitly give any semantic to
+this pseudo-language.  In some ways, it is more helpful than the English
+algorithm, but without semantics it can really mean anything.  At this stage, we
+are hoping that the reader connects the dots that we have in mind.
+
+Should we write out the definition of =lowercase=, =filter=, or =sum=?  If we
+did, should we write out the definition of their constituents as well?  When do
+we stop?  Well, we cannot go wrong by specifying /everything/, but we will spend
+a lot of time doing so.  Instead, we should stop when the level is evident to an
+intelligent reader.  A good criterion would be: give this to any competent
+programmer, and if she implements it without asking for clarification, then you
+provided sufficient information.  The same dilemma occurs in classic style: when
+to explain, and when to take for granted?
+
+Here we are taking for granted =lowercase=, on the basis that it should be a
+well-known function to any competent programmer.  Instead of defining it, we can
+specify how it should work: applied to any uppercase alphabetical character of
+the English alphabet, it should return the corresponding lowercase character,
+and be the identify for lowercase characters.  Amusingly, if we had to implement
+=lowercase=, we would have the same problem of finding the right level of
+description.  Since it is a common function in many languages, we can file it as
+trivial.  But we can see that we are only building on top of existing knowledge,
+of an existing context: the language and its API; itself built on its compiler;
+itself built on machine code; itself built on PC hardware; itself built on
+transistors; themselves built on electricity; and we have attained the ground
+truth: nature.
+
+It is mesmerizing to contemplate how deep these ramifications go, and how a few
+words can trigger a torrent of associations and ideas, and how our minds select
+the correct associations depending on the context in which they were written or
+read.  But this is also the source of confusion in any communication: assuming
+both parties have the same context for the current argument.
+
+At this stage, we should refrain from over-specifying, and state only what is
+needed by the problem.  Failing to do that, we might constrain the
+implementation unnecessarily.  For instance, in common programming languages we
+often specify the order of execution implicitly, even when such order does not
+matter, hence forcing a sequential order where parallel execution would lead to
+better performance.  The trick to not over-specify is to state only relations
+between functions, and not say a word about algorithms or data representation.
+The formalism of mathematics is often well-suited for this task.
+
+We would then write:
+
+: occurs(text, letter)
+is the number of occurrences of =letter= in =text=
+
+: freq(text, letter)
+is the frequency of =letter= in =text= relative to the other 26 letters of the
+alphabet.  So,
+
+freq(text, letter) = occurs(text, letter) / (\sum_{l} occurs(text, l))
+
+Leaving us to implement only =occurs=.
+
+#+BEGIN_SRC haskell
+  import Data.Char (toLower)
+
+  occurs :: Char -> String -> Int
+  occurs _ [] = 0
+  occurs l (t:ts)
+    | l == normalize t = 1 + rest
+    | otherwise        = rest
+    where rest = occurs l ts
+
+  normalize :: Char -> Char
+  normalize = toLower
+#+END_SRC
+
+This example is deceptively simple.
+
+We also use names to trigger contextual associations from the reader.  Names are
+useless for the machine: machine code has no name.  The only significance is the
+order of bits.  Putting arbitrary names is an effective way to obfuscate a
+program (e.g. minifiers for JavaScript, or obfuscators).  Names are tremendously
+helpful for humans, but can lead to confusion.  Names are ambiguous.  If a
+function is called “filter”, I would expect it to filter its input in some way,
+and preferably to behave just like the well-known filter of functional
+programming languages.  Likewise, if a function is called “getResults” and
+actually brews coffee, the name is misleading.  A short name is better than a
+long name, for both reading and writing.  But a short name can only tell so
+much, hence short names invite a decomposition of the program into small units.
+
+Related: Rich Hickey’s “Simple made easy” talk, and Bret Victor’s concept of
+“direct manipulation”.
+
+** Advice from “How to write a better thesis”
+*** Link words
+Link words indicate the logic flow in a passage of text.  There are two kinds:
+conjunctions, which are used to link clauses in a sentence, and transitional
+words, which are used to link a sentence to the one that preceded.
+
+- Common conjunctions: but, although, unless, if, as, since, while, where,
+  before, after, when, because, for whereas, and, or, nor.
+- Transitional words: however, thus, therefore, instead, also, so, moreover,
+  indeed, furthermore, now, nevertheless, likewise, similarly, accordingly,
+  consequently, finally.
+- Transitional phrases: in fact, in spite of, as a result of, for example, for
+  instance.
+*** The “standard” structure:
+1. Introduction, problem statement, aim and scope, thesis overview
+2. Background, history, current theory, current practice
+3. Core, own work, proposals, results
+4. Synthesis, analysis, discussion, conclusions
+
+*** Aim for a narrative
+A story that will take the reader along the road to where I want them to go.
+This path should be straightforward.
+
+#+BEGIN_QUOTE
+You may think to yourself: I have had to fumble, and explore, and make mistakes
+to get here, but I am now writing the guidebook that helps the next person to
+painlessly come to the same point of view and the same knowledge.
+#+END_QUOTE
+
+*** What to put in the appendices, what to discard
+Anything that would distract the reader from the main argument should go into
+the appendices.
+
+But only put material that a reviewer would want to follow.
+
+*** Introductory chapter
+Stick to a single aim.  Do not describe how you intend to achieve this aim;
+reserve this for a later chapter.
+
+Establish the scope of your study: time, location, resources or established
+boundaries of a field.
+
+*** Background chapter
+Provides a map of the territory you intend to cover.
+
+Will lead the reader from where you started (when you began your thesis), to
+where you are now.
+
+Write /defensively/: if you think something might confuse an examiner, address
+it.
+
+Pick a baseline against which to compare your results.  The “best” baseline in
+the scope you have set, of course.
+
+** Fast and forward research vs. slow and backward research
+Usually, a thesis is a of deep incursion into unknown territory.  The manuscript
+should revolve around new results, with a background section comparing existing
+approaches to the problem the thesis aims to solve.  The emphasis is on new,
+original results and new insights on a problem that is usually recent, but can
+also be an old one.
+
+The thing is, I never feel anything is new.  New problems are just old problems
+in different clothes.  New solutions are just old solutions put together and
+slightly altered.  From this perspective, no work is new or original; any work
+just flows logically from what was known before.
+
+Young researchers are often advised to read recent papers in a field to find new
+or “low-hanging” problems.  Papers from 10 years ago are seldom considered
+relevant for today’s problems.  There is the issue of bounded time: if you only
+have to read all the relevant papers for your thesis that were published in the
+last 10 years, that sets a manageable bound on your reading list.  If you
+consider any work published in the last century relevant, then you will spend a
+lot more time reading, and less time publishing.
+
+I feel we would be better of reading more, and publishing less.  The future is
+reflected in the past.  One of the goals of a thesis is providing new insight on
+a problem.  Well, there still is considerable insight in past research.  Even in
+2015, a 1962 paper is still many years of work condensed into a dozen pages.
+Disregarding most of that past effort seems wasteful.
+
+It is true that past research tends to get condensed as it is better understood.
+In fact, this is the general process of acquiring knowledge: gather up
+individual scenarios, then factorize a common schema out of the scenarios.  The
+factorization gives way to a mental model that can be used to quickly learn
+“new” situations by matching them to an existing mental pattern.  In papers,
+individual contributions do not matter as much as the mental model they evoke in
+the reader, the insight they provide.
+
+Doing “fast and forward” research will cause you to ignore what already existed,
+and could have been reused.  Reusing source code, reusing thoughts model is a
+strong theme in this thesis, and it applies to research as well.  I feel that it
+is easier to dismiss all the body of existing work, and instead focus only on
+“hot topics”.  But ultimately, publishing without looking back is doing a
+disservice to research.  Research works are increasingly produced every year,
+and the trend is accelerating.  Publishing without taking the time to put your
+work into perspective of what has been done before is disrespectful of the time
+spent by reviewers and readers.  The peer-review process is supposed to be
+safeguard against redundant works.  Unfortunately, the increasing volume and
+specialization of research work against peer-reviews.
+
+Authors should take the time to reflect on how what they have found relate to
+existing insight.  This is a tenet of this thesis.
+
+In fact, I don’t feel anything in this thesis will feel new to someone familiar
+with programming languages.  What I hope that this thesis does is give a fresh
+perspective on what modularity means to programmers, and expose the multiple
+ways there are to create modular interpreters.
+
+* Topics
+** What interests me
+How to design modular programs using language constructs.  To be concrete, here
+is the scenario of instrumenting interpreters.  How to build interpeters that
+can be extended without changing a bunch of lines of code.  In essence, how to
+design program that are extensible and clear.
+
+The clarity of a program is how well one can understand what the program does by
+reading the source code.  I believe clarity can be greatly influenced by how we
+choose to construct our program using languages and patterns.  Programmers are
+prompt to point out that certain features of programming languages can be
+detrimental to clarity (“GOTO considered harmful”), going as far as preaching to
+others programmers to avoid whole families of programming languages altogether.
+On the other hand, it is frequent to come upon praises of others features or
+paradigms (“monads are awesome”, “functional programming makes program
+clearer”).  But like natural languages shape thought, programming languages
+shape programs, and languages are not all equivalent in clarity when applied to
+different problems.
+
+I’m interested in the process of going from the problem, to the mental model, to
+the program, and the interactions between these levels.  A clear program is a
+perfect match with the conceptual model of the problem: no line of code is
+superfluous, and each line can be mapped to a part of the problem.  There is no
+accidental complexity (see Moseley’s “Out of the Tar Pit”).  The program is as
+complex as the problem is, no more, no less.
+
+To form a mental model is very related to a learning activity described by
+Papert and Piaget.  Going from a problem to a mental model is learning the
+problem.  The mental model is not formed at once, but is enriched piece by
+piece.  Similarly, the program is not written all at once, but line by line,
+feature by feature.  When one’s comprehension of the problem expands, the
+program must follow.
+
+I see programming as adapting the model of the problem to the model of the
+computer.  I have a mental model of how the computer works; I have a model of
+how such and such languages work.  When I have constructed a model for a
+problem, I can compare it to my models of tools (languages) and see if one fits
+better than the other.  It is unlikely that one language fits perfectly, but the
+closest will do.  From there, I can use the constructs of the language to
+approximate the problem model.
+
+On top of the model for languages, I also have countless models of how to solve
+generic problems, built from experience.  These are generally the first models
+used when looking for a match to the problem.  “This is a graph problem”, “An
+observer pattern would solve that”, “You are missing a semicolon”...
+
+I don’t feel that this process is specific to programming.  Essentially, it’s
+just pattern matching.  Matching forms and processes of the real world to the
+more abstract ones in our minds.  It’s a human thing, a consequence of how our
+brains work.
+
+This view of programming is a running thread for the work I’ve pursued during my
+thesis.  Finding just the /right/ solution for the problem, and not a
+catch-everything miracle.
+
+** Finding the right program for a problem
+Is a fitting problem.  You choose the most appropriate language that fits the
+problem, then write the code that maps the flow of your solution perfectly.
+
+Nothing left to add, nothing left to take away.
+
+It’s like those children toys where you have to match shapes, except you have to
+build your shapes from small parts.  If your shape is too small, you have not
+solved the problem completely.  If your shape is too large, your code does too
+much.
+
+Sometimes you change the shape of the problem, because it is much like another
+problem you have already solved.
+
+The same idea can be found in the “least upper bound” of sets, or the “tight
+necessary and sufficient conditions” of my master thesis.
+
+** Comparing strengths and weaknesses, not playing favourites
+It is common to hear programmers argue about their favourite language.  Java is
+crap, Scala is better, Clojure is awesome, Haskell is fantastic...  All these
+assertions are often rooted in personal sentiment, or signaling membership to a
+specific tribe.  When the arguments are based on seemingly objective
+observations (“type systems makes you more productive”, “C makes you write buggy
+programs”), they are rarely based on reproducible facts, but rather on
+subjective experiences and self-confirmation.
+
+The fact is, few serious studies have been done on the benefits and drawbacks of
+different programming languages.  The same goes for other tools like text
+editors, IDEs, terminal emulators or web browsers.
+
+One thing that I like to do, is to write the same program in different
+languages.  Or rather, solve the same problem in different languages.
+Often, one language will allow for multiple solutions.  It is then interesting
+to compare the benefits of the solution in terms of readability, clarity,
+simplicity, and extensibility.
+
+In this thesis, I would like to exhibit a number of ways to write an extensible
+interpreter and its extensions.  Hopefully there will be no subjective
+statements (elegance of code is in the eye of the beholder), but merely
+comparisons of the strengths and weaknesses of different solutions.
+
+I’m not hoping to settle the debate on what language to use.  First, it seems to
+me that languages are primarily bundle of features, and these features have
+found their way into many languages.  So rather than praising or dissing a
+language, we should focus on features.  But second, there won’t be one solution
+to satisfy everyone, because each programmer has different needs, even when
+considering the same problem.
+
+Instead, I’m hoping that programmers will recognize that language features are
+tools, just like algorithms or data structures.  One should always have the most
+useful tools in his belt to be able to solve common problems efficiently.  Some
+specific problems might require specialized tools, or the knowledge to apply
+common tools correctly.  This document provides knowledge to apply common tools
+to solve the specific problem of interpreter instrumentation in a modular way.
+
+** A programming language is the interface of a program
+Writing a program in a language is giving instructions to the interpreter or
+compiler of that language.  To allow a wide range of programs to be written, we
+use complex languages rather than merely passing options to gcc, because
+languages provide greater orthogonality.
+
+But the language is the input of the interpreter.  The output is the movement of
+bits in the machine.
+
+Since we have this level of indirection (why is it required?), this abstraction,
+it makes sense to design it in a way that allow for a great and precise control
+of the bits’ movement.
+
+The programming language is an interface, and it must be designed following the
+guidelines of human-machine interaction.
+
+In this view, a framework gives you one interface that is convenient for some
+tasks.  Using a framework is like using a front-end program for ffmpeg when you
+just want to rip CDs to MP3s.  The base program is more powerful, but you have
+to remember which options to declare, and input them each time.  Using the
+front-end program, the task is simpler to express, but the front-end cannot do
+everything that ffmpeg does.  The framework provides an interface for the
+programming language, in order to simplify the creation of selected programs.
+
+On the other hand, a library essentially enhances your interface, without being
+partial to some tasks.  Libraries compose, whereas frameworks rarely do.  Using
+a library is like composing programs with a pipe.  Greater re usability.
+
+Programming language designers often tout the regularity of their language, or
+its simplicity.  Both properties are important for /learning/ a language, but
+can actually hinder its /use/ [[cite:Gru-89][Gru-89]].
+
+Designers tend to favor consistent languages because they are simpler and more
+elegant.  However, users favor getting things done, and seldom care about the
+internals of the language.
+
+Programming languages are interfaces, and we should design them to be convenient
+to use.  We should design them from the problems they aim to solve.  This
+document specifically deals with the mechanisms one can use to solve the problem
+of modular instrumentation.
+
+** Modularity is a human concern
+The end goal of programming is moving bits in the machine to obtain a desired
+outcome.
+
+Writing a program is giving a static description of the movement that will take
+place when the machine executes it.
+
+The machine does not care about the elegance of the code.  It does not care
+about your choice of variable names, or class decomposition.  If anything, all
+these abstractions often lead to less efficient machine code.
+
+Modularity and elegant code are targeted to human programmers, human readers.
+Finding out what is pleasant to the human brain is harder, less absolute.  Maybe
+it’s not much a science.  There are measures we can apply, but we cannot measure
+what counts.  The full appreciation of an elegant code is in the intricate
+interplay of language features and problem domain.  Very much like a work of
+art, there is no formula, and a theory would be ill-advised.
+
+That said, there are choices of language design that promote or hinder
+modularity.  What choices, and to what extent do they affect modularity?  That
+is what this text is really about.
+
+** Shapes of computation
+AOP is a language for altering the control flow, but there is a dissonance
+between writing an aspect, and writing the program.  Writing a program is
+mapping the problem space to the computer space.  High-level languages encourage
+the programmer to think in terms of abstractions higher than registers and
+instruction pointers.  The mental model of OO is object + messaging.  The mental
+model of FP is function + referential transparency.
+
+AOP forces you to think about the control flow of your application.  Pointcuts
+are inherently control-flow related: =call=, =execution=, and of course =cflow=.
+You are writing pointcuts using the same identifiers as in your program, but
+they actually describe different objects.
+
+Knowing the shape of your computation is crucial to write robust programs [[cite:AS-96][AS-96]].
+
+Is there a programming language which is clearly matched to the shapes it
+produces?  I guess it’s not that simple.
+
+In [[cite:PLM-07][PLM-07]], semantics patches are used to pattern match on the syntactic
+structure of target programs.  Pointcuts are used to capture joinpoints, and
+joinpoints are created by the dynamic control-flow of a program.  However, the
+pointcut language is /not/ pattern matching.  You don’t write:
+
+: f(...)
+
+but
+
+: call(f)
+
+And you write
+
+: call(f) & cflow(g)
+
+instead of
+
+: stack[f ... g]
+
+We use pointcuts because we lack the adequate language to describe the runtime
+behavior of the program.
+
+Pattern matching on strings, inductive types, or abstract syntax trees, in all
+of those we are dealing with text.  So it’s easy to write a pattern in a text
+editor.  However, the shapes of computation are very dynamic.  We don’t have a
+language to describe them.
+
+** Prescriptivists and descriptivists
+Referring to the philosophy of linguistic researchers.
+
+I’m a descriptivist.  I describe what languages exist, how they are built, what
+constructs they contain, how they are used by programmers to build programs.
+
+I know of some prescriptivists.  Dijkstra was a prime example.  They prescribe
+which languages should be used, and which should not; which constructs are
+harmful, which are good.  They assume the Sapir-Whorf hypothesis, and are
+baffled that programs written in “badly-designed” languages work.
+
+The machine does not care, but we do.  It’s an amusing phenomenon.
+
+Anyway, if you are a prescriptivist, this manuscript will probably bother you.
+
+Maybe include a few questions for discerning on which side you stand?  “Type
+systems are necessary: agree/disagree”, etc.
+
+** Unanticipated extension is just a hack
+A catchier term might be /post-hoc extension/, following its use by Benjamin
+Lerner’s thesis.
+
+A program is made according to a specific mental model.  In its simplest form,
+this model does not account for all reasonable or exotic extensions one could
+add to the program.  As a result, the program is made simpler to build,
+understand and maintain.
+
+When someone wants to extend the program, they have a renewed mental model of
+what the extended program should do.  The problem is: the original program was
+/not/ made with the extended model in mind.  Now there are two ways to implement
+this renewed mental model:
+
+1. from scratch, as its own program
+2. by hacking the first program that was not meant to be used in this fashion
+
+Now, depending on the models themselves, either #1 or #2 may lead to the
+simplest program to build and understand.  However, #1 will be a standalone
+model, while #2 will be a fragmented one.  In #1, any part of the original model
+that is superseded by the extension can be deleted from the model, thus making
+the program simpler.  In #2, the model is larger, hence more complex, even if
+some parts of the original model are overridden.
+
+Think of a drawing made on paper.  If you only have a pencil and no eraser to
+draw, every mistake must be crossed-out.  When the drawing is done, any mistake
+will be unwanted noise, a byproduct of the process that obscures the final
+result.  If one were to draw a model on paper, without mistakes — a clear
+model.  Then #1 would be like taking a new paper and making a new drawing
+inspired by the first, while #2 would be like taking the first paper and drawing
+on top of it, but without an eraser.  If per chance the additions of the second
+drawing do not conflict with any of the preexisting lines, then both ways lead
+to a clear picture.  However if any line is superfluous, or even contradicts the
+goal of the second model, then it must be crossed-out, and the resulting drawing
+is less clear than a fresh one.
+
+Two things spring to mind:
+
+1. That this problem can be found also in drawing, writing or composing music
+   suggests that it is not specific to computer science, but rather to all
+   creative activities.  Programming is not unique in this regard.  Still, these
+   activities are sufficiently different that tentative solutions to the problem
+   in one of them may not be applicable to the others.
+2. Music composition may be a better analogy than drawing.  When programming,
+   you write source code that is meant to be executed.  In music, you write
+   musical notation that is meant to be played.  When you want to change a
+   particular piece of music, you have to specify the change using musical
+   notation.  The analogy is a better mapping than drawing, where the distance
+   between the end result and the process is smaller.
+
+Unanticipated extension is just a hack in cases where the original model was
+never intended to support such an extension.  This is in fact one of the common
+usage of the term “hack”: to cleverly leverage existing facilities in order to
+solve a problem these facilities were not intended for.  But when we build
+systems, and more importantly when we maintain these systems, we tend to see
+hacks as temporary workarounds, rarely as the proper solution.
+
+The trouble with the proper solution is that it makes rethink your whole
+approach.  Your are confronted with problem A, you think for a while and build a
+model M of this problem that you implement as program P.  Then a bit later,
+someones come along and introduces you to problem B, which kinda looks like A.
+Since you have built a mental model M of A, you try to fit B to M.  Most of B
+fits, and only a few bits stick out.  So you decide to extend program P into Q
+which only have a couple of bifurcations in the control flow to deal with the
+exceptions brought by problem B.  There, you solved B.  And you re-used your
+mental model M, saving you precious cognitive load.
+
+Now someone comes along with problem C (of course), and C kinda looks like B,
+which looked like A, but with additional bits sticking out — and not the same
+one that made B different from A.  You /could/ stretch your model M to fit C,
+but that would make for a messy model with lots of exceptions.  The same goes
+for the program Q, which could be turned into a solution for C, but the
+resulting program would not make for an easy read.  Still, A, B and C do share
+similarities.  You have to work to find the variable parts and the static parts,
+then design a model that allows you to easily plug in different variable parts
+that work well with the static ones.  Call this model N.  Now A, B and C are all
+expressible by model N.  But model N is sufficiently different from M that you
+need to overhaul your program Q (or P) into program R.  From R, you can create
+with few additional code (really configuration) solutions to A, B and C.
+
+** Why JavaScript?  What’s so special about it?
+Well, I guess the main reason is that you have a JS VM in all major browsers,
+and that web application are increasingly popular.  So that’s a vast domain of
+application right there.  Solve a “problem” in JS, you potentially impact
+millions of everyday users.  That’s reason enough for lenders of research
+grants.
+
+In addition, it’s not like you have to look far to find security issues in web
+applications.  XSS, CSRF, scams, phishing, and now ransomware.  We could all do
+without those.
+
+The question is though, is JavaScript /worse/ than other languages in respect to
+security?  And that’s a difficult question to answer, in large part because
+JavaScript is the only language that has been largely used to create client-side
+web applications.  Plenty of variants and alternatives to JS exist, but none
+with the same popularity.
+
+And I’d be warry of doing comparisons between languages alone.  Say, mine
+TypeScript projects for defects, and compare with comparable projects in JS.  I
+would guess that the background of JS devs is on a much larger spectrum than
+webapps devs using TypeScript.  If you /chose/ TypeScript, chances are you
+already care about the security of your web programs.  Or in the case of Dart (a
+different language, not a superset), I suspect the programmers who use Dart are
+more skilled in programming than the average JS dev.
+
+And even if you took top programmers in TS (or Dart) and JS, and have them both
+build the same application to spec, are you really evaluating the “robustness”
+of the language?  How do know they are equally skilled?  What about the
+toolchain?  Editors, IDEs, test suites?  What about methodology?  Cascade
+vs. agile?  Many variables here that get in the way of evaluating the language
+itself.
+
+So if you can’t easily evaluate the language at the top, from the end-user side.
+What about at the bottom?  When you consider the language in itself, and not its
+applications?
+
+That’s what theoretical types do.
+
+** What’s the ideal secure language?
+Ha!  Thanks for asking, because as it happens, there is one such language.  I
+call it ‘P’, though not many people are aware of it.  Here are its syntax and
+semantics (operational, small-step):
+
+#+BEGIN_EXAMPLE
+Syntax: ⟂
+
+                  true
+Rules:       ----------------
+                   ⟂
+#+END_EXAMPLE
+
+All programs in P are guaranteed to terminate.  They are also XSS- and
+CSRF-free.  P programs do not leak sensible information, nor can they harm your
+browser and computer in any way.  As a matter of fact, P programs cannot do
+/anything/.
+
+[[http://channel9.msdn.com/Blogs/Charles/Simon-Peyton-Jones-Towards-a-Programming-Language-Nirvana][Following Simon Peyton Jones]], you can classify all programs along two axes:
+usefulness (I interpret that as “easy” to write a program doing X) and safety
+(you can control every effects).  C would be useful but unsafe, and Haskell
+(jokingly) safe but useless.  Jokingly, because P /is/ the idealized safe but
+useless program.
+
+But Peyton-Jones has another insight for us in this video: even if your language
+allows you to program all kinds of algorithms, if running the program has no
+side-effects in the world, *it is useless*.  You can compute π to the 123rd
+decimal, but if you don’t save the result somewhere, what’s the point?
+(Arguably, executing the program /is/ a side effect on your machine, but that’s
+a side-effect of the interpreter/virtual machine rather than of your program.)
+
+So, what’s the ideal secure language that is also useful?  One with which you
+can write any program, but where all the effects of running the program are
+under total control of the programmer, or of the user running the program.
+
+** On what you can say about a given program
+Take regexps.
+
+#+BEGIN_EXAMPLE
+.*
+#+END_EXAMPLE
+
+What can you say about strings matching this regexp?  They are of unlimited
+length, containing any character.  Basically, the regexp matches /all/ strings
+you can create.
+
+What about that one:
+
+#+BEGIN_EXAMPLE
+a
+#+END_EXAMPLE
+
+It matches exactly one string, the string beginning and ending with “a”.  Given
+the regexp, the set of non-matching strings is infinite (it won’t match “b”, it
+won’t match “bb”, and so on).
+
+In programming languages land, in order to say what a program can or cannot do,
+the regexp becomes the syntax + semantics + environment of the language.
+
+The (somewhat) equivalent examples would be:
+
+#+BEGIN_EXAMPLE
+eval(stdin)
+#+END_EXAMPLE
+
+Can’t know what the program will do, depends entirely on user input.  Though
+this is /partially/ true when you consider what you know about the environment.
+You could restrict behavior in the environment itself, rather than in the
+program.
+
+The other example:
+
+#+BEGIN_EXAMPLE
+return 1
+#+END_EXAMPLE
+
+Only one purpose, does not depend on input.  You can say for sure that this
+program does not harm your computer (well, depending on the exact semantics,
+once again).
+
+Maybe that’s the issue: that you have to take the full stack into account for
+giving guarantees.  Or maybe regexps are conceptually simpler.  Is that because
+of their lower computational power?
+
+** What work I did during the thesis
+- Playing with interpreters written for lambda calculus and trying to change
+  their behavior for faceted evaluation.  Without presuming too much about the
+  structure of the interpreter to be general.
+  - JS protos revolved around manipulating scope and using prototypes, both for
+    constructing an interp (LASSY) and for instrumenting it (DLS), WITHOUT
+    true dynamic scoping
+  - Lisp proto shows dynamic scoping is a solution
+  - Haskell prototypes were failed attempts at using monads to define analyses.
+    Extending the syntax is brittle (Open Data Types), but allows one limited
+    form of extension.
+
+Trying to formulate an understanding of how all these solutions relate to each
+other.  What is common idea behind the syntax, grammar and semantics of each,
+when trying to solve post-hoc extension?
+
+- Thinking about language mechanisms for solving extensibility issues:
+  - OO: inheritance, composition, delegation, design patterns, dynamic and
+    multiple dispatch, ...
+  - AOP: joinpoints, pointcuts, weaving
+  - Dynamic scoping (and delimited dynamic scoping)
+  - Macros: static code as data
+  - Reflection: dynamic manipulation of language structure/semantics
+  - Continuations: linear control flow is easier to instrument
+  - Monads: reify computation; dynamic code as data
+  - Type systems: mostly working around them as they are antagonistic with
+    post-hoc extension
+
+Maybe we can make two categories of mechanisms: those that assume the
+interpreter has a specific structure (class-based, linearized, ...), and those
+with minimal assumptions (dynamic scoping, macros).
+
+Seeing how these mechanisms can be equivalent when looked through the post-hoc
+extension lens.
+
+- Applying this knowledge to Narcissus.  And dynamic analyses.
+
+** I don’t believe in security.
+Security is confidence, assurance, certainty, the absence of risks.  Security is
+immobility, immutability, predictability.  Security is a never ending game of
+building bigger mousetraps, only to find your grain eaten by bigger mouses.  We
+won’t have secure programs, or secure computers, since they are all embedded in
+the real world.  The real world is always moving, always changing.  Things grow
+and die all the time.  Accidents happen.  Tragedy is inevitable.
+
+The human desire for security is a desire to control reality, to control
+nature, to control future outcomes.  Secure programs are programs that we have
+control over.  We do not want strangers and malicious third parties taking over
+our computers, because that is a loss of control.  Leaked data?  Loss of
+control.
+
+Of course there are reasonable arguments for secure programs: programs that we
+do not control would be barely useful.  What good would be an unreliable sort
+algorithm?
+
+How secure is secure enough?  Proponents of secure programs invoke exceptional
+events like Ariane 5, or OpenSSH, and they ask for safer languages, safer
+tools.  There is a great cost incurred by going to 100% safe, if such a goal is
+even attainable.
+
+I believe in adaptability.  The world changes, then we must change with it.
+Plan for failure, as you cannot prove that it will not happen.  Crashes happen,
+and will continue to happen.  Computers are made of thousands, if not millions,
+of components.  They run in warehouses, on electricity, provided by cables.  All
+these components are embedded in reality, ready to fail when the next disaster
+happens.
+
+Redundancy is more reliable than Coq proofs when it comes to real-world
+software.  Things fail.  Robust programs are better than secure, or “safe”
+programs.  Robust programs deal with erroneous input; robust programs recover
+from error; robust programs continue to operate when the rest of the world
+crumbles.
+
+Secure computing is a dream for control-hungry plutocrats, it is running against
+the currents of reality.  Adaptability is letting go of the anxiety, accepting
+that things will change, things will fail, things will burn.  It’s okay.  We’ll
+recover and carry on.
+
+* Outline
+Thesis: the modular instrumentation of interpreters can be achieved through
+language mechanisms.
+
+** The narrative
+Take a program, try to change its semantics and minimize the changes made to the
+program source code.
+
+There are many ways to do that, and not all are equivalent.  How do they differ?
+Is there a common concept that lie behind them?  These are the initial research
+questions.
+
+It seems this process [[Unanticipated extension is just a hack][mirrors]] one involving mental models in the brain.
+
+I’ve started by looking at the case of an interpreter and dynamic program
+analyses.  However, this is just the application, as it turns out that the core
+of the problem lies in changing what a line means by dynamically changing
+bindings.
+
+What I hope this thesis provides, is a mental model to think about extending
+programs.  What it means, conceptually, and what it means for the source code.
+
+** What should be in it
+- a program is an explanation
+- modular is simple
+- separation of concerns goes with modularity
+- thinking about features: base behavior vs. extensions
+- programming incrementally
+- instrumentation is like customization
+- css is a customization language
+- emacs is a customizable platform
+- leaving holes for extensions: Lua game engines, visitor pattern
+- minikernels vs. monolithic kernels
+- preparing for extension vs unanticipated extension
+- instrumentation is unanticipated extension
+- monkey patching, copy-pasting, AOP
+- dynamic scoping, global scopes, namespaces
+- Lambda papers
+- granularity of extension points
+- modifying the control-flow vs modifying the source
+- patches are instrumentation (brittle)
+- drawbacks to separation: implicit control flow changes hamper reasoning
+  (COMEFROM, GOTO)
+- JS interpreters + information flow case studies
+- JS interpreters + modes of evaluation (strict/strong)
+- functional instrumentation: control-flow is data
+- throwbacks to Lisp (code is data)
+- monads, free monads
+- Lassy’15 work
+- Swierstra work
+- Application to Narcissus
+
+*** What is currently missing from the plan
+- instrumentation is like customization
+- css is a customization language
+- emacs is a customizable platform
+- leaving holes for extensions: Lua game engines, visitor pattern
+- preparing for extension vs unanticipated extension
+
+** Introduction
+I introduce the themes of the thesis, its setting and its goals.
+
+The themes:
+- modularity of programs
+- modularity is clarity
+- separation of concerns
+- incremental programming
+- code as data is the epitome of modularity
+
+The setting:
+- JavaScript security
+- instrumentation of interpreters
+- information flow analyses
+- Narcissus
+
+The goals:
+- understand what makes a program modular
+- understand the benefits and downsides of modularity (in particular, with
+  respect to security)
+- understand how we can build modular interpreters for the purpose of
+  instrumentation
+- give a fresh perspective on languages from different communities: JavaScript,
+  Haskell, Lisp, Scala.  Different programming disciplines to solve the same
+  problem.
+
+I also describe what the thesis does /not/ cover, in order to give reasonable
+expectations to the reader.
+
+** Background
+We extend the themes and setting of the introduction to give the reader all the
+background necessary to understand the choices made in the thesis.
+
+We show how existing work relate to the problem of modular instrumentation.
+Specifically we show that very few work have targeted this particular problem.
+Though there are numerous works concerned with modularity in interpreters, most
+prominently around the expression problem.
+
+Conclusion should be: modular instrumentation is still a fresh, and legitimate
+axis of research.
+
+*** Structure of this section                                          :meta:
+Organizing this section is hard.  There are many themes I want to cover, but the
+analysis of the related work should stay relevant to the thesis’s goals.
+
+Modularity is an overloaded term, with confusing expectations.  Extensibility is
+narrower, prefer the latter.
+
+The contributions all revolve around extensible interpreters.  How to build
+them, and what mechanisms to use to extend existing interpreters.
+
+Separation of concerns is closely related to extensibility, and can be seen as a
+pre-requisite.  An interpreter is hardly extensible for analyses if the code for
+all the analyses is tangled together.  We must know how to achieve it as well.
+
+Modularity, complexity, separation of concerns.  All have been a driving force
+in software engineering since assembly.  There is an evident chronological
+presentation of extensibility: from assembly to post-object.
+
+There is also a strong methodology/language/tool spectrum of separating
+concerns.  I focused on languages, but I now believe more in methodology and
+tools.
+
+A third axis is what they were used for: building versus extending.  This one is
+fuzzy, and overlaps perhaps too much with the contributions.
+
+I have collected examples of /extensible systems/ (Emacs, IDEs, Browsers).  What
+make them extensible is relevant to the thesis.
+
+A nice solution to presenting this session is to start from a map of the process
+of creating a computation from the source code of target programs.  From source,
+to AST, to bytecode generation and evaluation in the browser.
+
+The browser as well was generated from source code, so there are potential
+points to exploit as well.
+
+Each node in this map is a site potential to accept the modifications needed by
+the analyses.  Some, however, are more convenient than others.
+
+But most related work can be placed on this map, providing a convenient visual
+‘heat chart’ of the field.
+
+*** Setting
+The ELI5 section of the thesis.  I explain all of that and foreshadow the
+following subsections.  If I you don’t get what is all this stuff and why you
+should care, then you can put down the thesis now.
+
+**** What is a program?
+**** What is a programming language?
+**** What is program modularity?
+**** What is an interpreter?
+**** What does it mean to instrument an interpreter?
+**** Why should this instrumentation be modular?
+**** Why should we care about separation of concerns?
+**** What is JavaScript?
+**** What is an information flow analysis?
+
+*** Modularity background
+Modularity has been a concern for programmers for a long time.  Plenty of
+solutions abound.  I stick to modularity in programs from a programming
+languages point of view.  But you should know there are other ways to build
+programs than inputting source code, and there also modularity is a concern.
+
+Should also cover:
+- scoping / dynamic scoping
+- information hiding
+- interfaces
+- modules
+
+But when selecting papers, be sure to get all the relevant ones first (the ones
+that target instrumentation and interpreters are a priority), then take
+“representative” papers about other programming disciplines.
+
+Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
+Classical logic is inflexible, incompatible with the realities of software.
+Especially, information hiding is not the silver bullet.  Approaches to software
+development that seem to break information hiding, and even oppose modular
+reasoning, have their virtues.  Those can be thought of using nonclassical
+logics.
+
+Parnas is usually credited with the notion of modularity, as well as notions of
+/separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
+improving the methodology of programming through up-front planning and critical
+analysis of designs.  He does not believe in language solutions to software
+modularity [[cite:DBB+03][DBB+03]] [[cite:Par-96][Par-96]], although he is often quoted by proponents of
+modularity through languages.
+
+#+BEGIN_QUOTE
+My engineering teacher laid down some basic rules:
+
+1. Design before implementing.
+2. Document your design.
+3. Review and analyze the documented design.
+4. Review implementation for consistency with the design.
+
+There rules apply to software as least as much as they do to circuits or
+machines.
+#+END_QUOTE
+
+**** Structured programming
+Argues for a single entry point into procedures, and single exit point.  Not
+jumping directly in the middle, or exiting prematurely.
+
+Exemplified by ALGOL, and Pascal [[cite:Wir-74][Wir-74]] [[cite:Wir-74a][Wir-74a]].
+
+Dijkstra notoriously argued against the GOTO statement, as a superfluous control
+structure [[cite:Dij-68][Dij-68]].  On grounds of obscuring the “independent coordinates”
+implicitly used by programmers to understand the dynamic flow of a program.
+“Unbridled use” of GOTO statements makes finding such coordinates “terribly
+hard”.  In short, peppering GOTO statements leads to spaghetti code.
+
+The article has a strong prescriptive tone, as usual from Dijkstra, yet it opens
+with a reasonable appeal: “to shorten the conceptual gap between the static
+program and the dynamic process, to make the correspondence between the program
+(spread out in text space) and the process (spread out in time) as trivial as
+possible”.
+
+On the legacy front, most programmers are cargo-culting the fear of GOTO (though
+Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
+it.  However, the discipline of single-exit is more controversial, as most
+modern languages offer constructs for early exits from procedures (return
+statement) or from loops (break and continue statements, sometimes with
+labels).
+
+The fear of GOTO is an example of focusing on the wrong issue: structured
+programming is a proposal for clearer programs.  Blindly removing all GOTOs and
+labels from an unstructured program does not make it structured.  The focus is
+on writing programs that clearly reflect their dynamic process.  As Parnas noted
+[[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
+processes, not by adding a “module” statement to the language.  The same
+situation arises here.
+
+**** Literate programming
+Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
+mode.
+
+[[cite:Knu-84][Knu-84]] for the original notion:
+
+#+BEGIN_QUOTE
+Instead of imagining that our main task is to instruct a /computer/ what to do,
+let us concentrate rather on explaining to /human beings/ what we want to do.
+#+END_QUOTE
+
+As usual, Knuth writing is delightfully witty:
+
+#+BEGIN_QUOTE
+I must confess that there may also be a bit of malice in my choice of a title.
+During the 1970s I was coerced like everybody else into adopting the ideas of
+structured programming, because I couldn’t bear to be found guilty of writing
+/unstructured/ programs.  Now I have a chance to get even.  By coining the
+phrase “literate programming,” I am imposing a moral commitment on everyone who
+hears the term; surely nobody wants to admit writing an /illiterate/ program.
+#+END_QUOTE
+
+The WEB system allows one to write a TeX + source code document, and then
+produce documentation (using the WEAVE program) or complete program (using
+TANGLE).  The focus is on documenting first what the program does, then
+producing a machine version as a second concern.  The source code can be
+presented out-of-order in the document, for expository purposes, using links and
+macros.
+
+The WEB way of writing programs is “psychologically correct”, as it reflects the
+way in which the program was conceived and elaborated.
+
+#+BEGIN_QUOTE
+When I first began to work with the ideas that eventually became the WEB system,
+I thought that I would be designing a language for “top-down” programming, where
+a top-level description is given first and successively refined.  On the other
+hand I knew that I often created major parts of programs in a “bottom-up”
+fashion, starting with the definitions of basic procedures and data structures
+and gradually building more and more powerful routines.  I had the feeling that
+top-down and bottom-up were opposing methodologies: one more suitable for
+program exposition and the other more suitable for program creation.
+
+[...] I have come to realize that there is no need to choose once and for all
+between top-down and bottom-up, because a program is best thought of as a web
+instead of a tree.  [...] A complex piece of software consists of simple parts
+and simple relations between those parts; the programmer’s task is to state
+those parts and those relationships, in whatever order is best for human
+comprehension – not in some rigidly determined order like top-down or
+bottom-up.
+
+[...]
+
+Thus the  WEB language allows a person to express programs in a “stream of
+consciousness” order.
+#+END_QUOTE
+
+An unexpected benefit of WEB is a better separation of concerns.  Although Knuth
+does not use the term, each part of a program can be described in its own
+section, thus each section can focus on one concern.  He gives the example of
+separating error recovery from a simple data structure update routine.
+
+#+BEGIN_QUOTE
+While writing the program for [error recovery], a programmer subconsciously
+tries to get by with the fewest possible lines of code, since the program for
+[updating the structure] is quite short.  If an extensive error recovery is
+actually programmed, the subroutine will appear to have error-messages printing
+as its main purpose.  But the programmer knows that the error is really an
+exceptional case that arises only rarely; therefore a lengthy error recovery
+doesn’t look right, and most programmers will minimize it [...] in order to make
+the subroutine’s appearance match its intended behavior.  [Programming] with
+WEB, the purpose of =update= can be be shown quite clearly, and the possibility
+of error recovery can be reduce to a mere mention when =update= is defined.
+When another section [related to error recovery] is subsequently written, the
+whole point of that section is to do the best error recovery, and it becomes
+quite natural to write a better program.
+#+END_QUOTE
+
+Knuth notes that the target programming language can impact the writing of WEB
+programs.  Having to declare variables at the start of a program leads to
+appending to the same “Local variables” program section.
+
+Taking the time to document the code as you write it is not free, but is
+beneficial in the long run.
+
+#+BEGIN_QUOTE
+I had known for a long time that the programs I construct for publication in a
+book, or the programs that I construct in front of a class, have tended to be
+comparatively free of errors, because I am forced to clarify my thoughts as I do
+the programming.  By contrast, when writing for myself alone, I have often taken
+shortcuts that proved later to be dreadful mistakes.  It’s harder for me to fool
+myself in such ways when I’m writing a WEB program, because I’m in “expository
+mode” (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
+less debugging time.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+WEB may be only for the subset of computer scientists who like to write and to
+explain what they are doing.
+#+END_QUOTE
+
+Noweb is a language-agnostic syntax and implementation of WEB, which is used in
+Org-mode.
+
+***** Mechanisms for extension
+The idea of documenting as you program is important, as is the focus on writing
+“what the human meant to do”.
+
+The mechanisms of including and referencing code snippets allows one to
+structure the program as they see fit.  Especially, it allows to separate
+concerns through quantification.
+
+**** Object-oriented programming
+Objects impose another structure.  Design patterns are recipes for building
+modular object-oriented programs.  Meta-object protocols let you manipulate
+message dispatching for a great flexibility.
+**** Functional programming
+Pure functions are easier to compose.  Referential transparency, local
+reasoning.
+
+Monads and side-effects as computation.
+**** Aspect-Oriented Programming
+Manipulation of static and runtime code.  Joinpoints reifie extension points.
+Pointcuts give powerful quantification over joinpoints.  Aspects promote
+separation of concerns.
+
+Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
+both a blessing and a curse.  COMEFROM destroys local reasoning or referential
+transparency.
+**** Context-Oriented Programming
+Expressive separation of concerns when behavior can change depending on the
+context in which the program is executed.  Composition of programs by layers.
+**** Feature-Oriented Programming
+Promise of high-level programming, where features are built standalone, and
+interaction between them are dealt with separately.
+**** Flow-based programming
+No side effects?  I don’t know if this is a discipline or just a toy.  But if it
+should help build modular programs, it fits.
+**** Model-driven development
+You build meta-models that encompass all variations of the solution space.
+
+[[cite:HT-06][HT-06]] makes some good points about the promises and reality of MDD (in 2006).
+The distinction between the three categories of sketchers, blueprinters and
+model programmers in the modeling community is relevant in order to not
+amalgamate different intentions.
+
+**** Domain-specific languages
+Greater control for language designer.  Gives a constrained playground for
+programmers.
+
+Downsides include tooling, development time, unfamiliarity and competition with
+general-purposes languages.
+
+Monads can be seen as DSLs (but this is an insight better saved for later).
+
+*** Modularity of interpreters
+How to build an interpreter from composing blocks.  And how this /not quite/
+instrumentation, because these approaches do not consider modification to
+language.
+
+**** Expression problem
+Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
+
+**** Building from modules
+Findler & Flatt, Newspeak
+
+**** Building with monads
+Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
+
+Free algebras, free monads.  Basically reify data in a way that is accepted by
+the type system of the underlying language to allow unanticipated extension.
+
+[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
+/object algebras/.  Object algebras are akin to a free algebra.  Instead of
+locking down the actual objects used as expressions too early, they leave them
+open using abstract factories.  Providing a factory when evaluating the
+expression gives you either integer evaluation, or pretty-printing.
+
+Their solution is applicable to Java with generics, without significant
+syntactic overhead (less than related work).  And, they leverage the type system
+to capture erroneous composition.
+
+**** Stratego/Spoofax
+Peter Moses.
+
+Gives you an interpreter and tool support (IDE, syntax highlighting) from just a
+grammar.  What about composing languages?  Spin-offs languages (instrumentation)?
+
+**** Partial evaluation
+Partial evaluation is the partial application of an interpreter to a program.
+If some input to the program is known before runtime, then one can specialize
+the program to this input.  The result is a semantically-equivalent program
+which accepts the rest of the (dynamic) input.
+
+Exactly like the partial application of a function:
+
+: interp(a, b, c, ...)(a,b) = interp’(c, ...)
+
+[[cite:Fut-99][Fut-99]] describes how to apply partial evaluation to a interpreter, and by
+successive application of partial evaluation, how to obtain a compiler
+generator (a point made clearer in [[cite:FNT-91][FNT-91]]).
+
+#+BEGIN_EXAMPLE
+interpret(program, input) = \alpha(interpret, program)(input)
+                          = \alpha(\alpha, interpret)(program)(input)
+                          = \alpha(\alpha, \alpha)(interpret)(program)(input)
+#+END_EXAMPLE
+
+If ‘interpret’ is an interpreter, then the partial evaluation (\alpha) of this
+interpreter for a known program yields a specialized interpreter \alpha(interpret,
+program).  Applying the partial evaluation again, we obtain \alpha(\alpha, interpret),
+a specialized compiler of the programs of the language targeted by ‘interpret’.
+Then, ‘currying’ along, we obtain \alpha(\alpha, \alpha), a compiler generator.
+
+This can be understood again by looking at the types:
+
+#+BEGIN_EXAMPLE
+interpret :: (Program, Input) -> Computation
+\alpha(interpret, program) :: Input -> Computation
+\alpha(\alpha, interpret) :: Program -> Input -> Computation
+\alpha(\alpha, \alpha) :: ((Program, Input) -> Computation) -> Program -> Input -> Computation
+#+END_EXAMPLE
+
+Each projection yields a more abstract function, up to the last one which can
+take an interpret as input.
+
+We can derive the type of \alpha by line 2:
+
+#+BEGIN_EXAMPLE
+\alpha(interpret, program) :: Input -> Computation
+\alpha :: (((Program, Input) -> Computation), Program) -> Input -> Computation
+#+END_EXAMPLE
+
+and by abstracting the types, we obtain the signature of the polymorphic \alpha:
+
+: \alpha :: (((a, b) -> c), a) -> b -> c
+
+Applying the projections to the polymorphic variant yields:
+
+#+BEGIN_EXAMPLE
+f       :: (a, b) -> c
+\alpha(f, a) :: b -> c
+\alpha(\alpha, f) :: a -> b -> c
+\alpha(\alpha, \alpha) :: ((a, b) -> c) -> a -> b -> c
+#+END_EXAMPLE
+
+The signature of the compiler-compiler is the same as that of the well-known
+currying function!  Seems there is an evident relation between partial
+evaluation and currying in functional programming.  Laziness might even give you
+partial evaluation for free.
+
+Work by Futamura is light in technical details of the practicality of these
+projections, especially the higher-order compiler-compiler.  [[cite:JGS-93][JGS-93]] has examples
+of practical partial evaluators for subsets of Scheme and C.
+
+A basic example of partial evaluation is the compiler optimization known as
+constant-folding.  Partial evaluation is generalized constant folding.
+
+The advantage of partially evaluating a program is a potential gain in
+performance: operations evaluated at partial evaluation time need not be done at
+runtime.  However, there are two immediate troubles: termination is undecidable,
+and side-effects need to happen at runtime.
+
+Since partial evaluation operates with partial knowledge of the input, it must
+make assumptions for the unknown inputs.  This leads to a potential static
+analysis of branches, which can degenerate into infinite loops.  Knowing in
+advance if the program will terminate its partial evaluation is a variant of the
+halting problem.  However, I suppose there is always the option to bail out of
+the partial evaluation process, trading potential optimization benefit for
+bounded-time partial evaluation.
+
+Side-effects, like printing to the console or writing to disk, cannot be
+generated from the partial interpreter: they need to happen at runtime.  I
+suppose, here again, that side-effects can be left in place.  But getting values
+from the outside world probably means that the partial interpreter cannot
+evaluate further.
+
+[[cite:JGS-93][JGS-93]] makes the point that partial evaluation allows one to write
+highly-parametrized programs, while retaining efficiency.  The modular program
+is specialized by the partial evaluator, and you get an efficient equivalent
+program.
+
+The remark that interpreters are usually smaller and easier to write.  They
+ascribe that to the simplicity of the former: interpreters only deal with
+execution time (execution of the target program is the same happens at the
+execution of the interpreter), with only one language, and they provide (or
+match) an operational semantics.  But compilers are efficient.
+
+*** Instrumentation of interpreters
+**** Bytecode instrumentation
+Ansaloni.  Targets bytecode, which is low-level code.
+
+Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
+alter the behavior of a program with no access to its source code.  Inserts code
+after/before point of interest.
+
+
+[[cite:BRG+14][BRG+14]] instruments the bytecode interpreter of WebKit to enable information flow
+tracking.  Bytecode instrumentation is difficult, because you lose high-level
+details of the source code like “when does an if block ends”.  They have to
+build a control-flow graph to know when to discard program counters used by the
+information flow analysis.  Also, instrumenting the bytecode is specific to the
+bytecode compiler of WebKit (there is no standard, unlike Java).
+
+**** Using aspects
+FlowR.  Not much insight regarding the structure; artifact not available.
+
+*** Extensibility
+Emacs and Smalltalk are two examples of dynamic environments that can be
+extended by the user, incrementally and continuously.  They both achieve that by
+exposing code to the user.
+
+The languages used are different: Lisp with dynamic scoping, Smalltalk with
+object-orientation.
+
+Extensions in Eclipse and web browsers are fundamentally different as they are
+not written in only one language, but several (description in XML, views in XUL,
+logic in Java/JavaScript).  They are much more cumbersome to write, without
+better guarantees.
+
+**** Open Implementation                                        :methodology:
+Before AOP, there was the concept of Open Implementation [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]]
+[[cite:KLL+97][KLL+97]].
+
+[[cite:Rao-91][Rao-91]] introduces the concept of a system with /open implementation/, which has
+two interfaces: the base level interface and the metalevel interface that
+reveals parts of the implementation of the base level.  They use reflection to
+customize the behavior of a window system for writing a spreadsheet.  They find
+that OO languages have advantages:
+1. Object-centered specification closely maps the domain (here, a window
+   system).
+2. Polymorphism allows multiple implementation to coexist.
+3. Inheritance allows reuse and differential programming.
+
+Reflection is only one mechanism, that may not be optimal for clients of the
+meta level interface (can be complex).  They believe in a more declarative
+approach to meta level interfaces.
+
+#+BEGIN_QUOTE
+An Open Implementation of a software module exposes facets of its internal
+operation to client control in a principled way.  They key assumption behind
+Open Implementation is that software modules can be more reusable if they can be
+designed to accommodate a range of implementation strategies.  Since no
+implementation strategy is adequate for all clients, the module should support
+several implementation strategies and allow clients to help select the strategy
+actually used.
+#+END_QUOTE
+[[cite:MLM+97][MLM+97]]
+
+The first sentence does not give the full picture.  Open Implementation is not
+just about exposing an alternate interface.  The primary concern is to allow
+client code to select different implementation strategies (to answer different
+performance needs, for instance).
+
+Metaobject protocols [[cite:KRB-91][KRB-91]] are given as an example of open implementation, for
+object-oriented systems.
+
+#+BEGIN_QUOTE
+The goals of any Open Implementation are to ensure that suitable implementation
+strategies are available for a range of clients, to ensure that the appropriate
+strategy may be selected for or by a client, and to ensure that the benefits
+associated with black-box abstraction are not unreasonably compromised.
+#+END_QUOTE
+[[cite:MLM+97][MLM+97]]
+
+One key tenet of OI is “give control to the client in a disciplined way”.  That
+means, some structure should be in place, otherwise the client is free to mess
+with the implementation in any way.
+
+#+BEGIN_QUOTE
+Whereas black-box modules hide all aspects of their implementation, open
+implementation modules allow clients some control over selection of their
+implementation strategy, while still hiding many true details of their
+implementation.
+#+END_QUOTE
+[[cite:KLL+97][KLL+97]]
+
+The paper is broad: it considers what solution should a module implementer chose
+for open implementation, depending on the client requirements.  It provides a
+methodology for designing an open module.
+
+They define 4 styles of open interface:
+1. Client has no control: the module adapts its implementation by observing the
+   client.
+2. Client declares its usage pattern, module selects a strategy.
+3. Client specifies the strategy among the predefined ones.
+4. Client provides the strategy.
+
+Style 4 is the one we want for modular instrumentation.  It is also recommended
+in half the cases they consider, though it “might be difficult to engineer”.
+They note that style 4 cannot be used when the integrity of the module must not
+be compromised.
+
+[[cite:KLL+97][KLL+97]] describes the four styles further.  Style 4 subsumes styles 1 and 3 (and
+could be adapted to style 2), and is said to be /layered/, in the sense that
+clients can choose the style better suited for their needs.
+
+#+BEGIN_QUOTE
+When there is a simple interface that can describe strategies that will satisfy
+a significant fraction of clients, but it is impractical to accommodate all
+important strategies in that interface, then the interfaces should be layered.
+#+END_QUOTE
+[[cite:KLL+97][KLL+97]]
+
+From the set of client requirements, the module implementer should refine the
+open interface in stages, until all requirements can be expressed.
+
+***** Mechanisms for open implementation
+Sadly, the language mechanisms for open implementation are not covered.
+
+#+BEGIN_QUOTE
+While the implementation techniques that support theses interfaces are crucial,
+they are beyond the scope of this paper.  [footnote:] Many of the implementation
+techniques are straightforward, and will be apparent simply from looking at the
+interface design.  Others are more subtle, and involve recently developed
+techniques in language and system implementation [[cite:KRB-91][KRB-91]] [[cite:CU-91][CU-91]] [[cite:Chi-95][Chi-95]].  There is,
+as yet, no unified presentation of these techniques; a separate paper describing
+this is in preparation.
+#+END_QUOTE
+[[cite:KLL+97][KLL+97]]
+
+Could not find a trace of this paper in preparation.
+
+The Strategy pattern comes to mind [[cite:GHJ+94][GHJ+94]] (though they actually cite [[cite:HO-87][HO-87]] for
+the specific case of selecting algorithms with different space/time trade-offs).
+
+Open Module [[cite:Ald-05][Ald-05]] does not mention Open Implementation, although they certainly
+fit the description of style 4.
+
+[[Reflection]] is another mechanism.
+
+**** Aspect-Oriented Programming                       :methodology:language:
+Did the initial vision of AOP covered the problem of extensibility?
+
+[[cite:KLM+97][KLM+97]]
+Motivation of AOP is a better match between design processes and programming
+language mechanisms.
+
+#+BEGIN_QUOTE
+A design process and a programming language work well together when the
+programming language provides abstraction and composition mechanisms that
+cleanly support the kinds of units the design process breaks the system into.
+#+END_QUOTE
+
+OO languages, procedural languages, functional languages all provide a
+/generalized procedure/ as key abstraction mechanism.  Design processes for a GP
+language decompose systems into units of behavior.
+
+First example of tangling: an efficient image filter system.  A filter loops on
+all the pixels of the input image, and produces a new image.  Higher-level
+filters (‘horizontal-edge’) are defined by composing lower-level ones (‘or’,
+‘and’).  This is elegant, but inefficient as temporary images are created and
+deleted, and many loops are made where only one sufficed.
+
+The alternate solution is to code the higher-level filters explicitly with only
+one loop.  Then the code is tangled.  Their actual system is 768 lines when
+implemented “cleanly”, but the efficient version is 35213 lines.
+
+The language only supports one kind of composition, the functional one, while
+there is a need to also specify the fusion of loops, which is a composition of
+data flow.
+
+They distinguish /components/ from /aspects/:
+- Components :: encapsulate cleanly a feature through a “generalized procedure”
+                (object, method, procedure, API).  Components tend to be the
+                unit of functional decomposition of the system.
+- Aspects :: for features that cannot be cleanly encapsulated through a
+             generalized procedure.  Aspects tend to be features orthogonal to
+             the functionality of the system: data representation,
+             synchronization constraints ...
+
+The goal of AOP is to provide mechanisms to cleanly separate components from
+aspects, components from components, and aspects from aspects.  GP languages
+only provide mechanisms to separate components from each other.
+
+They feel that dynamic scoping and catch/throw already help implementing
+/aspects/, since they provide a complementary composition mechanism.
+
+Error handling and performance issues are often aspects because they cross-cut
+the components decomposition.
+
+An AOP implementation has: a component language, an aspect language, and an
+aspect weaver.  For example, in AspectJ the component language is Java, the
+aspect language is the pointcuts/advice language provided by AspectJ.  But the
+component language does not have to be a vanilla language — it can be a specific
+one.
+
+In the image filter example, the component language is procedural and allows
+high-level filters to be defined cleanly, using a DSL for describing loops.  The
+aspect language is also procedural, but allows to specify loop fusion.  The
+weaver then creates a data-flow graph from the components, runs aspects on them,
+and produces efficient C code.
+
+They significantly improved the performance of the clean version by adding 352
+lines of aspects (not counting the size of the weaver).  Though the manually
+optimized version is still more efficient.
+
+#+BEGIN_QUOTE
+[...] the aspect languages must address different issues than the component
+languages.
+#+END_QUOTE
+
+The second example is a book repository.  The component language is (a subset
+of) Java, and the aspect language is a meta-program which captures method
+invocation using compile-time reflective techniques.
+
+[[Reflection]] can be used to write aspects, but may be too powerful a tool (hence,
+a costly one).  A reflective system provides a component language and a
+low-level aspect language, as well as the weaving mechanism.  The reflected
+structures provide join points.  Reflective systems are general-purpose, and in
+the paper they aim for more declarative aspects.
+
+AspectJ is more limited than reflection, but still general.  Domain-specific
+aspect languages are recommended to write aspects while retaining static
+control.
+
+#+BEGIN_QUOTE
+AOP is a goal, for which reflection is a powerful tool.
+#+END_QUOTE
+
+[[cite:KHH+01][KHH+01]] presents the AspectJ AOP system.  It contains an intuitive footnote about
+the separation of concerns.
+
+#+BEGIN_QUOTE
+When we say “separation of concerns” we mean the idea that it should be possible
+to work with the design or implementation of a system in the natural units of
+concern – concept, goal, team structure etc. – rather than in units imposed on
+us by the tools we are using.  We would like the modularity of a system to
+reflect the way “we want to think about it” rather than the way the language or
+other tools force us to think about it.  In software, Parnas is generally
+credited with this idea [[cite:Par-72][Par-72]] [[cite:Par-74][Par-74]].
+#+END_QUOTE
+
+The shift from domain-specific to general-purpose AOP is motivated by a desire
+for adoption: providing an alternative paradigm for all Java programmers.
+
+#+BEGIN_QUOTE
+AspectJ is intended to be a practical AOP language that provides, in a Java
+compatible package, a solid and well-worked-out set of AOP features.
+#+END_QUOTE
+
+They describe the joinpoints, pointcuts, and advice of AspectJ, as well as
+the rules of advice precedence, and sketch the compilation strategy.
+
+Advice declarations in AspectJ, through CLOS [[cite:KRB-91][KRB-91]], owe much to Flavors
+[[cite:Can-03][Can-03]].
+
+[[cite:MK-03][MK-03]] provides models and scheme implementations of four AOP systems; the
+Pointcuts-Advice model for AspectJ in particular.
+
+[[cite:FF-04][FF-04]] wants to answer the question “when are we looking at an AOP system?”.
+They find two essential traits of AOP systems: quantification and obliviousness.
+
+They describe AOP as the desire to make statements of the form
+
+: In programs P, whenever condition C arises, perform action A.
+
+suggesting three axes of choices for AOP systems:
+1. What kinds of conditions can we specify? (Quantification)
+2. How do actions interact with programs and with each other? (Interface)
+3. How will the system mix the execution of programs and actions? (Weaving)
+
+For quantification, they distinguish between static (conditions on the source
+code structure) and dynamic (conditions on the runtime behavior).  Furthermore,
+black-box systems quantify over the public interface of components (e.g.,
+functions or object methods), and clear-box systems quantify over the internal
+structure of the code (AST).
+
+They note that rule-based systems (Prolog, OPS-5 [[cite:BFK+85][BFK+85]]) would not need AOP.
+However
+
+#+BEGIN_QUOTE
+But by and large, people don’t program with rule-based systems.  This is because
+rule-based systems are notoriously difficult to code.  They’ve destroyed the
+fundamental sequentiality of almost everything.  The sequential, local, unitary
+style is really very good for expressing most things.  The cleverness of
+classical AOP is augmenting conventional sequentiality with quantification,
+rather than supplanting it wholesale.
+#+END_QUOTE
+
+The paper has an interesting stance on the evolution of programming languages
+with respect to /local/ and /unitary/ statements (\sect2.2).
+
+#+BEGIN_QUOTE
+The earliest computer machine-language programs had a strict correspondence
+between the program text and the execution pattern.  Generally, each programming
+language statement was both /unitary/ and /local/ — unitary in that it ended up
+having effect in precisely /one/ place in the elaborated program, and local in
+that it was almost always proximate to the statements executing around it.
+#+END_QUOTE
+
+They point out that adding code to a base class that has multiple subclasses is
+a form of quantification.
+
+[[cite:Ste-06][Ste-06]] questions the success of AOP by opposing the AOP vision to the actual
+mechanisms provided.  Quoting [[cite:FF-04][FF-04]]:
+
+#+BEGIN_QUOTE
+Understanding something involves both understanding how it works (mechanism) and
+what it’s good for (methodology).  In computer science, we’re rarely shy about
+grandiose methodological claims (see, for example, the literature of AI or the
+Internet).  But mechanism is important – appreciating mechanisms leads to
+improved mechanisms, recognition of commonalities and isomorphisms, and plain
+old clarity about what’s actually happening.
+#+END_QUOTE
+
+AOP has the issue of /fragile pointcuts/: sensitive to changes in the target
+program.
+
+AOP is detrimental to Parnas’s notion of modularity because of the strong
+coupling between an aspect and the target program.  Independent development
+cannot continue.
+
+Interestingly, Parnas considers modularity as a design issue, not a language
+one.  Confusing the two is harmful: using the module functionality of a language
+does not mean the system is modular in the sense meant by Parnas.  Each task is
+a single module with a clear interface, and implementation-specific information
+is not shared across modules.
+
+They suggest that AOP use should be restricted to applications where programmers
+do not have to see it; e.g., generated code.  They do not regard AOP as
+a “new paradigm”, especially they do not find convincing applications for it.
+
+AOP promotes the localization of concerns (bringing tangled code in one place),
+but this actually breaks the locality of code (executed statements are not
+together in the source code).
+
+I find strange that a critique of AOP does not even mention the original AOP
+paper [[cite:KLM+97][KLM+97]].  This critique is focused on the AOP mechanism as realized by
+AspectJ, mostly.  But the original paper focused on domain-specific aspect
+languages, which /hid/ the weaver, joinpoints and pointcuts.  The original
+contribution was also in formulating the goal of separating components from
+aspects.  AspectJ is just one way to achieve this goal, but it might not be best
+one, depending on the domain.
+
+Overall, it is a critique of one mechanism for AOP, rather than a critique of
+the methodology (separating aspects from components).
+
+Aspects and monads are sometimes both viewed as mechanisms to achieve modularity
+in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]].
+
+AOP is [[https://encrypted.google.com/patents/US6467086][patented]] since 2002 by XEROX (US6467086 B1).
+
+***** Mechanisms for instrumentation
+The distinction between aspects and components is the most important
+contribution of AOP.  Though it is unclear whether ‘aspects’ are inevitable
+because of the complexity of the problem domain, or if they are accidental
+artifacts created by the chosen programming model (like most design patterns are
+motivated by the lack of first-class functions).
+
+Java + AspectJ is only one aspect system: useful for tracing, logging, but
+cumbersome for more specific needs.  The pointcuts/advice model is the
+underlying formalism of AspectJ, but not necessarily of the AOP methodology.
+
+Like Parnas’s modules, aspects are a design-time issue.  Solving the module
+issues with language mechanisms was, according to Parnas [[cite:DBB+03][DBB+03]], a mistake.
+Maybe the same can be said of aspects.
+
+Is AOP useful for the instrumentation problem?  First, the initial use case of
+AOP, like open implementation, is tangential concerns: algorithmic complexity,
+choice of data representation, optimizations, etc.  Post-hoc extension is not
+exactly a tangential concern: changing the behavior of the interpreter is a
+primary concern.
+
+Second, we have to consider separately the usefulness of the AOP methodology,
+and of the AOP mechanisms.
+
+The methodology of separating components from aspects is applicable if our
+analyses are tangential.  They are not.  The problem we deal with is that
+extensibility was not considered when designing the interpreter, and solutions
+must be built on the implementation.
+
+Preserving locality is a guiding tenet of the AOP methodology (avoiding
+tangling).  It is also a motivation for writing modular analyses: we want the
+analysis code to be in one place.  However, by regrouping the analysis code, we
+are sacrificing locality of code execution: statements executed at runtime are
+not next to each other in the source code.  Satisfying both notions of locality
+would lead to duplication in the code, which is a worse state of affairs.
+Solutions to this duplication must come from the tools used to write and browse
+code, since the textual format we use offer none.  An editor can maintain two
+views of the same unit of code: changes in one view will affect both places.
+That way, both notions of locality can coexist.
+
+The second notion of locality, the one from [[cite:FF-04][FF-04]], is one manifestation of the
+more general need of a match between runtime behavior and static program
+description.  The program source should tell readers what it does, and
+navigating through dynamically-bound method calls and oblivious advices hinders
+the reading.
+
+Organization of the code should reflect the design decisions: what is primary is
+explained first, then exceptions or tangential concerns are relegated to
+appendices.  Literate programming [[cite:Knu-84][Knu-84]] can help organize the code in a such
+way.
+
+The mechanisms of AOP may serve to extend the interpreter with analyses, without
+necessarily obeying the component/aspect decomposition.  Though without editor
+support, using AOP mechanisms will only satisfy one notion of locality.
+
+**** Emacs                                                         :language:
+See Emacs Manual, [[cite:Sta-81][Sta-81]], [[cite:Hal-88][Hal-88]].  Emacs is an example of an extensible system.
+The mechanisms: global namespace, dynamic scoping, and a simple aspect system.
+
+In [[cite:Sta-81][Sta-81]], it is said that the TECO language was instrumental for the
+extensibility of the EMACS system.  An interpreter should be available all the
+time, and compiled languages often lack this functionality.
+
+#+BEGIN_QUOTE
+A system written in PL/I or PASCAL can be modified and recompiled, but such an
+extension becomes a separate version of the entire program. The user must
+choose, before invoking the program, which version he wants. Combining two
+independent extensions requires comparing and merging the source files.  These
+obstacles usually suffice to discourage all extension.
+#+END_QUOTE
+
+Especially they list “Language features for extensibility”:
+1. Global variables.  They can be queried, referred to, and redefined.
+2. [[Dynamic binding]].  Useful for redefining binding on the fly.
+3. File-local variables.  Good for customization, but really they give a
+   file-local value for a global variable.
+4. Hooks.  They give points in the control flow to insert extension code.
+   Especially when redefining assembly or C functions, which cannot be
+   reinterpreted.
+5. Error handling.  Throwing the debugger helps discover and recover from
+   unexpected situations.
+6. Non-local transfers.  Gives an example to exit an infinite loop.
+
+
+In the related work, Multics EMACS [[cite:Gre-80][Gre-80]] is mentioned as being more flexible,
+as it is written in MacLisp directly.  [[Smalltalk]] [[cite:Ing-78][Ing-78]] is also said to be
+“oriented toward writing extensible programs”.
+
+(The Augment editor demoed by Engelbart [[cite:EE-68][EE-68]] is also mentioned, though nothing
+is said of its extensibility.)
+
+[[cite:NS-01][NS-01]] proposes a dynamic scope analysis, to translate Emacs Lisp code using
+dynamic binding to lexical binding.
+
+*****  Mechanisms for extension
+Global variables, dynamic binding, hooks.
+
+Though hooks are more a convention than a first-class mechanism.
+
+**** Dynamic binding                                               :language:
+Introduced by McCarthy’s LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
+dynamic environment in lexical binding [[cite:Que-03][Que-03]].
+
+Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
+their first-class privileges).
+
+[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
+binding adds expressiveness to a purely functional language.  They give examples
+in Perl, TeX, Common Lisp and Bash.
+
+[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
+dimensions of propagation of bindings (call stack and delayed lambdas), and
+offering a filter function to toggle the activation of a propagated binding.
+
+Some use-cases are mentioned, but none are demonstrated in the paper.  The
+proposal is not motivated enough by concrete applications that would be
+difficult to solve using existing mechanisms.  Also, the work is really focused
+on the binding semantics of Scheme, which reduce its applicability.
+
+**** Smalltalk                                                     :language:
+Design and Implementation [[cite:Ing-78][Ing-78]].
+
+Opens with a definition of modularity:
+#+BEGIN_QUOTE
+No part of a complex system should depend on the internal details of any other
+part.
+
+[...]
+
+Objects are created and manipulated by sending messages.  The communication
+metaphor supports the principle of modularity, since any attempt to examine or
+alter the state of an object is sent as a message to that object, and the sender
+need never know about internal representation.
+
+[...]
+
+The class is the natural unit of modularity, as it describes all the external
+messages understood by its instances, as well as all the internal details about
+methods for computing responses to messages and representation of data in the
+instances.
+#+END_QUOTE
+
+Smalltalk is designed with modularity, as classes encapsulate object
+descriptions and methods, and can only interact through messages.
+
+An example of extending the system: adding new objects and a printer for them.
+Similar to the [[Expression problem][expression problem]].
+
+#+BEGIN_QUOTE
+Adding a new class of data to a programming system is soon followed by the need
+to print objects of that class. In many extensible languages, this can be a
+difficult task at a time when things should be easy.  One is faced with having
+to edit the system print routine which (a) is difficult to understand because it
+is full of details about the rest of the system, (b) was written by someone else
+and may even be in another language, and (c) will blow the system to bits if you
+make one false move.  Fear of this often leads to writing a separate print
+routine with a different name which then must be remembered.
+
+In our object-oriented system, on the other hand, printing is always effected by
+sending the message =printon: s= (where s is a character stream) to the object
+in question.  Therefore the only place where code is needed is right in the new
+class description.  If the new code should fail, there is no problem; the
+existing system is unmodified, and can continue to provide support.
+#+END_QUOTE
+
+Changing a field inside =Rectangle= does not need to change code external to the
+object, and global recompilation is avoided.
+
+Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]]; a larger
+perspective is given in [[cite:Mul-15][Mul-15]].
+
+***** Mechanisms for extension
+Subclassing, and reflection.  Everything as an object, so message dispatch is
+just a method on the meta class, and can be altered.
+
+**** Self                                                          :language:
+The power of simplicity [[cite:US-91][US-91]].
+
+Pure object-oriented language.  No variables, but slots containing objects that
+return themselves.
+
+No classes.  No control structure.
+
+The absence of distinction may not be a good thing in practice:
+#+BEGIN_QUOTE
+The absence of class-instance distinction may make it too hard to understand
+which objects exist solely to provide shared information for other objects.
+Perhaps SELF programmers will create entirely new organizational structures.  In
+any case, SELF’s flexibility poses a challenge to the programming environment;
+it will have to include navigational and descriptive aids.
+
+[later, in the conclusion]
+
+Reducing the number of basic concepts in a language can make the language easier
+to explain, understand, and use.  However, there is a tension between making the
+language simpler and making the organization of a system manifest.  As the
+variety of constructs decreases, so does the variety of linguistic clues to a
+system’s structure.
+#+END_QUOTE
+
+They cite [[cite:UCC+91][UCC+91]] for pointers on structuring programs in SELF.
+
+Classes are abstract description of objects, but prototypes are always
+concrete.  Each object is an example, and can be easily cloned.  Class
+hierarchies are hard, and impose a structure; prototypes less so.
+
+Classes forces you to create a template, even when you deal with several objects
+with unique behavior.
+
+Activation records for methods inherit from the receiver object, so the receiver
+is on the chain for binding lookup.
+
+They note that they could build “class-like” objects that hold code to create
+new clones, and also hold the shared behavior, though they “do not believe this
+is the best way to construct a system”.
+
+In [[cite:UCC+91][UCC+91]], the following organization is described:
+- Traits object for methods (shared by all instances of an object).
+- A prototype object with a default implementation.
+- Instances are created from cloning the prototype.
+
+Abstract objects dispense of the prototype, and singleton objects contain
+methods and state without providing a copy method.
+
+They note that OO supports “differential programming”, which is to define new
+data types as differences from existing data types.  In Smalltalk, differential
+programming is achieved through subclassing.  In SELF, they call it “refining
+traits objects”, but the mechanism is delegation through the parent link.
+
+An oddity: they state that parent links are constant, though the introduce a
+=dataParent= setter in figure 3.  Later they say that parent slot are like other
+data slots, assignable.
+
+Prototypes allow for multiple behavior modes, through dynamic inheritance
+switching.  Behavior modes enhance the clarity of the code, though they do not
+comment on the potential performance costs.
+
+***** Mechanisms for extension
+Prototypes, and message passing.  Prototypes are more general and simpler than
+inheritance.
+
+However prototypes do not originate with SELF [[cite:Bor-86][Bor-86]] [[cite:Lie-86][Lie-86]].
+
+[[cite:Lie-86][Lie-86]] makes a good case for prototypes as being a simpler model to learn, as
+well as being more intuitive.  Humans derive general concepts from examples, not
+the other way around.  Class-based languages require you to commit to the
+concepts first.
+
+Prototype-based and class-based languages provide different mechanisms for
+realizing differential programming,
+
+Is differential programming sufficient to solve the problem of modular
+instrumentation?  In the case of Narcissus, it was not, since the interpreter
+was not OO.  But the open scope pattern might be equivalent, dynamically, to
+inheritance.
+
+**** Prototype-based programming                                   :language:
+A collection of (at least) the following papers (or revisions of them):
+- [[cite:Tai-97][Tai-97]]
+- [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
+- [[cite:GBO+98][GBO+98]]
+- [[cite:Bor-86][Bor-86]]
+- [[cite:SU-95][SU-95]]
+- [[cite:Smi-95][Smi-95]]
+- [[cite:MMM+98][MMM+98]]
+- [[cite:Bla-91][Bla-91]] & [[cite:Bla-94][Bla-94]]
+- [[cite:Wol-96][Wol-96]]
+- [[cite:Moo-96][Moo-96]]
+- [[cite:Nob-01][Nob-01]]
+- [[cite:DeM-98][DeM-98]]
+
+[[cite:Tai-97][Tai-97]] is a philosophical take on the basis for class-based and prototype-based
+languages.  Ascribing to classes is following the school of Plato and Aristotle
+[[cite:Pla-98][Pla-98]] [[cite:Ari-35][Ari-35]].  Plato distinguished between /forms/, the ideal description of
+things, and /instances/ of these forms.  He regarded forms as being more real
+than instances.  Aristotle believed in “a single correct taxonomy of all natural
+things”, and classified things using the following rule:
+: essence = genus + differential
+which mirrors class creation in class-based languages.
+
+Classification has been criticized, notably by Wittgenstein [[cite:Wit-53][Wit-53]], as being
+subjective.  Some concepts are difficult to define by intension – through a list
+of common properties that all instances must share.  Rather, Wittgenstein
+proposes the notion of /family resemblance/.  Meaning is not determined by a
+definition, but by similarity to representative prototypes.
+
+This philosophical heritage has a few implications for programming:
+- there are no optimal class hierarchies
+- in a class hierarchy, the middle classes are often the best representatives.
+  Higher classes are too abstract; lower classes too specific.
+- prototypes may map better to the usual human process: iterate from examples.
+
+Designers of class-based or prototype-based languages are seldom aware of the
+philosophical issues of both models, but focus more on technical matters.  Kevo
+[[cite:Tai-93][Tai-93]] is a prototype-based language with a notion of family
+resemblance. [[cite:Tai-93b][Tai-93b]] offer similar insights on the notion of object.
+
+[[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
+d languages are advantageous for describing exceptional instances, multiple
+points of view of the same entity, and incomplete objects.
+
+They identify the following mechanisms common to prototype-based languages:
+- message passing
+- 3 ways of creating objects (ex nihilo, cloning, and extension)
+- delegation
+- dynamic dispatch
+
+Prototype-based languages also introduce new issues:
+- Fragmented entities.  Since objects are described differentially, no single
+  object in the system reify the complete entity.  To clone it completely, we
+  would need to clone all its parts, but they are not reified (e.g., traits
+  objects are only conventions, not language primitives).
+- Sharing between clones of the same object.
+- Sharing between clones of different objects.
+
+**** Eclipse and other IDEs                                            :tool:
+As noted by [[cite:Ler-11][Ler-11]], the Eclipse platform is extensible, and built using
+plugins.  Each plugin states its dependencies (the hooks needed to function),
+and its extension points (for other plugins).
+
+Eclipse plugins are compiled, though they can be loaded dynamically (if they are
+written properly).  Symptomatically of Java, writing plugins needs lot of
+boilerplate code and XML (which Eclipse can generate for you, I understand).
+
+***** Mechanisms for extension
+The mechanisms for extension seems to revolve around the observer pattern: a
+host plugin raises events which can be intercepted by extensions [[cite:Bol-03][Bol-03]].
+
+So, a lot of convention.
+
+**** Web browsers                                                      :tool:
+Many extensions are written for web browsers.  The mechanisms are heavy,
+comparable to the effort of writing an Eclipse plug-in.
+
+In fact, ZaphodFacets was an extension to change the JavaScript interpreter used
+by the browser.
+
+***** Mechanisms for extension
+Convention.  Write manifest, and define the agreed-upon functions (install,
+startup).
+
+**** Lua                                                           :language:
+An extensible extension language [[cite:IFF-96][IFF-96]].
+
+Extensible systems comprise of a kernel and a configuration.  The kernel is the
+core of the system, the parts that cannot change, and is usually compiled for
+speed and efficiency.  The configuration part is written in an interpreted,
+flexible language, which can interact with the kernel.
+
+Another take, in the conclusion, is that the kernel is a virtual machine for
+programs written in the configuration language.
+
+Note that if performance can suffer, writing the whole system as a configuration
+gives even greater flexibility.
+
+Configuration languages can be simple: .ini files, X11 resource files, but they
+can have more features (scripting languages).  Also called /extension
+languages/.
+
+Five requirements for extension languages:
+1. good data structures (key-value maps for configuration)
+2. simple syntax for amateur programmers
+3. lightweight
+4. not static type checking or exception handling, as only small programs are
+   written in them
+5. should be extensible
+
+Requirement 4 is actually an absence of requirement.  Unfortunately, people
+/will/ write large systems in it, especially if the language is easy to pick up.
+Arguably, the cost of such features may conflict with requirement 3.  Otherwise,
+this list looks more like a checklist for Lua.
+
+On a related note, [[cite:Bla-82][Bla-82]] devotes a whole thesis against exceptions.
+
+Extension programs have no =main=.
+
+Associative arrays are a powerful data structure which make plenty of algorithms
+trivial (free hashtables), and more efficient to implement than lists.
+
+Amusingly, the associative array syntax was inspired by BibTeX.
+
+Associative arrays + first-class functions = classes.
+
+No error handling, but errors can be raised.  To catch them, we can define
+/fallback/ functions.
+
+Setting a fallback on the “index” event allows to define a custom delegation
+mechanism between tables.
+
+Compared to Lisp, Lua is portable and has easier syntax.  Tcl is slow and has
+strange syntax.  Python is not embeddable, and is already too complex (modules
+and exception handling).
+
+At the time of writing, Lua is 20 times slower than C (this factor is said to be
+“typical for interpreted languages”, and cites “Java, The Language” for this
+assertion).
+
+The latest numbers on the [[http://benchmarksgame.alioth.debian.org][benchmarks game]] show Lua being 5 to 79 times slower,
+while consuming more memory.
+
+In the conclusion, they allude at extending web browsers with Lua.  A follow-up
+seems to be [[cite:HBI-98][HBI-98]], which proposes Lua as a target for CGI on web servers.
+
+[[cite:IFF-07][IFF-07]] goes over the history of Lua, up to version 5.1 released in 2006.
+
+One tenet of Lua is “Mechanisms, not policy”: provide language mechanisms and
+let programmers code the way they want to with them.  An example is message
+dispatch: rather than using a class construct, Lua programmers can use fallbacks.
+
+Though they regret not stating a policy when it comes to modules, since everyone
+is doing its thing, without agreeing on a common protocol.
+
+*****  Mechanisms for extension
+The kernel+configuration, as seen in EMACS.  Mechanisms over policy shares our
+philosophy and provides programmers with tools to solve their problems in their
+own way.
+
+To extend Lua, bindings from C can be added, and custom data structure as well.
+Changing the interpreter does not seem possible, even from C.
+
+**** Scripting languages                                           :language:
+Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
+early ‘90s phenomenon.  Dealing with low-level languages was deemed too heavy,
+but writing your whole system in a high-level language was too costly.  The
+compromise was to write the kernel in C, and the rest in a scripting language.
+
+With sufficiently efficient high-level languages, the kernel+configuration
+approach might be unneeded.
+
+JavaScript being a scripting language for the browser, as well as an object used
+in the [[Core]], it might be adequate to have a dedicated background section to it.
+
+**** Reflection                                                    :language:
+[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
+made between /introspection/, /introcession/, /structural reflection/, and
+/behavioral reflection/; also between a program (a textual description) and a
+/computational system/ (a running process described by a program).
+
+A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
+#+BEGIN_QUOTE
+The general trend in the evolution of programming languages has been to postpone
+formal binding times towards the running of programs, but to use more and more
+sophisticated analysis and implementation techniques to bring actual times back
+to the earlier stages.
+#+END_QUOTE
+Later binding = more runtime flexibility, but also less guarantees and less
+performance.  The DLS submission is a perfect example.
+
+[[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
+interpreter.
+
+[[cite:Ste-94a][Ste-94a]] studies object-oriented languages which support open implementation.
+The open implementation of a language (the interpreter) is itself written in one
+language called the /implementation language/, and its meta-level interface
+allows the system to interpret a range of /engendered languages/.
+
+[[cite:SW-96][SW-96]] describe three approaches to code non-functional requirements while
+preserving the separation of concerns: systems-based, language-based, and
+MOP-based.  They find that MOP-based solutions are more flexible, especially as
+they can be applied to other domains without modifying the code.  However, they
+consider non-functional requirements like persistence and atomicity.
+
+Reflection for dynamic adaptation [[cite:DSC+99][DSC+99]].  Dynamic adaptation echoes the
+motivation of open implementation: an application should adapt dynamically to
+the need of the users, thereby enhancing performance.  This is mostly a concern
+in systems software, operating systems and middlewares.  They use a memory
+allocator example and compare using design patterns, DLLs and reflection.
+Essentially, reflection is more flexible, but also less efficient.
+
+[[cite:RC-02][RC-02]] illustrates how unanticipated dynamic adaptation can be achieved using
+MOPs in Java.
+
+Unifying AOP and OOP [[cite:RS-09a][RS-09a]].
+
+[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
+proxy which has a handful of traps that are useful to override: when the value
+is called as a function, when the value is used as a record, when the value is
+used as an index in an array, when the value is used in a binary operation ...
+
+They exhibit several scenarios where virtual values are useful: lazy evaluation,
+revocable membranes, and tainting.  They modified Narcissus (again!) to add
+their virtual values extension, but the implementation seems incomplete
+regarding all operations available in JavaScript.
+
+They motivate virtual values as a nice way to extend languages without having to
+touch the interpreter.  Though they do not talk at all of the limitations of
+this approach: can you write any extension that you would write by modifying the
+interpreter with virtual values?  The only downsides they acknowledge are
+performance hits and potential breakage of JS invariants (‘x*x’ returning a
+negative number, or ‘x === x’ returning false).
+
+It seems evident that virtual values are only hooks for values.  So you cannot
+override any other part of the module which is not explicitly given by a trap.
+Getting a trace of the interpreter execution is out.  Also, you need to specify
+your analysis from the point of view of handler on values, not by altering the
+interpreter semantics.
+
+[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
+previous implementation which used code transformation; better performance, less
+maintenance.
+
+**** Software product lines                       :tool:language:methodology:
+[[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
+
+An engineering methodology to create and maintain variants of a software
+product, with optional features (analogy with car assembly lines, which allow
+for adding optional features while reusing the same assembly process).
+
+Inspired by the similar evolution in the mass production of consumer goods.
+From handcrafting to mass production, to mass customization: product lines that
+cover a spectrum of variations.  Examples abound: cars, multi-flavored
+detergent, phones, Subway sandwiches ...  Software product lines are the
+realization of mass customization for software products (yeah!).
+
+A product line engineering platform combines all the artifacts, documentation
+and methodologies of a family of products.  The goal of PLE is to manage the
+/commonality/ and /variability/ of a product family.  PLE is not specific to
+software.
+
+Properties of a SPL:
+- binding time (composition can happen at compile-time, load-time or run-time)
+- language solution vs. tool based
+- annotation (think C preprocessor) vs. composition (features in their own unit)
+- preplanning effort (can you add features without designing for it?)
+- feature traceability (mapping between feature model to solution space)
+- separation of concerns
+- information hiding
+- uniformity
+
+Software product lines mechanisms include:
+- global parameters
+- design patterns (observer, strategy, decorator)
+- frameworks
+- components
+
+Using version control branches to manage variability is also discussed.  Each
+branch correspond to a product, and code sharing is provided by the version
+control tool.  However, version control manages /products/ rather than
+/features/.  Features are not apparent independently of the base code, except
+when looking at diffs.
+
+Feature-oriented programming allows the decomposition of a program into features
+first.  Jak is a Java extension that supports FOP [[cite:BSR-04][BSR-04]].  A feature corresponds
+to a layer, and each layer can contain multiple classes that implement the
+feature.  Further layers can /refine/ the classes of previous layer, and refer
+to their implementation via the =original= keyword.
+
+FeatureHouse [[cite:AKL-13][AKL-13]] is akin to [[Semantic patches]], in that it uses a reduced
+syntax tree in order to transform code.  One writes a base program, then another
+program can be superimposed on it by matching their reduced syntax trees.  The
+base program code can be called using the =original= keyword.  Three-way merges
+are also possible, and resolved like in version control systems.  The model of
+reduced syntax trees of FeatureHouse is language independent, as are the
+composition mechanisms.  Language plugins can be written to tell
+FeatureHouse how to generate, compose, and pretty-print reduced syntax trees.
+
+#+BEGIN_EXAMPLE
+public class A {
+  private int foo() { return 0; }
+}
+
+public class A {
+  private int foo() { original(); return 1; }
+}
+#+END_EXAMPLE
+
+FeatureHouse also supports quantification.  Mixins and traits mechanisms are
+essentially instances of superimposition.
+
+FOP is well-suited to implementing /heterogeneous concerns/ (one variation per
+join point), while AOP is better for /homogeneous concerns/ (one variation,
+multiple join points). [[cite:MO-04][MO-04]] illustrates the compromises of each approaches (and
+presents [[Caesar]] as the superior solution).
+
+If you cannot maintain a separation of concerns in the code itself, you can
+emulate it through views.  /Virtual separation of concerns/ is using tools to
+provide coherent views of features that are scattered in the code [[cite:AK-09][AK-09]].
+
+Virtual separation of concerns has few downsides and many benefits: simplicity
+and flexibility being the chief advantages.
+
+Handling feature interactions is an open problem.  Detecting them also.
+
+***** Mechanisms for instrumentation
+FOP implementations presented here are static organization of code into
+features.  Much like design patterns or frameworks, they require the programmer
+to design for extensibility beforehand.  AspectJ allows extending an existing
+code base (unlike the original AOP vision, which emphasized the design decision
+of separating components from aspects).
+
+The notion of superimposition is nice.  Recognizing that inheritance, mixins and
+traits are all instances of superimposition is a powerful insight.
+
+Virtual separation of concerns makes some good points.  If the primary
+decomposition is tyranny, then we have no hope of organizing the physical code
+into features.  However, we can leverage editing tools to re-arrange and view
+the code in any way we like.  One physical representation, many views.  Each
+view can provide different information about the system.
+
+The motivation behind all such mechanisms is a desire to organize snippets of
+code, to structure modules, and avoid repetitions.  The ultimate conclusion of
+that trend is a language-agnostic manipulation syntax based on hypertext.  Each
+snippet has a name, and tags (for marking membership of a feature, but mostly
+for non-hierarchical organization).  Any snippets can be referenced by another
+(for documentation), and can be included for execution.  Snippets can be
+referenced to by name, or by tags.  Tags and wildcards allow quantification.
+
+Tags also allow to view the program through different lenses.  Snippets can have
+parameters, hence are a form a macros.
+
+Links are two way, and kept in sync by the programming system (editor): this
+prevents obliviousness.
+
+**** Caesar
+[[cite:AGM+06][AGM+06]]
+
+CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
+All these mechanisms are brought together to allow composition along many axis.
+
+But overall, I failed to see the problems that it solved.  Both papers [[cite:AGM+06][AGM+06]]
+[[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
+the benefit brought by the new mechanisms.
+
+**** Hyper/J                                               :methodology:tool:
+[[cite:TOH+99][TOH+99]] argues for a multi-dimensional separation of concerns.  First, they note
+that modern software technologies provide mechanisms for the /decomposition/ and
+/composition/ of source code, in order to cut the code into manageable pieces,
+and put the pieces back together to produce the running program.
+
+Existing software formalisms provide decomposition and composition mechanisms,
+but typically support a single dominant dimension of decomposition.  They dub
+this phenomenon the “tyranny of the dominant decomposition”.
+
+A class hierarchy is insufficient for anticipating all the evolutions of an
+expression language (see Expression problem).  Subclassing and design patterns
+require pre-planning.
+
+There are many concerns we need to manage simultaneously, and the dominant
+decomposition typically sacrifices some of those concerns for the benefit of
+others.  Thus, we are in presence of a multi-dimensional artifact, and each
+decomposition gives only a lower-dimensional view of said artifact.
+
+They propose /hyperslices/ as way to organize artifacts along all desired
+dimensions of concern.  An hyperslice contains all the units of change related
+to one concern.  Units of change can appear in multiple hyperslices, and thus
+hyperslices can overlap.  In the expression example, one slice for the kernel
+language, one slice for the pretty-printing, one slice for syntax checking, etc.
+
+Composition of hyperslices must be specified manually, though a default strategy
+can be installed.  They suggest one strategy based on name matching for merging
+classes together (akin to superimposition).
+
+Throughout the paper, they only use hyperslices on UML diagrams, not source
+code.  Hyperslices can be applied to specification, design documents and code.
+Though they do not highlight a way to link the related parts from those
+different artifacts together, other than putting them in the same hyperslice.
+There does not seem to be a way to deal with duplicates.
+
+Compared to AOP, where components are the primary decomposition and aspects
+gravitate around them, hyperslices do not impose a dominant structure (though it
+may often appear in practice, e.g., the kernel slice of the expression
+language).
+
+There are no descriptive papers of Hyper/J, but there is a manual [[cite:TO-00][TO-00]].  The
+manual gives details on how to implement the example of expression language.
+Using Hyper/J requires to write three files describing: the hyperspace (all
+classes that Hyper/J will care about), the concern mappings (which
+package/class/method/field maps to which concern), and the hypermodules (which
+features are part of a module, and how composition happens).  Running the
+Hyper/J tool will compose all the hypermodules using the specified rules (merge
+by name) to produce the final program.
+
+Hyper/J simplifies the multi-dimensional concept by mapping units of change to
+exactly one feature.  No overlap between hyperslices.
+
+***** Mechanisms for instrumentation
+Realization that the tyranny of the dominant decomposition is a manifestation of
+looking at a multi-dimensional object through low-dimensional projections.  All
+projections are unsatisfactory as they sacrifice one or more dimensions.
+
+The Hyper/J solution is basically superimposition.
+
+**** Others?
+***** Software evolution through runtime method transformation
+[[cite:Zdu-04][Zdu-04]]
+
+***** Direct manipulation
+Beyond programming languages [[cite:Shn-83][Shn-83]].  Argues that computer applications are
+better learned and used if the user can directly manipulate the high-level
+domain objects.
+
+Users have semantic knowledge of how to solve a task, how to decompose it into
+smaller, lower-level semantic goals (copy a sentence = move cursor to sentence
+start, select until sentence end, issue copy command).  Semantic knowledge is
+mostly application-independent (most text editors support the previous semantic
+actions).  Syntactic knowledge comprises the actual commands needed to effect a
+low-level semantic action; syntactic knowledge is application-specific, and
+mostly arbitrary (‘K’ will copy text in one editor, but delete in another).
+
+Novices begin with zero semantic knowledge, and must build it upward, from
+low-level actions to high-level domain planning.  They build this knowledge by
+learning the syntax of the application: the commands it provides.  At first,
+they can only solve tasks that are straight applications of syntactic
+knowledge.  Building higher-level semantic knowledge must be done by analogy
+with similar domains, or by following examples.
+
+Shneiderman suggests that novice manuals should then not be lists of the
+application’s commands, but should provide examples of common high-level domain
+goals, and first describe how to decompose these goals into lower-level semantic
+tasks, before providing the solutions using commands.
+
+He also frames the benefit of direct manipulation as leaning toward re-using
+semantic knowledge, rather than asking the user to digest the arbitrary
+syntactic knowledge of a commands language.
+
+Example of systems exhibiting direct manipulation: (early) video games like
+Pong, Breakout, Space Invaders, Donkey Kong; Visicalc; display editors (Emacs,
+Vi).
+
+***** Delta-oriented programming
+[[cite:SBB+10][SBB+10]]
+
+Describes delta of code; can remove methods, which is unusual for step-wise
+programming.
+
+***** Information transparency                                         :tool:
+[[cite:Gri-01][Gri-01]]
+
+Tools for capturing the similarity of code across modules.  Tangled code should
+be similar, according to the principle of consistency.  Hence, capturing similar
+code should help gather and organize concerns.  E.g., changing the behavior of
+the parsing of a =while= statement by grepping for ‘while’ in the source.
+
+Principle of consistency:
+
+#+BEGIN_QUOTE
+Things that look similar should /be/ similar; things that /are/ different should
+look different.
+#+END_QUOTE
+[[cite:Mac-87][Mac-87]]
+
+First principle of information transparency:
+
+#+BEGIN_QUOTE
+Code elements likely to be changed together as part of a complete, consistent
+change should look similar, and code elements unlikely to be changed together
+should look different.
+#+END_QUOTE
+
+If a code base obeys this principle, it can be easily refactored using standard
+tools like grep.
+
+A second principle promotes using variable names to indicate implementation
+choices.  Hungarian notation is given as an example.
+
+#+BEGIN_QUOTE
+The unmodularized code elements relating to a changeable design decision should
+contain recognizable tags uniquely identifying the design decision.
+#+END_QUOTE
+
+Locality can be managed by tools.  They exhibit tools a bit more powerful than
+grep, with knowledge of the target language AST, or matching on typos.
+
+#+BEGIN_QUOTE
+Both tools [Aspect Browser and Seesoft] embody the concept that, by leveraging
+the human visual system, identifiable /symbols/ are a viable alternative to
+/locality/ as a way of managing changes to software.
+#+END_QUOTE
+
+***** JastAdd: extensible Java compiler
+Used for writing “declarative” static flow analyses with reference attribute
+grammars [[cite:SEH+13][SEH+13]].
+
+Attribute grammars are already a declarative language for specifying the
+semantics of a language [[cite:Knu-68][Knu-68]].
+
+*** Code transformation
+**** Semantic patches                                                  :tool:
+[[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
+name, or gains an argument, client code must makes the necessary changes.  The
+changes in client code are collateral.
+
+In a semantic patch, one describes the pattern of collateral changes needed to
+adapt client code.
+
+#+BEGIN_EXAMPLE
+@ rule2 @
+identifier proc_info_func;
+identifier hostptr;
+@@
+proc_info_func (
++ struct Scsi_Host *hostptr,
+- int hostno
+) {
+  ...
+- struct Scsi_Host *hostptr;
+  ...
+- hostptr = scri_host_hn_get(hostno);
+  ...
+- if (!hostptr) { ... return ...; }
+  ...
+- scsi_host_put(hostptr);
+  ...
+}
+#+END_EXAMPLE
+
+Identifiers are declared in the header with a syntactic class.  They are matched
+in the target code according to the context where they appear in the body of the
+semantic path.
+
+The dots =...= are an operator to match any sequence of code between two lines.
+There is a mention of the dots matching the /control-flow/ of the code, though
+nothing indicates that =spatch= interprets the target code in any way.
+
+[[cite:JH-07][JH-07]] demystifies the tool by giving a denotational semantics.  Indeed, the dots
+only match the syntax.
+
+The related work section of [[cite:JH-07][JH-07]] has a few surveys on software evolution, and
+in particular the Journal of Software Maintenance and Evolution.
+
+All around a nice idea, though you still have to write the semantic patches from
+scratch for every change.
+
+The (unintended) idea of source transformation based on dynamic control flow is
+interesting.  See [[Shapes of computation]].
+
+***** Mechanisms for extension
+It’s another approach, transforming code to alleviate the maintenance cost.
+
+However, it’s a crutch.  We would prefer not having to have to make those
+changes in the first place, even if the kernel libraries are updated.
+
+The concept of /collateral evolution/ is certainly related.  When interpreters
+evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM-06][PLM-06]] was
+more focused on introducing the collateral evolution problem, with plenty of
+examples from the Linux kernel.
+
+** Core
+Here I show, with extensive details, how one can build a modular interpreter
+amenable to instrumentation in JavaScript.
+
+The building blocks come from the background section, but as the problem is
+slightly different, so are the way they are put together.  This leads to many
+opportunities to discuss the benefits and downsides of each solution and the
+mechanisms they leverage.
+
+This part ends with an illustration of an interpreter capable of executing code
+in different ways, by changing only a small amount of code each time.
+
+I know I’m supposed to lay a straightforward narrative, but here I believe there
+is equivalent insight to be gained from /failed/ experiments than from the
+successes.  Negative results may not be publishable, but they can appear in a
+thesis document.
+
+Finally, I apply the insights gained from prototypes to Narcissus, showing that
+they scale, and give examples with information flow instrumentation, showing
+that they can be used for security purposes.
+
+*** Building from scratch vs. extending existing interpreters
+When we think of instrumentation, we think mostly of the latter.  The two
+approaches map to mental models: see [[*Unanticipated%20extension%20is%20just%20a%20hack][Unanticipated extension is just a hack]].
+
+Extending has its limits; it’s not the proper way to do things.
+
+On the other hand, it’s unclear how to build modular interpreters amenable to
+extension from building blocks.
+
+*** Instrumenting the program vs. instrumenting the interpreter
+Show how they are equivalent, with examples.  But not quite, since the
+interpreter can do things the rewriting can’t.
+
+Also, security concerns of leaking information to program if not careful, which
+does not happen by instrumenting the interpreter, as they run in separate
+environments.
+
+However, interesting insight of full control over the AST given by treating code
+as data.  Will pop up again later.
+
+*** Dynamic scoping and global namespace (Lisp/JS)
+[[cite:SS-78][SS-78]]
+*** The aspect-oriented interpreter (Java/JS?)
+*** Once again with types (Haskell/Scala)
+*** Application to Narcissus
+
+** Synthesis
+Here I take another look at the solutions proposed in Core, and relate them to
+existing work.  I take the time to discuss the higher-level schema behind all of
+them and what this means for modularity.  I am explicit about the limits of the
+approach, and what are the directions for improvement.
+
+** Acknowledgements
+Raganwald for a Game of Life implementation showing off literate programming and
+AOP, and getting me interested in finding better ways to structure programs.
+
+Bret Victor for the realization of the dissonance between textual programming
+languages and the dynamic processes they describe.  Also, for inspiration.
+
+* Outtakes
+** First, the scope: what are JS programs?  What do we mean by security? How do we provide it?
+I want to cover as much ground as I can, at least in the State of the Art part.
+So:
+- every JS program.
+- lots of things.  Whatever helps the programmer gain confidence in the
+  executions of the program he designs helps security.  So, a magical tool that
+  lights a green lamp up when the program is free of XSS or CSRF, but a
+  programming patterns that helps minimizing the defects is also in scope.
+- Better tools (interpreters, compilers, benchmarks), bettern patterns and
+  libraries ... any way helps.  Better language is also another way.
