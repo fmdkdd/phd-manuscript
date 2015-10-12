@@ -1,7 +1,126 @@
-#+BIBLIOGRAPHY refs
+# -*- org-confirm-babel-evaluate: nil -*-
+# -*- org-babel-use-quick-and-dirty-noweb-expansion: t -*-
 
-Thesis: the modular instrumentation of interpreters can be achieved through
-language mechanisms.
+#+TITLE: Language mechanisms and patterns for extending interpreters
+#+AUTHOR: fmdkdd
+#+LATEX_CLASS: thesis
+#+OPTIONS: tags:nil
+#+BIBLIOGRAPHY: refs
+
+Thesis: extending interpreters can be achieved through
+language mechanisms and pattern conventions.
+
+* Contents                                                   :TOC@4:noexport:
+ - [[#acknowledgements][Acknowledgements]]
+ - [[#introduction][Introduction]]
+ - [[#background][Background]]
+   - [[#setting][Setting]]
+     - [[#what-is-a-program][What is a program?]]
+     - [[#what-is-a-programming-language][What is a programming language?]]
+     - [[#what-is-program-modularity][What is program modularity?]]
+     - [[#what-is-an-interpreter][What is an interpreter?]]
+     - [[#what-does-it-mean-to-instrument-an-interpreter][What does it mean to instrument an interpreter?]]
+     - [[#why-should-this-instrumentation-be-modular][Why should this instrumentation be modular?]]
+     - [[#why-should-we-care-about-separation-of-concerns][Why should we care about separation of concerns?]]
+     - [[#what-is-javascript][What is JavaScript?]]
+     - [[#what-is-an-information-flow-analysis][What is an information flow analysis?]]
+   - [[#modularity-background][Modularity background]]
+     - [[#structured-programming][Structured programming]]
+     - [[#literate-programming][Literate programming]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#object-oriented-programming][Object-oriented programming]]
+     - [[#functional-programming][Functional programming]]
+     - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
+     - [[#context-oriented-programming][Context-Oriented Programming]]
+     - [[#feature-oriented-programming][Feature-Oriented Programming]]
+     - [[#flow-based-programming][Flow-based programming]]
+     - [[#model-driven-development][Model-driven development]]
+     - [[#domain-specific-languages][Domain-specific languages]]
+   - [[#modularity-of-interpreters][Modularity of interpreters]]
+     - [[#expression-problem][Expression problem]]
+     - [[#building-from-modules][Building from modules]]
+     - [[#building-with-monads][Building with monads]]
+     - [[#strategospoofax][Stratego/Spoofax]]
+     - [[#partial-evaluation][Partial evaluation]]
+   - [[#instrumentation-of-interpreters][Instrumentation of interpreters]]
+     - [[#bytecode-instrumentation][Bytecode instrumentation]]
+     - [[#using-aspects][Using aspects]]
+   - [[#extensibility][Extensibility]]
+     - [[#open-implementation][Open Implementation]]
+       - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
+     - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
+       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+     - [[#emacs][Emacs]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#dynamic-binding][Dynamic binding]]
+     - [[#smalltalk][Smalltalk]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#self][Self]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#prototype-based-programming][Prototype-based programming]]
+     - [[#eclipse-and-other-ides][Eclipse and other IDEs]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#web-browsers][Web browsers]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#lua][Lua]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#scripting-languages][Scripting languages]]
+     - [[#reflection][Reflection]]
+     - [[#software-product-lines][Software product lines]]
+       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+     - [[#caesar][Caesar]]
+     - [[#hyperj][Hyper/J]]
+       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+     - [[#others][Others?]]
+       - [[#software-evolution-through-runtime-method-transformation][Software evolution through runtime method transformation]]
+       - [[#direct-manipulation][Direct manipulation]]
+       - [[#delta-oriented-programming][Delta-oriented programming]]
+       - [[#information-transparency][Information transparency]]
+       - [[#jastadd-extensible-java-compiler][JastAdd: extensible Java compiler]]
+   - [[#code-transformation][Code transformation]]
+     - [[#semantic-patches][Semantic patches]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+ - [[#core][Core]]
+   - [[#building-from-scratch-vs-extending-existing-interpreters][Building from scratch vs. extending existing interpreters]]
+     - [[#the-problem][The problem]]
+       - [[#case-study-narcissus-instrumentation-for-faceted-evaluation][Case study: Narcissus instrumentation for faceted evaluation]]
+       - [[#finding-a-core-example][Finding a core example]]
+       - [[#the-expression-problem][The expression problem]]
+       - [[#the-expression-problem-with-a-twist][The expression problem, with a twist]]
+       - [[#the-modular-instrumentation-problem][The modular instrumentation problem]]
+     - [[#variations][Variations]]
+       - [[#javascript][JavaScript]]
+     - [[#lisp][Lisp]]
+     - [[#haskell][Haskell]]
+       - [[#building-scaffolding-with-language-features][Building scaffolding with language features]]
+       - [[#extending-the-syntax][Extending the syntax]]
+     - [[#modular-monadic-interpreters][Modular monadic interpreters]]
+       - [[#the-giants][The giants]]
+       - [[#the-bigger-picture][The bigger picture]]
+   - [[#instrumenting-the-program-vs-instrumenting-the-interpreter][Instrumenting the program vs. instrumenting the interpreter]]
+   - [[#dynamic-scoping-to-build-interpreters][Dynamic scoping to build interpreters]]
+     - [[#the-base-datatype][The base datatype]]
+     - [[#adding-a-data-variant][Adding a data variant]]
+     - [[#adding-an-operation][Adding an operation]]
+     - [[#adding-an-operation-as-a-module][Adding an operation as a module]]
+       - [[#a-use-case-for-with][A use-case for =with=]]
+       - [[#selective-imports-with-an-iife][Selective imports with an IIFE]]
+     - [[#modifying-an-operation][Modifying an operation]]
+       - [[#non-destructive-modification][Non-destructive modification]]
+     - [[#passing-state][Passing state]]
+     - [[#all-in-one][All in one]]
+   - [[#dynamic-scoping-to-modify-narcissus][Dynamic scoping to modify Narcissus]]
+     - [[#the-idea-manipulating-scopes][The idea: manipulating scopes]]
+     - [[#how-to-manipulate-scopes-in-javascript][How to manipulate scopes in JavaScript]]
+     - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
+     - [[#discussion][Discussion]]
+       - [[#insights][Insights]]
+       - [[#broad-applications][Broad applications]]
+       - [[#other-js-interpreters][Other JS interpreters]]
+       - [[#related-work][Related work]]
+       - [[#objections-and-downsides][Objections and downsides]]
+ - [[#synthesis][Synthesis]]
+ - [[#bibliography][Bibliography]]
 
 * Acknowledgements
 Raganwald for a Game of Life implementation showing off literate programming and
@@ -1213,7 +1332,7 @@ With sufficiently efficient high-level languages, the kernel+configuration
 approach might be unneeded.
 
 JavaScript being a scripting language for the browser, as well as an object used
-in the [[Core]], it might be adequate to have a dedicated background section to it.
+in the [[#core][Core]], it might be adequate to have a dedicated background section to it.
 
 *** Reflection                                                     :language:
 [[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
@@ -1621,6 +1740,9 @@ more focused on introducing the collateral evolution problem, with plenty of
 examples from the Linux kernel.
 
 * Core
+:PROPERTIES:
+:CUSTOM_ID: core
+:END:
 Here I show, with extensive details, how one can build a modular interpreter
 amenable to instrumentation in JavaScript.
 
@@ -3817,6 +3939,141 @@ From the LASSY’15 paper.
 An arithmetic expression language, the example taken by Wadler and
 Odersky as a base to propose solutions to the expression problem.
 
+#+NAME: svg
+#+BEGIN_SRC js :exports none
+  function toMarkup(obj, open, close, attr) {
+    if (typeof obj !== 'object') return obj.toString();
+
+    let tagName = obj.t;
+    let attrs = Object.getOwnPropertyNames(obj.attrs).map(n => attr(n, obj.attrs[n]));
+    let content = obj.children.map(o => toMarkup(o, open, close, attr)).join('');
+    return open(tagName, attrs) + content + close(tagName);
+  }
+
+  function toSVG(obj) {
+    function openSVG(tagName, attrs) { return '<' + (tagName + ' ' + attrs.join(' ')).trim() + '>' }
+    function closeSVG(tagName) { return '</' + tagName + '>' }
+    function attrSVG(k, v) { return k  + '="' + v + '"' }
+    return toMarkup(obj, openSVG, closeSVG, attrSVG);
+  }
+
+  function t(tagName, ...args) {
+    let o = {
+      t: tagName,
+      attrs: Object.create(null),
+      a(k, v) { o.attrs[k] = v; return o },
+      children: args,
+    };
+    let shortcuts = ['width', 'height', 'fill', 'stroke', 'cx', 'cy', 'r',
+                     'x', 'y', 'x1', 'y1', 'x2', 'y2', 'rx', 'ry',
+                     'id', 'viewBox', 'refX', 'refY', 'markerUnits',
+                     'markerWidth', 'markerHeight', 'orient',
+                     'transform'];
+    shortcuts.forEach(s => { o[s] = o.a.bind(o, s) });
+    return o;
+  }
+
+  function box(names) {
+    let marginTop = 0;
+    let marginBottom = 10;
+    let marginLeft = 7;
+    let marginRight = 10
+    let fontSize = 15;
+    let lineHeight = 18;
+    let charWidth = 9;
+
+    let longest = names.map(p => p.length).reduce((a,b) => Math.max(a,b), 0);
+    let width = marginLeft + longest * charWidth + marginRight;
+    let height = marginTop + marginBottom + lineHeight * names.length;
+
+    let propText = names.map((n, i) => t('text', n).x(marginLeft)
+                                                   .y((i+1) * lineHeight)
+                                                   .fill('#657b83'));
+
+    let g = t('g',
+              t('rect').width(width).height(height).stroke('#657b83').fill('#fdf6e3'),
+              ...propText)
+      .a('font-size', fontSize)
+      .a('font-family', 'Monospace')
+      .height(height)
+      .width(width);
+
+    return g;
+  }
+
+  function link(a, b, options) {
+    let {vertical, dashed, reversed, offset} = options || {};
+    offset = offset || 15;
+
+    let arrowLength = 50;
+    let arrowTip = 15;
+    let space = arrowLength + arrowTip;
+
+    if (vertical) {
+      var g = above(a, b, space);
+      [a, b] = g.children;
+      var y1 = a.attrs.height;
+      var y2 = y1 + arrowLength;
+      var x1 = offset, x2 = offset;
+      var center = {x: x1, y: y1 + space / 2};
+    } else {
+      var g = beside(a, b, space);
+      [a, b] = g.children;
+      var x1 = a.attrs.width;
+      var x2 = x1 + arrowLength;
+      var y1 = offset, y2 = offset;
+      var center = {x: x1 + space / 2, y: y1};
+    }
+
+    let arrow = t('line').x1(x1).x2(x2).y1(y1).y2(y2).stroke('#fdf6e3')
+      .a('stroke-width', 5).a('marker-end', 'url(#triangle)');
+
+    if (dashed) arrow.a('stroke-dasharray', '3 1');
+    if (reversed) arrow.transform(`rotate(180 ${center.x} ${center.y})`);
+
+    return t('g', a, arrow, b).width(g.attrs.width).height(g.attrs.height);
+  }
+
+  function beside(a, b, hspace) {
+    hspace = hspace || 20;
+
+    return t('g', a, b.transform(`translate(${a.attrs.width + hspace}, 0)`))
+      .width(a.attrs.width + hspace + b.attrs.width)
+      .height(Math.max(a.attrs.height, b.attrs.height));
+  }
+
+  function above(a, b, vspace) {
+    vspace = vspace || 20;
+    return t('g', a, b.transform(`translate(0, ${a.attrs.height + vspace})`))
+      .width(Math.max(a.attrs.width, b.attrs.width))
+      .height(a.attrs.height + vspace + b.attrs.height);
+  }
+
+  function name(n) {
+    let g = box([n]);
+    g.children[0].rx(10).ry(10);
+    return g;
+  }
+
+  function ref(a, b, options) {
+    options = options || {};
+    options.dashed = true;
+    return link(a, b, options);
+  }
+
+  let proto = link;
+  let obj = function(o) { return box(Object.getOwnPropertyNames(o)) };
+
+  function svg(...gs) {
+    let triangle = t('marker', t('path').a('d', 'M 0 0 L 10 5 L 0 10 z'))
+      .id('triangle').viewBox('0 0 10 10').refX(0).refY(5)
+      .markerWidth(4).markerHeight(3)
+      .orient('auto').fill('#fdf6e3');
+
+    print(toSVG(t('svg', triangle, ...gs)));
+  }
+#+END_SRC
+
 *** The base datatype
 #+NAME: num
 #+BEGIN_SRC js
@@ -3846,7 +4103,7 @@ Odersky as a base to propose solutions to the expression problem.
                     {reversed:true}))))
 #+END_SRC
 
-[[file:img/num.svg]]
+# [[file:img/num.svg]]
 
 *** Adding a data variant
 #+NAME: plus
@@ -3867,7 +4124,7 @@ Odersky as a base to propose solutions to the expression problem.
 #+RESULTS:
 : 3
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
 
@@ -3886,7 +4143,7 @@ Odersky as a base to propose solutions to the expression problem.
   svg(above($e1, $e2))
 #+END_SRC
 
-[[file:img/num-plus.svg]]
+# [[file:img/num-plus.svg]]
 
 *** Adding an operation
 #+NAME: show-invasive
@@ -3907,14 +4164,12 @@ Odersky as a base to propose solutions to the expression problem.
   print(plus.new(num.new(1), num.new(2)).show());
 #+END_SRC
 
-#+RESULTS:
-: 1+2
-: 1+2
+#+RESULTS[dcac8561b9f21e4bb1985c63e9e70ff10ee557dc]:
 
 This extension is invasive: it modifies the prototypes of =num= and
 =plus=.  If we want, we can extend safely both objects.
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
   <<show-invasive>>
@@ -3935,7 +4190,7 @@ This extension is invasive: it modifies the prototypes of =num= and
 
 #+END_SRC
 
-[[file:img/show-invasive.svg]]
+# [[file:img/show-invasive.svg]]
 
 *** Adding an operation as a module
 #+NAME: show
@@ -3961,7 +4216,7 @@ This extension is invasive: it modifies the prototypes of =num= and
   print(s.plus.new(s.num.new(1), s.num.new(2)).show());
 #+END_SRC
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
   <<show>>
@@ -3984,7 +4239,7 @@ This extension is invasive: it modifies the prototypes of =num= and
   svg(above($s, g))
 #+END_SRC
 
-[[file:img/show-module.svg]]
+# [[file:img/show-module.svg]]
 
 Works, but can mix languages in unsafe ways:
 
@@ -4022,7 +4277,7 @@ the same language.
 
 Inside =with=, here is what we see:
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
   <<show>>
@@ -4037,11 +4292,11 @@ Inside =with=, here is what we see:
   svg(above($num, $plus))
 #+END_SRC
 
-[[file:img/show-module-with.svg]]
+# [[file:img/show-module-with.svg]]
 
 Outside =with=, the =show= module is out of scope:
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
   <<show>>
@@ -4054,7 +4309,7 @@ Outside =with=, the =show= module is out of scope:
   svg(above($num, $plus))
 #+END_SRC
 
-[[file:img/show-module-with-outside.svg]]
+# [[file:img/show-module-with-outside.svg]]
 
 **** Selective imports with an IIFE
 #+BEGIN_SRC js
@@ -4096,7 +4351,7 @@ print(plus.new(num.new(1), num.new(2)).eval())
 Previous version of =num.eval= is lost: we have no reference to it
 anymore.
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
 
@@ -4112,7 +4367,7 @@ anymore.
   svg(above($e1, $prev))
 #+END_SRC
 
-[[file:img/modify-num.svg]]
+# [[file:img/modify-num.svg]]
 
 **** Non-destructive modification
 #+NAME: double
@@ -4143,7 +4398,7 @@ with(double(num)) {
 Inside the inner-most =with=, the objects in scope are the modified
 =num=, and the original =plus=.
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<svg>>
   redirect('img/modify-num-module.svg')
   var $num = ref(name('num'),
@@ -4156,11 +4411,11 @@ Inside the inner-most =with=, the objects in scope are the modified
   svg(above($num, $plus))
 #+END_SRC
 
-[[file:img/modify-num-module.svg]]
+# [[file:img/modify-num-module.svg]]
 
 While after the =with=, =num= refers to the original, unmodified object.
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<plus>>
   <<svg>>
   redirect('img/modify-num-module-outside.svg')
@@ -4170,7 +4425,7 @@ While after the =with=, =num= refers to the original, unmodified object.
   svg(above($num, $plus))
 #+END_SRC
 
-[[file:img/modify-num-module-outside.svg]]
+# [[file:img/modify-num-module-outside.svg]]
 
 *** Passing state
 Add a program counter incremented each time a data variant calls
@@ -4208,7 +4463,7 @@ Add a program counter incremented each time a data variant calls
 : 3
 : 3
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
   <<state>>
@@ -4224,7 +4479,7 @@ Add a program counter incremented each time a data variant calls
   svg(above($getPC, above($num, $plus)))
 #+END_SRC
 
-[[file:img/state.svg]]
+# [[file:img/state.svg]]
 
 *** All in one
 Combine all the extensions without effort.
@@ -4253,7 +4508,7 @@ Combine all the extensions without effort.
 : 3
 : 1+2
 
-#+BEGIN_SRC js :results silent
+#+BEGIN_SRC js :results silent :exports none
   <<num>>
   <<plus>>
   <<show>>
@@ -4288,7 +4543,7 @@ Combine all the extensions without effort.
   svg(above($getPC, above($n, $nl)))
 #+END_SRC
 
-[[file:img/all-in-one.svg]]
+# [[file:img/all-in-one.svg]]
 
 ** Dynamic scoping to modify Narcissus
 From the DLS’15/SAC’16 paper.
@@ -4322,7 +4577,7 @@ A module defines its own scope, and exports some of them in an object.
 
 Before the code runs.
 
-#+BEGIN_SRC dot :file img/ex1-0.svg
+#+BEGIN_SRC dot :file img/ex1-0.png
 digraph {
   subgraph clusterglobal {
     label = "global";
@@ -4337,7 +4592,7 @@ digraph {
 
 After the IIFE is executed.
 
-#+BEGIN_SRC dot :file img/ex1-1.svg
+#+BEGIN_SRC dot :file img/ex1-1.png
 digraph {
   node [shape = record, height = 0];
 
@@ -4379,7 +4634,7 @@ important for understanding the module pattern here.
 
 Calling =m.g(0)=.
 
-#+BEGIN_SRC dot :file img/ex1-2.svg
+#+BEGIN_SRC dot :file img/ex1-2.png
 digraph {
   node [shape = record, height = 0];
 
@@ -4452,7 +4707,7 @@ property, then we can write:
 
 After the line =m.scope.a = 2=, we have:
 
-#+BEGIN_SRC dot :file img/ex1-3.svg
+#+BEGIN_SRC dot :file img/ex1-3.png
 digraph {
   rankdir=BT;
   node [shape = record, height = 0];
@@ -4517,7 +4772,7 @@ and we can change bindings and delete our changes.
   m.g(0) //: 1
 #+END_SRC
 
-#+BEGIN_SRC dot :file img/ex2-1.svg
+#+BEGIN_SRC dot :file img/ex2-1.png
 digraph {
   rankdir=BT;
   node [shape = record, height = 0];
@@ -4615,7 +4870,7 @@ Instrumentations can insert themselves in any layer of the instrumentation cake.
   m.g(0) //: 1
 #+END_SRC
 
-#+BEGIN_SRC dot :file img/ex3-1.svg
+#+BEGIN_SRC dot :file img/ex3-1.png
 digraph {
   rankdir=BT;
   node [shape = record, height = 0];
@@ -4667,7 +4922,7 @@ bottom of the scope, which is not accessible to instrumenters.
 
 Could also use a proxy object instead of returning the scope itself.
 
-#+BEGIN_SRC dot :file img/ex4-1.svg
+#+BEGIN_SRC dot :file img/ex4-1.png
 digraph {
   rankdir=BT;
   node [shape = record, height = 0];
@@ -4799,7 +5054,7 @@ var m = (function(){
 }())
 #+END_SRC
 
-#+BEGIN_SRC dot :file img/with-lexenv-1.svg
+#+BEGIN_SRC dot :file img/with-lexenv-1.png
 digraph {
   node [shape = record];
   rankdir=BT;
@@ -4840,7 +5095,7 @@ var m = (function(){
 }())
 #+END_SRC
 
-#+BEGIN_SRC dot :file img/with-lexenv-2.svg
+#+BEGIN_SRC dot :file img/with-lexenv-2.png
 digraph {
   node [shape = record];
   rankdir=BT;
@@ -5224,3 +5479,6 @@ Here I take another look at the solutions proposed in Core, and relate them to
 existing work.  I take the time to discuss the higher-level schema behind all of
 them and what this means for modularity.  I am explicit about the limits of the
 approach, and what are the directions for improvement.
+
+* Bibliography
+#+LATEX: \printbibliography

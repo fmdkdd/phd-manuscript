@@ -1,0 +1,14 @@
+\usepackage{fontspec}
+\setmonofont{Ubuntu Mono}
+
+%% Generates the bibliography.  Handles UTF8-encoded bib files.
+\usepackage[
+  backend=biber,
+  firstinits=true,
+  natbib=true,
+  style=numeric,
+  maxbibnames=10     %% 3 max authors, for #space
+]{biblatex}
+\addbibresource{../refs.bib}
+
+\usepackage{hyperref}
