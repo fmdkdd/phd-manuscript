@@ -17,15 +17,15 @@ go:
 tex/manuscript.tex: manuscript.org tex/export-setup.el
 	echo 'Exporting to LaTeX...'
 
-	# Export whole Org document to LaTeX, with the prelude.
+# Export whole Org document to LaTeX, with the prelude.
 	emacs --quick --batch \
         --load tex/export-setup.el \
         --file manuscript.org \
         --eval '(message (format "Org version %s" (org-version)))' \
         --eval '(org-latex-export-to-latex)'
 
-  # Org creates the TeX in the same directory as the Org document.
-  # Maybe there is a way to override it with ELisp, but for now...
+# Org creates the TeX in the same directory as the Org document.  Maybe there is
+# a way to override it with ELisp, but for now...
 	mv manuscript.tex tex/manuscript.tex
 
 tex/acks.tex: manuscript.org tex/export-setup.el
