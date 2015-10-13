@@ -13,9 +13,8 @@
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
-               '("thesis" "\\documentclass{book}\n\
-                           [NO-DEFAULT-PACKAGES]\n\
-\\input{preamble}"
+               '("thesis"
+                 "[NO-DEFAULT-PACKAGES]\n\\input{preamble}"
                  ("\\part{%s}" . "\\part*{%s}")
                  ("\\chapter{%s}" . "\\chapter*{%s}")
                  ("\\section{%s}" . "\\section*{%s}")

@@ -1,4 +1,9 @@
+\documentclass[a4paper]{book}
+
+%% TTF fonts with XeLaTeX.
 \usepackage{fontspec}
+
+%% A monospace font that handles utf8 chars.  And is not too wide.
 \setmonofont{Ubuntu Mono}
 
 %% Generates the bibliography.  Handles UTF8-encoded bib files.
@@ -12,4 +17,5 @@
 ]{biblatex}
 \addbibresource{../refs.bib}
 
+%% Hyperlinks for citations and external links.
 \usepackage{hyperref}
