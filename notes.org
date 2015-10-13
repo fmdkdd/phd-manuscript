@@ -10,7 +10,10 @@ CLOSED: [2015-10-13 mar. 15:24]
   Book will do for now.
 - [X] Export citations to biblatex refs
 
-** TODO Acknowledgements as front matter
+** DONE Acknowledgements as front matter
+CLOSED: [2015-10-13 mar. 17:09]
+Bibliography should also be unnumbered.
+
 ** TODO Image paths are broken in the PDF
 ** TODO Re-organize contents
 Table of contents is a mess.  Should refactor the tree to redistribute weight.
@@ -84,6 +87,28 @@ Trying to specify “a4paper” option outside of the documentclass macro, to pu
 all changes in =preamble.tex=.  Actually, I can omit documentclass in
 ~org-latex-classes~ and put it in =preamble.tex= directly.  That saves me from
 messing with =export-setup.el= for LaTeX-y stuff.
+
+Setting the front/main/back matter correctly without polluting (too much) the
+Org document.  The compromise I’ve opted for is to create =frontmatter.tex= and
+=backmatter.tex= to take care of finer presentation details.  That leaves room
+to grow for a custom title page.
+
+Two downsides to the approach:
+1. Acknowledgments must be defined outside the Org document.  Just because I
+   cannot set it as a chapter in LaTeX without setting it to a level 2 heading
+   in Org, which would be absorbed by the previous level 1 heading.
+
+   Maybe I can define it as a level 1 heading, no export, but then do a subtree
+   export for this node only in a separate file.
+
+   Ok, I just did that instead.  Works, with the issue of linking to other parts
+   of the document.  Don’t need that for now, and I prefer the Acknowledgments
+   stay in the document.
+
+2. Three lines of LaTeX in the Org document.  The first two at the top are okay,
+   the problematic one is the third.  It should be the last line of the Org
+   document, but is part of the last heading instead.  When moving headings, it
+   can be forgotten.  There is probably a better way.
 
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the

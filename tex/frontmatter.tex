@@ -1,0 +1,15 @@
+%% Insert title, TOC, and acknowledgments.  The Org document must not insert
+%% title or TOC itself, otherwise they will appear before the frontmatter
+%% command.
+
+\frontmatter
+
+\maketitle
+\tableofcontents
+
+\chapter*{Acknowledgements}
+%% Fix heading mark showing “Contents”
+%% as suggested here:
+%% https://en.wikibooks.org/wiki/LaTeX/Document_Structure#The_document_environment
+\markboth{\MakeUppercase{Acknowledgements}}{}
+\input{acks}

@@ -4,11 +4,11 @@
 #+TITLE: Language mechanisms and patterns for extending interpreters
 #+AUTHOR: fmdkdd
 #+LATEX_CLASS: thesis
-#+OPTIONS: tags:nil
+#+OPTIONS: tags:nil toc:nil
 #+BIBLIOGRAPHY: refs
 
-Thesis: extending interpreters can be achieved through
-language mechanisms and pattern conventions.
+#+LATEX: \input{frontmatter}
+#+LATEX: \mainmatter
 
 * Contents                                                   :TOC@4:noexport:
  - [[#acknowledgements][Acknowledgements]]
@@ -120,9 +120,11 @@ language mechanisms and pattern conventions.
        - [[#related-work][Related work]]
        - [[#objections-and-downsides][Objections and downsides]]
  - [[#synthesis][Synthesis]]
- - [[#bibliography][Bibliography]]
 
-* Acknowledgements
+* Acknowledgements                                                 :noexport:
+:PROPERTIES:
+:EXPORT_FILE_NAME: tex/acks.tex
+:END:
 Raganwald for a Game of Life implementation showing off literate programming and
 AOP, and getting me interested in finding better ways to structure programs.
 
@@ -5480,5 +5482,4 @@ existing work.  I take the time to discuss the higher-level schema behind all of
 them and what this means for modularity.  I am explicit about the limits of the
 approach, and what are the directions for improvement.
 
-* Bibliography
-#+LATEX: \printbibliography
+#+LATEX: \input{backmatter}

@@ -10,9 +10,9 @@
 (with-eval-after-load 'org
   (org-add-link-type "cite" nil #'fmdkdd/org-export-cite))
 
-;; Custom LATEX_CLASS that sets the documentclass, removes all default packages,
-;; and tells Org how to translate headlines into LaTeX sections.
 (with-eval-after-load 'ox-latex
+  ;; Custom LATEX_CLASS that sets the documentclass, removes all default
+  ;; packages, and tells Org how to translate headlines into LaTeX sections.
   (add-to-list 'org-latex-classes
                '("thesis"
                  "[NO-DEFAULT-PACKAGES]\n\\input{preamble}"
@@ -20,4 +20,7 @@
                  ("\\chapter{%s}" . "\\chapter*{%s}")
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  ;; Do not insert maketitle, we do that in frontmatter.tex.
+  (setq org-latex-title-command ""))
