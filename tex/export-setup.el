@@ -10,7 +10,8 @@
 (with-eval-after-load 'org
   (org-add-link-type "cite" nil #'fmdkdd/org-export-cite))
 
-
+;; Custom LATEX_CLASS that sets the documentclass, removes all default packages,
+;; and tells Org how to translate headlines into LaTeX sections.
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("thesis"
@@ -20,5 +21,3 @@
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
-
-;; (setq org-latex-prefer-user-labels t)
