@@ -24,3 +24,10 @@
 
   ;; Do not insert maketitle, we do that in frontmatter.tex.
   (setq org-latex-title-command ""))
+
+;; Allow Babel to execute source blocks in batch mode.
+(with-eval-after-load 'ob-core
+  (require 'ob-js)
+  (require 'ob-dot)
+  (setq org-confirm-babel-evaluate nil
+        org-babel-use-quick-and-dirty-noweb-expansion t))
