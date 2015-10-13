@@ -3,13 +3,13 @@ LATEXMK_ARGS=-pdflatex=xelatex -output-directory=pdf -pdf -synctex=1
 
 .PHONY: clean
 
-pdf/manuscript.pdf: tex/manuscript.tex tex/preamble.tex
+pdf/manuscript.pdf: tex/manuscript.tex tex/preamble.tex refs.bib
 	env TEXINPUTS=${TEXINPUTS} latexmk ${LATEXMK_ARGS} tex/manuscript.tex
 
 tex/manuscript.tex: manuscript.org
 	echo 'Exporting to LaTeX...'
 
-# Export whole document to LaTeX, with the prelude.
+# Export whole Org document to LaTeX, with the prelude.
 	emacs --quick --batch \
         --load tex/export-setup.el \
         --file manuscript.org \
