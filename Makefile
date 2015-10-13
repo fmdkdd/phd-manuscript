@@ -1,5 +1,5 @@
 TEXINPUTS='.:tex:' # Trailing ':' will make pdflatex include system paths
-LATEXMK_ARGS=-pdflatex=xelatex -output-directory=pdf -pdf -synctex=1
+LATEXMK_ARGS=-pdflatex=xelatex -output-directory=pdf -pdf -synctex=1 -quiet
 
 .PHONY: clean
 
