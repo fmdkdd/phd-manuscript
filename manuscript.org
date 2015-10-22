@@ -14,6 +14,7 @@
  - [[#acknowledgements][Acknowledgements]]
  - [[#introduction][Introduction]]
  - [[#background][Background]]
+   - [[#de-l’exécution-d’un-programme-au-code-source][De l’exécution d’un programme au code source]]
    - [[#setting][Setting]]
      - [[#what-is-a-program][What is a program?]]
      - [[#what-is-a-programming-language][What is a programming language?]]
@@ -161,16 +162,131 @@ I also describe what the thesis does /not/ cover, in order to give reasonable
 expectations to the reader.
 
 * Background
-We extend the themes and setting of the introduction to give the reader all the
-background necessary to understand the choices made in the thesis.
+# We extend the themes and setting of the introduction to give the reader all the
+# background necessary to understand the choices made in the thesis.
 
-We show how existing work relate to the problem of modular instrumentation.
-Specifically we show that very few work have targeted this particular problem.
-Though there are numerous works concerned with modularity in interpreters, most
-prominently around the expression problem.
+# We show how existing work relate to the problem of modular instrumentation.
+# Specifically we show that very few work have targeted this particular problem.
+# Though there are numerous works concerned with modularity in interpreters, most
+# prominently around the expression problem.
 
-Conclusion should be: modular instrumentation is still a fresh, and legitimate
-axis of research.
+# Conclusion should be: modular instrumentation is still a fresh, and legitimate
+# axis of research.
+
+** De l’exécution d’un programme au code source
+Pour modifier l’exécution d’un programme, il est bon de savoir /comment/ le
+programme est exécuté par la machine.  Du point de vue de la machine, un
+programme est une simple liste d’instructions.  Une séquence d’additions, de
+soustractions, de chargement et stockage de valeurs en mémoire, et de sauts
+conditionnels.  Ces instructions sont présentées à la machine sous la seule
+forme que son processeur est capable de manipuler : des nombres, codés par des
+suites de zéros et de uns.
+
+#+CAPTION: Un programme (point de vue d’une machine x86).
+#+BEGIN_EXAMPLE
+...00101011010101011...
+#+END_EXAMPLE
+
+Le programme est alors exécuté instruction par instruction.  La machine lit une
+instruction, puis effectue l’opération correspondante ; elle charge
+l’instruction suivante, la lit, effectue l’opération, charge, lit, effectue,
+etc.  Cette monomanie contribue à l’utilité que nous trouvons à la machine, car
+son processeur agit certes simplement, mais il agit /vite/.  N’importe quel
+processeur actuel est capable d’effectuer plusieurs milliards d’opérations par
+seconde.  La machine ne différencie donc pas un programme d’un autre ; tous se
+mêlent en une immense suite binaire.
+
+Le programmeur en revanche cherche à structurer cette suite de nombres.  Une
+suite infinie de zéros et de uns est difficile à appréhender pour un cerveau
+humain ; il lui faut des repères, découper le programme en unités plus
+digestibles par nos facultés organiques.  Un programmeur manipule donc rarement
+des bits afin de déclarer ses intentions à la machine ; il utilise plutôt un
+langage de programmation.
+
+#+CAPTION: Un programme (point de vue d’un programmeur connaissant le langage
+#+CAPTION: JavaScript, vers 2015).
+#+NAME: fib
+#+BEGIN_SRC js
+function fibonacci(n) {
+  return n < 2 ? 1 : fibonacci(n-1) + fibonacci(n-2)
+}
+
+print(fibonacci(10))
+#+END_SRC
+
+Dans les langages de programmation exotériques[fn:eso-lang], un programme est
+constitué principalement de lettres plutôt que de nombres.  Les lettres,
+arrangées en permutations judicieuses, nous servent à /nommer/ les objets de la
+computation tels que les variables et constantes, les fonctions, les classes et
+autres structures.  Les mots sont plus facilement prononçables, davantage
+mnémoniques, et peuvent communiquer l’intention du programmeur par homonymie.
+On peut, simplement en suivant les mots, supposer que le code de [[fib]] calcule et
+affiche le onzième nombre de la suite de Fibonacci, sans être vraiment certain
+de la sémantique de JavaScript.  Les mots /évoquent/ du sens alors que les
+nombres restent silencieux[fn:misleading].
+
+# Traduction to machine code
+
+# Other structures, classes, modules
+
+
+[fn:eso-lang] Par opposition aux langages /ésotériques/ qui sont conçus
+davantage pour démontrer la créativité de leur auteur que pour simplifier la
+conception de programmes.  [[http://esolangs.org/wiki/Main_Page][Esolang]] recense des spécimens tels que Brainfuck,
+Piet ou Whitespace, qui ne manquent pas de nous rappeler qu’être Turing-complet
+n’est pas un critère suffisant pour être un langage /utile/.
+
+[fn:misleading] Les mots peuvent également évoquer un contresens ; une
+définition maladroite — ou intentionnelle — peut induire en erreur le lecteur.
+Un ami m’a raconté avoir passé tout un après-midi à pister une erreur dans du
+code écrit en C, pour finalement découvrir dans un fichier inclus la ligne :
+~#define true false~.  Le [[http://www.ioccc.org/index.html][concours international d’obfuscation de code C]] recèle
+d’exemples à suivre pour mystifier tout collaborateur.
+
+
+
+#+BEGIN_SRC dot :file img/bg-map.png
+digraph {
+  rankdir=LR;
+  node [shape=record];
+  source [label = "Code source"];
+  box [label = "Magie"];
+  effects [label = "Effets"];
+  source -> box -> effects;
+}
+#+END_SRC
+
+#+RESULTS:
+[[file:img/bg-map.png]]
+
+#+BEGIN_SRC dot :file img/bg-map2.png
+digraph {
+  rankdir=LR;
+  node [shape=record];
+  source [label = "Code source"];
+  box [label = "Interpréteur"];
+  effects [label = "Effets"];
+  source -> box -> effects;
+}
+#+END_SRC
+
+#+RESULTS:
+[[file:img/bg-map2.png]]
+
+#+BEGIN_SRC dot :file img/bg-map3.png
+digraph {
+  rankdir=LR;
+  node [shape=record];
+  source [label = "Code source"];
+  box [label = "Compilateur"];
+  bin [label = "Binaire"];
+  effects [label = "Effets"];
+  source -> box -> bin -> effects;
+}
+#+END_SRC
+
+#+RESULTS:
+[[file:img/bg-map3.png]]
 
 ** Setting
 The ELI5 section of the thesis.  I explain all of that and foreshadow the
