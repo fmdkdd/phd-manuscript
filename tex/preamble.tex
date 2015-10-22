@@ -1,10 +1,56 @@
 \documentclass[a4paper]{book}
 
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% General typography
+
+%% Computer modern fonts with extended support for European characters.
+\usepackage{lmodern}
+
 %% TTF fonts with XeLaTeX.
 \usepackage{fontspec}
 
 %% A monospace font that handles utf8 chars.  And is not too wide.
 \setmonofont{Ubuntu Mono}
+
+%% French typographical conventions and translated names for “Chapitre”, “Table
+%% des matières”, etc.
+\usepackage[french]{babel}
+
+%% Left justification of the whole document.  Full justification is superficial.
+\usepackage[document]{ragged2e}
+
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Source code listings
+
+%% Environment for source code snippets.
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  commentstyle=\ttfamily,
+  columns=fullflexible, keepspaces=true,
+  breaklines=false, showstringspaces=false,
+  escapeinside={//*}{\^^M},     % Escape to LaTeX between //* and line return
+  captionpos=b,
+  %extendedchars=true, inputencoding=utf8,
+}
+
+%% Org export produces environment for ‘js’, so we must define that language for
+%% listings.
+\lstdefinelanguage{js}{
+  language={Java},
+  morekeywords={with,var,function},
+  deletekeywords={double},
+}
+
+%% Accept ‘diff’ as language, no special treatment.
+\lstdefinelanguage{diff}{}
+
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Bibliography
+
+%% Quells a warning from biblatex with babel activated.  Not sure /what/ it does
+%% though.
+\usepackage{csquotes}
 
 %% Generates the bibliography.  Handles UTF8-encoded bib files.
 \usepackage[
@@ -16,6 +62,9 @@
   maxbibnames=10
 ]{biblatex}
 \addbibresource{../refs.bib}
+
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Others
 
 %% Hyperlinks for citations and external links.
 \usepackage{hyperref}

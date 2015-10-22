@@ -119,6 +119,65 @@ Two downsides to the approach:
 
 Allowing Babel to run in batch fixed the issue with non-loading images.
 
+Trying out the ‘classicthesis’ package; it’s all kind of broken.  Going to stay
+with the default book class for now, then maybe later look into KOMAScript or
+memoir for further customization.
+
+** [2015-10-16 ven.]
+Organizing background section.  Since the section is intended to be a map of
+manipulating programs, present the pipeline from source to side effects in the
+computer.
+
+** [2015-10-19 lun.]
+Starting from the start.  What is a program?
+
+** [2015-10-20 mar.]
+- Why do you talk about programs?  I thought this was about extending interpreters.
+
+- An interpreter is a program like any other.  To extend an interpreter, we can use
+  the same mechanisms we would use for extending a program.
+
+- Ok, go on.  Wait, why talk specifically about interpreters then?  Doesn’t your
+  work apply to any program?
+
+- Well, the mechanisms would apply to any program, yes.  But they are more
+  tailored for use in interpreters.  However, I find it important that I relate
+  the mechanisms used in the specific instance of interpreters to the larger
+  family of mechanisms used for extending generic programs.  The background
+  section deals with this larger family, while the core section focuses on the
+  instance of interpreters.
+
+- Will you not lose time discussing related work that could not apply to
+  interpreters, although they are viable for generic programs?
+
+- Such work can be dismissed on the grounds you highlight.
+
+-----
+
+- So, where are you going with this explanation of what a program is?
+
+- I want to show how a program is executed.  Because we want to modify programs,
+  we need to know how they run.  There’s a whole pipeline, from source code to
+  machine code, that takes the program and transforms it into an increasingly
+  larger file with a lower instruction count.  But it’s still the same program.
+  So if you want to modify the program, you now have several places where you
+  can do it.  They all have compromises: the source is easy to modify, and
+  corresponds to the object the programmer knows, but you might not have access
+  to it.  The binary is always accessible, but it might be too low-level as it
+  has lost structuring information that the programmer knows (names, modules,
+  classes ...).
+
+** [2015-10-22 jeu.]
+Captions on source blocks are broken.  The source block is inserted in a
+verbatim environment, and the caption with a ~captionof~ command.
+
+Maybe trying to export with the ‘listings’ package will take care of captions?
+
+It did.  I just had to enable listings as the environment for source block via
+an ELisp variable, and add the package in the preamble.  The Org export sets the
+‘language’ option of listings environment to the language of the source block,
+so I have to define these languages for listings in the preamble as well.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

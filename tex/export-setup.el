@@ -11,6 +11,9 @@
   (org-add-link-type "cite" nil #'fmdkdd/org-export-cite))
 
 (with-eval-after-load 'ox-latex
+  ;; Use the listings package for exporting source blocks.
+  (setq org-latex-listings t)
+
   ;; Custom LATEX_CLASS that sets the documentclass, removes all default
   ;; packages, and tells Org how to translate headlines into LaTeX sections.
   (add-to-list 'org-latex-classes
