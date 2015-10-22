@@ -16,8 +16,16 @@
 %% des matières”, etc.
 \usepackage[french]{babel}
 
+%% Move characters around and minimize hyphenation.  Good for diversity.
+\usepackage{microtype}
+
 %% Left justification of the whole document.  Full justification is superficial.
-\usepackage[document]{ragged2e}
+%% 'side' option is passed to footmisc for footnotes on the side.
+\usepackage[document, side]{ragged2e}
+
+%% Ragged2e sets parindent to 0 otherwise paragraphs look unbalanced.  The
+%% default parskip is too subtle to tell when a paragraph begins however.
+\setlength{\parskip}{1ex}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Source code listings
