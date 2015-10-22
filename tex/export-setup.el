@@ -11,6 +11,10 @@
   (org-add-link-type "cite" nil #'fmdkdd/org-export-cite))
 
 (with-eval-after-load 'ox-latex
+  ;; Use CUSTOM_ID and NAME labels of Org file as labels for \label commands in
+  ;; the exported LaTeX.  Needed to refer to source bloks with a NAME.
+  (setq org-latex-prefer-user-labels t)
+
   ;; Use the listings package for exporting source blocks.
   (setq org-latex-listings t)
 
