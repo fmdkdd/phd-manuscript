@@ -191,6 +191,31 @@ agreed-upon definition.
 
 Trying out side footnotes.  They might need a bit more space.
 
+** [2015-10-23 ven.]
+Margin footnotes using =footmisc= have two issues:
+1. Ragged side does not follow side of margin (always ragged right).
+2. There’s an indentation at the start of the footnote.
+
+Trying the =marginnotes= package.  The fact that footnotes are not floats is a
+feature, but will not do for my use case.  Also, they are not numbered.
+
+After toying for the last hours, I think I’d like to have both footnotes and
+(numbered) margin notes.  Margins for most of side information (notes, but also
+small images, Listing captions, snarky remarks ...).  And footnotes for URLs?
+
+Or URLs as citations, which make more sense.  All in the bibliography, and avoid
+the need for footnotes.
+
+** [2015-10-26 lun.]
+Let’s try to put everything in the margin, and then URLs as cites.
+
+- Notes ragged left or right might look better.
+- Need a number or symbol.
+
+Ok, done.  Had to write my own LaTeX command and use counters.  As I’m using
+~marginpar~, there may be an issue down the road if the number of margin notes
+exceeds 256.  The package =etex= apparently solves that issue.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
