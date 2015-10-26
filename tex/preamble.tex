@@ -24,9 +24,6 @@
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% General typography
 
-%% Computer modern fonts with extended support for European characters.
-\usepackage{lmodern}
-
 %% TTF fonts with XeLaTeX.
 \usepackage{fontspec}
 
@@ -37,7 +34,8 @@
 %% des matières”, etc.
 \usepackage[french]{babel}
 
-%% Move characters around and minimize hyphenation.  Good for diversity.
+%% Move characters around and minimize hyphenation.  Good for diversity.  Not as
+%% powerful with XeLaTeX, as font information may be missing.
 \usepackage{microtype}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,7 +127,10 @@
 %% Hyperlinks for citations and external links.
 \usepackage{hyperref}
 \hypersetup{
-  colorlinks=true,
+  unicode,                      % Always a good idea?
+  hyperfootnotes=false,         % Footnotes are broken
+  xetex,                        % Might as well tell it already
+  colorlinks=true,              % Color links rather than put boxes around them
   linkcolor=rubric,             % internal link
   citecolor=rubric,             % bibliography link
   urlcolor=azure,               % external link
