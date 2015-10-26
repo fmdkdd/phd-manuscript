@@ -6,7 +6,8 @@ LATEXMK_ARGS=-pdflatex=xelatex -output-directory=pdf -pdf -synctex=1 -quiet
 pdf/manuscript.pdf: tex/manuscript.tex tex/preamble.tex \
 										tex/frontmatter.tex tex/acks.tex \
 										tex/backmatter.tex \
-										refs.bib
+										refs.bib \
+                    tex/tufte-latex.sty
 	env TEXINPUTS=${TEXINPUTS} latexmk ${LATEXMK_ARGS} tex/manuscript.tex
 
 # Only useful for debugging the TeX output with Synctex, since it does not

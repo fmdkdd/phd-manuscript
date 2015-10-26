@@ -60,6 +60,20 @@
 %% Replace all footnotes with a marginnote.
 \renewcommand{\footnote}{\refstepcounter{marginnotecounter}\marginnotemark\marginnote}
 
+%% I want to put caption of figures in the margin as well.  Tufte-latex does
+%% that, but also does plenty of stuff I don’t need (like redefining my layout
+%% with ‘geometry’).  I load a custom version of the tufte-latex package with
+%% most of the useless stuff commented out.
+\usepackage[
+  nobib,                        % Don’t override \cite
+  symmetric,                    % Twosides
+  sidenote=raggedouter  ,       % Always ragged text for margin stuff
+  marginnote=raggedouter,
+  caption=raggedouter,
+  citation=raggedouter,
+  marginals=raggedouter,
+]{tufte-latex}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Source code listings
 

@@ -226,6 +226,26 @@ The author-year citation style needs an author and a year, information that
 might not make sense for a website.  I could switch citation styles, but in the
 meantime I can use the ~label~ field to provide a referencing key.
 
+-----
+
+Now I’d like to have captions of figures and listings to appear in the margin as
+well.  This allow for easy parsing, and I don’t like that caption break the flow
+of paragraphs.
+
+Wow, so that was complicated, as anticipated.  Turns out that the =tufte-latex=
+package does what I want.  But it is also strongly opinionated on the layout of
+the text.  So I took the code, and commented out most of what I did not need,
+and let it redefine the ~figure~ environment for captions in the margin.
+
+I tried to use it for footnotes in the margin as well, but the code seems
+bugged?  I kept getting an error with the ~sidenote~ command, but the
+~marginnote~ worked alright.  I kept my custom margin note command.
+
+Next step is to override the caption of ~listings~ environment.  The [[http://tex.stackexchange.com/questions/46137/combining-listings-and-tufte-book-listings-caption-on-tuftes-margin][suggested
+workaround]] is to wrap a ~lstlistings~ into a ~figure~ and not skip the caption
+handling of =listings=.
+
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
