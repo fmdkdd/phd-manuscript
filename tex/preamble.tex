@@ -1,4 +1,25 @@
-\documentclass[a4paper]{book}
+\documentclass{scrbook}
+
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Layout
+
+\KOMAoptions{
+  paper=A4,
+  BCOR=0mm,
+  pagesize,
+  mpinclude=true,               % Treat margin as part of text body
+  fontsize=11pt,
+}
+
+%% Recompute layout based on the options above.  Without it, the layout is
+%% pretty bad and there are a bunch of warnings in the output.
+\recalctypearea
+
+%% More space for margin notes.
+\setlength{\marginparwidth}{3\marginparwidth}
+
+%% More space for main text body.
+\addtolength{\textheight}{5em}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% General typography
