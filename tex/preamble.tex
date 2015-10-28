@@ -9,6 +9,7 @@
   pagesize,
   mpinclude=true,               % Treat margin as part of text body
   fontsize=11pt,
+  captions=nooneline,           % Don’t center one-line captions
 }
 
 %% Recompute layout based on the options above.  Without it, the layout is
@@ -72,6 +73,10 @@
   marginals=raggedouter,
 ]{tufte-latex}
 
+%% KOMAscript indents captions.  I don’t want that for margin captions.
+\setcapindent{0pt}
+\setkomafont{caption}{\FloatRaggedOuter\footnotesize}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Source code listings
 
@@ -83,7 +88,8 @@
   columns=fullflexible, keepspaces=true,
   breaklines=false, showstringspaces=false,
   escapeinside={//*}{\^^M},     % Escape to LaTeX between //* and line return
-  captionpos=b,
+  aboveskip=0pt,
+  belowskip=0pt,
   %extendedchars=true, inputencoding=utf8,
 }
 
