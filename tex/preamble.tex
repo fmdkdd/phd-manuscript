@@ -77,6 +77,14 @@
 \setcapindent{0pt}
 \setkomafont{caption}{\FloatRaggedOuter\footnotesize}
 
+%% Babel french puts it in small caps.  I don’t want that.
+%% Additionally, override figurename for listings.
+%% HACK: maybe using a new environment for the listings would be a better
+%% solution.
+\newcommand{\UnsetListingFigureName}{\renewcaptionname{french}{\figurename}{Figure}}
+\UnsetListingFigureName
+\newcommand{\SetListingFigureName}{\renewcaptionname{french}{\figurename}{Code}}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Source code listings
 

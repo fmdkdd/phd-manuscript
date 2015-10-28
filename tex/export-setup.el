@@ -157,6 +157,7 @@ contextual information."
                                (org-export-data main info))))))
                 (lst-opt (plist-get info :latex-listings-options)))
             (concat
+             "\\SetListingFigureName\n"
              "\\begin{figure}\n"
              ;; Options.
              (format
@@ -203,7 +204,8 @@ contextual information."
                  nil (and retain-labels (cdr code-info)))))
              (if caption-str (format "\n\\caption{%s}" caption-str) "")
              (if label (format "\n\\label{%s}" label) "")
-             "\n\\end{figure}")))))))
+             "\n\\end{figure}"
+             "\n\\UnsetListingFigureName")))))))
 
   (advice-add 'org-latex-src-block :around #'fmdkdd//org-latex-src-block)
 
