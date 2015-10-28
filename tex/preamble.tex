@@ -39,24 +39,24 @@
 \usepackage{microtype}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%% Margin notes
+%% Side notes (in the outer margin)
 
-%% Font to use for margin notes.
-\newkomafont{margin}{\footnotesize}
+%% Font to use for side notes.
+\newkomafont{sidenote}{\footnotesize}
 
-%% For hyphenation in ragged text, which gives more even margin notes.
+%% For hyphenation in ragged text, which gives more even side notes.
 \usepackage{ragged2e}
 
-%% Custom commands for margin notes with a counter and ragged text side
+%% Custom commands for side notes with a counter and ragged text side
 %% following odd and even pages.
-\newcounter{marginnotecounter}
-\newcommand{\marginnotemark}{\textsuperscript{\themarginnotecounter}}
-\newcommand{\marginnote}[1]{%
-  \marginpar[\RaggedLeft\usekomafont{margin}{\marginnotemark#1\par}]%
-            {\RaggedRight\usekomafont{margin}{\marginnotemark#1\par}}}
+\newcounter{sidenotecounter}
+\newcommand{\sidenotemark}{\textsuperscript{\thesidenotecounter}}
+\newcommand{\sidenote}[1]{%
+  \marginpar[\RaggedLeft\usekomafont{sidenote}{\sidenotemark#1\par}]%
+            {\RaggedRight\usekomafont{sidenote}{\sidenotemark#1\par}}}
 
 %% Replace all footnotes with a marginnote.
-\renewcommand{\footnote}{\refstepcounter{marginnotecounter}\marginnotemark\marginnote}
+\renewcommand{\footnote}{\refstepcounter{sidenotecounter}\sidenotemark\sidenote}
 
 %% I want to put caption of figures in the margin as well.  Tufte-latex does
 %% that, but also does plenty of stuff I don’t need (like redefining my layout
