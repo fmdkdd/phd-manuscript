@@ -24,7 +24,8 @@ Maybe related, but I should probably use SVG instead if I want diagrams at all.
 
 ** TODO Re-organize contents
 Table of contents is a mess.  Should refactor the tree to redistribute weight.
-** TODO Translate ‘Listings’ captions to French
+** DONE Translate ‘Listings’ captions to French
+CLOSED: [2015-10-29 jeu. 15:17]
 
 * Log
 ** [2015-10-08 jeu.]
@@ -254,6 +255,14 @@ spew out a ~figure~ environment around the listing.
 ** [2015-10-28 mer.]
 Advising ~org-latex-src-block~ did the job.
 
+For now I just add the LaTeX commands I need in this function.  A neater
+solution would be to create a new environment that takes care of wrapping the
+listing in a figure, and setting the ~figurename~.  That will do for now.
+
+** [2015-10-29 jeu.]
+Empty captions caused tufte-latex to put the figure in full width.  This was
+caused by the minipage for side captions having nothing in it.  I just put a
+non-breaking space to fill the page as a workaround.
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

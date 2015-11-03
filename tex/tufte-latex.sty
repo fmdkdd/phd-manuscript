@@ -1309,7 +1309,7 @@
     % build the caption box
     \begin{lrbox}{\@tufte@caption@box}%
       \begin{minipage}[\floatalignment]{\marginparwidth}\hbox{}%
-        \ifthenelse{\NOT\equal{\@tufte@stored@caption}{}}{\@tufte@orig@caption[\@tufte@stored@shortcaption]{\@tufte@stored@caption}}{}%
+        \ifthenelse{\NOT\equal{\@tufte@stored@caption}{}}{\@tufte@orig@caption[\@tufte@stored@shortcaption]{\@tufte@stored@caption}}{~}%
         \ifthenelse{\NOT\equal{\@tufte@stored@label}{}}{\@tufte@orig@label{\@tufte@stored@label}}{}%
         \par\vspace{-\prevdepth}%% TODO: DOUBLE-CHECK FOR SAFETY
       \end{minipage}%
