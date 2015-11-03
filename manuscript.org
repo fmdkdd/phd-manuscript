@@ -14,7 +14,7 @@
  - [[#acknowledgements][Acknowledgements]]
  - [[#introduction][Introduction]]
  - [[#background][Background]]
-   - [[#de-l’exécution-d’un-programme-au-code-source][De l’exécution d’un programme au code source]]
+   - [[#de-l’exécution-du-programme-au-code-source][De l’exécution du programme au code source]]
    - [[#setting][Setting]]
      - [[#what-is-a-program][What is a program?]]
      - [[#what-is-a-programming-language][What is a programming language?]]
@@ -173,19 +173,22 @@ expectations to the reader.
 # Conclusion should be: modular instrumentation is still a fresh, and legitimate
 # axis of research.
 
-** De l’exécution d’un programme au code source
+** De l’exécution du programme au code source
 Pour modifier l’exécution d’un programme, il est bon de savoir /comment/ le
 programme est exécuté par la machine.  Du point de vue de la machine, un
 programme est une simple liste d’instructions.  Une séquence d’additions, de
 soustractions, de chargement et stockage de valeurs en mémoire, et de sauts
 conditionnels.  Ces instructions sont présentées à la machine sous la seule
-forme que son processeur est capable de manipuler : des nombres, codés par des
+forme que son processeur est capable de manipuler: des nombres, codés par des
 suites de zéros et de uns.
 
-#+CAPTION: Un programme (point de vue d’une machine x86).
-#+BEGIN_EXAMPLE
-...00101011010101011...
-#+END_EXAMPLE
+#+CAPTION: Un programme (extrait; point de vue d’une machine x86).
+#+BEGIN_figure*
+\begin{verbatim}
+...00101011011100101011010101110101011111010100010110100000000110001011101010010101011...
+\end{verbatim}
+\vspace{-2em}
+#+END_figure*
 
 Le programme est alors exécuté instruction par instruction.  La machine lit une
 instruction, puis effectue l’opération correspondante ; elle charge
@@ -193,14 +196,14 @@ l’instruction suivante, la lit, effectue l’opération, charge, lit, effectue
 etc.  Cette monomanie contribue à l’utilité que nous trouvons à la machine, car
 son processeur agit certes simplement, mais il agit /vite/.  N’importe quel
 processeur actuel est capable d’effectuer plusieurs milliards d’opérations par
-seconde.  La machine ne différencie donc pas un programme d’un autre ; tous se
+seconde.  La machine ne différencie donc pas un programme d’un autre; tous se
 mêlent en une immense suite binaire.
 
 Le programmeur en revanche cherche à structurer cette suite de nombres.  Une
 suite infinie de zéros et de uns est difficile à appréhender pour un cerveau
-humain ; il lui faut des repères, découper le programme en unités plus
+humain; il lui faut des repères, découper le programme en unités plus
 digestibles par nos facultés organiques.  Un programmeur manipule donc rarement
-des bits afin de déclarer ses intentions à la machine ; il utilise plutôt un
+des bits afin de déclarer ses intentions à la machine; il utilise plutôt un
 langage de programmation.
 
 #+CAPTION: Un programme (point de vue d’un programmeur connaissant le langage
@@ -219,13 +222,64 @@ constitué principalement de lettres plutôt que de nombres.  Les lettres,
 arrangées en permutations judicieuses, nous servent à /nommer/ les objets de la
 computation tels que les variables et constantes, les fonctions, les classes et
 autres structures.  Les mots sont plus facilement prononçables, davantage
-mnémoniques, et peuvent communiquer l’intention du programmeur par homonymie.
-On peut, simplement en suivant les mots, supposer que le code de [[fib]] calcule et
-affiche le onzième nombre de la suite de Fibonacci, sans être vraiment certain
-de la sémantique de JavaScript.  Les mots /évoquent/ du sens alors que les
-nombres restent silencieux[fn:misleading].
+mnémoniques, et peuvent surtout communiquer l’intention du programmeur par
+homonymie.  On peut ainsi, simplement en suivant les mots, supposer que le code
+[[fib]] calcule et affiche le onzième nombre de la suite de Fibonacci, sans être
+vraiment certain de la sémantique de JavaScript.  Les mots /évoquent/
+immédiatement du sens alors que les nombres doivent être décodés[fn:misleading].
 
-# Traduction to machine code
+Mais, si le programme ainsi décrit est plus confortable pour le programmeur, il
+est incompréhensible par la machine en tant que tel.  Il faut au préalable
+/traduire/ ce programme en code machine avant de pouvoir l’exécuter.  L’analogie
+avec les langues naturelles est pertinente; si je souhaite communiquer le
+contenu de ce manuscrit de thèse à des non-francophones, soit je rédige une
+nouvelle version dans une langue qu’ils parlent (écrire le programme en langage
+machine), soit j’emploie les services d’un traducteur[fn:third-option].
+Heureusement, la traduction d’un programme est une tâche moins hasardeuse que la
+traduction d’un document en langue naturelle.  Les langages de programmation
+sont définis de façon à éliminer toute ambiguïté d’interprétation, ce qui permet
+d’effectuer la traduction en langage machine automatiquement.
+
+C’est le /compilateur/ qui traduit des programmes d’un langage de programmation
+vers le langage machine.  Le compilateur lit le texte brut décrivant le
+programme, vérifie que ce texte est conforme aux règles syntaxiques et
+grammaticales du langage qu’il traduit, puis applique les règles de traduction
+en langage machine.  Un compilateur permet donc au programmeur d’obtenir un
+programme exécutable par la machine à partir de code écrit dans le langage de
+son choix.
+
+#+CAPTION: Le compilateur lit le programme, en extrait la structure, et produit
+#+CAPTION: du code machine.
+#+BEGIN_SRC dot :file img/compile-pipeline.png
+digraph {
+  rankdir=LR;
+  node [shape=record];
+  source [label = "print(1 + 1)"];
+  lex [label = "_print_ ( _1_ _+_ _1_ )"];
+  ast [label = "body { call { print, add { 1, 1 }}}"];
+  asm [label = "lda 1 - add 1 - psh - call $a0 - ... "];
+  bin [label = "0101011101..."];
+  source -> lex -> ast -> asm -> bin;
+}
+#+END_SRC
+
+Notons que la compilation n’attache aucun sens particulier aux noms choisis par
+le programmeur.  Les noms servent juste à vite remplacés par des références.  On
+pourrait écrire le programme de [[fib]], de manière totalement équivalente:
+
+#+BEGIN_SRC js
+function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
+#+END_SRC
+
+# Structures do not count (modules, classes, files).  Structure is for humans.
+
+Le programme, n’a donc pas comme seule vocation à ordonner la machine, il doit
+aussi être lisible par d’autres programmeurs
+vocations parallèles:
+
+Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes
+Lorsqu’un texte devient trop long, il devient plus pratique de le découper
+en unités indépendantes.
 
 # Other structures, classes, modules
 
@@ -236,12 +290,19 @@ conception de programmes.  [[cite:Esolang][Esolang]] recense des spécimens tels
 Piet ou Whitespace, qui ne manquent pas de nous rappeler qu’être Turing-complet
 n’est pas un critère suffisant pour être un langage /utile/.
 
-[fn:misleading] Les mots peuvent également évoquer un contresens ; une
-définition maladroite – ou intentionnelle – peut induire en erreur le lecteur.
-Un ami m’a raconté avoir passé tout un après-midi à pister une erreur dans du
-code écrit en C, pour finalement découvrir dans un fichier inclus la ligne :
-~#define true false~.  Les archives du concours international d’obfuscation de
-code C [[cite:IOCCC][IOCCC]] recèlent d’exemples à suivre pour mystifier tout collaborateur.
+[fn:misleading] Les mots peuvent également évoquer un contresens; une définition
+maladroite–ou intentionnelle–peut induire en erreur le lecteur.  Un ami m’a
+raconté avoir passé tout un après-midi à pister une erreur dans du code écrit en
+C, pour finalement découvrir dans un fichier inclus la ligne: ~#define true
+false~.
+
+[fn:third-option] Une troisième option serait que les non-francophones
+apprennent le français pour lire ce manuscrit.  En suivant l’analogie, cela
+correspond à une machine qui exécuterait directement un programme JavaScript.
+Les deux situations sont également improbables.
+
+[fn:obfuscation] Les archives du concours international d’obfuscation de code C
+[[cite:IOCCC][IOCCC]] recèlent d’exemples à suivre pour mystifier tout collaborateur.
 
 
 #+BEGIN_SRC dot :file img/bg-map.png

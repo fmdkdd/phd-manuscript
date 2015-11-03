@@ -263,6 +263,120 @@ listing in a figure, and setting the ~figurename~.  That will do for now.
 Empty captions caused tufte-latex to put the figure in full width.  This was
 caused by the minipage for side captions having nothing in it.  I just put a
 non-breaking space to fill the page as a workaround.
+
+-----
+
+— Where are you going with the compiler explanation?
+
+— That’s how you get a program to the machine.
+
+— Wouldn’t it be simpler to just have said “programs have different forms, from
+source code to binary.  To modify a program, we can modify any of these forms.
+People have done that; each form has compromises; here they are.”
+
+— Sometimes it’s more about the journey...
+
+— Yes, but know your audience.  For sure the two people reading your manuscript
+will know all that stuff.  Your take on the basic of compilation, while
+interesting, is not very relevant.  They rather want to know what you did.  The
+background section is for surveying work related to the problem you want to
+solve, not for getting lyrical.  Focus.  A focused manuscript is easier to write
+and to read.
+
+— But I /care/ about this stuff, and I want to ensure we all have the same
+understanding of what the basics are.
+
+— This material has a place, but maybe not in the document.  A companion, the
+“lost chapters” perhaps?  Or for a course?  The fact that a program is for
+machines /and/ humans is certainly relevant however, as the contributions are
+certainly about the human side of programming.  But this is context, and context
+is for the introduction.
+
+— You have good points, and I will certainly heed them.  A synthetic, focused,
+to-the-point manuscript has its virtues.  I think I’m afraid that going this
+route will also lead to dryness.  I was also taken aback by Adrien’s defense,
+where he went headfirst to solve a problem when, for me, the whole premise of
+finding a “best” set of keywords was dubious.  I think I expect a researcher to
+argue the merit of the problem before exposing a solution.
+
+In my case, the task set by Jacques was “Find a better way to instrument
+Narcissus than ad-hoc copy-pasting”.  That fit into the larger problem, that was
+a motivation for pursuing a PhD in programming languages: how to reduce
+complexity in software, and achieve Modularity (with a capital M)?
+
+Back then, I understood clearly that the instrumentation of Narcissus was not
+modular.  I had to decide what would a modular instrumentation look like, to set
+a goal.
+
+Turns out, modularity is a tricky thing.  I was in team that had ridden on the
+wave of AOP, promoting “separation of concerns” and “modularity” at every turn
+of a sentence, but trying out AOP for my use case I could see that it was not
+quite the silver bullet.  You gained separation of concerns, but traded clarity
+of code, and ease of debugging.  Was the end result more “modular”?  The meaning
+of this word started to elude me.  Every solutions to the problems of AOP were
+like putting makeup on a pig.  The core COMEFROM concept was both the solution
+to the separation of concerns, and the cause of all the other problems.
+And, AspectScript did not feel like a proper tool that anyone would use outside
+of a proof of concept.
+
+If AOP did not fit the bill, maybe another paradigm would?  Functional
+programming was en vogue, and I agreed that immutability and avoiding side
+effects tended to make programs clearer.  Éric and Ismael had put out an AOP
+library for Haskell powered by magical monadic dust, and I was supposed to work
+with them for a month.  Besides, I always wanted to take a deeper look at Haskell.
+
+So, I tried to wrap my head around monads.  Even around category theory, as I
+gathered the theory would provide a mental model for understanding monads.  I
+fought with the type system daily, battling ever-stranger and increasingly
+opaque error messages from the compiler.  In the end, the type system won.  I
+never managed to type even a modest lambda calculus interpreter that could
+change its meaning at runtime.  The near-solutions were already so convoluted
+that I judged them not worth the hassle.
+
+I turned to static code transformation.  That worked, but then it had nothing to
+do with functional programming or monads.  So it was not a new solution.  And it
+did not solve the problem with Narcissus.
+
+I had still not produced any scientific contribution, and was entering my third
+year.  Getting back to JavaScript, I needed to produce a working solution to the
+original task.  Not an ideal solution to the problem of modularity.  Just, a
+better way to instrument Narcissus.  A better way that would also be worthy of a
+publication.
+
+In JavaScript, the most elegant and simple mechanism I could find that would do
+the job was dynamic scoping.  Except JS had no dynamic scoping.  Also, I found
+the idea that dynamic scoping could be legitimately /useful/ rather amusing,
+especially as it is often viewed as conflicting with modularity.  I found a way
+to simulate dynamic scoping in JavaScript using ~with~.  Since that was mostly a
+trick, I put a workshop paper showing how to build an interpreter with dynamic
+layers.  Then I tried to use the same technique for Narcissus, and ended up
+using another trick, still based on ~with~ and dynamic scoping.  It’s not
+particularly novel.  It’s still a trick.  I’m not sure it warrants publication.
+But it did solve the problem in a new way.
+
+For some definition of solved.  What I gained was the ability to change the
+interpreter dynamically, with separation of concern and single point of truth.
+However, modularity is violated since we are touching private code from outside
+the module.
+
+Turns out, there is no silver bullet alright.
+
+So I’ve contemplated, and found that maybe trying to find a solution using the
+language was not the right idea.  Separation of concerns is a presentation
+issue, something well put by Akram’s poster.  Every language raises the issue of
+primary decomposition (the expression problem being a prime example).  Solving
+it /through/ the language only complicates the code.
+
+That’s why something like literate programming and WEB is appealing.  It’s on
+top of any language.  You can build the program from named blocks, that can
+appear in multiple places.  So you have full flexibility of presenting the
+program structure in any way you like for a maintainer, while generating a
+“linear” version to the machine.  The program has dual, conflicting roles, and
+we cannot resolve this tension by manipulating only one view of the code.  With
+multiple views, we can satisfy all interested parties.
+
+It just has to be as natural and painless as writing navigating plain text.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
