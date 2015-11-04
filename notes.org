@@ -377,6 +377,171 @@ multiple views, we can satisfy all interested parties.
 
 It just has to be as natural and painless as writing navigating plain text.
 
+** [2015-11-03 mar.]
+*** On the COMEFROM trail
+What I’ve been trying to do, extend interpreters from other files, amounts
+essentially to a COMEFROM statement.
+
+The COMEFROM statement has originated as a joke statement in FORTRAN and other
+programming languages of the early ‘70s, as an answer to the “GOTO considered
+harmful” paper by Dijkstra.
+
+[[cite:Cla-73][Cla-73]] proposes COME FROM.  [[cite:SM-78][SM-78]] goes to 11 and proposes UNLESS, DON’T, UNTIL,
+IF MAYBE...  Both are humorous.
+
+With the same title of “Structured programming considered harmful”, but in
+definitely serious tone (coincidentally 3 years earlier in the same
+publication), [[cite:Abr-75][Abr-75]] attacks the sociology of structured programming.
+
+*** Auto spacing in Babel frenchb
+Making a note of the fact that then frenchb package of Babel by default inserts
+spaces before the punctuation signs =; : ? !=.  It means I should /not/ put any
+space (follow English typographical conventions) in the Org document.
+
+** [2015-11-04 mer.]
+*** Abrahams’ pragmatic defiance against structured programming
+He argues that blindly following the “dogma” of structured programming does not
+lead to clear and correct programs.  Structured programming is based on false
+assumptions, and goes through them.
+
+First assumption is the belief that one can write a correct program in a
+top-down fashion, in stepwise refinement of a tree structure.  But programs are
+not trees, and even in those exhibited by Wirth or Dijkstra we find lattices.
+From my own experience, it is certainly a dual approach.  A pure top-down does
+not work unless you have already solved all the problems of representation.
+Abrahams argues that a readable and efficient program is more the product of a
+skilled programmer than the result of following the rules of structured programming.
+
+#+BEGIN_QUOTE
+If the prime number program, for instance, had been spontaneously invented by
+one of Dijkstra's weaker students after taking a course in structured
+programming rather than by Dijkstra himself, the case for structured programming
+would be more convincing.
+#+END_QUOTE
+
+In the “Pragmatics” section, the attitude of Abrahams is opposed to that of Dijkstra:
+
+#+BEGIN_QUOTE
+But we must accept the fact that we live in the world that is, not the world
+that we would wish to live in or even the world that we will in the future live
+in.
+#+END_QUOTE
+
+He then goes on to say that alternative constructs to GOTO (like LOOP) may not
+be available in the language you must use.  GOTOs are efficient, while a
+procedure call is not.  Adding a GOTO is more convenient than rearranging all
+your punched cards.  And some programs are not meant to be “graven onto bronze
+tables, to be preserved for future generations”; “fastest is best”.
+
+He finishes by quoting Knuth [[cite:Knu-74][Knu-74]]:
+
+#+BEGIN_QUOTE
+There has been far too much emphasis on GO TO elimination instead of the really
+important issues; people have a natural tendency to set up an easily understood
+quantitative goal like the abolition of Jumps, instead of working directly for a
+qualitative goal like good program structure.
+#+END_QUOTE
+
+*** Knuth’s reasonable position on GOTO
+
+Re-reading [[cite:Knu-74][Knu-74]] (at least I think I’ve skimmed through it at least once, but
+some parts seem new to me).
+
+#+BEGIN_SRC js :results output
+var A = [1,2,3,4,5,6,7,8,9]
+var B = [0,0,0,0,0,0,0,0,0]
+
+function findOrAppend(x, A) {
+  var i = 0;
+  var m = A.length;
+  while (i < m && A[i] !== x) ++i
+  if (i < m) // found
+    ++B[i]
+  else {
+    A[i] = x
+    B[i] = 0
+  }
+}
+
+findOrAppend(1, A)
+print(A, B)
+findOrAppend(3, A)
+print(A, B)
+findOrAppend(-1, A)
+print(A, B)
+#+END_SRC
+
+The paper seems to argue that some GOTOs are harmless and even useful, if you
+care about counting cycles.  Using labels can make getting out of a loop more
+readable.  Syntactic sugar can take the place of GOTOs, the LOOP ... THEN
+construct is a nice example that somehow never made it into mainstream
+languages.  Error exits are also a legitimate use case, and I believe exception
+throwing and catching is the non-GOTO replacement.
+
+But, it touches also on the more general concern of structured programming, in
+the sense of crafting programs that must be simple to read and understand, but
+must also be efficient when it counts.  Focusing on GOTO is the wrong issue.
+Finding better abstractions, better way to deal with large programs is.
+
+Comments notes invariants.  Of loops, but also of variables (“m is the number of
+items in the table”, ...).
+
+The whole thing still rings true after 40 years, especially the conclusion
+section.
+
+“The Future” is also prescient:
+
+#+BEGIN_QUOTE
+We will perhaps eventually be writing only small modules which are identified by
+name as they are used to build larger ones, so that devices like indentation,
+rather than delimiters, might become feasible for expressing local structure in
+the source language.
+#+END_QUOTE
+
+We essentially do that with modules.  And languages like Python and Haskell use
+only indentation to delimit blocks.
+
+#+BEGIN_QUOTE
+Although our examples don't indicate this, it turns out that a given level of
+abstraction often involves several related routines and data definitions; for
+example, when we decide to represent a table in a certain way, we simultaneously
+want to specify the routines for storing and fetching information from that
+table.  The next generation of languages will probably take into account such
+related routines.
+#+END_QUOTE
+
+Again, this is abstract data types.  Though for that one maybe at the time some
+people were already toying with the idea.  I thought Reynolds was credited with
+the concept around that time.
+
+Then there is this vision of “program manipulation systems”:
+
+#+BEGIN_QUOTE
+Program manipulation systems appear to be a promising future tool which will
+help programmers to improve their programs, and to enjoy doing it.  Standard
+operating procedure nowadays is usually to hand code critical portions of a
+routine in assembly language.  Let us hope such assemblers will die out, and we
+will see several levels of language instead: At the highest levels we will be
+able to write abstract programs, while at the lowest levels we will be able to
+control storage and register allocation, and to suppress subscript range
+checking, etc.  With an integrated system it will be possible to do debugging
+and analysis of the transformed program using a higher level language for
+communication.  All levels will, of course, exhibit program structure
+syntactically so that our eyes can grasp it.
+#+END_QUOTE
+
+While enticing, one part is over enthusiastic.  We do have piles of languages
+now, but we have certainly lost control over the code executed by the machine in
+the process.  Even C code directives for inlining or register allocations are
+routinely discarded because “the compiler knows best”.
+
+But maybe Knuth has realized that himself.  The language of the future was
+slated for 1984.  This is the year Knuth published the literate programming
+system.  And it seems literate programming is the solution he prefers, to
+organize parts of the program in the order he wants to expose them, rather than
+adhering to a strict top-down or bottom-up approach.  In particular, he can
+still touch the low-level stuff, but put them in a dedicated section.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
