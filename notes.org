@@ -29,10 +29,11 @@ CLOSED: [2015-10-29 jeu. 15:17]
 
 * Log
 ** [2015-10-08 jeu.]
-Getting serious.  Organizing the Org file manuscript.  I initially wanted only
-one document mixing meta-concerns and content, but it seems less troublesome to
-just have one Org file for the exported manuscript.  I’m sure that taming the
-Org export for /one/ file only will have its fair share of challenges.
+*** Getting serious
+Organizing the Org file manuscript.  I initially wanted only one document mixing
+meta-concerns and content, but it seems less troublesome to just have one Org
+file for the exported manuscript.  I’m sure that taming the Org export for /one/
+file only will have its fair share of challenges.
 
 Using the classic-thesis.sty file is not sufficient.  It seems all kind of
 broken with the book document class.  It seems the preferred way would be to use
@@ -43,6 +44,7 @@ Looking into how to split the Org file in several LaTeX files during export.
 This is difficult, because Org 8.3 errs when a subtree links to other sections.
 
 ** [2015-10-12 lun.]
+*** Deciding on the pipeline to produce the PDF
 I just want a simple pipeline: write only the Org document.  Worry about the
 final details of the presentation /later/.  But, I still need to export to get
 an idea of how it fits in terms of length, and to send drafts to my advisors.
@@ -90,8 +92,10 @@ with Latexmk.  This saves me from regenerating the whole document when I want to
 change the LaTeX (around 6 seconds right now mostly due to Babel I guess).
 
 ** [2015-10-13 mar.]
-Setting the bibliography properly.  Use a style that works for now.
+*** Setting the bibliography properly
+Use a style that works for now.
 
+*** Setting up the structure for processing the PDF
 Trying to specify “a4paper” option outside of the documentclass macro, to put
 all changes in =preamble.tex=.  Actually, I can omit documentclass in
 ~org-latex-classes~ and put it in =preamble.tex= directly.  That saves me from
@@ -121,19 +125,21 @@ Two downsides to the approach:
 
 Allowing Babel to run in batch fixed the issue with non-loading images.
 
+*** Trying out classicthesis
 Trying out the ‘classicthesis’ package; it’s all kind of broken.  Going to stay
 with the default book class for now, then maybe later look into KOMAScript or
 memoir for further customization.
 
 ** [2015-10-16 ven.]
-Organizing background section.  Since the section is intended to be a map of
-manipulating programs, present the pipeline from source to side effects in the
-computer.
+*** Organizing the background section
+Since the section is intended to be a map of manipulating programs, present the
+pipeline from source to side effects in the computer.
 
 ** [2015-10-19 lun.]
 Starting from the start.  What is a program?
 
 ** [2015-10-20 mar.]
+*** Solo dialogue about scope of introduction
 - Why do you talk about programs?  I thought this was about extending interpreters.
 
 - An interpreter is a program like any other.  To extend an interpreter, we can use
@@ -154,8 +160,7 @@ Starting from the start.  What is a program?
 
 - Such work can be dismissed on the grounds you highlight.
 
------
-
+*** Solo dialogue, again
 - So, where are you going with this explanation of what a program is?
 
 - I want to show how a program is executed.  Because we want to modify programs,
@@ -170,6 +175,7 @@ Starting from the start.  What is a program?
   classes ...).
 
 ** [2015-10-22 jeu.]
+*** Using listings for exporting Org source blocks
 Captions on source blocks are broken.  The source block is inserted in a
 verbatim environment, and the caption with a ~captionof~ command.
 
@@ -183,16 +189,15 @@ so I have to define these languages for listings in the preamble as well.
 And source blocks can contain references to line numbers through Org, cleanly
 (see [[info:org#Literal%20examples][info:org#Literal examples]]).
 
------
-
+*** Neologism
 Oh yes, ‘[[https://fr.wiktionary.org/wiki/exot%25C3%25A9rique][exotérique]]’ is a word.  Not that I would not use it if there was no
 agreed-upon definition.
 
------
-
-Trying out side footnotes.  They might need a bit more space.
+*** Trying out side footnotes
+They might need a bit more space.
 
 ** [2015-10-23 ven.]
+*** Footnotes in the margin, figuring out the style
 Margin footnotes using =footmisc= have two issues:
 1. Ragged side does not follow side of margin (always ragged right).
 2. There’s an indentation at the start of the footnote.
@@ -208,6 +213,7 @@ Or URLs as citations, which make more sense.  All in the bibliography, and avoid
 the need for footnotes.
 
 ** [2015-10-26 lun.]
+*** Footnotes in the margin
 Let’s try to put everything in the margin, and then URLs as cites.
 
 - Notes ragged left or right might look better.
@@ -217,8 +223,7 @@ Ok, done.  Had to write my own LaTeX command and use counters.  As I’m using
 ~marginpar~, there may be an issue down the road if the number of margin notes
 exceeds 256.  The package =etex= apparently solves that issue.
 
------
-
+*** URLs as citations
 Since the document must be printed, external URLs are not very useful when
 presented only as hyperlinks.  Rather, I treat them like other citations, which
 gives a unified presentation.
@@ -227,8 +232,7 @@ The author-year citation style needs an author and a year, information that
 might not make sense for a website.  I could switch citation styles, but in the
 meantime I can use the ~label~ field to provide a referencing key.
 
------
-
+*** Captions in the margin
 Now I’d like to have captions of figures and listings to appear in the margin as
 well.  This allow for easy parsing, and I don’t like that caption break the flow
 of paragraphs.
@@ -247,12 +251,14 @@ workaround]] is to wrap a ~lstlistings~ into a ~figure~ and not skip the caption
 handling of =listings=.
 
 ** [2015-10-27 mar.]
+*** Listing environment caption margins
 Ok, listings, captions, margin.
 
 Got the caption in the margin.  Now I need to tell the Org LaTeX exporter to
 spew out a ~figure~ environment around the listing.
 
 ** [2015-10-28 mer.]
+*** Got listing environment caption margins to work
 Advising ~org-latex-src-block~ did the job.
 
 For now I just add the LaTeX commands I need in this function.  A neater
@@ -260,12 +266,12 @@ solution would be to create a new environment that takes care of wrapping the
 listing in a figure, and setting the ~figurename~.  That will do for now.
 
 ** [2015-10-29 jeu.]
+*** Fix figures without a caption
 Empty captions caused tufte-latex to put the figure in full width.  This was
 caused by the minipage for side captions having nothing in it.  I just put a
 non-breaking space to fill the page as a workaround.
 
------
-
+*** Solo dialogue for rethinking the background introduction
 — Where are you going with the compiler explanation?
 
 — That’s how you get a program to the machine.
@@ -299,6 +305,7 @@ where he went headfirst to solve a problem when, for me, the whole premise of
 finding a “best” set of keywords was dubious.  I think I expect a researcher to
 argue the merit of the problem before exposing a solution.
 
+*** A brief history of my PhD
 In my case, the task set by Jacques was “Find a better way to instrument
 Narcissus than ad-hoc copy-pasting”.  That fit into the larger problem, that was
 a motivation for pursuing a PhD in programming languages: how to reduce
