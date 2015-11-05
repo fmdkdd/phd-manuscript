@@ -549,6 +549,129 @@ organize parts of the program in the order he wants to expose them, rather than
 adhering to a strict top-down or bottom-up approach.  In particular, he can
 still touch the low-level stuff, but put them in a dedicated section.
 
+*** The thesis I wanted to write
+It is evident that finding better ways to organize programs has motivated
+programmers for a long time.  AOP, in this larger history, may look like a
+passing fad.
+
+AOP has two parts: the motivation, and the mechanism.  They realized that some
+programming concerns were orthogonal to the main purpose of the system.  Thus,
+they argued this orthogonality should be reflected in the structure of the code.
+The mechanism is essentially a powerful COMEFROM statement.
+
+Programs have two roles: to be executed by the machine and to be read by other
+humans.  Program for the machine, we write assembly code with an optimal use of
+registers and without redundant instructions.  Programming for the humans
+however, we make our code match the problem domain by using the right level of
+abstraction.
+
+These two roles are at odds with each other.  Higher level of abstraction have
+meant lower control on the exact produced code.  And focus on machine code means
+using very basic constructs (jumps) that humans have difficulties making sense
+of.
+
+I’ve come to realize the thesis I wanted to write was about how to organize
+programs.  I’ve reviewed AOP, type systems, model driven engineering... in the
+hope of finding the true path to well-crafted programs.  I did not find that
+path, and was enlightened.
+
+** [2015-11-05 jeu.]
+*** Drafting the introduction
+But not finding the path is not a very interesting story to tell.  There are
+ways to organize programs in order to separate concerns.
+
+- Introduction
+  - Programs are for machine to execute, but also for humans to read.
+  - Machines only need bits.  We optimize for program size and program
+    efficiency.  Programs should have just the minimal number of instructions
+    required to carry their job, and make the most use of system resources
+    (registers, cache, IO, ...).
+  - Humans need words, structures, and value readability and extensibility.  The
+    program should be decoupled into small, re-usable components that can be put
+    back together.  Because correctness is important, and creating correct
+    programs is hard, it is common sense to reuse correct that is proven to
+    work.  Code is correct only with respect to a set of assumptions, implicit
+    or explicit.  If a code assumes less, it can be used in more situations.
+    Therefore, small components are preferred to build software.
+
+  - Program, procedure, function (conceptual operation) distinction [[cite:SS-78][SS-78]].
+
+    A program has a function, a utility.  It makes something happen.  This is
+    what the user of the program cares about, and the job of the programmer is
+    to instruct the machine to make things happen for the user.  From a user
+    point of view, correctness, reliability and efficiency matter most.  The
+    software should make things happen without surprises, not crash, and react
+    to user input.
+
+    Software is an incarnation of a conceptual system.  A text editor acts on
+    text.  A browser displays web pages and executes scripts.  A paint
+    application fills a canvas with brushes.  These are conceptual operations.
+    Not working on a machine.  But act on an abstract model of the software.  A
+    text editor provides operations to manipulate a list of characters.  A paint
+    application manipulates a 2D array of pixels.  Conceptual operations can get
+    away with infinite resources, and not worry about the ‘how’, but focus on
+    the ‘what’.
+
+    A program is just a text string.  A collection of text files that must be
+    processed by an interpreter or compiler.  From the program, the instruction
+    carried out by the computer are generated.  But the program is not the
+    procedure.  Trivially, using a different compiler would yield a different
+    procedure.  Or compiling for a different machine.  The point is, the
+    programming language usually abstracts the machine hardware, because we want
+    to write code that matches the conceptual operations more closely than it
+    matches the machine code.  If the code matches the conceptual operations, it
+    becomes easier to check that it does indeed make the right things
+    happen—that it’s a correct translation of the conceptual operation into
+    computation.
+
+    The procedure is what is really executed by the machine.  Usually, the
+    programmer has only an indirect control over the procedure.  That’s what
+    makes debugging fun.  You are trying to understand why the machine blurted
+    out an error, and errors are usually reported at one level of abstraction
+    below the one you express your program.  You get segfault without dealing
+    with segments.  You get syntax errors about a missing token, but deal with
+    functions and classes.  But the procedure is the ultimate truth.  The
+    conceptual operations, the program, none of them are executable directly.
+    Only the procedure is.  A common analogy of a program is cooking recipe.
+    You can’t taste recipes.  Even if the recipe is well-written and easy to
+    follow, the end meal might be atrocious.
+
+    So a program is really part of all that.  And a programmer must take all
+    those aspects into account.
+
+    Even if we are mainly concerned with simplifying the programmer’s job, it
+    must be with respect to all the other aspects of programming.
+
+*** Retaining performance control with language abstractions
+Could not quite put the finger on why abstraction could not be reconciled with
+precise control over performance while reading [[cite:Knu-74][Knu-74]] yesterday.  Take numbers.
+In C, we declare what type of number we want, depending on their expected use.
+ints, floats, shorts.  Operations on those numbers always have a clear and
+simple translation to assembly.  The compiler can even do some assembly tricks
+for you, like turning a multiplication by 2 into a left shift.  This is no
+abstraction at all, and you have a fine control over performance (even the
+ability to revert to assembly).
+
+In Haskell, we want to deal with numbers that behave like those from
+mathematics.  By default, all numbers are infinitely large integers (provided
+memory is sufficient).  With this abstraction, no need to worry about int size.
+But no way to tell the compiler either that we only need 4 bits for a number,
+and that we can directly use ADD to sum them without worrying about overflow.
+To regain control over performance, you can use Int types, but that requires
+foregoing the abstraction.
+
+In JavaScript, all numbers are floats.  No integers.  And no way to tell the
+compiler it can safely use an int.  So all operations must be use the slower
+floating point module.
+
+Using an abstraction, you avoid specifying the details that were abstracted
+away.  But you cannot, at the same time, have fine control over those details.
+
+Maybe, however, this is not a fatality.  In Common Lisp, annotations are
+sufficient to help the compiler with optimizations.  I guess, if the annotations
+are not good enough for your purpose (and that’s always the case for someone),
+you would want the compiler to be extensible enough that you can add your own.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
