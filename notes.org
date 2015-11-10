@@ -139,7 +139,7 @@ pipeline from source to side effects in the computer.
 Starting from the start.  What is a program?
 
 ** [2015-10-20 mar.]
-*** Solo dialogue about scope of introduction
+*** Monologue about scope of introduction
 - Why do you talk about programs?  I thought this was about extending interpreters.
 
 - An interpreter is a program like any other.  To extend an interpreter, we can use
@@ -160,7 +160,7 @@ Starting from the start.  What is a program?
 
 - Such work can be dismissed on the grounds you highlight.
 
-*** Solo dialogue, again
+*** Monologue, again
 - So, where are you going with this explanation of what a program is?
 
 - I want to show how a program is executed.  Because we want to modify programs,
@@ -271,7 +271,7 @@ Empty captions caused tufte-latex to put the figure in full width.  This was
 caused by the minipage for side captions having nothing in it.  I just put a
 non-breaking space to fill the page as a workaround.
 
-*** Solo dialogue for rethinking the background introduction
+*** Monologue for rethinking the background introduction
 — Where are you going with the compiler explanation?
 
 — That’s how you get a program to the machine.
@@ -671,6 +671,119 @@ Maybe, however, this is not a fatality.  In Common Lisp, annotations are
 sufficient to help the compiler with optimizations.  I guess, if the annotations
 are not good enough for your purpose (and that’s always the case for someone),
 you would want the compiler to be extensible enough that you can add your own.
+
+** [2015-11-09 lun.]
+All this reflection indicates is that a synthetic manuscript would be much
+easier to write, and to follow.
+
+Sketching a new, synthetic, outline.
+
+** [2015-11-09 lun.]
+Synthetic outline.
+
+*** Introduction
+**** Problème: étendre un interprèteur par de multiple analyses
+- Contexte de sécurité web.
+- Scripts de pages web passent par un interpréteur.
+- Sécuriser un script = analyser ses fonctionnalités
+  - runtime monitoring
+  - access control
+  - logging
+- Une analyse dynamique = une modification de l’interpréteur
+- Modification du code source en conflit avec la séparation des préoccupations
+  - perte d’extensibilité, perte de lisibilité, difficulté de maintenance...
+- Ajouter une analyse devrait être simple
+  - sans requérir des modifications invasives de l’interpréteur
+  - maximiser la flexibilité, minimiser le coût d’adoption
+- Ajouter une analyse ne doit pas impacter la lisibilité du code de l’interpréteur
+  - séparation des préoccupations
+- Analyses peuvent se composer sans effort particulier (lorsqu’elles
+  n’interfèrent pas entre elles)
+
+**** But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations
+- Trouver des mécanismes, des constructions (patterns) pour étendre des interpréteurs
+- Améliorer la situation
+
+**** Portée: interpréteurs en JavaScript
+- Mécanismes et patterns génériques, pas nécessairement liés à un langage
+  particulier.
+- Software engineering
+- Point de vue du programmeur
+  - Travail sur le code source, l’éditeur de programmes, les outils du programmeur
+
+**** Survol
+
+** [2015-11-10 mar.]
+Introduction is focused.  Now on to the background.
+
+*** Background
+**** État de l’art
+- Un interpréteur = un programme
+- Techniques pour modifier un programme -> techniques pour modifier un interpréteur
+- Comment modifier un programme?
+- Modifier le code source
+  - Mais aussi modifier son interpréteur
+  - Ou son code binaire
+- S’insérer n’importe où dans le pipeline
+  - différentes représentations du même programme
+  - compromis pour la modification
+
+De là où je suis parti, vers les confins du raisonnable.
+
+- OO
+  - Smalltalk
+  - Self
+- Expression problem
+- Visitor, extensible visitor
+- Building from modules
+- Building with monads (FP trail)
+- Customization (core + extensions)
+  - Emacs
+  - Plugins (browser/Eclipse)
+  - Lua
+- Open implementation
+  - double interface: client et implémenteur
+- Reflection
+  - proxies
+  - meta object protocol
+- Dynamic binding
+- AOP
+  - AspectJ
+  - CaesarJ
+- HyperJ
+- COP
+- FOP (software product lines)
+- Bytecode instrumentation
+- Static transformation
+  - preprocessor
+  - semantic patches
+
+**** Contributions
+***** Étude de cas: extension ad-hoc de Narcissus
+***** Variations (lamfa)
+***** Construire un interpréteur par modules (LASSY)
+***** Modifier un interpréteur par dynamic scoping (DLS/SAC)
+***** Étendre Narcissus par dynamic scoping (DLS)
+
+**** Synthèse
+***** Séparation des préoccupations: pourquoi?
+- Séparation difficile à obtenir
+- Difficile de définir les frontières
+  - une préoccupation est rarement isolée du reste du programme
+- Cause d’autres problèmes
+  - appels implicites, perte de compréhension du flot de contrôle
+- Pointcut ~ dynamic scoping ~ COMEFROM
+  - mécanismes puissants mais peu connus
+  - usage difficile à justifier hors cas vraiment spécifiques
+- Mauvais sens des priorités
+  - Un programme doit d’abord être correct.
+  - Puis il doit être maintenable -> bonne documentation des choix de structure
+  - Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?
+
+*** What the hell did I just do?                                      :emacs:
+There is a ~last-command~ variable that holds the last command.  Useful for
+these moments I do something unexpectedly useful but have no idea what I typed.
+Also, ~command-history~.
 
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
