@@ -20,7 +20,6 @@
   (add-to-list 'org-latex-classes
                '("thesis"
                  "[NO-DEFAULT-PACKAGES]\n\\input{preamble}"
-                 ("\\part{%s}" . "\\part*{%s}")
                  ("\\chapter{%s}" . "\\chapter*{%s}")
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")

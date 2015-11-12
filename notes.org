@@ -785,6 +785,51 @@ There is a ~last-command~ variable that holds the last command.  Useful for
 these moments I do something unexpectedly useful but have no idea what I typed.
 Also, ~command-history~.
 
+** [2015-11-12 jeu.]
+*** The multiple dimensions of the background section
+The *chronological* axis is evident, and somehow not particularly revealing.
+
+There is a trend for higher-level languages, but it seems to have stagnated.
+Though I don’t know how one would /measure/ the ‘higher-levelness’ in order to
+produce this curve.  Taking popularity numbers is easier now with Github, but
+getting numbers from past decades might be harder.
+
+A timeline of all the cited works might be interesting to look at.  Not only the
+dates, but the genealogy between works also, to understand trends.
+
+There is a dimension of the nature of *tools*.  Languages, methodologies,
+patterns, mechanisms.  All are tools in the programmer’s toolbox, but they
+are not interchangeable.  Mechanisms may be independent of languages, languages
+can depend of the problem domain...
+
+In paradigms like OO and FP, works present how to *build* extensible programs
+(or interpreters).  Reflection and AOP allow one to *extend* existing programs,
+mostly regardless of how they are constructed.  These are different approaches,
+as in FP the latter is somehow difficult.  But the distinction can be fuzzy, as
+AspectJ could be argued to fall into both ends (building with aspects, and
+extending with pointcuts).
+
+We could place all these works on the map of the *pipeline* from source code to
+machine code.  This provides an applicability chart: if I want to modify source
+code, a bytecode transformer is not the right tool.
+
+Ideally, the background section should highlight a blank space, an uncharted
+territory in some ways, which would motivate the contributions.  In my case it
+was rather the contrary: there was a wealth of solutions, but no consensus.  The
+territory is well-trodden, but no-one seem to agree.  How to extend interpreter?
+
+In the end, like always, all of those dimensions are relevant.
+
+*** Is modularity relevant?
+I want to extend programs.  One of the virtue of a modular program is that it
+should be easier to extend.  So, a “modular” interpreter would be extensible.
+However, an extensible interpreter is not necessarily modular, because the
+extension mechanism may introduce coupling (like dynamic scoping).
+
+But I want to refrain from dealing with modularity, as it is an “eel”
+concept—ill-defined and too slimy to capture.
+
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

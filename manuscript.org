@@ -13,114 +13,119 @@
 * Contents                                                   :TOC@4:noexport:
  - [[#acknowledgements][Acknowledgements]]
  - [[#introduction][Introduction]]
- - [[#background][Background]]
+   - [[#problème-étendre-un-interprèteur-par-de-multiple-analyses][Problème: étendre un interprèteur par de multiple analyses]]
+   - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
+   - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
+   - [[#survol][Survol]]
+ - [[#État-de-l’art][État de l’art]]
    - [[#de-l’exécution-du-programme-au-code-source][De l’exécution du programme au code source]]
-   - [[#setting][Setting]]
-     - [[#what-is-a-program][What is a program?]]
-     - [[#what-is-a-programming-language][What is a programming language?]]
-     - [[#what-is-program-modularity][What is program modularity?]]
-     - [[#what-is-an-interpreter][What is an interpreter?]]
-     - [[#what-does-it-mean-to-instrument-an-interpreter][What does it mean to instrument an interpreter?]]
-     - [[#why-should-this-instrumentation-be-modular][Why should this instrumentation be modular?]]
-     - [[#why-should-we-care-about-separation-of-concerns][Why should we care about separation of concerns?]]
-     - [[#what-is-javascript][What is JavaScript?]]
-     - [[#what-is-an-information-flow-analysis][What is an information flow analysis?]]
-   - [[#modularity-background][Modularity background]]
-     - [[#structured-programming][Structured programming]]
-     - [[#literate-programming][Literate programming]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#object-oriented-programming][Object-oriented programming]]
-     - [[#functional-programming][Functional programming]]
-     - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
-     - [[#context-oriented-programming][Context-Oriented Programming]]
-     - [[#feature-oriented-programming][Feature-Oriented Programming]]
-     - [[#flow-based-programming][Flow-based programming]]
-     - [[#model-driven-development][Model-driven development]]
-     - [[#domain-specific-languages][Domain-specific languages]]
-   - [[#modularity-of-interpreters][Modularity of interpreters]]
-     - [[#expression-problem][Expression problem]]
-     - [[#building-from-modules][Building from modules]]
-     - [[#building-with-monads][Building with monads]]
-     - [[#strategospoofax][Stratego/Spoofax]]
-     - [[#partial-evaluation][Partial evaluation]]
-   - [[#instrumentation-of-interpreters][Instrumentation of interpreters]]
-     - [[#bytecode-instrumentation][Bytecode instrumentation]]
-     - [[#using-aspects][Using aspects]]
-   - [[#extensibility][Extensibility]]
-     - [[#open-implementation][Open Implementation]]
-       - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
-     - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
-       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#emacs][Emacs]]
-        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#dynamic-binding][Dynamic binding]]
-     - [[#smalltalk][Smalltalk]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#self][Self]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#prototype-based-programming][Prototype-based programming]]
-     - [[#eclipse-and-other-ides][Eclipse and other IDEs]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#web-browsers][Web browsers]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#lua][Lua]]
-        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#scripting-languages][Scripting languages]]
-     - [[#reflection][Reflection]]
-     - [[#software-product-lines][Software product lines]]
-       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#caesar][Caesar]]
-     - [[#hyperj][Hyper/J]]
-       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#others][Others?]]
-       - [[#software-evolution-through-runtime-method-transformation][Software evolution through runtime method transformation]]
-       - [[#direct-manipulation][Direct manipulation]]
-       - [[#delta-oriented-programming][Delta-oriented programming]]
-       - [[#information-transparency][Information transparency]]
-       - [[#jastadd-extensible-java-compiler][JastAdd: extensible Java compiler]]
-   - [[#code-transformation][Code transformation]]
-     - [[#semantic-patches][Semantic patches]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
- - [[#core][Core]]
-   - [[#building-from-scratch-vs-extending-existing-interpreters][Building from scratch vs. extending existing interpreters]]
-     - [[#the-problem][The problem]]
-       - [[#case-study-narcissus-instrumentation-for-faceted-evaluation][Case study: Narcissus instrumentation for faceted evaluation]]
-       - [[#finding-a-core-example][Finding a core example]]
-       - [[#the-expression-problem][The expression problem]]
-       - [[#the-expression-problem-with-a-twist][The expression problem, with a twist]]
-       - [[#the-modular-instrumentation-problem][The modular instrumentation problem]]
-     - [[#variations][Variations]]
-       - [[#javascript][JavaScript]]
-     - [[#lisp][Lisp]]
-     - [[#haskell][Haskell]]
-       - [[#building-scaffolding-with-language-features][Building scaffolding with language features]]
-       - [[#extending-the-syntax][Extending the syntax]]
-     - [[#modular-monadic-interpreters][Modular monadic interpreters]]
-       - [[#the-giants][The giants]]
-       - [[#the-bigger-picture][The bigger picture]]
-   - [[#instrumenting-the-program-vs-instrumenting-the-interpreter][Instrumenting the program vs. instrumenting the interpreter]]
-   - [[#dynamic-scoping-to-build-interpreters][Dynamic scoping to build interpreters]]
-     - [[#the-base-datatype][The base datatype]]
-     - [[#adding-a-data-variant][Adding a data variant]]
-     - [[#adding-an-operation][Adding an operation]]
-     - [[#adding-an-operation-as-a-module][Adding an operation as a module]]
-       - [[#a-use-case-for-with][A use-case for =with=]]
-       - [[#selective-imports-with-an-iife][Selective imports with an IIFE]]
-     - [[#modifying-an-operation][Modifying an operation]]
-       - [[#non-destructive-modification][Non-destructive modification]]
-     - [[#passing-state][Passing state]]
-     - [[#all-in-one][All in one]]
-   - [[#dynamic-scoping-to-modify-narcissus][Dynamic scoping to modify Narcissus]]
-     - [[#the-idea-manipulating-scopes][The idea: manipulating scopes]]
-     - [[#how-to-manipulate-scopes-in-javascript][How to manipulate scopes in JavaScript]]
-     - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
-     - [[#discussion][Discussion]]
-       - [[#insights][Insights]]
-       - [[#broad-applications][Broad applications]]
-       - [[#other-js-interpreters][Other JS interpreters]]
-       - [[#related-work][Related work]]
-       - [[#objections-and-downsides][Objections and downsides]]
- - [[#synthesis][Synthesis]]
+   - [[#smalltalk][Smalltalk]]
+     - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#self][Self]]
+     - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#prototype-based-programming][Prototype-based programming]]
+   - [[#building-from-modules][Building from modules]]
+   - [[#building-with-monads][Building with monads]]
+   - [[#le-problème-d’expression][Le problème d’expression]]
+   - [[#notion-of-modularity][Notion of modularity]]
+   - [[#parnas’-modularity][Parnas’ modularity]]
+   - [[#structured-programming][Structured programming]]
+   - [[#literate-programming][Literate programming]]
+     - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
+   - [[#context-oriented-programming][Context-Oriented Programming]]
+   - [[#feature-oriented-programming][Feature-Oriented Programming]]
+   - [[#model-driven-development][Model-driven development]]
+   - [[#domain-specific-languages][Domain-specific languages]]
+   - [[#bytecode-instrumentation][Bytecode instrumentation]]
+   - [[#open-implementation][Open Implementation]]
+     - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
+   - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
+     - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+   - [[#emacs][Emacs]]
+      - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#dynamic-binding][Dynamic binding]]
+   - [[#eclipse-and-other-ides][Eclipse and other IDEs]]
+     - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#web-browsers][Web browsers]]
+     - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#lua][Lua]]
+      - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#scripting-languages][Scripting languages]]
+   - [[#reflection][Reflection]]
+   - [[#software-product-lines][Software product lines]]
+     - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+   - [[#caesar][Caesar]]
+   - [[#hyperj][Hyper/J]]
+     - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+   - [[#information-transparency][Information transparency]]
+   - [[#semantic-patches][Semantic patches]]
+     - [[#mechanisms-for-extension][Mechanisms for extension]]
+ - [[#Étude-de-cas-extension-ad-hoc-de-narcissus][Étude de cas: extension ad-hoc de Narcissus]]
+ - [[#building-from-scratch-vs-extending-existing-interpreters][Building from scratch vs. extending existing interpreters]]
+   - [[#the-problem][The problem]]
+     - [[#case-study-narcissus-instrumentation-for-faceted-evaluation][Case study: Narcissus instrumentation for faceted evaluation]]
+     - [[#finding-a-core-example][Finding a core example]]
+     - [[#the-expression-problem][The expression problem]]
+     - [[#the-expression-problem-with-a-twist][The expression problem, with a twist]]
+     - [[#the-modular-instrumentation-problem][The modular instrumentation problem]]
+   - [[#variations][Variations]]
+     - [[#javascript][JavaScript]]
+       - [[#split-oo-style-instrumented-interpreter-into-modules][Split OO-style instrumented interpreter into modules]]
+       - [[#split-pattern-matching-instrumented-interpreter-into-modules][Split pattern-matching instrumented interpreter into modules]]
+       - [[#summary-of-javascript-variations][Summary of JavaScript variations]]
+   - [[#lisp][Lisp]]
+   - [[#haskell][Haskell]]
+     - [[#building-scaffolding-with-language-features][Building scaffolding with language features]]
+       - [[#monadic-interpreters][Monadic interpreters]]
+       - [[#either-data-type][Either data type]]
+       - [[#type-classes][Type classes]]
+       - [[#data-types-à-la-carte][Data types à la carte]]
+       - [[#implicit-arguments][Implicit arguments]]
+       - [[#facets-as-a-monad][Facets as a monad]]
+     - [[#extending-the-syntax][Extending the syntax]]
+   - [[#modular-monadic-interpreters][Modular monadic interpreters]]
+     - [[#the-giants][The giants]]
+       - [[#data-types--à-la-carte-2015][Data types  à la carte (2015)]]
+       - [[#wadler-—-the-essence-of-functional-programming][Wadler — The essence of functional programming]]
+     - [[#the-bigger-picture][The bigger picture]]
+ - [[#dynamic-scoping-to-build-interpreters][Dynamic scoping to build interpreters]]
+   - [[#the-base-datatype][The base datatype]]
+   - [[#adding-a-data-variant][Adding a data variant]]
+   - [[#adding-an-operation][Adding an operation]]
+   - [[#adding-an-operation-as-a-module][Adding an operation as a module]]
+     - [[#a-use-case-for-with][A use-case for =with=]]
+     - [[#selective-imports-with-an-iife][Selective imports with an IIFE]]
+   - [[#modifying-an-operation][Modifying an operation]]
+     - [[#non-destructive-modification][Non-destructive modification]]
+   - [[#passing-state][Passing state]]
+   - [[#all-in-one][All in one]]
+ - [[#dynamic-scoping-to-modify-narcissus][Dynamic scoping to modify Narcissus]]
+   - [[#the-idea-manipulating-scopes][The idea: manipulating scopes]]
+   - [[#how-to-manipulate-scopes-in-javascript][How to manipulate scopes in JavaScript]]
+   - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
+   - [[#discussion][Discussion]]
+     - [[#insights][Insights]]
+     - [[#broad-applications][Broad applications]]
+     - [[#other-js-interpreters][Other JS interpreters]]
+     - [[#related-work][Related work]]
+       - [[#open-modules][Open modules]]
+       - [[#isn’t-a-visitor-pattern-enough][Isn’t a visitor pattern enough?]]
+       - [[#object-oriented-interpreter][Object-oriented interpreter]]
+       - [[#aop][...AOP?]]
+       - [[#scoping-strategies][Scoping strategies]]
+     - [[#objections-and-downsides][Objections and downsides]]
+       - [[#with-is-deprecated][=with= is deprecated]]
+       - [[#open-scope-defeats-the-purpose-of-the-module-pattern][Open scope defeats the purpose of the module pattern]]
+       - [[#it’s-not-modular-if-there-is-no-interface-for-instrumentation][It’s not modular if there is no interface for instrumentation]]
+       - [[#it’s-still-ad-hoc][It’s still ad-hoc]]
+       - [[#application-of-open-scope-if-not-module-pattern][Application of open scope if not module pattern?]]
+       - [[#open-scope-only-captures-top-level-declaration-of-module][Open scope only captures top-level declaration of module]]
+       - [[#aliasing-inside-the-module-can-be-problematic][Aliasing inside the module can be problematic]]
+       - [[#what-about-interferences-between-instrumentations][What about interferences between instrumentations?]]
+       - [[#performance-costs][Performance costs]]
+ - [[#synthèse][Synthèse]]
+   - [[#séparation-des-préoccupations-pourquoi][Séparation des préoccupations: pourquoi?]]
 
 * Acknowledgements                                                 :noexport:
 :PROPERTIES:
@@ -133,46 +138,38 @@ Bret Victor for the realization of the dissonance between textual programming
 languages and the dynamic processes they describe.  Also, for inspiration.
 
 * Introduction
-I introduce the themes of the thesis, its setting and its goals.
+** Problème: étendre un interprèteur par de multiple analyses
+- Contexte de sécurité web.
+- Scripts de pages web passent par un interpréteur.
+- Sécuriser un script = analyser ses fonctionnalités
+  - runtime monitoring
+  - access control
+  - logging
+- Une analyse dynamique = une modification de l’interpréteur
+- Modification du code source en conflit avec la séparation des préoccupations
+  - perte d’extensibilité, perte de lisibilité, difficulté de maintenance...
+- Ajouter une analyse devrait être simple
+  - sans requérir des modifications invasives de l’interpréteur
+  - maximiser la flexibilité, minimiser le coût d’adoption
+- Ajouter une analyse ne doit pas impacter la lisibilité du code de l’interpréteur
+  - séparation des préoccupations
+- Analyses peuvent se composer sans effort particulier (lorsqu’elles
+  n’interfèrent pas entre elles)
 
-The themes:
-- modularity of programs
-- modularity is clarity
-- separation of concerns
-- incremental programming
-- code as data is the epitome of modularity
+** But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations
+- Trouver des mécanismes, des constructions (patterns) pour étendre des interpréteurs
+- Améliorer la situation
 
-The setting:
-- JavaScript security
-- instrumentation of interpreters
-- information flow analyses
-- Narcissus
+** Portée: interpréteurs en JavaScript
+- Mécanismes et patterns génériques, pas nécessairement liés à un langage
+  particulier.
+- Software engineering
+- Point de vue du programmeur
+  - Travail sur le code source, l’éditeur de programmes, les outils du programmeur
 
-The goals:
-- understand what makes a program modular
-- understand the benefits and downsides of modularity (in particular, with
-  respect to security)
-- understand how we can build modular interpreters for the purpose of
-  instrumentation
-- give a fresh perspective on languages from different communities: JavaScript,
-  Haskell, Lisp, Scala.  Different programming disciplines to solve the same
-  problem.
+** Survol
 
-I also describe what the thesis does /not/ cover, in order to give reasonable
-expectations to the reader.
-
-* Background
-# We extend the themes and setting of the introduction to give the reader all the
-# background necessary to understand the choices made in the thesis.
-
-# We show how existing work relate to the problem of modular instrumentation.
-# Specifically we show that very few work have targeted this particular problem.
-# Though there are numerous works concerned with modularity in interpreters, most
-# prominently around the expression problem.
-
-# Conclusion should be: modular instrumentation is still a fresh, and legitimate
-# axis of research.
-
+* État de l’art
 ** De l’exécution du programme au code source
 Pour modifier l’exécution d’un programme, il est bon de savoir /comment/ le
 programme est exécuté par la machine.  Du point de vue de la machine, un
@@ -348,37 +345,225 @@ digraph {
 #+RESULTS:
 [[file:img/bg-map3.png]]
 
-** Setting
-The ELI5 section of the thesis.  I explain all of that and foreshadow the
-following subsections.  If I you don’t get what is all this stuff and why you
-should care, then you can put down the thesis now.
+** Smalltalk
+Design and Implementation [[cite:Ing-78][Ing-78]].
 
-*** What is a program?
-*** What is a programming language?
-*** What is program modularity?
-*** What is an interpreter?
-*** What does it mean to instrument an interpreter?
-*** Why should this instrumentation be modular?
-*** Why should we care about separation of concerns?
-*** What is JavaScript?
-*** What is an information flow analysis?
+Opens with a definition of modularity:
+#+BEGIN_QUOTE
+No part of a complex system should depend on the internal details of any other
+part.
 
-** Modularity background
-Modularity has been a concern for programmers for a long time.  Plenty of
-solutions abound.  I stick to modularity in programs from a programming
-languages point of view.  But you should know there are other ways to build
-programs than inputting source code, and there also modularity is a concern.
+[...]
 
-Should also cover:
-- scoping / dynamic scoping
-- information hiding
-- interfaces
-- modules
+Objects are created and manipulated by sending messages.  The communication
+metaphor supports the principle of modularity, since any attempt to examine or
+alter the state of an object is sent as a message to that object, and the sender
+need never know about internal representation.
 
-But when selecting papers, be sure to get all the relevant ones first (the ones
-that target instrumentation and interpreters are a priority), then take
-“representative” papers about other programming disciplines.
+[...]
 
+The class is the natural unit of modularity, as it describes all the external
+messages understood by its instances, as well as all the internal details about
+methods for computing responses to messages and representation of data in the
+instances.
+#+END_QUOTE
+
+Smalltalk is designed with modularity, as classes encapsulate object
+descriptions and methods, and can only interact through messages.
+
+An example of extending the system: adding new objects and a printer for them.
+Similar to the expression problem.
+
+#+BEGIN_QUOTE
+Adding a new class of data to a programming system is soon followed by the need
+to print objects of that class. In many extensible languages, this can be a
+difficult task at a time when things should be easy.  One is faced with having
+to edit the system print routine which (a) is difficult to understand because it
+is full of details about the rest of the system, (b) was written by someone else
+and may even be in another language, and (c) will blow the system to bits if you
+make one false move.  Fear of this often leads to writing a separate print
+routine with a different name which then must be remembered.
+
+In our object-oriented system, on the other hand, printing is always effected by
+sending the message =printon: s= (where s is a character stream) to the object
+in question.  Therefore the only place where code is needed is right in the new
+class description.  If the new code should fail, there is no problem; the
+existing system is unmodified, and can continue to provide support.
+#+END_QUOTE
+
+Changing a field inside =Rectangle= does not need to change code external to the
+object, and global recompilation is avoided.
+
+Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]]; a larger
+perspective is given in [[cite:Mul-15][Mul-15]].
+
+*** Mechanisms for extension
+Subclassing, and reflection.  Everything as an object, so message dispatch is
+just a method on the meta class, and can be altered.
+
+** Self
+The power of simplicity [[cite:US-91][US-91]].
+
+Pure object-oriented language.  No variables, but slots containing objects that
+return themselves.
+
+No classes.  No control structure.
+
+The absence of distinction may not be a good thing in practice:
+#+BEGIN_QUOTE
+The absence of class-instance distinction may make it too hard to understand
+which objects exist solely to provide shared information for other objects.
+Perhaps SELF programmers will create entirely new organizational structures.  In
+any case, SELF’s flexibility poses a challenge to the programming environment;
+it will have to include navigational and descriptive aids.
+
+[later, in the conclusion]
+
+Reducing the number of basic concepts in a language can make the language easier
+to explain, understand, and use.  However, there is a tension between making the
+language simpler and making the organization of a system manifest.  As the
+variety of constructs decreases, so does the variety of linguistic clues to a
+system’s structure.
+#+END_QUOTE
+
+They cite [[cite:UCC+91][UCC+91]] for pointers on structuring programs in SELF.
+
+Classes are abstract description of objects, but prototypes are always
+concrete.  Each object is an example, and can be easily cloned.  Class
+hierarchies are hard, and impose a structure; prototypes less so.
+
+Classes forces you to create a template, even when you deal with several objects
+with unique behavior.
+
+Activation records for methods inherit from the receiver object, so the receiver
+is on the chain for binding lookup.
+
+They note that they could build “class-like” objects that hold code to create
+new clones, and also hold the shared behavior, though they “do not believe this
+is the best way to construct a system”.
+
+In [[cite:UCC+91][UCC+91]], the following organization is described:
+- Traits object for methods (shared by all instances of an object).
+- A prototype object with a default implementation.
+- Instances are created from cloning the prototype.
+
+Abstract objects dispense of the prototype, and singleton objects contain
+methods and state without providing a copy method.
+
+They note that OO supports “differential programming”, which is to define new
+data types as differences from existing data types.  In Smalltalk, differential
+programming is achieved through subclassing.  In SELF, they call it “refining
+traits objects”, but the mechanism is delegation through the parent link.
+
+An oddity: they state that parent links are constant, though the introduce a
+=dataParent= setter in figure 3.  Later they say that parent slot are like other
+data slots, assignable.
+
+Prototypes allow for multiple behavior modes, through dynamic inheritance
+switching.  Behavior modes enhance the clarity of the code, though they do not
+comment on the potential performance costs.
+
+*** Mechanisms for extension
+Prototypes, and message passing.  Prototypes are more general and simpler than
+inheritance.
+
+However prototypes do not originate with SELF [[cite:Bor-86][Bor-86]] [[cite:Lie-86][Lie-86]].
+
+[[cite:Lie-86][Lie-86]] makes a good case for prototypes as being a simpler model to learn, as
+well as being more intuitive.  Humans derive general concepts from examples, not
+the other way around.  Class-based languages require you to commit to the
+concepts first.
+
+Prototype-based and class-based languages provide different mechanisms for
+realizing differential programming,
+
+Is differential programming sufficient to solve the problem of modular
+instrumentation?  In the case of Narcissus, it was not, since the interpreter
+was not OO.  But the open scope pattern might be equivalent, dynamically, to
+inheritance.
+
+** Prototype-based programming
+A collection of (at least) the following papers (or revisions of them):
+- [[cite:Tai-97][Tai-97]]
+- [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
+- [[cite:GBO+98][GBO+98]]
+- [[cite:Bor-86][Bor-86]]
+- [[cite:SU-95][SU-95]]
+- [[cite:Smi-95][Smi-95]]
+- [[cite:MMM+98][MMM+98]]
+- [[cite:Bla-91][Bla-91]] & [[cite:Bla-94][Bla-94]]
+- [[cite:Wol-96][Wol-96]]
+- [[cite:Moo-96][Moo-96]]
+- [[cite:Nob-01][Nob-01]]
+- [[cite:DeM-98][DeM-98]]
+
+[[cite:Tai-97][Tai-97]] is a philosophical take on the basis for class-based and prototype-based
+languages.  Ascribing to classes is following the school of Plato and Aristotle
+[[cite:Pla-98][Pla-98]] [[cite:Ari-35][Ari-35]].  Plato distinguished between /forms/, the ideal description of
+things, and /instances/ of these forms.  He regarded forms as being more real
+than instances.  Aristotle believed in “a single correct taxonomy of all natural
+things”, and classified things using the following rule:
+: essence = genus + differential
+which mirrors class creation in class-based languages.
+
+Classification has been criticized, notably by Wittgenstein [[cite:Wit-53][Wit-53]], as being
+subjective.  Some concepts are difficult to define by intension – through a list
+of common properties that all instances must share.  Rather, Wittgenstein
+proposes the notion of /family resemblance/.  Meaning is not determined by a
+definition, but by similarity to representative prototypes.
+
+This philosophical heritage has a few implications for programming:
+- there are no optimal class hierarchies
+- in a class hierarchy, the middle classes are often the best representatives.
+  Higher classes are too abstract; lower classes too specific.
+- prototypes may map better to the usual human process: iterate from examples.
+
+Designers of class-based or prototype-based languages are seldom aware of the
+philosophical issues of both models, but focus more on technical matters.  Kevo
+[[cite:Tai-93][Tai-93]] is a prototype-based language with a notion of family
+resemblance. [[cite:Tai-93b][Tai-93b]] offer similar insights on the notion of object.
+
+[[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
+d languages are advantageous for describing exceptional instances, multiple
+points of view of the same entity, and incomplete objects.
+
+They identify the following mechanisms common to prototype-based languages:
+- message passing
+- 3 ways of creating objects (ex nihilo, cloning, and extension)
+- delegation
+- dynamic dispatch
+
+Prototype-based languages also introduce new issues:
+- Fragmented entities.  Since objects are described differentially, no single
+  object in the system reify the complete entity.  To clone it completely, we
+  would need to clone all its parts, but they are not reified (e.g., traits
+  objects are only conventions, not language primitives).
+- Sharing between clones of the same object.
+- Sharing between clones of different objects.
+
+** Building from modules
+Findler & Flatt, Newspeak
+
+** Building with monads
+Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
+
+Free algebras, free monads.  Basically reify data in a way that is accepted by
+the type system of the underlying language to allow unanticipated extension.
+
+[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
+/object algebras/.  Object algebras are akin to a free algebra.  Instead of
+locking down the actual objects used as expressions too early, they leave them
+open using abstract factories.  Providing a factory when evaluating the
+expression gives you either integer evaluation, or pretty-printing.
+
+Their solution is applicable to Java with generics, without significant
+syntactic overhead (less than related work).  And, they leverage the type system
+to capture erroneous composition.
+
+** Le problème d’expression
+Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
+
+** Notion of modularity
 Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
 Classical logic is inflexible, incompatible with the realities of software.
 Especially, information hiding is not the silver bullet.  Approaches to software
@@ -386,6 +571,7 @@ development that seem to break information hiding, and even oppose modular
 reasoning, have their virtues.  Those can be thought of using nonclassical
 logics.
 
+** Parnas’ modularity
 Parnas is usually credited with the notion of modularity, as well as notions of
 /separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
 improving the methodology of programming through up-front planning and critical
@@ -405,7 +591,7 @@ There rules apply to software as least as much as they do to circuits or
 machines.
 #+END_QUOTE
 
-*** Structured programming
+** Structured programming
 Argues for a single entry point into procedures, and single exit point.  Not
 jumping directly in the middle, or exiting prematurely.
 
@@ -438,7 +624,7 @@ on writing programs that clearly reflect their dynamic process.  As Parnas noted
 processes, not by adding a “module” statement to the language.  The same
 situation arises here.
 
-*** Literate programming
+** Literate programming
 Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
 mode.
 
@@ -541,7 +727,7 @@ explain what they are doing.
 Noweb is a language-agnostic syntax and implementation of WEB, which is used in
 Org-mode.
 
-**** Mechanisms for extension
+*** Mechanisms for extension
 The idea of documenting as you program is important, as is the focus on writing
 “what the human meant to do”.
 
@@ -549,16 +735,7 @@ The mechanisms of including and referencing code snippets allows one to
 structure the program as they see fit.  Especially, it allows to separate
 concerns through quantification.
 
-*** Object-oriented programming
-Objects impose another structure.  Design patterns are recipes for building
-modular object-oriented programs.  Meta-object protocols let you manipulate
-message dispatching for a great flexibility.
-*** Functional programming
-Pure functions are easier to compose.  Referential transparency, local
-reasoning.
-
-Monads and side-effects as computation.
-*** Aspect-Oriented Programming
+** Aspect-Oriented Programming
 Manipulation of static and runtime code.  Joinpoints reifie extension points.
 Pointcuts give powerful quantification over joinpoints.  Aspects promote
 separation of concerns.
@@ -566,16 +743,16 @@ separation of concerns.
 Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
 both a blessing and a curse.  COMEFROM destroys local reasoning or referential
 transparency.
-*** Context-Oriented Programming
+
+** Context-Oriented Programming
 Expressive separation of concerns when behavior can change depending on the
 context in which the program is executed.  Composition of programs by layers.
-*** Feature-Oriented Programming
+
+** Feature-Oriented Programming
 Promise of high-level programming, where features are built standalone, and
 interaction between them are dealt with separately.
-*** Flow-based programming
-No side effects?  I don’t know if this is a discipline or just a toy.  But if it
-should help build modular programs, it fits.
-*** Model-driven development
+
+** Model-driven development
 You build meta-models that encompass all variations of the solution space.
 
 [[cite:HT-06][HT-06]] makes some good points about the promises and reality of MDD (in 2006).
@@ -583,7 +760,7 @@ The distinction between the three categories of sketchers, blueprinters and
 model programmers in the modeling community is relevant in order to not
 amalgamate different intentions.
 
-*** Domain-specific languages
+** Domain-specific languages
 Greater control for language designer.  Gives a constrained playground for
 programmers.
 
@@ -592,147 +769,12 @@ general-purposes languages.
 
 Monads can be seen as DSLs (but this is an insight better saved for later).
 
-** Modularity of interpreters
-How to build an interpreter from composing blocks.  And how this /not quite/
-instrumentation, because these approaches do not consider modification to
-language.
-
-*** Expression problem
-Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
-
-*** Building from modules
-Findler & Flatt, Newspeak
-
-*** Building with monads
-Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
-
-Free algebras, free monads.  Basically reify data in a way that is accepted by
-the type system of the underlying language to allow unanticipated extension.
-
-[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
-/object algebras/.  Object algebras are akin to a free algebra.  Instead of
-locking down the actual objects used as expressions too early, they leave them
-open using abstract factories.  Providing a factory when evaluating the
-expression gives you either integer evaluation, or pretty-printing.
-
-Their solution is applicable to Java with generics, without significant
-syntactic overhead (less than related work).  And, they leverage the type system
-to capture erroneous composition.
-
-*** Stratego/Spoofax
-Peter Moses.
-
-Gives you an interpreter and tool support (IDE, syntax highlighting) from just a
-grammar.  What about composing languages?  Spin-offs languages (instrumentation)?
-
-*** Partial evaluation
-Partial evaluation is the partial application of an interpreter to a program.
-If some input to the program is known before runtime, then one can specialize
-the program to this input.  The result is a semantically-equivalent program
-which accepts the rest of the (dynamic) input.
-
-Exactly like the partial application of a function:
-
-: interp(a, b, c, ...)(a,b) = interp’(c, ...)
-
-[[cite:Fut-99][Fut-99]] describes how to apply partial evaluation to a interpreter, and by
-successive application of partial evaluation, how to obtain a compiler
-generator (a point made clearer in [[cite:FNT-91][FNT-91]]).
-
-#+BEGIN_EXAMPLE
-interpret(program, input) = \alpha(interpret, program)(input)
-                          = \alpha(\alpha, interpret)(program)(input)
-                          = \alpha(\alpha, \alpha)(interpret)(program)(input)
-#+END_EXAMPLE
-
-If ‘interpret’ is an interpreter, then the partial evaluation (\alpha) of this
-interpreter for a known program yields a specialized interpreter \alpha(interpret,
-program).  Applying the partial evaluation again, we obtain \alpha(\alpha, interpret),
-a specialized compiler of the programs of the language targeted by ‘interpret’.
-Then, ‘currying’ along, we obtain \alpha(\alpha, \alpha), a compiler generator.
-
-This can be understood again by looking at the types:
-
-#+BEGIN_EXAMPLE
-interpret :: (Program, Input) -> Computation
-\alpha(interpret, program) :: Input -> Computation
-\alpha(\alpha, interpret) :: Program -> Input -> Computation
-\alpha(\alpha, \alpha) :: ((Program, Input) -> Computation) -> Program -> Input -> Computation
-#+END_EXAMPLE
-
-Each projection yields a more abstract function, up to the last one which can
-take an interpret as input.
-
-We can derive the type of \alpha by line 2:
-
-#+BEGIN_EXAMPLE
-\alpha(interpret, program) :: Input -> Computation
-\alpha :: (((Program, Input) -> Computation), Program) -> Input -> Computation
-#+END_EXAMPLE
-
-and by abstracting the types, we obtain the signature of the polymorphic \alpha:
-
-: \alpha :: (((a, b) -> c), a) -> b -> c
-
-Applying the projections to the polymorphic variant yields:
-
-#+BEGIN_EXAMPLE
-f       :: (a, b) -> c
-\alpha(f, a) :: b -> c
-\alpha(\alpha, f) :: a -> b -> c
-\alpha(\alpha, \alpha) :: ((a, b) -> c) -> a -> b -> c
-#+END_EXAMPLE
-
-The signature of the compiler-compiler is the same as that of the well-known
-currying function!  Seems there is an evident relation between partial
-evaluation and currying in functional programming.  Laziness might even give you
-partial evaluation for free.
-
-Work by Futamura is light in technical details of the practicality of these
-projections, especially the higher-order compiler-compiler.  [[cite:JGS-93][JGS-93]] has examples
-of practical partial evaluators for subsets of Scheme and C.
-
-A basic example of partial evaluation is the compiler optimization known as
-constant-folding.  Partial evaluation is generalized constant folding.
-
-The advantage of partially evaluating a program is a potential gain in
-performance: operations evaluated at partial evaluation time need not be done at
-runtime.  However, there are two immediate troubles: termination is undecidable,
-and side-effects need to happen at runtime.
-
-Since partial evaluation operates with partial knowledge of the input, it must
-make assumptions for the unknown inputs.  This leads to a potential static
-analysis of branches, which can degenerate into infinite loops.  Knowing in
-advance if the program will terminate its partial evaluation is a variant of the
-halting problem.  However, I suppose there is always the option to bail out of
-the partial evaluation process, trading potential optimization benefit for
-bounded-time partial evaluation.
-
-Side-effects, like printing to the console or writing to disk, cannot be
-generated from the partial interpreter: they need to happen at runtime.  I
-suppose, here again, that side-effects can be left in place.  But getting values
-from the outside world probably means that the partial interpreter cannot
-evaluate further.
-
-[[cite:JGS-93][JGS-93]] makes the point that partial evaluation allows one to write
-highly-parametrized programs, while retaining efficiency.  The modular program
-is specialized by the partial evaluator, and you get an efficient equivalent
-program.
-
-The remark that interpreters are usually smaller and easier to write.  They
-ascribe that to the simplicity of the former: interpreters only deal with
-execution time (execution of the target program is the same happens at the
-execution of the interpreter), with only one language, and they provide (or
-match) an operational semantics.  But compilers are efficient.
-
-** Instrumentation of interpreters
-*** Bytecode instrumentation
+** Bytecode instrumentation
 Ansaloni.  Targets bytecode, which is low-level code.
 
 Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
 alter the behavior of a program with no access to its source code.  Inserts code
 after/before point of interest.
-
 
 [[cite:BRG+14][BRG+14]] instruments the bytecode interpreter of WebKit to enable information flow
 tracking.  Bytecode instrumentation is difficult, because you lose high-level
@@ -741,23 +783,7 @@ build a control-flow graph to know when to discard program counters used by the
 information flow analysis.  Also, instrumenting the bytecode is specific to the
 bytecode compiler of WebKit (there is no standard, unlike Java).
 
-*** Using aspects
-FlowR.  Not much insight regarding the structure; artifact not available.
-
-** Extensibility
-Emacs and Smalltalk are two examples of dynamic environments that can be
-extended by the user, incrementally and continuously.  They both achieve that by
-exposing code to the user.
-
-The languages used are different: Lisp with dynamic scoping, Smalltalk with
-object-orientation.
-
-Extensions in Eclipse and web browsers are fundamentally different as they are
-not written in only one language, but several (description in XML, views in XUL,
-logic in Java/JavaScript).  They are much more cumbersome to write, without
-better guarantees.
-
-*** Open Implementation                                         :methodology:
+** Open Implementation
 Before AOP, there was the concept of Open Implementation [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]]
 [[cite:KLL+97][KLL+97]].
 
@@ -844,7 +870,7 @@ important strategies in that interface, then the interfaces should be layered.
 From the set of client requirements, the module implementer should refine the
 open interface in stages, until all requirements can be expressed.
 
-**** Mechanisms for open implementation
+*** Mechanisms for open implementation
 Sadly, the language mechanisms for open implementation are not covered.
 
 #+BEGIN_QUOTE
@@ -868,7 +894,7 @@ fit the description of style 4.
 
 [[Reflection]] is another mechanism.
 
-*** Aspect-Oriented Programming                        :methodology:language:
+** Aspect-Oriented Programming
 Did the initial vision of AOP covered the problem of extensibility?
 
 [[cite:KLM+97][KLM+97]]
@@ -1080,7 +1106,7 @@ in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]
 
 AOP is [[https://encrypted.google.com/patents/US6467086][patented]] since 2002 by XEROX (US6467086 B1).
 
-**** Mechanisms for instrumentation
+*** Mechanisms for instrumentation
 The distinction between aspects and components is the most important
 contribution of AOP.  Though it is unclear whether ‘aspects’ are inevitable
 because of the complexity of the problem domain, or if they are accidental
@@ -1135,7 +1161,7 @@ The mechanisms of AOP may serve to extend the interpreter with analyses, without
 necessarily obeying the component/aspect decomposition.  Though without editor
 support, using AOP mechanisms will only satisfy one notion of locality.
 
-*** Emacs                                                          :language:
+** Emacs
 See Emacs Manual, [[cite:Sta-81][Sta-81]], [[cite:Hal-88][Hal-88]].  Emacs is an example of an extensible system.
 The mechanisms: global namespace, dynamic scoping, and a simple aspect system.
 
@@ -1174,12 +1200,12 @@ is said of its extensibility.)
 [[cite:NS-01][NS-01]] proposes a dynamic scope analysis, to translate Emacs Lisp code using
 dynamic binding to lexical binding.
 
-****  Mechanisms for extension
+***  Mechanisms for extension
 Global variables, dynamic binding, hooks.
 
 Though hooks are more a convention than a first-class mechanism.
 
-*** Dynamic binding                                                :language:
+** Dynamic binding
 Introduced by McCarthy’s LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
 dynamic environment in lexical binding [[cite:Que-03][Que-03]].
 
@@ -1199,203 +1225,7 @@ proposal is not motivated enough by concrete applications that would be
 difficult to solve using existing mechanisms.  Also, the work is really focused
 on the binding semantics of Scheme, which reduce its applicability.
 
-*** Smalltalk                                                      :language:
-Design and Implementation [[cite:Ing-78][Ing-78]].
-
-Opens with a definition of modularity:
-#+BEGIN_QUOTE
-No part of a complex system should depend on the internal details of any other
-part.
-
-[...]
-
-Objects are created and manipulated by sending messages.  The communication
-metaphor supports the principle of modularity, since any attempt to examine or
-alter the state of an object is sent as a message to that object, and the sender
-need never know about internal representation.
-
-[...]
-
-The class is the natural unit of modularity, as it describes all the external
-messages understood by its instances, as well as all the internal details about
-methods for computing responses to messages and representation of data in the
-instances.
-#+END_QUOTE
-
-Smalltalk is designed with modularity, as classes encapsulate object
-descriptions and methods, and can only interact through messages.
-
-An example of extending the system: adding new objects and a printer for them.
-Similar to the [[Expression problem][expression problem]].
-
-#+BEGIN_QUOTE
-Adding a new class of data to a programming system is soon followed by the need
-to print objects of that class. In many extensible languages, this can be a
-difficult task at a time when things should be easy.  One is faced with having
-to edit the system print routine which (a) is difficult to understand because it
-is full of details about the rest of the system, (b) was written by someone else
-and may even be in another language, and (c) will blow the system to bits if you
-make one false move.  Fear of this often leads to writing a separate print
-routine with a different name which then must be remembered.
-
-In our object-oriented system, on the other hand, printing is always effected by
-sending the message =printon: s= (where s is a character stream) to the object
-in question.  Therefore the only place where code is needed is right in the new
-class description.  If the new code should fail, there is no problem; the
-existing system is unmodified, and can continue to provide support.
-#+END_QUOTE
-
-Changing a field inside =Rectangle= does not need to change code external to the
-object, and global recompilation is avoided.
-
-Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]]; a larger
-perspective is given in [[cite:Mul-15][Mul-15]].
-
-**** Mechanisms for extension
-Subclassing, and reflection.  Everything as an object, so message dispatch is
-just a method on the meta class, and can be altered.
-
-*** Self                                                           :language:
-The power of simplicity [[cite:US-91][US-91]].
-
-Pure object-oriented language.  No variables, but slots containing objects that
-return themselves.
-
-No classes.  No control structure.
-
-The absence of distinction may not be a good thing in practice:
-#+BEGIN_QUOTE
-The absence of class-instance distinction may make it too hard to understand
-which objects exist solely to provide shared information for other objects.
-Perhaps SELF programmers will create entirely new organizational structures.  In
-any case, SELF’s flexibility poses a challenge to the programming environment;
-it will have to include navigational and descriptive aids.
-
-[later, in the conclusion]
-
-Reducing the number of basic concepts in a language can make the language easier
-to explain, understand, and use.  However, there is a tension between making the
-language simpler and making the organization of a system manifest.  As the
-variety of constructs decreases, so does the variety of linguistic clues to a
-system’s structure.
-#+END_QUOTE
-
-They cite [[cite:UCC+91][UCC+91]] for pointers on structuring programs in SELF.
-
-Classes are abstract description of objects, but prototypes are always
-concrete.  Each object is an example, and can be easily cloned.  Class
-hierarchies are hard, and impose a structure; prototypes less so.
-
-Classes forces you to create a template, even when you deal with several objects
-with unique behavior.
-
-Activation records for methods inherit from the receiver object, so the receiver
-is on the chain for binding lookup.
-
-They note that they could build “class-like” objects that hold code to create
-new clones, and also hold the shared behavior, though they “do not believe this
-is the best way to construct a system”.
-
-In [[cite:UCC+91][UCC+91]], the following organization is described:
-- Traits object for methods (shared by all instances of an object).
-- A prototype object with a default implementation.
-- Instances are created from cloning the prototype.
-
-Abstract objects dispense of the prototype, and singleton objects contain
-methods and state without providing a copy method.
-
-They note that OO supports “differential programming”, which is to define new
-data types as differences from existing data types.  In Smalltalk, differential
-programming is achieved through subclassing.  In SELF, they call it “refining
-traits objects”, but the mechanism is delegation through the parent link.
-
-An oddity: they state that parent links are constant, though the introduce a
-=dataParent= setter in figure 3.  Later they say that parent slot are like other
-data slots, assignable.
-
-Prototypes allow for multiple behavior modes, through dynamic inheritance
-switching.  Behavior modes enhance the clarity of the code, though they do not
-comment on the potential performance costs.
-
-**** Mechanisms for extension
-Prototypes, and message passing.  Prototypes are more general and simpler than
-inheritance.
-
-However prototypes do not originate with SELF [[cite:Bor-86][Bor-86]] [[cite:Lie-86][Lie-86]].
-
-[[cite:Lie-86][Lie-86]] makes a good case for prototypes as being a simpler model to learn, as
-well as being more intuitive.  Humans derive general concepts from examples, not
-the other way around.  Class-based languages require you to commit to the
-concepts first.
-
-Prototype-based and class-based languages provide different mechanisms for
-realizing differential programming,
-
-Is differential programming sufficient to solve the problem of modular
-instrumentation?  In the case of Narcissus, it was not, since the interpreter
-was not OO.  But the open scope pattern might be equivalent, dynamically, to
-inheritance.
-
-*** Prototype-based programming                                    :language:
-A collection of (at least) the following papers (or revisions of them):
-- [[cite:Tai-97][Tai-97]]
-- [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
-- [[cite:GBO+98][GBO+98]]
-- [[cite:Bor-86][Bor-86]]
-- [[cite:SU-95][SU-95]]
-- [[cite:Smi-95][Smi-95]]
-- [[cite:MMM+98][MMM+98]]
-- [[cite:Bla-91][Bla-91]] & [[cite:Bla-94][Bla-94]]
-- [[cite:Wol-96][Wol-96]]
-- [[cite:Moo-96][Moo-96]]
-- [[cite:Nob-01][Nob-01]]
-- [[cite:DeM-98][DeM-98]]
-
-[[cite:Tai-97][Tai-97]] is a philosophical take on the basis for class-based and prototype-based
-languages.  Ascribing to classes is following the school of Plato and Aristotle
-[[cite:Pla-98][Pla-98]] [[cite:Ari-35][Ari-35]].  Plato distinguished between /forms/, the ideal description of
-things, and /instances/ of these forms.  He regarded forms as being more real
-than instances.  Aristotle believed in “a single correct taxonomy of all natural
-things”, and classified things using the following rule:
-: essence = genus + differential
-which mirrors class creation in class-based languages.
-
-Classification has been criticized, notably by Wittgenstein [[cite:Wit-53][Wit-53]], as being
-subjective.  Some concepts are difficult to define by intension – through a list
-of common properties that all instances must share.  Rather, Wittgenstein
-proposes the notion of /family resemblance/.  Meaning is not determined by a
-definition, but by similarity to representative prototypes.
-
-This philosophical heritage has a few implications for programming:
-- there are no optimal class hierarchies
-- in a class hierarchy, the middle classes are often the best representatives.
-  Higher classes are too abstract; lower classes too specific.
-- prototypes may map better to the usual human process: iterate from examples.
-
-Designers of class-based or prototype-based languages are seldom aware of the
-philosophical issues of both models, but focus more on technical matters.  Kevo
-[[cite:Tai-93][Tai-93]] is a prototype-based language with a notion of family
-resemblance. [[cite:Tai-93b][Tai-93b]] offer similar insights on the notion of object.
-
-[[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
-d languages are advantageous for describing exceptional instances, multiple
-points of view of the same entity, and incomplete objects.
-
-They identify the following mechanisms common to prototype-based languages:
-- message passing
-- 3 ways of creating objects (ex nihilo, cloning, and extension)
-- delegation
-- dynamic dispatch
-
-Prototype-based languages also introduce new issues:
-- Fragmented entities.  Since objects are described differentially, no single
-  object in the system reify the complete entity.  To clone it completely, we
-  would need to clone all its parts, but they are not reified (e.g., traits
-  objects are only conventions, not language primitives).
-- Sharing between clones of the same object.
-- Sharing between clones of different objects.
-
-*** Eclipse and other IDEs                                             :tool:
+** Eclipse and other IDEs
 As noted by [[cite:Ler-11][Ler-11]], the Eclipse platform is extensible, and built using
 plugins.  Each plugin states its dependencies (the hooks needed to function),
 and its extension points (for other plugins).
@@ -1404,24 +1234,24 @@ Eclipse plugins are compiled, though they can be loaded dynamically (if they are
 written properly).  Symptomatically of Java, writing plugins needs lot of
 boilerplate code and XML (which Eclipse can generate for you, I understand).
 
-**** Mechanisms for extension
+*** Mechanisms for extension
 The mechanisms for extension seems to revolve around the observer pattern: a
 host plugin raises events which can be intercepted by extensions [[cite:Bol-03][Bol-03]].
 
 So, a lot of convention.
 
-*** Web browsers                                                       :tool:
+** Web browsers
 Many extensions are written for web browsers.  The mechanisms are heavy,
 comparable to the effort of writing an Eclipse plug-in.
 
 In fact, ZaphodFacets was an extension to change the JavaScript interpreter used
 by the browser.
 
-**** Mechanisms for extension
+*** Mechanisms for extension
 Convention.  Write manifest, and define the agreed-upon functions (install,
 startup).
 
-*** Lua                                                            :language:
+** Lua
 An extensible extension language [[cite:IFF-96][IFF-96]].
 
 Extensible systems comprise of a kernel and a configuration.  The kernel is the
@@ -1492,7 +1322,7 @@ dispatch: rather than using a class construct, Lua programmers can use fallbacks
 Though they regret not stating a policy when it comes to modules, since everyone
 is doing its thing, without agreeing on a common protocol.
 
-****  Mechanisms for extension
+***  Mechanisms for extension
 The kernel+configuration, as seen in EMACS.  Mechanisms over policy shares our
 philosophy and provides programmers with tools to solve their problems in their
 own way.
@@ -1500,7 +1330,7 @@ own way.
 To extend Lua, bindings from C can be added, and custom data structure as well.
 Changing the interpreter does not seem possible, even from C.
 
-*** Scripting languages                                            :language:
+** Scripting languages
 Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
 early ‘90s phenomenon.  Dealing with low-level languages was deemed too heavy,
 but writing your whole system in a high-level language was too costly.  The
@@ -1510,9 +1340,9 @@ With sufficiently efficient high-level languages, the kernel+configuration
 approach might be unneeded.
 
 JavaScript being a scripting language for the browser, as well as an object used
-in the [[#core][Core]], it might be adequate to have a dedicated background section to it.
+in the Core, it might be adequate to have a dedicated background section to it.
 
-*** Reflection                                                     :language:
+** Reflection
 [[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
 made between /introspection/, /introcession/, /structural reflection/, and
 /behavioral reflection/; also between a program (a textual description) and a
@@ -1581,7 +1411,7 @@ interpreter semantics.
 previous implementation which used code transformation; better performance, less
 maintenance.
 
-*** Software product lines                        :tool:language:methodology:
+** Software product lines
 [[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
 
 An engineering methodology to create and maintain variants of a software
@@ -1663,7 +1493,7 @@ and flexibility being the chief advantages.
 
 Handling feature interactions is an open problem.  Detecting them also.
 
-**** Mechanisms for instrumentation
+*** Mechanisms for instrumentation
 FOP implementations presented here are static organization of code into
 features.  Much like design patterns or frameworks, they require the programmer
 to design for extensibility beforehand.  AspectJ allows extending an existing
@@ -1693,7 +1523,7 @@ parameters, hence are a form a macros.
 Links are two way, and kept in sync by the programming system (editor): this
 prevents obliviousness.
 
-*** Caesar
+** Caesar
 [[cite:AGM+06][AGM+06]]
 
 CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
@@ -1703,7 +1533,7 @@ But overall, I failed to see the problems that it solved.  Both papers [[cite:AG
 [[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
 the benefit brought by the new mechanisms.
 
-*** Hyper/J                                                :methodology:tool:
+** Hyper/J
 [[cite:TOH+99][TOH+99]] argues for a multi-dimensional separation of concerns.  First, they note
 that modern software technologies provide mechanisms for the /decomposition/ and
 /composition/ of source code, in order to cut the code into manageable pieces,
@@ -1755,57 +1585,14 @@ by name) to produce the final program.
 Hyper/J simplifies the multi-dimensional concept by mapping units of change to
 exactly one feature.  No overlap between hyperslices.
 
-**** Mechanisms for instrumentation
+*** Mechanisms for instrumentation
 Realization that the tyranny of the dominant decomposition is a manifestation of
 looking at a multi-dimensional object through low-dimensional projections.  All
 projections are unsatisfactory as they sacrifice one or more dimensions.
 
 The Hyper/J solution is basically superimposition.
 
-*** Others?
-**** Software evolution through runtime method transformation
-[[cite:Zdu-04][Zdu-04]]
-
-**** Direct manipulation
-Beyond programming languages [[cite:Shn-83][Shn-83]].  Argues that computer applications are
-better learned and used if the user can directly manipulate the high-level
-domain objects.
-
-Users have semantic knowledge of how to solve a task, how to decompose it into
-smaller, lower-level semantic goals (copy a sentence = move cursor to sentence
-start, select until sentence end, issue copy command).  Semantic knowledge is
-mostly application-independent (most text editors support the previous semantic
-actions).  Syntactic knowledge comprises the actual commands needed to effect a
-low-level semantic action; syntactic knowledge is application-specific, and
-mostly arbitrary (‘K’ will copy text in one editor, but delete in another).
-
-Novices begin with zero semantic knowledge, and must build it upward, from
-low-level actions to high-level domain planning.  They build this knowledge by
-learning the syntax of the application: the commands it provides.  At first,
-they can only solve tasks that are straight applications of syntactic
-knowledge.  Building higher-level semantic knowledge must be done by analogy
-with similar domains, or by following examples.
-
-Shneiderman suggests that novice manuals should then not be lists of the
-application’s commands, but should provide examples of common high-level domain
-goals, and first describe how to decompose these goals into lower-level semantic
-tasks, before providing the solutions using commands.
-
-He also frames the benefit of direct manipulation as leaning toward re-using
-semantic knowledge, rather than asking the user to digest the arbitrary
-syntactic knowledge of a commands language.
-
-Example of systems exhibiting direct manipulation: (early) video games like
-Pong, Breakout, Space Invaders, Donkey Kong; Visicalc; display editors (Emacs,
-Vi).
-
-**** Delta-oriented programming
-[[cite:SBB+10][SBB+10]]
-
-Describes delta of code; can remove methods, which is unusual for step-wise
-programming.
-
-**** Information transparency                                          :tool:
+** Information transparency                                            :tool:
 [[cite:Gri-01][Gri-01]]
 
 Tools for capturing the similarity of code across modules.  Tangled code should
@@ -1849,15 +1636,7 @@ the human visual system, identifiable /symbols/ are a viable alternative to
 /locality/ as a way of managing changes to software.
 #+END_QUOTE
 
-**** JastAdd: extensible Java compiler
-Used for writing “declarative” static flow analyses with reference attribute
-grammars [[cite:SEH+13][SEH+13]].
-
-Attribute grammars are already a declarative language for specifying the
-semantics of a language [[cite:Knu-68][Knu-68]].
-
-** Code transformation
-*** Semantic patches                                                   :tool:
+** Semantic patches                                                    :tool:
 [[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
 name, or gains an argument, client code must makes the necessary changes.  The
 changes in client code are collateral.
@@ -1906,7 +1685,7 @@ scratch for every change.
 The (unintended) idea of source transformation based on dynamic control flow is
 interesting.  See [[file:notes.org::*Shapes%20of%20computation][Shapes of computation]].
 
-**** Mechanisms for extension
+*** Mechanisms for extension
 It’s another approach, transforming code to alleviate the maintenance cost.
 
 However, it’s a crutch.  We would prefer not having to have to make those
@@ -1917,31 +1696,8 @@ evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM
 more focused on introducing the collateral evolution problem, with plenty of
 examples from the Linux kernel.
 
-* Core
-:PROPERTIES:
-:CUSTOM_ID: core
-:END:
-Here I show, with extensive details, how one can build a modular interpreter
-amenable to instrumentation in JavaScript.
-
-The building blocks come from the background section, but as the problem is
-slightly different, so are the way they are put together.  This leads to many
-opportunities to discuss the benefits and downsides of each solution and the
-mechanisms they leverage.
-
-This part ends with an illustration of an interpreter capable of executing code
-in different ways, by changing only a small amount of code each time.
-
-I know I’m supposed to lay a straightforward narrative, but here I believe there
-is equivalent insight to be gained from /failed/ experiments than from the
-successes.  Negative results may not be publishable, but they can appear in a
-thesis document.
-
-Finally, I apply the insights gained from prototypes to Narcissus, showing that
-they scale, and give examples with information flow instrumentation, showing
-that they can be used for security purposes.
-
-** Building from scratch vs. extending existing interpreters
+* Étude de cas: extension ad-hoc de Narcissus
+* Building from scratch vs. extending existing interpreters
 When we think of instrumentation, we think mostly of the latter.  The two
 approaches map to mental models: see [[file:notes.org::*Unanticipated%20extension%20is%20just%20a%20hack][Unanticipated extension is just a hack]].
 
@@ -1950,7 +1706,7 @@ Extending has its limits; it’s not the proper way to do things.
 On the other hand, it’s unclear how to build modular interpreters amenable to
 extension from building blocks.
 
-*** The problem
+** The problem
 Say we have a monadic interpreter for a toy language.  We want to
 instrument this interpreter: modify the rules to create additional
 side effects, or even change the return value.
@@ -2009,7 +1765,7 @@ eliminates both issues.  If we describe only the additions and changes
 to the original interpreter, we minimize code duplication, and promote
 local reasoning.
 
-**** Case study: Narcissus instrumentation for faceted evaluation
+*** Case study: Narcissus instrumentation for faceted evaluation
 [[https://github.com/mozilla/narcissus][Narcissus]] is a meta-circular interpreter for JavaScript.  Tom Austin
 and Cormac Flanagan implemented their Faceted Evaluation strategy in
 JavaScript by instrumenting Narcissus.  This instrumentation was done
@@ -2244,7 +2000,7 @@ to reduce the noise from this Narcissus example, and unearth the core
 issues.  JavaScript is a large language, and Narcissus, while
 reasonable, is not a minimal example of an interpreter.
 
-**** Finding a core example
+*** Finding a core example
 Looking at the operational semantics for faceted evaluation, we can
 see the patterns mentioned previously (=pc= parameter, new cases for
 =FacetedValues=).  They are based on a lambda calculus variant, with
@@ -3159,7 +2915,7 @@ Narcissus or JavaScript interpreters.
 We will now exhibit variations in writing the instrumentation as
 a separate module with minimal code duplication.
 
-**** The expression problem
+*** The expression problem
 First, let’s list the additions brought by our extension to the
 interpreter:
 
@@ -3194,7 +2950,7 @@ real solutions [[[http://www.andres-loeh.de/OpenDatatypes.pdf][Open Data Types a
 declarations of data types and functions.  One could also require both
 extended and original codes to include keywords.)
 
-**** The expression problem, with a twist
+*** The expression problem, with a twist
 The expression problem is only concerned with /adding/ data types and
 functions, but when we instrument an interpreter, we will often want
 to /modify/ its behavior rather than just extend it.
@@ -3250,7 +3006,7 @@ function? A: You’d have to have a clue about the precedence order to
 make sense of the result, but these problems are shared by other AOP
 applications.]
 
-**** The modular instrumentation problem
+*** The modular instrumentation problem
 We have an interpreter I for a language L, and the source code for I.
 We want to instrument the interpreter I, by extending and modifying
 its behavior.  Namely, the instrumentation can:
@@ -3289,14 +3045,14 @@ leave the original behavior unaltered.  How to recognize or enforce
 question. [“Recognize” I don’t know how.  “Enforce” you can do with
 monads, if you have a monadic interpreter.]
 
-*** Variations
-**** JavaScript
+** Variations
+*** JavaScript
 See [[file:js/aoping.org]].
 
 See also [[file:lassy15.org]] for a way to build interpreters
 incrementally.
 
-***** Split OO-style instrumented interpreter into modules
+**** Split OO-style instrumented interpreter into modules
 Let’s try to separate the object-oriented instrumented interpreter in
 two modules: one for the base interpreter, ‘base.js’, and one for the
 instrumentation, ‘facets.js’.  The ‘base.js’ file should not contain
@@ -3306,14 +3062,14 @@ standard interpreter.
 Looking at the diff, we can put =mk_facet=, =facet= and the extension
 to =Set.prototype= in a separate file right away.
 
-****** Handling the extra PC parameter
+***** Handling the extra PC parameter
 The second, more pervasive change is the addition of the program
 counter context in every call.  There are at least two solutions to
 this problem:
 1. Using a global variable.
 2. Using a context object.
 
-******* Using a global variable
+****** Using a global variable
 [[file:js/lab/oo-split-global/base.js]]
 [[file:js/lab/oo-split-global/facets.js]]
 
@@ -3368,7 +3124,7 @@ change the current program counter referenced in the closure.
 Mutability can be waived as a requirement if the language supports
 dynamic scoping [Art of Interp].
 
-******* Using a context object
+****** Using a context object
 [[file:js/lab/oo-split-context/base.js]]
 [[file:js/lab/oo-split-context/facets.js]]
 
@@ -3425,7 +3181,7 @@ Note that we could combine both methods, and avoid passing the context
 object explicitly in all functions by using a global variable.  In
 that case, both mutability and dynamic typing are leveraged.
 
-****** Handling the change in the reference rule
+***** Handling the change in the reference rule
 [[file:js/lab/oo-split-global/base.js]]
 [[file:js/lab/oo-split-global/facets.js]]
 
@@ -3523,7 +3279,7 @@ context object) are free of instrumentation-specific concerns.  In
 fact, the base interpreter with the global ‘pc’ is /identical/ to the
 base object-oriented interpreter.
 
-****** Summary
+***** Summary
 We split the object-oriented interpreter into two modules:
 1. The base interpreter which contains no concerns pertaining to
    faceted evaluation.
@@ -3546,7 +3302,7 @@ We used two different mechanisms to handle the extra ‘pc’ parameter:
 Overriding the =ref= function required only delegation using the
 prototype chain.
 
-***** Split pattern-matching instrumented interpreter into modules
+**** Split pattern-matching instrumented interpreter into modules
 [[file:js/lab/es6-split-global/base.js]]
 [[file:js/lab/es6-split-global/facets.js]]
 
@@ -3556,7 +3312,7 @@ the object-oriented interpreter.
 However, when we try to extend the =ref= rule, two things are
 different.
 
-****** The facet-specific rules are scattered
+***** The facet-specific rules are scattered
 The =eval_apply=, =eval_deref= and =eval_assign= code for facet values
 is split across the three =application_rules=, =deref_rules= and
 =assign_rules= objects.  In the object-oriented approach, they were
@@ -3627,7 +3383,7 @@ It is clear that the lexical scoping of the rules object is the issue.
 Being able to refer to these object from a dynamic scope would resolve
 it.
 
-****** Extending the ref function
+***** Extending the ref function
 In the object-oriented approach, we redefined the =ref= function in
 the facets module and delegated the other rules to the base
 interpreter.  Here we cannot do so.
@@ -3729,7 +3485,7 @@ closures directly and eliminate the need for the =rules= object.
 This allows us to override the functionality of =ref= using a
 namespace, as we did in the object-oriented approach.
 
-****** Summary
+***** Summary
 The two solutions (global variable and context object) for dealing
 with the extra ‘pc’ parameter can be applied here as well.  The same
 remarks apply.
@@ -3740,7 +3496,7 @@ This ability is not provided by the language, but shadowing the =ref=
 function (or the rules object, or the =interpretNode= dispatcher) by
 using dynamic scoping achieves the same effects.
 
-***** Summary of JavaScript variations
+**** Summary of JavaScript variations
 It appears that, the more the interpreter rely on dynamic features,
 the easier it is to instrument.  The /dynamic dispatching/ of the
 object-oriented interpreter allows the effortless addition of the
@@ -3761,7 +3517,7 @@ context at runtime.
 In a language with dynamic scoping the interpreter should be a breeze
 to instrument.  That is the focus of the [[Lisp][Lisp variations]].
 
-*** Lisp
+** Lisp
 [[file:lisp/pm.lisp]]
 
 Common Lisp offers both lexical and dynamic scoping of variables.  We
@@ -3840,7 +3596,7 @@ provided by static types?  Is the modular instrumentation still
 feasible?  Is it cumbersome to write?  That is the focus of the
 [[Haskell][Haskell variations]].
 
-*** Haskell
+** Haskell
 Building scaffolding with languages features has the following
 advantages:
 + No extra syntax or rewriting program required
@@ -3860,24 +3616,24 @@ Advantages:
 + Lightweight syntax is straightforward to use
 - Overriding it still awkward to read
 
-**** Building scaffolding with language features
-***** Monadic interpreters
+*** Building scaffolding with language features
+**** Monadic interpreters
 The monadic interpreter is mostly taken from [[http://homepages.inf.ed.ac.uk/wadler/papers/essence/essence.ps][Wadler]].
 
 - [[http://web.cecs.pdx.edu/~mpj/pubs/modinterp.html][Monads Transformers and Modular Interpreters]]
   + [[http://www.cas.mcmaster.ca/~kahl/FP/2003/Interpreter.pdf][Haskell implementation]]
 
-***** Either data type
+**** Either data type
 See [[file:hs/extend-types/Extension.fail.1.hs]].  Types are extended like
 so:
 
 : data FacetTerm  = Facet Principal FacetTerm FacetTerm | BaseTerm Term
 
-****** What does work
+***** What does work
 - Maximum reuse from the file ‘Base.hs’
 - Able to execute `term0` and `term1`
 
-****** What fails
+***** What fails
 - `term2` gives a type error:
     “Couldn't match expected type `Term' with actual type `FacetTerm'”
 
@@ -3885,21 +3641,21 @@ so:
 
 - Also, have to wrap Base.Term values with the BaseTerm constructor
 
-****** What I wanted
+***** What I wanted
 - `eval term2` gives the same result as when using Extended.eval.
 
 - The raw term1 and term2 should type without wrapping values.
 
-****** Why it doesn’t work
+***** Why it doesn’t work
 A FacetTerm is either a Facet or a BaseTerm.  A Facet can contain
 FacetTerms (and hence BaseTerms), but since BaseTerms are just Terms,
 they cannot contain Facets.
 
-****** Conclusion
+***** Conclusion
 What we really want is to insert the constructor `Facet` into the
 existing data type `Term`.
 
-***** Type classes
+**** Type classes
 Another suggestion by Rémi.
 
 #+BEGIN_SRC haskell
@@ -3923,7 +3679,7 @@ overhead is minimal.  Though you still need to have indirect calls.
 > Ismael: Some disadvantages of this approach are discussed in the
 Open Data Types paper, in Section 6.4.
 
-****** Multi-param types classes
+***** Multi-param types classes
 #+BEGIN_SRC haskell
 class Eval term value where
   eval :: term -> value
@@ -3934,7 +3690,7 @@ Becomes quite complicated rapidly.  First you need an extension, then
 you quickly run into typing issues that are not worth the flexibility
 offered by this strategy.
 
-***** Data types à la carte
+**** Data types à la carte
 From Swierstra, 2008.
 
 [[file:hs/extend-types/Extension.swierstra.hs][A first attempt]]
@@ -3959,7 +3715,7 @@ Cons:
 
 See also my [[Data types  à la carte (2015)][my second attempt]] at Swierstra, in 2015.
 
-***** Implicit arguments
+**** Implicit arguments
 A simple idea: implicit arguments can replace global variables.
 
 Unfortunately, describing an override of the base eval function is still an
@@ -3967,7 +3723,7 @@ issue.  Maybe use type classes?
 
 See [[file:hs/implicit][implicit]].
 
-***** Facets as a monad
+**** Facets as a monad
 The faceted evaluation strategy requires a new state global: the program
 counter.  It makes sense to add this state in a state monad to a monadic
 interpreter.  This can be done using monad transformers, or monad views, or
@@ -3978,7 +3734,7 @@ list monad.
 
 See [[file:hs/list-monad/][list-monad]].
 
-**** Extending the syntax
+*** Extending the syntax
 See [[file:hs/transform/notes.org]]
 
 [[file:hs/transform/tests/2/LC.hs][Lambda calculus with FlowR instrumentation]]
@@ -3987,8 +3743,8 @@ See [[file:hs/transform/notes.org]]
 - Extending the monadic stack is best done with scaffolding, though
   obliviousness is lost
 
-*** Modular monadic interpreters
-**** The giants
+** Modular monadic interpreters
+*** The giants
 There’s a body of work on monadic interpreters in functional programming
 languages built around monads, dating from the ‘90s.
 
@@ -4026,7 +3782,7 @@ modules and design patterns.
 - Brudo C.d.S. Oliveira, William R. Cook.  Extensibility for the Masses --
   Practical Extensibility with Object Algebras.  2012
 
-***** Data types  à la carte (2015)
+**** Data types  à la carte (2015)
 Re-reading Swiestra in 2015, my brain parses it much better.
 
 - Coproduct is just disjoint-union.
@@ -4052,7 +3808,7 @@ Re-reading Swiestra in 2015, my brain parses it much better.
   will never modify the value of the memory cell.  Also the topic of \sect7, and
   related work on type systems for effects.
 
-***** Wadler — The essence of functional programming
+**** Wadler — The essence of functional programming
 How to build a monadic interpreter.  Also serves as a tutorial on monads.
 
 An interpreter just creates computations inside a monad M.  By changing the
@@ -4078,7 +3834,7 @@ not oblivious at all in this case.  But if the interpreter code does not need to
 interact with the monad, then changes to the monad can affect the meaning of the
 interpreter in an oblivious fashion.
 
-**** The bigger picture
+*** The bigger picture
 In the solutions from the functional programming world, the idea seems to
 revolve around reifying the computation (the target program of an interpreter),
 and write different interpreters.  In other words, to achieve modularity, one
@@ -4098,20 +3854,7 @@ can always be seen as a data structure that is easily parsed.  If turning your
 code to data gives you the greatest modularity, then homoiconic languages have
 a clear advantage of not requiring a parser.
 
-** Instrumenting the program vs. instrumenting the interpreter
-Show how they are equivalent, with examples.  But not quite, since the
-interpreter can do things the rewriting can’t.
-
-Also, security concerns of leaking information to program if not careful, which
-does not happen by instrumenting the interpreter, as they run in separate
-environments.
-
-However, interesting insight of full control over the AST given by treating code
-as data.  Will pop up again later.
-
-[[cite:SS-78][SS-78]]
-
-** Dynamic scoping to build interpreters
+* Dynamic scoping to build interpreters
 From the LASSY’15 paper.
 
 An arithmetic expression language, the example taken by Wadler and
@@ -4252,7 +3995,7 @@ Odersky as a base to propose solutions to the expression problem.
   }
 #+END_SRC
 
-*** The base datatype
+** The base datatype
 #+NAME: num
 #+BEGIN_SRC js
   var num = {
@@ -4283,7 +4026,7 @@ Odersky as a base to propose solutions to the expression problem.
 
 # [[file:img/num.svg]]
 
-*** Adding a data variant
+** Adding a data variant
 #+NAME: plus
 #+BEGIN_SRC js
   var plus = {
@@ -4323,7 +4066,7 @@ Odersky as a base to propose solutions to the expression problem.
 
 # [[file:img/num-plus.svg]]
 
-*** Adding an operation
+** Adding an operation
 #+NAME: show-invasive
 #+BEGIN_SRC js
   num.show = function() { return this.n.toString() }
@@ -4370,7 +4113,7 @@ This extension is invasive: it modifies the prototypes of =num= and
 
 # [[file:img/show-invasive.svg]]
 
-*** Adding an operation as a module
+** Adding an operation as a module
 #+NAME: show
 #+BEGIN_SRC js
   var show = function(base) {
@@ -4435,7 +4178,7 @@ Works, but can mix languages in unsafe ways:
 #+RESULTS:
 : TypeError: this.l.show is not a function
 
-**** A use-case for =with=
+*** A use-case for =with=
 #+BEGIN_SRC js
   <<num>>
   <<plus>>
@@ -4489,7 +4232,7 @@ Outside =with=, the =show= module is out of scope:
 
 # [[file:img/show-module-with-outside.svg]]
 
-**** Selective imports with an IIFE
+*** Selective imports with an IIFE
 #+BEGIN_SRC js
   <<num>>
   <<plus>>
@@ -4511,7 +4254,7 @@ values of the scope object by assigning to them, but in the IIFE,
 assigning to the arguments has no effect outside the function.  In our
 two examples, we always pass a fresh module so there is no issue.
 
-*** Modifying an operation
+** Modifying an operation
 #+BEGIN_SRC js
 <<num>>
 <<plus>>
@@ -4547,7 +4290,7 @@ anymore.
 
 # [[file:img/modify-num.svg]]
 
-**** Non-destructive modification
+*** Non-destructive modification
 #+NAME: double
 #+BEGIN_SRC js
 <<num>>
@@ -4605,7 +4348,7 @@ While after the =with=, =num= refers to the original, unmodified object.
 
 # [[file:img/modify-num-module-outside.svg]]
 
-*** Passing state
+** Passing state
 Add a program counter incremented each time a data variant calls
 =eval=.
 
@@ -4659,7 +4402,7 @@ Add a program counter incremented each time a data variant calls
 
 # [[file:img/state.svg]]
 
-*** All in one
+** All in one
 Combine all the extensions without effort.
 
 #+BEGIN_SRC js
@@ -4723,10 +4466,10 @@ Combine all the extensions without effort.
 
 # [[file:img/all-in-one.svg]]
 
-** Dynamic scoping to modify Narcissus
+* Dynamic scoping to modify Narcissus
 From the DLS’15/SAC’16 paper.
 
-*** The idea: manipulating scopes
+** The idea: manipulating scopes
 Looking back, we see that we are mostly concerned with scopes and the ability to
 manipulate them to add or remove bindings.  So we can describe what we want,
 abstractly, using scopes manipulation primitives.
@@ -5152,7 +4895,7 @@ digraph {
 This is all very pretty, but there is no exposed scope property in JavaScript.
 How do we make this work?
 
-*** How to manipulate scopes in JavaScript
+** How to manipulate scopes in JavaScript
 Here we find a way to approximate this scope manipulation using standard
 JavaScript.
 
@@ -5367,7 +5110,7 @@ popLayer(s, m)
 m.g(0) //: -1
 #+END_SRC
 
-*** Evaluation on Narcissus
+** Evaluation on Narcissus
 Application of open scope pattern to Narcissus.
 
 Other changes:
@@ -5419,8 +5162,8 @@ Tracing can be defined on the side, and applied to facets or base.
 We have corrected bugs in Narcissus without touching the instrumented
 evaluation, since we reduce copy-pasting.  (e.g., =S12.11_A1_T3.js=)
 
-*** Discussion
-**** Insights
+** Discussion
+*** Insights
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
 for every bit of functionality (i.e., identify moving pieces and put them in
 variables or functions).
@@ -5440,7 +5183,7 @@ extensions writers not afraid of modifying obfuscated Java bytecode.  Yes,
 ideally there should be a clean interface for instrumenters.  No, in practice
 there is none.  Open scope is not ideal, but practical.
 
-**** Broad applications
+*** Broad applications
 Not only dynamic analyses, but any variation of the interpreter.  Strict mode
 comes to mind.  As it applies to the module pattern, there is nothing specific
 to an interpreter there.  Extending any module is possible.  Browsers, games,
@@ -5449,7 +5192,7 @@ scope can be a low-cost option for customization.
 
 More generally, it applies to /customizing software/ at the source level.
 
-**** Other JS interpreters
+*** Other JS interpreters
 ES5.1 interpreter written using a module pattern:
 - https://github.com/metaes/metaes/blob/master/metaes.js
 
@@ -5459,8 +5202,8 @@ Written as an object (in strict mode):
 Written as several modules (ES5 + flow analysis):
 - http://www.jsflow.net/
 
-**** Related work
-***** Open modules
+*** Related work
+**** Open modules
 Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
 offer a clearly-defined boundary between the module writer and the writer of an
 extension to this module.  In our case, we do not presume to know what interface
@@ -5472,14 +5215,14 @@ convenience.  The instrumentation writer is responsible if the base writer
 changes its bindings.  This is not modular, but unanticipated extension is not
 modular.
 
-***** Isn’t a visitor pattern enough?
+**** Isn’t a visitor pattern enough?
 In general, a good idea.  But Narcissus is not object-oriented, so it cannot
 apply here.
 
 Point of the approach is to minimize the changes to Narcissus.  Otherwise we
 could just rewrite from scratch and design for extensibility.
 
-***** Object-oriented interpreter
+**** Object-oriented interpreter
 Other ways to instrument would depend on the form of the target interpreter.
 Here we have a module pattern with lexical scoping.  What if the interpreter was
 written as a class?  The function bindings would be available to extending
@@ -5497,7 +5240,7 @@ Just by comparing their effect on bindings, we can see that they both solve the
 problem equally: =with= creates an indirection of binding just like =this= does
 on object attributes.
 
-***** ...AOP?
+**** ...AOP?
 - No satisfying AOP framework we could apply.  AspectScript is costly because
   parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.
 - Building our own would not be pragmatic.
@@ -5506,7 +5249,7 @@ on object attributes.
   is technical debt: who writes the AOP extension, who maintains it?  Open scope
   is just standard JavaScript.
 
-***** Scoping strategies
+**** Scoping strategies
 Scoping strategies specify how aspects are applied dynamically.
 
 Here we just manipulate bindings.  Essentially, an instrumentation is just
@@ -5529,8 +5272,8 @@ However, if we redefined =evaluate= we could override the bindings using
 standard dynamic scoping semantics.  It is unclear whether the added
 expressiveness of scoping strategies would be needed, or more useful.
 
-**** Objections and downsides
-***** =with= is deprecated
+*** Objections and downsides
+**** =with= is deprecated
 =with= is disallowed in Strict mode because it makes static analysis difficult
 by violating lexical scope.  But this is precisely why we need it in this
 pattern.  This evokes an interesting compromise in language design: security
@@ -5544,7 +5287,7 @@ sure we could do it as easily in, say, Python.
 [[https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml#with___{}][Google's style guide]] prohibits =with=.  As does [[http://javascript.crockford.com/code.html#with%2520statement][Douglas Crockford]].  The [[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with][MDN page]]
 lists pro and contra arguments.
 
-***** Open scope defeats the purpose of the module pattern
+**** Open scope defeats the purpose of the module pattern
 Module pattern is for hiding information, and exposing only what is required.
 
 Open scope leaves a backdoor that exposes private bindings.
@@ -5556,7 +5299,7 @@ Is open scope necessary when the interpreter is not written defensively?
 Is open scope applicable when the interpreter uses another pattern for hiding
 information?  (WeakMap, Symbols, or dunder prefix).
 
-***** It’s not modular if there is no interface for instrumentation
+**** It’s not modular if there is no interface for instrumentation
 Open scope means an instrumentation is free to change any binding, without an
 explicit interface.  No interface means no contract between instrumentation
 writer and module writer.  Instrumentation is brittle if module is liable to
@@ -5567,7 +5310,7 @@ are responsible if your instrumentation breaks in the future”.  Because it’s
 more convenient to open scope rather than having to design an interface, or add
 hooks everywhere.
 
-***** It’s still ad-hoc
+**** It’s still ad-hoc
 Some refactoring made to Narcissus was specific to the implementation (salami
 the =switch=, =reflectClass=).  But the open scope pattern makes few hypotheses
 on the language (must deal with names, bindings, and scopes).
@@ -5578,14 +5321,14 @@ Interface”.  But that is a pipe dream, as different languages will require
 adaptation of analysis (facets is incomplete on JS).  At least now you can
 eyeball the implementation of facets and compare it to a spec document.
 
-***** Application of open scope if not module pattern?
+**** Application of open scope if not module pattern?
 The idea is to manipulate scopes, so it is general.  /How/ to manipulate the
 scope depends on the situation.  If the target is not a module pattern, then
 maybe =with= is not the right tool to use.
 
 If the target is OO, =this= also provides a kind dynamic scope.
 
-***** Open scope only captures top-level declaration of module
+**** Open scope only captures top-level declaration of module
 Declarations inside functions are not captured, cannot be overridden.
 
 True.  Such declarations should be moved to top-level of module for this pattern
@@ -5596,7 +5339,7 @@ changes are required for the pattern.
 Can be useful for preventing bindings to be overridden, or for hiding
 information.
 
-***** Aliasing inside the module can be problematic
+**** Aliasing inside the module can be problematic
 Open scope allows an instrumentation to change bindings inside the module.  If a
 binding is aliased inside the module, the instrumentation should override the
 alias as well.  This creates redundant noise in the instrumentation.
@@ -5634,7 +5377,7 @@ the arrow (per binding) or at the right (per value).
 
 That’s not an issue we have encountered in instrumenting Narcissus.
 
-***** What about interferences between instrumentations?
+**** What about interferences between instrumentations?
 Is
 : njs -l flowr -l trace
 the same as
@@ -5642,7 +5385,7 @@ the same as
 
 If not, what do you have to pay attention to when writing analyses?
 
-***** Performance costs
+**** Performance costs
 Are expected due to the added indirection.
 
 We could partially evaluate the interpreter + the activated instrumentations to
@@ -5652,10 +5395,19 @@ overloaded bindings.
 We would then lose the ability to change the bindings dynamically, as far as I
 can see.
 
-* Synthesis
-Here I take another look at the solutions proposed in Core, and relate them to
-existing work.  I take the time to discuss the higher-level schema behind all of
-them and what this means for modularity.  I am explicit about the limits of the
-approach, and what are the directions for improvement.
+* Synthèse
+** Séparation des préoccupations: pourquoi?
+- Séparation difficile à obtenir
+- Difficile de définir les frontières
+  - une préoccupation est rarement isolée du reste du programme
+- Cause d’autres problèmes
+  - appels implicites, perte de compréhension du flot de contrôle
+- Pointcut ~ dynamic scoping ~ COMEFROM
+  - mécanismes puissants mais peu connus
+  - usage difficile à justifier hors cas vraiment spécifiques
+- Mauvais sens des priorités
+  - Un programme doit d’abord être correct.
+  - Puis il doit être maintenable -> bonne documentation des choix de structure
+  - Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?
 
 #+LATEX: \input{backmatter}
