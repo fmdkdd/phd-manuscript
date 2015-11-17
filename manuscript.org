@@ -1592,7 +1592,7 @@ projections are unsatisfactory as they sacrifice one or more dimensions.
 
 The Hyper/J solution is basically superimposition.
 
-** Information transparency                                            :tool:
+** Information transparency
 [[cite:Gri-01][Gri-01]]
 
 Tools for capturing the similarity of code across modules.  Tangled code should
@@ -1636,7 +1636,7 @@ the human visual system, identifiable /symbols/ are a viable alternative to
 /locality/ as a way of managing changes to software.
 #+END_QUOTE
 
-** Semantic patches                                                    :tool:
+** Semantic patches
 [[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
 name, or gains an argument, client code must makes the necessary changes.  The
 changes in client code are collateral.
@@ -1697,6 +1697,98 @@ more focused on introducing the collateral evolution problem, with plenty of
 examples from the Linux kernel.
 
 * Étude de cas: extension ad-hoc de Narcissus
+Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
+[[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
+utilise l’environnement hôte pour son implémentation (p.ex., l’objet ~String~
+exposé au code client n’est pas réimplémenté par Narcissus, mais est une simple
+façade de l’objet ~String~ hôte).  Narcissus est une implémentation relativement
+légère (environ 6000 lignes de code) du standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet
+de rapidement prototyper des fonctionnalités expérimentales pour le langage.
+
+En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
+analyse d’évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
+d’information qui permet à une valeur d’être étiquetée par une autorité qui a
+des droits d’écriture et de lecture pour cette valeur.  Lorsqu’une valeur
+étiquetée est utilisée dans une expression, son étiquette est propagée au
+résultat de l’expression, ce qui préserve les permissions de l’autorité sur le
+résultat.  Dans l’analyse multi-facettes, chaque valeur étiquetée a deux
+facettes: une facette contient la valeur “privée” à destination de l’autorité,
+une autre facettes contient la valeur “publique” destinée à des observateurs
+tiers non autorisés.  Dans une expression, les facettes sont toutes deux
+évaluées en même temps afin de produire les deux facettes du résultat.  Afin de
+suivre les étiquettes même lors de branchements (des flots /indirects/),
+l’évaluation multi-facettes maintient une liste des embranchements suivis lors
+de l’exécution; cette liste est appelée /program counter/ (PC).
+
+Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
+fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
+facettes avec une valeur privée ~true~ et une valeur publique ~false~ (qu’on
+écrit ~true | false~), alors le premier ~if~ sera exécuté deux fois: une fois
+pour chaque facette de la condition.  Après le second ~if~, la fonction retourne
+la valeur ~true | false~.  Un observateur non autorisé n’a accès qu’à la valeur
+publique du résultat, et n’est donc pas capable d’inférer la valeur privée de
+~x~, même à travers un flot indirect d’information.
+
+#+BEGIN_SRC js
+function f(x) {  // x: true | false
+  var y = true   // y: true
+  var z = true   // z: true
+  if (x)
+    y = false    // y: false | true
+  if (y)
+    z = false    // z: true | false
+  return z
+}
+#+END_SRC
+
+Pour réaliser l’instrumentation de Narcissus pour l’évaluation multi-facettes,
+les auteurs ont modifié directement le code source de l’interpréteur Narcissus.
+On peut obtenir l’ensemble des changements effectués en extrayant un /diff/ des
+deux versions[fn:narcissus-diff].
+
+Pour donner une idée de l’échelle du projet, Narcissus fait 6000 lignes de
+code[fn:lines-of-code], et les deux plus gros fichiers sont le parseur (1600
+lignes) et le fichier principal de interpréteur, “jsexec” (1300 lignes).  Ce
+fichier principal contient la logique pour interpréter des arbres de syntaxe
+abstraits, et pour mettre en place l’environnement d’exécution des programmes
+clients.  Les changements effectués pour l’implémentation de l’évaluation
+multi-facettes sont restreints à ce fichier principal; 640 lignes sont
+affectées, soit la moitié.
+
+En observant le diff de plus près, on peut classer les changement de
+l’instrumentation en trois catégories:
+
+1. Les changements effectués pour accommoder le /program counter/ utilisé par
+   l’analyse.  D’abord, le constructeur de l’objet ~ExecutionContext~ est étendu
+   pour accepter un argument supplémentaire: la valeur courante du /program
+   counter/, ~pc~.  Voici un extrait du diff qui illustre ce
+   changement[fn:diff-syntax]:
+
+   #+BEGIN_SRC diff
+- function ExecutionContext(type, version) {
++ function ExecutionContext(type, pc, version {
++   this.pc = pc;
+   #+END_SRC
+
+   Dans Narcissus, une instance de l’objet ~ExecutionContext~ est créée lorsque
+   le contrôle est transféré à du code client exécutable: lors de l’entrée dans
+   une fonction, lors d’un appel à ~eval~, ou lors de l’exécution d’un programme
+   entier.  L’objet ~ExecutionContext~ contient les variables importantes pour
+   l’exécution du code; en particulier l’environnement lexical utilisé pour
+   résoudre les noms de variables du code exécuté par ce contexte.  L’objet
+   ~ExecutionContext~ est une réification du concept éponyme de la spécification
+   ECMAScript[fn:ecma-execution-contexts].
+
+[fn:narcissus-diff] Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]]
+et [[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
+
+[fn:lines-of-code] Lignes physiques, commentaires inclus mais sans compter les
+lignes vides.
+
+[fn:diff-syntax] Le symbole ~-~ marque une ligne supprimée de l’interpréteur;
+le symbole ~+~ marque une ligne ajoutée par l’instrumentation.
+
+[fn:ecma-execution-contexts] Voir la section 10.3 de la spécification.
 * Building from scratch vs. extending existing interpreters
 When we think of instrumentation, we think mostly of the latter.  The two
 approaches map to mental models: see [[file:notes.org::*Unanticipated%20extension%20is%20just%20a%20hack][Unanticipated extension is just a hack]].
