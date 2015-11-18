@@ -844,6 +844,52 @@ filter-branch~.
 Now I just have to remember to make a fresh git clone of those projects from my
 other computers.
 
+** [2015-11-18 mer.]
+*** Making the diagram for tangled concerns in Narcissus
+Already had done the ground work of stitching the code into a single picture,
+and labeling the diff with the concerns.  But it’s a large PNG, and I want only
+a ‘big picture’ that shows the fragmentation of concerns over the code.
+
+**** Aligning rectangles to the grid
+Since I want a vector diagram, I loaded the PNG into Inkscape.  Now, I wanted to
+represent one line of code by a rectangle of solid color.  Each color
+corresponds to a category of change, out of the 3 main categories I present in
+the case study.
+
+To line up the rectangles with each line of code, I used a custom-sized grid.
+Grid step height equaled the line height (I eyeballed it), and grid step width
+equaled the column width of my text.
+
+Here are the values I used, in case I need them again:
+: Preferences > Interface > Grid
+: Spacing X = 372px
+: Spacing Y = 1,54920px
+: Major grid line every: 5
+
+Then, I created a rectangle of solid color covering a line.  Copy-pasting this
+rectangle with the grid activated automatically snapped the copy onto the line
+under my cursor.  Then, I could resize the rectangle using the black arrow and
+holding Alt, for covering multiple lines at once (holding Alt does /not/ make
+the resizing snap to grid, but it resizes in increments of the original height,
+which in my case amounted to the same).
+
+**** Recovering the underlying hidden image
+I used some alpha value in the solid colors in order to still see the code
+underneath while putting the rectangles.  Now that this part is over, I can
+deactivate the alpha and hide the underlying image.  To get the image back, I
+can go through Edit > Find/Replace, and search for ‘img’, including hidden tags.
+Or I can go through Edit > XML Editor and go through the tree to look for it.
+
+**** Choosing a palette
+Went to [[http://colorbrewer2.org/][ColorBrewer]] to find a qualitative palette for 4 classes.  Might change
+that later, but for the moment it is not offensive and does the job.
+
+**** Exporting in batch mode
+I put the SVG into an svg folder.  Then I add a rule to the Makefile to produce
+a PDF from an SVG using Inkscape in batch mode.
+
+: inkscape --file svg/narcissus-diff.svg --export-pdf=img/narcissus-diff.pdf
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

@@ -1,13 +1,18 @@
 TEXINPUTS='.:tex:' # Trailing ':' will make pdflatex include system paths
 LATEXMK_ARGS=-pdflatex=xelatex -output-directory=pdf -pdf -synctex=1 -quiet
 
+# Convert all SVG images into svg folder to PDF into img folder.
+SVG_IMG=$(wildcard svg/*.svg)
+PDF_IMG=$(patsubst svg/%.svg, img/%.pdf, $(SVG_IMG))
+
 .PHONY: clean go
 
 pdf/manuscript.pdf: tex/manuscript.tex tex/preamble.tex \
-										tex/frontmatter.tex tex/acks.tex \
-										tex/backmatter.tex \
-										refs.bib \
-                    tex/tufte-latex.sty
+                    tex/frontmatter.tex tex/acks.tex \
+                    tex/backmatter.tex \
+                    refs.bib \
+                    tex/tufte-latex.sty \
+                    $(PDF_IMG)
 	env TEXINPUTS=${TEXINPUTS} latexmk ${LATEXMK_ARGS} tex/manuscript.tex
 
 # Only useful for debugging the TeX output with Synctex, since it does not
@@ -36,6 +41,11 @@ tex/acks.tex: manuscript.org tex/export-setup.el
         --file manuscript.org \
         --eval '(re-search-forward "\\\* Acknowledgements")' \
         --eval '(org-latex-export-to-latex nil t nil t)'
+
+
+# Convert SVG to PDF with Inkscape.
+img/%.pdf: svg/%.svg
+	inkscape --file $< --export-pdf=$@
 
 clean:
 	latexmk -output-directory=pdf -C -f tex/manuscript.tex
