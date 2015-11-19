@@ -1720,31 +1720,21 @@ suivre les étiquettes même lors de branchements (des flots /indirects/),
 l’évaluation multi-facettes maintient une liste des embranchements suivis lors
 de l’exécution; cette liste est appelée /program counter/ (PC).
 
+#+ATTR_LATEX: :float margin
+#+CAPTION: Une valeur à deux facettes.
+[[file:img/a-facet.pdf]]
+
 Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
 fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
 facettes avec une valeur privée ~true~ et une valeur publique ~false~ (qu’on
-écrit ~true | false~), alors le premier ~if~ sera exécuté deux fois: une fois
-pour chaque facette de la condition.  Après le second ~if~, la fonction retourne
-la valeur ~true | false~.  Un observateur non autorisé n’a accès qu’à la valeur
+écrit ~true:false~), alors le premier ~if~ sera exécuté deux fois: une fois pour
+chaque facette de la condition.  Après le second ~if~, la fonction retourne la
+valeur ~true:false~.  Un observateur non autorisé n’a accès qu’à la valeur
 publique du résultat, et n’est donc pas capable d’inférer la valeur privée de
 ~x~, même à travers un flot indirect d’information.
 
-#+BEGIN_SRC js
-function f(x) {  // x: true | false
-  var y = true   // y: true
-  var z = true   // z: true
-  if (x)
-    y = false    // y: false | true
-  if (y)
-    z = false    // z: true | false
-  return z
-}
-#+END_SRC
-
-Pour réaliser l’instrumentation de Narcissus pour l’évaluation multi-facettes,
-les auteurs ont modifié directement le code source de l’interpréteur Narcissus.
-On peut obtenir l’ensemble des changements effectués en extrayant un /diff/ des
-deux versions[fn:narcissus-diff].
+#+ATTR_LATEX: :height 3.5cm :float t
+[[file:img/fenton-example.pdf]]
 
 Pour donner une idée de l’échelle du projet, Narcissus fait 6000 lignes de
 code[fn:lines-of-code], et les deux plus gros fichiers sont le parseur (1600
@@ -1755,10 +1745,65 @@ clients.  Les changements effectués pour l’implémentation de l’évaluation
 multi-facettes sont restreints à ce fichier principal; 640 lignes sont
 affectées, soit la moitié.
 
-En observant le diff de plus près, on peut classer les changement de
-l’instrumentation en trois catégories:
+Pour réaliser l’instrumentation de Narcissus pour l’évaluation multi-facettes,
+les auteurs ont modifié directement le code source de l’interpréteur Narcissus.
+On peut obtenir l’ensemble des changements effectués en extrayant un /diff/ des
+deux versions[fn:narcissus-diff].  La figure [[visual-narcissus-diff]] donne une
+vue d’ensemble des changements.
 
-1. Les changements effectués pour accommoder le /program counter/ utilisé par
+#+NAME: visual-narcissus-diff
+#+CAPTION: Visualisation des modifications apportées par l’instrumentation de
+#+CAPTION: Narcissus pour l’évaluation multi-facettes.  Le diff de “jsexec” y
+#+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
+#+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
+#+CAPTION: partie.  Les lignes grises ne sont pas affectées par
+#+CAPTION: l’instrumentation.  [[file:img/narcissus-diff-legend.pdf]]
+[[file:img/narcissus-diff.pdf]]
+
+On constate immédiatement que les changements effectués par l’instrumentation
+touchent de nombreuses parties du code de l’interpréteur, sans être restreints à
+une ou deux régions particulières.  Les changements sont *éparpillés* dans le
+code.  De plus, les changements de même nature—appartenant à la même
+catégorie—ne sont pas regroupés.  Résultat, il devient difficile de comprendre
+les effets de l’instrumentation à l’œil nu, ou de s’assurer de sa justesse par
+rapport à une spécification formelle.  Il devient difficile également, sans
+connaissances avancées de Narcissus et de l’évaluation multi-facettes, de savoir
+si une ligne de code de l’interpréteur instrumenté concerne l’interprétation
+décrite par le standard ECMAScript, ou si elle concerne l’évaluation
+multi-facettes.  Le code de l’interpréteur instrumenté ne comporte aucune
+information qui permet de les distinguer.
+
+On constate également que l’instrumentation *duplique tout le code* de
+l’interpréteur.  C’est une solution simple pour créer un interpréteur qui
+supporte l’évaluation multi-facettes.  En revanche, la duplication de code a un
+impact important sur la maintenance à long terme: plus de double du code doit
+être maintenu.  Les changements requis dans le code source pour corriger un bug
+dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
+répétés dans l’instrumentation.  Le coût de maintenance devient prohibitif
+lorsque /plusieurs/ instrumentations sont envisagées.
+
+En observant le diff de plus près, on peut distinguer quatre catégories de
+changements:
+
+1. De nouvelles définitions ont besoin d’être importées dans le module de
+   l’interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
+   ajouts qui sont localisés en début et en fin de fichier respectivement.
+   Voici comment ils se présentent dans le code:
+
+   #+BEGIN_SRC diff
++ // Faceted Value utilities
++ var FacetedValue = Zaphod.facets.FacetedValue;
++ var ProgramCounter = Zaphod.facets.ProgramCounter;
+...
+   #+END_SRC
+
+   #+BEGIN_SRC diff
+-      test: test
++      test: test,
++      getPC: getGC
+   #+END_SRC
+
+2. Les changements effectués pour accommoder le /program counter/ utilisé par
    l’analyse.  D’abord, le constructeur de l’objet ~ExecutionContext~ est étendu
    pour accepter un argument supplémentaire: la valeur courante du /program
    counter/, ~pc~.  Voici un extrait du diff qui illustre ce
@@ -1779,7 +1824,7 @@ l’instrumentation en trois catégories:
    ~ExecutionContext~ est une réification du concept éponyme de la spécification
    ECMAScript[fn:ecma-execution-contexts].
 
-   Puisque la signature du constructeur d’~ExecutionContext~ est étendue, tous
+   Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous
    ses appels doivent être modifiés en conséquence pour fournir une valeur
    correcte pour le paramètre /program counter/.  Il y a plus de 80 instances de
    ce simple changement dans l’instrumentation.  En voici deux exemples:
@@ -1792,7 +1837,7 @@ l’instrumentation en trois catégories:
 + getValue(execute(n.children[0], x), pc);
    #+END_SRC
 
-2. Les changements effectués dans l’exécution de l’arbre de syntaxe abstrait
+3. Les changements effectués dans l’exécution de l’arbre de syntaxe abstrait
    (AST) pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
    additionner deux valeurs à facettes devrait produire une nouvelle valeur à
    facettes.  Dans l’implémentation, plutôt que de simplement additionner les
@@ -1823,7 +1868,7 @@ l’instrumentation en trois catégories:
    avec cette valeur comme premier argument, et comme second une fonction
    qui opère sur une valeur simple.
 
-3. Les changements effectués sur l’environnement d’exécution de code client.
+4. Les changements effectués sur l’environnement d’exécution de code client.
    Dans un programme JavaScript, l’environnement d’exécution fournit un objet
    ~global~ qui contient les définitions de base comme ~Array~, ~Math~, ~String~
    et ~Object~.  Puisque Narcissus est meta-circulaire, il réutilise l’objet
@@ -1851,32 +1896,9 @@ l’instrumentation en trois catégories:
    suivre les valeurs étiquetées passées en argument du constructeur de chaînes
    de caractères.
 
-De cet examen en détail de l’instrumentation de Narcissus pour l’évaluation
-multi-facettes, nous faisons deux observations importantes.
+Le fait que la plupart des changements appartiennent à une de ces quatre
+catégories indique qu’il y a un potentiel de factorisation de ces changements.
 
-L’instrumentation *duplique tout le code* de l’interpréteur.  C’est une solution
-simple pour créer un interpréteur qui supporte l’évaluation multi-facettes.
-En revanche, la duplication de code a un impact important sur la maintenance à
-long terme: plus de double du code doit être maintenu.  Les changements requis
-dans le code source pour corriger un bug dans Narcissus, ou pour ajouter une
-fonctionnalité doivent désormais être répétés dans l’instrumentation.  Le coût
-de maintenance devient prohibitif lorsque /plusieurs/ instrumentations sont
-envisagées.
-
-Les changements effectués par l’instrumentation sont *éparpillés* dans le code
-de l’interpréteur.  Les changements de même nature—appartenant à la même
-catégorie—ne sont pas regroupés au même endroit du code source.  Résultat, il
-devient difficile de comprendre les effets de l’instrumentation à l’œil nu, ou
-de s’assurer de sa justesse par rapport à une spécification formelle.  Il
-devient difficile également, sans connaissances avancées de Narcissus et de
-l’évaluation multi-facettes, de savoir si une ligne de code de l’interpréteur
-instrumenté concerne l’interprétation décrite par le standard ECMAScript, ou
-si elle concerne l’évaluation multi-facettes.  Encore une fois, ce problème est
-aggravé lorsque plusieurs instrumentations sont considérées.
-
-#+CAPTION: Visualisation des modifications apportées par l’instrumentation de
-#+CAPTION: Narcissus pour l’évaluation multi-facettes.
-[[file:img/narcissus-diff.pdf]]
 
 
 [fn:narcissus-diff] Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]]

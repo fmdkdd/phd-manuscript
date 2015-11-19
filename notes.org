@@ -890,6 +890,31 @@ a PDF from an SVG using Inkscape in batch mode.
 
 : inkscape --file svg/narcissus-diff.svg --export-pdf=img/narcissus-diff.pdf
 
+** [2015-11-19 jeu.]
+*** Images in caption
+So, I needed to put the legend of yesterday’s diagram in the caption.  Making a
+file link in the Org CAPTION works (though it does not seem to be recognized as
+a link by org-mode).
+
+On export, an ~includegraphics~ is included in the caption.  However, LaTeX
+complains.  [[http://tex.stackexchange.com/questions/54049/placing-graphics-inside-figure-captions][Turns out]] that you have to ~\protect~ that command in a caption, or
+put something into the optional argument of the caption (short name for the list
+of figures).
+
+You /can/ specify the short name in Org:
+
+: #+CAPTION[short]: long
+
+But!  It’s not sufficient in my case, since ~figure~ is actually redefined by
+tufte-latex, and only the ~\protect~ will do.
+
+So, I bring out the big guns and I advise ~org-latex--inline-image~ to add a
+~\protect~ in front of ~\includegraphics~ for image links.  I do this regardless
+of whether I am in a caption.  I don’t know enough LaTeX to know whether this
+will cause me headaches in the long run, but it works for now... (famous last
+words)
+
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
