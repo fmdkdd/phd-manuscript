@@ -919,6 +919,12 @@ Argh.  Listings environment by default can be broken over a page.  But not
 figures.  So, wrapping a listing in a figure gives the figure behavior.  Might
 be problematic down the road, as I intend to include many code.
 
+** [2015-11-20 ven.]
+*** Fixing space around figures
+Smaller space via ~\intextsep~ (cf. [[http://tex.stackexchange.com/questions/38393/spacing-around-table-and-figure-environments][SO]]).  Listings had an extra space above,
+even though I put ~aboveskip~ and ~belowskip~ both to 0... Putting a negative
+value in ~aboveskip~ did the trick.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

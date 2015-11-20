@@ -22,6 +22,9 @@
 %% More space for main text body.
 \addtolength{\textheight}{5em}
 
+%% Small space around and below floats.
+\setlength{\intextsep}{1ex}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% General typography
 
@@ -66,7 +69,7 @@
 \usepackage[
   nobib,                        % Don’t override \cite
   symmetric,                    % Twosides
-  sidenote=raggedouter  ,       % Always ragged text for margin stuff
+  sidenote=raggedouter,         % Always ragged text for margin stuff
   marginnote=raggedouter,
   caption=raggedouter,
   citation=raggedouter,
@@ -96,7 +99,7 @@
   columns=fullflexible, keepspaces=true,
   breaklines=false, showstringspaces=false,
   escapeinside={//*}{\^^M},     % Escape to LaTeX between //* and line return
-  aboveskip=0pt,
+  aboveskip=-4pt,               % No space above and below, symmetric
   belowskip=0pt,
   %extendedchars=true, inputencoding=utf8,
 }
