@@ -450,7 +450,6 @@ qualitative goal like good program structure.
 #+END_QUOTE
 
 *** Knuth’s reasonable position on GOTO
-
 Re-reading [[cite:Knu-74][Knu-74]] (at least I think I’ve skimmed through it at least once, but
 some parts seem new to me).
 
@@ -939,7 +938,13 @@ if the option was absent.  Apparently, a “nil” value will be turned into the
 symbol, which makes the absence of value indistinguishable from the presence of
 a “nil” value.  I guess it’s understandable.
 
-So I went for ~:no-center~ instead.
+So I went for ~:no-center~ instead.  But!  Giving no value to the option seems
+to still return nil.  So you can’t have a simple boolean option that is either
+present or not.  I must write:
+
+: attr_latex: :no-center t
+
+which is redundant.  Oh well.
 
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the

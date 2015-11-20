@@ -1,5 +1,4 @@
-# -*- org-confirm-babel-evaluate: nil -*-
-# -*- org-babel-use-quick-and-dirty-noweb-expansion: t -*-
+# -*- org-confirm-babel-evaluate: nil; org-babel-use-quick-and-dirty-noweb-expansion: t -*-
 
 #+TITLE: Language mechanisms and patterns for extending interpreters
 #+AUTHOR: fmdkdd
@@ -62,7 +61,8 @@
    - [[#semantic-patches][Semantic patches]]
      - [[#mechanisms-for-extension][Mechanisms for extension]]
  - [[#Étude-de-cas-extension-ad-hoc-de-narcissus][Étude de cas: extension ad-hoc de Narcissus]]
- - [[#building-from-scratch-vs-extending-existing-interpreters][Building from scratch vs. extending existing interpreters]]
+ - [[#variations-sur-un-interpréteur-de-lambda-calcul-extensible][Variations sur un interpréteur de lambda-calcul extensible]]
+ - [[#building-from-scratch-vs-extending][Building from scratch vs. extending]]
    - [[#the-problem][The problem]]
      - [[#case-study-narcissus-instrumentation-for-faceted-evaluation][Case study: Narcissus instrumentation for faceted evaluation]]
      - [[#finding-a-core-example][Finding a core example]]
@@ -1773,7 +1773,7 @@ décrite par le standard ECMAScript, ou si elle concerne l’évaluation
 multi-facettes.  Le code de l’interpréteur instrumenté ne comporte aucune
 information qui permet de les distinguer.
 
-On constate également que l’instrumentation *duplique tout le code* de
+Autre point important: l’instrumentation *duplique tout le code* de
 l’interpréteur.  C’est une solution simple pour créer un interpréteur qui
 supporte l’évaluation multi-facettes.  En revanche, la duplication de code a un
 impact important sur la maintenance à long terme: plus de double du code doit
@@ -1893,8 +1893,33 @@ suivre les valeurs étiquetées passées en argument du constructeur de chaînes
 caractères.
 
 Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories indique qu’il y a un potentiel de factorisation de ces changements.
+catégories indique qu’il y a un potentiel de factorisation.  Si l’on souhaite
+rendre Narcissus extensibles, afin de pouvoir définir l’évaluation
+multi-facettes sans duplication de code, il faut trouver des façons d’exprimer
+les changements de ces quatre catégories.  Mais si nous souhaites exprimer
+d’autres analyses, et étendre d’autres interpréteurs, il faut tenter des trouver
+des mécanismes génériques qui pourront être réemployés pour ces autres cas.
 
+Pour prendre un peu de recul par rapport à l’instrumentation de Narcissus, on
+peut s’intéresser à la définition formelle de l’évaluation multi-facettes.
+Celle-ci est donnée sous forme d’une sémantique opérationnelle d’un langage
+proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d’abord donnée
+sans considérer l’évaluation multi-facettes, et suit une définition usuelle d’un
+lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
+références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
+JavaScript.
+
+Dans un second temps, une sémantique alternative est présentée qui introduit les
+changements nécessaires pour l’évaluation multi-facettes.  Il s’agit d’une copie
+de la première sémantique, avec quelques changements et ajouts.  On y retrouve
+les deux des quatre catégories de changements dégagées du diff.  Le /program
+counter/ accompagne chaque règle d’évaluation, et de nouvelles règles sont
+ajoutées pour séparer l’évaluation de valeurs à facette en deux parties.
+
+Les règles de la sémantique instrumentées tiennent sur une page; un
+interpréteur pour cette sémantique est donc considérablement plus petit qu’un
+interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
+des mécanismes d’extensibilité.
 
 
 [fn:narcissus-diff] Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]]
@@ -1908,15 +1933,150 @@ le symbole ~+~ marque une ligne ajoutée par l’instrumentation.  L’absence d
 marque indique une ligne commune aux deux versions.
 
 [fn:ecma-execution-contexts] Voir la section 10.3 de la spécification.
-* Building from scratch vs. extending existing interpreters
-When we think of instrumentation, we think mostly of the latter.  The two
-approaches map to mental models: see [[file:notes.org::*Unanticipated%20extension%20is%20just%20a%20hack][Unanticipated extension is just a hack]].
 
-Extending has its limits; it’s not the proper way to do things.
+* Variations sur un interpréteur de lambda-calcul extensible
+Essayons d’abord d’écrire un interpréteur pour chaque sémantique de \lambda^{facet}, sans
+anticiper l’instrumentation; c’est à dire sans se préoccuper de pouvoir étendre
+l’interpréteur facilement.
 
-On the other hand, it’s unclear how to build modular interpreters amenable to
-extension from building blocks.
+Puisque Narcissus est en JavaScript, et suit le patron /module/, écrivons un
+interpréteur de \lambda^{facet} dans le même style.
 
+#+NAME: ast-nodes
+#+BEGIN_SRC js
+function bot(e) { return {type: 'BOT', e}; }
+function c(e) { return {type: 'CONST', e}; }
+function v(e) { return {type: 'VAR', e}; }
+function fun(argName, body) { return {type: 'FUN', argName, body}; }
+function app(fun, arg) { return {type: 'APP', fun, arg}; }
+function ref(e) { return {type: 'REF', e}; }
+function deref(e) { return {type: 'DEREF', e}; }
+function assign(left, right) { return {type: 'ASSIGN', left, right}; }
+#+END_SRC
+
+#+NAME: interpreter
+#+BEGIN_SRC js
+var interpreter = (function(){
+  var bottom = {
+    toString() { return 'BOT'},
+    _call(arg, context) { return this },
+    deref(context) { return this },
+  }
+
+  function Address(a) {
+    this.a = a
+  }
+
+  Address.prototype.deref = function(context) {
+    return context.store.retrieve(this.a)
+  }
+
+  function ExecutionContext(parent) {
+    if (parent) {
+      this.scope = Object.create(parent.scope)
+      this.store = parent.store
+    }
+    else {
+      this.scope = {}
+      this.store = new Store()
+    }
+  }
+
+  function Store() {
+    this.refs = []
+  }
+
+  Store.prototype.add = function(value) {
+    this.refs.push(value)
+    return this.refs.length - 1
+  }
+
+  Store.prototype.retrieve = function(addr) {
+    return this.refs[addr]
+  }
+
+  function FunctionObject(node, scope) {
+    this.node = node
+    this.scope = scope
+  }
+
+  FunctionObject.prototype._call = function(arg, context) {
+    context.scope[this.node.argName] = arg
+    return execute(this.node.body, context)
+  }
+
+  function execute(node, context) {
+    var v, f, a, x, r
+
+    switch(node.type) {
+    case 'BOT':
+      v = bottom
+      break
+
+    case 'CONST':
+      v = node.e
+      break
+
+    case 'VAR':
+      v = context.scope[node.e]
+      break
+
+    case 'FUN':
+      v = new FunctionObject(node, context.scope)
+      break
+
+    case 'APP':
+      f = execute(node.fun, context)
+      a = execute(node.arg, context)
+      x = new ExecutionContext(context)
+      v = f._call(a, x)
+      break
+
+    case 'REF':
+      r = execute(node.e, context)
+      a = context.store.add(r)
+      v = new Address(a)
+      break
+
+    case 'DEREF':
+      a = execute(node.e, context)
+      v = a.deref(context)
+      break
+    }
+
+    return v
+  }
+
+  function run(ast) {
+    return execute(ast, new ExecutionContext())
+  }
+
+  return {
+    run: run,
+    bottom: bottom,
+  }
+}())
+#+END_SRC
+
+#+BEGIN_SRC js :results output :noweb yes
+<<ast-nodes>>
+<<interpreter>>
+
+print(interpreter.run(app(fun('x', v('x')), c(42))) === 42)
+print(interpreter.run(bot()) === interpreter.bottom)
+print(interpreter.run(app(bot(), c(42))) === interpreter.bottom)
+print(interpreter.run(app(fun('x', deref(v('x'))), ref(c(42)))) === 42)
+print(interpreter.run(deref(bot())) === interpreter.bottom)
+#+END_SRC
+
+#+RESULTS:
+: true
+: true
+: true
+: true
+: true
+
+* Building from scratch vs. extending
 ** The problem
 Say we have a monadic interpreter for a toy language.  We want to
 instrument this interpreter: modify the rules to create additional
