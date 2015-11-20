@@ -925,6 +925,22 @@ Smaller space via ~\intextsep~ (cf. [[http://tex.stackexchange.com/questions/383
 even though I put ~aboveskip~ and ~belowskip~ both to 0... Putting a negative
 value in ~aboveskip~ did the trick.
 
+*** Adding a toggle for ~\centering~ in figures
+I already override the function to export inline images in [[file:tex/export-setup.el][export-setup.el]],
+so...  Just another case of getting the argument and formatting.
+
+Tricky thing though.  I went for an option ~:center~, like this:
+
+: attr_latex: :center nil
+
+So, nil removes the ~centering~, but absence of the option leaves it.
+~plist-get~ gives you whatever was written after the option.  But it returns nil
+if the option was absent.  Apparently, a “nil” value will be turned into the
+symbol, which makes the absence of value indistinguishable from the presence of
+a “nil” value.  I guess it’s understandable.
+
+So I went for ~:no-center~ instead.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

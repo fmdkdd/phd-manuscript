@@ -217,6 +217,7 @@ contextual information."
   ;; works.  I also add a `margin' option to the `float' attribute passed by
   ;; ATTR_LATEX in Org, to trigger the `marginfigure' environment of
   ;; tufte-latex.
+  ;; Also adds a `:no-center' option to disable figure centering.
   (defun fmdkdd//org-latex--inline-image (orig link info)
     "Return LaTeX code for an inline image.
 LINK is the link pointing to the inline image.  INFO is a plist
@@ -251,6 +252,7 @@ used as a communication channel."
                 (format "[%s]" (plist-get info :latex-default-figure-position)))
                (t ""))))
            (comment-include (if (plist-get attr :comment-include) "%" ""))
+           (center (if (plist-get attr :no-center) "" "\\centering\n"))
            ;; It is possible to specify width and height in the
            ;; ATTR_LATEX line, and also via default variables.
            (width (cond ((plist-get attr :width))
@@ -316,42 +318,42 @@ used as a communication channel."
       ;; Return proper string, depending on FLOAT.
       (case float
         (wrap (format "\\begin{wrapfigure}%s
-%s\\centering
-%s%s
+%s%s%s%s
 %s\\end{wrapfigure}"
                       placement
                       (if caption-above-p caption "")
+                      center
                       comment-include image-code
                       (if caption-above-p "" caption)))
         (sideways (format "\\begin{sidewaysfigure}
-%s\\centering
-%s%s
+%s%s%s%s
 %s\\end{sidewaysfigure}"
                           (if caption-above-p caption "")
+                          center
                           comment-include image-code
                           (if caption-above-p "" caption)))
         (multicolumn (format "\\begin{figure*}%s
-%s\\centering
-%s%s
+%s%s%s%s
 %s\\end{figure*}"
                              placement
                              (if caption-above-p caption "")
+                             center
                              comment-include image-code
                              (if caption-above-p "" caption)))
         (figure (format "\\begin{figure}%s
-%s\\centering
-%s%s
+%s%s%s%s
 %s\\end{figure}"
                         placement
                         (if caption-above-p caption "")
+                        center
                         comment-include image-code
                         (if caption-above-p "" caption)))
         (margin (format "\\begin{marginfigure}%s
-%s\\centering
-%s%s
+%s%s%s%s
 %s\\end{marginfigure}"
                         placement
                         (if caption-above-p caption "")
+                        center
                         comment-include image-code
                         (if caption-above-p "" caption)))
         (nonfloat
