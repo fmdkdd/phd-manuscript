@@ -1941,10 +1941,14 @@ Essayons d’abord d’écrire un interpréteur pour chaque sémantique de \lamb
 anticiper l’instrumentation; c’est à dire sans se préoccuper de pouvoir étendre
 l’interpréteur facilement.
 
-Puisque Narcissus est en JavaScript, et suit le patron /module/, écrivons un
-interpréteur de \lambda^{facet} dans le même style.
+Nous appellerons \lambda^{standard}^{} le langage décrit par la première sémantique d’Austin
+et Flanagan, qui correspond à un lambda-calcul avec références, et \lambda^{facet} le
+langage étendu pour l’évaluation multi-facettes.
 
-#+NAME: ast-nodes
+Puisque Narcissus est en JavaScript, et suit le patron /module/, écrivons un
+interpréteur de \lambda^{standard} dans le même style.
+
+#+NAME: lambda-standard/ast-nodes
 #+BEGIN_SRC js
 function bot(e) { return {type: 'BOT', e}; }
 function c(e) { return {type: 'CONST', e}; }
@@ -1956,7 +1960,7 @@ function deref(e) { return {type: 'DEREF', e}; }
 function assign(left, right) { return {type: 'ASSIGN', left, right}; }
 #+END_SRC
 
-#+NAME: interpreter
+#+NAME: lambda-standard/interpreter
 #+BEGIN_SRC js
 var interpreter = (function(){
   var bottom = {
@@ -2061,8 +2065,158 @@ var interpreter = (function(){
 #+END_SRC
 
 #+BEGIN_SRC js :results output :noweb yes
-<<ast-nodes>>
-<<interpreter>>
+<<lambda-standard/ast-nodes>>
+<<lambda-standard/interpreter>>
+
+print(interpreter.run(app(fun('x', v('x')), c(42))) === 42)
+print(interpreter.run(bot()) === interpreter.bottom)
+print(interpreter.run(app(bot(), c(42))) === interpreter.bottom)
+print(interpreter.run(app(fun('x', deref(v('x'))), ref(c(42)))) === 42)
+print(interpreter.run(deref(bot())) === interpreter.bottom)
+#+END_SRC
+
+#+RESULTS:
+: true
+: true
+: true
+: true
+: true
+
+Ce simple interpréteur reflète la structure de Narcissus, mais est bien plus
+succinct.
+
+Comme dans Narcissus, le gros de la logique de l’interpréteur réside dans la
+fonction ~execute~.  Les définitions qui précèdent réifient des objets de la
+spécification: ~Address~, ~bottom~, ~FunctionObject~.  On réutilise
+le nom ~ExecutionContext~ pour indiquer l’objet qui contient les environnements
+de variables et qui est passé au fil des appels récursifs à ~execute~.
+
+On peut maintenant modifier cet interpréteur pour implémenter la seconde
+sémantique de \lambda^{facet}.  Comme pour l’instrumentation de Narcissus, on part de
+l’interpréteur du langage standard, qu’on modifie par endroits suivant les
+besoins de la nouvelle sémantique.  L’idée ici n’est pas de construire un
+interpréteur extensible, mais d’identifier les points qui vont varier en
+définissant cette variation.
+
+#+NAME: lambda-facet/ast-nodes
+#+BEGIN_SRC js
+function bot(e) { return {type: 'BOT', e}; }
+function c(e) { return {type: 'CONST', e}; }
+function v(e) { return {type: 'VAR', e}; }
+function fun(argName, body) { return {type: 'FUN', argName, body}; }
+function app(fun, arg) { return {type: 'APP', fun, arg}; }
+function ref(e) { return {type: 'REF', e}; }
+function deref(e) { return {type: 'DEREF', e}; }
+function assign(left, right) { return {type: 'ASSIGN', left, right}; }
+#+END_SRC
+
+#+NAME: lambda-facet/interpreter
+#+BEGIN_SRC js
+var interpreter = (function(){
+  var bottom = {
+    toString() { return 'BOT'},
+    _call(arg, context) { return this },
+    deref(context) { return this },
+  }
+
+  function Address(a) {
+    this.a = a
+  }
+
+  Address.prototype.deref = function(context) {
+    return context.store.retrieve(this.a)
+  }
+
+  function ExecutionContext(parent) {
+    if (parent) {
+      this.scope = Object.create(parent.scope)
+      this.store = parent.store
+    }
+    else {
+      this.scope = {}
+      this.store = new Store()
+    }
+  }
+
+  function Store() {
+    this.refs = []
+  }
+
+  Store.prototype.add = function(value) {
+    this.refs.push(value)
+    return this.refs.length - 1
+  }
+
+  Store.prototype.retrieve = function(addr) {
+    return this.refs[addr]
+  }
+
+  function FunctionObject(node, scope) {
+    this.node = node
+    this.scope = scope
+  }
+
+  FunctionObject.prototype._call = function(arg, context) {
+    context.scope[this.node.argName] = arg
+    return execute(this.node.body, context)
+  }
+
+  function execute(node, context) {
+    var v, f, a, x, r
+
+    switch (node.type) {
+    case 'BOT':
+      v = bottom
+      break
+
+    case 'CONST':
+      v = node.e
+      break
+
+    case 'VAR':
+      v = context.scope[node.e]
+      break
+
+    case 'FUN':
+      v = new FunctionObject(node, context.scope)
+      break
+
+    case 'APP':
+      f = execute(node.fun, context)
+      a = execute(node.arg, context)
+      x = new ExecutionContext(context)
+      v = f._call(a, x)
+      break
+
+    case 'REF':
+      r = execute(node.e, context)
+      a = context.store.add(r)
+      v = new Address(a)
+      break
+
+    case 'DEREF':
+      a = execute(node.e, context)
+      v = a.deref(context)
+      break
+    }
+
+    return v
+  }
+
+  function run(ast) {
+    return execute(ast, new ExecutionContext())
+  }
+
+  return {
+    run: run,
+    bottom: bottom,
+  }
+}())
+#+END_SRC
+
+#+BEGIN_SRC js :results output :noweb yes
+<<lambda-facet/ast-nodes>>
+<<lambda-facet/interpreter>>
 
 print(interpreter.run(app(fun('x', v('x')), c(42))) === 42)
 print(interpreter.run(bot()) === interpreter.bottom)

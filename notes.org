@@ -946,6 +946,107 @@ present or not.  I must write:
 
 which is redundant.  Oh well.
 
+** [2015-11-25 mer.]
+*** Reading by following leads from reviewer #3
+“Homogenous embeddings” [[cite:Tra-08][Tra-08]] seems like a fancy academic word for “DSL”, or a
+distinction thereof that I do not quite grasp.  The paper is obscure and I don’t
+quite understand the problem it tries to solve.
+
+“Growing a language” [[cite:Ste-99][Ste-99]].  Is there ever a Steele paper I disliked?  Argues
+that a well-designed language is often small, too small to be of use for the
+real programs of today.  Large languages provide many words to be used for the
+real programs.  But large languages are too hard to design, and too hard to
+learn.  Hence, one must design /growable languages/.  Start small, but give
+users the tools to extend the vocabulary of their language.  Matches content to
+form by giving a talk made of one syllables words, and defining longer words as
+he goes.  Behind this general advice, says that he wants generic types and
+operator overloading in Java.  One of them did not make it; this was in 1999.
+Steele went on to develop Fortress, which he considers as an example of growable
+language.
+
+“Modular Domain Specific Languages and Tools” [[cite:Hud-98][Hud-98]].  DSLs are good, because
+they are domain-specific.  Programs written in them are more declarative, and
+easier to learn (HTML and LaTeX users rarely deal with control flow, for
+instance).  But DLSs are hard to write and their vocabulary is tricky to get
+right.  Hence, domain-specific /embedded/ languages (DSELs), which are DSLs
+built inside an existing language.  Reuse the underlying language facilities,
+but build a domain-specific vocabulary inside it.  The term is new, but what it
+describe is old: think Lisp macros.  Of course, Hudak prefers to use Haskell.
+
+Goes off to give examples of DSELs: geometry regions, reactive animations,
+monadic interpreters.  Referential transparency, higher-order functions and
+laziness are the key ingredients to declarative DSELs.  Referential transparency
+is necessary for equational reasoning, like showing associativity or
+distributivity.  Higher-order functions are necessary for composing existing
+behavior into new words for the DSEL vocabulary.  Laziness is necessary for
+writing recursive definitions that we can compute.  Although, maybe those are
+just /sufficient/ for DSELs and not /necessary/.  Hudak only says that without
+those ingredients it would be cumbersome and unnatural, not impossible.  But he
+developed Haskell, so might be a bit biased in this respect.
+
+The nugget, for my topic, is:
+
+#+BEGIN_QUOTE
+The design of truly modular interpreters has been an elusive goal in the
+programming language community for many years.  In particular, one would like to
+design the interpreter so that different language features can be isolated and
+given individualized interpretations in a “building block” manner.  These
+building blocks can then be assembled to yield languages that have only a few, a
+majority, or even all of the individual language features.  Progress by Moggi,
+Espinosa, and Steele [[[cite:Mog-89][Mog-89]], [[cite:Ste-94][Ste-94]], Esp93, [[cite:Spi-95][Spi-95]]] laid the groundwork for our
+recent effort at producing a modular interpreter for a non-trivial language
+[[cite:LHJ-95][LHJ-95]], and basing modular compiler construction technology on it [LH96, Lia98].
+The use of monads [PJW93, [[cite:Wad-90][Wad-90]]] to structure the design was critical.
+
+Our approach means that language features can be added long after the initial
+design, /even if they involve fundamental changes in the interpreter
+functionality/.  [...] At each level the new language features can be added,
+along with their semantics, /without altering any previous code/.
+#+END_QUOTE
+
+An example is briefly given.  An interpreter is just a function:
+
+: interp :: Term -> InterpM Value
+
+But these types are just aliases.  To build an interpreter incrementally, redefine
+the aliases.
+
+: type Term = TermA
+: type Term = OR TermF TermA
+
+I feel this is cheating a bit, since you still have to change existing code.
+Unless you can load the definitions of the types from external files.
+
+All this composition has a performance cost.  But partial evaluation to the
+rescue!  Hudak mentions speedups, but no baseline for comparison; e.g., a
+hand-written instrumented interpreter or program.  This read like an ad with
+very little criticism and basically no word on alternative approaches.
+
+[[cite:LHJ-95][LHJ-95]] goes into lengthy details of how to build this interpreter.  Mostly, it’s
+about using the Either type for composing terms, and monad transformers for
+composing interpreter functions.  Writing monad transformers is a lot of work,
+and some boilerplate.  Lifting is a thorny issue which creates complex code.
+While it seems the interpreter is indeed composed from modular pieces, the
+language is definitely not natural.  Swierstra’s [[cite:Swi-08][Swi-08]] solution is easier on
+the eye.
+
+** [2015-11-26 jeu.]
+*** Catching up on OOPSLA’15
+More reading, while I’m at it.
+
+[[cite:FR-15][FR-15]] questions the folklore that functional programming is better for
+modularity.  Mainly, all proponents cite [[cite:Hug-89][Hug-89]] as proof, and recently the
+claims have become bolder without any empirical evidence.  Authors suggest to
+look for this evidence, and settle the question.  As usual, I do not believe in
+their methods based on large repository mining.  Statistics are devil’s tool.
+And since “modularity” is a highly subjective property, I don’t think any
+measurement of coupling will move proponents of functional programming either
+way.  Still, it’s good someone else cares.
+
+“Binding as Sets of Scopes” gives a new model for hygienic macro replacement.
+Food for thought, as the Open Scope pattern is mostly binding manipulation.
+
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
