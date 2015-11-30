@@ -1939,546 +1939,102 @@ Essayons d’abord d’écrire un interpréteur pour chaque sémantique de \lamb
 anticiper l’instrumentation; c’est à dire sans se préoccuper de pouvoir étendre
 l’interpréteur facilement.
 
-Nous appellerons \lambda^{standard}^{} le langage décrit par la première sémantique d’Austin
+Nous appellerons \lambda^{standard} le langage décrit par la première sémantique d’Austin
 et Flanagan, qui correspond à un lambda-calcul avec références, et \lambda^{facet} le
 langage étendu pour l’évaluation multi-facettes.
 
 Puisque Narcissus est en JavaScript, et suit le patron /module/, écrivons un
 interpréteur de \lambda^{standard} dans le même style.
 
-#+NAME: lambda-standard/ast-nodes
-#+BEGIN_SRC js
-function bot(e) { return {type: 'BOT', e} }
-function c(e) { return {type: 'CONST', e} }
-function v(e) { return {type: 'VAR', e} }
-function fun(argName, body) { return {type: 'FUN', argName, body} }
-function app(fun, arg) { return {type: 'APP', fun, arg} }
-function ref(e) { return {type: 'REF', e} }
-function deref(e) { return {type: 'DEREF', e} }
-function assign(left, right) { return {type: 'ASSIGN', left, right} }
-#+END_SRC
-
-#+NAME: lambda-standard/interpreter
+# From [[file:~/Archim%C3%A8de/Th%C3%A8se/lab/lamfa/js/lab/lamfa-narcissus-style.org][lamfa/js/lamfa-narcissus-style.org]]
 #+BEGIN_SRC js
 var interpreter = (function(){
-  var bottom = {
-    toString() { return 'BOT' },
-    _call(arg, context) { return this },
-    deref(context) { return this },
-  }
-
-  function Address(a) { this.a = a }
-
-  Address.prototype.deref = function(context) {
-    return context.store.retrieve(this.a)
-  }
+  var bottom = {...}
+  function Address() {...}
+  function FunctionObject() {...}
 
   function ExecutionContext(parent) {
-    if (parent) {
-      this.scope = Object.create(parent.scope)
-      this.store = parent.store
-    }
-    else {
-      this.scope = {}
-      this.store = new Store()
-    }
-  }
-
-  function Store() { this.refs = [] }
-
-  Store.prototype.add = function(value) {
-    this.refs.push(value)
-    return this.refs.length - 1
-  }
-
-  Store.prototype.retrieve = function(addr) {
-    return this.refs[addr]
-  }
-
-  function FunctionObject(node, scope) {
-    this.node = node
-    this.scope = scope
-  }
-
-  FunctionObject.prototype._call = function(arg, context) {
-    var x = new ExecutionContext(context)
-    x.scope[this.node.argName] = arg
-    return execute(this.node.body, x)
+    ...
+    this.scope = {}
+    this.store = new Store()
   }
 
   function execute(node, context) {
-    var v, f, a, x, r
-
     switch (node.type) {
-    case 'BOT':
-      v = bottom
-      break
-
-    case 'CONST':
-      v = node.e
-      break
-
-    case 'VAR':
-      v = context.scope[node.e]
-      break
-
-    case 'FUN':
-      v = new FunctionObject(node, context.scope)
-      break
-
-    case 'APP':
-      f = execute(node.fun, context)
-      a = execute(node.arg, context)
-      v = f._call(a, context)
-      break
-
-    case 'REF':
-      r = execute(node.e, context)
-      a = context.store.add(r)
-      v = new Address(a)
-      break
-
-    case 'DEREF':
-      a = execute(node.e, context)
-      v = a.deref(context)
-      break
+    case 'CONST':  ...
+    case 'VAR':    ...
+    case 'FUN':    ...
+    case 'APP':    ...
+    ...
     }
-
-    return v
-  }
-
-  function run(ast) {
-    return execute(ast, new ExecutionContext())
   }
 
   return {
     run: run,
-    bottom: bottom,
   }
 }())
 #+END_SRC
 
-#+BEGIN_SRC js :results output :noweb yes
-<<lambda-standard/ast-nodes>>
-<<lambda-standard/interpreter>>
-
-print(interpreter.run(app(fun('x', v('x')), c(42))) === 42)
-print(interpreter.run(bot()) === interpreter.bottom)
-print(interpreter.run(app(bot(), c(42))) === interpreter.bottom)
-print(interpreter.run(app(fun('x', deref(v('x'))), ref(c(42)))) === 42)
-print(interpreter.run(deref(bot())) === interpreter.bottom)
-#+END_SRC
-
-#+RESULTS:
-: true
-: true
-: true
-: true
-: true
-
 Ce simple interpréteur reflète la structure de Narcissus, mais est bien plus
-succinct.
-
-Comme dans Narcissus, le gros de la logique de l’interpréteur réside dans la
-fonction ~execute~.  Les définitions qui précèdent réifient des objets de la
-spécification: ~Address~, ~bottom~, ~FunctionObject~.  On réutilise
-le nom ~ExecutionContext~ pour indiquer l’objet qui contient les environnements
-de variables et qui est passé au fil des appels récursifs à ~execute~.
+succinct.  Comme dans Narcissus, le gros de la logique de l’interpréteur réside
+dans la fonction ~execute~.  Les définitions qui précèdent réifient des objets
+de la spécification: ~Address~, ~bottom~, ~FunctionObject~.  On réutilise le nom
+~ExecutionContext~ pour indiquer l’objet qui contient l’environnement de
+variable et qui est passé au fil des appels récursifs à ~execute~.  En bas ce
+sont les fonctions exportées par le module.
 
 On peut maintenant modifier cet interpréteur pour implémenter la seconde
 sémantique de \lambda^{facet}.  Comme pour l’instrumentation de Narcissus, on part de
 l’interpréteur du langage standard, qu’on modifie par endroits suivant les
 besoins de la nouvelle sémantique.  L’idée ici n’est pas de construire un
 interpréteur extensible, mais d’identifier les points qui vont varier en
-définissant cette variation.
+définissant cette variation.  Pour cela, on s’intéresse surtout aux différences
+entre les deux versions.
 
-#+NAME: lambda-facet/ast-nodes
-#+BEGIN_SRC js
-function bot(e) { return {type: 'BOT', e} }
-function c(e) { return {type: 'CONST', e} }
-function v(e) { return {type: 'VAR', e} }
-function fun(argName, body) { return {type: 'FUN', argName, body} }
-function app(fun, arg) { return {type: 'APP', fun, arg} }
-function ref(e) { return {type: 'REF', e} }
-function deref(e) { return {type: 'DEREF', e} }
-function assign(left, right) { return {type: 'ASSIGN', left, right} }
-#+END_SRC
+#+CAPTION: Diff simplifié qui illustre les modifications nécessaires pour
+#+CAPTION: l’interpréteur \lambda^{facet}.
+#+BEGIN_SRC diff
++ function Facet() {...}
 
-#+NAME: lambda-facet/facet-definitions
-#+BEGIN_SRC js
-function Facet(k, vh, vl) {
-  this.k = k
-  this.vh = vh
-  this.vl = vl
-}
++ function evaluateEach() {...}
 
-function constructFacet(pc, vh, vl) {
-  if (pc.length === 0)
-    return vh
-
-  var k = pc[0]
-  var rest = pc.slice(1)
-
-  if (pc[0] > 0)
-    return new Facet(k, constructFacet(rest, vh, vl), vl)
-  else
-    return new Facet(-k, vl, constructFacet(rest, vh, vl))
-}
-
-Facet.prototype.toString = function() {
-  return `<${this.k} ? ${this.vh} : ${this.vl}>`
-}
-
-function evaluateEach(v, x, f) {
-  var vh, vl
-  var pc = x.pc
-
-  if (v instanceof Facet) {
-    if (v.k in x.pc)
-      return evaluateEach(v.vh, x, f)
-    else if (-v.k in x.pc)
-      return evaluateEach(v.vl, x, f)
-    else {
-      x.pc[v.k] = true
-      vh = evaluateEach(v.vh, x, f)
-      x.pc[-v.k] = true
-      vl = evaluateEach(v.vl, x, f)
-      x.pc = pc
-
-      return new Facet(v.k, vh, vl)
-    }
-  }
-  else
-    return f(v, x)
-}
-#+END_SRC
-
-#+NAME: lambda-facet/interpreter
-#+BEGIN_SRC js
-var interpreter = (function(){
-  var bottom = {
-    toString() { return 'BOT' },
-    _call(arg, context) { return this },
-    deref(context) { return this },
+  function ExecutionContext() {
++   this.pc = []
   }
 
-  function Address(a) { this.a = a }
+  function execute(...) {
+    ...
+    case CALL:
+-     v = f._call(a, context)
++     v = evaluateEach(f, context, (f, x) => f._call(a, x))
 
-  Address.prototype.deref = function(context) {
-    return context.store.retrieve(this.a)
-  }
+    case REF:
++     v = constructFacet(context.pc, v, bottom)
 
-  function ExecutionContext(parent) {
-    if (parent) {
-      this.scope = Object.create(parent.scope)
-      this.store = parent.store
-      this.pc = parent.pc
-    }
-    else {
-      this.scope = {}
-      this.store = new Store()
-      this.pc = []
-    }
-  }
-
-  function Store() { this.refs = [] }
-
-  Store.prototype.add = function(value) {
-    this.refs.push(value)
-    return this.refs.length - 1
-  }
-
-  Store.prototype.retrieve = function(addr) {
-    return this.refs[addr]
-  }
-
-  function FunctionObject(node, scope) {
-    this.node = node
-    this.scope = scope
-  }
-
-  FunctionObject.prototype.toString = function() {
-    return '<func>'
-  }
-
-  FunctionObject.prototype._call = function(arg, context) {
-    var x = new ExecutionContext(context)
-    x.scope[this.node.argName] = arg
-    return execute(this.node.body, x)
-  }
-
-  function execute(node, context) {
-    var v, f, a, x, r
-
-    switch (node.type) {
-    case 'BOT':
-      v = bottom
-      break
-
-    case 'CONST':
-      v = node.e
-      break
-
-    case 'VAR':
-      v = context.scope[node.e]
-      break
-
-    case 'FUN':
-      v = new FunctionObject(node, context.scope)
-      break
-
-    case 'APP':
-      f = execute(node.fun, context)
-      a = execute(node.arg, context)
-      v = evaluateEach(f, context, (f, x) => f._call(a, x))
-      break
-
-    case 'REF':
-      r = execute(node.e, context)
-      a = context.store.add(r)
-      v = new Address(a)
-      v = constructFacet(context.pc, v, bottom)
-      break
-
-    case 'DEREF':
-      a = execute(node.e, context)
-      v = evaluateEach(a, context, (a, x) => a.deref(x))
-      break
-    }
-
-    return v
-  }
-
-  function run(ast) {
-    return execute(ast, new ExecutionContext())
-  }
-
-  function runWithPC(ast, pc) {
-    var x = new ExecutionContext()
-    x.pc = pc
-    return execute(ast, x)
+    case DEREF:
+-     v = a.deref(context)
++     v = evaluateEach(a, context, (a, x) => a.deref(x))
+  ...
   }
 
   return {
-    run: run,
-    runWithPC: runWithPC,
-    bottom: bottom,
+    ...
++   runWithPC: runWithPC,
   }
-}())
 #+END_SRC
 
-#+BEGIN_SRC js :results output stderr :noweb yes
-<<lambda-facet/ast-nodes>>
-<<lambda-facet/facet-definitions>>
-<<lambda-facet/interpreter>>
+Il y a moins de différences que pour l’instrumentation de Narcissus, mais on
+retrouve trois des mêmes catégories.  D’abord, il y a de nouvelles définitions
+pour les valeurs à facettes et leur évaluation (~Facet~ et ~evaluateEach~).  La
+fonction ~evaluateEach~ est utilisée, comme dans l’instrumentation de Narcissus,
+pour évaluer les deux parties d’une valeur à facettes récursivement.  Le program
+counter est présent, et rajouté à l’objet ~ExecutionContext~ pour pouvoir être
+utilisé dans ~execute~.  Enfin, une nouvelle fonction est exportée par le module.
 
-print(interpreter.run(app(fun('x', v('x')), c(42))) === 42)
-print(interpreter.run(bot()) === interpreter.bottom)
-print(interpreter.run(app(bot(), c(42))) === interpreter.bottom)
-print(interpreter.run(app(fun('x', deref(v('x'))), ref(c(42)))) === 42)
-print(interpreter.run(deref(bot())) === interpreter.bottom)
+# Hence, working with this reduced example is meaningful.
 
-print(interpreter.runWithPC(
-  app(fun('x', deref(v('x'))),
-      ref(c(42))),
-  [1]))
-#+END_SRC
+# Duplication should not be needed for such small changes.
 
-#+RESULTS:
-: true
-: true
-: true
-: true
-: true
-: <1 ? 42 : BOT>
-
-Diff entre les deux:
-
-#+BEGIN_SRC js :noweb yes :tangle lambda-standard.js
-<<lambda-standard/ast-nodes>>
-<<lambda-standard/interpreter>>
-#+END_SRC
-
-#+BEGIN_SRC js :noweb yes :tangle lambda-facets.js
-<<lambda-facet/ast-nodes>>
-<<lambda-facet/facet-definitions>>
-<<lambda-facet/interpreter>>
-#+END_SRC
-
-#+BEGIN_SRC sh :results output code
-git diff --no-index -- lambda-standard.js lambda-facets.js; exit 0
-#+END_SRC
-
-#+RESULTS:
-#+BEGIN_SRC diff
-diff --git a/lambda-standard.js b/lambda-facets.js
-index 2d12239..6956c17 100644
---- a/lambda-standard.js
-+++ b/lambda-facets.js
-@@ -6,6 +6,51 @@ function app(fun, arg) { return {type: 'APP', fun, arg} }
- function ref(e) { return {type: 'REF', e} }
- function deref(e) { return {type: 'DEREF', e} }
- function assign(left, right) { return {type: 'ASSIGN', left, right} }
-+function Facet(k, vh, vl) {
-+  this.k = k
-+  this.vh = vh
-+  this.vl = vl
-+}
-+
-+function constructFacet(pc, vh, vl) {
-+  if (pc.length === 0)
-+    return vh
-+
-+  var k = pc[0]
-+  var rest = pc.slice(1)
-+
-+  if (pc[0] > 0)
-+    return new Facet(k, constructFacet(rest, vh, vl), vl)
-+  else
-+    return new Facet(-k, vl, constructFacet(rest, vh, vl))
-+}
-+
-+Facet.prototype.toString = function() {
-+  return `<${this.k} ? ${this.vh} : ${this.vl}>`
-+}
-+
-+function evaluateEach(v, x, f) {
-+  var vh, vl
-+  var pc = x.pc
-+
-+  if (v instanceof Facet) {
-+    if (v.k in x.pc)
-+      return evaluateEach(v.vh, x, f)
-+    else if (-v.k in x.pc)
-+      return evaluateEach(v.vl, x, f)
-+    else {
-+      x.pc[v.k] = true
-+      vh = evaluateEach(v.vh, x, f)
-+      x.pc[-v.k] = true
-+      vl = evaluateEach(v.vl, x, f)
-+      x.pc = pc
-+
-+      return new Facet(v.k, vh, vl)
-+    }
-+  }
-+  else
-+    return f(v, x)
-+}
- var interpreter = (function(){
-   var bottom = {
-     toString() { return 'BOT' },
-@@ -23,10 +68,12 @@ var interpreter = (function(){
-     if (parent) {
-       this.scope = Object.create(parent.scope)
-       this.store = parent.store
-+      this.pc = parent.pc
-     }
-     else {
-       this.scope = {}
-       this.store = new Store()
-+      this.pc = []
-     }
-   }
-
-@@ -46,6 +93,10 @@ var interpreter = (function(){
-     this.scope = scope
-   }
-
-+  FunctionObject.prototype.toString = function() {
-+    return '<func>'
-+  }
-+
-   FunctionObject.prototype._call = function(arg, context) {
-     var x = new ExecutionContext(context)
-     x.scope[this.node.argName] = arg
-@@ -55,7 +106,7 @@ var interpreter = (function(){
-   function execute(node, context) {
-     var v, f, a, x, r
-
--    switch(node.type) {
-+    switch (node.type) {
-     case 'BOT':
-       v = bottom
-       break
-@@ -75,18 +126,19 @@ var interpreter = (function(){
-     case 'APP':
-       f = execute(node.fun, context)
-       a = execute(node.arg, context)
--      v = f._call(a, context)
-+      v = evaluateEach(f, context, (f, x) => f._call(a, x))
-       break
-
-     case 'REF':
-       r = execute(node.e, context)
-       a = context.store.add(r)
-       v = new Address(a)
-+      v = constructFacet(context.pc, v, bottom)
-       break
-
-     case 'DEREF':
-       a = execute(node.e, context)
--      v = a.deref(context)
-+      v = evaluateEach(a, context, (a, x) => a.deref(x))
-       break
-     }
-
-@@ -97,8 +149,15 @@ var interpreter = (function(){
-     return execute(ast, new ExecutionContext())
-   }
-
-+  function runWithPC(ast, pc) {
-+    var x = new ExecutionContext()
-+    x.pc = pc
-+    return execute(ast, x)
-+  }
-+
-   return {
-     run: run,
-+    runWithPC: runWithPC,
-     bottom: bottom,
-   }
- }())
-#+END_SRC
-
-we want to add a new construct for pairs of integers.  The
-straightforward way is to extend the existing interpreter:
-
-#+BEGIN_SRC haskell
-  data Term = Plus Term Term | Constant Int | Couple Int Int
-  data Value = Number Int | Pair Int Int
-
-  interp :: Term -> Value
-  interp (Plus t1 t2) = plus (interp t1) (interp t2)
-  interp (Constant i) = (Number i)
-  interp (Couple i1 i2) = (Pair i1 i2)
-
-  plus :: Value -> Value -> Value
-  plus (Number a) (Number b) = (Number (a + b))
-  plus (Number a) (Pair i1 i2) = (Pair (a + i1) (a + i2))
-  plus (Pair i1 i2) (Number a) = (Pair (a + i1) (a + i2))
-#+END_SRC
-
-But the obvious downside of this approach is that we cannot make
-changes to the original interpreter without having to manually
-replicate these changes in the extended interpreter.  Replicating the
-changes is time-consuming and prone to error.
-
-Furthermore, the extended interpreter code makes no distinction
-between the original code and the extension code; the two are merged
-together.  Thus, to be able to reason about the changes brought by the
-extension, we must always compare both programs.  We cannot reason
-about the extension in isolation.
-
-These downsides are caused by the /accidental/ duplication of code for
-the original interpreter.  Conceptually, we want to reuse the behavior
-the orginal code provides, but not the code itself.  Copying the code
-is an easy way to reuse the original behavior, but bears the costs
-mentionned above: code replication and unability to reason locally.
-
-Is there a better way?  A /differential description/ of the extension
-eliminates both issues.  If we describe only the additions and changes
-to the original interpreter, we minimize code duplication, and promote
-local reasoning.
 
 *** Case study: Narcissus instrumentation for faceted evaluation
 [[https://github.com/mozilla/narcissus][Narcissus]] is a meta-circular interpreter for JavaScript.  Tom Austin
