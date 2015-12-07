@@ -64,7 +64,7 @@
      - [[#mechanisms-for-extension][Mechanisms for extension]]
  - [[#Étude-de-cas-extension-ad-hoc-de-narcissus][Étude de cas: extension ad-hoc de Narcissus]]
  - [[#variations-sur-un-interpréteur-de-lambda-calcul-extensible][Variations sur un interpréteur de lambda-calcul extensible]]
-     - [[#case-study-narcissus-instrumentation-for-faceted-evaluation][Case study: Narcissus instrumentation for faceted evaluation]]
+ - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
      - [[#finding-a-core-example][Finding a core example]]
      - [[#the-expression-problem][The expression problem]]
      - [[#the-expression-problem-with-a-twist][The expression problem, with a twist]]
@@ -2029,247 +2029,39 @@ pour les valeurs à facettes et leur évaluation (~Facet~ et ~evaluateEach~).  L
 fonction ~evaluateEach~ est utilisée, comme dans l’instrumentation de Narcissus,
 pour évaluer les deux parties d’une valeur à facettes récursivement.  Le program
 counter est présent, et rajouté à l’objet ~ExecutionContext~ pour pouvoir être
-utilisé dans ~execute~.  Enfin, une nouvelle fonction est exportée par le module.
+utilisé dans ~execute~.  Enfin, une nouvelle fonction est exportée par le
+module.  La seule catégorie non représentée est l’extension de l’objet client
+global, car il n’y a pas d’équivalent à l’objet global dans \lambda^{facet}.
 
-# Hence, working with this reduced example is meaningful.
+Puisqu’on retrouve les mêmes catégories de changement sur cet exemple plus
+restreint, on peut supposer que si l’on trouve des moyens d’instrumenter
+l’interpréteur de \lambda^{standard} pour l’évaluation à facettes sans duplication de
+code, ces moyens seront applicables à Narcissus également.
 
-# Duplication should not be needed for such small changes.
+Il est clair que les choix d’implémentation de l’interpréteur standard sont la
+cause de la duplication de code dans l’instrumentation.  Si l’interpréteur
+possédait une interface pour être étendu, nous n’aurions pas besoin de dupliquer
+le code pour changer ces quelques lignes.  Comment aurions nous dû /construire/
+l’interpréteur pour que l’extension requise par \lambda^{facet} puisse être écrite en
+minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
+l’interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
+que nous explorons par la suite.
 
+* Construire un interpréteur extensible
+Le style de l’interpréteur du chapitre précédent n’est pas extensible.
+L’interpréteur suit le patron module en JavaScript, qui a pour intention de
+verrouiller les définitions du module contre toute extension future; qu’elles
+soient intentionnelles ou accidentelles (le chapitre ?? décrit en détail le
+fonctionnement de ce patron).
 
-*** Case study: Narcissus instrumentation for faceted evaluation
-[[https://github.com/mozilla/narcissus][Narcissus]] is a meta-circular interpreter for JavaScript.  Tom Austin
-and Cormac Flanagan implemented their Faceted Evaluation strategy in
-JavaScript by instrumenting Narcissus.  This instrumentation was done
-on top of the interpreter, in a “straightforward way”, that is,
-without any consideration for modularity.  The best way to know what
-has changed from the base interpreter is to look at [[file:narcissus-facet.diff][this diff]]
-(extracted from the HEADs of https://github.com/taustin/narcissus and
-https://github.com/taustin/ZaphodFacets).
+Mais ce n’est pas la seule façon d’écrire l’interpréteur en JavaScript.  On peut
+très bien suivre un style inspiré de la programmation objet.  Le patron
+/interpréteur/ [[cite:GHJ+94][GHJ+94]] est d’ailleurs un bon candidat: chaque nœud de l’arbre de
+syntaxe est un objet, et contient une méthode ~interpret~.  Le ~switch~ de la
+fonction ~execute~ de Narcissus est donc séparé: chaque nœud possède le code qui
+permet d’évaluer sa valeurs et ses effets.
 
-After examining the diff, three patterns are readily apparent:
-
-1. The addition of a =pc= parameter (Program Counter) at multiple
-   locations.  The program counter is part of the context needed by
-   the faceted evaluation strategy; it has to be present in the
-   execution context of Narcissus.  This pattern is found in the
-   operational semantics of faceted evaluation.
-
-   #+BEGIN_SRC diff
-     89c99
-     <     function ExecutionContext(type, version) {
-     ---
-     >     function ExecutionContext(type, pc, version) {
-     115c131
-     <             var x2 = new ExecutionContext(EVAL_CODE, x.version);
-     ---
-     >             var x2 = new ExecutionContext(EVAL_CODE, x.pc, x.version);
-     233c361,362
-     <         ExecutionContext.current = new ExecutionContext(GLOBAL_CODE, Narcissus.options.version);
-     ---
-     >         ExecutionContext.current = new ExecutionContext(GLOBAL_CODE,
-     >                 new ProgramCounter(), Narcissus.options.version);
-     313c442,462
-     <     function getValue(v) {
-     ---
-     >     function getValue(v, pc) {
-     413c577
-     <         var x2 = new ExecutionContext(MODULE_CODE, x.version);
-     ---
-     >         var x2 = new ExecutionContext(MODULE_CODE, x.pc, x.version);
-     580c765
-     <             v = getValue(s);
-     ---
-     >             v = getValue(s, pc);
-     590c775
-     <                 putValue(execute(r, x), a[i], r);
-     ---
-     >                 putValue(execute(r, x), a[i], r, x.pc);
-     1323c1529
-     <         var x = new ExecutionContext(GLOBAL_CODE, Narcissus.options.version);
-     ---
-     >         var x = new ExecutionContext(GLOBAL_CODE, new ProgramCounter(), Narcissus.options.version);
-     1411c1617
-     <         var x = new ExecutionContext(GLOBAL_CODE, Narcissus.options.version);
-     ---
-     >         var x = new ExecutionContext(GLOBAL_CODE, new ProgramCounter(), Narcissus.options.version);
-
-   #+END_SRC
-
-2. The addition of tests on =FacetedValue= values in evaluation
-   functions.  This is consistent with the operational semantics for
-   faceted evaluation: new cases are created to handle faceted
-   values.  Though the translation from operational semantics to code
-   is not obvious.
-
-   #+BEGIN_SRC diff
-     <     function getValue(v) {
-     ---
-     >     function getValue(v, pc) {
-     >         if (v instanceof FacetedValue) {
-     >             return derefFacetedValue(v, pc);
-     >         }
-     327,329c476,493
-     <     function putValue(v, w, vn) {
-     <         if (v instanceof Reference)
-     <             return (v.base || global)[v.propertyName] = w;
-     ---
-     >     function putValue(v, w, vn, pc) {
-     >         if (v instanceof FacetedValue) {
-     >             // x is not really an execution environment, but is being used a
-     >             // way of passing on data.
-     >             return evaluateEachPair(v, w, function(ref, val, x) {
-     >                 return putValue(ref, val, x.vn, x.pc);
-     >             }, {pc: pc, vn: vn});
-     >         }
-     >         else if (v instanceof Reference) {
-     >             var base = v.base || global;
-     >             var oldVal = base[v.propertyName];
-     >             var newVal = base[v.propertyName] = buildVal(pc, w, oldVal);
-     >             return w;
-     >         }
-     512c680,689
-     <             if (getValue(execute(n.condition, x)))
-     ---
-     >             let cond = getValue(execute(n.condition, x), pc);
-     >             if (cond instanceof FacetedValue) {
-     >                 evaluateEach(cond, function(v, x) {
-     >                     if (v)
-     >                         execute(n.thenPart, x);
-     >                     else if (n.elsePart)
-     >                         execute(n.elsePart, x);
-     >                 }, x);
-     >             }
-     >             else if (cond)
-
-   #+END_SRC
-
-3. The addition of =evaluateEach= in multiple locations.  This is a
-   convenience function, to avoid repeating the needed pattern of
-   recursively evaluating faceted values.
-
-   #+BEGIN_SRC diff
-     562,568c740,754
-     <             while (!n.condition || getValue(execute(n.condition, x))) {
-     ---
-     >             let whileCond = !n.condition || getValue(execute(n.condition, x), pc);
-     >             evaluateEach(whileCond, function(c,x) {
-     658,664c850,859
-     <             t = toObject(getValue(r), r, n.object);
-     <             x.scope = {object: t, parent: x.scope};
-     <             try {
-     <                 execute(n.body, x);
-     <             } finally {
-     <                 x.scope = x.scope.parent;
-     <             }
-     ---
-     >             t = getValue(r,pc);
-     >             evaluateEach(t, function(t,x) {
-     >                 let o = toObject(t, r, n.object);
-     >                 x.scope = {object: o, parent: x.scope};
-     >                 try {
-     >                     execute(n.body, x);
-     >                 } finally {
-     >                     x.scope = x.scope.parent;
-     >                 }
-     >             }, x);
-     735,736c943,947
-     <             v = getValue(execute(c[0], x)) ? getValue(execute(c[1], x))
-     <                                            : getValue(execute(c[2], x));
-     ---
-     >             t = getValue(execute(c[0], x), pc);
-     >             v = evaluateEach(t, function(t,x) {
-     >                 return t ? getValue(execute(c[1], x), x.pc)
-     >                          : getValue(execute(c[2], x), x.pc);
-     >             }, x);
-     741c952,963
-     <             v = getValue(execute(c[0], x)) || getValue(execute(c[1], x));
-     ---
-     >             v = getValue(execute(c[0], x), pc);
-     >             if (v instanceof FacetedValue) {
-     >                 let v2Thunk = function(pc) {
-     >                     return getValue(execute(c[1],x), pc);
-     >                 };
-     >                 v = evaluateEach(v, function(v1, x) {
-     >                     return v1 || v2Thunk(x.pc);
-     >                 }, x);
-     >             }
-     >             else if (!v) {
-     >                 v = getValue(execute(c[1], x), x.pc);
-     >             }
-     856c1010,1017
-     <             v = getValue(execute(c[0], x)) % getValue(execute(c[1], x));
-     ---
-     >             t = getValue(execute(c[0], x), pc);
-     >             u = getValue(execute(c[1], x), pc);
-     >             v = evaluateEachPair(t, u, function(t, u, pc) {
-     >                 if (isObject(u) && typeof u.__hasInstance__ === "function")
-     >                     return u.__hasInstance__(t);
-     >                 else
-     >                     return t instanceof u;
-     >             }, x);
-     861c1022,1024
-     <             v = !(t instanceof Reference) || delete t.base[t.propertyName];
-     ---
-     >             v = evaluateEach(t, function(t,x) {
-     >                 return !(t instanceof Reference) || delete t.base[t.propertyName];
-     >             }, x);
-
-   #+END_SRC
-
-   #+BEGIN_SRC js
-     function evaluateEach(v, f, x) {
-       let pc = x.pc;
-       if (!(v instanceof FacetedValue)) {
-         return f(v, x);
-       }
-
-       if (pc.contains(v.label)) {
-         return evaluateEach(v.authorized, f, x);
-       }
-       else if (pc.contains(v.label.reverse())) {
-         return evaluateEach(v.unauthorized, f, x);
-       }
-       else {
-         let va, vu;
-         try {
-           x.pc = pc.join(v.label);
-           va = evaluateEach(v.authorized, f, x);
-           x.pc = pc.join(v.label.reverse());
-           vu = evaluateEach(v.unauthorized, f, x);
-           x.pc = pc;
-         }
-         catch (e) {
-           // Terminate program to avoid leaking data through exceptions
-           //throw END_SIGNAL;
-           throw e;
-         }
-         return new FacetedValue(v.label, va, vu);
-       }
-     }
-   #+END_SRC
-
-From this preliminary examination, we gather that:
-1. The Narcissus instrumentation share some similarity with the
-   operational semantics for faceted evaluation.  Although it is
-   difficult to tell for certain if the instrumentation is conforming
-   without a specification, a proof of the translation to JavaScript,
-   or even a test suite.
-2. Without looking at the diff, looking only at the instrumented code,
-   only a careful reading and understanding of the code would reveal
-   the pieces needed by instrumentation, and the pieces needed by the
-   standard interpreter.  Concerns from instrumentation and from the
-   interpreter are all tangled together.
-
-Is there a better way to write this instrumentation on top of the
-interpreter?  A way that would clearly and cleanly separate the
-instrumentation code from the interpreter; a way that would minimize
-coupling between the instrumentation and the interpreter; a modular
-way?
-
-Before attempting to answer this tantalizing question, we should try
-to reduce the noise from this Narcissus example, and unearth the core
-issues.  JavaScript is a large language, and Narcissus, while
-reasonable, is not a minimal example of an interpreter.
+Écrivons un interpréteur pour \lambda^{standard} dans ce style.
 
 *** Finding a core example
 Looking at the operational semantics for faceted evaluation, we can
@@ -3320,8 +3112,7 @@ monads, if you have a monadic interpreter.]
 *** JavaScript
 See [[file:js/aoping.org]].
 
-See also [[file:lassy15.org]] for a way to build interpreters
-incrementally.
+See also [[file:lassy15.org]] for a way to build interpreters incrementally.
 
 **** Split OO-style instrumented interpreter into modules
 Let’s try to separate the object-oriented instrumented interpreter in
