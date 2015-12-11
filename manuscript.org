@@ -2058,10 +2058,125 @@ Mais ce n’est pas la seule façon d’écrire l’interpréteur en JavaScript.
 très bien suivre un style inspiré de la programmation objet.  Le patron
 /interpréteur/ [[cite:GHJ+94][GHJ+94]] est d’ailleurs un bon candidat: chaque nœud de l’arbre de
 syntaxe est un objet, et contient une méthode ~interpret~.  Le ~switch~ de la
-fonction ~execute~ de Narcissus est donc séparé: chaque nœud possède le code qui
-permet d’évaluer sa valeurs et ses effets.
+fonction ~execute~ de Narcissus est donc séparé en morceaux indépendants: chaque
+nœud possède le code qui permet d’évaluer sa valeurs et ses effets.
 
-Écrivons un interpréteur pour \lambda^{standard} dans ce style.
+Écrivons un interpréteur pour \lambda^{standard} dans ce style.  D’abord, les objets qui
+réifient les nœuds de l’AST:
+
+#+BEGIN_SRC js
+var stdInterp = {
+  CONST: {
+    new(e) {...},
+    execute(context) {...}},
+
+  VAR: {
+    new(e) {...},
+    execute(context) {...}},
+
+  FUN: {
+    new(argName, body) {...},
+    execute(context) {...}},
+
+  APP: {
+    new(fun, arg) {...},
+    execute(context) {...}},
+#+END_SRC
+
+Chaque objet a deux méthodes: une pour l’instancier, et une pour évaluer le nœud
+de l’AST.  Les méthodes ~execute~ contiennent la même logique que les ~case~ du
+~switch~ de l’interpréteur dans le style de Narcissus.
+
+Les objets de l’exécution subissent la même transformation:
+
+#+BEGIN_SRC js
+  Address: {
+    new(a) {...},
+    deref(context) {...},
+  },
+
+  ExecutionContext: {
+    new(scope, store) {...},
+  },
+
+  Store: {
+    new() {...},
+    add(value) {...},
+    retrieve(addr) {...},
+  },
+
+  FunctionObject: {
+    new(node, scope) {...},
+    _call(arg, x) {...},
+  },
+#+END_SRC
+
+Et enfin, la fonction d’entrée de l’interpréteur, ~run~, peut simplement appeler
+la méthode ~execute~ sur la racine de l’AST.
+
+#+BEGIN_SRC js
+  run(node) {
+    return node.execute(this.ExecutionContext.new())
+  },
+})
+#+END_SRC
+
+L’intérêt de cette décomposition c’est qu’on peut maintenant facilement créer
+une variante de l’interpréteur grâce à la délégation par prototype de
+JavaScript:
+
+#+BEGIN_SRC js
+var fctInterp = derive(stdInterp, {
+  APP: derive(stdInterp.APP, {
+    execute(context) {
+      ...
+      return evaluateEach(...) }})
+
+  REF: derive(stdInterp.REF, {
+    execute(context) {
+      ...
+      return constructFacet(...) }}),
+
+  DEREF: derive(stdInterp.DEREF, {
+    execute(context) {
+      return evaluateEach(...) }}),
+
+  ExecutionContext: derive(stdInterp.ExecutionContext, {
+    new(scope, store, pc) {...}
+  }),
+
+  runWithPC(node, pc) {...},
+})
+#+END_SRC
+
+Ici, ~fctInterp~ a pour prototype ~stdInterp~, donc toute propriété non présente
+sur ~fctInterp~ sera prise de ~stdInterp~.  Inversement, la propriété ~APP~ est
+définie sur ~fctInterp~, donc elle “surcharge” la propriété ~APP~ de
+~stdInterp~.  La délégation par prototype est un mécanisme bien adapté à notre
+problème, car on souhaite que le code de ~fctInterp~ exprime la /différence/ de
+l’évaluation de \lambda^{facet}, et seulement cette différence.  Dans un langage à
+prototype, un objet n’est pas instancié à partir d’une classe, mais /dérivé/
+d’un prototype.  Un objet dérivé n’a besoin que de définir en quoi il diffère de
+son prototype.  C’est donc un mécanisme de langage idéal pour notre scénario
+avec deux interpréteurs.
+
+#+NAME: lamfa-proto
+#+CAPTION: Définition d’un interpréteur en utilisant la délégation par
+#+CAPTION: prototype.  L’objet ~fctInterp~ possède une unique propriété propre:
+#+CAPTION: ~APP~.  Les autres propriétés sont déléguées à son prototype,
+#+CAPTION: ~stdInterp~.
+[[file:img/lamfa-proto.pdf]]
+
+L’interpréteur de \lambda^{facet} peut donc être défini uniquement en codant les
+différences entre ces deux modes d’interprétation.  Les deux objets ~stdInterp~
+et ~fctInterp~ coexistent à l’exécution, ce qui permet de pouvoir choisir entre
+l’une ou l’autre interprétation pour un même programme.
+
+# Pas si simple, subtilités de références d’objets imbriqués
+
+
+# Créer de nouveaux interpréteurs à l’exécution.  Pas modifier la même instance
+# d’interpréteur.
 
 *** Finding a core example
 Looking at the operational semantics for faceted evaluation, we can
