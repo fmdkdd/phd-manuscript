@@ -1092,6 +1092,32 @@ Or, parsimony.  Pragmatism.  AOP ideas are interesting.  COP also.  But
 frameworks/libraries for those are terribly convoluted and driven by salami
 publishing.
 
+** [2015-12-21 lun.]
+*** Searching for a diagram language
+The JavaScript examples are not very telling.  Because they only give the
+syntax, they are useless to a reader who doesn’t know the semantics of the
+language.  They only tell him that the results are indeed what we wanted to
+obtain.  Even I sometimes gloss over the code when re-reading.
+
+That is why I tried to use diagrams in the DLS submission.  To focus on the
+/effects/ of the code, rather than focus on the code symbols.  We can see JS
+programs as giving instruction to build a running system.  By showing how
+objects relate to each other in the heap, we focus on the configuration itself,
+not how we express it.  This frees us from thinking solely about JS: the same
+could be done in Scheme, Python, Ruby ...
+
+The code itself is part of the contribution of course.  /How/ we achieve a
+specific heap configuration is of interest.  There are /infinite ways/ to obtain
+a configuration.  Not all of them are equal in code size and clarity.
+
+But the heap diagrams lack an important information: how to go from one diagram
+to the next one.  They are just snapshots of state.  There is nothing that tells
+a reader how to construct the next diagram.  This is implicitly gathered from
+following the examples.
+
+I think a representation of the code stack is missing.  What current code is
+being executed?
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
