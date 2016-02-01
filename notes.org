@@ -1141,6 +1141,231 @@ following the examples.
 I think a representation of the code stack is missing.  What current code is
 being executed?
 
+** [2016-01-04 lun.]
+*** Reading Programming as Theory Building
+On the occasion of Peter Naur’s death.  [[cite:Nau-85][Nau-85]].
+
+Programming is not the production of a program.  Programming is building a
+theory of the matters at hand.
+
+The first example resonates strongly: group A builds a compiler, group B wants
+to extend it.  Group B proposes extensions.  Group A reviews them:
+
+#+BEGIN_QUOTE
+In several major cases it turned out that the solutions suggested by group B
+were found by group A to make no use of the facilities that were not only
+inherent in the structure of the existing compiler but were discussed at length
+in its documentation, and to be based instead on additions to that structure in
+the form of patches that effectively destroyed its power and simplicity.  The
+members of group A were able to spot these cases instantly and could propose
+simple and effective solutions, framed entirely within the existing structure.
+#+END_QUOTE
+
+Case in point, the program text is insufficient to access the theory:
+
+#+BEGIN_QUOTE
+This is an example of how the full program text and additional documentation is
+insufficient in conveying to even the highly motivated group B the deeper
+insight into the design, that theory which is immediately present to the members
+of group A.
+#+END_QUOTE
+
+By programming, group A developed a theory, which is not accessible to group B
+through the program.  The program is a by-product of building the theory, which
+resides mostly in the mind.
+
+In the second example, there is again evidence of critical knowledge held by
+programmers about a large program; without this knowledge, modifying the program
+is hopeless.
+
+He means by theory what I often call “mental model”:
+
+#+BEGIN_QUOTE
+What characterizes intellectual activity [...]  is the person's building and
+having a theory, where theory is understood as the knowledge a person must have
+in order not only to do certain things intelligently but also to explain them,
+to answer queries about them, to argue about them, and so forth.
+
+The notion of theory employed here is explicitly /not/ confined to what may be
+called the most general or abstract part of the insight.  For example, to have
+Newton's theory of mechanics as understood here it is not enough to understand
+the central laws, such as that force equals mass times acceleration.  In
+addition, as described in more detail by Kuhn, the person having the theory must
+have an understanding of the manner in which the central laws apply to certain
+aspects of reality, so as to be able to recognize and apply the theory to other
+similar aspects.
+#+END_QUOTE
+
+Why modify programs rather than building new ones from scratch?  Costs.
+
+#+BEGIN_QUOTE
+The question of program modifications is closely tied to that of programming
+costs.  In the face of a need for a changed manner of operation of the program,
+one hopes to achieve a saving of costs by making modifications of an existing
+program text, rather than by writing an entirely new program.
+#+END_QUOTE
+
+But is modifying an existing program always cheaper?
+
+#+BEGIN_QUOTE
+First it should be noted that such an expectation cannot be supported by analogy
+with modifications of other complicated man-made constructions.  For many kinds
+of such constructions, such as cars, or television receivers, modifications are
+entirely out of the question, in practice.
+
+Second, the expectation of the possibility of low cost program modifications
+conceivably finds support in the fact that a program is a text held in a medium
+allowing for easy editing.  For this support to be valid it must clearly be
+assumed that the dominating cost is one of text manipulation.  This would agree
+with a notion of programming as text production.  On the Theory Building View
+this whole argument is false.
+#+END_QUOTE
+
+Modifying text is cheap.  But a program works because of hundreds of design
+decisions, hundreds of contextual assertions.  If even one or two assertions
+change, then the whole program may have to be rebuilt.
+
+What about flexibility?  Anticipating changes in the structure of the program,
+allowing for easy extension?
+
+#+BEGIN_QUOTE
+flexibility can in general only be achieved at a substantial cost.  Each item of
+it has to be designed, including what circumstances it has to cover and by what
+kind of parameters it should be controlled.  Then it has to be implemented,
+tested, and described.  This cost is incurred in achieving a program feature
+whose usefulness depends entirely on future events.  It must be obvious that
+built-in program flexibility is no answer to the general demand for adapting
+programs to the changing circumstances of the world.
+#+END_QUOTE
+
+To modify a program, one must know the theory:
+
+#+BEGIN_QUOTE
+What is needed in a modification, first of all, is a confrontation of the
+existing solution with the demands called for by the desired modification.
+[...]  The point is that the kind of similarity that has to be recognized is
+accessible to the human beings who possess the theory of the program, although
+entirely outside the reach of what can be determined by rules, since even the
+criteria on which to judge it cannot be formulated.
+#+END_QUOTE
+
+Essentially, there is no shortcut.  The program text is not sufficient.
+
+#+BEGIN_QUOTE
+the very notion of qualities such as simplicity and good structure can only be
+understood in terms of the theory of the program, since they characterize the
+actual program text in relation to such program texts that might have been
+written to achieve the same execution behaviour, but which exist only as
+possibilities in the programmer’s understanding.
+#+END_QUOTE
+
+The program is simple only when considering the theory, when taking all the
+design choices into account.
+
+I agree with Naur that programming is more than just writing the program text,
+and the theory building view is an apt description of the activity.  However,
+unlike Naur, I think that the theory can be described to a programmer, to some
+extent.  If the theory is being able to answer questions about how the program
+works, and how it should be extended, then it is only a matter of writing a FAQ.
+A top-down description, à la literate programming, can also be used to describe
+the overall design, and explain the trade-offs.  Maybe the whole knowledge is
+not transferable, but the rest can be rebuilt by a willing programmer working
+with the program text.
+
+An important point about training programmers (and education in general):
+
+#+BEGIN_QUOTE
+This problem of education of new programmers in an existing theory of a program
+is quite similar to that of the educational problem of other activities where
+the knowledge of how to do certain things dominates over the knowledge that
+certain things are the case, such as writing and playing a music instrument.
+The most important educational activity is the student's doing the relevant
+things under suitable supervision and guidance.  In the case of programming the
+activity should include discussions of the relation between the program and the
+relevant aspects and activities of the real world, and of the limits set on the
+real world matters dealt with by the program.
+#+END_QUOTE
+
+He calls “program revival” the act of rebuilding the theory of a program text by
+a new team of programmers (reverse-engineering the source).  Modifying a program
+written by other programmers is akin to reviving it, since you need to rebuild
+its theory.  But using dirty tricks that do not conform to the original theory
+can be enough to make your changes.  Program necromancy sounds much better than
+unanticipated extension.
+
+He argues that modifying a program text is hopeless without modifying the
+theory.  The proper way is to rebuild, and that may have a lower cost even in
+the short term.
+
+#+BEGIN_QUOTE
+The point is that building a theory to fit and support an existing program text
+is a difficult, frustrating, and time consuming activity.  The new programmer is
+likely to feel torn between loyalty to the existing program text, with whatever
+obscurities and weaknesses it may contain, and the new theory that he or she has
+to build up, and which, for better or worse, most likely will differ from the
+original theory behind the program text.
+#+END_QUOTE
+
+A consequence of the Theory Building View is that the choice of programming
+language or tools is inconsequential.  All that matters is the theory.  It helps
+understand why one should choose the tools the team is the most comfortable
+with, without prejudice.
+
+#+BEGIN_QUOTE
+Where the Theory Building View departs from that of the methodologists is on the
+question of which techniques to use and in what order.  On the Theory Building
+View this must remain entirely a matter for the programmer to decide, taking
+into account the actual program to be solved.
+#+END_QUOTE
+
+The Theory Building View implies that programmers are not interchangeable.  And
+that we should focus on theory building skills to train new programmers:
+
+#+BEGIN_QUOTE
+While skills such as the mastery of notations, data representations, and data
+processes, remain important, the primary emphasis would have to turn in the
+direction of furthering the understanding and talent for theory formation.  To
+what extent this can be taught at all must remain an open question.  The most
+hopeful approach would be to have the student work on concrete problems under
+guidance, in an active and constructive environment.
+#+END_QUOTE
+
+
+** [2016-01-27 mer.]
+*** Separation of concerns is the scattering of control flow
+Dijkstra’s original argument against GOTO was that you lost sight of the control
+flow of a program when using GOTO statements.  Structured programming argues for
+a single entry point to a function, and a single exit point from it: no
+surprises of control transfer in the middle of a function, or an exit from a
+routine from the middle of a loop.  Hence the more declarative loop
+constructions (do-while, for) to replace the common use-cases of GOTO.  So, for
+Dijkstra, clarity of code means that the control flow is explicit and not
+tortuous.  The locality of the control flow is matched by the locality of the
+code.
+
+Separation of concerns argues for code clarity as well, by putting code related
+to the same concern in a common place in the source code.  Code that can happen
+basically at any point of the control flow.  Following the separation of
+concerns, locality of source code does /not/ match the locality of control flow,
+but rather matches the locality in the programmer’s brain.  Code pertaining to
+the same concept is all in the same place, neatly arranged.  But then, the code
+is full of non-local transfer of control!  Trying to make sense of the control
+flow, we are back to GOTO, or even worse, COMEFROM.
+
+COMEFROM, events, inversion of control.  From this lens, they all have the same
+consequence: increasing modularity by decreasing coupling, at the cost of a
+decreased ability to follow the control flow.
+
+There are recourses.  Inversion of control is only a change in point of view.
+You can always transform code that use observers to use direct calls.  And
+convert GOTOs to and from COMEFROMs.  These paradigms are only two sides of the
+same coin.  To get the full picture, one needs to look at the two-sides of the
+coin at the same time.  Get some perspective.
+
+The source code is a description of the program, but it is only one description.
+We can arrange the code in many ways using views as done in literate
+programming.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
