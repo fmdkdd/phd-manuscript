@@ -19,49 +19,53 @@
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
  - [[#État-de-l’art][État de l’art]]
-   - [[#de-l’exécution-du-programme-au-code-source][De l’exécution du programme au code source]]
-   - [[#smalltalk][Smalltalk]]
-     - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#self][Self]]
-     - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#prototype-based-programming][Prototype-based programming]]
-   - [[#building-from-modules][Building from modules]]
-   - [[#building-with-monads][Building with monads]]
-   - [[#le-problème-d’expression][Le problème d’expression]]
-   - [[#notion-of-modularity][Notion of modularity]]
-   - [[#parnas’-modularity][Parnas’ modularity]]
-   - [[#structured-programming][Structured programming]]
-   - [[#literate-programming][Literate programming]]
-     - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
-   - [[#context-oriented-programming][Context-Oriented Programming]]
-   - [[#feature-oriented-programming][Feature-Oriented Programming]]
-   - [[#model-driven-development][Model-driven development]]
-   - [[#domain-specific-languages][Domain-specific languages]]
-   - [[#bytecode-instrumentation][Bytecode instrumentation]]
-   - [[#open-implementation][Open Implementation]]
-     - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
-   - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
-     - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-   - [[#emacs][Emacs]]
-      - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#dynamic-binding][Dynamic binding]]
-   - [[#eclipse-and-other-ides][Eclipse and other IDEs]]
-     - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#web-browsers][Web browsers]]
-     - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#lua][Lua]]
-      - [[#mechanisms-for-extension][Mechanisms for extension]]
-   - [[#scripting-languages][Scripting languages]]
-   - [[#reflection][Reflection]]
-   - [[#software-product-lines][Software product lines]]
-     - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-   - [[#caesar][Caesar]]
-   - [[#hyperj][Hyper/J]]
-     - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-   - [[#information-transparency][Information transparency]]
-   - [[#semantic-patches][Semantic patches]]
-     - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#une-chronologie-de-la-modularité-dans-les-langages-de-programmation][Une chronologie de la modularité dans les langages de programmation]]
+     - [[#de-l’exécution-du-programme-au-code-source][De l’exécution du programme au code source]]
+     - [[#structured-programming][Structured programming]]
+     - [[#class-based-programming-smalltalk][Class-based programming: Smalltalk]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#literate-programming][Literate programming]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#prototype-based-programming][Prototype-based programming]]
+     - [[#self][Self]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#open-implementation][Open Implementation]]
+       - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
+     - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
+       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+     - [[#caesar][Caesar]]
+     - [[#hyperj][Hyper/J]]
+       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+     - [[#information-transparency][Information transparency]]
+   - [[#la-modularité-du-progamme-n’est-pas-la-modularité-du-code-source][La modularité du progamme n’est pas la modularité du code source]]
+     - [[#la-construction-d’une-théorie-de-naur][La construction d’une théorie de Naur]]
+     - [[#la-modularité-selon-parnas][La modularité selon Parnas]]
+     - [[#notion-of-modularity][Notion of modularity]]
+   - [[#moyens-techniques-pour-l’instrumentation][Moyens techniques pour l’instrumentation]]
+     - [[#le-problème-d’expression][Le problème d’expression]]
+     - [[#dynamic-binding][Dynamic binding]]
+     - [[#reflection][Reflection]]
+     - [[#building-from-modules][Building from modules]]
+     - [[#building-with-monads][Building with monads]]
+     - [[#bytecode-instrumentation][Bytecode instrumentation]]
+   - [[#travaux-connexes-concernant-l’instrumentation][Travaux connexes concernant l’instrumentation]]
+     - [[#domain-specific-languages][Domain-specific languages]]
+     - [[#scripting-languages][Scripting languages]]
+     - [[#emacs][Emacs]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#eclipse-and-other-ides][Eclipse and other IDEs]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#web-browsers][Web browsers]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#lua][Lua]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#context-oriented-programming][Context-Oriented Programming]]
+     - [[#feature-oriented-programming][Feature-Oriented Programming]]
+     - [[#model-driven-development][Model-driven development]]
+     - [[#software-product-lines][Software product lines]]
+       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+     - [[#semantic-patches][Semantic patches]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
  - [[#Étude-de-cas-extension-ad-hoc-de-narcissus][Étude de cas: extension ad-hoc de Narcissus]]
  - [[#variations-sur-un-interpréteur-de-lambda-calcul-extensible][Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
@@ -175,7 +179,8 @@ languages and the dynamic processes they describe.  Also, for inspiration.
 ** Survol
 
 * État de l’art
-** De l’exécution du programme au code source
+** Une chronologie de la modularité dans les langages de programmation
+*** De l’exécution du programme au code source
 Pour modifier l’exécution d’un programme, il est bon de savoir /comment/ le
 programme est exécuté par la machine.  Du point de vue de la machine, un
 programme est une simple liste d’instructions.  Une séquence d’additions, de
@@ -350,7 +355,40 @@ digraph {
 #+RESULTS:
 [[file:img/bg-map3.png]]
 
-** Smalltalk
+*** Structured programming
+Argues for a single entry point into procedures, and single exit point.  Not
+jumping directly in the middle, or exiting prematurely.
+
+Exemplified by ALGOL, and Pascal [[cite:Wir-74][Wir-74]] [[cite:Wir-74a][Wir-74a]].
+
+Dijkstra notoriously argued against the GOTO statement, as a superfluous control
+structure [[cite:Dij-68][Dij-68]].  On grounds of obscuring the “independent coordinates”
+implicitly used by programmers to understand the dynamic flow of a program.
+“Unbridled use” of GOTO statements makes finding such coordinates “terribly
+hard”.  In short, peppering GOTO statements leads to spaghetti code.
+
+The article has a strong prescriptive tone, as usual from Dijkstra, yet it opens
+with a reasonable appeal: “to shorten the conceptual gap between the static
+program and the dynamic process, to make the correspondence between the program
+(spread out in text space) and the process (spread out in time) as trivial as
+possible”.
+
+On the legacy front, most programmers are cargo-culting the fear of GOTO (though
+Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
+it.  However, the discipline of single-exit is more controversial, as most
+modern languages offer constructs for early exits from procedures (return
+statement) or from loops (break and continue statements, sometimes with
+labels).
+
+The fear of GOTO is an example of focusing on the wrong issue: structured
+programming is a proposal for clearer programs.  Blindly removing all GOTOs and
+labels from an unstructured program does not make it structured.  The focus is
+on writing programs that clearly reflect their dynamic process.  As Parnas noted
+[[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
+processes, not by adding a “module” statement to the language.  The same
+situation arises here.
+
+*** Class-based programming: Smalltalk
 Design and Implementation [[cite:Ing-78][Ing-78]].
 
 Opens with a definition of modularity:
@@ -402,234 +440,11 @@ object, and global recompilation is avoided.
 Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]]; a larger
 perspective is given in [[cite:Mul-15][Mul-15]].
 
-*** Mechanisms for extension
+**** Mechanisms for extension
 Subclassing, and reflection.  Everything as an object, so message dispatch is
 just a method on the meta class, and can be altered.
 
-** Self
-The power of simplicity [[cite:US-91][US-91]].
-
-Pure object-oriented language.  No variables, but slots containing objects that
-return themselves.
-
-No classes.  No control structure.
-
-The absence of distinction may not be a good thing in practice:
-#+BEGIN_QUOTE
-The absence of class-instance distinction may make it too hard to understand
-which objects exist solely to provide shared information for other objects.
-Perhaps SELF programmers will create entirely new organizational structures.  In
-any case, SELF’s flexibility poses a challenge to the programming environment;
-it will have to include navigational and descriptive aids.
-
-[later, in the conclusion]
-
-Reducing the number of basic concepts in a language can make the language easier
-to explain, understand, and use.  However, there is a tension between making the
-language simpler and making the organization of a system manifest.  As the
-variety of constructs decreases, so does the variety of linguistic clues to a
-system’s structure.
-#+END_QUOTE
-
-They cite [[cite:UCC+91][UCC+91]] for pointers on structuring programs in SELF.
-
-Classes are abstract description of objects, but prototypes are always
-concrete.  Each object is an example, and can be easily cloned.  Class
-hierarchies are hard, and impose a structure; prototypes less so.
-
-Classes forces you to create a template, even when you deal with several objects
-with unique behavior.
-
-Activation records for methods inherit from the receiver object, so the receiver
-is on the chain for binding lookup.
-
-They note that they could build “class-like” objects that hold code to create
-new clones, and also hold the shared behavior, though they “do not believe this
-is the best way to construct a system”.
-
-In [[cite:UCC+91][UCC+91]], the following organization is described:
-- Traits object for methods (shared by all instances of an object).
-- A prototype object with a default implementation.
-- Instances are created from cloning the prototype.
-
-Abstract objects dispense of the prototype, and singleton objects contain
-methods and state without providing a copy method.
-
-They note that OO supports “differential programming”, which is to define new
-data types as differences from existing data types.  In Smalltalk, differential
-programming is achieved through subclassing.  In SELF, they call it “refining
-traits objects”, but the mechanism is delegation through the parent link.
-
-An oddity: they state that parent links are constant, though the introduce a
-=dataParent= setter in figure 3.  Later they say that parent slot are like other
-data slots, assignable.
-
-Prototypes allow for multiple behavior modes, through dynamic inheritance
-switching.  Behavior modes enhance the clarity of the code, though they do not
-comment on the potential performance costs.
-
-*** Mechanisms for extension
-Prototypes, and message passing.  Prototypes are more general and simpler than
-inheritance.
-
-However prototypes do not originate with SELF [[cite:Bor-86][Bor-86]] [[cite:Lie-86][Lie-86]].
-
-[[cite:Lie-86][Lie-86]] makes a good case for prototypes as being a simpler model to learn, as
-well as being more intuitive.  Humans derive general concepts from examples, not
-the other way around.  Class-based languages require you to commit to the
-concepts first.
-
-Prototype-based and class-based languages provide different mechanisms for
-realizing differential programming,
-
-Is differential programming sufficient to solve the problem of modular
-instrumentation?  In the case of Narcissus, it was not, since the interpreter
-was not OO.  But the open scope pattern might be equivalent, dynamically, to
-inheritance.
-
-** Prototype-based programming
-A collection of (at least) the following papers (or revisions of them):
-- [[cite:Tai-97][Tai-97]]
-- [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
-- [[cite:GBO+98][GBO+98]]
-- [[cite:Bor-86][Bor-86]]
-- [[cite:SU-95][SU-95]]
-- [[cite:Smi-95][Smi-95]]
-- [[cite:MMM+98][MMM+98]]
-- [[cite:Bla-91][Bla-91]] & [[cite:Bla-94][Bla-94]]
-- [[cite:Wol-96][Wol-96]]
-- [[cite:Moo-96][Moo-96]]
-- [[cite:Nob-01][Nob-01]]
-- [[cite:DeM-98][DeM-98]]
-
-[[cite:Tai-97][Tai-97]] is a philosophical take on the basis for class-based and prototype-based
-languages.  Ascribing to classes is following the school of Plato and Aristotle
-[[cite:Pla-98][Pla-98]] [[cite:Ari-35][Ari-35]].  Plato distinguished between /forms/, the ideal description of
-things, and /instances/ of these forms.  He regarded forms as being more real
-than instances.  Aristotle believed in “a single correct taxonomy of all natural
-things”, and classified things using the following rule:
-: essence = genus + differential
-which mirrors class creation in class-based languages.
-
-Classification has been criticized, notably by Wittgenstein [[cite:Wit-53][Wit-53]], as being
-subjective.  Some concepts are difficult to define by intension – through a list
-of common properties that all instances must share.  Rather, Wittgenstein
-proposes the notion of /family resemblance/.  Meaning is not determined by a
-definition, but by similarity to representative prototypes.
-
-This philosophical heritage has a few implications for programming:
-- there are no optimal class hierarchies
-- in a class hierarchy, the middle classes are often the best representatives.
-  Higher classes are too abstract; lower classes too specific.
-- prototypes may map better to the usual human process: iterate from examples.
-
-Designers of class-based or prototype-based languages are seldom aware of the
-philosophical issues of both models, but focus more on technical matters.  Kevo
-[[cite:Tai-93][Tai-93]] is a prototype-based language with a notion of family
-resemblance. [[cite:Tai-93b][Tai-93b]] offer similar insights on the notion of object.
-
-[[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
-d languages are advantageous for describing exceptional instances, multiple
-points of view of the same entity, and incomplete objects.
-
-They identify the following mechanisms common to prototype-based languages:
-- message passing
-- 3 ways of creating objects (ex nihilo, cloning, and extension)
-- delegation
-- dynamic dispatch
-
-Prototype-based languages also introduce new issues:
-- Fragmented entities.  Since objects are described differentially, no single
-  object in the system reify the complete entity.  To clone it completely, we
-  would need to clone all its parts, but they are not reified (e.g., traits
-  objects are only conventions, not language primitives).
-- Sharing between clones of the same object.
-- Sharing between clones of different objects.
-
-** Building from modules
-Findler & Flatt, Newspeak
-
-** Building with monads
-Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
-
-Free algebras, free monads.  Basically reify data in a way that is accepted by
-the type system of the underlying language to allow unanticipated extension.
-
-[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
-/object algebras/.  Object algebras are akin to a free algebra.  Instead of
-locking down the actual objects used as expressions too early, they leave them
-open using abstract factories.  Providing a factory when evaluating the
-expression gives you either integer evaluation, or pretty-printing.
-
-Their solution is applicable to Java with generics, without significant
-syntactic overhead (less than related work).  And, they leverage the type system
-to capture erroneous composition.
-
-** Le problème d’expression
-Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
-
-** Notion of modularity
-Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
-Classical logic is inflexible, incompatible with the realities of software.
-Especially, information hiding is not the silver bullet.  Approaches to software
-development that seem to break information hiding, and even oppose modular
-reasoning, have their virtues.  Those can be thought of using nonclassical
-logics.
-
-** Parnas’ modularity
-Parnas is usually credited with the notion of modularity, as well as notions of
-/separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
-improving the methodology of programming through up-front planning and critical
-analysis of designs.  He does not believe in language solutions to software
-modularity [[cite:DBB+03][DBB+03]] [[cite:Par-96][Par-96]], although he is often quoted by proponents of
-modularity through languages.
-
-#+BEGIN_QUOTE
-My engineering teacher laid down some basic rules:
-
-1. Design before implementing.
-2. Document your design.
-3. Review and analyze the documented design.
-4. Review implementation for consistency with the design.
-
-There rules apply to software as least as much as they do to circuits or
-machines.
-#+END_QUOTE
-
-** Structured programming
-Argues for a single entry point into procedures, and single exit point.  Not
-jumping directly in the middle, or exiting prematurely.
-
-Exemplified by ALGOL, and Pascal [[cite:Wir-74][Wir-74]] [[cite:Wir-74a][Wir-74a]].
-
-Dijkstra notoriously argued against the GOTO statement, as a superfluous control
-structure [[cite:Dij-68][Dij-68]].  On grounds of obscuring the “independent coordinates”
-implicitly used by programmers to understand the dynamic flow of a program.
-“Unbridled use” of GOTO statements makes finding such coordinates “terribly
-hard”.  In short, peppering GOTO statements leads to spaghetti code.
-
-The article has a strong prescriptive tone, as usual from Dijkstra, yet it opens
-with a reasonable appeal: “to shorten the conceptual gap between the static
-program and the dynamic process, to make the correspondence between the program
-(spread out in text space) and the process (spread out in time) as trivial as
-possible”.
-
-On the legacy front, most programmers are cargo-culting the fear of GOTO (though
-Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
-it.  However, the discipline of single-exit is more controversial, as most
-modern languages offer constructs for early exits from procedures (return
-statement) or from loops (break and continue statements, sometimes with
-labels).
-
-The fear of GOTO is an example of focusing on the wrong issue: structured
-programming is a proposal for clearer programs.  Blindly removing all GOTOs and
-labels from an unstructured program does not make it structured.  The focus is
-on writing programs that clearly reflect their dynamic process.  As Parnas noted
-[[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
-processes, not by adding a “module” statement to the language.  The same
-situation arises here.
-
-** Literate programming
+*** Literate programming
 Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
 mode.
 
@@ -732,7 +547,7 @@ explain what they are doing.
 Noweb is a language-agnostic syntax and implementation of WEB, which is used in
 Org-mode.
 
-*** Mechanisms for extension
+**** Mechanisms for extension
 The idea of documenting as you program is important, as is the focus on writing
 “what the human meant to do”.
 
@@ -740,55 +555,147 @@ The mechanisms of including and referencing code snippets allows one to
 structure the program as they see fit.  Especially, it allows to separate
 concerns through quantification.
 
-** Aspect-Oriented Programming
-Manipulation of static and runtime code.  Joinpoints reifie extension points.
-Pointcuts give powerful quantification over joinpoints.  Aspects promote
-separation of concerns.
+*** Prototype-based programming
+A collection of (at least) the following papers (or revisions of them):
+- [[cite:Tai-97][Tai-97]]
+- [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
+- [[cite:GBO+98][GBO+98]]
+- [[cite:Bor-86][Bor-86]]
+- [[cite:SU-95][SU-95]]
+- [[cite:Smi-95][Smi-95]]
+- [[cite:MMM+98][MMM+98]]
+- [[cite:Bla-91][Bla-91]] & [[cite:Bla-94][Bla-94]]
+- [[cite:Wol-96][Wol-96]]
+- [[cite:Moo-96][Moo-96]]
+- [[cite:Nob-01][Nob-01]]
+- [[cite:DeM-98][DeM-98]]
 
-Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
-both a blessing and a curse.  COMEFROM destroys local reasoning or referential
-transparency.
+[[cite:Tai-97][Tai-97]] is a philosophical take on the basis for class-based and prototype-based
+languages.  Ascribing to classes is following the school of Plato and Aristotle
+[[cite:Pla-98][Pla-98]] [[cite:Ari-35][Ari-35]].  Plato distinguished between /forms/, the ideal description of
+things, and /instances/ of these forms.  He regarded forms as being more real
+than instances.  Aristotle believed in “a single correct taxonomy of all natural
+things”, and classified things using the following rule:
+: essence = genus + differential
+which mirrors class creation in class-based languages.
 
-** Context-Oriented Programming
-Expressive separation of concerns when behavior can change depending on the
-context in which the program is executed.  Composition of programs by layers.
+Classification has been criticized, notably by Wittgenstein [[cite:Wit-53][Wit-53]], as being
+subjective.  Some concepts are difficult to define by intension – through a list
+of common properties that all instances must share.  Rather, Wittgenstein
+proposes the notion of /family resemblance/.  Meaning is not determined by a
+definition, but by similarity to representative prototypes.
 
-** Feature-Oriented Programming
-Promise of high-level programming, where features are built standalone, and
-interaction between them are dealt with separately.
+This philosophical heritage has a few implications for programming:
+- there are no optimal class hierarchies
+- in a class hierarchy, the middle classes are often the best representatives.
+  Higher classes are too abstract; lower classes too specific.
+- prototypes may map better to the usual human process: iterate from examples.
 
-** Model-driven development
-You build meta-models that encompass all variations of the solution space.
+Designers of class-based or prototype-based languages are seldom aware of the
+philosophical issues of both models, but focus more on technical matters.  Kevo
+[[cite:Tai-93][Tai-93]] is a prototype-based language with a notion of family
+resemblance. [[cite:Tai-93b][Tai-93b]] offer similar insights on the notion of object.
 
-[[cite:HT-06][HT-06]] makes some good points about the promises and reality of MDD (in 2006).
-The distinction between the three categories of sketchers, blueprinters and
-model programmers in the modeling community is relevant in order to not
-amalgamate different intentions.
+[[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
+d languages are advantageous for describing exceptional instances, multiple
+points of view of the same entity, and incomplete objects.
 
-** Domain-specific languages
-Greater control for language designer.  Gives a constrained playground for
-programmers.
+They identify the following mechanisms common to prototype-based languages:
+- message passing
+- 3 ways of creating objects (ex nihilo, cloning, and extension)
+- delegation
+- dynamic dispatch
 
-Downsides include tooling, development time, unfamiliarity and competition with
-general-purposes languages.
+Prototype-based languages also introduce new issues:
+- Fragmented entities.  Since objects are described differentially, no single
+  object in the system reify the complete entity.  To clone it completely, we
+  would need to clone all its parts, but they are not reified (e.g., traits
+  objects are only conventions, not language primitives).
+- Sharing between clones of the same object.
+- Sharing between clones of different objects.
 
-Monads can be seen as DSLs (but this is an insight better saved for later).
+*** Self
+The power of simplicity [[cite:US-91][US-91]].
 
-** Bytecode instrumentation
-Ansaloni.  Targets bytecode, which is low-level code.
+Pure object-oriented language.  No variables, but slots containing objects that
+return themselves.
 
-Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
-alter the behavior of a program with no access to its source code.  Inserts code
-after/before point of interest.
+No classes.  No control structure.
 
-[[cite:BRG+14][BRG+14]] instruments the bytecode interpreter of WebKit to enable information flow
-tracking.  Bytecode instrumentation is difficult, because you lose high-level
-details of the source code like “when does an if block ends”.  They have to
-build a control-flow graph to know when to discard program counters used by the
-information flow analysis.  Also, instrumenting the bytecode is specific to the
-bytecode compiler of WebKit (there is no standard, unlike Java).
+The absence of distinction may not be a good thing in practice:
+#+BEGIN_QUOTE
+The absence of class-instance distinction may make it too hard to understand
+which objects exist solely to provide shared information for other objects.
+Perhaps SELF programmers will create entirely new organizational structures.  In
+any case, SELF’s flexibility poses a challenge to the programming environment;
+it will have to include navigational and descriptive aids.
 
-** Open Implementation
+[later, in the conclusion]
+
+Reducing the number of basic concepts in a language can make the language easier
+to explain, understand, and use.  However, there is a tension between making the
+language simpler and making the organization of a system manifest.  As the
+variety of constructs decreases, so does the variety of linguistic clues to a
+system’s structure.
+#+END_QUOTE
+
+They cite [[cite:UCC+91][UCC+91]] for pointers on structuring programs in SELF.
+
+Classes are abstract description of objects, but prototypes are always
+concrete.  Each object is an example, and can be easily cloned.  Class
+hierarchies are hard, and impose a structure; prototypes less so.
+
+Classes forces you to create a template, even when you deal with several objects
+with unique behavior.
+
+Activation records for methods inherit from the receiver object, so the receiver
+is on the chain for binding lookup.
+
+They note that they could build “class-like” objects that hold code to create
+new clones, and also hold the shared behavior, though they “do not believe this
+is the best way to construct a system”.
+
+In [[cite:UCC+91][UCC+91]], the following organization is described:
+- Traits object for methods (shared by all instances of an object).
+- A prototype object with a default implementation.
+- Instances are created from cloning the prototype.
+
+Abstract objects dispense of the prototype, and singleton objects contain
+methods and state without providing a copy method.
+
+They note that OO supports “differential programming”, which is to define new
+data types as differences from existing data types.  In Smalltalk, differential
+programming is achieved through subclassing.  In SELF, they call it “refining
+traits objects”, but the mechanism is delegation through the parent link.
+
+An oddity: they state that parent links are constant, though the introduce a
+=dataParent= setter in figure 3.  Later they say that parent slot are like other
+data slots, assignable.
+
+Prototypes allow for multiple behavior modes, through dynamic inheritance
+switching.  Behavior modes enhance the clarity of the code, though they do not
+comment on the potential performance costs.
+
+**** Mechanisms for extension
+Prototypes, and message passing.  Prototypes are more general and simpler than
+inheritance.
+
+However prototypes do not originate with SELF [[cite:Bor-86][Bor-86]] [[cite:Lie-86][Lie-86]].
+
+[[cite:Lie-86][Lie-86]] makes a good case for prototypes as being a simpler model to learn, as
+well as being more intuitive.  Humans derive general concepts from examples, not
+the other way around.  Class-based languages require you to commit to the
+concepts first.
+
+Prototype-based and class-based languages provide different mechanisms for
+realizing differential programming,
+
+Is differential programming sufficient to solve the problem of modular
+instrumentation?  In the case of Narcissus, it was not, since the interpreter
+was not OO.  But the open scope pattern might be equivalent, dynamically, to
+inheritance.
+
+*** Open Implementation
 Before AOP, there was the concept of Open Implementation [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]]
 [[cite:KLL+97][KLL+97]].
 
@@ -875,7 +782,7 @@ important strategies in that interface, then the interfaces should be layered.
 From the set of client requirements, the module implementer should refine the
 open interface in stages, until all requirements can be expressed.
 
-*** Mechanisms for open implementation
+**** Mechanisms for open implementation
 Sadly, the language mechanisms for open implementation are not covered.
 
 #+BEGIN_QUOTE
@@ -899,7 +806,15 @@ fit the description of style 4.
 
 [[Reflection]] is another mechanism.
 
-** Aspect-Oriented Programming
+*** Aspect-Oriented Programming
+Manipulation of static and runtime code.  Joinpoints reifie extension points.
+Pointcuts give powerful quantification over joinpoints.  Aspects promote
+separation of concerns.
+
+Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
+both a blessing and a curse.  COMEFROM destroys local reasoning or referential
+transparency.
+
 Did the initial vision of AOP covered the problem of extensibility?
 
 [[cite:KLM+97][KLM+97]]
@@ -1111,7 +1026,7 @@ in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]
 
 AOP is [[https://encrypted.google.com/patents/US6467086][patented]] since 2002 by XEROX (US6467086 B1).
 
-*** Mechanisms for instrumentation
+**** Mechanisms for instrumentation
 The distinction between aspects and components is the most important
 contribution of AOP.  Though it is unclear whether ‘aspects’ are inevitable
 because of the complexity of the problem domain, or if they are accidental
@@ -1166,7 +1081,300 @@ The mechanisms of AOP may serve to extend the interpreter with analyses, without
 necessarily obeying the component/aspect decomposition.  Though without editor
 support, using AOP mechanisms will only satisfy one notion of locality.
 
-** Emacs
+*** Caesar
+[[cite:AGM+06][AGM+06]]
+
+CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
+All these mechanisms are brought together to allow composition along many axis.
+
+But overall, I failed to see the problems that it solved.  Both papers [[cite:AGM+06][AGM+06]]
+[[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
+the benefit brought by the new mechanisms.
+
+*** Hyper/J
+[[cite:TOH+99][TOH+99]] argues for a multi-dimensional separation of concerns.  First, they note
+that modern software technologies provide mechanisms for the /decomposition/ and
+/composition/ of source code, in order to cut the code into manageable pieces,
+and put the pieces back together to produce the running program.
+
+Existing software formalisms provide decomposition and composition mechanisms,
+but typically support a single dominant dimension of decomposition.  They dub
+this phenomenon the “tyranny of the dominant decomposition”.
+
+A class hierarchy is insufficient for anticipating all the evolutions of an
+expression language (see Expression problem).  Subclassing and design patterns
+require pre-planning.
+
+There are many concerns we need to manage simultaneously, and the dominant
+decomposition typically sacrifices some of those concerns for the benefit of
+others.  Thus, we are in presence of a multi-dimensional artifact, and each
+decomposition gives only a lower-dimensional view of said artifact.
+
+They propose /hyperslices/ as way to organize artifacts along all desired
+dimensions of concern.  An hyperslice contains all the units of change related
+to one concern.  Units of change can appear in multiple hyperslices, and thus
+hyperslices can overlap.  In the expression example, one slice for the kernel
+language, one slice for the pretty-printing, one slice for syntax checking, etc.
+
+Composition of hyperslices must be specified manually, though a default strategy
+can be installed.  They suggest one strategy based on name matching for merging
+classes together (akin to superimposition).
+
+Throughout the paper, they only use hyperslices on UML diagrams, not source
+code.  Hyperslices can be applied to specification, design documents and code.
+Though they do not highlight a way to link the related parts from those
+different artifacts together, other than putting them in the same hyperslice.
+There does not seem to be a way to deal with duplicates.
+
+Compared to AOP, where components are the primary decomposition and aspects
+gravitate around them, hyperslices do not impose a dominant structure (though it
+may often appear in practice, e.g., the kernel slice of the expression
+language).
+
+There are no descriptive papers of Hyper/J, but there is a manual [[cite:TO-00][TO-00]].  The
+manual gives details on how to implement the example of expression language.
+Using Hyper/J requires to write three files describing: the hyperspace (all
+classes that Hyper/J will care about), the concern mappings (which
+package/class/method/field maps to which concern), and the hypermodules (which
+features are part of a module, and how composition happens).  Running the
+Hyper/J tool will compose all the hypermodules using the specified rules (merge
+by name) to produce the final program.
+
+Hyper/J simplifies the multi-dimensional concept by mapping units of change to
+exactly one feature.  No overlap between hyperslices.
+
+**** Mechanisms for instrumentation
+Realization that the tyranny of the dominant decomposition is a manifestation of
+looking at a multi-dimensional object through low-dimensional projections.  All
+projections are unsatisfactory as they sacrifice one or more dimensions.
+
+The Hyper/J solution is basically superimposition.
+
+*** Information transparency
+[[cite:Gri-01][Gri-01]]
+
+Tools for capturing the similarity of code across modules.  Tangled code should
+be similar, according to the principle of consistency.  Hence, capturing similar
+code should help gather and organize concerns.  E.g., changing the behavior of
+the parsing of a =while= statement by grepping for ‘while’ in the source.
+
+Principle of consistency:
+
+#+BEGIN_QUOTE
+Things that look similar should /be/ similar; things that /are/ different should
+look different.
+#+END_QUOTE
+[[cite:Mac-87][Mac-87]]
+
+First principle of information transparency:
+
+#+BEGIN_QUOTE
+Code elements likely to be changed together as part of a complete, consistent
+change should look similar, and code elements unlikely to be changed together
+should look different.
+#+END_QUOTE
+
+If a code base obeys this principle, it can be easily refactored using standard
+tools like grep.
+
+A second principle promotes using variable names to indicate implementation
+choices.  Hungarian notation is given as an example.
+
+#+BEGIN_QUOTE
+The unmodularized code elements relating to a changeable design decision should
+contain recognizable tags uniquely identifying the design decision.
+#+END_QUOTE
+
+Locality can be managed by tools.  They exhibit tools a bit more powerful than
+grep, with knowledge of the target language AST, or matching on typos.
+
+#+BEGIN_QUOTE
+Both tools [Aspect Browser and Seesoft] embody the concept that, by leveraging
+the human visual system, identifiable /symbols/ are a viable alternative to
+/locality/ as a way of managing changes to software.
+#+END_QUOTE
+** La modularité du progamme n’est pas la modularité du code source
+Les travaux de la section précédente cherchent à obtenir la modularité à travers
+le code source.
+
+Mais un programme n’est pas que son code source.
+
+*** La construction d’une théorie de Naur
+*** La modularité selon Parnas
+Parnas is usually credited with the notion of modularity, as well as notions of
+/separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
+improving the methodology of programming through up-front planning and critical
+analysis of designs.  He does not believe in language solutions to software
+modularity [[cite:DBB+03][DBB+03]] [[cite:Par-96][Par-96]], although he is often quoted by proponents of
+modularity through languages.
+
+#+BEGIN_QUOTE
+My engineering teacher laid down some basic rules:
+
+1. Design before implementing.
+2. Document your design.
+3. Review and analyze the documented design.
+4. Review implementation for consistency with the design.
+
+There rules apply to software as least as much as they do to circuits or
+machines.
+#+END_QUOTE
+
+*** Notion of modularity
+Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
+Classical logic is inflexible, incompatible with the realities of software.
+Especially, information hiding is not the silver bullet.  Approaches to software
+development that seem to break information hiding, and even oppose modular
+reasoning, have their virtues.  Those can be thought of using nonclassical
+logics.
+
+** Moyens techniques pour l’instrumentation
+*** Le problème d’expression
+Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
+*** Dynamic binding
+Introduced by McCarthy’s LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
+dynamic environment in lexical binding [[cite:Que-03][Que-03]].
+
+Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
+their first-class privileges).
+
+[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
+binding adds expressiveness to a purely functional language.  They give examples
+in Perl, TeX, Common Lisp and Bash.
+
+[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
+dimensions of propagation of bindings (call stack and delayed lambdas), and
+offering a filter function to toggle the activation of a propagated binding.
+
+Some use-cases are mentioned, but none are demonstrated in the paper.  The
+proposal is not motivated enough by concrete applications that would be
+difficult to solve using existing mechanisms.  Also, the work is really focused
+on the binding semantics of Scheme, which reduce its applicability.
+
+*** Reflection
+[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
+made between /introspection/, /introcession/, /structural reflection/, and
+/behavioral reflection/; also between a program (a textual description) and a
+/computational system/ (a running process described by a program).
+
+A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
+#+BEGIN_QUOTE
+The general trend in the evolution of programming languages has been to postpone
+formal binding times towards the running of programs, but to use more and more
+sophisticated analysis and implementation techniques to bring actual times back
+to the earlier stages.
+#+END_QUOTE
+Later binding = more runtime flexibility, but also less guarantees and less
+performance.  The DLS submission is a perfect example.
+
+[[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
+interpreter.
+
+[[cite:Ste-94a][Ste-94a]] studies object-oriented languages which support open implementation.
+The open implementation of a language (the interpreter) is itself written in one
+language called the /implementation language/, and its meta-level interface
+allows the system to interpret a range of /engendered languages/.
+
+[[cite:SW-96][SW-96]] describe three approaches to code non-functional requirements while
+preserving the separation of concerns: systems-based, language-based, and
+MOP-based.  They find that MOP-based solutions are more flexible, especially as
+they can be applied to other domains without modifying the code.  However, they
+consider non-functional requirements like persistence and atomicity.
+
+Reflection for dynamic adaptation [[cite:DSC+99][DSC+99]].  Dynamic adaptation echoes the
+motivation of open implementation: an application should adapt dynamically to
+the need of the users, thereby enhancing performance.  This is mostly a concern
+in systems software, operating systems and middlewares.  They use a memory
+allocator example and compare using design patterns, DLLs and reflection.
+Essentially, reflection is more flexible, but also less efficient.
+
+[[cite:RC-02][RC-02]] illustrates how unanticipated dynamic adaptation can be achieved using
+MOPs in Java.
+
+Unifying AOP and OOP [[cite:RS-09a][RS-09a]].
+
+[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
+proxy which has a handful of traps that are useful to override: when the value
+is called as a function, when the value is used as a record, when the value is
+used as an index in an array, when the value is used in a binary operation ...
+
+They exhibit several scenarios where virtual values are useful: lazy evaluation,
+revocable membranes, and tainting.  They modified Narcissus (again!) to add
+their virtual values extension, but the implementation seems incomplete
+regarding all operations available in JavaScript.
+
+They motivate virtual values as a nice way to extend languages without having to
+touch the interpreter.  Though they do not talk at all of the limitations of
+this approach: can you write any extension that you would write by modifying the
+interpreter with virtual values?  The only downsides they acknowledge are
+performance hits and potential breakage of JS invariants (‘x*x’ returning a
+negative number, or ‘x === x’ returning false).
+
+It seems evident that virtual values are only hooks for values.  So you cannot
+override any other part of the module which is not explicitly given by a trap.
+Getting a trace of the interpreter execution is out.  Also, you need to specify
+your analysis from the point of view of handler on values, not by altering the
+interpreter semantics.
+
+[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
+previous implementation which used code transformation; better performance, less
+maintenance.
+
+*** Building from modules
+Findler & Flatt, Newspeak
+
+*** Building with monads
+Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
+
+Free algebras, free monads.  Basically reify data in a way that is accepted by
+the type system of the underlying language to allow unanticipated extension.
+
+[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
+/object algebras/.  Object algebras are akin to a free algebra.  Instead of
+locking down the actual objects used as expressions too early, they leave them
+open using abstract factories.  Providing a factory when evaluating the
+expression gives you either integer evaluation, or pretty-printing.
+
+Their solution is applicable to Java with generics, without significant
+syntactic overhead (less than related work).  And, they leverage the type system
+to capture erroneous composition.
+
+*** Bytecode instrumentation
+Ansaloni.  Targets bytecode, which is low-level code.
+
+Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
+alter the behavior of a program with no access to its source code.  Inserts code
+after/before point of interest.
+
+[[cite:BRG+14][BRG+14]] instruments the bytecode interpreter of WebKit to enable information flow
+tracking.  Bytecode instrumentation is difficult, because you lose high-level
+details of the source code like “when does an if block ends”.  They have to
+build a control-flow graph to know when to discard program counters used by the
+information flow analysis.  Also, instrumenting the bytecode is specific to the
+bytecode compiler of WebKit (there is no standard, unlike Java).
+** Travaux connexes concernant l’instrumentation
+*** Domain-specific languages
+Greater control for language designer.  Gives a constrained playground for
+programmers.
+
+Downsides include tooling, development time, unfamiliarity and competition with
+general-purposes languages.
+
+Monads can be seen as DSLs (but this is an insight better saved for later).
+
+*** Scripting languages
+Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
+early ‘90s phenomenon.  Dealing with low-level languages was deemed too heavy,
+but writing your whole system in a high-level language was too costly.  The
+compromise was to write the kernel in C, and the rest in a scripting language.
+
+With sufficiently efficient high-level languages, the kernel+configuration
+approach might be unneeded.
+
+JavaScript being a scripting language for the browser, as well as an object used
+in the Core, it might be adequate to have a dedicated background section to it.
+
+*** Emacs
 See Emacs Manual, [[cite:Sta-81][Sta-81]], [[cite:Hal-88][Hal-88]].  Emacs is an example of an extensible system.
 The mechanisms: global namespace, dynamic scoping, and a simple aspect system.
 
@@ -1196,7 +1404,7 @@ Especially they list “Language features for extensibility”:
 
 
 In the related work, Multics EMACS [[cite:Gre-80][Gre-80]] is mentioned as being more flexible,
-as it is written in MacLisp directly.  [[Smalltalk]] [[cite:Ing-78][Ing-78]] is also said to be
+as it is written in MacLisp directly.  Smalltalk [[cite:Ing-78][Ing-78]] is also said to be
 “oriented toward writing extensible programs”.
 
 (The Augment editor demoed by Engelbart [[cite:EE-68][EE-68]] is also mentioned, though nothing
@@ -1205,32 +1413,12 @@ is said of its extensibility.)
 [[cite:NS-01][NS-01]] proposes a dynamic scope analysis, to translate Emacs Lisp code using
 dynamic binding to lexical binding.
 
-***  Mechanisms for extension
+****  Mechanisms for extension
 Global variables, dynamic binding, hooks.
 
 Though hooks are more a convention than a first-class mechanism.
 
-** Dynamic binding
-Introduced by McCarthy’s LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
-dynamic environment in lexical binding [[cite:Que-03][Que-03]].
-
-Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
-their first-class privileges).
-
-[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
-binding adds expressiveness to a purely functional language.  They give examples
-in Perl, TeX, Common Lisp and Bash.
-
-[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
-dimensions of propagation of bindings (call stack and delayed lambdas), and
-offering a filter function to toggle the activation of a propagated binding.
-
-Some use-cases are mentioned, but none are demonstrated in the paper.  The
-proposal is not motivated enough by concrete applications that would be
-difficult to solve using existing mechanisms.  Also, the work is really focused
-on the binding semantics of Scheme, which reduce its applicability.
-
-** Eclipse and other IDEs
+*** Eclipse and other IDEs
 As noted by [[cite:Ler-11][Ler-11]], the Eclipse platform is extensible, and built using
 plugins.  Each plugin states its dependencies (the hooks needed to function),
 and its extension points (for other plugins).
@@ -1239,24 +1427,24 @@ Eclipse plugins are compiled, though they can be loaded dynamically (if they are
 written properly).  Symptomatically of Java, writing plugins needs lot of
 boilerplate code and XML (which Eclipse can generate for you, I understand).
 
-*** Mechanisms for extension
+**** Mechanisms for extension
 The mechanisms for extension seems to revolve around the observer pattern: a
 host plugin raises events which can be intercepted by extensions [[cite:Bol-03][Bol-03]].
 
 So, a lot of convention.
 
-** Web browsers
+*** Web browsers
 Many extensions are written for web browsers.  The mechanisms are heavy,
 comparable to the effort of writing an Eclipse plug-in.
 
 In fact, ZaphodFacets was an extension to change the JavaScript interpreter used
 by the browser.
 
-*** Mechanisms for extension
+**** Mechanisms for extension
 Convention.  Write manifest, and define the agreed-upon functions (install,
 startup).
 
-** Lua
+*** Lua
 An extensible extension language [[cite:IFF-96][IFF-96]].
 
 Extensible systems comprise of a kernel and a configuration.  The kernel is the
@@ -1327,7 +1515,7 @@ dispatch: rather than using a class construct, Lua programmers can use fallbacks
 Though they regret not stating a policy when it comes to modules, since everyone
 is doing its thing, without agreeing on a common protocol.
 
-***  Mechanisms for extension
+****  Mechanisms for extension
 The kernel+configuration, as seen in EMACS.  Mechanisms over policy shares our
 philosophy and provides programmers with tools to solve their problems in their
 own way.
@@ -1335,88 +1523,23 @@ own way.
 To extend Lua, bindings from C can be added, and custom data structure as well.
 Changing the interpreter does not seem possible, even from C.
 
-** Scripting languages
-Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
-early ‘90s phenomenon.  Dealing with low-level languages was deemed too heavy,
-but writing your whole system in a high-level language was too costly.  The
-compromise was to write the kernel in C, and the rest in a scripting language.
+*** Context-Oriented Programming
+Expressive separation of concerns when behavior can change depending on the
+context in which the program is executed.  Composition of programs by layers.
 
-With sufficiently efficient high-level languages, the kernel+configuration
-approach might be unneeded.
+*** Feature-Oriented Programming
+Promise of high-level programming, where features are built standalone, and
+interaction between them are dealt with separately.
 
-JavaScript being a scripting language for the browser, as well as an object used
-in the Core, it might be adequate to have a dedicated background section to it.
+*** Model-driven development
+You build meta-models that encompass all variations of the solution space.
 
-** Reflection
-[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
-made between /introspection/, /introcession/, /structural reflection/, and
-/behavioral reflection/; also between a program (a textual description) and a
-/computational system/ (a running process described by a program).
+[[cite:HT-06][HT-06]] makes some good points about the promises and reality of MDD (in 2006).
+The distinction between the three categories of sketchers, blueprinters and
+model programmers in the modeling community is relevant in order to not
+amalgamate different intentions.
 
-A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
-#+BEGIN_QUOTE
-The general trend in the evolution of programming languages has been to postpone
-formal binding times towards the running of programs, but to use more and more
-sophisticated analysis and implementation techniques to bring actual times back
-to the earlier stages.
-#+END_QUOTE
-Later binding = more runtime flexibility, but also less guarantees and less
-performance.  The DLS submission is a perfect example.
-
-[[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
-interpreter.
-
-[[cite:Ste-94a][Ste-94a]] studies object-oriented languages which support open implementation.
-The open implementation of a language (the interpreter) is itself written in one
-language called the /implementation language/, and its meta-level interface
-allows the system to interpret a range of /engendered languages/.
-
-[[cite:SW-96][SW-96]] describe three approaches to code non-functional requirements while
-preserving the separation of concerns: systems-based, language-based, and
-MOP-based.  They find that MOP-based solutions are more flexible, especially as
-they can be applied to other domains without modifying the code.  However, they
-consider non-functional requirements like persistence and atomicity.
-
-Reflection for dynamic adaptation [[cite:DSC+99][DSC+99]].  Dynamic adaptation echoes the
-motivation of open implementation: an application should adapt dynamically to
-the need of the users, thereby enhancing performance.  This is mostly a concern
-in systems software, operating systems and middlewares.  They use a memory
-allocator example and compare using design patterns, DLLs and reflection.
-Essentially, reflection is more flexible, but also less efficient.
-
-[[cite:RC-02][RC-02]] illustrates how unanticipated dynamic adaptation can be achieved using
-MOPs in Java.
-
-Unifying AOP and OOP [[cite:RS-09a][RS-09a]].
-
-[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
-proxy which has a handful of traps that are useful to override: when the value
-is called as a function, when the value is used as a record, when the value is
-used as an index in an array, when the value is used in a binary operation ...
-
-They exhibit several scenarios where virtual values are useful: lazy evaluation,
-revocable membranes, and tainting.  They modified Narcissus (again!) to add
-their virtual values extension, but the implementation seems incomplete
-regarding all operations available in JavaScript.
-
-They motivate virtual values as a nice way to extend languages without having to
-touch the interpreter.  Though they do not talk at all of the limitations of
-this approach: can you write any extension that you would write by modifying the
-interpreter with virtual values?  The only downsides they acknowledge are
-performance hits and potential breakage of JS invariants (‘x*x’ returning a
-negative number, or ‘x === x’ returning false).
-
-It seems evident that virtual values are only hooks for values.  So you cannot
-override any other part of the module which is not explicitly given by a trap.
-Getting a trace of the interpreter execution is out.  Also, you need to specify
-your analysis from the point of view of handler on values, not by altering the
-interpreter semantics.
-
-[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
-previous implementation which used code transformation; better performance, less
-maintenance.
-
-** Software product lines
+*** Software product lines
 [[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
 
 An engineering methodology to create and maintain variants of a software
@@ -1498,7 +1621,7 @@ and flexibility being the chief advantages.
 
 Handling feature interactions is an open problem.  Detecting them also.
 
-*** Mechanisms for instrumentation
+**** Mechanisms for instrumentation
 FOP implementations presented here are static organization of code into
 features.  Much like design patterns or frameworks, they require the programmer
 to design for extensibility beforehand.  AspectJ allows extending an existing
@@ -1528,120 +1651,7 @@ parameters, hence are a form a macros.
 Links are two way, and kept in sync by the programming system (editor): this
 prevents obliviousness.
 
-** Caesar
-[[cite:AGM+06][AGM+06]]
-
-CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
-All these mechanisms are brought together to allow composition along many axis.
-
-But overall, I failed to see the problems that it solved.  Both papers [[cite:AGM+06][AGM+06]]
-[[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
-the benefit brought by the new mechanisms.
-
-** Hyper/J
-[[cite:TOH+99][TOH+99]] argues for a multi-dimensional separation of concerns.  First, they note
-that modern software technologies provide mechanisms for the /decomposition/ and
-/composition/ of source code, in order to cut the code into manageable pieces,
-and put the pieces back together to produce the running program.
-
-Existing software formalisms provide decomposition and composition mechanisms,
-but typically support a single dominant dimension of decomposition.  They dub
-this phenomenon the “tyranny of the dominant decomposition”.
-
-A class hierarchy is insufficient for anticipating all the evolutions of an
-expression language (see Expression problem).  Subclassing and design patterns
-require pre-planning.
-
-There are many concerns we need to manage simultaneously, and the dominant
-decomposition typically sacrifices some of those concerns for the benefit of
-others.  Thus, we are in presence of a multi-dimensional artifact, and each
-decomposition gives only a lower-dimensional view of said artifact.
-
-They propose /hyperslices/ as way to organize artifacts along all desired
-dimensions of concern.  An hyperslice contains all the units of change related
-to one concern.  Units of change can appear in multiple hyperslices, and thus
-hyperslices can overlap.  In the expression example, one slice for the kernel
-language, one slice for the pretty-printing, one slice for syntax checking, etc.
-
-Composition of hyperslices must be specified manually, though a default strategy
-can be installed.  They suggest one strategy based on name matching for merging
-classes together (akin to superimposition).
-
-Throughout the paper, they only use hyperslices on UML diagrams, not source
-code.  Hyperslices can be applied to specification, design documents and code.
-Though they do not highlight a way to link the related parts from those
-different artifacts together, other than putting them in the same hyperslice.
-There does not seem to be a way to deal with duplicates.
-
-Compared to AOP, where components are the primary decomposition and aspects
-gravitate around them, hyperslices do not impose a dominant structure (though it
-may often appear in practice, e.g., the kernel slice of the expression
-language).
-
-There are no descriptive papers of Hyper/J, but there is a manual [[cite:TO-00][TO-00]].  The
-manual gives details on how to implement the example of expression language.
-Using Hyper/J requires to write three files describing: the hyperspace (all
-classes that Hyper/J will care about), the concern mappings (which
-package/class/method/field maps to which concern), and the hypermodules (which
-features are part of a module, and how composition happens).  Running the
-Hyper/J tool will compose all the hypermodules using the specified rules (merge
-by name) to produce the final program.
-
-Hyper/J simplifies the multi-dimensional concept by mapping units of change to
-exactly one feature.  No overlap between hyperslices.
-
-*** Mechanisms for instrumentation
-Realization that the tyranny of the dominant decomposition is a manifestation of
-looking at a multi-dimensional object through low-dimensional projections.  All
-projections are unsatisfactory as they sacrifice one or more dimensions.
-
-The Hyper/J solution is basically superimposition.
-
-** Information transparency
-[[cite:Gri-01][Gri-01]]
-
-Tools for capturing the similarity of code across modules.  Tangled code should
-be similar, according to the principle of consistency.  Hence, capturing similar
-code should help gather and organize concerns.  E.g., changing the behavior of
-the parsing of a =while= statement by grepping for ‘while’ in the source.
-
-Principle of consistency:
-
-#+BEGIN_QUOTE
-Things that look similar should /be/ similar; things that /are/ different should
-look different.
-#+END_QUOTE
-[[cite:Mac-87][Mac-87]]
-
-First principle of information transparency:
-
-#+BEGIN_QUOTE
-Code elements likely to be changed together as part of a complete, consistent
-change should look similar, and code elements unlikely to be changed together
-should look different.
-#+END_QUOTE
-
-If a code base obeys this principle, it can be easily refactored using standard
-tools like grep.
-
-A second principle promotes using variable names to indicate implementation
-choices.  Hungarian notation is given as an example.
-
-#+BEGIN_QUOTE
-The unmodularized code elements relating to a changeable design decision should
-contain recognizable tags uniquely identifying the design decision.
-#+END_QUOTE
-
-Locality can be managed by tools.  They exhibit tools a bit more powerful than
-grep, with knowledge of the target language AST, or matching on typos.
-
-#+BEGIN_QUOTE
-Both tools [Aspect Browser and Seesoft] embody the concept that, by leveraging
-the human visual system, identifiable /symbols/ are a viable alternative to
-/locality/ as a way of managing changes to software.
-#+END_QUOTE
-
-** Semantic patches
+*** Semantic patches
 [[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
 name, or gains an argument, client code must makes the necessary changes.  The
 changes in client code are collateral.
@@ -1690,7 +1700,7 @@ scratch for every change.
 The (unintended) idea of source transformation based on dynamic control flow is
 interesting.  See [[file:notes.org::*Shapes%20of%20computation][Shapes of computation]].
 
-*** Mechanisms for extension
+**** Mechanisms for extension
 It’s another approach, transforming code to alleviate the maintenance cost.
 
 However, it’s a crutch.  We would prefer not having to have to make those
