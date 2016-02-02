@@ -15,17 +15,29 @@ OUTPUT=$2
 # Get IDs of objects matching '^export:' regexp
 to_export=`inkscape --query-all ${SVG}\
            | grep '^export:'\
-           | cut --delimiter ',' --fields 1`
+           | cut --delimiter ',' --fields 1\
+           | cut --delimiter ':' --fields 2`
 
-echo $to_export
+echo 'Export object ids:' ${to_export}
 
 # Export each of them to PDF in OUTPUT folder with the specified filename
-for id in $to_export; do
-    filename=`echo ${id} | cut --delimiter ':' --fields 2`
-    echo $filename
-    inkscape --without-gui --file ${SVG}\
-             --export-id=${id}\
-             --export-pdf=${OUTPUT}/${filename}.pdf\
-             --export-area-drawing\
-             --export-margin=2
-done
+# for id in $to_export; do
+#     filename=`echo ${id} | cut --delimiter ':' --fields 2`
+#     echo $filename
+#     inkscape --without-gui --file ${SVG}\
+#              --export-id=${id}\
+#              --export-pdf=${OUTPUT}/${filename}.pdf\
+#              --export-area-drawing\
+#              --export-margin=2
+# done
+
+# Above takes 7 seconds on my test SVG file
+# Export using GNU parallel: 4 seconds
+filenames=`echo ${to_export} | cut --delimiter ':' --fields 2`
+
+parallel inkscape --without-gui\
+                  --file ${SVG}\
+                  --export-id='export:{}'\
+                  --export-pdf=${OUTPUT}/{}.pdf\
+                  --export-area-drawing\
+                  --export-margin=2 ::: ${to_export}
