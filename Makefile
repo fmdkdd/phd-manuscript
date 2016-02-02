@@ -42,6 +42,10 @@ tex/acks.tex: manuscript.org tex/export-setup.el
         --eval '(re-search-forward "\\\* Acknowledgements")' \
         --eval '(org-latex-export-to-latex nil t nil t)'
 
+# Convert SVG containing multiple diagrams to multiple PDF with Inkscape.
+img/%.multi.pdf: svg/%.multi.svg
+	./svgexport.sh $< img/
+	@touch $@
 
 # Convert SVG to PDF with Inkscape.
 img/%.pdf: svg/%.svg
