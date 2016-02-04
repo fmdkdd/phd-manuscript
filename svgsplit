@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Batch export of SVG objects to PDF using Inkscape.  SVG objects to be exported
+# must match the regexp '^export:(FILENAME)', and FILENAME.pdf will be created
+# under the OUTPUT directory.
+
+# Requires:
+# - xmlstarlet for finding the SVG id to export (using 1.5.0)
+# - rsvg-convert (part of librsvg) for converting to SVG/PNG/PDF
+#   (using 2.40.11 for --export-id)
+# - GNU Parallel for spawning multiple rsvg-convert (using 20130922)
+
+if [[ $# -ne 3 ]]; then
+    echo 'Usage: svgexport png|svg|pdf SVG OUTPUT_DIRECTORY'
+    exit 1
+fi
+
+TYPE=$1
+SVG=$2
+OUTPUT=$3
+
+# Get IDs of objects matching '^export:' regexp
+# filenames=`inkscape --query-all ${SVG} \
+#            | grep '^export:' \
+#            | cut --delimiter ',' --fields 1 \
+#            | cut --delimiter ':' --fields 2`
+
+# Inkscape is the correct way to do it, but it's a slog (~1s startup time for
+# each file).  Using just a XML selector (like hxselect) is still correct, but
+# much faster.
+filenames=`xmlstarlet sel --template --nl \
+                          --value-of '//*[starts-with(@id, "export:")]/@id' \
+                          ${SVG} \
+           | cut --delimiter ':' --fields 2`
+
+# If somehow the above becomes a bottleneck, there is more brittle but faster
+# grep option.
+# filenames=`grep --only-matching 'export:[^"]\+' ${SVG} \
+#            | cut --delimiter ':' --fields 2`
+
+# Use GNU Parallel to cut down on conversion time
+case $TYPE in
+    # At first I tried Inkscape to convert, but 1) it's slow, and 2) it fails to
+    # crop PNG and SVG to the selected object.  There's a way to script the GUI
+    # with --verb, but it's takes several seconds to process just one SVG.
+    # rsvg-convert is much faster, but might not give the exact same output for
+    # bitmap export.
+    pdf) parallel rsvg-convert --export-id 'export:{}' \
+                               --format pdf \
+                               --output ${OUTPUT}/{}.pdf \
+                               ${SVG} ::: ${filenames}
+         ;;
+
+    png) parallel rsvg-convert --export-id 'export:{}' \
+                               --format png \
+                               --output ${OUTPUT}/{}.png \
+                               ${SVG} ::: ${filenames}
+         ;;
+
+    svg) parallel rsvg-convert --export-id 'export:{}' \
+                               --format svg \
+                               --output ${OUTPUT}/{}.svg \
+                               ${SVG} ::: ${filenames}
+         ;;
+esac
