@@ -1198,7 +1198,54 @@ le code source.
 Mais un programme n’est pas que son code source.
 
 *** La construction d’une théorie de Naur
+
+
 *** La modularité selon Parnas
+Parnas est fréquemment cité comme référence pour la notion de modularité d’un
+système, en particulier l’article “On the Critera to be Used In Decomposing
+Systems into Modules” [[cite:Par-72][Par-72]].  Mais Parnas s’intéresse davantage à la phase de
+/conception/ d’un système qu’à la phase d’implémentation.
+
+Dans l’article, il décrit deux décompositions en modules d’un même système
+d’indexation ; un exemple didactique qui peut être implémenté “par un bon
+programmeur en une ou deux semaines“.  La première décomposition comporte 5
+modules, la seconde 6.  Les deux décompositions sont supposées produire des
+programmes équivalents: qui fournissent les même fonctionnalités.  Si les deux
+designs sont équivalents, quel intérêt à choisir une décomposition plutôt qu’une
+autre ?  La réponse vient en s’intéressant aux choix d’implémentation qui ont
+été laissé en suspens.
+
+Suivant le format d’entrée des données, ou l’emplacement mémoire de sauvegarde
+des données, il faudra modifier certaines parties du programme en conséquence.
+Et c’est là que les deux design ne sont plus équivalents: le second changement
+touche tous les modules de la première décomposition, alors que les changements
+sont restreints à un seul module dans la seconde décomposition.
+
+file:img/parnas-0.svg
+
+# A program is modular only /with respect to/ a set of changes.  It’s modular if
+# we change the data representation.  It’s modular if we add new opcodes.  Etc.
+
+les composent afin de déterminer les critères de décomposition d’un module.
+Pour Parnas, un module n’est pas un sous-programme, mais un regroupement de
+responsabilités ; il s’intéresse davantage à la phase la phase de /conception/
+du système plutôt que la phase d’implémentation.  Il mentionne quand même que
+des assembleurs qui permettent d’écrire un module et de le lier à d’autres sans
+reconstruire tout le système sont extrêmement utiles pour la conception de
+grands systèmes.  Mais /comment/ découper
+
+#+BEGIN_aside
+Ce qu’aujourd’hui on désigne aussi par compilation séparée.
+#+END_aside
+
+#+BEGIN_QUOTE
+In this context “module” is considered to be a responsability assignment rather
+than a subprogram.  The /modularizations/ include the design decisions which
+must be made /before/ the work on independent modules can begin.
+#+END_QUOTE
+
+Les avantages attendus d’un système modulaires sont: un temps de développement
+
 Parnas is usually credited with the notion of modularity, as well as notions of
 /separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
 improving the methodology of programming through up-front planning and critical
