@@ -1,0 +1,67 @@
+#+TITLE: Mécanismes de langages pour étendre des interpréteurs
+#+AUTHOR: fmdkdd
+#+LANGUAGE: french
+
+#+HTML_DOCTYPE: html5
+#+HTML_HEAD: <link rel="stylesheet" href="../style.css">
+
+* Construire un interpréteur extensible
+** Ajouter des termes
+Le premier langage a un terme unique pour représenter des constantes, et une
+opération pour évaluer cette constante vers sa valeur.  Pour implémenter ce
+terme, on utilise une décomposition objet en JavaScript, qui rappelle le patron
+/Interpreter/ de [[cite:GHJ+94][GHJ+94]].
+
+#+BEGIN_SRC js
+var num = {
+  new(n) { return {__proto__: this, n} },
+  eval() { return this.n }
+}
+
+var e1 = num.new(3)
+e1.eval() //: 3
+#+END_SRC
+
+#+ATTR_HTML: :style margin-top:-18rem
+#+BEGIN_aside
+Dans les programmes de ce chapitre, le trigramme ~//:~ indique la valeur de
+l’expression qui précède.  C’est la syntaxe de l’éditeur interactif [[cite:s3c][s3c]].
+#+END_aside
+
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_side-figure
+#+CAPTION: Représentation de la mémoire du programme après la création de l’objet
+#+CAPTION: ~num~, mais avant la création de ~e1~.
+[[file:../img/lassy-0.svg]]
+#+END_side-figure
+
+L’objet ~num~ comporte deux fonctions: ~new~ pour retourner un objet qui pour
+prototype ~this~ et contient la valeur ~n~ de la constante; et ~eval~ pour
+retourner cette constante ultérieurement.  À la dernière ligne, on appelle
+~eval~ sur l’instance ~e1~ de la constante 3, et c’est bien le résultat
+obtenu.
+
+#+BEGIN_full-figure
+#+CAPTION: Représentation de la mémoire du programme après la création de l’objet
+#+CAPTION: ~num~, mais avant la création de ~e1~.
+[[file:../img/lassy-0.svg]]
+#+END_full-figure
+
+Le second terme représente l’addition entre deux constantes.  Dans notre
+implémentation par objets, un nouveau terme est simplement ajouté en créant un
+objet ~plus~ avec une fonction ~eval~.  L’évaluation de ~plus~ appelle
+récursivement la fonction ~eval~ sur les opérandes de l’addition.
+
+#+CAPTION: Représentation de la mémoire du programme après la création de l’objet
+#+CAPTION: ~num~, mais avant la création de ~e1~.
+[[file:../img/lassy-0.svg]]
+
+#+BEGIN_SRC js
+var plus = {
+  new(l, r) { return {__proto__: this, l, r } },
+  eval() { return this.l.eval() + this.r.eval() }
+}
+
+var e2 = plus.new(num.new(1), num.new(2))
+e2.eval() //: 3
+#+END_SRC

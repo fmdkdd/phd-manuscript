@@ -1,3 +1,5 @@
+* { box-sizing: border-box }
+
 html {
   font-family: serif;
   font-size: 16px;
@@ -6,17 +8,51 @@ html {
   background-color: #fff;
 }
 
-#content, img {
-  max-width: 40rem;
-}
+#content, #postamble { width: 35rem }
 
-.figure, .aside {
+.side-figure, { width: 21rem }
+.full-figure { width: 58rem }
+
+.side-figure, .aside {
   position: absolute;
-  left: 42rem;
+  left: 37rem;
 }
 
-.figure p, .aside p {
+.side-figure img { max-width: 21rem }
+.side-figure p, .aside p {
   text-align: left;
   font-size: 90%;
-  max-width: 30rem;
+  width: 21rem;
+}
+
+.full-figure p {
+  text-align: left;
+}
+
+
+/* Caption (hopefully) */
+.figure p:last-child {
+  position: absolute;
+  top: 0;
+  left: 37rem;
+  text-align: left;
+  font-size: 90%;
+  width: 21rem;
+  margin: 0;
+}
+.side-figure .figure p:last-child {
+  position: static;
+}
+.full-figure .figure p:last-child {
+  position: static;
+  margin: 0;
+  float: right;
+  text-align: left;
+  font-size: 90%;
+  width: 21rem;
+}
+
+.figure {
+  position: relative;
+  padding: 0;
 }
