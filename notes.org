@@ -1380,6 +1380,61 @@ I actually know how to put things where I want them to be.
 Also, I can use SVG natively, and even add some interactivity, like running the
 JavaScript examples.
 
+** [2016-02-04 jeu.]
+*** Splitting SVG using rsvg-convert
+Splitting SVG using Inkscape on the command line was not as frictionless as
+exporting to PDF.  The SVG are not cropped, leading to wonky work-around of
+scripting the Inkscape GUI with --verb commands.  But that takes many seconds.
+
+So, maybe exporting to PNG would be better for drafting.  But no.  PNG are not
+cropped correctly, even with the --export-area-drawing option set.  Looking on
+the Inkscape bug tracker for this surprising behavior, I see that rsvg-convert
+does seem to do that correctly.  So I switch to rsvg-convert.
+
+Mostly it’s smooth sailing.  I’m just wondering whether the PNG/PDF outputs can
+different than the one from Inkscape.  I /hope/ that just cutting SVG out of a
+larger file does not alter the image.
+
+I also ditch Inkscape even for getting the IDs of objects to export, since it’s
+so long to startup.  xmlstarlet with a simple XPath query is enough to get the
+information I need.
+
+*** Customizing the HTML output
+This is covered by the [[info:org#CSS%20support][Org info manual]].
+
+I need:
+- max-width for content
+- set the font
+
+*** Getting figures in the margin
+Again.  I should try to toy with that over the week-end.  If I can get full
+control of figure offset in the exported HTML from the Org, that would be good
+enough.  Because I can always tweak the values in the Org to match what I want.
+
+Even better would be a few sane defaults like figures in the margin, full-width
+figures with below caption, and text-width figures with margin caption.
+
+*** Getting the bibliography back
+There is a bibliography extension to org-export that uses bib2html.  Might use
+that at start.
+
+Otherwise, I might be able to roll my own.  It’s just a matter of:
+
+- Getting all the refs I need to include by parsing the Org.
+
+  Might be able to do that by logging each ref when creating citations.
+
+- Create links for each citation.
+
+  Easy, already done in export-setup.el.
+
+- Extract all the needed info for each ref from the bib.
+
+  Call a standalone tool that can slice bibtex files for a given ref.  Then
+  template that into HTML.
+
+Famous last words.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

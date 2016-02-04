@@ -10,13 +10,13 @@ SVG_SRC=$(wildcard svg/*.svg)
 SVG_DST=$(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
 PNG_DST=$(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
 
-draft: $(TARGET) $(SVG_DST)
-final: $(TARGET) $(SVG_DST)
+draft: $(TARGET) $(SVG_DST) html/style.css
+final: $(TARGET) $(SVG_DST) html/style.css
 
-$(TARGET): $(INPUT) refs.bib html-export-setup.el
+$(TARGET): $(INPUT) refs.bib html-src/export-setup.el
 	@echo 'Exporting to HTML...'
 	@emacs --quick --batch \
-         --load html-export-setup.el \
+         --load html-src/export-setup.el \
          --file $(INPUT) \
          --eval '(message (format "Org version %s" (org-version)))' \
          --eval '(org-html-export-to-html)'
@@ -44,8 +44,12 @@ img/%.multi.png: svg/%.multi.svg svgsplit
 img/%.png: svg/%.svg
 	rsvg-convert --format png --output $@ $<
 
+html/style.css: html-src/style.css
+	cp $< $@
+
 clean:
 	rm --force $(TARGET)
 	rm --force img/*.svg
 	rm --force img/*.png
 	rm --force img/*.pdf
+	rm --force html/style.css

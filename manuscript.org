@@ -1,15 +1,15 @@
 # -*- org-confirm-babel-evaluate: nil; org-babel-use-quick-and-dirty-noweb-expansion: t -*-
 
-#+TITLE: Language mechanisms and patterns for extending interpreters
+#+TITLE: Mécanismes de langages pour étendre des interpréteurs
 #+AUTHOR: fmdkdd
-#+LATEX_CLASS: thesis
-#+OPTIONS: tags:nil toc:nil
+#+LANGUAGE: french
+#+OPTIONS: tags:nil
 #+BIBLIOGRAPHY: refs
 
 #+MACRO: acr @@latex:\textsc{$1}@@
 
-#+LATEX: \input{frontmatter}
-#+LATEX: \mainmatter
+#+HTML_DOCTYPE: html5
+#+HTML_HEAD: <link rel="stylesheet" href="style.css">
 
 * Contents                                                   :TOC@4:noexport:
  - [[#acknowledgements][Acknowledgements]]
@@ -190,12 +190,9 @@ forme que son processeur est capable de manipuler: des nombres, codés par des
 suites de zéros et de uns.
 
 #+CAPTION: Un programme (extrait; point de vue d’une machine x86).
-#+BEGIN_figure*
-\begin{verbatim}
+#+BEGIN_EXAMPLE
 ...00101011011100101011010101110101011111010100010110100000000110001011101010010101011...
-\end{verbatim}
-\vspace{-2em}
-#+END_figure*
+#+END_EXAMPLE
 
 Le programme est alors exécuté instruction par instruction.  La machine lit une
 instruction, puis effectue l’opération correspondante ; elle charge
@@ -1193,6 +1190,7 @@ Both tools [Aspect Browser and Seesoft] embody the concept that, by leveraging
 the human visual system, identifiable /symbols/ are a viable alternative to
 /locality/ as a way of managing changes to software.
 #+END_QUOTE
+
 ** La modularité du progamme n’est pas la modularité du code source
 Les travaux de la section précédente cherchent à obtenir la modularité à travers
 le code source.
@@ -1735,9 +1733,9 @@ suivre les étiquettes même lors de branchements (des flots /indirects/),
 l’évaluation multi-facettes maintient une liste des embranchements suivis lors
 de l’exécution; cette liste est appelée /program counter/ (PC).
 
-#+ATTR_LATEX: :float margin
+#+ATTR_HTML: :height 40rem
 #+CAPTION: Une valeur à deux facettes.
-[[file:img/a-facet.pdf]]
+[[file:img/a-facet.svg]]
 
 Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
 fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
@@ -1748,8 +1746,8 @@ valeur ~true:false~.  Un observateur non autorisé n’a accès qu’à la valeu
 publique du résultat, et n’est donc pas capable d’inférer la valeur privée de
 ~x~, même à travers un flot indirect d’information.
 
-#+ATTR_LATEX: :height 3.5cm :float t :no-center t
-[[file:img/fenton-example.pdf]]
+#+ATTR_HTML: :height 200rem
+[[file:img/fenton-example.svg]]
 
 Pour donner une idée de l’échelle du projet, Narcissus fait 6000 lignes de
 code[fn:lines-of-code], et les deux plus gros fichiers sont le parseur (1600
@@ -1766,14 +1764,15 @@ On peut obtenir l’ensemble des changements effectués en extrayant un /diff/ d
 deux versions[fn:narcissus-diff].  La figure [[visual-narcissus-diff]] donne une
 vue d’ensemble des changements.
 
+#+ATTR_HTML: :class full-width
 #+NAME: visual-narcissus-diff
 #+CAPTION: Visualisation des modifications apportées par l’instrumentation de
 #+CAPTION: Narcissus pour l’évaluation multi-facettes.  Le diff de “jsexec” y
 #+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
 #+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
 #+CAPTION: partie.  Les lignes grises ne sont pas affectées par
-#+CAPTION: l’instrumentation.  [[file:img/narcissus-diff-legend.pdf]]
-[[file:img/narcissus-diff.pdf]]
+#+CAPTION: l’instrumentation.  [[file:img/narcissus-diff-legend.svg]]
+[[file:img/narcissus-diff.svg]]
 
 On constate immédiatement que les changements effectués par l’instrumentation
 touchent de nombreuses parties du code de l’interpréteur, sans être restreints à
@@ -2180,7 +2179,7 @@ avec deux interpréteurs.
 #+CAPTION: prototype.  L’objet ~fctInterp~ possède une unique propriété propre:
 #+CAPTION: ~APP~.  Les autres propriétés sont déléguées à son prototype,
 #+CAPTION: ~stdInterp~.
-[[file:img/lamfa-proto.pdf]]
+[[file:img/lamfa-proto.svg]]
 
 L’interpréteur de \lambda^{facet} peut donc être défini uniquement en codant les
 différences entre ces deux modes d’interprétation.  Les deux objets ~stdInterp~
@@ -4083,11 +4082,20 @@ var e1 = num.new(3)
 e1.eval() //: 3
 #+END_SRC
 
+#+BEGIN_aside
+Dans les programmes de ce chapitre, le trigramme ~//:~ indique la valeur de
+l’expression qui précède.  C’est la syntaxe de l’éditeur interactif [[cite:s3c][s3c]].
+#+END_aside
+
+#+CAPTION: Représentation de la mémoire du programme après la création de l’objet
+#+CAPTION: ~num~, mais avant la création de ~e1~.
+[[file:img/lassy-0.svg]]
+
 L’objet ~num~ comporte deux fonctions: ~new~ pour retourner un objet qui pour
 prototype ~this~ et contient la valeur ~n~ de la constante; et ~eval~ pour
 retourner cette constante ultérieurement.  À la dernière ligne, on appelle
 ~eval~ sur l’instance ~e1~ de la constante 3, et c’est bien le résultat
-obtenu[fn:s3c].
+obtenu.
 
 Le second terme représente l’addition entre deux constantes.  Dans notre
 implémentation par objets, un nouveau terme est simplement ajouté en créant un
@@ -4373,10 +4381,6 @@ with (state({num, plus})) {
       n.show() //: “1+2”
 #+END_SRC
 
-
-[fn:s3c] Dans les programmes qui suivent, le trigramme ~//:~ indique la valeur
-de l’expression qui précède.  C’est la syntaxe de l’éditeur interactif [[cite:s3c][s3c]] que
-j’ai développé pour les cours de JavaScript.
 
 [fn:proceed] Une fonctionnalité similaire au mot-clé ~proceed~ en AspectJ et
 autres langages à aspects.
@@ -5936,5 +5940,3 @@ can see.
   - Un programme doit d’abord être correct.
   - Puis il doit être maintenable -> bonne documentation des choix de structure
   - Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?
-
-#+LATEX: \input{backmatter}
