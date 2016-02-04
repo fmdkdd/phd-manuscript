@@ -1,58 +1,49 @@
-TEXINPUTS='.:tex:' # Trailing ':' will make pdflatex include system paths
-LATEXMK_ARGS=-pdflatex=xelatex -output-directory=pdf -pdf -synctex=1 -quiet
+.PHONY: clean draft final
 
-# Convert all SVG images into svg folder to PDF into img folder.
-SVG_IMG=$(wildcard svg/*.svg)
-PDF_IMG=$(patsubst svg/%.svg, img/%.pdf, $(SVG_IMG))
+ORG_SRC=lab/html-export.org
 
-.PHONY: clean go
+# Extract all multi SVG images from svg/ folder into img/ folder.  Copy plain
+# SVG so that all reside in img/.
+SVG_SRC=$(wildcard svg/*.svg)
+SVG_DST=$(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
+PNG_DST=$(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
 
-pdf/manuscript.pdf: tex/manuscript.tex tex/preamble.tex \
-                    tex/frontmatter.tex tex/acks.tex \
-                    tex/backmatter.tex \
-                    refs.bib \
-                    tex/tufte-latex.sty \
-                    $(PDF_IMG)
-	env TEXINPUTS=${TEXINPUTS} latexmk ${LATEXMK_ARGS} tex/manuscript.tex
+draft: lab/html-export.html $(SVG_DST)
+final: lab/html-export.html $(SVG_DST)
 
-# Only useful for debugging the TeX output with Synctex, since it does not
-# re-export the TeX from changes in the Org document.
-go:
-	env TEXINPUTS=${TEXINPUTS} latexmk ${LATEXMK_ARGS} -pvc tex/manuscript.tex
+lab/html-export.html: $(ORG_SRC) refs.bib html-export-setup.el
+	echo 'Exporting to HTML...'
+	@emacs --quick --batch \
+         --load html-export-setup.el \
+         --file $(ORG_SRC) \
+         --eval '(message (format "Org version %s" (org-version)))' \
+         --eval '(org-html-export-to-html)'
 
-tex/manuscript.tex: manuscript.org tex/export-setup.el
-	echo 'Exporting to LaTeX...'
+# Org creates the HTML in the same directory as the Org document.  Maybe there
+# is a way to override it with ELisp, but for now...
+#  @mv manuscript.html html/manuscript.html
 
-# Export whole Org document to LaTeX, with the prelude.
-	emacs --quick --batch \
-        --load tex/export-setup.el \
-        --file manuscript.org \
-        --eval '(message (format "Org version %s" (org-version)))' \
-        --eval '(org-latex-export-to-latex)'
-
-# Org creates the TeX in the same directory as the Org document.  Maybe there is
-# a way to override it with ELisp, but for now...
-	mv manuscript.tex tex/manuscript.tex
-
-tex/acks.tex: manuscript.org tex/export-setup.el
-# Export only the subtree Acknowledgements.
-	emacs --quick --batch \
-        --load tex/export-setup.el \
-        --file manuscript.org \
-        --eval '(re-search-forward "\\\* Acknowledgements")' \
-        --eval '(org-latex-export-to-latex nil t nil t)'
-
-# Convert SVG containing multiple diagrams to multiple PDF with Inkscape.
-img/%.multi.pdf: svg/%.multi.svg
-	./svgexport.sh $< img/
+# Extract individual SVG from SVG containing multiple diagrams with Inkscape.
+img/%.multi.svg: svg/%.multi.svg svgsplit
+	./svgsplit svg $< img
+  # We actually create multiple files, and we can't know their names from the
+  # Makefile.  So we use a phony file to know when we need to keep track of
+  # the last time we ran the command.
 	@touch $@
 
-# Convert SVG to PDF with Inkscape.
-img/%.pdf: svg/%.svg
-	inkscape --file $< --export-pdf=$@
+img/%.svg: svg/%.svg
+	cp $< $@
+
+# Same as above, but for the PNG exports.
+img/%.multi.png: svg/%.multi.svg svgsplit
+	./svgsplit png $< img
+	@touch $@
+
+img/%.png: svg/%.svg
+	rsvg-convert --format png --output $@ $<
 
 clean:
-	latexmk -output-directory=pdf -C -f tex/manuscript.tex
-	rm --force pdf/manuscript.synctex.gz pdf/manuscript.bbl pdf/manuscript.run.xml
-	rm --force tex/manuscript.tex
-	rm --force tex/acks.tex
+	rm --force html/manuscript.html
+	rm --force img/*.svg
+	rm --force img/*.png
+	rm --force img/*.pdf
