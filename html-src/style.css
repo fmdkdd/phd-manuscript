@@ -1,25 +1,31 @@
 * { box-sizing: border-box }
 
 html {
-  font-family: serif;
+  font-family: 'Alegreya', serif;
   font-size: 16px;
 
   color: #333;
   background-color: #fff;
 }
 
+pre, code {
+  font-family: 'Ubuntu Mono';
+}
+
 #content, #postamble { width: 35rem }
 
-.side-figure, { width: 21rem }
+figure img { max-width: 35rem }
+.side-figure { width: 21rem }
+.side-figure img { max-width: 21rem }
 .full-figure { width: 58rem }
+.full-figure img { max-width: 58rem }
 
-.side-figure, .aside {
+.side-figure, aside {
   position: absolute;
   left: 37rem;
 }
 
-.side-figure img { max-width: 21rem }
-.side-figure p, .aside p {
+.side-figure p, aside p {
   text-align: left;
   font-size: 90%;
   width: 21rem;
@@ -29,9 +35,7 @@ html {
   text-align: left;
 }
 
-
-/* Caption (hopefully) */
-.figure p:last-child {
+figure figcaption {
   position: absolute;
   top: 0;
   left: 37rem;
@@ -40,10 +44,10 @@ html {
   width: 21rem;
   margin: 0;
 }
-.side-figure .figure p:last-child {
+.side-figure figcaption {
   position: static;
 }
-.full-figure .figure p:last-child {
+.full-figure figcaption {
   position: static;
   margin: 0;
   float: right;
@@ -52,7 +56,8 @@ html {
   width: 21rem;
 }
 
-.figure {
+figure {
   position: relative;
+  margin: 0;
   padding: 0;
 }

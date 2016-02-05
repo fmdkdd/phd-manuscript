@@ -11,6 +11,9 @@
   (org-add-link-type "cite" nil #'fmdkdd/org-export-cite))
 
 (with-eval-after-load 'ox-html
+  ;; Produce figcaption elements, the only way to identify caption in the CSS.
+  (setq org-html-html5-fancy t)
+
   ;; Do not embed SVG image in <object> tag.  An <img> works better.
   (defun fmdkdd/org-html--format-image (_ source attributes info)
     "Return \"img\" tag with given SOURCE and ATTRIBUTES.
