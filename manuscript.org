@@ -40,6 +40,7 @@
    - [[#la-modularité-du-progamme-n’est-pas-la-modularité-du-code-source][La modularité du progamme n’est pas la modularité du code source]]
      - [[#la-construction-d’une-théorie-de-naur][La construction d’une théorie de Naur]]
      - [[#la-modularité-selon-parnas][La modularité selon Parnas]]
+       - [[#conclusion][Conclusion]]
      - [[#notion-of-modularity][Notion of modularity]]
    - [[#moyens-techniques-pour-l’instrumentation][Moyens techniques pour l’instrumentation]]
      - [[#le-problème-d’expression][Le problème d’expression]]
@@ -1253,11 +1254,12 @@ design decision which it hides from all others.  Its interface or definition was
 chosen to reveal as little as possible about its inner workings.
 #+END_QUOTE
 
-L’encapsulation est le critère de décomposition en module que Parnas trouve le
-plus efficace.  En appliquant ce critère, Parnas conseille notamment de mettre
-dans un même module une structure de données et ses procédures d’accès et de
-modification.  Une notion de type abstrait de donnée qu’il ne nomme pas comme
-telle.
+#+ATTR_HTML: :style margin-top:-1rem
+#+BEGIN_aside
+Dans le même article, Parnas conseille aussi de mettre dans un même module une
+structure de données et ses procédures d’accès et de modification.  Une notion
+de type abstrait de donnée qu’il ne nomme pas comme telle.
+#+END_aside
 
 Si l’on suit ce critère pour décomposer un système en modules, alors on peut
 qualifier le système de /modulaire/.  Parnas liste les trois avantages attendus
@@ -1275,21 +1277,43 @@ Le premier design a beau comporter des modules, il n’a pas ces avantages.  Il
 n’est donc pas modulaire.  Sur un second exemple de système, un compilateur et
 interpréteur pour le même langage, il conclut là encore qu’une décomposition
 suivant le critère d’encapsulation est supérieure à une décomposition qui suit
-les étapes de traitement.  Un interpréteur et un compilateur en partie résolvent
+les étapes de traitement.  Un interpréteur et un compilateur résolvent en partie
 les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 /réutiliser/ les modules d’un système à l’autre.
 
+Néanmoins, il y a un obstacle à utiliser une décomposition dont les modules
+adhèrent strictement à l’encapsulation: l’efficacité du système.  Dans une telle
+décomposition, les appels de procédures sont plus nombreux et comportent
+davantage d’instructions.  Là où le design qui suit le logigramme peut accéder
+directement à la mémoire pour modifier les données utilisées par un autre
+module, dans la décomposition suivant Parnas chaque module est responsable de
+ses propres données; il faut forcément passer par les procédures d’accès et de
+modification du module.  Ces procédures peuvent en plus effectuer des
+vérifications sur leurs paramètres, qui ne sont peut-être pas nécessaires dans
+tous les cas, ce qui rajoute encore des instructions que la machine devra
+effectuer.
 
+Parnas reconnaît ce problème d’efficacité, et envisage de concevoir un outil qui
+transforme le code de la décomposition modulaire en code qui suit davantage le
+fil d’exécution.  Dans le code généré par cet outil, les appels de procédures
+inutiles sont supprimés, et l’efficacité n’est pas sacrifiée.  En revanche, la
+décomposition modulaire ne serait plus apparente.  Il suggère donc de conserver
+le programme sous ses plusieurs formes et de développer des outils pour passer
+d’une forme à l’autre.
+
+**** Conclusion
+Article riche: notions de modularité d’un système, d’encapsulation, et de
+séparation des préoccupations.
 
 # A program is modular only /with respect to/ a set of changes.  It’s modular if
 # we change the data representation.  It’s modular if we add new opcodes.  Etc.
 
+Importance de la phase de conception.  Ne pas suivre le flot d’exécution, mais
+plutôt encapsuler les décisions de design afin de pouvoir y apporter des
+modifications sans impacter le reste du système.
 
-Mais une décomposition dont les modules adhèrent strictement à l’encapsulation
-peut
-
-# Performance issues arise because encapsulation is costly.  Should use a mapper
-# to efficient code.
+Compromis efficacité/modularité.  À résoudre par un programme qui génère le
+code.
 
 Parnas is usually credited with the notion of modularity, as well as notions of
 /separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
@@ -1309,6 +1333,7 @@ My engineering teacher laid down some basic rules:
 There rules apply to software as least as much as they do to circuits or
 machines.
 #+END_QUOTE
+
 
 *** Notion of modularity
 Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
