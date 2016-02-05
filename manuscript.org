@@ -1208,43 +1208,88 @@ Systems into Modules” [[cite:Par-72][Par-72]].  Mais Parnas s’intéresse dav
 
 Dans l’article, il décrit deux décompositions en modules d’un même système
 d’indexation ; un exemple didactique qui peut être implémenté “par un bon
-programmeur en une ou deux semaines“.  La première décomposition comporte 5
+programmeur en une ou deux semaines”.  La première décomposition comporte 5
 modules, la seconde 6.  Les deux décompositions sont supposées produire des
-programmes équivalents: qui fournissent les même fonctionnalités.  Si les deux
-designs sont équivalents, quel intérêt à choisir une décomposition plutôt qu’une
-autre ?  La réponse vient en s’intéressant aux choix d’implémentation qui ont
-été laissé en suspens.
+programmes équivalents: qui fournissent les même fonctionnalités.  Mais si les
+deux programmes sont équivalents, quel intérêt à choisir une décomposition
+plutôt qu’une autre?  La réponse vient en s’intéressant aux choix
+d’implémentation qui ont été laissés en suspens.
 
 Suivant le format d’entrée des données, ou l’emplacement mémoire de sauvegarde
 des données, il faudra modifier certaines parties du programme en conséquence.
-Et c’est là que les deux design ne sont plus équivalents: le second changement
+Et c’est là que les deux designs ne sont plus équivalents: le second changement
 touche tous les modules de la première décomposition, alors que les changements
-sont restreints à un seul module dans la seconde décomposition.
+sont restreints à un seul module dans la seconde décomposition.  Le second
+design est donc mieux adapté aux changements potentiels anticipés par le
+concepteur.
 
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_side-figure
+#+CAPTION: Dans le second design, les changements sont restreints à un seul
+#+CAPTION: module.
 file:img/parnas-0.svg
+#+END_side-figure
+
+#+ATTR_HTML: :style margin-top:5rem
+#+BEGIN_side-figure
+#+CAPTION: Un logigramme.  Une façon courante de concevoir des programmes
+#+CAPTION: de 1950 à 1970.
+file:img/flowchart.svg
+#+END_side-figure
+
+Le second design est aussi plus facile à développer et plus facile à comprendre.
+Les modules du premier design correspondent aux étapes de traitement du système:
+Parnas nous dit qu’il suffit de dessiner le logigramme pour obtenir les 5
+modules.  Le résultat c’est que tous ces modules ont de nombreuses dépendances
+entre eux, ce qui pousse les programmeurs à avoir une compréhension globale du
+système pour pouvoir le développer.  En revanche, il a élaboré le second design
+en suivant le principe /d’encapsulation/: les modules ne correspondent plus à
+des étapes de traitement, mais plutôt à des décisions de design, des
+responsabilités:
+
+#+BEGIN_QUOTE
+Every module in the second decomposition is characterized by its knowledge of a
+design decision which it hides from all others.  Its interface or definition was
+chosen to reveal as little as possible about its inner workings.
+#+END_QUOTE
+
+L’encapsulation est le critère de décomposition en module que Parnas trouve le
+plus efficace.  En appliquant ce critère, Parnas conseille notamment de mettre
+dans un même module une structure de données et ses procédures d’accès et de
+modification.  Une notion de type abstrait de donnée qu’il ne nomme pas comme
+telle.
+
+Si l’on suit ce critère pour décomposer un système en modules, alors on peut
+qualifier le système de /modulaire/.  Parnas liste les trois avantages attendus
+d’un système modulaire:
+
+#+BEGIN_QUOTE
+(1) managerial—development time should be shortened because separate groups
+would work on each module with little need for communication: (2) product
+flexibility—it should be possible to make drastic changes to one module without
+a need to change others; (3) comprehensibility—it should be possible to study
+the system one module at a time.
+#+END_QUOTE
+
+Le premier design a beau comporter des modules, il n’a pas ces avantages.  Il
+n’est donc pas modulaire.  Sur un second exemple de système, un compilateur et
+interpréteur pour le même langage, il conclut là encore qu’une décomposition
+suivant le critère d’encapsulation est supérieure à une décomposition qui suit
+les étapes de traitement.  Un interpréteur et un compilateur en partie résolvent
+les mêmes problèmes, et la décomposition préconisée par Parnas permet de
+/réutiliser/ les modules d’un système à l’autre.
+
+
 
 # A program is modular only /with respect to/ a set of changes.  It’s modular if
 # we change the data representation.  It’s modular if we add new opcodes.  Etc.
 
-les composent afin de déterminer les critères de décomposition d’un module.
-Pour Parnas, un module n’est pas un sous-programme, mais un regroupement de
-responsabilités ; il s’intéresse davantage à la phase la phase de /conception/
-du système plutôt que la phase d’implémentation.  Il mentionne quand même que
-des assembleurs qui permettent d’écrire un module et de le lier à d’autres sans
-reconstruire tout le système sont extrêmement utiles pour la conception de
-grands systèmes.  Mais /comment/ découper
 
-#+BEGIN_aside
-Ce qu’aujourd’hui on désigne aussi par compilation séparée.
-#+END_aside
+Mais une décomposition dont les modules adhèrent strictement à l’encapsulation
+peut
 
-#+BEGIN_QUOTE
-In this context “module” is considered to be a responsability assignment rather
-than a subprogram.  The /modularizations/ include the design decisions which
-must be made /before/ the work on independent modules can begin.
-#+END_QUOTE
-
-Les avantages attendus d’un système modulaires sont: un temps de développement
+# Performance issues arise because encapsulation is costly.  Should use a mapper
+# to efficient code.
 
 Parnas is usually credited with the notion of modularity, as well as notions of
 /separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
@@ -1780,9 +1825,11 @@ suivre les étiquettes même lors de branchements (des flots /indirects/),
 l’évaluation multi-facettes maintient une liste des embranchements suivis lors
 de l’exécution; cette liste est appelée /program counter/ (PC).
 
+#+BEGIN_side-figure
 #+ATTR_HTML: :height 40rem
 #+CAPTION: Une valeur à deux facettes.
 [[file:img/a-facet.svg]]
+#+END_side-figure
 
 Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
 fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
@@ -1793,8 +1840,10 @@ valeur ~true:false~.  Un observateur non autorisé n’a accès qu’à la valeu
 publique du résultat, et n’est donc pas capable d’inférer la valeur privée de
 ~x~, même à travers un flot indirect d’information.
 
+#+BEGIN_side-figure
 #+ATTR_HTML: :height 200rem
 [[file:img/fenton-example.svg]]
+#+END_side-figure
 
 Pour donner une idée de l’échelle du projet, Narcissus fait 6000 lignes de
 code[fn:lines-of-code], et les deux plus gros fichiers sont le parseur (1600
@@ -1811,7 +1860,6 @@ On peut obtenir l’ensemble des changements effectués en extrayant un /diff/ d
 deux versions[fn:narcissus-diff].  La figure [[visual-narcissus-diff]] donne une
 vue d’ensemble des changements.
 
-#+ATTR_HTML: :class full-width
 #+NAME: visual-narcissus-diff
 #+CAPTION: Visualisation des modifications apportées par l’instrumentation de
 #+CAPTION: Narcissus pour l’évaluation multi-facettes.  Le diff de “jsexec” y
