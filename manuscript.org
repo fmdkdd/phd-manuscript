@@ -1293,13 +1293,120 @@ vérifications sur leurs paramètres, qui ne sont peut-être pas nécessaires da
 tous les cas, ce qui rajoute encore des instructions que la machine devra
 effectuer.
 
-Parnas reconnaît ce problème d’efficacité, et envisage de concevoir un outil qui
+Parnas reconnaît ce problème d’efficacité, et suggère de concevoir un outil qui
 transforme le code de la décomposition modulaire en code qui suit davantage le
-fil d’exécution.  Dans le code généré par cet outil, les appels de procédures
-inutiles sont supprimés, et l’efficacité n’est pas sacrifiée.  En revanche, la
-décomposition modulaire ne serait plus apparente.  Il suggère donc de conserver
-le programme sous ses plusieurs formes et de développer des outils pour passer
-d’une forme à l’autre.
+fil d’exécution.  Le concepteur peut travailler sur la représentation modulaire,
+et l’outil se charge de générer du code efficace.  Dans le code généré par cet
+outil, les appels de procédures inutiles sont supprimés, et l’efficacité n’est
+pas sacrifiée.  En revanche, la décomposition modulaire ne serait plus
+apparente.  Il propose donc de conserver le programme sous ses plusieurs formes
+et de développer des outils pour passer d’une forme à l’autre.
+
+Ce ne sont que des suggestions, et l’article ne dit pas comment réaliser ces
+transformations.  On trouve des mises en œuvre de ces idées dans le Literate
+Programming de Knuth, et dans l’AOP de Xerox.
+
+Parnas met donc en avant le critère d’encapsulation pour concevoir un système
+modulaire.  Mais surtout, il insiste sur l’importance de la phase de conception
+du système, indépendamment de son implémentation en code.  Parnas ne croit
+d’ailleurs pas que le choix du langage de programmation puisse rendre un système
+modulaire.  Un point qu’il développe dans “Why Software Jewels are Rare” [[cite:Par-96][Par-96]].
+
+Un “logiciel joyau” est un programme “bien structuré écrit dans un style
+homogène, sans bidouilles, développé tel que chaque composant est simple et
+organisé, et conçu pour que le produit soit facile à changer”.  Parnas donne
+plusieurs raisons qui explique, selon lui, la rareté de ces joyaux: le logiciel
+existe pour répondre à un besoin, et la structure interne du programme n’est pas
+un besoin du client; un logiciel est plus utile à l’utilisateur s’il répond à
+plusieurs besoins, ce qui implique d’enrichir ses fonctionnalités, au détriment
+de la simplicité du programme.  Les contraintes matérielles ne laissent que peu
+de place à l’élégance structurelle du code.  Parnas rapporte notamment son échec
+à vouloir mettre à jour un système d’ordinateur de vol pour l’armée américaine;
+la machine ciblée possédait un matériel très limité qui demandait une
+optimisation manuelle de l’utilisation des registres, mais Parnas et son équipe
+désiraient s’abstraire de ces détails matériels:
+
+#+BEGIN_QUOTE
+Near-optimal register allocation was essential to fitting the program into a
+very small memory.  One of our design goals had been to achieve hardware
+independence for most of our code.  To achieve hardware independence on the
+specified processor, we needed an effective register allocation algorithm.  The
+previous software for this task had been sucessful because none of the code was
+portable and register allocation was done by hand.  We never found the necessary
+register allocation algorithm.
+#+END_QUOTE
+
+Et contrairement à ce que l’on pourrait penser, la loi de Moore ne résout pas le
+problème.  Si les machines possèdent deux fois plus de registres et sont deux
+fois plus rapides, alors on leur demandera de faire deux fois plus de calculs
+(ou de les faire deux fois plus rapidement).  Parnas le note:
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+Phénomène également relaté avec humour par Wirth [[cite:Wir-95][Wir-95]]: “Software expands to
+fill the available memory”; “Software is getting slower more rapidly than
+hardware becomes faster”.
+#+END_aside
+
+#+BEGIN_QUOTE
+Although today’s machines are far better than the one we were using, goals have
+expanded and competitive pressures often limit the resources available.  Few of
+today’s designers are to ignore performance requirements and hardware
+limitations.
+#+END_QUOTE
+
+Mais surtout, il faut se méfier des marchands de panacée:
+
+#+BEGIN_QUOTE
+Sometimes new languages are used in the design of jewels, and authors may
+attribute a product’s success to the use of a particular language or type of
+language.  Here, I have grave doubts.  I have lost count of the number of
+languages that have been introduced to me as the solution to the software
+problems that everyone experiences.  First, I was told to use Fortran instead of
+an assembler language.  Later, others advocated Algol-60 and its derivatives as
+the cure to the ugly software resulting from Fortran.  Of course, NPL, later
+known as PL/I, was going to provide an even better solution.  The list goes on.
+With promotes Oberon while hundreds of people are telling me that an
+object-oriented language must be used to get clean software.  I no longer
+believe such claims.  The issue is design, not programming language.
+
+[...]
+
+We should not ignore the fact that most modern languages have inherent
+disadvantages.  A language that supports certain approach to software design
+often compels us to use a particular implementation of a design principle, one
+that may be inappropriate for the task at hand.  For example, many languages
+that support modules, abstract data types, and object classes require the use of
+subroutines where macro expansion might be a better choice.  Moreover, languages
+that prevent programming errors, a goal advanced by some inveterate language
+designers, are as feasible as knives that can cut meat but not hands.  We need
+sharp tools to do good work.
+#+END_QUOTE
+
+Un langage de programmation est un outil parmi d’autres, et aucun outil ne peut
+résoudre tous les problèmes.  C’est au concepteur de choisir l’outil adapté qui
+est le plus à même de résoudre le problème qu’il a en vue.  Choisir un langage
+n’affranchit pas le concepteur d’avoir à se poser des questions difficiles sur
+la structure du système.  En 2003, Parnas déplore cette tendance:
+
+#+BEGIN_QUOTE
+To a man with a hammer, everything looks like a nail.  To a Computer Scientist,
+everything looks like a language design problem.  Languages and compilers are,
+in their opinion, the only way to drive an idea into practice.
+
+My early work clearly treated modularisation as a design issue, not a language
+issue.  A module was a work assignment, not a subroutine or other language
+element.  Although some tools could make the job easier, no special tools were
+needed to use the principal, just discipline and skill.  When language designers
+caught on to the idea, they assumed that modules had to be subroutines, or
+collections of subroutines, and introduced unreasonable restrictions on the
+design.  They also spread the false impression that the important thing was to
+learn the language; in truth, the important thing is to learn how to design and
+document.  We are still trying to undo the damage caused by the early treatment
+of modularity as a language issue and, sadly, we still try to do it by inventing
+languages and tools.
+#+END_QUOTE
+
 
 **** Conclusion
 Article riche: notions de modularité d’un système, d’encapsulation, et de
@@ -1319,8 +1426,14 @@ Parnas is usually credited with the notion of modularity, as well as notions of
 /separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
 improving the methodology of programming through up-front planning and critical
 analysis of designs.  He does not believe in language solutions to software
-modularity [[cite:DBB+03][DBB+03]] [[cite:Par-96][Par-96]], although he is often quoted by proponents of
-modularity through languages.
+modularity [[cite:DBB+03][DBB+03]] (design and documentation are the important part) [[cite:Par-96][Par-96]]
+(admits failure at delivering a software jewel on tight hardware constraints by
+trying to abstract the register allocation away but never managing to gain
+enough performance back) although he is often quoted by proponents of modularity
+through languages.
+
+The money quote:
+
 
 #+BEGIN_QUOTE
 My engineering teacher laid down some basic rules:
@@ -1333,7 +1446,6 @@ My engineering teacher laid down some basic rules:
 There rules apply to software as least as much as they do to circuits or
 machines.
 #+END_QUOTE
-
 
 *** Notion of modularity
 Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
