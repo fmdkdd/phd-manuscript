@@ -1473,6 +1473,46 @@ the system, and hence would only make the system modular if the trade off is
 worth it; only for foreseeable changes that do not bear too much weight on the
 system.
 
+** [2016-02-10 mer.]
+*** There is no “zero-cost” abstraction
+The less you specify, the more control you relinquish.
+
+When you delegate a task, you lose control over the finer details of how this
+task will be performed.  The delegate has this control.  In exchange for this
+loss of control, you gain time, you are to focus on other matters.
+
+Delegation is very useful when you do not care about /how/ the task is carried
+out, as long as it’s done.
+
+If you need a custom-made chair, then ask a woodworker.  Give approximate
+dimensions, style, fitting guidelines and a few days later tadaa, you got a
+chair.
+
+But if you have very specific needs for a chair, it’s probably best to be
+involved in the decision process.  Pick the exact fabric, the exact wood to be
+used, specify the exact shape, etc.  You might even do it yourself.  Then you
+have more control over the end result.
+
+Abstraction in programming is delegation.  If you abstract, you have less
+control.  And for programs, less control is less control over the performance,
+over /how/ exactly is the machine stirred by your code.  That’s the price you
+pay, and there’s no way around it.
+
+To give an example, a “number” construct in a language is an abstraction.  Let’s
+say your programming language only offers the “number” type to hold any integer,
+no matter how large it is.  Of course, there’s no machine capable of holding an
+integer of arbitrary size.  But, dealing with 32-bit integers, or 64-bit
+integers, or moving them to heap space using an efficient representation is
+extra work.  So, you just say “number” and happily build your program with the
+confidence that your additions will never overflow, provided you do not outgrow
+your machine’s memory limits.
+
+But then, you have absolutely no idea how efficient your program really is.  You
+/hope/ the designers of the “number” abstraction have done their best to
+optimize the common cases: if your numbers can all be represented in 64-bit or
+less, that they use adequate registers and opcodes.  But you also know that /no
+compiler/ will ever be optimal, so there’s always a potential loss there.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

@@ -1343,15 +1343,15 @@ fois plus rapides, alors on leur demandera de faire deux fois plus de calculs
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
-Phénomène également relaté avec humour par Wirth [[cite:Wir-95][Wir-95]]: “Software expands to
-fill the available memory”; “Software is getting slower more rapidly than
-hardware becomes faster”.
+Phénomène relaté avec humour par Wirth [[cite:Wir-95][Wir-95]]: “Software expands to fill the
+available memory”; “Software is getting slower more rapidly than hardware
+becomes faster”.
 #+END_aside
 
 #+BEGIN_QUOTE
 Although today’s machines are far better than the one we were using, goals have
 expanded and competitive pressures often limit the resources available.  Few of
-today’s designers are to ignore performance requirements and hardware
+today’s designers are free to ignore performance requirements and hardware
 limitations.
 #+END_QUOTE
 
@@ -1366,7 +1366,7 @@ problems that everyone experiences.  First, I was told to use Fortran instead of
 an assembler language.  Later, others advocated Algol-60 and its derivatives as
 the cure to the ugly software resulting from Fortran.  Of course, NPL, later
 known as PL/I, was going to provide an even better solution.  The list goes on.
-With promotes Oberon while hundreds of people are telling me that an
+Wirth promotes Oberon while hundreds of people are telling me that an
 object-oriented language must be used to get clean software.  I no longer
 believe such claims.  The issue is design, not programming language.
 
@@ -1387,7 +1387,13 @@ Un langage de programmation est un outil parmi d’autres, et aucun outil ne peu
 résoudre tous les problèmes.  C’est au concepteur de choisir l’outil adapté qui
 est le plus à même de résoudre le problème qu’il a en vue.  Choisir un langage
 n’affranchit pas le concepteur d’avoir à se poser des questions difficiles sur
-la structure du système.  En 2003, Parnas déplore cette tendance:
+la structure du système.  En 2003, Parnas déplore cette tendance [[cite:DBB+03][DBB+03]]:
+
+#+ATTR_HTML: :style margin-top:8rem
+#+BEGIN_aside
+Cette dernière phrase est directement ciblée aux trois autres panélistes qui lui
+font face, qui sont les instigateurs respectifs de l’AOP, du FOP, et d’Hyper/J.
+#+END_aside
 
 #+BEGIN_QUOTE
 To a man with a hammer, everything looks like a nail.  To a Computer Scientist,
@@ -1407,33 +1413,15 @@ of modularity as a language issue and, sadly, we still try to do it by inventing
 languages and tools.
 #+END_QUOTE
 
+Parnas réitère: le langage de programmation seul ne rend pas le programme
+modulaire.  C’est aussi facile de créer un programme non-modulaire dans un
+langage de haut niveau qu’en assembleur.  On ne pourra donc pas rendre les
+programmes modulaires simplement en fournissant de meilleurs languages ou
+outils.
 
-**** Conclusion
-Article riche: notions de modularité d’un système, d’encapsulation, et de
-séparation des préoccupations.
-
-# A program is modular only /with respect to/ a set of changes.  It’s modular if
-# we change the data representation.  It’s modular if we add new opcodes.  Etc.
-
-Importance de la phase de conception.  Ne pas suivre le flot d’exécution, mais
-plutôt encapsuler les décisions de design afin de pouvoir y apporter des
-modifications sans impacter le reste du système.
-
-Compromis efficacité/modularité.  À résoudre par un programme qui génère le
-code.
-
-Parnas is usually credited with the notion of modularity, as well as notions of
-/separation of concerns/ and /information hiding/ [[cite:Par-72][Par-72]].  Parnas advocates
-improving the methodology of programming through up-front planning and critical
-analysis of designs.  He does not believe in language solutions to software
-modularity [[cite:DBB+03][DBB+03]] (design and documentation are the important part) [[cite:Par-96][Par-96]]
-(admits failure at delivering a software jewel on tight hardware constraints by
-trying to abstract the register allocation away but never managing to gain
-enough performance back) although he is often quoted by proponents of modularity
-through languages.
-
-The money quote:
-
+Alors, quelle est la bonne direction à suivre?  D’après Parnas, il faut insister
+sur la phase de conception du système; c’est là où les limites entre modules
+apparaissent, et là où les décisions de design doivent être prises:
 
 #+BEGIN_QUOTE
 My engineering teacher laid down some basic rules:
@@ -1446,6 +1434,46 @@ My engineering teacher laid down some basic rules:
 There rules apply to software as least as much as they do to circuits or
 machines.
 #+END_QUOTE
+
+# Missing illustrations for the main points of this section:
+# - encapsulation
+# - efficiency/modularity tradeoff
+
+**** Conclusion
+Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
+son message principal n’est pas toujours bien entendu.  On trouve dans l’article
+séminal de 1972 les avantages d’un système modulaire, et un critère pour les
+concevoir: le critère d’encapsulation.  Quelles parties du système ont besoin de
+pouvoir être changées?  D’une machine à l’autre, ou en réponse à des besoins
+futurs?  Ces parties déterminent les modules du système selon le critère
+d’encapsulation.  De ce critère découlent des notions de séparation des
+préoccupations et de type de données abstrait (qu’il ne nomme pas).
+L’encapsulation est un critère supérieur à la façon usuelle de découper les
+programmes selon le processus de traitement des données, en suivant un
+logigramme.
+
+Parnas nous permet donc de /qualifier/ la modularité d’un système.  Un système
+simplement découpé en modules arbitraires n’est pas modulaire.  Mais si pour
+changer la base de données utilisée par le système il suffit de modifier le code
+d’un seul module, alors ce système est modulaire /par rapport/ à la base de
+donné utilisée.  La base de donnée initiale est un choix de conception, mais un
+choix qui peut être changé ultérieurement sans demander la refonte totale du
+système.  Le système est modulaire /par rapport/ à un ensemble de choix qui
+peuvent être altérés ultérieurement.
+
+On peut donc voir la modularité comme une des fonctionnalités du système; une
+fonctionnalité à destination des programmeurs chargés de la maintenance du
+système, plutôt qu’une fonctionnalité destinée aux utilisateurs.  Et comme toute
+fonctionnalité, la modularité impose un coût de complexité au système.  Si le
+programme est flexible, s’il permet de changer la base de donnée utilisée, alors
+il faut que le reste du système soit capable de fonctionner non plus avec une
+seule base de donnée, mais avec plusieurs bases différentes.  Gérer cette
+compatibilité impose de traiter plus de cas, ce qui inévitablement se traduit en
+code.  De plus, pour implémenter un système modulaire, on fera souvent appel à
+des interfaces, des indirections, des appels de procédures qui encapsulent les
+décisions de conception.  Et ces interfaces ont souvent un impact négatif sur
+l’efficacité du programme.  Ces compromis modularité/complexité et
+modularité/efficacité me semblent inévitables.
 
 *** Notion of modularity
 Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
