@@ -1281,6 +1281,13 @@ les étapes de traitement.  Un interpréteur et un compilateur résolvent en par
 les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 /réutiliser/ les modules d’un système à l’autre.
 
+#+BEGIN_side-figure
+#+CAPTION: L’encapsulation cause de l’indirection, ce qui peut réduire
+#+CAPTION: l’efficacité du programme en augmentant les appels de procédures
+#+CAPTION: sur la pile.
+[[file:img/parnas-overhead.svg]]
+#+END_side-figure
+
 Néanmoins, il y a un obstacle à utiliser une décomposition dont les modules
 adhèrent strictement à l’encapsulation: l’efficacité du système.  Dans une telle
 décomposition, les appels de procédures sont plus nombreux et comportent
@@ -1389,7 +1396,7 @@ est le plus à même de résoudre le problème qu’il a en vue.  Choisir un lan
 n’affranchit pas le concepteur d’avoir à se poser des questions difficiles sur
 la structure du système.  En 2003, Parnas déplore cette tendance [[cite:DBB+03][DBB+03]]:
 
-#+ATTR_HTML: :style margin-top:8rem
+#+ATTR_HTML: :style margin-top:18rem
 #+BEGIN_aside
 Cette dernière phrase est directement ciblée aux trois autres panélistes qui lui
 font face, qui sont les instigateurs respectifs de l’AOP, du FOP, et d’Hyper/J.
@@ -1437,7 +1444,6 @@ machines.
 
 # Missing illustrations for the main points of this section:
 # - encapsulation
-# - efficiency/modularity tradeoff
 
 **** Conclusion
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
