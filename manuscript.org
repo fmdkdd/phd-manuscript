@@ -38,9 +38,9 @@
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
      - [[#information-transparency][Information transparency]]
    - [[#la-modularité-du-progamme-n’est-pas-la-modularité-du-code-source][La modularité du progamme n’est pas la modularité du code source]]
-     - [[#la-construction-d’une-théorie-de-naur][La construction d’une théorie de Naur]]
      - [[#la-modularité-selon-parnas][La modularité selon Parnas]]
        - [[#conclusion][Conclusion]]
+     - [[#la-théorie-de-naur-derrière-le-programme][La théorie de Naur derrière le programme]]
      - [[#notion-of-modularity][Notion of modularity]]
    - [[#moyens-techniques-pour-l’instrumentation][Moyens techniques pour l’instrumentation]]
      - [[#le-problème-d’expression][Le problème d’expression]]
@@ -1198,12 +1198,9 @@ le code source.
 
 Mais un programme n’est pas que son code source.
 
-*** La construction d’une théorie de Naur
-
-
 *** La modularité selon Parnas
-Parnas est fréquemment cité comme référence pour la notion de modularité d’un
-système, en particulier l’article “On the Critera to be Used In Decomposing
+David Parnas est fréquemment cité comme référence pour la notion de modularité
+d’un système, en particulier l’article “On the Critera to be Used In Decomposing
 Systems into Modules” [[cite:Par-72][Par-72]].  Mais Parnas s’intéresse davantage à la phase de
 /conception/ d’un système qu’à la phase d’implémentation.
 
@@ -1309,9 +1306,12 @@ pas sacrifiée.  En revanche, la décomposition modulaire ne serait plus
 apparente.  Il propose donc de conserver le programme sous ses plusieurs formes
 et de développer des outils pour passer d’une forme à l’autre.
 
+#+ATTR_HTML: :style margin-top:-8rem
+#+BEGIN_aside
 Ce ne sont que des suggestions, et l’article ne dit pas comment réaliser ces
 transformations.  On trouve des mises en œuvre de ces idées dans le Literate
 Programming de Knuth, et dans l’AOP de Xerox.
+#+END_aside
 
 Parnas met donc en avant le critère d’encapsulation pour concevoir un système
 modulaire.  Mais surtout, il insiste sur l’importance de la phase de conception
@@ -1398,7 +1398,7 @@ la structure du système.  En 2003, Parnas déplore cette tendance [[cite:DBB+03
 
 #+ATTR_HTML: :style margin-top:18rem
 #+BEGIN_aside
-Cette dernière phrase est directement ciblée aux trois autres panélistes qui lui
+Cette dernière phrase est cible directement les trois autres panélistes qui lui
 font face, qui sont les instigateurs respectifs de l’AOP, du FOP, et d’Hyper/J.
 #+END_aside
 
@@ -1480,6 +1480,152 @@ des interfaces, des indirections, des appels de procédures qui encapsulent les
 décisions de conception.  Et ces interfaces ont souvent un impact négatif sur
 l’efficacité du programme.  Ces compromis modularité/complexité et
 modularité/efficacité me semblent inévitables.
+
+*** La théorie de Naur derrière le programme
+Un point de vue qui complémente celui de Parnas est celui de Peter Naur.  Dans
+“Programming as Theory Building” [[cite:Nau-85][Nau-85]] il attache, comme Parnas, beaucoup
+d’importance à la réflexion du programmeur dans l’élaboration d’un système.
+Et il s’intéresse également à la modification de programmes, aux difficultés qui
+apparaissent quand on essaye d’ajouter des fonctionnalités non prévues
+initialement.
+
+Pour Naur, la tâche principal du programmeur n’est pas de produire du code
+source.  Un programmeur avant tout construit une /théorie/ du problème que le
+programme doit résoudre.  Lors de la conception et de l’implémentation, le
+programmeur construit sa connaissance du problème, du domaine d’application, et
+des outils.  Cette connaissance est naturellement interne, et toute production
+externe (code source, documentation, diagrammes) ne fait la refléter qu’en
+partie.
+
+Ce point de vue, Naur le tire de sa propre expérience à construire de larges
+systèmes.  Il donne l’exemple d’un compilateur développé par un groupe A pour
+une machine X.  Le compilateur fonctionne très bien, et un autre groupe de
+programmeurs, le groupe B, souhaite étendre légèrement le langage, et réutiliser
+ce compilateur pour une machine Y.  Le groupe B planifie les
+changements à apporter au compilateur après avoir étudié sa structure, et
+vient discuter des changements avec le groupe A qui offre son soutient:
+
+#+BEGIN_QUOTE
+In several major cases it turned out that the solutions suggested by group B
+were found by group A to make no use of the facilities that were not only
+inherent in the structure of the existing compiler but were discussed at length
+in its documentation, and to be based instead on additions to that structure in
+the form of patches that effectively destroyed its power and simplicity.  The
+members of group A were able to spot these cases instantly and could propose
+simple and effective solutions, framed entirely within the existing structure.
+#+END_QUOTE
+
+Le groupe B avait le code source et la documentation, et du temps pour les
+étudier.  Malgré cela, les modifications du compilateur qu’il envisage sont
+jugées inadéquates par le groupe A, qui est capable de proposer rapidement des
+modifications plus simples et directes.  Naur en conclut que la documentation et
+le code source n’ont pas été suffisants pour communiquer toutes les décisions de
+conception au groupe B, pour communiquer la /théorie/ du compilateur.
+
+“Théorie” ici n’a pas un sens abstrait; si un programmeur du groupe A possède la
+théorie du compilateur, c’est que non seulement il sait comment le compilateur
+fonctionne dans le détail, mais il est aussi capable de l’expliquer à quelqu’un
+du groupe B, de répondre à des questions sur le compilateur, de débattre sur les
+choix d’implémentation.  Avoir la théorie du programme, c’est avoir internalisé
+une connaissance /pratique/, et être capable d’appliquer cette connaissance à
+d’autres problème connexes:
+
+#+BEGIN_QUOTE
+The notion of theory employed here is explicitly /not/ confined to what may be
+called the most general or abstract part of the insight.  For example, to have
+Newton's theory of mechanics as understood here it is not enough to understand
+the central laws, such as that force equals mass times acceleration.  In
+addition, as described in more detail by Kuhn, the person having the theory must
+have an understanding of the manner in which the central laws apply to certain
+aspects of reality, so as to be able to recognize and apply the theory to other
+similar aspects.
+#+END_QUOTE
+
+Pourquoi s’intéresser à cette notion de théorie?  Parce qu’elle permet de mieux
+comprendre comment modifier un programme.  Naur commence par constater que
+modifier des programmes est une pratique courante, motivée par l’économie.  Si
+on a déjà un programme qui fait à peu près ce qu’on veut obtenir, c’est
+raisonnable de penser que modifier ce programme sera plus rapide que d’en
+recréer un complètement nouveau.  Naur remarque que ce raisonnement ne considère
+que la facilité de modifier le /texte/ du programme.  En effet, le code source
+d’un programme sous forme texte est facilement modifiable; bien plus qu’une
+construction physique comme un immeuble, un pont, ou une voiture.  Si l’on
+considère plutôt le point de vue de Naur — que le programmeur manipule avant
+tout une théorie — on ne peut pas modifier le programme sans prendre en compte
+la théorie sous-jacente:
+
+#+BEGIN_QUOTE
+What is needed in a modification, first of all, is a confrontation of the
+existing solution with the demands called for by the desired modification.  In
+this confrontation the degree and kind of similarity between the capabalities of
+the existing solution and the new demands has to be determined.  The point is
+that the kind of similarity that has to be recognized is accessible to the human
+beings who possess the theory of the program, although entirely outside the
+reach of what can be determined by rules, since even the criteria on which to
+judge it cannot be formulated.
+#+END_QUOTE
+
+Si l’on se contente de modifier le code source sans considérer la théorie, on se
+retrouve dans le cas du groupe B; à étendre le compilateur de façon
+tarabiscotée, sans tirer partie de sa structure:
+
+#+BEGIN_QUOTE
+For a program to retain its quality it is mandatory that each modification is
+firmly grounded in the theory of it.  Indeed, the very notion of qualities such
+as simplicity and good structure can only be understood in terms of the theory
+of the program, since the characterize the actual program text in relation to
+such program texts that might have been written to achieve the same execution
+behaviour, but which exist only as possibilities in the programmer’s
+understanding.
+#+END_QUOTE
+
+Donc, si l’on souhaite modifier le programme, il faut vraiment tenter de
+modifier la théorie.  Pour cela, il faut d’abord avoir accès à cette théorie.
+Si on n’a pas accès aux développeurs du programme, les possesseurs de sa
+théorie, il faut tenter de la recréer à partir de code source et de la
+documentation.  Naur appelle cela la “résurrection de programme”.  À ses yeux,
+c’est un acte sans espoir:
+
+#+BEGIN_QUOTE
+A very important consequence of the Theory Building View is that program
+revival, that is re-establishing the theory of a program merely from the
+documentation, is strictly impossible.
+
+[...] building a theory to fit and support an existing program text is a
+difficult, frustrating, and time consuming activity.  The new programmer is
+likely to feel torn between loyalty to the existing program text, with whatever
+obscurities and weaknesses it may contain, and the new theory that he or she has
+to build up, and which, for better or worse, most likely will differ from the
+original theory behind the program text.
+#+END_QUOTE
+
+Il concède que revivre un programme de cette façon peut être utile dans des
+circonstances particulières, mais en étant bien conscient de l’effort à fournir
+pour obtenir un résultat probablement de qualité inférieure.
+
+L’alternative qu’il conseille, est toujours de choisir de recréer le programme:
+
+#+BEGIN_QUOTE
+In preference to program revival, the existing program text should be discarded
+and the new-formed programmer team should be given the opportunity to solve the
+given problem afresh.  Such a procedure is more likely to produce a viable
+program than program revival, and at a no higher, and possiblly lower, cost.
+#+END_QUOTE
+
+
+
+# No formalism, programming method, or tool will help you
+
+# Have to keep the knowledge around by education, mentorship
+
+# What does it mean for us?  Naur says we can’t modify programs correctly.
+# Program necromancy.
+
+#+BEGIN_aside
+En filant la métaphore, l’ensemble des techniques qui permettent de modifier un
+programme abandonné sans se soucier de sa théorie pourrait s’appeler
+“nécromancie de programme”.
+#+END_aside
 
 *** Notion of modularity
 Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.

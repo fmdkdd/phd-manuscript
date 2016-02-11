@@ -1513,6 +1513,39 @@ optimize the common cases: if your numbers can all be represented in 64-bit or
 less, that they use adequate registers and opcodes.  But you also know that /no
 compiler/ will ever be optimal, so there’s always a potential loss there.
 
+** [2016-02-11 jeu.]
+*** Code tagging for language-agnostic multiple-views
+Multiple design decisions are made when creating software.  It’s a very good
+idea to document these decisions, and leave that somewhere with the program, for
+future source code readers and maintainers to better understand why the program
+was written the way it was.
+
+Something you often need to communicate, is the knowledge of modifying some
+parts of the program, if it was built with some flexibility.
+
+Literate programming is a nice solution for exposing the structure of a program,
+by focusing only on one part at a time.  It kind of solves the separation of
+concern, since you can expose the code that pertains to one concern at a time.
+
+But literate programming requires a weaving phase to produce the final document
+as well as the code.  So you are editing something but are not directly
+manipulating the object of interest.
+
+When editing code, you might want to recall a few related functions, to
+understand the control flow, or show how they can be modified in order to extend
+the functionality of the program.  Grouping these related pieces of code
+together in the source is not always a solution, since they can be part of
+multiple separate concerns at once.  There is never only one dimension to the
+program.  As Knuth noted, it’s more of a web.  But literate programming produces
+a little friction when developing.
+
+One low-cost solution is to put #tags in comments.  This is language-agnostic,
+and does not require a specific tool.  All related pieces (tagged with #t, for
+example) can be brought up with grep.  Best part is editor integration that can
+show you views for each tag (very much like tree slicing in Org, or Occur).
+Much like TODO, FIXME tags, this a very lightweight solution to give pointers to
+future programmers (including future self).
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
