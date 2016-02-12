@@ -39,8 +39,9 @@
      - [[#information-transparency][Information transparency]]
    - [[#la-modularité-du-progamme-n’est-pas-la-modularité-du-code-source][La modularité du progamme n’est pas la modularité du code source]]
      - [[#la-modularité-selon-parnas][La modularité selon Parnas]]
-       - [[#conclusion][Conclusion]]
+       - [[#conclusions][Conclusions]]
      - [[#la-théorie-de-naur-derrière-le-programme][La théorie de Naur derrière le programme]]
+       - [[#conclusions][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
    - [[#moyens-techniques-pour-l’instrumentation][Moyens techniques pour l’instrumentation]]
      - [[#le-problème-d’expression][Le problème d’expression]]
@@ -1445,7 +1446,7 @@ machines.
 # Missing illustrations for the main points of this section:
 # - encapsulation
 
-**** Conclusion
+**** Conclusions
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n’est pas toujours bien entendu.  On trouve dans l’article
 séminal de 1972 les avantages d’un système modulaire, et un critère pour les
@@ -1603,20 +1604,110 @@ Il concède que revivre un programme de cette façon peut être utile dans des
 circonstances particulières, mais en étant bien conscient de l’effort à fournir
 pour obtenir un résultat probablement de qualité inférieure.
 
-L’alternative qu’il conseille, est toujours de choisir de recréer le programme:
+L’alternative qu’il conseille, est de toujours recréer le programme:
 
 #+BEGIN_QUOTE
 In preference to program revival, the existing program text should be discarded
 and the new-formed programmer team should be given the opportunity to solve the
 given problem afresh.  Such a procedure is more likely to produce a viable
-program than program revival, and at a no higher, and possiblly lower, cost.
+program than program revival, and at a no higher, and possibly lower, cost.
 #+END_QUOTE
 
+Modifier le code source du programme n’est facile qu’en apparence; car modifier
+la fonctionnalité du programme demande de reconstruire sa théorie, afin de
+s’assurer que les changements envisagés auront bien les effets voulus.
+Puisqu’il faut reconstruire la théorie du problème initial, puis l’adapter au
+problème qui intéresse le programmeur, l’effort sera moindre en construisant une
+théorie directement adaptée au nouveau problème.
 
+Naur attaque une autre idée populaire du génie logiciel: qu’une méthode de
+programmation, un ensemble de règles à observer, peut être supérieure à une
+autre.  Une méthode préconise les étapes du processus de développement, ou les
+documents à produire et dans quel ordre.  Mais pour Naur, le seul point qui
+importe c’est le développement de la théorie du programme, et aucune méthode ne
+peut garantir une construction correcte:
 
-# No formalism, programming method, or tool will help you
+#+BEGIN_QUOTE
+A method implies a claim that program development can and should proceed as a
+sequence of actions of certain kinds, each action leading to a particular kind
+of documented result.  In the Theory Buiding View what matters most is the
+building of the theory, while production of documents is secondary.  In buiding
+the theory there can be no particular sequence of actions, for the reason that a
+theory held by a person has no inherent division into parts and no inherent
+ordering.  Rather, the person possessing a theory will be able to produce
+presentations of various sorts on the basis of it, in response to questions or
+demands.
+#+END_QUOTE
 
-# Have to keep the knowledge around by education, mentorship
+Pour les mêmes raisons, le choix du langage de programmation, ou d’un formalisme
+particulier ne peut remplacer la construction de la théorie:
+
+#+BEGIN_QUOTE
+As to the use of particular kinds of notation or formalization, again this can
+only be a secondary issue since the primary item, the theory, is not, and cannot
+be, expressed, and so no question of the form of its expression arises.
+#+END_QUOTE
+
+Quoi dire alors aux programmeurs novices?  Comment leur faire comprendre ces
+notions, comment les amener à construire d’élégantes théories pour créer des
+programmes flexibles et efficaces?  Naur recommande de les former principalement
+de façon organique: en travaillant avec des programmeurs chevronnés, ils
+absorberont les connaissances nécessaires par osmose.
+
+#+BEGIN_QUOTE
+What remains is the effect of methods in the eduction of programmers.  Indeed,
+on this view the quality of the theory built by the programmer will depend to a
+large extent on the programmer’s familiarity with model solutions of typical
+problems, with techniques of description and verification, and with principles
+of structuring systems consisting of many parts in complicated interactions.
+
+While skills such as the mastery of notations, data representations, and data
+processes, remain important, the primary emphasis would have to turn in the
+direction of furthering the understanding and talent for theory formation.  To
+what extent this can be taught at all must remain an open question.  The most
+hopeful approach would be to have the student work on concrete problems under
+guidance, in an active and constructive environment.
+#+END_QUOTE
+
+**** Conclusions
+Naur établit une distinction importante entre le source code d’un programme, et
+la connaissance que le programmeur a de son fonctionnement.  C’est une
+distinction intuitive pour quiconque a une expérience même modeste de
+programmation.  Cette distinction nous permet notamment de comprendre pourquoi
+modifier un programme n’est pas simplement modifier du texte, modifier son code
+source.  Il faut prendre en compte les choix faits au moment du design du
+programme, et considérer comment les changements que l’on souhaite apporter
+affectent ces choix.  Comprendre la théorie.
+
+Naur estime que la théorie n’est pas communicable; qu’elle reste toujours
+interne au programmeur qui la construit.  Mais à l’évidence le programmeur est
+toujours capable de la communiquer /en partie/.  La théorie, c’est savoir
+comment le programme fonctionne, pourquoi telle partie est nécessaire, comment
+étendre le programme... Naur dit lui-même plusieurs fois qu’un programmeur qui
+possède la théorie est capable de répondre à ces questions sur le programme,
+c’est bien qu’il y a une personne qui doit interpréter ces réponses et
+reconstruire la théorie.  Quand bien même la théorie ne peut être communiquée
+/exactement/ comme telle d’un programmeur à l’autre, il suffit d’en communiquer
+une partie suffisante pour satisfaire les besoins de l’autre.
+
+Le message général est proche de Parnas: l’important dans la programmation ce ne
+sont pas les formalismes, les langages ou les outils; c’est de réfléchir, de
+comprendre le problème, et construire une solution qui satisfait les contraintes
+données.   Et c’est cette aptitude à résoudre le problème qui devraient être
+enseignée principalement aux novices.  En cela, la programmation n’est pas
+différente d’autres activités:
+
+#+BEGIN_QUOTE
+This problem of education of new programmers in an existing theory of a program
+is quite similar to that of the educational problem of other activities where
+the knowledge of how to do certain things dominates over the knowledge that
+certain things are the case, such as writing and playing a music instrument.
+The most important educational activity is the student's doing the relevant
+things under suitable supervision and guidance.  In the case of programming the
+activity should include discussions of the relation between the program and the
+relevant aspects and activities of the real world, and of the limits set on the
+real world matters dealt with by the program.
+#+END_QUOTE
 
 # What does it mean for us?  Naur says we can’t modify programs correctly.
 # Program necromancy.
