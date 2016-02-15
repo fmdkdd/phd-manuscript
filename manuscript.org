@@ -21,7 +21,7 @@
  - [[#État-de-l’art][État de l’art]]
    - [[#une-chronologie-de-la-modularité-dans-les-langages-de-programmation][Une chronologie de la modularité dans les langages de programmation]]
      - [[#de-l’exécution-du-programme-au-code-source][De l’exécution du programme au code source]]
-     - [[#structured-programming][Structured programming]]
+     - [[#la-programmation-structurée][La programmation structurée]]
      - [[#class-based-programming-smalltalk][Class-based programming: Smalltalk]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#literate-programming][Literate programming]]
@@ -354,7 +354,31 @@ digraph {
 #+RESULTS:
 [[file:img/bg-map3.png]]
 
-*** Structured programming
+*** La programmation structurée
+La programmation structurée n’est pas un ensemble de techniques, ni une méthode
+de programmation, mais plutôt un but à atteindre.  Dans sa célèbre lettre à
+l’éditeur des communications de l’ACM, “Go To Statement Considered Harmful”
+[[cite:Dij-68][Dij-68]], Dijkstra décrit ce but:
+
+#+BEGIN_QUOTE
+Our intellectual powers are rather geared to master static relations and
+our powers to visualize processes evolving in time are relatively poorly
+developed.  For that reason we should do (as wise programmers aware of our
+limitations) our utmost to shorten the conceptual gap between the static program
+and the dynamic process, to make the correspondence between the program (spread
+out in text space) and the process (spread out in time) as trivial as possible.
+#+END_QUOTE
+
+# For Dij, there is something else than the program.  But it’s not the theory of
+# Naur.  The dynamic process is what happens at runtime, while the theory is the
+# knowledge the programmer has of that process.
+
+
+# GOTO is not necessary
+# sequence + selection + iteration is enough
+
+# GOTO harms understanding
+
 Argues for a single entry point into procedures, and single exit point.  Not
 jumping directly in the middle, or exiting prematurely.
 
@@ -386,6 +410,35 @@ on writing programs that clearly reflect their dynamic process.  As Parnas noted
 [[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
 processes, not by adding a “module” statement to the language.  The same
 situation arises here.
+
+Knuth finit sa défense du GOTO par imaginer les systèmes de manipulation de
+programmes du futur:
+
+#+BEGIN_QUOTE
+Program manipulation systems appear to be a promising future tool which will
+help programmers to improve their programs, and to enjoy doing it.  Standard
+operating procedure nowadays is usually to hand code critical portions of a
+routine in assembly language.  Let us hope such assemblers will die out, and we
+will see several levels of language instead: At the highest levels we will be
+able to write abstract programs, while at the lowest levels we will be able to
+control storage and register allocation, and to suppress subscript range
+checking, etc.  With an integrated system it will be possible to do debugging
+and analysis of the transformed program using a higher level language for
+communication.  All levels will, of course, exhibit program structure
+syntactically so that our eyes can grasp it.
+#+END_QUOTE
+
+L’idée est tentante, mais peut-être trop enthousiaste.  Knuth écrit en 1974, et
+je peux constater que 40 ans plus tard la situation n’est pas celle prédite.
+Bien qu’il existe de nombreux langages de programmation, et beaucoup qui sont
+qualifiés de “haut-niveau”, aucun ne permet de manipuler différents niveaux
+d’abstraction comme le décrit Knuth.  Aucun ne réconcilie la perte de contrôle
+d’efficacité impliquée avec la montée en abstraction.
+
+Mais peut-être que Knuth s’en est lui-même rendu compte.  Le langage du futur
+était annoncé pour 1984, l’année où il publie son système de Literate
+Programming qui permet de mêler une description haut-niveau du programme en
+toutes lettres et code machine bas-niveau.
 
 *** Class-based programming: Smalltalk
 Design and Implementation [[cite:Ing-78][Ing-78]].
@@ -1501,7 +1554,8 @@ partie.
 #+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
 #+CAPTION: Pour Naur, le code source et la documentation ne sont que des
-#+CAPTION: produits secondaires de la programmation; la tâche principale
+#+CAPTION: produits secondaires de la programmation; mais l’activité
+#+CAPTION: principale du programmeur
 #+CAPTION: est de construire une connaissance du problème, une /théorie/.
 [[file:img/naur-theory.svg]]
 #+END_side-figure
@@ -1594,6 +1648,13 @@ Si on n’a pas accès aux développeurs du programme, les possesseurs de sa
 théorie, il faut tenter de la recréer à partir de code source et de la
 documentation.  Naur appelle cela la “résurrection de programme”.  À ses yeux,
 c’est un acte sans espoir:
+
+#+ATTR_HTML: :style margin-top: -4.5rem
+#+BEGIN_aside
+En filant la métaphore, l’ensemble des techniques qui permettent de modifier un
+programme abandonné sans se soucier de sa théorie pourrait s’appeler
+“nécromancie de programme”.
+#+END_aside
 
 #+BEGIN_QUOTE
 A very important consequence of the Theory Building View is that program
@@ -1718,13 +1779,7 @@ real world matters dealt with by the program.
 #+END_QUOTE
 
 # What does it mean for us?  Naur says we can’t modify programs correctly.
-# Program necromancy.
-
-#+BEGIN_aside
-En filant la métaphore, l’ensemble des techniques qui permettent de modifier un
-programme abandonné sans se soucier de sa théorie pourrait s’appeler
-“nécromancie de programme”.
-#+END_aside
+# Program necromancy is the dark arts of resurrecting programs for quick fixes.
 
 *** Notion of modularity
 Notion of modularity [[cite:OGK+11][OGK+11]].  Modularity is rooted in classical logic thinking.
