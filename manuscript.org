@@ -369,6 +369,22 @@ and the dynamic process, to make the correspondence between the program (spread
 out in text space) and the process (spread out in time) as trivial as possible.
 #+END_QUOTE
 
+#+BEGIN_side-figure
+#+CAPTION: L’objet du programmeur est le processus effectué par la machine, et
+#+CAPTION: manipulé indirectement via un programme.  Dijkstra essaye de
+#+CAPTION: construire des programmes qui reflètent le comportement du processus.
+[[file:img/dijkstra-process-program.svg]]
+#+END_side-figure
+
+Dijkstra commence par établir une distinction cruciale entre le /programme/ tapé
+par le programmeur, et le /processus/ exécuté par la machine.  Le programmeur
+n’a pas de contrôle direct sur le processus, il doit nécessairement passer par
+le programme.  Afin de mieux comprendre le processus engendré par le programme,
+il faut que le programme reflète ce processus.  Dijkstra cherche donc à établir
+une correspondance claire entre la dimension temporelle du processus et la
+dimension spatiale du programme.  Et pour lui, le ~goto~ est une construction
+qui obscurcit cette correspondance.
+
 # For Dij, there is something else than the program.  But it’s not the theory of
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
 # knowledge the programmer has of that process.
