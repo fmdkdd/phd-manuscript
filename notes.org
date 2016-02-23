@@ -1546,6 +1546,305 @@ show you views for each tag (very much like tree slicing in Org, or Occur).
 Much like TODO, FIXME tags, this a very lightweight solution to give pointers to
 future programmers (including future self).
 
+** [2016-02-17 mer.]
+*** Reading Patterns of Software
+[[cite:Gab96][Gab96]].
+
+The foreword by Christopher Alexander, I’m assuming an established architect who
+as written several books on architecture, is rather insightful:
+
+#+BEGIN_QUOTE
+But still a fundamental question of practicality must lie at the forefront.
+Does all this thought, philosophy, help people to write better programs?  For
+the instigators of this approach to programming too, as in architecture, I
+suppose a critical question is simply this: Do the people who write these
+programs, using alexandrian patterns, or any other methods, do they do better
+work?  Are the programs better?  Do they get better results, more efficiently,
+more speedily, more profoundly?  Do people actually feel more alive when using
+them?  Is what is accomplished by these programs, and by the people who run
+these programs and by the people who are affected by them, better, more
+elevated, more insightful, better by ordinary spiritual standards?
+#+END_QUOTE
+
+That’s a very important question, that puts the betterment of human beings as
+the first priority of the endeavor of programming (and, I assume that Alexander
+holds architecture to the same standard).  I already like what I’m reading,
+especially since the answer is “probably not”:
+
+#+BEGIN_QUOTE
+Here I am at a grave disadvantage.  I am not a programmer, and I do not know how
+to judge programs.  But, speaking only about what appears in this book, I must
+confess to a slight—reluctant—skepticism.  I have not yet seen evidence of this
+improvement in an actual program.  Of course my ignorance is such that I would
+not have good instincts, at first anyway, about a given bit of code, not even
+enough to be able to say “This is a beautiful program, this one less so.”  I do
+not therefore ask these probing questions in a negative or hostile spirit at
+all.  I ask them, because I hope, and believe it may propel readers of this
+book, programmers themselves, into trying to do better.  But I cannot tell, as
+yet, whether the probing questions asked in this book, will actually lead to
+better programs, nor even what a better program is.
+#+END_QUOTE
+
+
+
+Gabriel takes over and also expresses skepticism over cure-alls:
+
+#+BEGIN_QUOTE
+We’ve tried to make programming easier, with abstraction as a toll, with
+higher-level programming languages, faster computers, design methodologies, with
+rules of thumb and courses and apprenticeships and mentoring, with automatic
+programming and artificial intelligence.  Compilers, debuggers, editors,
+programming environments.  With structured programming and architectural
+innovations.
+
+With object-oriented programming.
+
+But programming still requires people to work both alone and in teams, and when
+people are required to think in order to achieve, inherent limitations rule.
+Object-oriented programming—which is merely a set of concepts and programming
+languages to support those concepts—cannot remove the need to think hard and to
+plan things, to be creative and to overcome failures and obstacles, to find a
+way to work together when the ego says not to, that the failures are too many
+and too pervasive.
+#+END_QUOTE
+
+He is, like Alexander, someone who cares deeply about fellow humans above
+technology:
+
+#+BEGIN_QUOTE
+My overall bias is that technology, science, engineering, and company
+organization are all secondary to the people and human concerns in the
+endeavor.  Companies, ideas, processes, and approaches ultimately fail when
+humanity is forgotten, ignored, or placed second.  Alexander knew this, but his
+followers in the software pattern langauge community do not.  Computer
+scientists and developers don’t seem to know it, either.
+#+END_QUOTE
+
+
+
+One desirable criterion for software is /habitability/, rather than clarity.
+Here we see the influence of Alexander’s writing on Gabriel:
+
+#+BEGIN_QUOTE
+Habitability is the characteristic of source code that enables prorgammers,
+coders, bug-fixers, and people coming to the code later in its life to
+understand its construction and intentions and to change it comfortably and
+confidently.  Either there is more to habitability than clarity or the two
+characteristics are different.
+
+Habitability makes a place livable, like home.  And this is what we want in
+software—that developers feel at home, can place their hands on any tiem without
+having to think deeply about where it is.  It’s something like clarity, but
+clarity is too hard to come by.
+
+Most programming languages are excellent for building the program that is a
+monument to design ingenuity—pleasingly efficient, precise, and clear—but people
+don’t build programs like that.  Programs live and grow, and their
+inhabitants—the programmers—need to work with that program the way the farmer
+works with the homestead.
+
+Software needs to be habitable because it always has to change.  Software is
+subject to unpredictable events: Requirements change because the marketplace
+changes, competitors change, parts of the design are shown wrong by experience,
+people learn to use the software in ways not anticipated.
+#+END_QUOTE
+
+** [2016-02-18 jeu.]
+*** Reading, continued
+Abstraction can create more trouble than its worth:
+
+#+BEGIN_QUOTE
+If one abstraction is used in many places and that abstraction’s interface is
+wrong, then repairing it forces repair of all its uses.
+#+END_QUOTE
+
+(Reminded of the [[http://www.sandimetz.com/blog/2016/1/20/the-wrong-abstraction][Wrong Abstraction]]).
+
+An abstraction is often a compression: a new word for designing a common
+pattern.  But new words are only useful for those who know them.  Gabriel asks
+if the right abstraction:
+
+#+BEGIN_SRC lisp
+(mismatch sequence list :from-end t
+          :start1 20 :start2 40
+          :end1 120 :end2 140 :test #’baz)
+#+END_SRC
+
+is clearer than using more commonly-known constructs:
+
+#+BEGIN_SRC lisp
+(let ((subseq1 (reverse (subseq sequence 20 120)))
+      (subseq2 (reverse (subseq list 40 140))))
+  (flet ((the-same (x y) (baz x y)))
+    (loop for index upfrom 0
+          as item1 in subseq1
+          as item2 in subseq2
+          finally (return t) do
+          (unless (the-same item1 item2)
+            (return index)))))
+#+END_SRC
+
+
+
+The quality without a name is a key concept to Alexander’s work, especially to
+his pattern language.  Gabriel tries to understand this quality as it pertains
+to programming software.
+
+One aspect of the quality is a match between the solution and the problem:
+
+#+BEGIN_QUOTE
+One of the key ideas in this book was that in a good design there must be an
+underlying correspondence between the structure of the problem and the structure
+of the solution.
+#+END_QUOTE
+
+Quoting Alexander:
+
+#+BEGIN_QUOTE
+structural hierarchy is the exact counterpart of the functional hierarchy
+established during the analysis of the program.
+#+END_QUOTE
+
+** [2016-02-19 ven.]
+*** Continued reading
+Gabriel relates the experience of Alexander of trying to first build a pattern
+language for constructing buildings that have the “quality without a name”.
+This is difficult to relate to software, since the quality without a name is
+also without a clear definition.
+
+But there is an interesting twist: people start designing buildings following
+Alexander’s patterns, and the results do not have the desired quality.
+
+The root cause, according to them, is to fail to pay attention to the /process/
+of buliding, of mortagage, of the economy around buying and building a house to
+live in.
+
+#+BEGIN_QUOTE
+One of his reactions was to consider the process of building: the mortgage
+process, the zoning process, the construction process, the process of money
+flowing through the system, the role of the architect, and the role of the
+builder.  By controlling the process, you control the result, and if the control
+retains the old, broken process, the result will be the old, broken
+architecture.
+
+This resonates with what we see in software development: The structure of the
+system follows the structure of the organization that put it together, and to
+some extent, its quality follows the nature of the process used to produce it.
+The true problems of software development derive from the way the organization
+can discover and come to grips with the complexity of the system being built
+while maintaining budget and schedule constraints.
+#+END_QUOTE
+
+At the end of this chapter, I have an overwhelming impression that Gabriel is a
+hopeless romantic.  Searching for a “quality” without a clear definition of it
+is just seeking a specific perfection.  When you do not define clearly the goal,
+it will always elude you.  And that’s begging for unhappiness.  Alexander also
+comes out as a nostalgic: he opposes the modern “funky” constructions to the
+“beautiful” traditional ones.
+
+
+
+In “The Bead Game, Rugs, and Beauty”, Alexander gives a more constructive
+definition to the elusive quality using Turkish rugs.  In the rugs, symmetries
+and subsymmetries contribute to their beauty.  But, the symmetries are rarely of
+the perfect geometrical variety.  They evoke symmetry, but some details change.
+For Alexander, this crude symmetry contribute to their /wholeness/:
+
+#+BEGIN_QUOTE
+In our time, many of us have been taught to strive for an insane perfection that
+means nothing.  To get wholeness, you must try instead to strive for /this/ kind
+of perfection, where things that don’t matter are left rough and unimportant,
+and the things that really matter are given deep attention.  This is aperfection
+that seems imperfect.  But it is a far deeper thing.
+#+END_QUOTE
+
+
+
+The chapter on languages is short and only mildly interesting.  There are no
+strong points in the essays; only the opinions of one programmer.  Alexander’s
+vision is grander than Gabriel’s, who has reasonable positions on programming
+and software engineering, and ultimately, more interesting.
+
+** [2016-02-22 lun.]
+*** Reading, cont.
+Getting close to the end of the book.  Part IV and V are autobiographical
+accounts of the events that led Gabriel to Stanford, and to the creation and
+ultimate demise of Lucid Incorporated.
+
+The chapters are quite personal, and light on technical content or advice on
+software, though not uninteresting.  But one part that caught my attention is
+the description of the C++ interactive programming environment codenamed
+/Cadillac/:
+
+#+BEGIN_QUOTE
+Cadillac was an attempt to build an environment with same the degree of
+integration as the single-address-space Lisp and Smalltalk environments had in
+the 1970s and 1980s while separating the tools from the application.
+
+The idea was to reduce the number of physical tools as much as possible and to
+layer information onto those few tools.  Basically we had a text editor and a
+grapher.  These tools were able to handle descriptions of the sorts of things they can
+display along with descriptions of annotations.  Annotations are a generalization
+of hypertext.  An annotation is an object along with an associated set or sequence
+of other objects.  An annotation acts as a link among those other objects.  Each
+annotation is an instance of a class to which methods can be attached.  An
+example annotation is the simple link associated with a sequence of two objects.
+When both objects are text, the annotation is merely hypertext.
+
+Annotations and other information about the program under development
+are kept in a database and managed by a kernel.  The kernel and database act as the
+single address space where everything is known.  The tools know nothing.  An
+annotation is active: Methods are attached to annotations by being associated
+with a class.  When someone clicks on an annotation, the tool asks the connected
+kernel to look up what actions are available, which are passed back for the tool
+for display and selection.
+
+With annotations you can take an ordinary textual display of a program and
+decorate it with error messages, with breakpoints, with connections to related
+code, to classes, to methods, and so forth.  Instead of a number of browsers
+there is only one textual browser and one graphical browser.  These tools
+display the same objects, and all action takes place in the kernel.  The objects
+in the kernel are in a persistent object store, so information lasts over
+multiple sessions.
+
+When you click on the textual representation of any object, you get a pop-up
+menu with a list of actions.  This is nice because it makes you feel that you
+are interacting with objects directly instead of through the intermediary of a
+tool.
+
+The kernel learns about the programs by listening to a stream of data about the
+program sent by the compiler which annotates the source with language elements,
+a sort of generalization of programming language constructs.  This implies that
+the environment is language independent.
+#+END_QUOTE
+
+Based on what is described there, it sounds like a very interesting project I’d
+like to see in action.  Annotations of code linking to diagrams, explanations,
+documentation, all integrated into the programming environment is something that
+we still have not realized well.
+
+More details are in [[cite:GBD+90][GBD+90]].  Now, unfortunately, it does actually contains any
+tangible details; only abstract descriptions of how the systems is built and
+vague promises about what the system will do if the products takes off (it
+didn’t).
+
+It seems to be a full-featured IDE for C++, for Lisp programmers.  Not only
+there is the annotations part, integration with man pages, documentation, call
+graphs ..., but it also turns C++ into a live interactive environment, like
+Lisp.
+
+This [[https://www.youtube.com/watch?v=pQQTScuApWk][demonstration video]] shows off the actual product.  It’s a modified Emacs
+(Lucid Emacs, aka XEmacs) with a mouse-oriented interface where you can click on
+any function, class, variable and search for its uses, included files, etc.
+There’s also a “grapher”, a window to display class hierarchies or call graphs.
+All the views are kept in sync: modify a function name, and the graph will
+reload after compilation.  Compilation is incremental: only the changed
+functions/classes/enums are recompiled and linked into the final program.  So
+it’s a thoughtful IDE for C++.
+
+But the annotations are not exactly what I had in mind lackluster.  [[http://www.codersnotes.com/notes/a-constructive-look-at-templeos/#hypertext-doldoc][Temple OS]]
+did it better.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
