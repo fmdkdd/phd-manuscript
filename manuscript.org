@@ -371,7 +371,7 @@ out in text space) and the process (spread out in time) as trivial as possible.
 
 #+BEGIN_side-figure
 #+CAPTION: L’objet du programmeur est le processus effectué par la machine, et
-#+CAPTION: manipulé indirectement via un programme.  Dijkstra essaye de
+#+CAPTION: manipulé indirectement via un programme.  Dijkstra tente de
 #+CAPTION: construire des programmes qui reflètent le comportement du processus.
 [[file:img/dijkstra-process-program.svg]]
 #+END_side-figure
@@ -382,8 +382,17 @@ n’a pas de contrôle direct sur le processus, il doit nécessairement passer p
 le programme.  Afin de mieux comprendre le processus engendré par le programme,
 il faut que le programme reflète ce processus.  Dijkstra cherche donc à établir
 une correspondance claire entre la dimension temporelle du processus et la
-dimension spatiale du programme.  Et pour lui, le ~goto~ est une construction
-qui obscurcit cette correspondance.
+dimension spatiale du programme.  Et pour lui, ~goto~ est une construction qui
+obscurcit cette correspondance.
+
+#+ATTR_HTML: :style margin-top:8rem
+#+BEGIN_side-figure
+#+CAPTION: Le processus s’exécute dans le temps, et le programme décrit ce
+#+CAPTION: processus dans l’espace.  Comme le programmeur manipule et lit
+#+CAPTION: le programme, celui-ci doit refléter le plus directement possible
+#+CAPTION: le déroulement du processus.
+[[file:img/dijkstra-dimensions.svg]]
+#+END_side-figure
 
 # For Dij, there is something else than the program.  But it’s not the theory of
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
