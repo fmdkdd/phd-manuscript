@@ -369,6 +369,7 @@ and the dynamic process, to make the correspondence between the program (spread
 out in text space) and the process (spread out in time) as trivial as possible.
 #+END_QUOTE
 
+#+ATTR_HTML: :style margin-top:-18rem
 #+BEGIN_side-figure
 #+CAPTION: L’objet du programmeur est le processus effectué par la machine, et
 #+CAPTION: manipulé indirectement via un programme.  Dijkstra tente de
@@ -380,12 +381,13 @@ Dijkstra commence par établir une distinction cruciale entre le /programme/ tap
 par le programmeur, et le /processus/ exécuté par la machine.  Le programmeur
 n’a pas de contrôle direct sur le processus, il doit nécessairement passer par
 le programme.  Afin de mieux comprendre le processus engendré par le programme,
-il faut que le programme reflète ce processus.  Dijkstra cherche donc à établir
-une correspondance claire entre la dimension temporelle du processus et la
-dimension spatiale du programme.  Et pour lui, ~goto~ est une construction qui
-obscurcit cette correspondance.
+lorsque l’on écrit et relit le code, il faut que le programme reflète ce
+processus.  Dijkstra cherche donc à établir une correspondance claire entre les
+instructions exécutées par la machine (la dimension temporelle) et les
+instructions dictées par le programme (la dimension spatiale).  Et pour lui,
+~goto~ est une construction qui va à l’encontre de cette correspondance.
 
-#+ATTR_HTML: :style margin-top:8rem
+#+ATTR_HTML: :style margin-top:-8rem
 #+BEGIN_side-figure
 #+CAPTION: Le processus s’exécute dans le temps, et le programme décrit ce
 #+CAPTION: processus dans l’espace.  Comme le programmeur manipule et lit
@@ -394,32 +396,71 @@ obscurcit cette correspondance.
 [[file:img/dijkstra-dimensions.svg]]
 #+END_side-figure
 
+Pour Dijkstra, on comprend un programme en suivant les instructions une à une.
+C’est facile à faire pour un programme qui contient juste une liste
+d’assignations à des registres et de simples additions: on met son doigt sur la
+première ligne, puis on suit les instructions, une à une, jusqu’à la dernière.
+On peut comme ceci retrouver la valeur d’un registre particulier après la
+dixième instruction.  Si on exécute le programme plusieurs fois, le registre à
+cet endroit aura toujours la même valeur.  C’est un /invariant/ du
+programme à cet endroit, qui peut être utile pour vérifier que le processus
+correspond à une spécification donnée.  La correspondance entre le programme et
+le processus est directe.
+
+# See Hoare logic, and everything invariants are good for.  A practical example
+# is to ensure that a function computing factorials is correct.  An inductive
+# proof using the loop invariants can help prove correctness.
+
+On peut continuer de localiser ces invariants dans des programmes plus
+complexes.  Si l’on considère des conditions introduites par un ~if then else~
+ou un ~cond~, suivre le flot d’exécution est encore simple: il suffit de prendre
+la branche correspondante.  Pour les boucles (~while~, ~repeat A until B~), il
+faudra prendre en compte la valeur actuelle de l’indice de boucle pour savoir
+s’il faut répéter le corps de la boucle encore une fois, ou s’il faut sortir.
+Pour les appels de procédures, on ne peut plus se contenter d’utiliser un seul
+doigt pour suivre la ligne de code courante, il faut aussi tenir compte de la
+pile d’appels en cours, pour savoir où continuer l’exécution lorsque la
+procédure actuelle prend fin.
+
+L’instruction courante, l’indice de boucle, et la pile d’appels forment ce que
+Dijkstra appelle un système de coordonnées de l’exécution du processus.  On peut
+donc localiser précisément un point d’exécution du processus en donnant une
+position dans ce système de coordonnées.  Et à un point d’exécution du processus
+on peut rattacher un invariant, ce qui permet de s’assurer de la correction du
+programme.
+
+Et c’est là que ~goto~ pose problème.  En utilisant un ~goto~, le processus peut
+continuer l’exécution vers n’importe quelle ligne du programme: même au beau
+milieu d’une procédure, ou d’une boucle.  Le système de coordonnée n’est plus
+suffisant pour connaître avec certitude l’état du processus, les valeurs des
+variables.  Il faudrait également savoir à tout moment le chemin exact emprunté
+par le processus.  Mais ce n’est plus un système de coordonnées: on ne peut plus
+raisonner localement dans une boucle ou une procédure, il faut considérer
+l’intégralité du programme.
+
+Le ~goto~ est une construction puissante, qui permet donc de trop facilement
+transformer le programme en véritable labyrinthe.  Et Dijkstra défend simplement
+qu’il est plus facile de se perdre dans un labyrinthe que dans un couloir.
+
+
+# Pragmatists disagree: GOTO is not, in practice always confusing, and sometimes
+# the only efficient solution (Knuth)
+
+# Dijkstra says GOTO is not necessary
+# theorem: sequence + selection + iteration is enough
+
+
+
+
+
 # For Dij, there is something else than the program.  But it’s not the theory of
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
 # knowledge the programmer has of that process.
-
-
-# GOTO is not necessary
-# sequence + selection + iteration is enough
-
-# GOTO harms understanding
 
 Argues for a single entry point into procedures, and single exit point.  Not
 jumping directly in the middle, or exiting prematurely.
 
 Exemplified by ALGOL, and Pascal [[cite:Wir-74][Wir-74]] [[cite:Wir-74a][Wir-74a]].
-
-Dijkstra notoriously argued against the GOTO statement, as a superfluous control
-structure [[cite:Dij-68][Dij-68]].  On grounds of obscuring the “independent coordinates”
-implicitly used by programmers to understand the dynamic flow of a program.
-“Unbridled use” of GOTO statements makes finding such coordinates “terribly
-hard”.  In short, peppering GOTO statements leads to spaghetti code.
-
-The article has a strong prescriptive tone, as usual from Dijkstra, yet it opens
-with a reasonable appeal: “to shorten the conceptual gap between the static
-program and the dynamic process, to make the correspondence between the program
-(spread out in text space) and the process (spread out in time) as trivial as
-possible”.
 
 On the legacy front, most programmers are cargo-culting the fear of GOTO (though
 Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
