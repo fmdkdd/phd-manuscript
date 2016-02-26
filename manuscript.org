@@ -378,14 +378,15 @@ out in text space) and the process (spread out in time) as trivial as possible.
 #+END_side-figure
 
 Dijkstra commence par établir une distinction cruciale entre le /programme/ tapé
-par le programmeur, et le /processus/ exécuté par la machine.  Le programmeur
-n’a pas de contrôle direct sur le processus, il doit nécessairement passer par
-le programme.  Afin de mieux comprendre le processus engendré par le programme,
-lorsque l’on écrit et relit le code, il faut que le programme reflète ce
-processus.  Dijkstra cherche donc à établir une correspondance claire entre les
-instructions exécutées par la machine (la dimension temporelle) et les
-instructions dictées par le programme (la dimension spatiale).  Et pour lui,
-~goto~ est une construction qui va à l’encontre de cette correspondance.
+par le programmeur sous forme de texte, et le /processus/ engendré par ce
+programme, et exécuté par la machine.  Le programmeur n’a pas de contrôle direct
+sur le processus, il ne peut que modifier le programme.  Afin de mieux
+comprendre le processus engendré par le programme, lorsque l’on écrit et relit
+le code, il faut que le programme reflète au mieux ce processus.  Dijkstra
+cherche donc à établir une correspondance claire entre les instructions
+exécutées par la machine (la dimension temporelle) et les instructions dictées
+par le programme (la dimension spatiale).  Et pour lui, ~goto~ est une
+construction qui va à l’encontre de cette correspondance.
 
 #+ATTR_HTML: :style margin-top:-8rem
 #+BEGIN_side-figure
@@ -398,7 +399,7 @@ instructions dictées par le programme (la dimension spatiale).  Et pour lui,
 
 Pour Dijkstra, on comprend un programme en suivant les instructions une à une.
 C’est facile à faire pour un programme qui contient juste une liste
-d’assignations à des registres et de simples additions: on met son doigt sur la
+d’affectations à des registres et de simples additions: on met son doigt sur la
 première ligne, puis on suit les instructions, une à une, jusqu’à la dernière.
 On peut comme ceci retrouver la valeur d’un registre particulier après la
 dixième instruction.  Si on exécute le programme plusieurs fois, le registre à
@@ -424,9 +425,9 @@ procédure actuelle prend fin.
 
 L’instruction courante, l’indice de boucle, et la pile d’appels forment ce que
 Dijkstra appelle un système de coordonnées de l’exécution du processus.  On peut
-donc localiser précisément un point d’exécution du processus en donnant une
-position dans ce système de coordonnées.  Et à un point d’exécution du processus
-on peut rattacher un invariant, ce qui permet de s’assurer de la correction du
+localiser précisément un point d’exécution du processus en donnant une position
+dans ce système de coordonnées.  Et à un point d’exécution du processus on peut
+rattacher un invariant, ce qui permet de s’assurer de la correction du
 programme.
 
 Et c’est là que ~goto~ pose problème.  En utilisant un ~goto~, le processus peut
@@ -438,16 +439,72 @@ par le processus.  Mais ce n’est plus un système de coordonnées: on ne peut 
 raisonner localement dans une boucle ou une procédure, il faut considérer
 l’intégralité du programme.
 
-Le ~goto~ est une construction puissante, qui permet donc de trop facilement
-transformer le programme en véritable labyrinthe.  Et Dijkstra défend simplement
-qu’il est plus facile de se perdre dans un labyrinthe que dans un couloir.
+Pour Dijkstra, ~goto~ est une construction qui permet trop facilement de
+transformer le programme en véritable labyrinthe; d’obscurcir la correspondance
+entre le programme et le processus.  C’est une construction qui va donc à
+l’encontre du but qu’il a fixé en commençant la lettre.
+
+Mais la programmation structurée ne se réduit pas à l’abolition des ~goto~ dans
+un programme.  Au contraire, se concentrer sur le ~goto~ serait passer
+complètement à côté du message initial; Knuth le remarque très justement [[cite:Knu-74][Knu-74]]:
+
+#+BEGIN_QUOTE
+There has been far too much emphasis on GO TO elimination instead of the really
+important issues; people have a natural tendency to set up an easily understood
+quantitative goal like the abolition of jumps, instead of working directly for a
+qualitative goal like good program structure.
+#+END_QUOTE
+
+La programmation structurée tente simplement de résoudre les problèmes posés par
+la complexité croissante des programmes.  Les programmes pour les premiers
+ordinateurs, écrits en assembleur ou langage machine, avaient comme principal
+objectif d’utiliser au mieux les capacités de l’ordinateur.  L’assembleur est un
+langage flexible, qui offre notamment la possibilité de changer le programme
+chargé en mémoire pendant l’exécution (/self-modifying code/).  Pour optimiser
+l’utilisation de la mémoire, l’affectation des registres se fait à la main, en
+prenant garde qu’aucun code n’écrase les registres d’un autre.  Plus les
+machines deviennent rapides, et moins toutes ces techniques de programmation en
+assembleur deviennent nécessaires.  Le frein vient surtout de notre capacité à
+comprendre et gérer de larges programmes écrits dans des langages de plus
+haut niveau.  Wirth [[cite:Wir-74a][Wir-74a]] relate ce changement de contraintes:
+
+#+BEGIN_QUOTE
+As the power of computers on the one side, and the complexity and size of the
+programmer’s task on the other continued to grow with a speed unmatched by any
+other technological venture, it was gradually recognized that the true challenge
+does not consist in pushing computers to their limits by saving bits and
+microseconds, but in being capable of organizing large and complex programs, and
+assuring that, they specify a process that for all admitted inputs produces the
+desired results.  In short, it became clear that any amount of efficiency is
+worthless if we cannot provide /reliability/.
+#+END_QUOTE
+
+La programmation structurée cherche donc à produire des programmes fiables avant
+toute chose.  Wirth la décrit comme un mouvement, une attitude plutôt qu’une
+liste de règles à suivre:
+
+#+BEGIN_QUOTE
+[Structured programming] is the expression of a conviction that the programmer’s
+knowledge must not consist of a bag of tricks and trade secrets, but of a
+general intellectual ability to tackle problems systematically, and that
+particular techniques should be replaced (or augmented) by a method.  At its
+heart lies an /attitude/ rather than a recipe: the admission of the limitations
+of our minds.  The recognition of these limitations can be used to our
+advantage, if we carefully restrict ourselves to writing programs which we can
+manage intellectually, where we fully understand the totality of their
+implications.
+#+END_QUOTE
+
+Mais Wirth nous donne néanmoins des recettes.
+
+# GOTO is about single entry, single exit
+
+# that can be done by composing sequence, condition, and repetition
+
+# this serves the overall view: hierarchical refinements, top-down approach
 
 
-# Pragmatists disagree: GOTO is not, in practice always confusing, and sometimes
-# the only efficient solution (Knuth)
 
-# Dijkstra says GOTO is not necessary
-# theorem: sequence + selection + iteration is enough
 
 
 
