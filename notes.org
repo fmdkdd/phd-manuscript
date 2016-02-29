@@ -1869,8 +1869,114 @@ reload after compilation.  Compilation is incremental: only the changed
 functions/classes/enums are recompiled and linked into the final program.  So
 it’s a thoughtful IDE for C++.
 
-But the annotations are not exactly what I had in mind lackluster.  [[http://www.codersnotes.com/notes/a-constructive-look-at-templeos/#hypertext-doldoc][Temple OS]]
-did it better.
+But the annotations are not exactly what I had in mind.  [[http://www.codersnotes.com/notes/a-constructive-look-at-templeos/#hypertext-doldoc][Temple OS]] did it
+better.
+
+** [2016-02-29 lun.]
+*** The ideal platonic programming language
+Say you have a specific program idea in mind, you want to create a specific
+system.  You start seeing the system working in your head, you see the
+interactions, how that would work, you can already toy with it even if it’s not
+real.
+
+Let’s take a concrete example to avoid talking about clouds.
+
+Say you want to build a Tetris-like game.  Interactive, realtime, traveler’s
+backpack puzzle game where you fill a well with tetraminoes.  You already see
+how it should work, where the well goes in the UI, how the tetraminoes should
+fall, how do they rotate when the user presses a button, how the next tetraminoe
+to fall is previewed in the corner...
+
+All of these elements form the /domain language/: the vocabulary that you can
+use to talk about the running system when you describe it to someone.  In this
+language, you can already specify rules for the system: the game is over when
+the last tetraminoe was put outside the screen; after a tetraminoe is put in
+place, any full-width line is cleared and all lines above it are shifted one
+line down.
+
+When it comes to implementing the game in software, you just want to express the
+design constraints as plainly as possible.  What you really want to is to give
+the above rules to the machine, after you have defined the vocabulary.  This
+gives you the greatest flexibility in toying with design ideas: once the
+vocabulary is in the machine, you can just try new rules or alter existing ones
+easily.
+
+Now the problem of course is that while the domain language might be expressive
+enough for designing rules, it borrows a lot from its context and the ability of
+the readers to understand English, and their knowledge about the world (what’s a
+line, a tetraminoe, a screen, or a GUI?).
+
+When it comes to teaching the vocabulary to the machine, you don’t have all this
+context to lean on.  You have to recreate this context first, when porting the
+vocabulary to the machine.  And then it gets awkward, because English will allow
+you to combine words in many ways, but programming languages are less flexible.
+
+And programming languages are there to allow you to /program/ the machine, to
+express computations that the machine will carry away without supervision.  You
+cannot leave details out that a human computer would fill in for you; everything
+has to be specified at some point.  So it becomes very hard to dissociate the
+rules from the specific choices you have to make in order for the system to work
+on real hardware.
+
+The point is, a designer would very much like a programming language that is as
+close to the domain language as possible.  That is the ideal programming
+language for them.  But, as the domain language conveys no information about
+real hardware, there is a tension between expressing only what is relevant to
+the model, and stating out every step the machine must take in order to realize
+this vision.  This tension is also present in English itself:
+
+#+BEGIN_QUOTE
+In Zipf’s view, ambiguity fits within the framework of his unifying principle of
+least effort, and could be understood by considering the competing desires of
+the speaker and the listener.  Speakers can minimize their effort if all
+meanings are expressed by one simple, maximally ambiguous word, say, /ba/.  To
+express a meaning such as “The accordion box is too small,” the speaker would
+simply say /ba/.  To say “It will rain next Wednesday,” the speaker would say
+/ba/.  Such a system is very easy for speakers since they do not need to expend
+any effort thinking about or searching memory to retrieve the correct linguistic
+form to produce.  Conversely, from the comprehender’s perspective, effort is
+minimized if each meaning maps to a distinct linguistic form, assuming that
+handling many distinct word forms is not overly difficult for comprehenders.  In
+that type of system, the listener does not need to expend effort inferring what
+the speaker intended, since the linguistic signal would leave only one
+possibility.
+
+Zipf suggested that natural language would strike a balance between these two
+opposing forces of unification and diversification, arriving at a middle ground
+with some but not total, ambiguity.  Zipf argued this balance of speakers’ and
+comprehenders’ interests will be observed in a balance between frequency of
+words and number of words: speakers want a single (therefore highly frequent)
+word, and comprehenders want many (therefore less frequent) words.  He suggested
+the balancing of these two forces could be observed in the relationship between
+word frequency and rank frequency: the vocabulary was “balanced” because a
+word’s frequency multiplied by its frequency rank was roughly a constant, a
+celebrated statistical law of language.
+#+END_QUOTE
+([[cite:PTG-12][PTG-12]], p. 2)
+
+This tension is a the core of what programmers deal with everyday.  Programming
+is mainly taking sentences in the domain language, and translating them to
+executable machine instructions.  It’s more than that: it’s mapping the whole
+domain language to the target computer.  The difference is the same as the
+difference between translating a book and translating a hundred isolated
+sentences.  A book is a coherent collection of sentences, so the translation
+should be coherent as well.
+
+So maybe an ideal programming language, one that gives you all the expressivity
+of the domain language, but can be executed as is by the machine, is really
+ideal in the platonic sense—that is, an elegant construction that exists only to
+the mind, totally not happening in real life.
+
+Coming up with a coherent domain language in the design phase goes already a
+long way toward making the right choices at a low cost.  Designing a game on
+paper, or /with/ paper cut-outs can help make some problems immediately apparent
+without writing a single line of code.
+
+But any such design is incomplete until it is running on a machine as expected.
+So we should not strive for a perfect design upfront.  Being able to answer
+questions and try out variations on paper is already helpful.  I am not
+convinced that aiming for the ideal language will bring tangible benefits to the
+process.
 
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
