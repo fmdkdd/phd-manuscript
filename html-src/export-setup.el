@@ -20,6 +20,9 @@
         '(("fr"
            "<p class=\"author\">Auteur: %a</p>\n<p class=\"created\">Crée: %T (%c)</p>")))
 
+  ;; MathJax is not needed.  No need to ping the CDN.
+  (setq org-html-mathjax-template "")
+
   ;; Do not embed SVG image in <object> tag.  An <img> works better.
   (defun fmdkdd/org-html--format-image (_ source attributes info)
     "Return \"img\" tag with given SOURCE and ATTRIBUTES.
