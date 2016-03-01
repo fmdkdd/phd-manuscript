@@ -1978,6 +1978,67 @@ questions and try out variations on paper is already helpful.  I am not
 convinced that aiming for the ideal language will bring tangible benefits to the
 process.
 
+** [2016-03-01 mar.]
+*** Exporting bibliography in HTML
+There was the right way:
+1. Parse the Org file to get all cited keys
+2. Call an external tool to generate a .bib file containing only cited entries
+3. Parse the bib and generate HTML
+
+Now, it’s not /so/ trivial.  Existing tools are a bit bizarre and convoluted.
+Last time I tried to do that, I ended using bib2x, and it’s not that flexible.
+
+All I want for step 3 is a bibtex to JSON.  After that, I can generate HTML
+using anything.  It /seems/ there are such converters ([[http://home.in.tum.de/~muehe/bibtex-js/demo/bibtex.html][there]], [[https://github.com/mikolalysenko/bibtex-parser][there]] and [[https://www.npmjs.com/search?q=bibtex][there]]),
+but they are all version 0.0.1, and I don’t have time to test them all.
+
+So, there is the (sort-of) fast way:
+- Use ox-bibtex, and tweak it until I get a good-but-not-perfect output.
+
+I knew ox-bibtex /could/ get me 3/4 of what I wanted.  And as it turned out,
+there were only minor changes to make.
+
+Just requiring ox-bibtex at export time is enough (since I already had the
+BIBLIOGRAPHY keyword in the manuscript).  With the ~limit:t~ option it exports
+only the cited entries.  Each entry has a link with the key bound to its name,
+so querying #Ari-35 in the page works directly.
+
+The references are included at the position of the BIBLIOGRAPHY keyword though.
+Since I want them at the end, I put the keyword in its own (unnumbered) section.
+It’s a minor inconvenience to have to bury this keyword at the end of
+manuscript, but hey.
+
+Also, since ox-bibtex calls bibtex2html to generate two files, read one of them,
+and insert the content in the exported manuscript, there was no reason to keep
+the files around.  So I [[file:html-src/export-setup.el::(defun%20org-bibtex-process-bib-files%20(tree%20backend%20info)][tweaked]] the main function of ox-bibtex to do that.
+
+Then, what took the most time was an unexpected (of course) annoyance with file
+encoding.  I suspected that bibtex2html would not handle my unicode bib file
+correctly.  Actually, it leaves the accents unchanged when creating the HTML,
+but mangles the key names when an author has an accented name, e.g.:
+
+: [�T09a] 	Éric Tanter.
+
+But!  Since the resulting HTML is /not/ a full utf-8 file, when ox-bibtex reads
+it with [[help:insert-file-contents][insert-file-contents]], the automatic encoding detection opts for
+japanese-shift-something, and I get katakanas instead of é.
+
+Helpfully, the documentation of insert-file-contents mentions that you can set
+[[help:coding-system-for-read][coding-system-for-read]] locally to override the automatic detection.  I did that,
+and nothing changed.  I tried to understand and debug it for a good half an
+hour, when I realized I had only changed the coding system for one call to
+insert-file-contents, but it was the second call that created the string that
+went into the exported manuscript.
+
+The key names are still mangled in the HTML, but it’s only cosmetic, as the
+links internally use other, correct key names.  Maybe changing the bibtex style
+from alpha to something else would fix it.
+
+Oh!  And for some reason, bibtex2html returned an error initially because it
+could not find a crossref.  I put the crossref before the entry that made a
+reference to it.  Apparently, bibtex2html does not like that, as putting the
+crossref /after/ the entry that calls it worked.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
