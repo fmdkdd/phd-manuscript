@@ -2039,6 +2039,80 @@ could not find a crossref.  I put the crossref before the entry that made a
 reference to it.  Apparently, bibtex2html does not like that, as putting the
 crossref /after/ the entry that calls it worked.
 
+** [2016-03-08 mar.]
+*** Visualizing JavaScript snippets
+So I’ve got a couple contributions that are mainly based on particular pieces of
+code.  The straightforward thing to do would be to just put these snippets into
+the manuscript alongside some text explaining what it does.
+
+The issue I have with that is that I seldom read snippets of code in papers,
+articles, or books.  If I’m learning the language, or a specific pattern, or
+coding trick, then of course the code is relevant.  The code is what is being
+talked about.  But when exposing data structures, control flow, algorithms, or
+optimizing techniques, the explanation is better served by a diagram or an
+animation.
+
+Code is truth.  But the code can be full of details irrelevant to the message at
+hand.  Maybe you are trying to explain how your algorithm handles text
+sequences, but are showing your code in Python which deals with dozens of corner
+cases, error handling, and tangential unicode workarounds.
+
+The fallacy of thinking that the code can be clearer than a diagram is that we
+live in our own code.  We build it, we improve it, we construct a working model
+of it in our mind.  So when we read that code, we actually reason abount it
+using our mental model.  And then we are tempted to include it verbatim
+alongside prose, because we are comfortable reading it.
+
+But another reader would not be comfortable with it at all.  Another reader has
+no mental model of this code.  He must work through it line by line.  And that’s
+where the accidentals, all the extraneous information is harmful for their
+understanding.
+
+And more importantly, the reader might not even /know/ the language semantics.
+Without them, he might as well be reading Chinese.
+
+That’s why, in the manuscript, I don’t want code to be the main way of
+explaining the things I do in JavaScript.
+
+Opening the module pattern, for example, is essentially a process of
+manipulating scopes.  Visualizing how this manipulation takes place, and how it
+differs from the standard module pattern and alternatives should be enough to
+understand it.  The code can then be derived once the idea is understood.
+
+To that end, I find that the presentation in the DLS paper was pretty clear.
+Describe the code problem in terms of scope diagram.  Sketch the solution in
+these scope diagrams, and present a way in code to achieve the sketched
+solution.
+
+But the diagrams are still somewhat suboptimal, in that they need to be
+accompanied by code to know how they fit in the /timeline/ of execution.  A
+scope diagram is just a snapshot at a fixed point in this timeline.  So, when
+giving code snippets, the reader is still relying on me to choose the relevant
+snapshots and not mess up my translation from the JS semantics.  The only way
+that I have to link these snapshots together is to go back to code.
+
+I wish I could find a way to work /directly/ with this diagrams, and be able to
+express modifications of these diagrams visually, step by step.  Say, “set the
+property ‘a’ of ‘m’ to the number 1” would have an unambiguous counterpart in
+the diagram language (change /that/ box to 1).
+
+The interactive visualizer I was building in January would give me part of the
+solution.  I could manipulate directly diagrams as if it was code.  But those
+diagrams are still /static/, they do not convey any information to make a
+computer /do/ something, to animate, to make it beep and blink.
+
+I guess the best way to describe it is: I can give instructions to turn a module
+pattern into an open scope pattern, by adding “with” and a scope object around
+the inner code of the function.  But how would I give /visual/ instructions to
+turn the scope diagram of a module pattern into the open scope diagram?
+Instructions that would work for any module, regardless of the specific names,
+values and functions it contains?
+
+If the diagram can be self-sufficient to describe the computation, then I can
+dispense of the code entirely.  The diagrams would be a different, simpler
+language that would help me get the point across more directly than bringing the
+full weight of JavaScript.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
