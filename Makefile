@@ -1,14 +1,14 @@
 .PHONY: clean draft final
 
-INPUT=manuscript.org
-HTML_OUTPUT=$(patsubst %.org, %.html, $(INPUT))
-TARGET=$(patsubst %.org, html/%.html, $(INPUT))
+INPUT := manuscript.org
+HTML_OUTPUT := $(patsubst %.org, %.html, $(INPUT))
+TARGET := $(patsubst %.org, html/%.html, $(INPUT))
 
 # Extract all multi SVG images from svg/ folder into img/ folder.  Copy plain
 # SVG so that all reside in img/.
-SVG_SRC=$(wildcard svg/*.svg)
-SVG_DST=$(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
-PNG_DST=$(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
+SVG_SRC := $(wildcard svg/*.svg)
+SVG_DST := $(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
+PNG_DST := $(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
 
 # Draft is intended to be the quick option.  Initially, PNG export was much
 # faster than SVG.  Using rsvg-convert made both options equally fast.  But I'm
