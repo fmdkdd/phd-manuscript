@@ -1,0 +1,71 @@
+* { box-sizing: border-box }
+
+html {
+  font-family: 'Alegreya', serif;
+  font-size: 16px;
+
+  color: #333;
+  background-color: #fff;
+}
+
+a {color: hsl(3, 76%, 37%)}
+a:visited {color: hsl(3, 66%, 27%)}
+
+h5 { font-size: 100%; margin-bottom: 0.5rem; }
+
+pre, code {
+  font-family: 'Ubuntu Mono';
+}
+
+#content, #postamble { width: 35rem }
+
+figure img { max-width: 35rem }
+.side-figure { width: 21rem }
+.side-figure img { max-width: 21rem }
+.full-figure { width: 58rem }
+.full-figure img { max-width: 58rem }
+
+.side-figure, aside {
+  position: absolute;
+  left: 37rem;
+}
+
+.side-figure p, aside p {
+  text-align: left;
+  font-size: 90%;
+  width: 21rem;
+}
+
+.full-figure p {
+  text-align: left;
+}
+
+figure figcaption {
+  position: absolute;
+  top: 0;
+  left: 37rem;
+  text-align: left;
+  font-size: 90%;
+  width: 21rem;
+  margin: 0;
+}
+.side-figure figcaption {
+  position: static;
+}
+.full-figure figcaption {
+  position: static;
+  margin: 0;
+  float: right;
+  text-align: left;
+  font-size: 90%;
+  width: 21rem;
+}
+
+figure {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.figure-number { display: none }
+.numbered .figure-number { display: inline }
