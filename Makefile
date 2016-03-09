@@ -2,7 +2,7 @@
 
 INPUT := manuscript.org
 HTML_OUTPUT := $(patsubst %.org, %.html, $(INPUT))
-TARGET := $(patsubst %.org, html/%.html, $(INPUT))
+TARGET := html/index.html
 
 # Extract all multi SVG images from svg/ folder into img/ folder.  Copy plain
 # SVG so that all reside in img/.
