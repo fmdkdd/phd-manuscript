@@ -10,8 +10,11 @@ SVG_SRC=$(wildcard svg/*.svg)
 SVG_DST=$(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
 PNG_DST=$(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
 
-draft: $(TARGET) $(SVG_DST) html/style.css
-final: $(TARGET) $(SVG_DST) html/style.css
+# Draft is intended to be the quick option.  Initially, PNG export was much
+# faster than SVG.  Using rsvg-convert made both options equally fast.  But I'm
+# still leaving the two targets for now.
+draft: $(TARGET) $(SVG_DST) html/img html/style.css
+final: $(TARGET) $(SVG_DST) html/img html/style.css
 
 $(TARGET): $(INPUT) refs.bib html-src/export-setup.el
 	@echo 'Exporting to HTML...'
@@ -47,9 +50,19 @@ img/%.png: svg/%.svg
 html/style.css: html-src/style.css
 	cp $< $@
 
+# img created by Org and rsvg-convert are put into the img/ folder by the
+# `draft` and `final` targets.  To make standalone HTML folder to be pushed onto
+# a web server, we need to copy the img folder as well.  The target is simply
+# the folder.
+html/img: img
+	cp --recursive $< $@
+
 clean:
 	rm --force $(TARGET)
 	rm --force img/*.svg
 	rm --force img/*.png
 	rm --force img/*.pdf
 	rm --force html/style.css
+	rm --force html/img/*.svg
+	rm --force html/img/*.png
+	rmdir html/img
