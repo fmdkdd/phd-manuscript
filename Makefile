@@ -29,8 +29,8 @@ $(TARGET): $(INPUT) refs.bib html-src/export-setup.el
 	mv $(HTML_OUTPUT) $(TARGET)
 
 # Extract individual SVG from SVG containing multiple diagrams with Inkscape.
-img/%.multi.svg: svg/%.multi.svg svgsplit
-	./svgsplit svg $< img
+img/%.multi.svg: svg/%.multi.svg bin/svgsplit
+	./bin/svgsplit svg $< img
   # We actually create multiple files, and we can't know their names from the
   # Makefile.  So we use a phony file to know when we need to keep track of
   # the last time we ran the command.
@@ -40,8 +40,8 @@ img/%.svg: svg/%.svg
 	cp $< $@
 
 # Same as above, but for the PNG exports.
-img/%.multi.png: svg/%.multi.svg svgsplit
-	./svgsplit png $< img
+img/%.multi.png: svg/%.multi.svg bin/svgsplit
+	./bin/svgsplit png $< img
 	@touch $@
 
 img/%.png: svg/%.svg
