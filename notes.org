@@ -2113,6 +2113,83 @@ dispense of the code entirely.  The diagrams would be a different, simpler
 language that would help me get the point across more directly than bringing the
 full weight of JavaScript.
 
+** [2016-03-09 mer.]
+*** Setting up auto-deployment of HTML export on Github pages
+I’ve been using the HTML export locally for weeks.  It would make sense for
+others to be able to read the same thing in their browser.  Pushing it to
+a gh-pages branch is a no-brainer.
+
+Of course, I didn’t want to build, commit, and push the gh-pages manually.  I’ve
+done that for other projects, and it’s terribly error-prone.  You have to keep
+track of which files to add, which files to delete...
+
+So, git hooks!  I figured that a post-commit hook to master would automatically
+make the HTML export, stage and commit the changes in the gh-pages branch with a
+generated message.
+
+Then, a post-push to master would push the gh-pages branch to the Github
+remote.
+
+First things first, the html folder was not standalone: the img folder was just
+a symlink to ../img, where PNG and SVG are created by the Org export and
+svgsplit during make.
+
+Solution?  Just tell the makefile to copy all files in the img folder to
+html/img after they are created.  But there was a dependency problem.  The files
+in img need to be copied /after/ the Org export took place.
+
+So I tried to add the HTML output as a dependency, but as I was using the
+wildcard function for creating img targets, the wildcard would only be run once
+on the images that were present /before the export/.  After a make clean, there
+would be nothing in img, and the rule would only trigger in a second call to
+make.
+
+I wanted one call to make, and idempotent calls: “Nothing to be done” means that
+every target is up to date.
+
+I tried to RTFM.  I learned how Make processed the variables (learned about [[ but I had no way of telling make to wait for that process to end /and/ still copy each file in img without
+ https://www.gnu.org/software/make/manual/make.html#Flavors][recursively expanded variables versus simply-expanded]], as I’d been using the
+former all along), but that did not help me find a solution.  Tried to use
+wildcards in prerequisites, using both the wildcard function and the asterisk
+syntax.  Nope.
+
+In the end, the manual mentionned that directories would have their timestamp
+updated whenever their contents changed.  So I figured that instead of copying
+every file of the img folder, I could just copy the img folder itself!  Make
+would use its timestamp to know when to process the rule, and this would be much
+cleaner.
+
+And it worked.
+
+Now, I had a standalone HTML folder which was updated every time I called make.
+I cd’ed into it, git cloned the phd-manuscript repository, checked out the
+orphan gh-pages (following the [[https://help.github.com/articles/creating-project-pages-manually/][Github doc]]), clean tree, add, commit, and push.
+This was the usual process, except that the html folder, where make builds, is
+always checked out to gh-pages.  Rather than switch between master and gh-pages,
+I have two folders that correspond to these branches.  And the gh-pages branch
+folder is inside the master branch folder.
+
+#+BEGIN_EXAMPLE
+.
+├── html
+│   ├── img
+...
+├── Makefile
+├── Makefile.latex
+├── manuscript.org
+...
+#+END_EXAMPLE
+
+Then, I could finally write the hooks.  Rather straightforward, as they are just
+shell scripts.
+
+As a final touch, I put the hooks into a bin/ directory and checked them into
+the repository.  Makes more sense to keep track of this stuff if I work on a
+different machine.  Or if I want to use the same kind of setup for another
+project.  I was initially thinking of symlinking .git/hooks/pre-commit to
+bin/pre-commit, but this is not always a [[https://stackoverflow.com/questions/3462955/putting-git-hooks-into-repository][good idea]], security-wise.  Better to
+take the habit of copying them and updating them manually.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
