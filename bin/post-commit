@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Sync with gh-pages branch.
+
+# The make is done in the pre-commit, but that can be skipped, so make again,
+# to be sure.
+make draft
+
+# Get string 'commit 4a1bde412cf...'
+COMMIT=`git log -1 HEAD | head -n 1`
+
+cd html
+git add .
+echo "Auto build of ${COMMIT}"
+git commit -m "Auto build of ${COMMIT}"
