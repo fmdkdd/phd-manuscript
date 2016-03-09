@@ -223,16 +223,33 @@ function fibonacci(n) {
 print(fibonacci(10))
 #+END_SRC
 
-Dans les langages de programmation exotériques[fn:eso-lang], un programme est
-constitué principalement de lettres plutôt que de nombres.  Les lettres,
-arrangées en permutations judicieuses, nous servent à /nommer/ les objets de la
-computation tels que les variables et constantes, les fonctions, les classes et
-autres structures.  Les mots sont plus facilement prononçables, davantage
-mnémoniques, et peuvent surtout communiquer l’intention du programmeur par
-homonymie.  On peut ainsi, simplement en suivant les mots, supposer que le code
-[[fib]] calcule et affiche le onzième nombre de la suite de Fibonacci, sans être
-vraiment certain de la sémantique de JavaScript.  Les mots /évoquent/
-immédiatement du sens alors que les nombres doivent être décodés[fn:misleading].
+Dans les langages de programmation exotériques, un programme est constitué
+principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
+permutations judicieuses, nous servent à /nommer/ les objets de la computation
+tels que les variables et constantes, les fonctions, les classes et autres
+structures.  Les mots sont plus facilement prononçables, davantage mnémoniques,
+et peuvent surtout communiquer l’intention du programmeur par homonymie.  On
+peut ainsi, simplement en suivant les mots, supposer que le code [[fib]] calcule et
+affiche le onzième nombre de la suite de Fibonacci, sans être vraiment certain
+de la sémantique de JavaScript.  Les mots /évoquent/ immédiatement du sens alors
+que les nombres doivent être décodés.
+
+#+ATTR_HTML: :style margin-top:-15rem
+#+BEGIN_aside
+Par opposition aux langages /ésotériques/ qui sont conçus davantage pour
+démontrer la créativité de leur auteur que pour simplifier la conception de
+programmes.  [[cite:Esolang][Esolang]] recense des spécimens tels que Brainfuck, Piet ou
+Whitespace, qui ne manquent pas de nous rappeler qu’être Turing-complet n’est
+pas un critère suffisant pour être un langage /utile/.
+#+END_aside
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+Les mots peuvent également évoquer un contresens; une définition maladroite–ou
+intentionnelle–peut induire en erreur le lecteur.  Un ami m’a raconté avoir
+passé tout un après-midi à pister une erreur dans du code écrit en C, pour
+finalement découvrir dans un fichier inclus la ligne: ~#define true false~.
+#+END_aside
 
 Mais, si le programme ainsi décrit est plus confortable pour le programmeur, il
 est incompréhensible par la machine en tant que tel.  Il faut au préalable
@@ -240,11 +257,19 @@ est incompréhensible par la machine en tant que tel.  Il faut au préalable
 avec les langues naturelles est pertinente; si je souhaite communiquer le
 contenu de ce manuscrit de thèse à des non-francophones, soit je rédige une
 nouvelle version dans une langue qu’ils parlent (écrire le programme en langage
-machine), soit j’emploie les services d’un traducteur[fn:third-option].
-Heureusement, la traduction d’un programme est une tâche moins hasardeuse que la
-traduction d’un document en langue naturelle.  Les langages de programmation
-sont définis de façon à éliminer toute ambiguïté d’interprétation, ce qui permet
-d’effectuer la traduction en langage machine automatiquement.
+machine), soit j’emploie les services d’un traducteur.  Heureusement, la
+traduction d’un programme est une tâche moins hasardeuse que la traduction d’un
+document en langue naturelle.  Les langages de programmation sont définis de
+façon à éliminer toute ambiguïté d’interprétation, ce qui permet d’effectuer la
+traduction en langage machine automatiquement.
+
+#+ATTR_HTML: :style margin-top:-7rem
+#+BEGIN_aside
+Une troisième option serait que les non-francophones apprennent le français pour
+lire ce manuscrit.  En suivant l’analogie, cela correspond à une machine qui
+exécuterait directement un programme JavaScript.  Les deux situations sont
+également improbables.
+#+END_aside
 
 C’est le /compilateur/ qui traduit des programmes d’un langage de programmation
 vers le langage machine.  Le compilateur lit le texte brut décrivant le
@@ -277,6 +302,12 @@ pourrait écrire le programme de [[fib]], de manière totalement équivalente:
 function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+À ce titre, les archives du concours international d’obfuscation de code C [[cite:IOCCC][IOCCC]]
+recèlent d’exemples à suivre pour mystifier tout collaborateur.
+#+END_aside
+
 # Structures do not count (modules, classes, files).  Structure is for humans.
 
 Le programme, n’a donc pas comme seule vocation à ordonner la machine, il doit
@@ -288,28 +319,6 @@ Lorsqu’un texte devient trop long, il devient plus pratique de le découper
 en unités indépendantes.
 
 # Other structures, classes, modules
-
-
-[fn:eso-lang] Par opposition aux langages /ésotériques/ qui sont conçus
-davantage pour démontrer la créativité de leur auteur que pour simplifier la
-conception de programmes.  [[cite:Esolang][Esolang]] recense des spécimens tels que Brainfuck,
-Piet ou Whitespace, qui ne manquent pas de nous rappeler qu’être Turing-complet
-n’est pas un critère suffisant pour être un langage /utile/.
-
-[fn:misleading] Les mots peuvent également évoquer un contresens; une définition
-maladroite–ou intentionnelle–peut induire en erreur le lecteur.  Un ami m’a
-raconté avoir passé tout un après-midi à pister une erreur dans du code écrit en
-C, pour finalement découvrir dans un fichier inclus la ligne: ~#define true
-false~.
-
-[fn:third-option] Une troisième option serait que les non-francophones
-apprennent le français pour lire ce manuscrit.  En suivant l’analogie, cela
-correspond à une machine qui exécuterait directement un programme JavaScript.
-Les deux situations sont également improbables.
-
-[fn:obfuscation] Les archives du concours international d’obfuscation de code C
-[[cite:IOCCC][IOCCC]] recèlent d’exemples à suivre pour mystifier tout collaborateur.
-
 
 #+BEGIN_SRC dot :file img/bg-map.png
 digraph {
@@ -2419,6 +2428,7 @@ suivre les étiquettes même lors de branchements (des flots /indirects/),
 l’évaluation multi-facettes maintient une liste des embranchements suivis lors
 de l’exécution; cette liste est appelée /program counter/ (PC).
 
+#+ATTR_HTML: :style margin-top:-11rem
 #+BEGIN_side-figure
 #+ATTR_HTML: :height 40rem
 #+CAPTION: Une valeur à deux facettes.
@@ -2434,25 +2444,37 @@ valeur ~true:false~.  Un observateur non autorisé n’a accès qu’à la valeu
 publique du résultat, et n’est donc pas capable d’inférer la valeur privée de
 ~x~, même à travers un flot indirect d’information.
 
+#+ATTR_HTML: :style margin-top:-12rem
 #+BEGIN_side-figure
 #+ATTR_HTML: :height 200rem
 [[file:img/fenton-example.svg]]
 #+END_side-figure
 
-Pour donner une idée de l’échelle du projet, Narcissus fait 6000 lignes de
-code[fn:lines-of-code], et les deux plus gros fichiers sont le parseur (1600
-lignes) et le fichier principal de interpréteur, “jsexec” (1300 lignes).  Ce
-fichier principal contient la logique pour interpréter des arbres de syntaxe
-abstraits, et pour mettre en place l’environnement d’exécution des programmes
-clients.  Les changements effectués pour l’implémentation de l’évaluation
-multi-facettes sont restreints à ce fichier principal; 640 lignes sont
-affectées, soit la moitié.
+Pour donner une idée de l’échelle du projet, Narcissus fait 6000 lignes de code,
+et les deux plus gros fichiers sont le parseur (1600 lignes) et le fichier
+principal de interpréteur, “jsexec” (1300 lignes).  Ce fichier principal
+contient la logique pour interpréter des arbres de syntaxe abstraits, et pour
+mettre en place l’environnement d’exécution des programmes clients.  Les
+changements effectués pour l’implémentation de l’évaluation multi-facettes sont
+restreints à ce fichier principal; 640 lignes sont affectées, soit la moitié.
+
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+On compte les lignes de code physiques, commentaires inclus mais sans compter
+les lignes vides.
+#+END_aside
 
 Pour réaliser l’instrumentation de Narcissus pour l’évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l’interpréteur Narcissus.
 On peut obtenir l’ensemble des changements effectués en extrayant un /diff/ des
-deux versions[fn:narcissus-diff].  La figure [[visual-narcissus-diff]] donne une
-vue d’ensemble des changements.
+deux versions.  La figure [[visual-narcissus-diff]] donne une vue d’ensemble des
+changements.
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]] et
+[[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
+#+END_aside
 
 #+NAME: visual-narcissus-diff
 #+CAPTION: Visualisation des modifications apportées par l’instrumentation de
@@ -2504,11 +2526,18 @@ comment ils se présentent dans le code:
 +      getPC: getGC
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_aside
+Le symbole ~-~ marque une ligne supprimée de l’interpréteur; le symbole ~+~
+marque une ligne ajoutée par l’instrumentation.  L’absence de marque indique une
+ligne commune aux deux versions.
+#+END_aside
+
 Les changements effectués pour accommoder le /program counter/ utilisé par
 l’analyse.  D’abord, le constructeur de l’objet ~ExecutionContext~ est étendu
 pour accepter un argument supplémentaire: la valeur courante du /program
 counter/, ~pc~.  Voici un extrait du diff qui illustre ce
-changement[fn:diff-syntax]:
+changement:
 
 #+BEGIN_SRC diff
 - function ExecutionContext(type, version) {
@@ -2523,7 +2552,12 @@ entier.  L’objet ~ExecutionContext~ contient les variables importantes pour
 l’exécution du code; en particulier l’environnement lexical utilisé pour
 résoudre les noms de variables du code exécuté par ce contexte.  L’objet
 ~ExecutionContext~ est une réification du concept éponyme de la spécification
-ECMAScript[fn:ecma-execution-contexts].
+ECMAScript.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+Voir la section 10.3 de la spécification.
+#+END_aside
 
 Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
 appels doivent être modifiés en conséquence pour fournir une valeur correcte
@@ -2623,19 +2657,6 @@ Les règles de la sémantique instrumentées tiennent sur une page; un
 interpréteur pour cette sémantique est donc considérablement plus petit qu’un
 interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
 des mécanismes d’extensibilité.
-
-
-[fn:narcissus-diff] Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]]
-et [[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
-
-[fn:lines-of-code] Lignes physiques, commentaires inclus mais sans compter les
-lignes vides.
-
-[fn:diff-syntax] Le symbole ~-~ marque une ligne supprimée de l’interpréteur;
-le symbole ~+~ marque une ligne ajoutée par l’instrumentation.  L’absence de
-marque indique une ligne commune aux deux versions.
-
-[fn:ecma-execution-contexts] Voir la section 10.3 de la spécification.
 
 * Variations sur un interpréteur de lambda-calcul extensible
 Essayons d’abord d’écrire un interpréteur pour chaque sémantique de \lambda^{facet}, sans
@@ -3359,11 +3380,13 @@ handle facet values.
 >   {}, {}, [1]
 #+end_src
 
-Our ad-hoc pattern matching is perhaps not the most straightforward
-way to write such an interpreter in JavaScript.  Another, maybe more
-familiar way is to use object-oriented dispatching [fn:: And indeed,
-this form is quite similar to the Interpreter pattern from Gamma et
-al.].
+Our ad-hoc pattern matching is perhaps not the most straightforward way to write
+such an interpreter in JavaScript.  Another, maybe more familiar way is to use
+object-oriented dispatching.
+
+#+BEGIN_aside
+And indeed, this form is quite similar to the Interpreter pattern from [[cite:GHJ+94][GHJ+94]].
+#+END_aside
 
 [[file:js/lab/lamfa-oo-standard.js]]
 #+BEGIN_SRC js
@@ -4944,9 +4967,8 @@ plus.new(num.new(1), num.new(2)).eval() //: 6
 Maintenant, une variante.  Plutôt que de retourner le double de ~n~,
 l’évaluation d’un ~num~ doit retourner le double du résultat de l’évaluation
 d’origine.  Pour implémenter cette variante, il nous faut pouvoir faire
-référence à l’évaluation d’origine dans la nouvelle version de
-~num.eval~[fn:proceed].  On peut sauvegarder la version d’origine dans une
-fermeture:
+référence à l’évaluation d’origine dans la nouvelle version de ~num.eval~.  On
+peut sauvegarder la version d’origine dans une fermeture:
 
 #+BEGIN_SRC js
 (function(previous_eval) {
@@ -4956,6 +4978,11 @@ fermeture:
 num.new(1).eval() //: 2
 plus.new(num.new(1), num.new(2)).eval() //: 6
 #+END_SRC
+
+#+BEGIN_aside
+Une fonctionnalité similaire au mot-clé ~proceed~ en AspectJ et autres langages
+à aspects.
+#+END_aside
 
 Il ne reste plus qu’à appeler cette version antérieure en lui passant l’objet
 courant comme receveur à l’aide de l’appel ~call(this)~.
@@ -5069,10 +5096,6 @@ with (state({num, plus})) {
       getCount() //: 3
       n.show() //: “1+2”
 #+END_SRC
-
-
-[fn:proceed] Une fonctionnalité similaire au mot-clé ~proceed~ en AspectJ et
-autres langages à aspects.
 
 * Dynamic scoping to build interpreters
 From the LASSY’15 paper.
