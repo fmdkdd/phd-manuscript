@@ -111,6 +111,9 @@
    - [[#passing-state][Passing state]]
    - [[#all-in-one][All in one]]
  - [[#dynamic-scoping-to-modify-narcissus][Dynamic scoping to modify Narcissus]]
+   - [[#manipuler-la-portée-des-variables-pour-l’instrumentation][Manipuler la portée des variables pour l’instrumentation]]
+     - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
+     - [[#ouvrir-le-motif-module][Ouvrir le motif module]]
    - [[#the-idea-manipulating-scopes][The idea: manipulating scopes]]
    - [[#how-to-manipulate-scopes-in-javascript][How to manipulate scopes in JavaScript]]
    - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
@@ -5710,7 +5713,208 @@ Combine all the extensions without effort.
 # [[file:img/all-in-one.svg]]
 
 * Dynamic scoping to modify Narcissus
-From the DLS’15/SAC’16 paper.
+/Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [[cite:KNS-15b][KNS-15b]]/.
+
+Nous avons vu dans l’étude de cas que Narcissus n’était pas étendu de façon
+modulaire.  Dans ce chapitre, on propose une façon simple d’étendre cet
+interpréteur, en se basant uniquement sur les fonctionnalités présentes dans le
+langage JavaScript.
+
+** Manipuler la portée des variables pour l’instrumentation
+L’ingrédient clé de cette section est la notion de /portée de variable/, et
+comment manipuler cette portée.  Une variable déclarée dans une fonction n’est
+pas accessible depuis une autre fonction; on dit alors que la portée de cette
+variable est la fonction dans laquelle elle est définie, ou encore que la
+variable est locale à la fonction.  À l’inverse, une variable déclarée globale
+sera accessible par à tout point d’exécution du programme.
+
+En JavaScript typiquement, on peut considérer que l’ensemble des variables
+accessibles à un point d’exécution donné est déterminé par un objet qu’on
+appelle /l’environnement/.  Un environnement associe chaque nom de variable à
+une valeur (valeur primitive comme un nombre, ou une référence vers un objet),
+et possède un lien vers un environnement parent.  Pour nos besoins, un
+environnement est donc très similaire à un objet JavaScript.
+
+Les programmes donnés en exemple de cette section sont volontairement triviaux,
+puisque ce sont les mécanismes de manipulation de l’environnement qui nous
+intéressent, et non le code métier.  À la fin du chapitre, on applique ces
+mécanismes à un cas concret, Narcissus.
+
+Les exemples de code sont écrits en suivant un sous-ensemble du standard
+ECMAScript 5.1, que l’on va enrichir avec la possibilité de manipuler des
+environnements.  Ces manipulations sont plus clairement expliquées à l’aide de
+diagrammes qui parsèment ce chapitre.  Les diagrammes n’ont pas pour but de
+représenter fidèlement toute la sémantique du standard ECMAScript, mais
+seulement d’illustrer les mouvements des environnements qui nous intéressent.
+
+*** La portée dans le motif module
+L’interpréteur Narcissus est construit à partir du motif module.  Il n’y a pas
+de système de module en JavaScript, et c’est ce motif simple qui est souvent
+utilisé à la place.  Le motif utilisé par Narcissus se présente ainsi:
+
+#+BEGIN_aside
+Du moins, pas dans le standard ECMAScript 5.1.  Un système de module est proposé
+dans la prochaine version.
+#+END_aside
+
+#+BEGIN_SRC js -n -r
+var Narcissus = (function(){                        (ref:ex0-iife-start)
+  var globalBase = { ... }                          (ref:ex0-defs-start)
+
+  function ExecutionContext(type, version) { ... }
+  function getValue(v) { ... }
+  function putValue(v, w) { ... }
+  function evaluate(code) { ... }                   (ref:ex0-defs-end)
+
+  return {                                          (ref:ex0-return-start)
+    globalBase: globalBase,
+    evaluate: evaluate,
+    ...
+  }                                                 (ref:ex0-return-end)
+}())                                                (ref:ex0-iife-end)
+#+END_SRC
+
+Le but de ce motif est de créer un environnement pour toutes les définitions du
+module.  En JavaScript, une définition faite à la racine d’un fichier (un
+déclaration de variable avec ~var~ ou une définition de ~function~) créée une
+entrée dans l’environnement global.  Les entrées du l’environnement global sont
+accessibles en lecture et écriture par n’importe quel point du code, et même par
+du code d’autres fichiers chargés dynamiquement.  Mettre ses définitions dans
+l’environnement global a deux désavantages immédiats: 1) n’importe quel code
+peut écraser ces définitions, et 2) vos propres définitions peuvent écraser les
+définitions faites précédemment par d’autres fichiers, et même écraser des
+parties de l’API standard du langage.  Écraser une définition ne lève pas
+d’erreur ou d’avertissement en JavaScript; donc utiliser l’environnement global
+peut facilement casser du code chargé précédemment, et rend votre propre code
+fragile pour les mêmes raisons.  En outre, les différents moteurs d’exécution de
+JavaScript peuvent proposer différentes extensions à l’API standard, ce qui se
+traduit par différents noms supplémentaires dans l’environnement global.  Pour
+toutes ces raisons, les programmeurs JavaScript apprennent rapidement à enrober
+leurs définitions dans un environnement séparé.  Cet environnement est crée en
+enrobant les définitions dans une fonction, ouverte à la ligne [[(ex0-iife-start)]]
+et fermée à la ligne [[(ex0-iife-end)]].  Toutes les définitions de variables et
+fonctions des lignes [[(ex0-defs-start)]] à [[(ex0-defs-end)]] sont ainsi protégées de
+tout code extérieur au module, car inaccessibles.
+
+Si le module est là pour fournir une fonctionnalité spécifique, ce qui est le
+cas de l’interpréteur qui fournit une fonction d’évaluation, alors il doit
+exposer au moins une définition au monde extérieur, les exporter.  Exporter des
+définitions se fait à travers un objet JavaScript (un simple dictionnaire, qui
+associe des chaînes de caractères à des valeurs), aux lignes [[(ex0-return-start)]]
+à [[(ex0-return-end)]].  Cet objet, appelons-le l’objet exporté, est la valeur de
+retour de la fonction qui créée l’environnement du module.
+
+Enfin, l’objet exporté est assigné à la variable ~Narcissus~ (ligne
+[[(ex0-iife-start)]]), une définition faite à la racine et qui peut être utilisée
+par n’importe quel code chargé dynamiquement, pour accéder à la fonctionnalité
+proposée par le module.  La fonction qui crée l’environnement du module est
+appelée juste après sa définition (les ~()~ ligne [[(ex0-iife-end)]] appellent la
+fonction), on la nomme donc une /fonction immédiatement appelée/, ou FIA.
+
+Essayons de comprendre exactement les mécanismes du langage en jeu dans ce
+module.  D’abord, on va construire un exemple minimal de module qui a un
+comportement observable:
+
+#+BEGIN_SRC js -n -r
+var m = (function(){
+  var a = 1                               (ref:ex1-defs-start)
+  var f = function(x) { return x + a }
+  var g = function(x) { return f(x) }     (ref:ex1-defs-end)
+  return {g: g}                           (ref:ex1-return)
+}())
+
+m.g(0) //: 1                              (ref:ex1-test)
+#+END_SRC
+
+# Diagram
+
+On a ici un simple module qui retourne une seule fonction, ~g~.  Cette fonction
+appelle la fonction ~f~ et retourne sa valeur, et ~f~ à son tour retourne
+l’addition de son argument et de ~a~, une variable interne au module.  Quand on
+appelle ~m.g(0)~ à l’extérieur du module, on obtient ~1~, qui est la valeur de
+~a~.
+
+Le diagramme illustre les environnements les objets crées après l’appel de le la
+FIA et avant l’appel de la ligne ~m.g~ à la ligne [[(ex1-test)]].  Les objets
+JavaScript sont représentés par des boîtes qui contiennent des paires.  Une
+paire est une propriété, avec à gauche le nom de la propriété et à droite sa
+valeur.  Lorsque la valeur de la pair est une référence, la case contient une
+puce d’où part flèche qui pointe vers l’objet référencé.  Par exemple, on peut
+voir que l’objet ~global~ a une propriété ~m~ qui pointe vers l’objet exporté.
+
+On représente les environnements avec des boîtes également, et une flèche solide
+indique l’environnement parent.  Lorsqu’un nom est recherché dans un
+environnement et que ce nom n’est pas présent dans les propriétés de cet
+environnement, la recherche continue dans l’environnement parent, et
+récursivement jusqu’à ce que soit le parent n’existe pas, soit la propriété est
+trouvée.
+
+On peut expliquer le motif module en regardant seulement le diagramme.  Avant
+d’exécuter la code de l’exemple, l’objet /global/ est vide.  Lorsque la FIA est
+appelée, elle crée un environnement marqué “environnement FIA” dans le
+diagramme.  Puisque la FIA est définie à la racine, l’environnement parent est
+l’objet global.  À l’intérieur de la FIA, trois noms sont définis: une variable
+~a~ et deux fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).
+Lorsqu’une fonction est définie, un objet fonction est crée qui contient sont
+code et l’environnement dans lequel la fonction a été définie.  Cet
+environnement sera utilisé pour exécuter le corps de la fonction lorsqu’elle
+sera invoquée.  Avant que la FIA ne retourne, elle crée l’objet exporté (ligne
+[[(ex1-return)]]) qui contient une propriété ~g~.  Cette propriété réfère la
+fonction ~g~ définie à l’intérieur du module.  Notons qu’il y a /deux/
+références à la fonction ~g~ à l’exécution.  Enfin, la FIA retourne l’objet
+exporté, qui devient la valeur de la variable globale ~m~.
+
+On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
+[[(ex1-test)]] sur le second diagramme.  D’abord, la référence ~m.g~ est résolue en
+cherchant la propriété ~m~ dans l’environnement courant, c’est à dire,
+l’environnement global.  ~m~ existe et pointe vers un objet, donc l’interpréteur
+cherche maintenant la propriété ~g~ dans cet objet.  ~g~ existe, et réfère un
+objet fonction, on peut donc procéder pour l’appel ~m.g(0)~.  Lorsque la
+fonction est appelée dans l’environnement global, l’interpréteur crée un
+environnement pour le corps de la fonction qu’on appelle l’objet /d’activation/
+de ~g~.  Cet objet associe les noms des paramètres déclarés par la fonction aux
+valeurs passés par l’appel; ici, il y a donc une seule entrée ~x : 0~.  L’objet
+d’activation de ~g~ est un environnement, et il a comme environnement parent
+l’objet référencé par la propriété /env/ de l’objet fonction de ~g~.  Puis, le
+contrôle est transféré au corps de la fonction ~g~, qui contient ~f(x)~.
+L’interpréteur résout les noms ~f~ et ~x~ en cherchant à travers la chaîne
+d’environnement: d’abord dans l’environnement courant (l’objet d’activation de
+~g~).  ~f~ n’existe pas dans cet objet, mais il existe dans son objet parent.
+~x~ existe, et sa valeur est utilisée pour continuer l’exécution de l’appel
+~f(x)~.  Lorsque ~f~ est appelée, l’interpréteur crée un nouvel objet
+d’activation pour les paramètres formels, qui a l’environnement de la FIA comme
+environnement parent.  Après ça, l’interpréteur continue l’exécution avec le
+corps de ~f~, ~x+a~.  La propriété ~x~ se trouve dans l’objet d’activation de
+~f~ (0), et la propriété ~a~ dans l’environnement parent (1).  L’interpréteur
+somme les deux valeurs et retourne le résultat.
+
+Le second diagramme sert à illustrer deux points importants sur le motif module:
+
+1. La seul façon que du code extérieur au module a d’accéder aux définitions
+   faites à l’intérieur du module est de passer par l’objet retourné.  Dans
+   l’exemple que l’on a suivi, ~g~ est la seule référence exportée, mais c’est
+   un alias.  Remarquons que si on essayait de changer la valeur de ~m.g~ par
+   une autre fonction, ~m.g = function() { ... }~, seule la référence ~m.g~
+   serait affectée, mais la propriété ~g~ dans l’environnement de la FIA ferait
+   toujours référence à la fonction ~g~ définie dans le module.  Si l’on veut
+   modifie les références internes au module, il faut accéder directement à
+   l’environnement de la FIA.
+
+2. Toutes les fonctions créées à l’intérieur du module utilise l’environnement
+   de la FIA comme environnement parent.  Autrement dit, les fonctions se
+   referment sur leur environnement de définition (leur environnement
+   /lexical/), et c’est pourquoi on appelle ces fonctions des /fermetures/.  Si
+   l’on a accès à l’environnement de la FIA, on peut changer le comportement des
+   fonctions internes au module en changeant les références de cet
+   environnement.
+
+On voit alors que l’environnement de la FIA est le point central du module, là
+où tous les noms utilisés par le module sont recherchés.  On voit aussi que le
+motif module ne permet pas, en l’état, d’accéder à ces noms de l’extérieur du
+module.
+
+*** Ouvrir le motif module
+
 
 ** The idea: manipulating scopes
 Looking back, we see that we are mostly concerned with scopes and the ability to
