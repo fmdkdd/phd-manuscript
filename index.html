@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-09 mer. 17:07 -->
+<!-- 2016-03-10 jeu. 18:02 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,28 +267,34 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline136">8. Dynamic scoping to modify Narcissus</a>
+<li><a href="#orgheadline139">8. Dynamic scoping to modify Narcissus</a>
 <ul>
-<li><a href="#orgheadline113">8.1. The idea: manipulating scopes</a></li>
-<li><a href="#orgheadline114">8.2. How to manipulate scopes in JavaScript</a></li>
-<li><a href="#orgheadline115">8.3. Evaluation on Narcissus</a></li>
-<li><a href="#orgheadline135">8.4. Discussion</a>
+<li><a href="#orgheadline115">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
-<li><a href="#orgheadline116">8.4.1. Insights</a></li>
-<li><a href="#orgheadline117">8.4.2. Broad applications</a></li>
-<li><a href="#orgheadline118">8.4.3. Other JS interpreters</a></li>
-<li><a href="#orgheadline124">8.4.4. Related work</a></li>
-<li><a href="#orgheadline134">8.4.5. Objections and downsides</a></li>
+<li><a href="#orgheadline113">8.1.1. La portée dans le motif module</a></li>
+<li><a href="#orgheadline114">8.1.2. Ouvrir le motif module</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline116">8.2. The idea: manipulating scopes</a></li>
+<li><a href="#orgheadline117">8.3. How to manipulate scopes in JavaScript</a></li>
+<li><a href="#orgheadline118">8.4. Evaluation on Narcissus</a></li>
+<li><a href="#orgheadline138">8.5. Discussion</a>
+<ul>
+<li><a href="#orgheadline119">8.5.1. Insights</a></li>
+<li><a href="#orgheadline120">8.5.2. Broad applications</a></li>
+<li><a href="#orgheadline121">8.5.3. Other JS interpreters</a></li>
+<li><a href="#orgheadline127">8.5.4. Related work</a></li>
+<li><a href="#orgheadline137">8.5.5. Objections and downsides</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline138">9. Synthèse</a>
+<li><a href="#orgheadline141">9. Synthèse</a>
 <ul>
-<li><a href="#orgheadline137">9.1. Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline140">9.1. Séparation des préoccupations: pourquoi?</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline139">Références</a></li>
+<li><a href="#orgheadline142">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7297,17 +7303,268 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-2">
-<h2 id="orgheadline136"><span class="section-number-2">8</span> Dynamic scoping to modify Narcissus</h2>
+<div id="outline-container-orgheadline139" class="outline-2">
+<h2 id="orgheadline139"><span class="section-number-2">8</span> Dynamic scoping to modify Narcissus</h2>
 <div class="outline-text-2" id="text-8">
 <p>
-From the DLS’15/SAC’16 paper.
+<i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15</a>]</i>.
+</p>
+
+<p>
+Nous avons vu dans l’étude de cas que Narcissus n’était pas étendu de façon
+modulaire.  Dans ce chapitre, on propose une façon simple d’étendre cet
+interpréteur, en se basant uniquement sur les fonctionnalités présentes dans le
+langage JavaScript.
 </p>
 </div>
 
-<div id="outline-container-orgheadline113" class="outline-3">
-<h3 id="orgheadline113"><span class="section-number-3">8.1</span> The idea: manipulating scopes</h3>
+<div id="outline-container-orgheadline115" class="outline-3">
+<h3 id="orgheadline115"><span class="section-number-3">8.1</span> Manipuler la portée des variables pour l’instrumentation</h3>
 <div class="outline-text-3" id="text-8-1">
+<p>
+L’ingrédient clé de cette section est la notion de <i>portée de variable</i>, et
+comment manipuler cette portée.  Une variable déclarée dans une fonction n’est
+pas accessible depuis une autre fonction; on dit alors que la portée de cette
+variable est la fonction dans laquelle elle est définie, ou encore que la
+variable est locale à la fonction.  À l’inverse, une variable déclarée globale
+sera accessible par à tout point d’exécution du programme.
+</p>
+
+<p>
+En JavaScript typiquement, on peut considérer que l’ensemble des variables
+accessibles à un point d’exécution donné est déterminé par un objet qu’on
+appelle <i>l’environnement</i>.  Un environnement associe chaque nom de variable à
+une valeur (valeur primitive comme un nombre, ou une référence vers un objet),
+et possède un lien vers un environnement parent.  Pour nos besoins, un
+environnement est donc très similaire à un objet JavaScript.
+</p>
+
+<p>
+Les programmes donnés en exemple de cette section sont volontairement triviaux,
+puisque ce sont les mécanismes de manipulation de l’environnement qui nous
+intéressent, et non le code métier.  À la fin du chapitre, on applique ces
+mécanismes à un cas concret, Narcissus.
+</p>
+
+<p>
+Les exemples de code sont écrits en suivant un sous-ensemble du standard
+ECMAScript 5.1, que l’on va enrichir avec la possibilité de manipuler des
+environnements.  Ces manipulations sont plus clairement expliquées à l’aide de
+diagrammes qui parsèment ce chapitre.  Les diagrammes n’ont pas pour but de
+représenter fidèlement toute la sémantique du standard ECMAScript, mais
+seulement d’illustrer les mouvements des environnements qui nous intéressent.
+</p>
+</div>
+
+<div id="outline-container-orgheadline113" class="outline-4">
+<h4 id="orgheadline113"><span class="section-number-4">8.1.1</span> La portée dans le motif module</h4>
+<div class="outline-text-4" id="text-8-1-1">
+<p>
+L’interpréteur Narcissus est construit à partir du motif module.  Il n’y a pas
+de système de module en JavaScript, et c’est ce motif simple qui est souvent
+utilisé à la place.  Le motif utilisé par Narcissus se présente ainsi:
+</p>
+
+<aside>
+<p>
+Du moins, pas dans le standard ECMAScript 5.1.  Un système de module est proposé
+dans la prochaine version.
+</p>
+</aside>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span id="coderef-ex0-iife-start" class="coderef-off"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">Narcissus</span> = (<span style="font-weight: bold;">function</span>(){</span>
+<span id="coderef-ex0-defs-start" class="coderef-off"><span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">globalBase</span> = { ... }</span>
+<span class="linenr"> 3: </span>
+<span class="linenr"> 4: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">ExecutionContext</span>(<span style="font-weight: bold; font-style: italic;">type</span>, <span style="font-weight: bold; font-style: italic;">version</span>) { ... }
+<span class="linenr"> 5: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">getValue</span>(<span style="font-weight: bold; font-style: italic;">v</span>) { ... }
+<span class="linenr"> 6: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">putValue</span>(<span style="font-weight: bold; font-style: italic;">v</span>, <span style="font-weight: bold; font-style: italic;">w</span>) { ... }
+<span id="coderef-ex0-defs-end" class="coderef-off"><span class="linenr"> 7: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">evaluate</span>(<span style="font-weight: bold; font-style: italic;">code</span>) { ... }</span>
+<span class="linenr"> 8: </span>
+<span id="coderef-ex0-return-start" class="coderef-off"><span class="linenr"> 9: </span>  <span style="font-weight: bold;">return</span> {</span>
+<span class="linenr">10: </span>    globalBase: globalBase,
+<span class="linenr">11: </span>    evaluate: evaluate,
+<span class="linenr">12: </span>    ...
+<span id="coderef-ex0-return-end" class="coderef-off"><span class="linenr">13: </span>  }</span>
+<span id="coderef-ex0-iife-end" class="coderef-off"><span class="linenr">14: </span>}())</span>
+</pre>
+</div>
+
+<p>
+Le but de ce motif est de créer un environnement pour toutes les définitions du
+module.  En JavaScript, une définition faite à la racine d’un fichier (un
+déclaration de variable avec <code>var</code> ou une définition de <code>function</code>) créée une
+entrée dans l’environnement global.  Les entrées du l’environnement global sont
+accessibles en lecture et écriture par n’importe quel point du code, et même par
+du code d’autres fichiers chargés dynamiquement.  Mettre ses définitions dans
+l’environnement global a deux désavantages immédiats: 1) n’importe quel code
+peut écraser ces définitions, et 2) vos propres définitions peuvent écraser les
+définitions faites précédemment par d’autres fichiers, et même écraser des
+parties de l’API standard du langage.  Écraser une définition ne lève pas
+d’erreur ou d’avertissement en JavaScript; donc utiliser l’environnement global
+peut facilement casser du code chargé précédemment, et rend votre propre code
+fragile pour les mêmes raisons.  En outre, les différents moteurs d’exécution de
+JavaScript peuvent proposer différentes extensions à l’API standard, ce qui se
+traduit par différents noms supplémentaires dans l’environnement global.  Pour
+toutes ces raisons, les programmeurs JavaScript apprennent rapidement à enrober
+leurs définitions dans un environnement séparé.  Cet environnement est crée en
+enrobant les définitions dans une fonction, ouverte à la ligne <a href="#coderef-ex0-iife-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-iife-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-iife-start');">1</a>
+et fermée à la ligne <a href="#coderef-ex0-iife-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-iife-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-iife-end');">14</a>.  Toutes les définitions de variables et
+fonctions des lignes <a href="#coderef-ex0-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-defs-start');">2</a> à <a href="#coderef-ex0-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-defs-end');">7</a> sont ainsi protégées de
+tout code extérieur au module, car inaccessibles.
+</p>
+
+<p>
+Si le module est là pour fournir une fonctionnalité spécifique, ce qui est le
+cas de l’interpréteur qui fournit une fonction d’évaluation, alors il doit
+exposer au moins une définition au monde extérieur, les exporter.  Exporter des
+définitions se fait à travers un objet JavaScript (un simple dictionnaire, qui
+associe des chaînes de caractères à des valeurs), aux lignes <a href="#coderef-ex0-return-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-return-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-return-start');">9</a>
+à <a href="#coderef-ex0-return-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-return-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-return-end');">13</a>.  Cet objet, appelons-le l’objet exporté, est la valeur de
+retour de la fonction qui créée l’environnement du module.
+</p>
+
+<p>
+Enfin, l’objet exporté est assigné à la variable <code>Narcissus</code> (ligne
+<a href="#coderef-ex0-iife-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-iife-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-iife-start');">1</a>), une définition faite à la racine et qui peut être utilisée
+par n’importe quel code chargé dynamiquement, pour accéder à la fonctionnalité
+proposée par le module.  La fonction qui crée l’environnement du module est
+appelée juste après sa définition (les <code>()</code> ligne <a href="#coderef-ex0-iife-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex0-iife-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex0-iife-end');">14</a> appellent la
+fonction), on la nomme donc une <i>fonction immédiatement appelée</i>, ou FIA.
+</p>
+
+<p>
+Essayons de comprendre exactement les mécanismes du langage en jeu dans ce
+module.  D’abord, on va construire un exemple minimal de module qui a un
+comportement observable:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr">1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
+<span id="coderef-ex1-defs-start" class="coderef-off"><span class="linenr">2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1</span>
+<span class="linenr">3: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span id="coderef-ex1-defs-end" class="coderef-off"><span class="linenr">4: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }</span>
+<span id="coderef-ex1-return" class="coderef-off"><span class="linenr">5: </span>  <span style="font-weight: bold;">return</span> {g: g}</span>
+<span class="linenr">6: </span>}())
+<span class="linenr">7: </span>
+<span id="coderef-ex1-test" class="coderef-off"><span class="linenr">8: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span></span>
+</pre>
+</div>
+
+<p>
+On a ici un simple module qui retourne une seule fonction, <code>g</code>.  Cette fonction
+appelle la fonction <code>f</code> et retourne sa valeur, et <code>f</code> à son tour retourne
+l’addition de son argument et de <code>a</code>, une variable interne au module.  Quand on
+appelle <code>m.g(0)</code> à l’extérieur du module, on obtient <code>1</code>, qui est la valeur de
+<code>a</code>.
+</p>
+
+<p>
+Le diagramme illustre les environnements les objets crées après l’appel de le la
+FIA et avant l’appel de la ligne <code>m.g</code> à la ligne <a href="#coderef-ex1-test"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-test');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-test');">8</a>.  Les objets
+JavaScript sont représentés par des boîtes qui contiennent des paires.  Une
+paire est une propriété, avec à gauche le nom de la propriété et à droite sa
+valeur.  Lorsque la valeur de la pair est une référence, la case contient une
+puce d’où part flèche qui pointe vers l’objet référencé.  Par exemple, on peut
+voir que l’objet <code>global</code> a une propriété <code>m</code> qui pointe vers l’objet exporté.
+</p>
+
+<p>
+On représente les environnements avec des boîtes également, et une flèche solide
+indique l’environnement parent.  Lorsqu’un nom est recherché dans un
+environnement et que ce nom n’est pas présent dans les propriétés de cet
+environnement, la recherche continue dans l’environnement parent, et
+récursivement jusqu’à ce que soit le parent n’existe pas, soit la propriété est
+trouvée.
+</p>
+
+<p>
+On peut expliquer le motif module en regardant seulement le diagramme.  Avant
+d’exécuter la code de l’exemple, l’objet <i>global</i> est vide.  Lorsque la FIA est
+appelée, elle crée un environnement marqué “environnement FIA” dans le
+diagramme.  Puisque la FIA est définie à la racine, l’environnement parent est
+l’objet global.  À l’intérieur de la FIA, trois noms sont définis: une variable
+<code>a</code> et deux fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).
+Lorsqu’une fonction est définie, un objet fonction est crée qui contient sont
+code et l’environnement dans lequel la fonction a été définie.  Cet
+environnement sera utilisé pour exécuter le corps de la fonction lorsqu’elle
+sera invoquée.  Avant que la FIA ne retourne, elle crée l’objet exporté (ligne
+<a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient une propriété <code>g</code>.  Cette propriété réfère la
+fonction <code>g</code> définie à l’intérieur du module.  Notons qu’il y a <i>deux</i>
+références à la fonction <code>g</code> à l’exécution.  Enfin, la FIA retourne l’objet
+exporté, qui devient la valeur de la variable globale <code>m</code>.
+</p>
+
+<p>
+On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
+<a href="#coderef-ex1-test"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-test');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-test');">8</a> sur le second diagramme.  D’abord, la référence <code>m.g</code> est résolue en
+cherchant la propriété <code>m</code> dans l’environnement courant, c’est à dire,
+l’environnement global.  <code>m</code> existe et pointe vers un objet, donc l’interpréteur
+cherche maintenant la propriété <code>g</code> dans cet objet.  <code>g</code> existe, et réfère un
+objet fonction, on peut donc procéder pour l’appel <code>m.g(0)</code>.  Lorsque la
+fonction est appelée dans l’environnement global, l’interpréteur crée un
+environnement pour le corps de la fonction qu’on appelle l’objet <i>d’activation</i>
+de <code>g</code>.  Cet objet associe les noms des paramètres déclarés par la fonction aux
+valeurs passés par l’appel; ici, il y a donc une seule entrée <code>x : 0</code>.  L’objet
+d’activation de <code>g</code> est un environnement, et il a comme environnement parent
+l’objet référencé par la propriété <i>env</i> de l’objet fonction de <code>g</code>.  Puis, le
+contrôle est transféré au corps de la fonction <code>g</code>, qui contient <code>f(x)</code>.
+L’interpréteur résout les noms <code>f</code> et <code>x</code> en cherchant à travers la chaîne
+d’environnement: d’abord dans l’environnement courant (l’objet d’activation de
+<code>g</code>).  <code>f</code> n’existe pas dans cet objet, mais il existe dans son objet parent.
+<code>x</code> existe, et sa valeur est utilisée pour continuer l’exécution de l’appel
+<code>f(x)</code>.  Lorsque <code>f</code> est appelée, l’interpréteur crée un nouvel objet
+d’activation pour les paramètres formels, qui a l’environnement de la FIA comme
+environnement parent.  Après ça, l’interpréteur continue l’exécution avec le
+corps de <code>f</code>, <code>x+a</code>.  La propriété <code>x</code> se trouve dans l’objet d’activation de
+<code>f</code> (0), et la propriété <code>a</code> dans l’environnement parent (1).  L’interpréteur
+somme les deux valeurs et retourne le résultat.
+</p>
+
+<p>
+Le second diagramme sert à illustrer deux points importants sur le motif module:
+</p>
+
+<ol class="org-ol">
+<li>La seul façon que du code extérieur au module a d’accéder aux définitions
+faites à l’intérieur du module est de passer par l’objet retourné.  Dans
+l’exemple que l’on a suivi, <code>g</code> est la seule référence exportée, mais c’est
+un alias.  Remarquons que si on essayait de changer la valeur de <code>m.g</code> par
+une autre fonction, <code>m.g = function() { ... }</code>, seule la référence <code>m.g</code>
+serait affectée, mais la propriété <code>g</code> dans l’environnement de la FIA ferait
+toujours référence à la fonction <code>g</code> définie dans le module.  Si l’on veut
+modifie les références internes au module, il faut accéder directement à
+l’environnement de la FIA.</li>
+
+<li>Toutes les fonctions créées à l’intérieur du module utilise l’environnement
+de la FIA comme environnement parent.  Autrement dit, les fonctions se
+referment sur leur environnement de définition (leur environnement
+<i>lexical</i>), et c’est pourquoi on appelle ces fonctions des <i>fermetures</i>.  Si
+l’on a accès à l’environnement de la FIA, on peut changer le comportement des
+fonctions internes au module en changeant les références de cet
+environnement.</li>
+</ol>
+
+<p>
+On voit alors que l’environnement de la FIA est le point central du module, là
+où tous les noms utilisés par le module sont recherchés.  On voit aussi que le
+motif module ne permet pas, en l’état, d’accéder à ces noms de l’extérieur du
+module.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline114" class="outline-4">
+<h4 id="orgheadline114"><span class="section-number-4">8.1.2</span> Ouvrir le motif module</h4>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline116" class="outline-3">
+<h3 id="orgheadline116"><span class="section-number-3">8.2</span> The idea: manipulating scopes</h3>
+<div class="outline-text-3" id="text-8-2">
 <p>
 Looking back, we see that we are mostly concerned with scopes and the ability to
 manipulate them to add or remove bindings.  So we can describe what we want,
@@ -7548,9 +7805,9 @@ How do we make this work?
 </div>
 </div>
 
-<div id="outline-container-orgheadline114" class="outline-3">
-<h3 id="orgheadline114"><span class="section-number-3">8.2</span> How to manipulate scopes in JavaScript</h3>
-<div class="outline-text-3" id="text-8-2">
+<div id="outline-container-orgheadline117" class="outline-3">
+<h3 id="orgheadline117"><span class="section-number-3">8.3</span> How to manipulate scopes in JavaScript</h3>
+<div class="outline-text-3" id="text-8-3">
 <p>
 Here we find a way to approximate this scope manipulation using standard
 JavaScript.
@@ -7755,9 +8012,9 @@ m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style
 </div>
 </div>
 
-<div id="outline-container-orgheadline115" class="outline-3">
-<h3 id="orgheadline115"><span class="section-number-3">8.3</span> Evaluation on Narcissus</h3>
-<div class="outline-text-3" id="text-8-3">
+<div id="outline-container-orgheadline118" class="outline-3">
+<h3 id="orgheadline118"><span class="section-number-3">8.4</span> Evaluation on Narcissus</h3>
+<div class="outline-text-3" id="text-8-4">
 <p>
 Application of open scope pattern to Narcissus.
 </p>
@@ -7865,12 +8122,12 @@ evaluation, since we reduce copy-pasting.  (e.g., <code>S12.11_A1_T3.js</code>)
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-3">
-<h3 id="orgheadline135"><span class="section-number-3">8.4</span> Discussion</h3>
-<div class="outline-text-3" id="text-8-4">
-</div><div id="outline-container-orgheadline116" class="outline-4">
-<h4 id="orgheadline116"><span class="section-number-4">8.4.1</span> Insights</h4>
-<div class="outline-text-4" id="text-8-4-1">
+<div id="outline-container-orgheadline138" class="outline-3">
+<h3 id="orgheadline138"><span class="section-number-3">8.5</span> Discussion</h3>
+<div class="outline-text-3" id="text-8-5">
+</div><div id="outline-container-orgheadline119" class="outline-4">
+<h4 id="orgheadline119"><span class="section-number-4">8.5.1</span> Insights</h4>
+<div class="outline-text-4" id="text-8-5-1">
 <p>
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
 for every bit of functionality (i.e., identify moving pieces and put them in
@@ -7898,9 +8155,9 @@ there is none.  Open scope is not ideal, but practical.
 </div>
 </div>
 
-<div id="outline-container-orgheadline117" class="outline-4">
-<h4 id="orgheadline117"><span class="section-number-4">8.4.2</span> Broad applications</h4>
-<div class="outline-text-4" id="text-8-4-2">
+<div id="outline-container-orgheadline120" class="outline-4">
+<h4 id="orgheadline120"><span class="section-number-4">8.5.2</span> Broad applications</h4>
+<div class="outline-text-4" id="text-8-5-2">
 <p>
 Not only dynamic analyses, but any variation of the interpreter.  Strict mode
 comes to mind.  As it applies to the module pattern, there is nothing specific
@@ -7915,9 +8172,9 @@ More generally, it applies to <i>customizing software</i> at the source level.
 </div>
 </div>
 
-<div id="outline-container-orgheadline118" class="outline-4">
-<h4 id="orgheadline118"><span class="section-number-4">8.4.3</span> Other JS interpreters</h4>
-<div class="outline-text-4" id="text-8-4-3">
+<div id="outline-container-orgheadline121" class="outline-4">
+<h4 id="orgheadline121"><span class="section-number-4">8.5.3</span> Other JS interpreters</h4>
+<div class="outline-text-4" id="text-8-5-3">
 <p>
 ES5.1 interpreter written using a module pattern:
 </p>
@@ -7941,12 +8198,12 @@ Written as several modules (ES5 + flow analysis):
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-4">
-<h4 id="orgheadline124"><span class="section-number-4">8.4.4</span> Related work</h4>
-<div class="outline-text-4" id="text-8-4-4">
-</div><div id="outline-container-orgheadline119" class="outline-5">
-<h5 id="orgheadline119">Open modules</h5>
-<div class="outline-text-5" id="text-orgheadline119">
+<div id="outline-container-orgheadline127" class="outline-4">
+<h4 id="orgheadline127"><span class="section-number-4">8.5.4</span> Related work</h4>
+<div class="outline-text-4" id="text-8-5-4">
+</div><div id="outline-container-orgheadline122" class="outline-5">
+<h5 id="orgheadline122">Open modules</h5>
+<div class="outline-text-5" id="text-orgheadline122">
 <p>
 Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
 offer a clearly-defined boundary between the module writer and the writer of an
@@ -7964,9 +8221,9 @@ modular.
 </div>
 </div>
 
-<div id="outline-container-orgheadline120" class="outline-5">
-<h5 id="orgheadline120">Isn’t a visitor pattern enough?</h5>
-<div class="outline-text-5" id="text-orgheadline120">
+<div id="outline-container-orgheadline123" class="outline-5">
+<h5 id="orgheadline123">Isn’t a visitor pattern enough?</h5>
+<div class="outline-text-5" id="text-orgheadline123">
 <p>
 In general, a good idea.  But Narcissus is not object-oriented, so it cannot
 apply here.
@@ -7979,9 +8236,9 @@ could just rewrite from scratch and design for extensibility.
 </div>
 </div>
 
-<div id="outline-container-orgheadline121" class="outline-5">
-<h5 id="orgheadline121">Object-oriented interpreter</h5>
-<div class="outline-text-5" id="text-orgheadline121">
+<div id="outline-container-orgheadline124" class="outline-5">
+<h5 id="orgheadline124">Object-oriented interpreter</h5>
+<div class="outline-text-5" id="text-orgheadline124">
 <p>
 Other ways to instrument would depend on the form of the target interpreter.
 Here we have a module pattern with lexical scoping.  What if the interpreter was
@@ -8009,9 +8266,9 @@ on object attributes.
 </div>
 </div>
 
-<div id="outline-container-orgheadline122" class="outline-5">
-<h5 id="orgheadline122">&#x2026;AOP?</h5>
-<div class="outline-text-5" id="text-orgheadline122">
+<div id="outline-container-orgheadline125" class="outline-5">
+<h5 id="orgheadline125">&#x2026;AOP?</h5>
+<div class="outline-text-5" id="text-orgheadline125">
 <ul class="org-ul">
 <li>No satisfying AOP framework we could apply.  AspectScript is costly because
 parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.</li>
@@ -8024,9 +8281,9 @@ is just standard JavaScript.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline123" class="outline-5">
-<h5 id="orgheadline123">Scoping strategies</h5>
-<div class="outline-text-5" id="text-orgheadline123">
+<div id="outline-container-orgheadline126" class="outline-5">
+<h5 id="orgheadline126">Scoping strategies</h5>
+<div class="outline-text-5" id="text-orgheadline126">
 <p>
 Scoping strategies specify how aspects are applied dynamically.
 </p>
@@ -8064,12 +8321,12 @@ expressiveness of scoping strategies would be needed, or more useful.
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-4">
-<h4 id="orgheadline134"><span class="section-number-4">8.4.5</span> Objections and downsides</h4>
-<div class="outline-text-4" id="text-8-4-5">
-</div><div id="outline-container-orgheadline125" class="outline-5">
-<h5 id="orgheadline125"><code>with</code> is deprecated</h5>
-<div class="outline-text-5" id="text-orgheadline125">
+<div id="outline-container-orgheadline137" class="outline-4">
+<h4 id="orgheadline137"><span class="section-number-4">8.5.5</span> Objections and downsides</h4>
+<div class="outline-text-4" id="text-8-5-5">
+</div><div id="outline-container-orgheadline128" class="outline-5">
+<h5 id="orgheadline128"><code>with</code> is deprecated</h5>
+<div class="outline-text-5" id="text-orgheadline128">
 <p>
 <code>with</code> is disallowed in Strict mode because it makes static analysis difficult
 by violating lexical scope.  But this is precisely why we need it in this
@@ -8091,9 +8348,9 @@ lists pro and contra arguments.
 </div>
 </div>
 
-<div id="outline-container-orgheadline126" class="outline-5">
-<h5 id="orgheadline126">Open scope defeats the purpose of the module pattern</h5>
-<div class="outline-text-5" id="text-orgheadline126">
+<div id="outline-container-orgheadline129" class="outline-5">
+<h5 id="orgheadline129">Open scope defeats the purpose of the module pattern</h5>
+<div class="outline-text-5" id="text-orgheadline129">
 <p>
 Module pattern is for hiding information, and exposing only what is required.
 </p>
@@ -8117,9 +8374,9 @@ information?  (WeakMap, Symbols, or dunder prefix).
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-5">
-<h5 id="orgheadline127">It’s not modular if there is no interface for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline127">
+<div id="outline-container-orgheadline130" class="outline-5">
+<h5 id="orgheadline130">It’s not modular if there is no interface for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline130">
 <p>
 Open scope means an instrumentation is free to change any binding, without an
 explicit interface.  No interface means no contract between instrumentation
@@ -8136,9 +8393,9 @@ hooks everywhere.
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-5">
-<h5 id="orgheadline128">It’s still ad-hoc</h5>
-<div class="outline-text-5" id="text-orgheadline128">
+<div id="outline-container-orgheadline131" class="outline-5">
+<h5 id="orgheadline131">It’s still ad-hoc</h5>
+<div class="outline-text-5" id="text-orgheadline131">
 <p>
 Some refactoring made to Narcissus was specific to the implementation (salami
 the <code>switch</code>, <code>reflectClass</code>).  But the open scope pattern makes few hypotheses
@@ -8155,9 +8412,9 @@ eyeball the implementation of facets and compare it to a spec document.
 </div>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-5">
-<h5 id="orgheadline129">Application of open scope if not module pattern?</h5>
-<div class="outline-text-5" id="text-orgheadline129">
+<div id="outline-container-orgheadline132" class="outline-5">
+<h5 id="orgheadline132">Application of open scope if not module pattern?</h5>
+<div class="outline-text-5" id="text-orgheadline132">
 <p>
 The idea is to manipulate scopes, so it is general.  <i>How</i> to manipulate the
 scope depends on the situation.  If the target is not a module pattern, then
@@ -8170,9 +8427,9 @@ If the target is OO, <code>this</code> also provides a kind dynamic scope.
 </div>
 </div>
 
-<div id="outline-container-orgheadline130" class="outline-5">
-<h5 id="orgheadline130">Open scope only captures top-level declaration of module</h5>
-<div class="outline-text-5" id="text-orgheadline130">
+<div id="outline-container-orgheadline133" class="outline-5">
+<h5 id="orgheadline133">Open scope only captures top-level declaration of module</h5>
+<div class="outline-text-5" id="text-orgheadline133">
 <p>
 Declarations inside functions are not captured, cannot be overridden.
 </p>
@@ -8191,9 +8448,9 @@ information.
 </div>
 </div>
 
-<div id="outline-container-orgheadline131" class="outline-5">
-<h5 id="orgheadline131">Aliasing inside the module can be problematic</h5>
-<div class="outline-text-5" id="text-orgheadline131">
+<div id="outline-container-orgheadline134" class="outline-5">
+<h5 id="orgheadline134">Aliasing inside the module can be problematic</h5>
+<div class="outline-text-5" id="text-orgheadline134">
 <p>
 Open scope allows an instrumentation to change bindings inside the module.  If a
 binding is aliased inside the module, the instrumentation should override the
@@ -8243,9 +8500,9 @@ That’s not an issue we have encountered in instrumenting Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline132" class="outline-5">
-<h5 id="orgheadline132">What about interferences between instrumentations?</h5>
-<div class="outline-text-5" id="text-orgheadline132">
+<div id="outline-container-orgheadline135" class="outline-5">
+<h5 id="orgheadline135">What about interferences between instrumentations?</h5>
+<div class="outline-text-5" id="text-orgheadline135">
 <p>
 Is
 </p>
@@ -8265,9 +8522,9 @@ If not, what do you have to pay attention to when writing analyses?
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-5">
-<h5 id="orgheadline133">Performance costs</h5>
-<div class="outline-text-5" id="text-orgheadline133">
+<div id="outline-container-orgheadline136" class="outline-5">
+<h5 id="orgheadline136">Performance costs</h5>
+<div class="outline-text-5" id="text-orgheadline136">
 <p>
 Are expected due to the added indirection.
 </p>
@@ -8288,11 +8545,11 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-2">
-<h2 id="orgheadline138"><span class="section-number-2">9</span> Synthèse</h2>
+<div id="outline-container-orgheadline141" class="outline-2">
+<h2 id="orgheadline141"><span class="section-number-2">9</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline137" class="outline-3">
-<h3 id="orgheadline137"><span class="section-number-3">9.1</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline140" class="outline-3">
+<h3 id="orgheadline140"><span class="section-number-3">9.1</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -8320,9 +8577,9 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-2">
-<h2 id="orgheadline139">Références</h2>
-<div class="outline-text-2" id="text-orgheadline139">
+<div id="outline-container-orgheadline142" class="outline-2">
+<h2 id="orgheadline142">Références</h2>
+<div class="outline-text-2" id="text-orgheadline142">
 <div id="bibliography">
 
 <table>
@@ -9204,6 +9461,25 @@ John McCarthy.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="KNS-15b">MdKNS15</a>]
+</td>
+<td class="bibtexitem">
+Florent Marchand&nbsp;de Kerchove, Jacques Noyé, and Mario Südholt.
+ Open Scope: A Pragmatic JavaScript Pattern for Modular
+  Instrumentation.
+ working paper or preprint, June 2015.
+[&nbsp;<a href="https://hal.archives-ouvertes.fr/hal-01181143">http</a>&nbsp;| 
+<a href="https://hal.archives-ouvertes.fr/hal-01181143/file/main.pdf">.pdf</a>&nbsp;]
+<blockquote><font size="-1">
+Keywords: Scope ; JavaScript ; Instrumentation ; Modularity
+</font></blockquote>
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Meu-97">Meu97</a>]
 </td>
 <td class="bibtexitem">
@@ -9924,7 +10200,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-09 mer. 17:07 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-10 jeu. 18:02 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
