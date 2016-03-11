@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-11 ven. 16:24 -->
+<!-- 2016-03-11 ven. 18:30 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -7572,22 +7572,82 @@ de la FIA.
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="linenr">1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-<span class="linenr">2: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">mkG</span>() { <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">function</span> g(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x }}
-<span class="linenr">3: </span>  <span style="font-weight: bold;">return</span> {g: mkG()}
-<span class="linenr">4: </span>}())
-<span class="linenr">5: </span>
-<span class="linenr">6: </span>m.g(0)
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
+<span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span class="linenr"> 3: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span class="linenr"> 4: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">mkG</span> = <span style="font-weight: bold;">function</span>() {
+<span class="linenr"> 5: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
+<span class="linenr"> 6: </span>    <span style="font-weight: bold;">return</span> g
+<span class="linenr"> 7: </span>  }
+<span id="coderef-ex2-return" class="coderef-off"><span class="linenr"> 8: </span>  <span style="font-weight: bold;">return</span> {g: mkG()}</span>
+<span class="linenr"> 9: </span>}())
+<span class="linenr">10: </span>
+<span class="linenr">11: </span>m.g(0)
 </pre>
 </div>
 
 <p>
 Dans cet exemple, la fonction <code>g</code> exportée par le module ne capture pas
-l’environnement de la FIA.
+l’environnement de la FIA.  À la ligne <a href="#coderef-ex2-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex2-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex2-return');">8</a> on exporte la valeur de
+retour de la function <code>mkG</code> sous le nom <code>g</code>.  La fonction <code>mkG</code> retourne
+exactement la même fonction <code>g</code> que dans l’exemple précédent, avec une
+différence notable: cette fonction <code>g</code> capture l’environnement de l’appel à
+<code>mkG</code>.  Le diagramme qui l’accompagne illustre cette différence par l’apparition
+d’un nouvel objet d’activation pour <code>mkG</code> qui est référencé comme environnement
+de <code>g</code>.  On a <code>m.g.scope</code> qui pointe vers l’environnement crée par <code>mkG</code>, et non
+l’environnement crée par la FIA.  Au contraire, la fonction <code>f</code> pointe
+directement vers l’environnement de la FIA.  On voit alors que la propriété
+<code>env</code> d’une fonction n’est pas garantie de pointer vers l’environnement dont
+nous avons besoin.
+</p>
+
+<p>
+On va maintenant s’éloigner du comportement standard de JavaScript que nous
+avons suivi jusqu’ici.  Supposons que nous <i>pouvons</i> accéder à l’environnement
+crée par la FIA grâce à une nouvelle propriété <i>env</i> qui serait automatiquement
+ajoutée sur l’objet exporté par le module.  Supposons également que cet
+environnement se comporte comme un objet JavaScript régulier; on peut lire et
+changer ses propriétés.
+</p>
+
+<aside>
+<p>
+La section suivante montre comment retrouver cette fonctionnalité dans le
+langage standard.
+</p>
+</aside>
+
+<div class="org-src-container">
+
+<pre class="src src--n">var m = (function(){
+  var a = 1
+  var f = function(x) { return x + a }
+  var g = function(x) { return f(x) }
+  return {g: g}
+}())
+
+<span id="coderef-ex3-test1" class="coderef-off">m.g(0) //: 1</span>
+<span id="coderef-ex3-change" class="coderef-off">m.env.a = 2</span>
+<span id="coderef-ex3-test2" class="coderef-off">m.g(0) //: 2</span>
+</pre>
+</div>
+
+<p>
+Reprenons le module du début, mais avec l’addition de cette nouvelle propriété
+<code>env</code>.  Si on exécute <code>m.g(0)</code> à la ligne <a href="#coderef-ex3-test1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-test1');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-test1');">8</a>, on obtient toujours <code>1</code>.
+Par contre, cette fois on a accès à l’environnement interne au module via la
+propriété <code>m.env</code>.  Si on change la valeur de <code>a</code> dans cet environnement (ligne
+<a href="#coderef-ex3-change"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-change');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-change');">9</a>), alors l’appel <code>m.g(0)</code> qui suit utilise cette nouvelle valeur, et
+c’est pourquoi <i>le même appel</i> donne le résultat différent, <code>2</code>, à la ligne
+<a href="#coderef-ex3-test2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-test2');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-test2');">10</a>.  Le diagramme qui accompagne l’exemple donne une autre façon de
+voir ce qui se passe.  On y voit la nouvelle propriété <code>env</code> sur l’objet
+exporté et référencé par la propriété globale <code>m</code>.  Cette propriété <code>m.env</code>
 </p>
 </div>
 </div>
 </div>
+
+
 
 
 <div id="outline-container-orgheadline116" class="outline-3">
@@ -10225,7 +10285,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-11 ven. 16:24 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-11 ven. 18:30 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
