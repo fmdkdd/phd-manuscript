@@ -2190,6 +2190,38 @@ project.  I was initially thinking of symlinking .git/hooks/pre-commit to
 bin/pre-commit, but this is not always a [[https://stackoverflow.com/questions/3462955/putting-git-hooks-into-repository][good idea]], security-wise.  Better to
 take the habit of copying them and updating them manually.
 
+** [2016-03-11 ven.]
+*** Smart pagination in HTML
+Not having pages in the HTML export is a /good thing/.  It tremendously
+simplifies the placement of figures and text.  Everything flows linearly on a
+single page.
+
+However, it does not eleminate the need to think about figure placement.  If
+some paragraph describes a figure, it makes sense that the reader will want to
+look at both at the same time.  The figure and the paragraph should both be in
+the window.
+
+We could define virtual pages, bounding boxes of content that is better shown
+together.
+
+[[file:svg/smart-pages.svg]]
+
+Here for instance I have four paragraphs and one figure.  The paragraphs above
+and below the image refer to the figure, so I put a bounding box around them.
+
+We can then use this bounding box as friction point when using page down/page up
+and when scrolling in the browser.  Like window snapping in a window manager.
+
+This is to prevent paging down inside the top paragraph.  We can keep the top
+paragraph whole.
+
+Same thing for the second bounding box.
+
+Actually, maybe only the top anchor is really needed.  But the full bounding box
+can still be useful when thinking about publishing on different screen
+resolutions.  For mobile readers, we could imagine that some reflowing happens
+to try to keep all the content of the bounding box is visible.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

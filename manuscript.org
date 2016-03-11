@@ -1,5 +1,5 @@
 # -*- org-confirm-babel-evaluate: nil; org-babel-use-quick-and-dirty-noweb-expansion: t -*-
-
+#+STARTUP: nologdone
 #+TITLE: Mécanismes de langages pour étendre des interpréteurs
 #+AUTHOR: fmdkdd
 #+LANGUAGE: fr
@@ -10,66 +10,68 @@
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
 
+#+TODO: BARE(b) UNSTABLE(u) TRANSLATE(t) | STABLE(d)
+
 * Contents                                                   :TOC@4:noexport:
  - [[#acknowledgements][Acknowledgements]]
- - [[#introduction][Introduction]]
+ - [[#bare-introduction][BARE Introduction]]
    - [[#problème-étendre-un-interprèteur-par-de-multiple-analyses][Problème: étendre un interprèteur par de multiple analyses]]
    - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
- - [[#État-de-l’art][État de l’art]]
-   - [[#une-chronologie-de-la-modularité-dans-les-langages-de-programmation][Une chronologie de la modularité dans les langages de programmation]]
-     - [[#de-l’exécution-du-programme-au-code-source][De l’exécution du programme au code source]]
-     - [[#la-programmation-structurée][La programmation structurée]]
-     - [[#class-based-programming-smalltalk][Class-based programming: Smalltalk]]
+ - [[#unstable-État-de-l’art][UNSTABLE État de l’art]]
+   - [[#unstable-une-chronologie-de-la-modularité-dans-les-langages-de-programmation][UNSTABLE Une chronologie de la modularité dans les langages de programmation]]
+     - [[#unstable-de-l’exécution-du-programme-au-code-source][UNSTABLE De l’exécution du programme au code source]]
+     - [[#unstable-la-programmation-structurée][UNSTABLE La programmation structurée]]
+     - [[#bare-class-based-programming-smalltalk][BARE Class-based programming: Smalltalk]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#literate-programming][Literate programming]]
+     - [[#translate-literate-programming][TRANSLATE Literate programming]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#prototype-based-programming][Prototype-based programming]]
-     - [[#self][Self]]
+     - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
+     - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#open-implementation][Open Implementation]]
+     - [[#translate-open-implementation][TRANSLATE Open Implementation]]
        - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
-     - [[#aspect-oriented-programming][Aspect-Oriented Programming]]
+     - [[#translate-aspect-oriented-programming][TRANSLATE Aspect-Oriented Programming]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#caesar][Caesar]]
-     - [[#hyperj][Hyper/J]]
+     - [[#bare-caesar][BARE Caesar]]
+     - [[#translate-hyperj][TRANSLATE Hyper/J]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#information-transparency][Information transparency]]
-   - [[#la-modularité-du-progamme-n’est-pas-la-modularité-du-code-source][La modularité du progamme n’est pas la modularité du code source]]
-     - [[#la-modularité-selon-parnas][La modularité selon Parnas]]
+     - [[#bare-information-transparency][BARE Information transparency]]
+   - [[#unstable-la-modularité-du-progamme-n’est-pas-la-modularité-du-code-source][UNSTABLE La modularité du progamme n’est pas la modularité du code source]]
+     - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
-     - [[#la-théorie-de-naur-derrière-le-programme][La théorie de Naur derrière le programme]]
+     - [[#stable-la-théorie-de-naur-derrière-le-programme][STABLE La théorie de Naur derrière le programme]]
        - [[#conclusions][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
-   - [[#moyens-techniques-pour-l’instrumentation][Moyens techniques pour l’instrumentation]]
-     - [[#le-problème-d’expression][Le problème d’expression]]
-     - [[#dynamic-binding][Dynamic binding]]
-     - [[#reflection][Reflection]]
-     - [[#building-from-modules][Building from modules]]
-     - [[#building-with-monads][Building with monads]]
-     - [[#bytecode-instrumentation][Bytecode instrumentation]]
-   - [[#travaux-connexes-concernant-l’instrumentation][Travaux connexes concernant l’instrumentation]]
-     - [[#domain-specific-languages][Domain-specific languages]]
-     - [[#scripting-languages][Scripting languages]]
-     - [[#emacs][Emacs]]
+   - [[#unstable-moyens-techniques-pour-l’instrumentation][UNSTABLE Moyens techniques pour l’instrumentation]]
+     - [[#bare-le-problème-d’expression][BARE Le problème d’expression]]
+     - [[#bare-dynamic-binding][BARE Dynamic binding]]
+     - [[#translate-reflection][TRANSLATE Reflection]]
+     - [[#bare-building-from-modules][BARE Building from modules]]
+     - [[#bare-building-with-monads][BARE Building with monads]]
+     - [[#bare-bytecode-instrumentation][BARE Bytecode instrumentation]]
+   - [[#unstable-travaux-connexes-concernant-l’instrumentation][UNSTABLE Travaux connexes concernant l’instrumentation]]
+     - [[#bare-domain-specific-languages][BARE Domain-specific languages]]
+     - [[#bare-scripting-languages][BARE Scripting languages]]
+     - [[#translate-emacs][TRANSLATE Emacs]]
         - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#eclipse-and-other-ides][Eclipse and other IDEs]]
+     - [[#translate-eclipse-and-other-ides][TRANSLATE Eclipse and other IDEs]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#web-browsers][Web browsers]]
+     - [[#bare-web-browsers][BARE Web browsers]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#lua][Lua]]
+     - [[#translate-lua][TRANSLATE Lua]]
         - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#context-oriented-programming][Context-Oriented Programming]]
-     - [[#feature-oriented-programming][Feature-Oriented Programming]]
-     - [[#model-driven-development][Model-driven development]]
-     - [[#software-product-lines][Software product lines]]
+     - [[#bare-context-oriented-programming][BARE Context-Oriented Programming]]
+     - [[#bare-feature-oriented-programming][BARE Feature-Oriented Programming]]
+     - [[#bare-model-driven-development][BARE Model-driven development]]
+     - [[#translate-software-product-lines][TRANSLATE Software product lines]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#semantic-patches][Semantic patches]]
+     - [[#translate-semantic-patches][TRANSLATE Semantic patches]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
- - [[#Étude-de-cas-extension-ad-hoc-de-narcissus][Étude de cas: extension ad-hoc de Narcissus]]
- - [[#variations-sur-un-interpréteur-de-lambda-calcul-extensible][Variations sur un interpréteur de lambda-calcul extensible]]
- - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
+ - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
+ - [[#unstable-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNSTABLE Variations sur un interpréteur de lambda-calcul extensible]]
+ - [[#translate-construire-un-interpréteur-extensible][TRANSLATE Construire un interpréteur extensible]]
      - [[#finding-a-core-example][Finding a core example]]
      - [[#the-expression-problem][The expression problem]]
      - [[#the-expression-problem-with-a-twist][The expression problem, with a twist]]
@@ -94,7 +96,7 @@
        - [[#data-types--à-la-carte-2015][Data types  à la carte (2015)]]
        - [[#wadler-—-the-essence-of-functional-programming][Wadler — The essence of functional programming]]
      - [[#the-bigger-picture][The bigger picture]]
- - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
+ - [[#translate-construire-un-interpréteur-par-modules][TRANSLATE Construire un interpréteur par modules]]
    - [[#ajouter-des-termes][Ajouter des termes]]
    - [[#ajouter-des-opérations][Ajouter des opérations]]
    - [[#modifier-des-opérations][Modifier des opérations]]
@@ -110,7 +112,7 @@
      - [[#non-destructive-modification][Non-destructive modification]]
    - [[#passing-state][Passing state]]
    - [[#all-in-one][All in one]]
- - [[#dynamic-scoping-to-modify-narcissus][Dynamic scoping to modify Narcissus]]
+ - [[#translate-dynamic-scoping-to-modify-narcissus][TRANSLATE Dynamic scoping to modify Narcissus]]
    - [[#manipuler-la-portée-des-variables-pour-l’instrumentation][Manipuler la portée des variables pour l’instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
      - [[#ouvrir-le-motif-module][Ouvrir le motif module]]
@@ -137,8 +139,8 @@
        - [[#aliasing-inside-the-module-can-be-problematic][Aliasing inside the module can be problematic]]
        - [[#what-about-interferences-between-instrumentations][What about interferences between instrumentations?]]
        - [[#performance-costs][Performance costs]]
- - [[#synthèse][Synthèse]]
-   - [[#séparation-des-préoccupations-pourquoi][Séparation des préoccupations: pourquoi?]]
+ - [[#bare-synthèse][BARE Synthèse]]
+   - [[#bare-séparation-des-préoccupations-pourquoi][BARE Séparation des préoccupations: pourquoi?]]
  - [[#références][Références]]
 
 * Acknowledgements                                                 :noexport:
@@ -151,7 +153,7 @@ AOP, and getting me interested in finding better ways to structure programs.
 Bret Victor for the realization of the dissonance between textual programming
 languages and the dynamic processes they describe.  Also, for inspiration.
 
-* Introduction
+* BARE Introduction
 ** Problème: étendre un interprèteur par de multiple analyses
 - Contexte de sécurité web.
 - Scripts de pages web passent par un interpréteur.
@@ -183,9 +185,9 @@ languages and the dynamic processes they describe.  Also, for inspiration.
 
 ** Survol
 
-* État de l’art
-** Une chronologie de la modularité dans les langages de programmation
-*** De l’exécution du programme au code source
+* UNSTABLE État de l’art
+** UNSTABLE Une chronologie de la modularité dans les langages de programmation
+*** UNSTABLE De l’exécution du programme au code source
 Pour modifier l’exécution d’un programme, il est bon de savoir /comment/ le
 programme est exécuté par la machine.  Du point de vue de la machine, un
 programme est une simple liste d’instructions.  Une séquence d’additions, de
@@ -366,7 +368,7 @@ digraph {
 #+RESULTS:
 [[file:img/bg-map3.png]]
 
-*** La programmation structurée
+*** UNSTABLE La programmation structurée
 La programmation structurée n’est pas un ensemble de techniques, ni une méthode
 de programmation, mais plutôt un but à atteindre.  Dans sa célèbre lettre à
 l’éditeur des communications de l’ACM, “Go To Statement Considered Harmful”
@@ -575,7 +577,7 @@ Mais peut-être que Knuth s’en est lui-même rendu compte.  Le langage du futu
 Programming qui permet de mêler une description haut-niveau du programme en
 toutes lettres et code machine bas-niveau.
 
-*** Class-based programming: Smalltalk
+*** BARE Class-based programming: Smalltalk
 Design and Implementation [[cite:Ing-78][Ing-78]].
 
 Opens with a definition of modularity:
@@ -631,7 +633,7 @@ perspective is given in [[cite:Mul-15][Mul-15]].
 Subclassing, and reflection.  Everything as an object, so message dispatch is
 just a method on the meta class, and can be altered.
 
-*** Literate programming
+*** TRANSLATE Literate programming
 Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
 mode.
 
@@ -742,7 +744,7 @@ The mechanisms of including and referencing code snippets allows one to
 structure the program as they see fit.  Especially, it allows to separate
 concerns through quantification.
 
-*** Prototype-based programming
+*** BARE Prototype-based programming
 A collection of (at least) the following papers (or revisions of them):
 - [[cite:Tai-97][Tai-97]]
 - [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
@@ -801,7 +803,7 @@ Prototype-based languages also introduce new issues:
 - Sharing between clones of the same object.
 - Sharing between clones of different objects.
 
-*** Self
+*** TRANSLATE Self
 The power of simplicity [[cite:US-91][US-91]].
 
 Pure object-oriented language.  No variables, but slots containing objects that
@@ -882,7 +884,7 @@ instrumentation?  In the case of Narcissus, it was not, since the interpreter
 was not OO.  But the open scope pattern might be equivalent, dynamically, to
 inheritance.
 
-*** Open Implementation
+*** TRANSLATE Open Implementation
 Before AOP, there was the concept of Open Implementation [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]]
 [[cite:KLL+97][KLL+97]].
 
@@ -993,7 +995,7 @@ fit the description of style 4.
 
 [[Reflection]] is another mechanism.
 
-*** Aspect-Oriented Programming
+*** TRANSLATE Aspect-Oriented Programming
 Manipulation of static and runtime code.  Joinpoints reifie extension points.
 Pointcuts give powerful quantification over joinpoints.  Aspects promote
 separation of concerns.
@@ -1268,7 +1270,7 @@ The mechanisms of AOP may serve to extend the interpreter with analyses, without
 necessarily obeying the component/aspect decomposition.  Though without editor
 support, using AOP mechanisms will only satisfy one notion of locality.
 
-*** Caesar
+*** BARE Caesar
 [[cite:AGM+06][AGM+06]]
 
 CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
@@ -1278,7 +1280,7 @@ But overall, I failed to see the problems that it solved.  Both papers [[cite:AG
 [[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
 the benefit brought by the new mechanisms.
 
-*** Hyper/J
+*** TRANSLATE Hyper/J
 [[cite:TOH+99][TOH+99]] argues for a multi-dimensional separation of concerns.  First, they note
 that modern software technologies provide mechanisms for the /decomposition/ and
 /composition/ of source code, in order to cut the code into manageable pieces,
@@ -1337,7 +1339,7 @@ projections are unsatisfactory as they sacrifice one or more dimensions.
 
 The Hyper/J solution is basically superimposition.
 
-*** Information transparency
+*** BARE Information transparency
 [[cite:Gri-01][Gri-01]]
 
 Tools for capturing the similarity of code across modules.  Tangled code should
@@ -1381,13 +1383,13 @@ the human visual system, identifiable /symbols/ are a viable alternative to
 /locality/ as a way of managing changes to software.
 #+END_QUOTE
 
-** La modularité du progamme n’est pas la modularité du code source
+** UNSTABLE La modularité du progamme n’est pas la modularité du code source
 Les travaux de la section précédente cherchent à obtenir la modularité à travers
 le code source.
 
 Mais un programme n’est pas que son code source.
 
-*** La modularité selon Parnas
+*** STABLE La modularité selon Parnas
 David Parnas est fréquemment cité comme référence pour la notion de modularité
 d’un système, en particulier l’article “On the Critera to be Used In Decomposing
 Systems into Modules” [[cite:Par-72][Par-72]].  Mais Parnas s’intéresse davantage à la phase de
@@ -1670,7 +1672,7 @@ décisions de conception.  Et ces interfaces ont souvent un impact négatif sur
 l’efficacité du programme.  Ces compromis modularité/complexité et
 modularité/efficacité me semblent inévitables.
 
-*** La théorie de Naur derrière le programme
+*** STABLE La théorie de Naur derrière le programme
 Un point de vue qui complémente celui de Parnas est celui de Peter Naur.  Dans
 “Programming as Theory Building” [[cite:Nau-85][Nau-85]] il attache, comme Parnas, beaucoup
 d’importance à la réflexion du programmeur dans l’élaboration d’un système.
@@ -1924,10 +1926,10 @@ development that seem to break information hiding, and even oppose modular
 reasoning, have their virtues.  Those can be thought of using nonclassical
 logics.
 
-** Moyens techniques pour l’instrumentation
-*** Le problème d’expression
+** UNSTABLE Moyens techniques pour l’instrumentation
+*** BARE Le problème d’expression
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
-*** Dynamic binding
+*** BARE Dynamic binding
 Introduced by McCarthy’s LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
 dynamic environment in lexical binding [[cite:Que-03][Que-03]].
 
@@ -1947,7 +1949,7 @@ proposal is not motivated enough by concrete applications that would be
 difficult to solve using existing mechanisms.  Also, the work is really focused
 on the binding semantics of Scheme, which reduce its applicability.
 
-*** Reflection
+*** TRANSLATE Reflection
 [[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
 made between /introspection/, /introcession/, /structural reflection/, and
 /behavioral reflection/; also between a program (a textual description) and a
@@ -2016,10 +2018,10 @@ interpreter semantics.
 previous implementation which used code transformation; better performance, less
 maintenance.
 
-*** Building from modules
+*** BARE Building from modules
 Findler & Flatt, Newspeak
 
-*** Building with monads
+*** BARE Building with monads
 Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
 
 Free algebras, free monads.  Basically reify data in a way that is accepted by
@@ -2035,7 +2037,7 @@ Their solution is applicable to Java with generics, without significant
 syntactic overhead (less than related work).  And, they leverage the type system
 to capture erroneous composition.
 
-*** Bytecode instrumentation
+*** BARE Bytecode instrumentation
 Ansaloni.  Targets bytecode, which is low-level code.
 
 Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
@@ -2048,8 +2050,9 @@ details of the source code like “when does an if block ends”.  They have to
 build a control-flow graph to know when to discard program counters used by the
 information flow analysis.  Also, instrumenting the bytecode is specific to the
 bytecode compiler of WebKit (there is no standard, unlike Java).
-** Travaux connexes concernant l’instrumentation
-*** Domain-specific languages
+
+** UNSTABLE Travaux connexes concernant l’instrumentation
+*** BARE Domain-specific languages
 Greater control for language designer.  Gives a constrained playground for
 programmers.
 
@@ -2058,7 +2061,7 @@ general-purposes languages.
 
 Monads can be seen as DSLs (but this is an insight better saved for later).
 
-*** Scripting languages
+*** BARE Scripting languages
 Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
 early ‘90s phenomenon.  Dealing with low-level languages was deemed too heavy,
 but writing your whole system in a high-level language was too costly.  The
@@ -2070,7 +2073,7 @@ approach might be unneeded.
 JavaScript being a scripting language for the browser, as well as an object used
 in the Core, it might be adequate to have a dedicated background section to it.
 
-*** Emacs
+*** TRANSLATE Emacs
 See Emacs Manual, [[cite:Sta-81][Sta-81]], [[cite:Hal-88][Hal-88]].  Emacs is an example of an extensible system.
 The mechanisms: global namespace, dynamic scoping, and a simple aspect system.
 
@@ -2114,7 +2117,7 @@ Global variables, dynamic binding, hooks.
 
 Though hooks are more a convention than a first-class mechanism.
 
-*** Eclipse and other IDEs
+*** TRANSLATE Eclipse and other IDEs
 As noted by [[cite:Ler-11][Ler-11]], the Eclipse platform is extensible, and built using
 plugins.  Each plugin states its dependencies (the hooks needed to function),
 and its extension points (for other plugins).
@@ -2129,7 +2132,7 @@ host plugin raises events which can be intercepted by extensions [[cite:Bol-03][
 
 So, a lot of convention.
 
-*** Web browsers
+*** BARE Web browsers
 Many extensions are written for web browsers.  The mechanisms are heavy,
 comparable to the effort of writing an Eclipse plug-in.
 
@@ -2140,7 +2143,7 @@ by the browser.
 Convention.  Write manifest, and define the agreed-upon functions (install,
 startup).
 
-*** Lua
+*** TRANSLATE Lua
 An extensible extension language [[cite:IFF-96][IFF-96]].
 
 Extensible systems comprise of a kernel and a configuration.  The kernel is the
@@ -2219,15 +2222,15 @@ own way.
 To extend Lua, bindings from C can be added, and custom data structure as well.
 Changing the interpreter does not seem possible, even from C.
 
-*** Context-Oriented Programming
+*** BARE Context-Oriented Programming
 Expressive separation of concerns when behavior can change depending on the
 context in which the program is executed.  Composition of programs by layers.
 
-*** Feature-Oriented Programming
+*** BARE Feature-Oriented Programming
 Promise of high-level programming, where features are built standalone, and
 interaction between them are dealt with separately.
 
-*** Model-driven development
+*** BARE Model-driven development
 You build meta-models that encompass all variations of the solution space.
 
 [[cite:HT-06][HT-06]] makes some good points about the promises and reality of MDD (in 2006).
@@ -2235,7 +2238,7 @@ The distinction between the three categories of sketchers, blueprinters and
 model programmers in the modeling community is relevant in order to not
 amalgamate different intentions.
 
-*** Software product lines
+*** TRANSLATE Software product lines
 [[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
 
 An engineering methodology to create and maintain variants of a software
@@ -2347,7 +2350,7 @@ parameters, hence are a form a macros.
 Links are two way, and kept in sync by the programming system (editor): this
 prevents obliviousness.
 
-*** Semantic patches
+*** TRANSLATE Semantic patches
 [[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
 name, or gains an argument, client code must makes the necessary changes.  The
 changes in client code are collateral.
@@ -2407,7 +2410,7 @@ evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM
 more focused on introducing the collateral evolution problem, with plenty of
 examples from the Linux kernel.
 
-* Étude de cas: extension ad-hoc de Narcissus
+* UNSTABLE Étude de cas: extension ad-hoc de Narcissus
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
 [[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
 utilise l’environnement hôte pour son implémentation (p.ex., l’objet ~String~
@@ -2661,7 +2664,7 @@ interpréteur pour cette sémantique est donc considérablement plus petit qu’
 interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
 des mécanismes d’extensibilité.
 
-* Variations sur un interpréteur de lambda-calcul extensible
+* UNSTABLE Variations sur un interpréteur de lambda-calcul extensible
 Essayons d’abord d’écrire un interpréteur pour chaque sémantique de \lambda^{facet}, sans
 anticiper l’instrumentation; c’est à dire sans se préoccuper de pouvoir étendre
 l’interpréteur facilement.
@@ -2774,7 +2777,7 @@ minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
 l’interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
 que nous explorons par la suite.
 
-* Construire un interpréteur extensible
+* TRANSLATE Construire un interpréteur extensible
 Le style de l’interpréteur du chapitre précédent n’est pas extensible.
 L’interpréteur suit le patron module en JavaScript, qui a pour intention de
 verrouiller les définitions du module contre toute extension future; qu’elles
@@ -4760,7 +4763,7 @@ can always be seen as a data structure that is easily parsed.  If turning your
 code to data gives you the greatest modularity, then homoiconic languages have
 a clear advantage of not requiring a parser.
 
-* Construire un interpréteur par modules
+* TRANSLATE Construire un interpréteur par modules
 /Contenu principalement tiré d’un papier présenté à l’atelier LASSY’15 [[cite:KNS-15][KNS-15]]/.
 
 Étendre un interpréteur peut être vu comme une extension du problème de
@@ -5712,7 +5715,7 @@ Combine all the extensions without effort.
 
 # [[file:img/all-in-one.svg]]
 
-* Dynamic scoping to modify Narcissus
+* TRANSLATE Dynamic scoping to modify Narcissus
 /Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [[cite:KNS-15b][KNS-15b]]/.
 
 Nous avons vu dans l’étude de cas que Narcissus n’était pas étendu de façon
@@ -6842,8 +6845,8 @@ overloaded bindings.
 We would then lose the ability to change the bindings dynamically, as far as I
 can see.
 
-* Synthèse
-** Séparation des préoccupations: pourquoi?
+* BARE Synthèse
+** BARE Séparation des préoccupations: pourquoi?
 - Séparation difficile à obtenir
 - Difficile de définir les frontières
   - une préoccupation est rarement isolée du reste du programme
