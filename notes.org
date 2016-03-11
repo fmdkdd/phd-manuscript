@@ -2222,6 +2222,66 @@ can still be useful when thinking about publishing on different screen
 resolutions.  For mobile readers, we could imagine that some reflowing happens
 to try to keep all the content of the bounding box is visible.
 
+*** Keeping track of pages without page numbers
+Page numbers are very useful to identify a page uniquely in a printed document.
+When copy editing the document, or referencing a particular paragraph, or line,
+having the page number at the bottom is necessary.  Imagine having no page
+number at all, you would have to say: “The third page after the beginning of
+section 2.3.  No wait, fourth page, top-half”.
+
+But there is an unfortunate side effect of page numbers: you can use them as a
+proxy to determine if a thesis manuscript is “good enough”, or “too much”.
+
+Is there a way to uniquely identify pages without being able to know how many
+pages there are (beyond manual counting)?
+
+To identify the pages uniquely, you just need a unique symbol at the bottom of
+each page.  A word can be used.  A word can be pronounced, while a random
+graphical symbol (unicode or emoji) might not have an obvious pronunciation.
+
+But a word is not as useful as a number.  If I tell you “page dolphin, 3rd
+paragraph”, where is page dolphin?  Unless you know the page words by heart, you
+wil probably have to shift through the pages to find exactly where it is.  There
+has to be a /meaningful order/ between the words.
+
+A total order has no ambiguity at all, and serves the purpose well.  Now if you
+are looking at page elephant, you know page dolphin is before, but after page
+cheetah.  It’s as efficient as numbers, if you know your lexicographical order.
+
+But it as advantages that numbers don’t.
+
+First, you cannot compare books based on the page count anymore.  Unless you
+count all the pages manually.  But the goal of a proxy like page numbers is to
+/avoid/ working too much in order to produce a superficial judgment.  Of course,
+you could go by book weight instead, but oh well.
+
+Also, words can give a sense of progress through the book.  Like 11/150, but
+books never give you the total count on the bottom of each page.  But if you use
+words that begin with ‘a’ on the first few pages, going to words beginning with
+‘z’ to the last few pages, and using lexicographical order, then looking only at
+the bottom of the page you have an idea of where you are.
+
+You could even instill further conventions, like using the same first letter for
+all pages belonging to the same chapter...
+
+And the best part is, you can choose the words!  As long as there is a clear
+order for the reader, then they retain their usefulness as page locators.  But
+you can be subversive, poetic, clever, or descriptive while choosing the words
+to match a page.
+
+One thing I can see working is to built words out of three or four random
+consonants, then add random voyels in-between.  Order them by lexicographical
+order, and map them to the sequence of pages.  Pronunceable, potentially fun
+words.
+
+Otherwise, you can choose among a list of dictionary words that are rarely used
+in common speech.  There are tons of those, and some can be really recombulant.
+Just chose words that you like, order them, and voilà.  It gives you a perfect
+excuse to learn of new words that are outside your domain.  And it gives those
+words a purpose.
+
+Idea of the year right there.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

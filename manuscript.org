@@ -5917,6 +5917,77 @@ motif module ne permet pas, en l’état, d’accéder à ces noms de l’extér
 module.
 
 *** Ouvrir le motif module
+On cherche maintenant à accéder à l’environnement de la FIA de l’extérieur du
+module; c’est à dire obtenir une référence vers cet environnement.  En regardant
+le diagramme, on pourrait penser que ~m.g.env~ suffit: il s’agit bien d’une
+référence à l’environnement qui nous intéresse depuis l’extérieur du module.
+Malheureusement, cette référence n’est pas fiable.  Suivant la construction de
+~g~, l’environnement qu’elle retourne pourrait très bien être différent de celui
+de la FIA.
+
+#+BEGIN_SRC js -n -r
+var m = (function(){
+  var a = 1
+  var f = function(x) { return x + a }
+  var mkG = function() {
+    var g = function(x) { return f(x) }
+    return g
+  }
+  return {g: mkG()}                                     (ref:ex2-return)
+}())
+
+m.g(0)
+#+END_SRC
+
+Dans cet exemple, la fonction ~g~ exportée par le module ne capture pas
+l’environnement de la FIA.  À la ligne [[(ex2-return)]] on exporte la valeur de
+retour de la function ~mkG~ sous le nom ~g~.  La fonction ~mkG~ retourne
+exactement la même fonction ~g~ que dans l’exemple précédent, avec une
+différence notable: cette fonction ~g~ capture l’environnement de l’appel à
+~mkG~.  Le diagramme qui l’accompagne illustre cette différence par l’apparition
+d’un nouvel objet d’activation pour ~mkG~ qui est référencé comme environnement
+de ~g~.  On a ~m.g.scope~ qui pointe vers l’environnement crée par ~mkG~, et non
+l’environnement crée par la FIA.  Au contraire, la fonction ~f~ pointe
+directement vers l’environnement de la FIA.  On voit alors que la propriété
+~env~ d’une fonction n’est pas garantie de pointer vers l’environnement dont
+nous avons besoin.
+
+On va maintenant s’éloigner du comportement standard de JavaScript que nous
+avons suivi jusqu’ici.  Supposons que nous /pouvons/ accéder à l’environnement
+crée par la FIA grâce à une nouvelle propriété /env/ qui serait automatiquement
+ajoutée sur l’objet exporté par le module.  Supposons également que cet
+environnement se comporte comme un objet JavaScript régulier; on peut lire et
+changer ses propriétés.
+
+#+BEGIN_aside
+La section suivante montre comment retrouver cette fonctionnalité dans le
+langage standard.
+#+END_aside
+
+#+BEGIN_SRC -n -r
+var m = (function(){
+  var a = 1
+  var f = function(x) { return x + a }
+  var g = function(x) { return f(x) }
+  return {g: g}
+}())
+
+m.g(0) //: 1                             (ref:ex3-test1)
+m.env.a = 2                              (ref:ex3-change)
+m.g(0) //: 2                             (ref:ex3-test2)
+#+END_SRC
+
+Reprenons le module du début, mais avec l’addition de cette nouvelle propriété
+~env~.  Si on exécute ~m.g(0)~ à la ligne [[(ex3-test1)]], on obtient toujours ~1~.
+Par contre, cette fois on a accès à l’environnement interne au module via la
+propriété ~m.env~.  Si on change la valeur de ~a~ dans cet environnement (ligne
+[[(ex3-change)]]), alors l’appel ~m.g(0)~ qui suit utilise cette nouvelle valeur, et
+c’est pourquoi /le même appel/ donne le résultat différent, ~2~, à la ligne
+[[(ex3-test2)]].  Le diagramme qui accompagne l’exemple donne une autre façon de
+voir ce qui se passe.  On y voit la nouvelle propriété ~env~ sur l’objet
+exporté et référencé par la propriété globale ~m~.  Cette propriété ~m.env~
+
+
 
 
 ** The idea: manipulating scopes
