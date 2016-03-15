@@ -6032,7 +6032,8 @@ l’on créait une fermeture dans le module, mais définit de l’extérieur.
 
 #+BEGIN_aside
 Malheureusement, on ne peut pas modifier l’environnement capturé par une
-fonction en JavaScript.  On verra plus loin comment émuler ce comportement.
+fonction en JavaScript.  On ne peut même pas /accéder/ à l’environnement
+capturé.  Cette solution ne peut donc pas être implémentée.
 #+END_aside
 
 #+BEGIN_SRC js
@@ -6177,7 +6178,7 @@ même être déclarées dans des fichiers séparés.  De plus, on peut dynamique
 activer ou désactiver des ensembles de changements d’un seul coup.  Mais pour
 l’instant rien de ce qu’on a définit n’est exécutable.  Il s’agissait
 d’illustrer le modèle de fonctionnement dans le cadre d’un langage inspiré de
-JavaScript.  Mais ce faisant, on a dévié de JavaScript sur les points suivants:
+JavaScript.  Ce faisant, on a dévié de JavaScript en supposant:
 
 1. que les environnements se comportent comme des objets JavaScript standards,
    comme des dictionnaires auxquels on peut ajouter des propriétés, récupérer
@@ -6190,12 +6191,188 @@ JavaScript.  Mais ce faisant, on a dévié de JavaScript sur les points suivants
 3. que l’on pouvait obtenir et modifier le parent de n’importe quel
    environnement.
 
-Aucune de ces hypothèses n’est valide en JavaScript.  Cependant, il y a moyen
+Aucune de ces suppositions n’est valide en JavaScript.  Cependant, il y a moyen
 de réaliser ce modèle en utilisant des constructions JavaScript standard.  C’est
 l’objet de la section suivante.
 
 ** Le motif “module ouvert”
+Pour réaliser le modèle illustré dans la section précédente, on peut tirer
+partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
+prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
+répliquer les exemples de composition d’environnement par couches grâce aux
+prototypes.
 
+#+BEGIN_aside
+Tous les exemples de cette section sont exécutables sur un interpréteur
+JavaScript qui suit le standard ECMAScript 5.1.
+#+END_aside
+
+L’expression ~with~ est grammaticalement similaire à un ~if~.  Elle prend une
+expression entre parenthèses, qui est évaluée pour constituer son /objet de
+liaison/, et un bloc de code entre accolades.  Voici un exemple d’utilisation de
+~with~.  On définit une fonction ~f~ dans le corps de ~with~ à la ligne
+[[(ex7-f)]].  La fonction va simplement retourner la valeur de la variable ~a~.
+Notons que ~a~ est libre dans ce contexte, mais pourtant l’appel de ~f~ à la
+ligne [[(ex7-call)]] retourne 42.  Quand ~f~ est définie, elle capture
+l’environnement lexical, et il se trouve que ~with~ crée un environnement
+lexical pour le code qu’il entoure; cet environnement est basé sur l’objet de
+liaison, ~o~.  Puisque ~o~ associe le nom ~a~ à 42, l’appel de ~f~ va trouver
+cette association et renvoyer 42.
+
+#+BEGIN_SRC js -n -r
+var o = { a: 42 }
+with (o) {
+  function f() { return a }       (ref:ex7-f)
+}
+f() //: 42                        (ref:ex7-call)
+#+END_SRC
+
+En voyant cet exemple, on peut se demander si l’effet de ~with~ sur le bloc de
+code qu’il entoure n’est pas simplement de la liaison dynamique.  Dans un
+langage qui permet la liaison dynamique des fonctions, les variables libres sont
+résolues en parcourant les environnements de la pile d’appel, plutôt que de
+parcourir l’environnement lexical.  Or, ce n’est ce qui se passe ici.  Dans
+l’exemple ci-dessous, on appelle crée la fonction ~f~ à la racine, puis on
+l’appelle à l’intérieur d’un ~with~, de façon à ce que ~with~ crée un
+environnement sur la pile lorsque ~f~ est appelée.  L’appel échoue, car la
+résolution de noms ne trouve aucune occurrence de ~a~.  La fonction ~f~ n’est
+donc dynamiquement liée si elle est appelée dans un ~with~.
+
+#+BEGIN_SRC js
+function f() { return a }
+var o = { a: 42 }
+with (o) { f() } //: ReferenceError: a is undefined
+#+END_SRC
+
+Ce qui se passe dans le premier exemple, c’est que lorsque la fonction ~f~ est
+définie dans ~with~ elle capture l’environnement lexical crée par ~with~; ~f~
+suit donc une liaison statique.  Mais l’environnement généré par ~with~ est
+particulier car la résolution de noms dans cet environnement est déléguée à
+l’objet de liaison.  Et l’objet de liaison peut être dynamique: on peut y
+ajouter ou y supprimer des propriétés.  Donc, on dira que la fonction ~f~
+/capture statiquement un environnement dynamique/.  L’environnement ne peut être
+capturé qu’à la définition de ~f~, mais cet environnement peut être modifié par
+la suite.  Ce comportement de ~with~ est exactement ce qu’il nous faut pour
+ouvrir le motif module.
+
+Dans le code qui suit, on utilise ~with~ pour créer l’environnement capturé par
+~f~ et ~g~, et obtenir une référence vers cet environnement.  On commence par
+créer un objet vide ~env~ ligne [[(ex8-create)]].  Puis on passe cet objet à ~with~,
+pour qu’il devienne son objet de liaison.  Dans le corps de ~with~, on déclare
+la variable ~a~ et les deux fonctions ~g~ exactement comme dans le module qui
+nous intéressait dans la section précédente.  Ligne [[(ex8-return)]] en revanche on
+retourne une propriété supplémentaire: l’objet ~env~.  Le premier appel ~m.g(0)~
+retourne encore 1, indiquant que ~g~ appelle bien ~f~, qui fait bien référence
+au ~a~ défini dans le module.
+
+#+BEGIN_SRC js -n -r
+var m = (function(){
+  var env = Object.create(null)      (ref:ex8-create)
+  with (env) {
+    var a = 1
+    function f(x) { return x + a }
+    function g(x) { return f(x) }
+    return { g: g, env: env }        (ref:ex8-return)
+  }
+}())
+
+m.g(0) //: 1
+m.env.a = 2                          (ref:ex8-a)
+m.g(0) //: 2
+#+END_SRC
+
+Comme on a une référence à l’objet de liaison ~env~, on redéfinit la valeur de
+~a~ ligne [[(ex8-a)]].  L’appel ~m.g(0)~ qui suit retourne 2, ce qui montre que la
+fonction ~f~ va bien prendre la valeur de ~a~ de l’objet ~env~.
+
+On peut se demander pourquoi la valeur de ~m.env.a~ est préférée à la
+déclaration de ~a~, alors que cette dernière est /plus proche/ lexicalement de
+la fonction ~f~ que le début du ~with~.  On a vu que ~with~ crée un
+environnement pour le code qu’il entoure, mais cet environnement /ne capture
+pas/ les déclarations.  Les déclarations de variables et fonctions sont
+capturées par l’environnement crée par la fonction qui enrobe le module—la FIA.
+Le diagramme illustre la situation.  L’environnement crée par ~with~ est mis en
+évidence; il contient l’objet de liaison.  Dans l’objet de liaison il n’y a que
+la propriété ~a~ associée à 2.  Les déclarations de ~a~, ~f~ et ~g~ faites dans
+le module n’existent que dans l’environnement crée par la FIA.  On voit par
+contre que ~f~ et ~g~ capturent l’environnement crée par ~with~, puisque leur
+propriété ~env~ pointe dessus.  C’est pourquoi la valeur de ~m.env.a~ est
+trouvée en premier par la résolution de nom lors de l’exécution de ~f~.
+
+D’après le diagramme, il est clair que si l’objet de liaison est vide, le module
+se comportera exactement comme si ~with~ n’était pas utilisé.  La seule
+différence observable serait un léger surcoût dû à l’objet supplémentaire sur la
+chaîne de résolution de noms.
+
+Une différence cruciale entre le modèle de la figure ?? et de ce qu’on obtient
+ici, c’est qu’ci l’environnement crée par ~with~ et l’objet de liaison sont deux
+objets séparés, alors que dans le modèle il ne sont qu’un seul et même objet.
+On peut voir qu’avec ~with~, l’environnement a un environnement
+parent (l’environnement de la FIA), mais que l’objet de liaison n’a pas d‘objet
+parent (il est /null/, d’après sa définition ligne [[(ex8-create)]]).  Et la
+propriété ~m.env~ pointe vers l’objet de liaison, tandis que les propriétés
+~env~ des fonctions ~f~ et ~g~ pointent vers l’environnement.  La conséquence de
+cette distinction, c’est qu’on si peut se servir de ~m.env~ pour surcharger les
+définitions faites dans le module, on ne peut pas s’en servir pour /accéder/ aux
+valeurs de ces définitions de l’extérieur du module.  ~m.env.f~ ne fait pas
+référence au ~f~ de l’environnement de la FIA; ~m.env.f~ n’est pas défini.
+
+Pour remédier à cette déviation du modèle, on peut créer un objet parent à
+~env~.  Cet objet contiendra une référence pour chaque déclaration faite dans le
+module.  On assigne ensuite cet objet parent au /prototype/ de l’objet de
+liaison, ~env~.  JavaScript est un objet à prototypes: chaque objet a un lien de
+prototype vers un autre objet, ou vers ~null~.  Lorsque la résolution de nom
+cherche la propriété ~p~ sur un objet qui ne la contient pas, la recherche
+continue sur le prototype, et s’arrête si le prototype est nul.  La recherche de
+nom dans la chaîne de prototype d’un objet se comporte donc exactement comme la
+résolution de noms de variable dans les environnements lexicaux.  La solution se
+présente donc ainsi:
+
+#+BEGIN_SRC js
+var m = (function(){
+  var env = Object.create(null)
+  with (env) {
+    var a = 1
+    function f(x) { return x + a }
+    function g(x) { return f(x) }
+
+    var parent = { a: a, f: f, g: g }             (ref:ex9-parent)
+    Object.setPrototypeOf(env, parent)
+    return { g: g, scope: scope }
+  }
+}())
+
+m.g(0) //: 1
+m.env.f = function(x) { return x + 2 * m.env.a }  (ref:ex9-f)
+m.g(0) //: 2
+m.env.a = 2
+m.g(0) //: 4
+delete m.env.f
+m.g(0) //: 2
+delete m.env.a
+m.g(0) //: 1
+#+END_SRC
+
+On crée un objet ~parent~ ligne [[(ex9-parent)]] qui contient une référence pour
+chaque déclaration du module.  Puis on assigne ~parent~ au prototype de ~env~.
+Grâce à cet objet, on peut faire référence à ~a~ à travers ~m.env.a~ lors de la
+redéfinition de ~f~ ligne [[(ex9-f)]].  Puis, lorsqu’on redéfinit ~a~ à travers
+~m.env.a~, cette nouvelle valeur a priorité sur la valeur initiale du module, et
+est bien capturée par la nouvelle fonction ~f~.  Tout cela est illustré par le
+diagramme.  La propriété ~m.env~ pointe sur l’objet de liaison, qui contient les
+redéfinitions de ~a~ et ~f~.  Si l’objet de liaison est vide, alors on recherche
+les propriétés sur l’objet ~parent~ avant de les chercher dans l’environnement
+de la FIA.  Ainsi, lorsque l’on supprime les propriétés ~a~ et ~f~, le dernier
+appel ~m.g(0)~ retourne la même valeur que le premier, avant les modifications.
+
+On peut se demander si l’objet ~parent~ n’apporte que de la redondance de code.
+Principalement oui, mais cette redondance nous apporte aussi une flexibilité
+supplémentaire par rapport au modèle.  Seules les propriétés mentionnées dans
+l’objet parent seront accessibles de l’extérieur du module, ce qui nous permet
+de contrôler quelles propriétés sont exposées.  Mais surtout, les valeurs
+exposées par l’objet parent ne sont pas forcément celles de l’environnement de
+la FIA, ce qui permet encore une fois de contrôler ce que le code externe au
+module peut voir.
 
 ** The idea: manipulating scopes
 Looking back, we see that we are mostly concerned with scopes and the ability to
