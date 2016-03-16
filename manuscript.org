@@ -117,7 +117,9 @@
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
      - [[#ouvrir-le-motif-module][Ouvrir le motif module]]
      - [[#disposer-les-environnements-en-couches][Disposer les environnements en couches]]
-   - [[#le-motif-“module-ouvert”][Le motif “module ouvert”]]
+   - [[#réaliser-le-motif-“module-ouvert”][Réaliser le motif “module ouvert”]]
+   - [[#appliquer-le-motif-“module-ouvert”-à-narcissus][Appliquer le motif “module ouvert” à Narcissus]]
+     - [[#ajouter-l’analyse-d’évaluation-multi-facettes][Ajouter l’analyse d’évaluation multi-facettes]]
    - [[#the-idea-manipulating-scopes][The idea: manipulating scopes]]
    - [[#how-to-manipulate-scopes-in-javascript][How to manipulate scopes in JavaScript]]
    - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
@@ -6195,7 +6197,7 @@ Aucune de ces suppositions n’est valide en JavaScript.  Cependant, il y a moye
 de réaliser ce modèle en utilisant des constructions JavaScript standard.  C’est
 l’objet de la section suivante.
 
-** Le motif “module ouvert”
+** Réaliser le motif “module ouvert”
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
 partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
@@ -6373,6 +6375,228 @@ de contrôler quelles propriétés sont exposées.  Mais surtout, les valeurs
 exposées par l’objet parent ne sont pas forcément celles de l’environnement de
 la FIA, ce qui permet encore une fois de contrôler ce que le code externe au
 module peut voir.
+
+Enfin, puisque la chaîne de prototype d’un objet JavaScript peut être vue comme
+une liste chaînée, on peut directement implémenter l’idée des couches
+d’environnements du modèle de la section précédente.  Dans le code suivant, on
+définit la fonction ~pushEnv(e, head)~ qui insère l’objet ~e~ comme parent de
+~head~; la fonction ~removeEnv(e, head)~ retire l’objet ~e~ de la chaîne,
+quelque soit sa position.  Si on reprend le module ~m~ définit dans l’exemple
+précédent, on peut maintenant utiliser des objets JavaScript pour grouper les
+modifications que l’on souhaite apporter au module (~e1~ et ~e2~), et utiliser
+~pushEnv~ et ~removeEnv~ pour activer ou désactiver ces changements
+dynamiquement.
+
+#+BEGIN_SRC js
+var m = (function(){ ... }())
+
+function pushEnv(e, head) {
+  Object.setPrototypeOf(e, Object.getPrototypeOf(head))
+  Object.setPrototypeOf(head, e)
+}
+
+function removeEnv(e, head) {
+  while (Object.getPrototypeOf(head) != null && Object.getPrototypeOf(head) !== e)
+    head = Object.getPrototypeOf(head)
+
+  if (Object.getPrototypeOf(head) === e) {
+    Object.setPrototypeOf(head, Object.getPrototypeOf(e))
+    Object.setPrototypeOf(e, null)
+  }
+}
+
+m.g(0) //: 1
+
+var e1 = { a: 2, f: function(x) { return x + 2 * m.env.a }}
+pushEnv(e1, m.env)
+m.g(0) //: 4
+
+var e2 = { f: function() { return -m.env.a }}
+pushEnv(e2, m.env)
+m.g(0) //: -2
+
+removeEnv(e1, m.env)
+m.g(0) //: -1
+#+END_SRC
+
+Donc ~with~ permet de réaliser l’idée de l’environnement frontal, et la chaîne
+de prototype de l’objet de liaison de ~with~ permet de disposer les
+environnements en couches.  Et grâce à ces mécanismes, on parvient à ouvrir le
+motif module; on peut changer les définitions internes au module par du code
+écrit à l’extérieur.  Mais les exemples que l’on a utilisés sont restés très
+simples.  Il serait plus intéressant de voir comment on peut ouvrir un module
+plus complexe, et quels sont les problèmes qui apparaissent.  Dans la section
+suivante, on applique ces mécanismes à Narcissus.
+
+** Appliquer le motif “module ouvert” à Narcissus
+Dans cette section, on reprend une version non instrumentée de Narcissus, à
+laquelle on va ajouter plusieurs analyses en essayant de minimiser les
+changements de code à l’intérieur du module de Narcissus.  Pour ouvrir le module
+de Narcissus, il suffit d’ajouter ~with~ autour du corps du code ainsi que
+l’objet ~parent~:
+
+#+BEGIN_SRC diff
+Narcissus.interpreter = (function() {
++  var _env = Object.create(null);
++  with (_env) {
+   ...
+   // 1500 lines later
+   ...
++  var _parent = {
++    globalBase: globalBase,
++    execute: execute,
++    getValue: getValue,
++    ...
++  };
++  Object.setPrototypeOf(_env, _parent);
+   return {
+     evaluate: evaluate,
+     ...
++    _env: _env,
+   };
++  }
+}());
+#+END_SRC
+
+Les changements n’affectent que le début et la fin du fichier.  Puisque le
+module exporte déjà des propriétés dans le ~return~, on y ajoute juste la
+propriété ~_env~.  Les analyses qui nous intéressent nécessitent également
+d’exposer des propriétés internes au module à travers l’objet ~_parent~ (nous en
+avons utilisé 14 en tout dans notre version instrumentée de Narcissus).  Notons
+au passage que les propriétés ~_env~ et ~_parent~ sont préfixées d’un tiret bas
+pour éviter une collision de nom avec les variables déclarées à la racine par
+Narcissus.  Mais ces lignes sont les seules modifications nécessaires à apporter
+au module pour pouvoir commencer l’instrumentation.
+
+*** Ajouter l’analyse d’évaluation multi-facettes
+On a vu dans l’étude de cas que l’implémentation de l’évaluation multi-facettes
+sur Narcissus pouvait être répartie en trois catégories de changements.  La
+première catégorie était l’ajout du /program counter/ par extension de l’objet
+~ExecutionContext~ et d’arguments supplémentaires à la fonction ~getValue~.  On
+peut maintenant effectuer ce changement de l’extérieur du module:
+
+#+BEGIN_SRC js -n -r
+var N = Narcissus.interpreter._env                        (ref:ex10-N)
+
+var EC = N.ExecutionContext                               (ref:ex10-EC)
+function ExecutionContext(type, version) {
+  EC.call(this, type, version)
+
+  this.pc = getPC() || new ProgramCounter()
+}
+
+ExecutionContext.prototype = Object.create(EC.prototype)  (ref:ex10-ECproto)
+
+function getPC() {
+  var x = EC.current
+  return x && x.pc
+}
+
+var GV = N.getValue
+function getValue(v, pc) {                                (ref:ex10-getV)
+  pc = pc || getPC()
+
+  if (v instanceof FacetedValue)
+    return derefFacetedValue(v, pc)
+
+  return GV(v)
+}
+
+N.ExecutionContext = ExecutionContext                     (ref:ex10-instr1)
+N.getValue = getValue                                     (ref:ex10-instr2)
+#+END_SRC
+
+On commence par définir un nom raccourci ligne [[(ex10-N)]] pour l’environnement
+exporté par Narcissus.  Puis on modifie le constructeur ~ExecutionContext~ après
+avoir sauvegardé l’original ligne [[(ex10-EC)]], pour pouvoir y faire référence dans
+la nouveau constructeur, mais aussi dans ~getPC~.  Le nouveau constructeur
+appelle le constructeur original (équivalent à un appel à ~super~ en Java) et
+ajoute la valeur courante du /program counter/ comme propriété ~pc~.  Les autres
+propriétés de l’objet ~ExecutionContext~ sont héritées grâce à l’idiome
+JavaScript ligne [[(ex10-ECproto)]].  Ligne [[(ex10-getV)]], on définit une nouvelle
+fonction ~getValue~ qui va remplacer et appeler l’originale, mais qui récupère
+le /program counter/ courant soit donné en argument, soit par un appel à ~getPC~
+si l’argument n’est pas renseigné.  De cette façon, les appels à ~getValue~ dans
+l’interpréteur ne nécessitent pas de modification pour l’argument
+supplémentaire, mais le code de l’instrumentation peut appeler ~getValue~ en
+passant une valeur pour ~pc~.  Enfin, on installe ces modifications dans
+l’environnement frontal de l’interpréteur (lignes [[(ex10-instr1)]] et
+[[(ex10-instr2)]]).
+
+La seconde catégorie de changements concernait l’extension de la fonction
+~execute~ pour chaque nœud de l’AST, dans le but de scinder l’évaluation des
+valeurs à facettes en appelant la nouvelle fonction ~evaluateEach~ sur chacune
+des facettes.  La fonction ~execute~ est essentiellement un long ~switch~ (600
+lignes) avec un ~case~ pour chaque type de nœud de l’AST.  On redéfinit la
+fonction ~execute~ en suivant la même structure.
+
+#+BEGIN_SRC js +n -r
+var EX = N.execute
+function execute(n.x) {
+  switch (n.type) {
+    case IF:
+      var cond = N.getValue(N.execute(n.condition, x), x.pc)
+      evaluateEach(cond, function(v, x) {
+        if (v) N.execute(n.thenPart, x)
+        else if (n.elsePart) N.execute(n.elsePart, x)
+      }, x)
+    break
+
+    ... // other instrumented cases
+
+    default: var v = EX(n, x)                                 (ref:ex11-default)
+  }
+  return v
+}
+
+N.execute = execute                                           (ref:ex11-redef)
+#+END_SRC
+
+L’évaluation multi-facettes ne redéfinit le comportement que pour quelques types
+de nœuds de l’AST, donc on délègue à la fonction initiale dans le ~default~
+ligne [[(ex11-default)]].  En déclarant un ~case IF~, on redéfinit le traitement des
+nœuds de type ~IF~ dans l’AST.  Notons qu’ici on appelle récursivement
+~N.execute~, et que dans le code de la fonction d’origine, l’appel récursif est
+noté ~execute~, mais après la ligne [[(ex11-redef)]], les deux noms pointeront vers
+la même fonction: celle que l’on vient de définir.
+
+Enfin, la troisième catégorie de changements regroupait les ajouts de propriétés
+à l’objet ~globalBase~.  Il s’agit donc de définir un nouvel objet ~globalBase~
+qui hérite de l’objet original, mais auquel on rajoute les propriétés
+supplémentaires:
+
+#+BEGIN_SRC js +n -r
+var globalBase = Object.create(N.globalBase)
+
+globalBase.isFacetedValue = function(v) {
+  return (v instanceof FacetedValue)
+}
+
+...  // other properties
+
+N.globalBase = globalBase
+#+END_SRC
+
+Mais ce n’est pas suffisant.  Dans le module de Narcissus, l’objet ~globalBase~
+est utilisé juste après sa création pour peupler l’objet global du code client.
+Ce processus prend place dans le module, avant que les propriétés exportées ne
+soient retournées.  Hors, la façon que l’on a d’étendre le module ne nous permet
+de modifier que des valeurs après l’export des propriétés.  Il nous faut donc
+modifier le code du module pour pouvoir effectuer ce changement.  Il suffit de
+fournir une fonction ~populateEnvironment~ qui construit l’objet global à partir
+de ~globalBase~, et qui devra être appelée après la construction du module.  Ça
+nous laisse maintenant la possibilité d’étendre l’objet ~globalBase~.  Cette
+modification au module consiste à déplacer les 30 instructions qui peuplaient
+l’objet global dans la fonction ~populateEnvironment~, et à rajouter cette
+nouvelle fonction dans les propriétés exportées.
+
+Un dernier changement du module a été nécessaire, plus léger cette fois.  Une
+fonction cruciale, la fonction qui est utilisée par le code client pour
+déclencher un appel de fonction, était crée de manière /anonyme/ dans le
+module.  Vu qu’elle n’avait pas de nom, il n’y avait aucun moyen de la redéfinir
+de l’extérieur du module; le motif “module ouvert” ne peut surcharger que des
+identifiants nommés.  Pour pouvoir redéfinir cette fonction, nous lui avons
+simplement donné un nom.
 
 ** The idea: manipulating scopes
 Looking back, we see that we are mostly concerned with scopes and the ability to
