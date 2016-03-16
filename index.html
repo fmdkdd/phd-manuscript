@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-15 mar. 16:36 -->
+<!-- 2016-03-16 mer. 17:32 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,7 +267,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline141">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Dynamic scoping to modify Narcissus</a>
+<li><a href="#orgheadline143">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Dynamic scoping to modify Narcissus</a>
 <ul>
 <li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
@@ -276,27 +276,32 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline115">8.1.3. Disposer les environnements en couches</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline117">8.2. Le motif “module ouvert”</a></li>
-<li><a href="#orgheadline118">8.3. The idea: manipulating scopes</a></li>
-<li><a href="#orgheadline119">8.4. How to manipulate scopes in JavaScript</a></li>
-<li><a href="#orgheadline120">8.5. Evaluation on Narcissus</a></li>
-<li><a href="#orgheadline140">8.6. Discussion</a>
+<li><a href="#orgheadline117">8.2. Réaliser le motif “module ouvert”</a></li>
+<li><a href="#orgheadline119">8.3. Appliquer le motif “module ouvert” à Narcissus</a>
 <ul>
-<li><a href="#orgheadline121">8.6.1. Insights</a></li>
-<li><a href="#orgheadline122">8.6.2. Broad applications</a></li>
-<li><a href="#orgheadline123">8.6.3. Other JS interpreters</a></li>
-<li><a href="#orgheadline129">8.6.4. Related work</a></li>
-<li><a href="#orgheadline139">8.6.5. Objections and downsides</a></li>
+<li><a href="#orgheadline118">8.3.1. Ajouter l’analyse d’évaluation multi-facettes</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#orgheadline143">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline120">8.4. The idea: manipulating scopes</a></li>
+<li><a href="#orgheadline121">8.5. How to manipulate scopes in JavaScript</a></li>
+<li><a href="#orgheadline122">8.6. Evaluation on Narcissus</a></li>
+<li><a href="#orgheadline142">8.7. Discussion</a>
 <ul>
-<li><a href="#orgheadline142">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline123">8.7.1. Insights</a></li>
+<li><a href="#orgheadline124">8.7.2. Broad applications</a></li>
+<li><a href="#orgheadline125">8.7.3. Other JS interpreters</a></li>
+<li><a href="#orgheadline131">8.7.4. Related work</a></li>
+<li><a href="#orgheadline141">8.7.5. Objections and downsides</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline144">Références</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline145">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
+<ul>
+<li><a href="#orgheadline144">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline146">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7306,8 +7311,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-2">
-<h2 id="orgheadline141"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Dynamic scoping to modify Narcissus</h2>
+<div id="outline-container-orgheadline143" class="outline-2">
+<h2 id="orgheadline143"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Dynamic scoping to modify Narcissus</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -7909,7 +7914,7 @@ l’objet de la section suivante.
 </div>
 
 <div id="outline-container-orgheadline117" class="outline-3">
-<h3 id="orgheadline117"><span class="section-number-3">8.2</span> Le motif “module ouvert”</h3>
+<h3 id="orgheadline117"><span class="section-number-3">8.2</span> Réaliser le motif “module ouvert”</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
@@ -8122,12 +8127,274 @@ exposées par l’objet parent ne sont pas forcément celles de l’environnemen
 la FIA, ce qui permet encore une fois de contrôler ce que le code externe au
 module peut voir.
 </p>
+
+<p>
+Enfin, puisque la chaîne de prototype d’un objet JavaScript peut être vue comme
+une liste chaînée, on peut directement implémenter l’idée des couches
+d’environnements du modèle de la section précédente.  Dans le code suivant, on
+définit la fonction <code>pushEnv(e, head)</code> qui insère l’objet <code>e</code> comme parent de
+<code>head</code>; la fonction <code>removeEnv(e, head)</code> retire l’objet <code>e</code> de la chaîne,
+quelque soit sa position.  Si on reprend le module <code>m</code> définit dans l’exemple
+précédent, on peut maintenant utiliser des objets JavaScript pour grouper les
+modifications que l’on souhaite apporter au module (<code>e1</code> et <code>e2</code>), et utiliser
+<code>pushEnv</code> et <code>removeEnv</code> pour activer ou désactiver ces changements
+dynamiquement.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){ ... }())
+
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">pushEnv</span>(<span style="font-weight: bold; font-style: italic;">e</span>, <span style="font-weight: bold; font-style: italic;">head</span>) {
+  Object.setPrototypeOf(e, Object.getPrototypeOf(head))
+  Object.setPrototypeOf(head, e)
+}
+
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">removeEnv</span>(<span style="font-weight: bold; font-style: italic;">e</span>, <span style="font-weight: bold; font-style: italic;">head</span>) {
+  <span style="font-weight: bold;">while</span> (Object.getPrototypeOf(head) != <span style="font-weight: bold; text-decoration: underline;">null</span> &amp;&amp; Object.getPrototypeOf(head) !== e)
+    head = Object.getPrototypeOf(head)
+
+  <span style="font-weight: bold;">if</span> (Object.getPrototypeOf(head) === e) {
+    Object.setPrototypeOf(head, Object.getPrototypeOf(e))
+    Object.setPrototypeOf(e, <span style="font-weight: bold; text-decoration: underline;">null</span>)
+  }
+}
+
+m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">e1</span> = { a: 2, f: <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.env.a }}
+pushEnv(e1, m.env)
+m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
+
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">e2</span> = { f: <span style="font-weight: bold;">function</span>() { <span style="font-weight: bold;">return</span> -m.env.a }}
+pushEnv(e2, m.env)
+m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -2</span>
+
+removeEnv(e1, m.env)
+m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -1</span>
+</pre>
+</div>
+
+<p>
+Donc <code>with</code> permet de réaliser l’idée de l’environnement frontal, et la chaîne
+de prototype de l’objet de liaison de <code>with</code> permet de disposer les
+environnements en couches.  Et grâce à ces mécanismes, on parvient à ouvrir le
+motif module; on peut changer les définitions internes au module par du code
+écrit à l’extérieur.  Mais les exemples que l’on a utilisés sont restés très
+simples.  Il serait plus intéressant de voir comment on peut ouvrir un module
+plus complexe, et quels sont les problèmes qui apparaissent.  Dans la section
+suivante, on applique ces mécanismes à Narcissus.
+</p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline118" class="outline-3">
-<h3 id="orgheadline118"><span class="section-number-3">8.3</span> The idea: manipulating scopes</h3>
+<div id="outline-container-orgheadline119" class="outline-3">
+<h3 id="orgheadline119"><span class="section-number-3">8.3</span> Appliquer le motif “module ouvert” à Narcissus</h3>
 <div class="outline-text-3" id="text-8-3">
+<p>
+Dans cette section, on reprend une version non instrumentée de Narcissus, à
+laquelle on va ajouter plusieurs analyses en essayant de minimiser les
+changements de code à l’intérieur du module de Narcissus.  Pour ouvrir le module
+de Narcissus, il suffit d’ajouter <code>with</code> autour du corps du code ainsi que
+l’objet <code>parent</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-diff">Narcissus.interpreter = (function() {
++  var _env = Object.create(null);
++  with (_env) {
+   ...
+   // 1500 lines later
+   ...
++  var _parent = {
++    globalBase: globalBase,
++    execute: execute,
++    getValue: getValue,
++    ...
++  };
++  Object.setPrototypeOf(_env, _parent);
+   return {
+     evaluate: evaluate,
+     ...
++    _env: _env,
+   };
++  }
+}());
+</pre>
+</div>
+
+<p>
+Les changements n’affectent que le début et la fin du fichier.  Puisque le
+module exporte déjà des propriétés dans le <code>return</code>, on y ajoute juste la
+propriété <code>_env</code>.  Les analyses qui nous intéressent nécessitent également
+d’exposer des propriétés internes au module à travers l’objet <code>_parent</code> (nous en
+avons utilisé 14 en tout dans notre version instrumentée de Narcissus).  Notons
+au passage que les propriétés <code>_env</code> et <code>_parent</code> sont préfixées d’un tiret bas
+pour éviter une collision de nom avec les variables déclarées à la racine par
+Narcissus.  Mais ces lignes sont les seules modifications nécessaires à apporter
+au module pour pouvoir commencer l’instrumentation.
+</p>
+</div>
+
+<div id="outline-container-orgheadline118" class="outline-4">
+<h4 id="orgheadline118"><span class="section-number-4">8.3.1</span> Ajouter l’analyse d’évaluation multi-facettes</h4>
+<div class="outline-text-4" id="text-8-3-1">
+<p>
+On a vu dans l’étude de cas que l’implémentation de l’évaluation multi-facettes
+sur Narcissus pouvait être répartie en trois catégories de changements.  La
+première catégorie était l’ajout du <i>program counter</i> par extension de l’objet
+<code>ExecutionContext</code> et d’arguments supplémentaires à la fonction <code>getValue</code>.  On
+peut maintenant effectuer ce changement de l’extérieur du module:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span id="coderef-ex10-N" class="coderef-off"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">N</span> = Narcissus.interpreter._env</span>
+<span class="linenr"> 2: </span>
+<span id="coderef-ex10-EC" class="coderef-off"><span class="linenr"> 3: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">EC</span> = N.ExecutionContext</span>
+<span class="linenr"> 4: </span><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">ExecutionContext</span>(<span style="font-weight: bold; font-style: italic;">type</span>, <span style="font-weight: bold; font-style: italic;">version</span>) {
+<span class="linenr"> 5: </span>  EC.call(<span style="font-weight: bold; text-decoration: underline;">this</span>, type, version)
+<span class="linenr"> 6: </span>
+<span class="linenr"> 7: </span>  <span style="font-weight: bold; text-decoration: underline;">this</span>.pc = getPC() || <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">ProgramCounter</span>()
+<span class="linenr"> 8: </span>}
+<span class="linenr"> 9: </span>
+<span id="coderef-ex10-ECproto" class="coderef-off"><span class="linenr">10: </span>ExecutionContext.<span style="font-weight: bold; text-decoration: underline;">prototype</span> = Object.create(EC.<span style="font-weight: bold; text-decoration: underline;">prototype</span>)</span>
+<span class="linenr">11: </span>
+<span class="linenr">12: </span><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">getPC</span>() {
+<span class="linenr">13: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">x</span> = EC.current
+<span class="linenr">14: </span>  <span style="font-weight: bold;">return</span> x &amp;&amp; x.pc
+<span class="linenr">15: </span>}
+<span class="linenr">16: </span>
+<span class="linenr">17: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">GV</span> = N.getValue
+<span id="coderef-ex10-getV" class="coderef-off"><span class="linenr">18: </span><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">getValue</span>(<span style="font-weight: bold; font-style: italic;">v</span>, <span style="font-weight: bold; font-style: italic;">pc</span>) {</span>
+<span class="linenr">19: </span>  pc = pc || getPC()
+<span class="linenr">20: </span>
+<span class="linenr">21: </span>  <span style="font-weight: bold;">if</span> (v <span style="font-weight: bold;">instanceof</span> <span style="font-weight: bold; text-decoration: underline;">FacetedValue</span>)
+<span class="linenr">22: </span>    <span style="font-weight: bold;">return</span> derefFacetedValue(v, pc)
+<span class="linenr">23: </span>
+<span class="linenr">24: </span>  <span style="font-weight: bold;">return</span> GV(v)
+<span class="linenr">25: </span>}
+<span class="linenr">26: </span>
+<span id="coderef-ex10-instr1" class="coderef-off"><span class="linenr">27: </span>N.ExecutionContext = ExecutionContext</span>
+<span id="coderef-ex10-instr2" class="coderef-off"><span class="linenr">28: </span>N.getValue = getValue</span>
+</pre>
+</div>
+
+<p>
+On commence par définir un nom raccourci ligne <a href="#coderef-ex10-N"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-N');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-N');">1</a> pour l’environnement
+exporté par Narcissus.  Puis on modifie le constructeur <code>ExecutionContext</code> après
+avoir sauvegardé l’original ligne <a href="#coderef-ex10-EC"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-EC');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-EC');">3</a>, pour pouvoir y faire référence dans
+la nouveau constructeur, mais aussi dans <code>getPC</code>.  Le nouveau constructeur
+appelle le constructeur original (équivalent à un appel à <code>super</code> en Java) et
+ajoute la valeur courante du <i>program counter</i> comme propriété <code>pc</code>.  Les autres
+propriétés de l’objet <code>ExecutionContext</code> sont héritées grâce à l’idiome
+JavaScript ligne <a href="#coderef-ex10-ECproto"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-ECproto');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-ECproto');">10</a>.  Ligne <a href="#coderef-ex10-getV"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-getV');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-getV');">18</a>, on définit une nouvelle
+fonction <code>getValue</code> qui va remplacer et appeler l’originale, mais qui récupère
+le <i>program counter</i> courant soit donné en argument, soit par un appel à <code>getPC</code>
+si l’argument n’est pas renseigné.  De cette façon, les appels à <code>getValue</code> dans
+l’interpréteur ne nécessitent pas de modification pour l’argument
+supplémentaire, mais le code de l’instrumentation peut appeler <code>getValue</code> en
+passant une valeur pour <code>pc</code>.  Enfin, on installe ces modifications dans
+l’environnement frontal de l’interpréteur (lignes <a href="#coderef-ex10-instr1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-instr1');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-instr1');">27</a> et
+<a href="#coderef-ex10-instr2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-instr2');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-instr2');">28</a>).
+</p>
+
+<p>
+La seconde catégorie de changements concernait l’extension de la fonction
+<code>execute</code> pour chaque nœud de l’AST, dans le but de scinder l’évaluation des
+valeurs à facettes en appelant la nouvelle fonction <code>evaluateEach</code> sur chacune
+des facettes.  La fonction <code>execute</code> est essentiellement un long <code>switch</code> (600
+lignes) avec un <code>case</code> pour chaque type de nœud de l’AST.  On redéfinit la
+fonction <code>execute</code> en suivant la même structure.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr">29: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">EX</span> = N.execute
+<span class="linenr">30: </span><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">execute</span>(<span style="font-weight: bold; font-style: italic;">n</span>.<span style="font-weight: bold; font-style: italic;">x</span>) {
+<span class="linenr">31: </span>  <span style="font-weight: bold;">switch</span> (n.type) {
+<span class="linenr">32: </span>    <span style="font-weight: bold;">case</span> IF:
+<span class="linenr">33: </span>      <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">cond</span> = N.getValue(N.execute(n.condition, x), x.pc)
+<span class="linenr">34: </span>      evaluateEach(cond, <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">v</span>, <span style="font-weight: bold; font-style: italic;">x</span>) {
+<span class="linenr">35: </span>        <span style="font-weight: bold;">if</span> (v) N.execute(n.thenPart, x)
+<span class="linenr">36: </span>        <span style="font-weight: bold;">else</span> <span style="font-weight: bold;">if</span> (n.elsePart) N.execute(n.elsePart, x)
+<span class="linenr">37: </span>      }, x)
+<span class="linenr">38: </span>    <span style="font-weight: bold;">break</span>
+<span class="linenr">39: </span>
+<span class="linenr">40: </span>    ... <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">other instrumented cases</span>
+<span class="linenr">41: </span>
+<span id="coderef-ex11-default" class="coderef-off"><span class="linenr">42: </span>    <span style="font-weight: bold;">default</span>: <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">v</span> = EX(n, x)</span>
+<span class="linenr">43: </span>  }
+<span class="linenr">44: </span>  <span style="font-weight: bold;">return</span> v
+<span class="linenr">45: </span>}
+<span class="linenr">46: </span>
+<span id="coderef-ex11-redef" class="coderef-off"><span class="linenr">47: </span>N.execute = execute</span>
+</pre>
+</div>
+
+<p>
+L’évaluation multi-facettes ne redéfinit le comportement que pour quelques types
+de nœuds de l’AST, donc on délègue à la fonction initiale dans le <code>default</code>
+ligne <a href="#coderef-ex11-default"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex11-default');" onmouseout="CodeHighlightOff(this, 'coderef-ex11-default');">42</a>.  En déclarant un <code>case IF</code>, on redéfinit le traitement des
+nœuds de type <code>IF</code> dans l’AST.  Notons qu’ici on appelle récursivement
+<code>N.execute</code>, et que dans le code de la fonction d’origine, l’appel récursif est
+noté <code>execute</code>, mais après la ligne <a href="#coderef-ex11-redef"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex11-redef');" onmouseout="CodeHighlightOff(this, 'coderef-ex11-redef');">47</a>, les deux noms pointeront vers
+la même fonction: celle que l’on vient de définir.
+</p>
+
+<p>
+Enfin, la troisième catégorie de changements regroupait les ajouts de propriétés
+à l’objet <code>globalBase</code>.  Il s’agit donc de définir un nouvel objet <code>globalBase</code>
+qui hérite de l’objet original, mais auquel on rajoute les propriétés
+supplémentaires:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr">48: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">globalBase</span> = Object.create(N.globalBase)
+<span class="linenr">49: </span>
+<span class="linenr">50: </span>globalBase.isFacetedValue = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">v</span>) {
+<span class="linenr">51: </span>  <span style="font-weight: bold;">return</span> (v <span style="font-weight: bold;">instanceof</span> <span style="font-weight: bold; text-decoration: underline;">FacetedValue</span>)
+<span class="linenr">52: </span>}
+<span class="linenr">53: </span>
+<span class="linenr">54: </span>...  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">other properties</span>
+<span class="linenr">55: </span>
+<span class="linenr">56: </span>N.globalBase = globalBase
+</pre>
+</div>
+
+<p>
+Mais ce n’est pas suffisant.  Dans le module de Narcissus, l’objet <code>globalBase</code>
+est utilisé juste après sa création pour peupler l’objet global du code client.
+Ce processus prend place dans le module, avant que les propriétés exportées ne
+soient retournées.  Hors, la façon que l’on a d’étendre le module ne nous permet
+de modifier que des valeurs après l’export des propriétés.  Il nous faut donc
+modifier le code du module pour pouvoir effectuer ce changement.  Il suffit de
+fournir une fonction <code>populateEnvironment</code> qui construit l’objet global à partir
+de <code>globalBase</code>, et qui devra être appelée après la construction du module.  Ça
+nous laisse maintenant la possibilité d’étendre l’objet <code>globalBase</code>.  Cette
+modification au module consiste à déplacer les 30 instructions qui peuplaient
+l’objet global dans la fonction <code>populateEnvironment</code>, et à rajouter cette
+nouvelle fonction dans les propriétés exportées.
+</p>
+
+<p>
+Un dernier changement du module a été nécessaire, plus léger cette fois.  Une
+fonction cruciale, la fonction qui est utilisée par le code client pour
+déclencher un appel de fonction, était crée de manière <i>anonyme</i> dans le
+module.  Vu qu’elle n’avait pas de nom, il n’y avait aucun moyen de la redéfinir
+de l’extérieur du module; le motif “module ouvert” ne peut surcharger que des
+identifiants nommés.  Pour pouvoir redéfinir cette fonction, nous lui avons
+simplement donné un nom.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline120" class="outline-3">
+<h3 id="orgheadline120"><span class="section-number-3">8.4</span> The idea: manipulating scopes</h3>
+<div class="outline-text-3" id="text-8-4">
 <p>
 Looking back, we see that we are mostly concerned with scopes and the ability to
 manipulate them to add or remove bindings.  So we can describe what we want,
@@ -8368,9 +8635,9 @@ How do we make this work?
 </div>
 </div>
 
-<div id="outline-container-orgheadline119" class="outline-3">
-<h3 id="orgheadline119"><span class="section-number-3">8.4</span> How to manipulate scopes in JavaScript</h3>
-<div class="outline-text-3" id="text-8-4">
+<div id="outline-container-orgheadline121" class="outline-3">
+<h3 id="orgheadline121"><span class="section-number-3">8.5</span> How to manipulate scopes in JavaScript</h3>
+<div class="outline-text-3" id="text-8-5">
 <p>
 Here we find a way to approximate this scope manipulation using standard
 JavaScript.
@@ -8575,9 +8842,9 @@ m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style
 </div>
 </div>
 
-<div id="outline-container-orgheadline120" class="outline-3">
-<h3 id="orgheadline120"><span class="section-number-3">8.5</span> Evaluation on Narcissus</h3>
-<div class="outline-text-3" id="text-8-5">
+<div id="outline-container-orgheadline122" class="outline-3">
+<h3 id="orgheadline122"><span class="section-number-3">8.6</span> Evaluation on Narcissus</h3>
+<div class="outline-text-3" id="text-8-6">
 <p>
 Application of open scope pattern to Narcissus.
 </p>
@@ -8685,12 +8952,12 @@ evaluation, since we reduce copy-pasting.  (e.g., <code>S12.11_A1_T3.js</code>)
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-3">
-<h3 id="orgheadline140"><span class="section-number-3">8.6</span> Discussion</h3>
-<div class="outline-text-3" id="text-8-6">
-</div><div id="outline-container-orgheadline121" class="outline-4">
-<h4 id="orgheadline121"><span class="section-number-4">8.6.1</span> Insights</h4>
-<div class="outline-text-4" id="text-8-6-1">
+<div id="outline-container-orgheadline142" class="outline-3">
+<h3 id="orgheadline142"><span class="section-number-3">8.7</span> Discussion</h3>
+<div class="outline-text-3" id="text-8-7">
+</div><div id="outline-container-orgheadline123" class="outline-4">
+<h4 id="orgheadline123"><span class="section-number-4">8.7.1</span> Insights</h4>
+<div class="outline-text-4" id="text-8-7-1">
 <p>
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
 for every bit of functionality (i.e., identify moving pieces and put them in
@@ -8718,9 +8985,9 @@ there is none.  Open scope is not ideal, but practical.
 </div>
 </div>
 
-<div id="outline-container-orgheadline122" class="outline-4">
-<h4 id="orgheadline122"><span class="section-number-4">8.6.2</span> Broad applications</h4>
-<div class="outline-text-4" id="text-8-6-2">
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">8.7.2</span> Broad applications</h4>
+<div class="outline-text-4" id="text-8-7-2">
 <p>
 Not only dynamic analyses, but any variation of the interpreter.  Strict mode
 comes to mind.  As it applies to the module pattern, there is nothing specific
@@ -8735,9 +9002,9 @@ More generally, it applies to <i>customizing software</i> at the source level.
 </div>
 </div>
 
-<div id="outline-container-orgheadline123" class="outline-4">
-<h4 id="orgheadline123"><span class="section-number-4">8.6.3</span> Other JS interpreters</h4>
-<div class="outline-text-4" id="text-8-6-3">
+<div id="outline-container-orgheadline125" class="outline-4">
+<h4 id="orgheadline125"><span class="section-number-4">8.7.3</span> Other JS interpreters</h4>
+<div class="outline-text-4" id="text-8-7-3">
 <p>
 ES5.1 interpreter written using a module pattern:
 </p>
@@ -8761,12 +9028,12 @@ Written as several modules (ES5 + flow analysis):
 </div>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-4">
-<h4 id="orgheadline129"><span class="section-number-4">8.6.4</span> Related work</h4>
-<div class="outline-text-4" id="text-8-6-4">
-</div><div id="outline-container-orgheadline124" class="outline-5">
-<h5 id="orgheadline124">Open modules</h5>
-<div class="outline-text-5" id="text-orgheadline124">
+<div id="outline-container-orgheadline131" class="outline-4">
+<h4 id="orgheadline131"><span class="section-number-4">8.7.4</span> Related work</h4>
+<div class="outline-text-4" id="text-8-7-4">
+</div><div id="outline-container-orgheadline126" class="outline-5">
+<h5 id="orgheadline126">Open modules</h5>
+<div class="outline-text-5" id="text-orgheadline126">
 <p>
 Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
 offer a clearly-defined boundary between the module writer and the writer of an
@@ -8784,9 +9051,9 @@ modular.
 </div>
 </div>
 
-<div id="outline-container-orgheadline125" class="outline-5">
-<h5 id="orgheadline125">Isn’t a visitor pattern enough?</h5>
-<div class="outline-text-5" id="text-orgheadline125">
+<div id="outline-container-orgheadline127" class="outline-5">
+<h5 id="orgheadline127">Isn’t a visitor pattern enough?</h5>
+<div class="outline-text-5" id="text-orgheadline127">
 <p>
 In general, a good idea.  But Narcissus is not object-oriented, so it cannot
 apply here.
@@ -8799,9 +9066,9 @@ could just rewrite from scratch and design for extensibility.
 </div>
 </div>
 
-<div id="outline-container-orgheadline126" class="outline-5">
-<h5 id="orgheadline126">Object-oriented interpreter</h5>
-<div class="outline-text-5" id="text-orgheadline126">
+<div id="outline-container-orgheadline128" class="outline-5">
+<h5 id="orgheadline128">Object-oriented interpreter</h5>
+<div class="outline-text-5" id="text-orgheadline128">
 <p>
 Other ways to instrument would depend on the form of the target interpreter.
 Here we have a module pattern with lexical scoping.  What if the interpreter was
@@ -8829,9 +9096,9 @@ on object attributes.
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-5">
-<h5 id="orgheadline127">&#x2026;AOP?</h5>
-<div class="outline-text-5" id="text-orgheadline127">
+<div id="outline-container-orgheadline129" class="outline-5">
+<h5 id="orgheadline129">&#x2026;AOP?</h5>
+<div class="outline-text-5" id="text-orgheadline129">
 <ul class="org-ul">
 <li>No satisfying AOP framework we could apply.  AspectScript is costly because
 parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.</li>
@@ -8844,9 +9111,9 @@ is just standard JavaScript.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-5">
-<h5 id="orgheadline128">Scoping strategies</h5>
-<div class="outline-text-5" id="text-orgheadline128">
+<div id="outline-container-orgheadline130" class="outline-5">
+<h5 id="orgheadline130">Scoping strategies</h5>
+<div class="outline-text-5" id="text-orgheadline130">
 <p>
 Scoping strategies specify how aspects are applied dynamically.
 </p>
@@ -8884,12 +9151,12 @@ expressiveness of scoping strategies would be needed, or more useful.
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-4">
-<h4 id="orgheadline139"><span class="section-number-4">8.6.5</span> Objections and downsides</h4>
-<div class="outline-text-4" id="text-8-6-5">
-</div><div id="outline-container-orgheadline130" class="outline-5">
-<h5 id="orgheadline130"><code>with</code> is deprecated</h5>
-<div class="outline-text-5" id="text-orgheadline130">
+<div id="outline-container-orgheadline141" class="outline-4">
+<h4 id="orgheadline141"><span class="section-number-4">8.7.5</span> Objections and downsides</h4>
+<div class="outline-text-4" id="text-8-7-5">
+</div><div id="outline-container-orgheadline132" class="outline-5">
+<h5 id="orgheadline132"><code>with</code> is deprecated</h5>
+<div class="outline-text-5" id="text-orgheadline132">
 <p>
 <code>with</code> is disallowed in Strict mode because it makes static analysis difficult
 by violating lexical scope.  But this is precisely why we need it in this
@@ -8911,9 +9178,9 @@ lists pro and contra arguments.
 </div>
 </div>
 
-<div id="outline-container-orgheadline131" class="outline-5">
-<h5 id="orgheadline131">Open scope defeats the purpose of the module pattern</h5>
-<div class="outline-text-5" id="text-orgheadline131">
+<div id="outline-container-orgheadline133" class="outline-5">
+<h5 id="orgheadline133">Open scope defeats the purpose of the module pattern</h5>
+<div class="outline-text-5" id="text-orgheadline133">
 <p>
 Module pattern is for hiding information, and exposing only what is required.
 </p>
@@ -8937,9 +9204,9 @@ information?  (WeakMap, Symbols, or dunder prefix).
 </div>
 </div>
 
-<div id="outline-container-orgheadline132" class="outline-5">
-<h5 id="orgheadline132">It’s not modular if there is no interface for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline132">
+<div id="outline-container-orgheadline134" class="outline-5">
+<h5 id="orgheadline134">It’s not modular if there is no interface for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline134">
 <p>
 Open scope means an instrumentation is free to change any binding, without an
 explicit interface.  No interface means no contract between instrumentation
@@ -8956,9 +9223,9 @@ hooks everywhere.
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-5">
-<h5 id="orgheadline133">It’s still ad-hoc</h5>
-<div class="outline-text-5" id="text-orgheadline133">
+<div id="outline-container-orgheadline135" class="outline-5">
+<h5 id="orgheadline135">It’s still ad-hoc</h5>
+<div class="outline-text-5" id="text-orgheadline135">
 <p>
 Some refactoring made to Narcissus was specific to the implementation (salami
 the <code>switch</code>, <code>reflectClass</code>).  But the open scope pattern makes few hypotheses
@@ -8975,9 +9242,9 @@ eyeball the implementation of facets and compare it to a spec document.
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-5">
-<h5 id="orgheadline134">Application of open scope if not module pattern?</h5>
-<div class="outline-text-5" id="text-orgheadline134">
+<div id="outline-container-orgheadline136" class="outline-5">
+<h5 id="orgheadline136">Application of open scope if not module pattern?</h5>
+<div class="outline-text-5" id="text-orgheadline136">
 <p>
 The idea is to manipulate scopes, so it is general.  <i>How</i> to manipulate the
 scope depends on the situation.  If the target is not a module pattern, then
@@ -8990,9 +9257,9 @@ If the target is OO, <code>this</code> also provides a kind dynamic scope.
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-5">
-<h5 id="orgheadline135">Open scope only captures top-level declaration of module</h5>
-<div class="outline-text-5" id="text-orgheadline135">
+<div id="outline-container-orgheadline137" class="outline-5">
+<h5 id="orgheadline137">Open scope only captures top-level declaration of module</h5>
+<div class="outline-text-5" id="text-orgheadline137">
 <p>
 Declarations inside functions are not captured, cannot be overridden.
 </p>
@@ -9011,9 +9278,9 @@ information.
 </div>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-5">
-<h5 id="orgheadline136">Aliasing inside the module can be problematic</h5>
-<div class="outline-text-5" id="text-orgheadline136">
+<div id="outline-container-orgheadline138" class="outline-5">
+<h5 id="orgheadline138">Aliasing inside the module can be problematic</h5>
+<div class="outline-text-5" id="text-orgheadline138">
 <p>
 Open scope allows an instrumentation to change bindings inside the module.  If a
 binding is aliased inside the module, the instrumentation should override the
@@ -9063,9 +9330,9 @@ That’s not an issue we have encountered in instrumenting Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-5">
-<h5 id="orgheadline137">What about interferences between instrumentations?</h5>
-<div class="outline-text-5" id="text-orgheadline137">
+<div id="outline-container-orgheadline139" class="outline-5">
+<h5 id="orgheadline139">What about interferences between instrumentations?</h5>
+<div class="outline-text-5" id="text-orgheadline139">
 <p>
 Is
 </p>
@@ -9085,9 +9352,9 @@ If not, what do you have to pay attention to when writing analyses?
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-5">
-<h5 id="orgheadline138">Performance costs</h5>
-<div class="outline-text-5" id="text-orgheadline138">
+<div id="outline-container-orgheadline140" class="outline-5">
+<h5 id="orgheadline140">Performance costs</h5>
+<div class="outline-text-5" id="text-orgheadline140">
 <p>
 Are expected due to the added indirection.
 </p>
@@ -9108,11 +9375,11 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline143" class="outline-2">
-<h2 id="orgheadline143"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline145" class="outline-2">
+<h2 id="orgheadline145"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline142" class="outline-3">
-<h3 id="orgheadline142"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline144" class="outline-3">
+<h3 id="orgheadline144"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -9140,9 +9407,9 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline144" class="outline-2">
-<h2 id="orgheadline144">Références</h2>
-<div class="outline-text-2" id="text-orgheadline144">
+<div id="outline-container-orgheadline146" class="outline-2">
+<h2 id="orgheadline146">Références</h2>
+<div class="outline-text-2" id="text-orgheadline146">
 <div id="bibliography">
 
 <table>
@@ -10760,7 +11027,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-15 mar. 16:36 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-16 mer. 17:32 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
