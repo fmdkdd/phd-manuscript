@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-17 jeu. 14:22 -->
+<!-- 2016-03-17 jeu. 17:35 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,7 +267,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline142">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline143">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
@@ -277,30 +277,31 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#orgheadline117">8.2. Ouvrir le motif module en JavaScript</a></li>
-<li><a href="#orgheadline119">8.3. Étendre Narcissus par manipulation de portée</a>
+<li><a href="#orgheadline120">8.3. Étendre Narcissus par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline118">8.3.1. Ajouter l’analyse d’évaluation multi-facettes</a></li>
+<li><a href="#orgheadline119">8.3.2. Évaluation</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline120">8.4. Discussion</a></li>
-<li><a href="#orgheadline121">8.5. Evaluation on Narcissus</a></li>
-<li><a href="#orgheadline141">8.6. Discussion</a>
+<li><a href="#orgheadline121">8.4. Discussion</a></li>
+<li><a href="#orgheadline122">8.5. Evaluation on Narcissus</a></li>
+<li><a href="#orgheadline142">8.6. Discussion</a>
 <ul>
-<li><a href="#orgheadline122">8.6.1. Insights</a></li>
-<li><a href="#orgheadline123">8.6.2. Broad applications</a></li>
-<li><a href="#orgheadline124">8.6.3. Other JS interpreters</a></li>
-<li><a href="#orgheadline130">8.6.4. Related work</a></li>
-<li><a href="#orgheadline140">8.6.5. Objections and downsides</a></li>
+<li><a href="#orgheadline123">8.6.1. Insights</a></li>
+<li><a href="#orgheadline124">8.6.2. Broad applications</a></li>
+<li><a href="#orgheadline125">8.6.3. Other JS interpreters</a></li>
+<li><a href="#orgheadline131">8.6.4. Related work</a></li>
+<li><a href="#orgheadline141">8.6.5. Objections and downsides</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline144">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline145">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline143">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline144">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline145">Références</a></li>
+<li><a href="#orgheadline146">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7310,8 +7311,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline142" class="outline-2">
-<h2 id="orgheadline142"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</h2>
+<div id="outline-container-orgheadline143" class="outline-2">
+<h2 id="orgheadline143"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -8189,8 +8190,8 @@ suivante, on applique ces mécanismes à Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline119" class="outline-3">
-<h3 id="orgheadline119"><span class="section-number-3">8.3</span> Étendre Narcissus par manipulation de portée</h3>
+<div id="outline-container-orgheadline120" class="outline-3">
+<h3 id="orgheadline120"><span class="section-number-3">8.3</span> Étendre Narcissus par manipulation de portée</h3>
 <div class="outline-text-3" id="text-8-3">
 <p>
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -8391,10 +8392,211 @@ simplement donné un nom.
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgheadline119" class="outline-4">
+<h4 id="orgheadline119"><span class="section-number-4">8.3.2</span> Évaluation</h4>
+<div class="outline-text-4" id="text-8-3-2">
+<p>
+L’instrumentation de Narcissus pour l’évaluation multi-facettes que l’on a
+réalisé consiste en 440 lignes de code, dans un seul fichier séparé de
+l’interpréteur; l’instrumentation faite par Austin et Flanagan comportait 640
+lignes mêlées au code de l’interpréteur.  Notre version factorise quelques
+changements, ce qui explique la différence.  L’intérêt d’avoir tous les
+changements dans un seul fichier à part c’est qu’on peut les étudier et avoir
+une idée de comment l’évaluation multi-facettes vient modifier l’interpréteur.
+On peut par exemple comparer le code de l’instrumentation avec la sémantique de
+référence de [<a href="#AF-12">AF12</a>].
+</p>
+
+<p>
+Pour ajouter l’évaluation multi-facettes, on a ajouté 19 lignes à Narcissus pour
+ouvrir le module avec <code>with</code>, et changé 32 lignes pour ajouter la fonction
+<code>populateEnvironment</code> et nommer la fonction anonyme.  En tout 51 lignes sur 1300
+sont touchées, à comparer avec les 640 lignes de l’instrumentation d’Austin et
+Flanagan.  Mais même si les changements sont restreints, il est important de
+noter qu’il était tout de même nécessaire de modifier le code de Narcissus.  Les
+changements, même mineurs, ont nécessité d’inspecter et de comprendre les
+différentes étapes de construction de l’interpréteur.
+</p>
+
+<aside>
+<p>
+Bien sûr, on aurait pu écrire un outil pour modifier automatiquement les lignes
+de Narcissus qui nous intéressent, et considérer ainsi qu’aucune ligne de
+Narcissus n’a été modifiée directement.  Mais non seulement ça ne change pas
+fondamentalement la situation (le code doit être modifié), ce serait en plus
+une transformation fragile car basée sur la syntaxe du code plutôt que sur sa
+sémantique.
+</p>
+</aside>
+
+<p>
+En plus de l’évaluation multi-facettes, on a défini trois autres analyses sur
+l’interpréteur: une analyse de flot d’information, FlowR, décrite par Pasquier,
+Bacon et Shand [<a href="#PBS-14">PBS</a>], une simple analyse de trace, et une analyse qui extrait
+les objets et les environnements alloués par l’interpréteur, afin de générer les
+diagrammes de cette section.  On a pu écrire ces trois analyses ont dans des
+fichiers séparés, sans avoir besoin de modifier le code de l’interpréteur.
+</p>
+
+<p>
+L’analyse de trace écrit sur la sortie standard le type de chaque nœud de l’AST,
+dans l’ordre de leur exécution par l’interpréteur.  C’est une information utile
+pour déboguer des exemples, et pour comprendre le fonctionnement de
+l’interpréteur.  En utilisant la technique de disposition en couches de la
+section ??, on peut activer plusieurs analyses à l’exécution avec des options de
+lancement.  Par exemple:
+</p>
+
+<pre class="example">
+./njs -l flowr -l trace -f tests/flowr.js
+</pre>
+
+<p>
+lance l’interpréteur, active l’analyse FlowR, et active aussi la trace en même
+temps avant d’exécuter le code du fichier “example.js”.  Un extrait de la sortie
+montre que les deux analyses fonctionnent correctement:
+</p>
+
+<pre class="example">
+              BLOCK
+                SEMICOLON
+                  CALL
+                    IDENTIFIER
+                    LIST
+                      IDENTIFIER
+Illegal flow: undefined to [object Object]
+            FUNCTION
+            SEMICOLON
+              CALL
+                IDENTIFIER
+                LIST
+                SCRIPT
+Illegal flow: undefined to [object Object]
+</pre>
+
+<p>
+Les <code>Illegal flow</code> sont produits par FlowR, et les autres par la trace.  L’union
+des deux sorties permet de localiser précisément les endroits du code où les
+flots non autorisés se produisent, sans avoir à rajouter du code spécifique à la
+trace dans l’analyse FlowR.
+</p>
+
+<p>
+La trace ne modifie qu’une seule fonction de l’interpréteur, et cette
+modification est compatible avec les modifications apportées par FlowR.
+Intuitivement, on voit bien que la trace est orthogonale au contrôle d’accès
+effectué par FlowR.  C’est pourquoi les deux analyses peuvent être activées en
+même temps sans que l’on ait besoin de rajouter du code spécifique à
+l’intégration de deux.  Ce n’est pas le cas pour l’évaluation multi-facettes et
+FlowR.  L’évaluation multi-facettes modifie les <i>valeurs</i> manipulées par
+l’interpréteur, et FlowR rajoute des <i>labels</i> sur ces valeurs.  Du coup, les
+deux analyses touchent à la représentation des valeurs dans l’interpréteur.  En
+regardant leur spécification, on ne peut pas dire clairement comment les deux
+analyses doivent se combiner, ni ce que le résultat d’une évaluation devrait
+produire.  Il faut donc retenir que la disposition en couches permet de
+facilement activer plusieurs modifications de l’interpréteur en même temps, mais
+que le résultat n’a de sens que si ces modifications n’interfèrent pas entre
+elles.
+</p>
+
+<aside>
+<p>
+Comment détecter et résoudre ces interférences reste un problème ouvert.
+</p>
+</aside>
+
+<p>
+Pour s’assurer qu’appliquer <code>with</code> pour ouvrir Narcissus n’a pas changé son
+fonctionnement, nous avons comparé le comportement de la version d’origine et la
+version avec <code>with</code> sur la suite de tests <code>test262</code>.  Cette suite contient plus
+de 11000 tests de conformité de la spécification ECMAScript 5.1.  Nous avons
+utilisé un sous-ensemble de cette suite, utilisé pour tester le moteur
+JavaScript SpiderMonkey de Mozilla.  Sur environ 3300 tests validés par
+SpiderMonkey, Narcissus en passe 2600.  Nous avons donc lancé la version
+originale de Narcissus et la version avec <code>with</code> sur ces 3300 tests.  Pour la
+version avec <code>with</code>, aucune analyse n’était activée: l‘objet de liaison restait
+donc vide.  Pour chaque test, notre script comparait la sortie des deux
+versions; si la sortie était identique, le test était passé, sinon, le test
+était échoué et le script enregistrait le test qui avait échoué.  Au final, les
+deux versions ont un comportement strictement identique sur ce jeu de tests.
+</p>
+
+<p>
+Nous avons aussi pu comparer Narcissus avec et sans l’évaluation multi-facettes
+sur ce même jeu de tests.  Lorsque le <i>program counter</i> de l’évaluation
+multi-facettes est vide, l’interpréteur se comporte de façon identique sur les
+tests considérés.  Un résultat démontré par Austin et Flanagan sur la sémantique
+de l’évaluation, basée sur un lambda-calcul, mais pas sur l’implémentation qui
+concerne le langage JavaScript dans toute sa largeur.
+</p>
+
+<p>
+En exécutant les tests, nous avons aussi mesuré le temps d’exécution de chaque
+version.  Pour chaque version, le jeu de test a été lancé dix fois, sur un seul
+thread, toujours sur la même machine.  Le tableau donne la moyenne arithmétique
+du temps pour une exécution complète sur ces dix lancers.
+</p>
+
+<aside>
+<p>
+Les tests ont été effectué sur un PC portable contenant un Intel i5-3320M
+2.60GHz et 4Gb de RAM.  Narcissus a été lancé à travers une <a href="https://ftp.mozilla.org/pub/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip">version de
+développement</a> de SpiderMonkey (version JavaScript-C36.0a1).  Les tests
+proviennent de la version de développement de <a href="https://mxr.mozilla.org/mozilla-central/source/js/src/tests/">mozilla-central</a> et ont été
+exécutés par le script <code>jstests.py</code> développé par Mozilla.
+</p>
+</aside>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Interpréteur</th>
+<th scope="col" class="org-left">Temps moyen (secondes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">SpiderMonkey</td>
+<td class="org-left">89 (± 1)</td>
+</tr>
+
+<tr>
+<td class="org-left">Narcissus original</td>
+<td class="org-left">1040 (± 1)</td>
+</tr>
+
+<tr>
+<td class="org-left">Narcissus avec <code>with</code></td>
+<td class="org-left">1218 (± 10)</td>
+</tr>
+
+<tr>
+<td class="org-left">Narcissus et multi-facettes (Austin et Flanagan)</td>
+<td class="org-left">1215 (± 2)</td>
+</tr>
+
+<tr>
+<td class="org-left">Narcissus et multi-facettes avec <code>with</code></td>
+<td class="org-left">1301 (± 1)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
-<div id="outline-container-orgheadline120" class="outline-3">
-<h3 id="orgheadline120"><span class="section-number-3">8.4</span> Discussion</h3>
+
+
+<div id="outline-container-orgheadline121" class="outline-3">
+<h3 id="orgheadline121"><span class="section-number-3">8.4</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 Comparison to putting all bindings in global scope, rather than using this
@@ -8410,25 +8612,56 @@ scope.</li>
 requires additions at the top and bottom of the file (local changes, easily
 removable).</li>
 </ul>
+
+<p>
+Why not refactor the interpreter and leave holes, inversion of control style?
+</p>
+<ul class="org-ul">
+<li>cleaner (more common), no need for weird <code>with</code> tricks</li>
+<li>allow for describing the instrumentation in its own file</li>
+</ul>
+<p>
+Yes but:
+</p>
+<ul class="org-ul">
+<li>need to refactor the interpreter heavily</li>
+<li>indirection of control flow complexifies clarity of interpreter code</li>
+<li>can’t design an API for unknown requirements</li>
+<li><code>with</code> is quite harmless if understood and used properly</li>
+<li>burden of instrumentation in open scope is the sole responsability of</li>
+</ul>
+<p>
+instrumentation programmer, not shared by interpreter writer
+</p>
+
+<p>
+Why not use AOP?
+</p>
+<ul class="org-ul">
+<li>well known solution</li>
+<li>allow for describing the instrumentation in its own file</li>
+<li>provides <code>around</code> and <code>proceed</code>, which seems to be what you need</li>
+</ul>
+<p>
+Yes but:
+</p>
+<ul class="org-ul">
+<li>no satisfying AOP library for JS</li>
+<li>could <i>write</i> one, but looking at what we needed, scope manipulation was</li>
+</ul>
+<p>
+enough to get 90% of the changes without modifying the code.
+</p>
+<ul class="org-ul">
+<li>opted for the simpler mechanism known to work reliably</li>
+<li><code>around</code> can be added (we did so) as a function of 3 lines of code</li>
+</ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline121" class="outline-3">
-<h3 id="orgheadline121"><span class="section-number-3">8.5</span> Evaluation on Narcissus</h3>
+<div id="outline-container-orgheadline122" class="outline-3">
+<h3 id="orgheadline122"><span class="section-number-3">8.5</span> Evaluation on Narcissus</h3>
 <div class="outline-text-3" id="text-8-5">
-<p>
-Refactoring is correct, does not change behavior of interpreter (same output
-with RAW and BASE for test262 suite).
-</p>
-
-<p>
-Benchmarks setup: i5-3320M 2.60GHz, running test262 from mozilla-central,
-through Narcissus on top of Spidermonkey.  Tests are mostly small programs,
-only a handful take longer than 5s to execute.  Startup times might dominate
-over actual <code>with</code> performance.  Octane benchmarks aim to measure performance
-for “realistic applications”.
-</p>
-
 <p>
 Performance is on par with straightforward instrumentation.  20% increase when
 comparing non-instrumented interpreter.  10% increase when comparing
@@ -8474,43 +8707,17 @@ instrumented (analysis matters more).
 </table>
 
 <p>
-Instrumentation stands in its own file; 440 non-blank lines (+ 300 of
-definitions).  Shorter in part because changes to PC are avoided by putting it
-on ExecutionContext.
-</p>
-
-<p>
-Facets instrumentation is terse; can at a glance see what parts are affected by
-faceted evaluation.
-</p>
-
-<p>
-Can check that facets instrumentation does not alter semantics of JS code when
-program counter is empty.  (But this could have been done by Austin had they run
-the test262 suite).
-</p>
-
-<p>
-FlowR is another information flow analysis which can be easily expressed in its
-own file, on top of base.
-</p>
-
-<p>
-Tracing can be defined on the side, and applied to facets or base.
-</p>
-
-<p>
 We have corrected bugs in Narcissus without touching the instrumented
 evaluation, since we reduce copy-pasting.  (e.g., <code>S12.11_A1_T3.js</code>)
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-3">
-<h3 id="orgheadline141"><span class="section-number-3">8.6</span> Discussion</h3>
+<div id="outline-container-orgheadline142" class="outline-3">
+<h3 id="orgheadline142"><span class="section-number-3">8.6</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-6">
-</div><div id="outline-container-orgheadline122" class="outline-4">
-<h4 id="orgheadline122"><span class="section-number-4">8.6.1</span> Insights</h4>
+</div><div id="outline-container-orgheadline123" class="outline-4">
+<h4 id="orgheadline123"><span class="section-number-4">8.6.1</span> Insights</h4>
 <div class="outline-text-4" id="text-8-6-1">
 <p>
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
@@ -8539,8 +8746,8 @@ there is none.  Open scope is not ideal, but practical.
 </div>
 </div>
 
-<div id="outline-container-orgheadline123" class="outline-4">
-<h4 id="orgheadline123"><span class="section-number-4">8.6.2</span> Broad applications</h4>
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">8.6.2</span> Broad applications</h4>
 <div class="outline-text-4" id="text-8-6-2">
 <p>
 Not only dynamic analyses, but any variation of the interpreter.  Strict mode
@@ -8556,8 +8763,8 @@ More generally, it applies to <i>customizing software</i> at the source level.
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-4">
-<h4 id="orgheadline124"><span class="section-number-4">8.6.3</span> Other JS interpreters</h4>
+<div id="outline-container-orgheadline125" class="outline-4">
+<h4 id="orgheadline125"><span class="section-number-4">8.6.3</span> Other JS interpreters</h4>
 <div class="outline-text-4" id="text-8-6-3">
 <p>
 ES5.1 interpreter written using a module pattern:
@@ -8582,12 +8789,12 @@ Written as several modules (ES5 + flow analysis):
 </div>
 </div>
 
-<div id="outline-container-orgheadline130" class="outline-4">
-<h4 id="orgheadline130"><span class="section-number-4">8.6.4</span> Related work</h4>
+<div id="outline-container-orgheadline131" class="outline-4">
+<h4 id="orgheadline131"><span class="section-number-4">8.6.4</span> Related work</h4>
 <div class="outline-text-4" id="text-8-6-4">
-</div><div id="outline-container-orgheadline125" class="outline-5">
-<h5 id="orgheadline125">Open modules</h5>
-<div class="outline-text-5" id="text-orgheadline125">
+</div><div id="outline-container-orgheadline126" class="outline-5">
+<h5 id="orgheadline126">Open modules</h5>
+<div class="outline-text-5" id="text-orgheadline126">
 <p>
 Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
 offer a clearly-defined boundary between the module writer and the writer of an
@@ -8605,9 +8812,9 @@ modular.
 </div>
 </div>
 
-<div id="outline-container-orgheadline126" class="outline-5">
-<h5 id="orgheadline126">Isn’t a visitor pattern enough?</h5>
-<div class="outline-text-5" id="text-orgheadline126">
+<div id="outline-container-orgheadline127" class="outline-5">
+<h5 id="orgheadline127">Isn’t a visitor pattern enough?</h5>
+<div class="outline-text-5" id="text-orgheadline127">
 <p>
 In general, a good idea.  But Narcissus is not object-oriented, so it cannot
 apply here.
@@ -8620,9 +8827,9 @@ could just rewrite from scratch and design for extensibility.
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-5">
-<h5 id="orgheadline127">Object-oriented interpreter</h5>
-<div class="outline-text-5" id="text-orgheadline127">
+<div id="outline-container-orgheadline128" class="outline-5">
+<h5 id="orgheadline128">Object-oriented interpreter</h5>
+<div class="outline-text-5" id="text-orgheadline128">
 <p>
 Other ways to instrument would depend on the form of the target interpreter.
 Here we have a module pattern with lexical scoping.  What if the interpreter was
@@ -8650,9 +8857,9 @@ on object attributes.
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-5">
-<h5 id="orgheadline128">&#x2026;AOP?</h5>
-<div class="outline-text-5" id="text-orgheadline128">
+<div id="outline-container-orgheadline129" class="outline-5">
+<h5 id="orgheadline129">&#x2026;AOP?</h5>
+<div class="outline-text-5" id="text-orgheadline129">
 <ul class="org-ul">
 <li>No satisfying AOP framework we could apply.  AspectScript is costly because
 parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.</li>
@@ -8665,9 +8872,9 @@ is just standard JavaScript.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-5">
-<h5 id="orgheadline129">Scoping strategies</h5>
-<div class="outline-text-5" id="text-orgheadline129">
+<div id="outline-container-orgheadline130" class="outline-5">
+<h5 id="orgheadline130">Scoping strategies</h5>
+<div class="outline-text-5" id="text-orgheadline130">
 <p>
 Scoping strategies specify how aspects are applied dynamically.
 </p>
@@ -8705,12 +8912,12 @@ expressiveness of scoping strategies would be needed, or more useful.
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-4">
-<h4 id="orgheadline140"><span class="section-number-4">8.6.5</span> Objections and downsides</h4>
+<div id="outline-container-orgheadline141" class="outline-4">
+<h4 id="orgheadline141"><span class="section-number-4">8.6.5</span> Objections and downsides</h4>
 <div class="outline-text-4" id="text-8-6-5">
-</div><div id="outline-container-orgheadline131" class="outline-5">
-<h5 id="orgheadline131"><code>with</code> is deprecated</h5>
-<div class="outline-text-5" id="text-orgheadline131">
+</div><div id="outline-container-orgheadline132" class="outline-5">
+<h5 id="orgheadline132"><code>with</code> is deprecated</h5>
+<div class="outline-text-5" id="text-orgheadline132">
 <p>
 <code>with</code> is disallowed in Strict mode because it makes static analysis difficult
 by violating lexical scope.  But this is precisely why we need it in this
@@ -8732,9 +8939,9 @@ lists pro and contra arguments.
 </div>
 </div>
 
-<div id="outline-container-orgheadline132" class="outline-5">
-<h5 id="orgheadline132">Open scope defeats the purpose of the module pattern</h5>
-<div class="outline-text-5" id="text-orgheadline132">
+<div id="outline-container-orgheadline133" class="outline-5">
+<h5 id="orgheadline133">Open scope defeats the purpose of the module pattern</h5>
+<div class="outline-text-5" id="text-orgheadline133">
 <p>
 Module pattern is for hiding information, and exposing only what is required.
 </p>
@@ -8758,9 +8965,9 @@ information?  (WeakMap, Symbols, or dunder prefix).
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-5">
-<h5 id="orgheadline133">It’s not modular if there is no interface for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline133">
+<div id="outline-container-orgheadline134" class="outline-5">
+<h5 id="orgheadline134">It’s not modular if there is no interface for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline134">
 <p>
 Open scope means an instrumentation is free to change any binding, without an
 explicit interface.  No interface means no contract between instrumentation
@@ -8777,9 +8984,9 @@ hooks everywhere.
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-5">
-<h5 id="orgheadline134">It’s still ad-hoc</h5>
-<div class="outline-text-5" id="text-orgheadline134">
+<div id="outline-container-orgheadline135" class="outline-5">
+<h5 id="orgheadline135">It’s still ad-hoc</h5>
+<div class="outline-text-5" id="text-orgheadline135">
 <p>
 Some refactoring made to Narcissus was specific to the implementation (salami
 the <code>switch</code>, <code>reflectClass</code>).  But the open scope pattern makes few hypotheses
@@ -8796,9 +9003,9 @@ eyeball the implementation of facets and compare it to a spec document.
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-5">
-<h5 id="orgheadline135">Application of open scope if not module pattern?</h5>
-<div class="outline-text-5" id="text-orgheadline135">
+<div id="outline-container-orgheadline136" class="outline-5">
+<h5 id="orgheadline136">Application of open scope if not module pattern?</h5>
+<div class="outline-text-5" id="text-orgheadline136">
 <p>
 The idea is to manipulate scopes, so it is general.  <i>How</i> to manipulate the
 scope depends on the situation.  If the target is not a module pattern, then
@@ -8811,9 +9018,9 @@ If the target is OO, <code>this</code> also provides a kind dynamic scope.
 </div>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-5">
-<h5 id="orgheadline136">Open scope only captures top-level declaration of module</h5>
-<div class="outline-text-5" id="text-orgheadline136">
+<div id="outline-container-orgheadline137" class="outline-5">
+<h5 id="orgheadline137">Open scope only captures top-level declaration of module</h5>
+<div class="outline-text-5" id="text-orgheadline137">
 <p>
 Declarations inside functions are not captured, cannot be overridden.
 </p>
@@ -8832,9 +9039,9 @@ information.
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-5">
-<h5 id="orgheadline137">Aliasing inside the module can be problematic</h5>
-<div class="outline-text-5" id="text-orgheadline137">
+<div id="outline-container-orgheadline138" class="outline-5">
+<h5 id="orgheadline138">Aliasing inside the module can be problematic</h5>
+<div class="outline-text-5" id="text-orgheadline138">
 <p>
 Open scope allows an instrumentation to change bindings inside the module.  If a
 binding is aliased inside the module, the instrumentation should override the
@@ -8884,9 +9091,9 @@ That’s not an issue we have encountered in instrumenting Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-5">
-<h5 id="orgheadline138">What about interferences between instrumentations?</h5>
-<div class="outline-text-5" id="text-orgheadline138">
+<div id="outline-container-orgheadline139" class="outline-5">
+<h5 id="orgheadline139">What about interferences between instrumentations?</h5>
+<div class="outline-text-5" id="text-orgheadline139">
 <p>
 Is
 </p>
@@ -8906,9 +9113,9 @@ If not, what do you have to pay attention to when writing analyses?
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-5">
-<h5 id="orgheadline139">Performance costs</h5>
-<div class="outline-text-5" id="text-orgheadline139">
+<div id="outline-container-orgheadline140" class="outline-5">
+<h5 id="orgheadline140">Performance costs</h5>
+<div class="outline-text-5" id="text-orgheadline140">
 <p>
 Are expected due to the added indirection.
 </p>
@@ -8929,11 +9136,11 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline144" class="outline-2">
-<h2 id="orgheadline144"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline145" class="outline-2">
+<h2 id="orgheadline145"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline143" class="outline-3">
-<h3 id="orgheadline143"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline144" class="outline-3">
+<h3 id="orgheadline144"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -8961,9 +9168,9 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline145" class="outline-2">
-<h2 id="orgheadline145">Références</h2>
-<div class="outline-text-2" id="text-orgheadline145">
+<div id="outline-container-orgheadline146" class="outline-2">
+<h2 id="orgheadline146">Références</h2>
+<div class="outline-text-2" id="text-orgheadline146">
 <div id="bibliography">
 
 <table>
@@ -10156,6 +10363,20 @@ David&nbsp;Lorge Parnas.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="PBS-14">PBS</a>]
+</td>
+<td class="bibtexitem">
+Thomas Pasquier, Jean Bacon, and Brian Shand.
+ Flowr: Aspect oriented programming for information flow control in
+  ruby.
+ Submitted to Modularity'14.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Pla-98">Pla98</a>]
 </td>
 <td class="bibtexitem">
@@ -10581,7 +10802,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-17 jeu. 14:22 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-17 jeu. 17:35 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
