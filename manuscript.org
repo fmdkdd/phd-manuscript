@@ -112,16 +112,15 @@
      - [[#non-destructive-modification][Non-destructive modification]]
    - [[#passing-state][Passing state]]
    - [[#all-in-one][All in one]]
- - [[#translate-dynamic-scoping-to-modify-narcissus][TRANSLATE Dynamic scoping to modify Narcissus]]
+ - [[#translate-Étendre-un-interpréteur-par-manipulation-de-portée][TRANSLATE Étendre un interpréteur par manipulation de portée]]
    - [[#manipuler-la-portée-des-variables-pour-l’instrumentation][Manipuler la portée des variables pour l’instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
      - [[#ouvrir-le-motif-module][Ouvrir le motif module]]
      - [[#disposer-les-environnements-en-couches][Disposer les environnements en couches]]
-   - [[#réaliser-le-motif-“module-ouvert”][Réaliser le motif “module ouvert”]]
-   - [[#appliquer-le-motif-“module-ouvert”-à-narcissus][Appliquer le motif “module ouvert” à Narcissus]]
+   - [[#ouvrir-le-motif-module-en-javascript][Ouvrir le motif module en JavaScript]]
+   - [[#Étendre-narcissus-par-manipulation-de-portée][Étendre Narcissus par manipulation de portée]]
      - [[#ajouter-l’analyse-d’évaluation-multi-facettes][Ajouter l’analyse d’évaluation multi-facettes]]
-   - [[#the-idea-manipulating-scopes][The idea: manipulating scopes]]
-   - [[#how-to-manipulate-scopes-in-javascript][How to manipulate scopes in JavaScript]]
+   - [[#discussion][Discussion]]
    - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
    - [[#discussion][Discussion]]
      - [[#insights][Insights]]
@@ -5719,7 +5718,7 @@ Combine all the extensions without effort.
 
 # [[file:img/all-in-one.svg]]
 
-* TRANSLATE Dynamic scoping to modify Narcissus
+* TRANSLATE Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [[cite:KNS-15b][KNS-15b]]/.
 
 #+ATTR_HTML: :class todo
@@ -5755,10 +5754,12 @@ mécanismes à un cas concret, Narcissus.
 
 Les exemples de code sont écrits en suivant un sous-ensemble du standard
 ECMAScript 5.1, que l’on va enrichir avec la possibilité de manipuler des
-environnements.  Ces manipulations sont plus clairement expliquées à l’aide de
-diagrammes qui parsèment ce chapitre.  Les diagrammes n’ont pas pour but de
-représenter fidèlement toute la sémantique du standard ECMAScript, mais
-seulement d’illustrer les mouvements des environnements qui nous intéressent.
+environnements.  On ne donnera pas de sémantique de ce langage étendu, mais ces
+manipulations seront expliquées à l’aide de diagrammes qui parsèment ce
+chapitre.  Les diagrammes reflètent le modèle qu’on cherche à atteindre; ce
+modèle est inspiré du fonctionnement de JavaScript, mais n’est pas forcément lié
+à ce langage.  Néanmoins, la seconde section montre comment implémenter ce
+modèle en JavaScript.
 
 *** La portée dans le motif module
 L’interpréteur Narcissus est construit à partir du motif module.  Il n’y a pas
@@ -6197,7 +6198,7 @@ Aucune de ces suppositions n’est valide en JavaScript.  Cependant, il y a moye
 de réaliser ce modèle en utilisant des constructions JavaScript standard.  C’est
 l’objet de la section suivante.
 
-** Réaliser le motif “module ouvert”
+** Ouvrir le motif module en JavaScript
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
 partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
@@ -6428,7 +6429,7 @@ simples.  Il serait plus intéressant de voir comment on peut ouvrir un module
 plus complexe, et quels sont les problèmes qui apparaissent.  Dans la section
 suivante, on applique ces mécanismes à Narcissus.
 
-** Appliquer le motif “module ouvert” à Narcissus
+** Étendre Narcissus par manipulation de portée
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
 laquelle on va ajouter plusieurs analyses en essayant de minimiser les
 changements de code à l’intérieur du module de Narcissus.  Pour ouvrir le module
