@@ -120,6 +120,7 @@
    - [[#ouvrir-le-motif-module-en-javascript][Ouvrir le motif module en JavaScript]]
    - [[#Étendre-narcissus-par-manipulation-de-portée][Étendre Narcissus par manipulation de portée]]
      - [[#ajouter-l’analyse-d’évaluation-multi-facettes][Ajouter l’analyse d’évaluation multi-facettes]]
+     - [[#Évaluation][Évaluation]]
    - [[#discussion][Discussion]]
    - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
    - [[#discussion][Discussion]]
@@ -6599,6 +6600,142 @@ de l’extérieur du module; le motif “module ouvert” ne peut surcharger que
 identifiants nommés.  Pour pouvoir redéfinir cette fonction, nous lui avons
 simplement donné un nom.
 
+*** Évaluation
+L’instrumentation de Narcissus pour l’évaluation multi-facettes que l’on a
+réalisé consiste en 440 lignes de code, dans un seul fichier séparé de
+l’interpréteur; l’instrumentation faite par Austin et Flanagan comportait 640
+lignes mêlées au code de l’interpréteur.  Notre version factorise quelques
+changements, ce qui explique la différence.  L’intérêt d’avoir tous les
+changements dans un seul fichier à part c’est qu’on peut les étudier et avoir
+une idée de comment l’évaluation multi-facettes vient modifier l’interpréteur.
+On peut par exemple comparer le code de l’instrumentation avec la sémantique de
+référence de [[cite:AF-12][AF-12]].
+
+Pour ajouter l’évaluation multi-facettes, on a ajouté 19 lignes à Narcissus pour
+ouvrir le module avec ~with~, et changé 32 lignes pour ajouter la fonction
+~populateEnvironment~ et nommer la fonction anonyme.  En tout 51 lignes sur 1300
+sont touchées, à comparer avec les 640 lignes de l’instrumentation d’Austin et
+Flanagan.  Mais même si les changements sont restreints, il est important de
+noter qu’il était tout de même nécessaire de modifier le code de Narcissus.  Les
+changements, même mineurs, ont nécessité d’inspecter et de comprendre les
+différentes étapes de construction de l’interpréteur.
+
+#+BEGIN_aside
+Bien sûr, on aurait pu écrire un outil pour modifier automatiquement les lignes
+de Narcissus qui nous intéressent, et considérer ainsi qu’aucune ligne de
+Narcissus n’a été modifiée directement.  Mais non seulement ça ne change pas
+fondamentalement la situation (le code doit être modifié), ce serait en plus
+une transformation fragile car basée sur la syntaxe du code plutôt que sur sa
+sémantique.
+#+END_aside
+
+En plus de l’évaluation multi-facettes, on a défini trois autres analyses sur
+l’interpréteur: une analyse de flot d’information, FlowR, décrite par Pasquier,
+Bacon et Shand [[cite:PBS-14][PBS-14]], une simple analyse de trace, et une analyse qui extrait
+les objets et les environnements alloués par l’interpréteur, afin de générer les
+diagrammes de cette section.  On a pu écrire ces trois analyses ont dans des
+fichiers séparés, sans avoir besoin de modifier le code de l’interpréteur.
+
+L’analyse de trace écrit sur la sortie standard le type de chaque nœud de l’AST,
+dans l’ordre de leur exécution par l’interpréteur.  C’est une information utile
+pour déboguer des exemples, et pour comprendre le fonctionnement de
+l’interpréteur.  En utilisant la technique de disposition en couches de la
+section ??, on peut activer plusieurs analyses à l’exécution avec des options de
+lancement.  Par exemple:
+
+: ./njs -l flowr -l trace -f tests/flowr.js
+
+lance l’interpréteur, active l’analyse FlowR, et active aussi la trace en même
+temps avant d’exécuter le code du fichier “example.js”.  Un extrait de la sortie
+montre que les deux analyses fonctionnent correctement:
+
+#+BEGIN_EXAMPLE
+              BLOCK
+                SEMICOLON
+                  CALL
+                    IDENTIFIER
+                    LIST
+                      IDENTIFIER
+Illegal flow: undefined to [object Object]
+            FUNCTION
+            SEMICOLON
+              CALL
+                IDENTIFIER
+                LIST
+                SCRIPT
+Illegal flow: undefined to [object Object]
+#+END_EXAMPLE
+
+Les ~Illegal flow~ sont produits par FlowR, et les autres par la trace.  L’union
+des deux sorties permet de localiser précisément les endroits du code où les
+flots non autorisés se produisent, sans avoir à rajouter du code spécifique à la
+trace dans l’analyse FlowR.
+
+La trace ne modifie qu’une seule fonction de l’interpréteur, et cette
+modification est compatible avec les modifications apportées par FlowR.
+Intuitivement, on voit bien que la trace est orthogonale au contrôle d’accès
+effectué par FlowR.  C’est pourquoi les deux analyses peuvent être activées en
+même temps sans que l’on ait besoin de rajouter du code spécifique à
+l’intégration de deux.  Ce n’est pas le cas pour l’évaluation multi-facettes et
+FlowR.  L’évaluation multi-facettes modifie les /valeurs/ manipulées par
+l’interpréteur, et FlowR rajoute des /labels/ sur ces valeurs.  Du coup, les
+deux analyses touchent à la représentation des valeurs dans l’interpréteur.  En
+regardant leur spécification, on ne peut pas dire clairement comment les deux
+analyses doivent se combiner, ni ce que le résultat d’une évaluation devrait
+produire.  Il faut donc retenir que la disposition en couches permet de
+facilement activer plusieurs modifications de l’interpréteur en même temps, mais
+que le résultat n’a de sens que si ces modifications n’interfèrent pas entre
+elles.
+
+#+BEGIN_aside
+Comment détecter et résoudre ces interférences reste un problème ouvert.
+#+END_aside
+
+Pour s’assurer qu’appliquer ~with~ pour ouvrir Narcissus n’a pas changé son
+fonctionnement, nous avons comparé le comportement de la version d’origine et la
+version avec ~with~ sur la suite de tests ~test262~.  Cette suite contient plus
+de 11000 tests de conformité de la spécification ECMAScript 5.1.  Nous avons
+utilisé un sous-ensemble de cette suite, utilisé pour tester le moteur
+JavaScript SpiderMonkey de Mozilla.  Sur environ 3300 tests validés par
+SpiderMonkey, Narcissus en passe 2600.  Nous avons donc lancé la version
+originale de Narcissus et la version avec ~with~ sur ces 3300 tests.  Pour la
+version avec ~with~, aucune analyse n’était activée: l‘objet de liaison restait
+donc vide.  Pour chaque test, notre script comparait la sortie des deux
+versions; si la sortie était identique, le test était passé, sinon, le test
+était échoué et le script enregistrait le test qui avait échoué.  Au final, les
+deux versions ont un comportement strictement identique sur ce jeu de tests.
+
+Nous avons aussi pu comparer Narcissus avec et sans l’évaluation multi-facettes
+sur ce même jeu de tests.  Lorsque le /program counter/ de l’évaluation
+multi-facettes est vide, l’interpréteur se comporte de façon identique sur les
+tests considérés.  Un résultat démontré par Austin et Flanagan sur la sémantique
+de l’évaluation, basée sur un lambda-calcul, mais pas sur l’implémentation qui
+concerne le langage JavaScript dans toute sa largeur.
+
+En exécutant les tests, nous avons aussi mesuré le temps d’exécution de chaque
+version.  Pour chaque version, le jeu de test a été lancé dix fois, sur un seul
+thread, toujours sur la même machine.  Le tableau donne la moyenne arithmétique
+du temps pour une exécution complète sur ces dix lancers.
+
+#+BEGIN_aside
+Les tests ont été effectué sur un PC portable contenant un Intel i5-3320M
+2.60GHz et 4Gb de RAM.  Narcissus a été lancé à travers une [[https://ftp.mozilla.org/pub/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip][version de
+développement]] de SpiderMonkey (version JavaScript-C36.0a1).  Les tests
+proviennent de la version de développement de [[https://mxr.mozilla.org/mozilla-central/source/js/src/tests/][mozilla-central]] et ont été
+exécutés par le script ~jstests.py~ développé par Mozilla.
+#+END_aside
+
+| Interpréteur                                     | Temps moyen (secondes) |
+|--------------------------------------------------+------------------------|
+| SpiderMonkey                                     | 89 (± 1)               |
+| Narcissus original                               | 1040 (± 1)             |
+| Narcissus avec ~with~                            | 1218 (± 10)            |
+| Narcissus et multi-facettes (Austin et Flanagan) | 1215 (± 2)             |
+| Narcissus et multi-facettes avec ~with~          | 1301 (± 1)             |
+|--------------------------------------------------+------------------------|
+
+
+
 ** Discussion
 Comparison to putting all bindings in global scope, rather than using this
 pattern:
@@ -6611,16 +6748,29 @@ pattern:
   requires additions at the top and bottom of the file (local changes, easily
   removable).
 
+Why not refactor the interpreter and leave holes, inversion of control style?
+- cleaner (more common), no need for weird ~with~ tricks
+- allow for describing the instrumentation in its own file
+Yes but:
+- need to refactor the interpreter heavily
+- indirection of control flow complexifies clarity of interpreter code
+- can’t design an API for unknown requirements
+- ~with~ is quite harmless if understood and used properly
+- burden of instrumentation in open scope is the sole responsability of
+instrumentation programmer, not shared by interpreter writer
+
+Why not use AOP?
+- well known solution
+- allow for describing the instrumentation in its own file
+- provides ~around~ and ~proceed~, which seems to be what you need
+Yes but:
+- no satisfying AOP library for JS
+- could /write/ one, but looking at what we needed, scope manipulation was
+enough to get 90% of the changes without modifying the code.
+- opted for the simpler mechanism known to work reliably
+- ~around~ can be added (we did so) as a function of 3 lines of code
+
 ** Evaluation on Narcissus
-Refactoring is correct, does not change behavior of interpreter (same output
-with RAW and BASE for test262 suite).
-
-Benchmarks setup: i5-3320M 2.60GHz, running test262 from mozilla-central,
-through Narcissus on top of Spidermonkey.  Tests are mostly small programs,
-only a handful take longer than 5s to execute.  Startup times might dominate
-over actual =with= performance.  Octane benchmarks aim to measure performance
-for “realistic applications”.
-
 Performance is on par with straightforward instrumentation.  20% increase when
 comparing non-instrumented interpreter.  10% increase when comparing
 instrumented (analysis matters more).
@@ -6632,22 +6782,6 @@ instrumented (analysis matters more).
 |-----------------+----------------|
 | facets (Austin) |           1233 |
 | facets (us)     |           1357 |
-
-Instrumentation stands in its own file; 440 non-blank lines (+ 300 of
-definitions).  Shorter in part because changes to PC are avoided by putting it
-on ExecutionContext.
-
-Facets instrumentation is terse; can at a glance see what parts are affected by
-faceted evaluation.
-
-Can check that facets instrumentation does not alter semantics of JS code when
-program counter is empty.  (But this could have been done by Austin had they run
-the test262 suite).
-
-FlowR is another information flow analysis which can be easily expressed in its
-own file, on top of base.
-
-Tracing can be defined on the side, and applied to facets or base.
 
 We have corrected bugs in Narcissus without touching the instrumented
 evaluation, since we reduce copy-pasting.  (e.g., =S12.11_A1_T3.js=)
