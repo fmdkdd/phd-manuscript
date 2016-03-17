@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-16 mer. 17:32 -->
+<!-- 2016-03-17 jeu. 14:22 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,7 +267,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline143">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Dynamic scoping to modify Narcissus</a>
+<li><a href="#orgheadline142">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
@@ -276,32 +276,31 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline115">8.1.3. Disposer les environnements en couches</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline117">8.2. Réaliser le motif “module ouvert”</a></li>
-<li><a href="#orgheadline119">8.3. Appliquer le motif “module ouvert” à Narcissus</a>
+<li><a href="#orgheadline117">8.2. Ouvrir le motif module en JavaScript</a></li>
+<li><a href="#orgheadline119">8.3. Étendre Narcissus par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline118">8.3.1. Ajouter l’analyse d’évaluation multi-facettes</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline120">8.4. The idea: manipulating scopes</a></li>
-<li><a href="#orgheadline121">8.5. How to manipulate scopes in JavaScript</a></li>
-<li><a href="#orgheadline122">8.6. Evaluation on Narcissus</a></li>
-<li><a href="#orgheadline142">8.7. Discussion</a>
+<li><a href="#orgheadline120">8.4. Discussion</a></li>
+<li><a href="#orgheadline121">8.5. Evaluation on Narcissus</a></li>
+<li><a href="#orgheadline141">8.6. Discussion</a>
 <ul>
-<li><a href="#orgheadline123">8.7.1. Insights</a></li>
-<li><a href="#orgheadline124">8.7.2. Broad applications</a></li>
-<li><a href="#orgheadline125">8.7.3. Other JS interpreters</a></li>
-<li><a href="#orgheadline131">8.7.4. Related work</a></li>
-<li><a href="#orgheadline141">8.7.5. Objections and downsides</a></li>
+<li><a href="#orgheadline122">8.6.1. Insights</a></li>
+<li><a href="#orgheadline123">8.6.2. Broad applications</a></li>
+<li><a href="#orgheadline124">8.6.3. Other JS interpreters</a></li>
+<li><a href="#orgheadline130">8.6.4. Related work</a></li>
+<li><a href="#orgheadline140">8.6.5. Objections and downsides</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline145">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline144">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline144">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline143">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline146">Références</a></li>
+<li><a href="#orgheadline145">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7311,8 +7310,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline143" class="outline-2">
-<h2 id="orgheadline143"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Dynamic scoping to modify Narcissus</h2>
+<div id="outline-container-orgheadline142" class="outline-2">
+<h2 id="orgheadline142"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -7364,10 +7363,12 @@ mécanismes à un cas concret, Narcissus.
 <p>
 Les exemples de code sont écrits en suivant un sous-ensemble du standard
 ECMAScript 5.1, que l’on va enrichir avec la possibilité de manipuler des
-environnements.  Ces manipulations sont plus clairement expliquées à l’aide de
-diagrammes qui parsèment ce chapitre.  Les diagrammes n’ont pas pour but de
-représenter fidèlement toute la sémantique du standard ECMAScript, mais
-seulement d’illustrer les mouvements des environnements qui nous intéressent.
+environnements.  On ne donnera pas de sémantique de ce langage étendu, mais ces
+manipulations seront expliquées à l’aide de diagrammes qui parsèment ce
+chapitre.  Les diagrammes reflètent le modèle qu’on cherche à atteindre; ce
+modèle est inspiré du fonctionnement de JavaScript, mais n’est pas forcément lié
+à ce langage.  Néanmoins, la seconde section montre comment implémenter ce
+modèle en JavaScript.
 </p>
 </div>
 
@@ -7914,7 +7915,7 @@ l’objet de la section suivante.
 </div>
 
 <div id="outline-container-orgheadline117" class="outline-3">
-<h3 id="orgheadline117"><span class="section-number-3">8.2</span> Réaliser le motif “module ouvert”</h3>
+<h3 id="orgheadline117"><span class="section-number-3">8.2</span> Ouvrir le motif module en JavaScript</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
@@ -8078,36 +8079,36 @@ présente donc ainsi:
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">env</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
-  <span style="font-weight: bold;">with</span> (env) {
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-
-<span id="coderef-ex9-parent" class="coderef-off">    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">parent</span> = { a: a, f: f, g: g } (ex9-parent)</span>
-    Object.setPrototypeOf(env, parent)
-    <span style="font-weight: bold;">return</span> { g: g, scope: scope }
-  }
-}())
-
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-<span id="coderef-ex9-f" class="coderef-off">m.env.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.env.a } (ex9-f)</span>
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-m.env.a = 2
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
-<span style="font-weight: bold;">delete</span> m.env.f
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-<span style="font-weight: bold;">delete</span> m.env.a
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
+<span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">env</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
+<span class="linenr"> 3: </span>  <span style="font-weight: bold;">with</span> (env) {
+<span class="linenr"> 4: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span class="linenr"> 5: </span>    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span class="linenr"> 6: </span>    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
+<span class="linenr"> 7: </span>
+<span id="coderef-ex9-parent" class="coderef-off"><span class="linenr"> 8: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">parent</span> = { a: a, f: f, g: g }</span>
+<span class="linenr"> 9: </span>    Object.setPrototypeOf(env, parent)
+<span class="linenr">10: </span>    <span style="font-weight: bold;">return</span> { g: g, scope: scope }
+<span class="linenr">11: </span>  }
+<span class="linenr">12: </span>}())
+<span class="linenr">13: </span>
+<span class="linenr">14: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+<span id="coderef-ex9-f" class="coderef-off"><span class="linenr">15: </span>m.env.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.env.a }</span>
+<span class="linenr">16: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span class="linenr">17: </span>m.env.a = 2
+<span class="linenr">18: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
+<span class="linenr">19: </span><span style="font-weight: bold;">delete</span> m.env.f
+<span class="linenr">20: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span class="linenr">21: </span><span style="font-weight: bold;">delete</span> m.env.a
+<span class="linenr">22: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
 </pre>
 </div>
 
 <p>
-On crée un objet <code>parent</code> ligne <a href="#coderef-ex9-parent"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-parent');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-parent');">ex9-parent</a> qui contient une référence pour
+On crée un objet <code>parent</code> ligne <a href="#coderef-ex9-parent"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-parent');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-parent');">8</a> qui contient une référence pour
 chaque déclaration du module.  Puis on assigne <code>parent</code> au prototype de <code>env</code>.
 Grâce à cet objet, on peut faire référence à <code>a</code> à travers <code>m.env.a</code> lors de la
-redéfinition de <code>f</code> ligne <a href="#coderef-ex9-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-f');">ex9-f</a>.  Puis, lorsqu’on redéfinit <code>a</code> à travers
+redéfinition de <code>f</code> ligne <a href="#coderef-ex9-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-f');">15</a>.  Puis, lorsqu’on redéfinit <code>a</code> à travers
 <code>m.env.a</code>, cette nouvelle valeur a priorité sur la valeur initiale du module, et
 est bien capturée par la nouvelle fonction <code>f</code>.  Tout cela est illustré par le
 diagramme.  La propriété <code>m.env</code> pointe sur l’objet de liaison, qui contient les
@@ -8189,7 +8190,7 @@ suivante, on applique ces mécanismes à Narcissus.
 </div>
 
 <div id="outline-container-orgheadline119" class="outline-3">
-<h3 id="orgheadline119"><span class="section-number-3">8.3</span> Appliquer le motif “module ouvert” à Narcissus</h3>
+<h3 id="orgheadline119"><span class="section-number-3">8.3</span> Étendre Narcissus par manipulation de portée</h3>
 <div class="outline-text-3" id="text-8-3">
 <p>
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -8393,395 +8394,8 @@ simplement donné un nom.
 </div>
 
 <div id="outline-container-orgheadline120" class="outline-3">
-<h3 id="orgheadline120"><span class="section-number-3">8.4</span> The idea: manipulating scopes</h3>
+<h3 id="orgheadline120"><span class="section-number-3">8.4</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-4">
-<p>
-Looking back, we see that we are mostly concerned with scopes and the ability to
-manipulate them to add or remove bindings.  So we can describe what we want,
-abstractly, using scopes manipulation primitives.
-</p>
-
-<p>
-A JavaScript subset to talk about scopes.   Think of scopes as JavaScript
-objects, which are dictionaries with property lookup delegation.
-</p>
-
-<p>
-Narcissus uses a module pattern.  Function + interface returned in an object.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-    <span style="font-weight: bold;">return</span> {g}
-}())
-
-print(m.g(0))
-</pre>
-</div>
-
-<p>
-A module defines its own scope, and exports some of them in an object.
-</p>
-
-<p>
-Before the code runs.
-</p>
-
-
-<figure>
-<p><img src="img/ex1-0.png" alt="ex1-0.png">
-</p>
-</figure>
-
-<p>
-After the IIFE is executed.
-</p>
-
-
-<figure>
-<p><img src="img/ex1-1.png" alt="ex1-1.png">
-</p>
-</figure>
-
-<p>
-Ignoring <code>Object.prototype</code> and <code>Function.prototype</code>, since they are not
-important for understanding the module pattern here.
-</p>
-
-<p>
-Calling <code>m.g(0)</code>.
-</p>
-
-
-<figure>
-<p><img src="img/ex1-2.png" alt="ex1-2.png">
-</p>
-</figure>
-
-<p>
-To modify the bindings inside the module, we must be able to manipulate its
-inner scope.  To change the meaning of <code>a</code> or <code>f</code> inside the module, we must
-manipulate the activation object of the IIFE.
-</p>
-
-<p>
-Given access to the inner scope, we can make the interpreter do what we want.
-</p>
-
-<p>
-Let’s say that the scope of the module is accessible from the <code>m.scope</code>
-property, then we can write:
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-    <span style="font-weight: bold;">return</span> {g}
-}())
-
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-m.scope.a = 2
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-</pre>
-</div>
-
-<p>
-After the line <code>m.scope.a = 2</code>, we have:
-</p>
-
-
-<figure>
-<p><img src="img/ex1-3.png" alt="ex1-3.png">
-</p>
-</figure>
-
-<p>
-We can change bindings for <code>a</code>, <code>f</code>.
-</p>
-
-<p>
-This destroys the original activation object, so we should fluid-let if we want
-to undo the changes.  So we put a scope in front of the activation of the IIFE,
-and we can change bindings and delete our changes.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-    <span style="font-weight: bold;">return</span> {g}
-}())
-
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-m.scope.a = 2
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-<span style="font-weight: bold;">delete</span> m.scope.a
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-</pre>
-</div>
-
-
-<figure>
-<p><img src="img/ex2-1.png" alt="ex2-1.png">
-</p>
-</figure>
-
-<p>
-Second requirement: we need to write functions that make use of the bindings
-inside the module.
-</p>
-
-<p>
-Since we have a reference to the scope, we can tap into it to use the bindings.
-</p>
-
-<p>
-Note that <code>m.scope.a</code> can potentially be instrumented, before or after we
-redefine <code>f</code>.  This makes our instrumentation compatible with further extension.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-    <span style="font-weight: bold;">return</span> {g}
-}())
-
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-m.scope.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.scope.a }
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-m.scope.a = 4
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 8</span>
-</pre>
-</div>
-
-<p>
-Can of course write the instrumentation as a module, and any further
-instrumentation would have access to its scope.
-</p>
-
-<p>
-However, there is potential for conflicts if two instrumentations redefine <code>f</code>
-in the exposed scope.
-</p>
-
-<p>
-Layered approach: scopes have parents from which they inherit bindings.  We can
-inject our scope as a parent to the module scope, to pack instrumentation
-bindings together.  Then we can easily toggle the instrumented bindings.
-</p>
-
-<p>
-Multiple layers can be combined in this way.  Lookup is always deterministic, as
-scopes have only one parent.  The latest layer takes precedence.
-Instrumentations can insert themselves in any layer of the instrumentation cake.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-    <span style="font-weight: bold;">return</span> {g}
-}())
-
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">layer</span> = {a:2}
-addLayer(m.g.scope, layer)
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-removeLayer(m.g.scope, layer)
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-</pre>
-</div>
-
-
-<figure>
-<p><img src="img/ex3-1.png" alt="ex3-1.png">
-</p>
-</figure>
-
-
-<p>
-Can control which bindings can be overridden by adding yet another layer at the
-bottom of the scope, which is not accessible to instrumenters.
-</p>
-
-<p>
-Could also use a proxy object instead of returning the scope itself.
-</p>
-
-
-<figure>
-<p><img src="img/ex4-1.png" alt="ex4-1.png">
-</p>
-</figure>
-
-<p>
-This is all very pretty, but there is no exposed scope property in JavaScript.
-How do we make this work?
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline121" class="outline-3">
-<h3 id="orgheadline121"><span class="section-number-3">8.5</span> How to manipulate scopes in JavaScript</h3>
-<div class="outline-text-3" id="text-8-5">
-<p>
-Here we find a way to approximate this scope manipulation using standard
-JavaScript.
-</p>
-
-<p>
-<code>with</code> is the mechanism of choice to manipulate scopes.  There are several ways
-to use it once you realize you have a backdoor to the lexical closure.
-</p>
-
-<p>
-<code>with</code> introduces a scope for the inner code using a plain JS object.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">o</span> = {a:42}
-<span style="font-weight: bold;">with</span> (o) {
-  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>() { <span style="font-weight: bold;">return</span> a }
-}
-print(f())
-</pre>
-</div>
-
-<p>
-The scope introduced by <code>with</code> has the surrounding scope as a parent.
-</p>
-
-<p>
-<code>with</code> is not dynamic scoping; it’s lexical scoping using a dynamic object.
-Importantly, lookup is still done lexically, not through the stack.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">o</span> = {a:42}
-<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>() { <span style="font-weight: bold;">return</span> a }
-<span style="font-weight: bold;">with</span> (o) {
-  print(f())
-}
-</pre>
-</div>
-
-<p>
-<code>with</code> creates a scope that can be used for instrumentation.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">scope</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
-  <span style="font-weight: bold;">with</span>(scope) {
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-    <span style="font-weight: bold;">return</span> {g,scope}
-  }
-}())
-
-print(m.g(0))
-m.scope.a = 2
-print(m.g(0))
-</pre>
-</div>
-
-<p>
-<code>with</code> is harmless with empty binding object, only a performance penalty for an
-additional (dynamically changing) scope to lookup.
-</p>
-
-<p>
-Using <code>with</code> is not emulating perfectly the simplified situation exposed with
-the diagrams earlier.
-</p>
-
-<p>
-For requirement #2, it is not sufficient because we have a reference to the
-<i>binding object</i>, and not the <i>lexical environment</i> itself.  The binding object
-<i>does not</i> delegate property lookup to the activation object.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">scope</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
-  <span style="font-weight: bold;">with</span>(scope) {
-    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>() {}
-  }
-  <span style="font-weight: bold;">return</span> scope
-}())
-</pre>
-</div>
-
-
-<figure>
-<p><img src="img/with-lexenv-1.png" alt="with-lexenv-1.png">
-</p>
-</figure>
-
-<p>
-To make the binding object behave like the lexical environment, must populate
-its prototype.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">scope</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
-  <span style="font-weight: bold;">with</span>(scope) {
-    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>() {}
-  }
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">outer</span> = {__proto__:<span style="font-weight: bold; text-decoration: underline;">null</span>, f}
-  Object.setPrototypeOf(scope, outer);
-  <span style="font-weight: bold;">return</span> scope
-}())
-</pre>
-</div>
-
-
-<figure>
-<p><img src="img/with-lexenv-2.png" alt="with-lexenv-2.png">
-</p>
-</figure>
-
-<p>
-Since <code>outer</code> is not the same object as the activation object of the module, we
-can control which bindings are exposed, with different granularity (with
-conventions).
-</p>
-
-<p>
-It’s somewhat unfortunate and unnecessary duplication.  However, in practice on
-Narcissus it amounts to 20 ‘dumb’ declarations.  And it means we cannot actually
-remove the original bindings in the IIFE activation object, which is arguably a
-good thing.
-</p>
-
-<p>
-Cannot restrict which bindings are instrumentable; all bindings are,
-potentially.  But we could actually do that if we exposed not the binding
-object, but a proxy to it.  The proxy would filter the names we don’t want to be
-exposed.  Convoluted, and we don’t have a use case.
-</p>
-
 <p>
 Comparison to putting all bindings in global scope, rather than using this
 pattern:
@@ -8796,72 +8410,12 @@ scope.</li>
 requires additions at the top and bottom of the file (local changes, easily
 removable).</li>
 </ul>
-
-<p>
-A layered approach makes use of prototype delegation in the scope object.
-</p>
-
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">scope</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
-  <span style="font-weight: bold;">with</span>(scope) {
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">outer</span> = {f,g,a}
-  Object.setPrototypeOf(scope, outer)
-  <span style="font-weight: bold;">return</span> scope
-  }
-}())
-
-<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">pushLayer</span>(<span style="font-weight: bold; font-style: italic;">l</span>, <span style="font-weight: bold; font-style: italic;">chain</span>) {
-  Object.setPrototypeOf(l, Object.getPrototypeOf(chain))
-  Object.setPrototypeOf(chain, l)
-}
-
-<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">popLayer</span>(<span style="font-weight: bold; font-style: italic;">l</span>, <span style="font-weight: bold; font-style: italic;">chain</span>) {
-  <span style="font-weight: bold;">while</span> (chain &amp;&amp; Object.getPrototypeOf(chain) !== l)
-    chain = Object.getPrototypeOf(chain)
-
-  <span style="font-weight: bold;">if</span> (Object.getPrototypeOf(chain))
-    Object.setPrototypeOf(chain, Object.getPrototypeOf(Object.getPrototypeOf(chain)))
-}
-
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">s</span> = {a:2, f(x) { <span style="font-weight: bold;">return</span> x + 2 * m.a }}
-pushLayer(s, m)
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
-<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">s2</span> = {f() { <span style="font-weight: bold;">return</span> -m.a }}
-pushLayer(s2, m)
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -2</span>
-popLayer(s, m)
-m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -1</span>
-</pre>
-</div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline122" class="outline-3">
-<h3 id="orgheadline122"><span class="section-number-3">8.6</span> Evaluation on Narcissus</h3>
-<div class="outline-text-3" id="text-8-6">
-<p>
-Application of open scope pattern to Narcissus.
-</p>
-
-<p>
-Other changes:
-</p>
-<ol class="org-ol">
-<li>Salami the <code>switch</code> inside <code>execute</code> into functions.  Instrumentation can
-override behavior for each AST node type.</li>
-<li>Refactor the <code>reflectClass</code> calls in a <code>populateEnvironment</code> function that
-can be called after instrumentation has extended the <code>globalBase</code> object.</li>
-<li>Extract and name anonymous functions used to populate <code>Function.prototype</code>.</li>
-<li>Add bindings to the returned object.</li>
-<li>Add variable for prompt string (to be able to change it!).</li>
-</ol>
-
+<div id="outline-container-orgheadline121" class="outline-3">
+<h3 id="orgheadline121"><span class="section-number-3">8.5</span> Evaluation on Narcissus</h3>
+<div class="outline-text-3" id="text-8-5">
 <p>
 Refactoring is correct, does not change behavior of interpreter (same output
 with RAW and BASE for test262 suite).
@@ -8952,12 +8506,12 @@ evaluation, since we reduce copy-pasting.  (e.g., <code>S12.11_A1_T3.js</code>)
 </div>
 </div>
 
-<div id="outline-container-orgheadline142" class="outline-3">
-<h3 id="orgheadline142"><span class="section-number-3">8.7</span> Discussion</h3>
-<div class="outline-text-3" id="text-8-7">
-</div><div id="outline-container-orgheadline123" class="outline-4">
-<h4 id="orgheadline123"><span class="section-number-4">8.7.1</span> Insights</h4>
-<div class="outline-text-4" id="text-8-7-1">
+<div id="outline-container-orgheadline141" class="outline-3">
+<h3 id="orgheadline141"><span class="section-number-3">8.6</span> Discussion</h3>
+<div class="outline-text-3" id="text-8-6">
+</div><div id="outline-container-orgheadline122" class="outline-4">
+<h4 id="orgheadline122"><span class="section-number-4">8.6.1</span> Insights</h4>
+<div class="outline-text-4" id="text-8-6-1">
 <p>
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
 for every bit of functionality (i.e., identify moving pieces and put them in
@@ -8985,9 +8539,9 @@ there is none.  Open scope is not ideal, but practical.
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-4">
-<h4 id="orgheadline124"><span class="section-number-4">8.7.2</span> Broad applications</h4>
-<div class="outline-text-4" id="text-8-7-2">
+<div id="outline-container-orgheadline123" class="outline-4">
+<h4 id="orgheadline123"><span class="section-number-4">8.6.2</span> Broad applications</h4>
+<div class="outline-text-4" id="text-8-6-2">
 <p>
 Not only dynamic analyses, but any variation of the interpreter.  Strict mode
 comes to mind.  As it applies to the module pattern, there is nothing specific
@@ -9002,9 +8556,9 @@ More generally, it applies to <i>customizing software</i> at the source level.
 </div>
 </div>
 
-<div id="outline-container-orgheadline125" class="outline-4">
-<h4 id="orgheadline125"><span class="section-number-4">8.7.3</span> Other JS interpreters</h4>
-<div class="outline-text-4" id="text-8-7-3">
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">8.6.3</span> Other JS interpreters</h4>
+<div class="outline-text-4" id="text-8-6-3">
 <p>
 ES5.1 interpreter written using a module pattern:
 </p>
@@ -9028,12 +8582,12 @@ Written as several modules (ES5 + flow analysis):
 </div>
 </div>
 
-<div id="outline-container-orgheadline131" class="outline-4">
-<h4 id="orgheadline131"><span class="section-number-4">8.7.4</span> Related work</h4>
-<div class="outline-text-4" id="text-8-7-4">
-</div><div id="outline-container-orgheadline126" class="outline-5">
-<h5 id="orgheadline126">Open modules</h5>
-<div class="outline-text-5" id="text-orgheadline126">
+<div id="outline-container-orgheadline130" class="outline-4">
+<h4 id="orgheadline130"><span class="section-number-4">8.6.4</span> Related work</h4>
+<div class="outline-text-4" id="text-8-6-4">
+</div><div id="outline-container-orgheadline125" class="outline-5">
+<h5 id="orgheadline125">Open modules</h5>
+<div class="outline-text-5" id="text-orgheadline125">
 <p>
 Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
 offer a clearly-defined boundary between the module writer and the writer of an
@@ -9051,9 +8605,9 @@ modular.
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-5">
-<h5 id="orgheadline127">Isn’t a visitor pattern enough?</h5>
-<div class="outline-text-5" id="text-orgheadline127">
+<div id="outline-container-orgheadline126" class="outline-5">
+<h5 id="orgheadline126">Isn’t a visitor pattern enough?</h5>
+<div class="outline-text-5" id="text-orgheadline126">
 <p>
 In general, a good idea.  But Narcissus is not object-oriented, so it cannot
 apply here.
@@ -9066,9 +8620,9 @@ could just rewrite from scratch and design for extensibility.
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-5">
-<h5 id="orgheadline128">Object-oriented interpreter</h5>
-<div class="outline-text-5" id="text-orgheadline128">
+<div id="outline-container-orgheadline127" class="outline-5">
+<h5 id="orgheadline127">Object-oriented interpreter</h5>
+<div class="outline-text-5" id="text-orgheadline127">
 <p>
 Other ways to instrument would depend on the form of the target interpreter.
 Here we have a module pattern with lexical scoping.  What if the interpreter was
@@ -9096,9 +8650,9 @@ on object attributes.
 </div>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-5">
-<h5 id="orgheadline129">&#x2026;AOP?</h5>
-<div class="outline-text-5" id="text-orgheadline129">
+<div id="outline-container-orgheadline128" class="outline-5">
+<h5 id="orgheadline128">&#x2026;AOP?</h5>
+<div class="outline-text-5" id="text-orgheadline128">
 <ul class="org-ul">
 <li>No satisfying AOP framework we could apply.  AspectScript is costly because
 parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.</li>
@@ -9111,9 +8665,9 @@ is just standard JavaScript.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline130" class="outline-5">
-<h5 id="orgheadline130">Scoping strategies</h5>
-<div class="outline-text-5" id="text-orgheadline130">
+<div id="outline-container-orgheadline129" class="outline-5">
+<h5 id="orgheadline129">Scoping strategies</h5>
+<div class="outline-text-5" id="text-orgheadline129">
 <p>
 Scoping strategies specify how aspects are applied dynamically.
 </p>
@@ -9151,12 +8705,12 @@ expressiveness of scoping strategies would be needed, or more useful.
 </div>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-4">
-<h4 id="orgheadline141"><span class="section-number-4">8.7.5</span> Objections and downsides</h4>
-<div class="outline-text-4" id="text-8-7-5">
-</div><div id="outline-container-orgheadline132" class="outline-5">
-<h5 id="orgheadline132"><code>with</code> is deprecated</h5>
-<div class="outline-text-5" id="text-orgheadline132">
+<div id="outline-container-orgheadline140" class="outline-4">
+<h4 id="orgheadline140"><span class="section-number-4">8.6.5</span> Objections and downsides</h4>
+<div class="outline-text-4" id="text-8-6-5">
+</div><div id="outline-container-orgheadline131" class="outline-5">
+<h5 id="orgheadline131"><code>with</code> is deprecated</h5>
+<div class="outline-text-5" id="text-orgheadline131">
 <p>
 <code>with</code> is disallowed in Strict mode because it makes static analysis difficult
 by violating lexical scope.  But this is precisely why we need it in this
@@ -9178,9 +8732,9 @@ lists pro and contra arguments.
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-5">
-<h5 id="orgheadline133">Open scope defeats the purpose of the module pattern</h5>
-<div class="outline-text-5" id="text-orgheadline133">
+<div id="outline-container-orgheadline132" class="outline-5">
+<h5 id="orgheadline132">Open scope defeats the purpose of the module pattern</h5>
+<div class="outline-text-5" id="text-orgheadline132">
 <p>
 Module pattern is for hiding information, and exposing only what is required.
 </p>
@@ -9204,9 +8758,9 @@ information?  (WeakMap, Symbols, or dunder prefix).
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-5">
-<h5 id="orgheadline134">It’s not modular if there is no interface for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline134">
+<div id="outline-container-orgheadline133" class="outline-5">
+<h5 id="orgheadline133">It’s not modular if there is no interface for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline133">
 <p>
 Open scope means an instrumentation is free to change any binding, without an
 explicit interface.  No interface means no contract between instrumentation
@@ -9223,9 +8777,9 @@ hooks everywhere.
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-5">
-<h5 id="orgheadline135">It’s still ad-hoc</h5>
-<div class="outline-text-5" id="text-orgheadline135">
+<div id="outline-container-orgheadline134" class="outline-5">
+<h5 id="orgheadline134">It’s still ad-hoc</h5>
+<div class="outline-text-5" id="text-orgheadline134">
 <p>
 Some refactoring made to Narcissus was specific to the implementation (salami
 the <code>switch</code>, <code>reflectClass</code>).  But the open scope pattern makes few hypotheses
@@ -9242,9 +8796,9 @@ eyeball the implementation of facets and compare it to a spec document.
 </div>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-5">
-<h5 id="orgheadline136">Application of open scope if not module pattern?</h5>
-<div class="outline-text-5" id="text-orgheadline136">
+<div id="outline-container-orgheadline135" class="outline-5">
+<h5 id="orgheadline135">Application of open scope if not module pattern?</h5>
+<div class="outline-text-5" id="text-orgheadline135">
 <p>
 The idea is to manipulate scopes, so it is general.  <i>How</i> to manipulate the
 scope depends on the situation.  If the target is not a module pattern, then
@@ -9257,9 +8811,9 @@ If the target is OO, <code>this</code> also provides a kind dynamic scope.
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-5">
-<h5 id="orgheadline137">Open scope only captures top-level declaration of module</h5>
-<div class="outline-text-5" id="text-orgheadline137">
+<div id="outline-container-orgheadline136" class="outline-5">
+<h5 id="orgheadline136">Open scope only captures top-level declaration of module</h5>
+<div class="outline-text-5" id="text-orgheadline136">
 <p>
 Declarations inside functions are not captured, cannot be overridden.
 </p>
@@ -9278,9 +8832,9 @@ information.
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-5">
-<h5 id="orgheadline138">Aliasing inside the module can be problematic</h5>
-<div class="outline-text-5" id="text-orgheadline138">
+<div id="outline-container-orgheadline137" class="outline-5">
+<h5 id="orgheadline137">Aliasing inside the module can be problematic</h5>
+<div class="outline-text-5" id="text-orgheadline137">
 <p>
 Open scope allows an instrumentation to change bindings inside the module.  If a
 binding is aliased inside the module, the instrumentation should override the
@@ -9330,9 +8884,9 @@ That’s not an issue we have encountered in instrumenting Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-5">
-<h5 id="orgheadline139">What about interferences between instrumentations?</h5>
-<div class="outline-text-5" id="text-orgheadline139">
+<div id="outline-container-orgheadline138" class="outline-5">
+<h5 id="orgheadline138">What about interferences between instrumentations?</h5>
+<div class="outline-text-5" id="text-orgheadline138">
 <p>
 Is
 </p>
@@ -9352,9 +8906,9 @@ If not, what do you have to pay attention to when writing analyses?
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-5">
-<h5 id="orgheadline140">Performance costs</h5>
-<div class="outline-text-5" id="text-orgheadline140">
+<div id="outline-container-orgheadline139" class="outline-5">
+<h5 id="orgheadline139">Performance costs</h5>
+<div class="outline-text-5" id="text-orgheadline139">
 <p>
 Are expected due to the added indirection.
 </p>
@@ -9375,11 +8929,11 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline145" class="outline-2">
-<h2 id="orgheadline145"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline144" class="outline-2">
+<h2 id="orgheadline144"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline144" class="outline-3">
-<h3 id="orgheadline144"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline143" class="outline-3">
+<h3 id="orgheadline143"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -9407,9 +8961,9 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline146" class="outline-2">
-<h2 id="orgheadline146">Références</h2>
-<div class="outline-text-2" id="text-orgheadline146">
+<div id="outline-container-orgheadline145" class="outline-2">
+<h2 id="orgheadline145">Références</h2>
+<div class="outline-text-2" id="text-orgheadline145">
 <div id="bibliography">
 
 <table>
@@ -11027,7 +10581,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-16 mer. 17:32 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-17 jeu. 14:22 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
