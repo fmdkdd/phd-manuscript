@@ -122,7 +122,6 @@
      - [[#ajouter-l’analyse-d’évaluation-multi-facettes][Ajouter l’analyse d’évaluation multi-facettes]]
      - [[#Évaluation][Évaluation]]
    - [[#discussion][Discussion]]
-   - [[#evaluation-on-narcissus][Evaluation on Narcissus]]
    - [[#discussion][Discussion]]
      - [[#insights][Insights]]
      - [[#broad-applications][Broad applications]]
@@ -6734,6 +6733,97 @@ exécutés par le script ~jstests.py~ développé par Mozilla.
 | Narcissus et multi-facettes avec ~with~          | 1301 (± 1)             |
 |--------------------------------------------------+------------------------|
 
+#+BEGIN_aside
+En moyenne, un test prend donc environ 0.5 seconde à s’exécuter.  Comme
+l’interpréteur est relancé pour chaque test, et que, dans le cas de Narcissus, il
+faut /évaluer/ tout l’intepréteur avant de pouvoir exécuter le test, ce temps de
+lancement se rajoute à chaque test.  Sur la même machine, lancer Narcissus sur
+un fichier vide prend 0.07 seconde en moyenne.  Activer les différentes analyses
+ne change pas cette mesure.
+#+END_aside
+
+L’écart type est à moins de 1% pour toutes les versions de Narcissus, donc les
+temps moyens sont représentatifs.  Si on compare l’interpréteur non instrumenté
+avec la version où on ajoute juste ~with~ autour du code du module, la seconde
+version prend 17% de temps supplémentaire pour exécuter le jeu de tests.  Ce
+surcoût est probablement dû à l’utilisation de ~with~, qui rajoute un
+environnement dans la chaîne de résolution des noms.  Non seulement ça fait un
+objet de plus à parcourir lors de la résolution de /n’importe quel nom/ du
+module, mais en plus les fonctions qui ont des variables libres ne peuvent pas
+être optimisées par le compilateur.  Là où, sans ~with~, un accès à une variable
+libre peut être résolu statiquement en regardant dans l’environnement lexical de
+la fonction, avec ~with~ la variable peut changer dynamiquement, donc le moteur
+d’exécution doit toujours résoudre le nom dynamiquement; aucun raccourci n’est
+possible.
+
+#+BEGIN_aside
+Et il faut aussi comprendre que ~with~ est un mot-clé du langage qui
+est rarement utilisé, c’est donc raisonnable si les développeurs de moteurs
+d’exécution ne cherchent pas à l’optimiser davantage.
+#+END_aside
+
+Si on compare l’interpréteur instrumenté par Austin et Flanagan pour
+l’évaluation multi-facettes, le surcoût de temps n’est plus que 7%.  Notons
+cependant que notre implémentation de l’évaluation multi-facettes factorise
+quelques changements par rapport à l’implémentation de base, on ne mesure pas
+seulement l’utilisation de ~with~.
+
+De toutes façons, comme l’indique le tableau, exécuter n’importe quel exemple
+avec Narcissus est d’un ordre de magnitude plus lent qu’avec SpiderMonkey
+directement.  C’est évidemment dû au fait que Narcissus est écrit en JavaScript.
+Mais pour nos besoins, les plus gros exemples qu’on a voulu exécuter avec les
+différentes analyses qu’on a ajouté à Narcissus n’ont pris que quelques
+secondes.  À cette échelle, une différence de 17% est insignifiante.
+
+Le gain de temps en écriture de code et en clarté de l’instrumentation est,
+quant à lui, tangible.  Avant de pouvoir exécuter la suite ~test262~ avec
+Narcissus, il a fallu corriger quelques erreurs dans son interprétation du code
+JavaScript et compléter sa couverture du standard.  En corrigeant ces erreurs
+dans l’interpréteur d’origine, il a fallu dupliquer les correctifs dans la
+version instrumentée par Austin et Flanagan, mais pas dans notre
+instrumentation.  Notre version de l’évaluation multi-facettes ne duplique pas
+le code de l’interpréteur, donc une fois le correctif appliqué à l’interpréteur
+de base, l’évaluation multi-facettes bénéficiait du correctif automatiquement.
+Cette anecdote illustre l’intérêt d’une décomposition qui cherche à minimiser la
+duplication de code.
+
+** Discussion
+L’idée principale de ce chapitre est que la manipulation de la portée des
+variables d’un module est suffisante pour changer totalement le comportement de
+ce module.  Et puisqu’on peut changer intégralement le comportement du module,
+on peut nécessairement en changer une partie, ce qui nous a permis de modifier
+dynamiquement Narcissus pour différentes analyses.
+
+On peut voir la propriété ~env~ qui expose l’environnement manipulable du module
+comment une interface spéciale, une interface d’instrumentation, qu’on peut
+rapprocher du concept d’”implémentation ouverte” de Rao.  Cette interface
+spéciale expose /tous/ les noms de l’interpréteur, et confère donc aux
+programmeurs qui l’utilisent le pouvoir de modifier le code du module, mais
+également de casser ce code en créant des situations non anticipées par le
+créateur du module.  Comme on a pu changer la fonction ~execute~ pour étendre sa
+fonctionnalité, on aurait pu tout aussi bien fournir une version qui lance une
+exception.  Pas très utile dans notre cas, mais ça montre qu’il est très facile
+de rompre la fonctionnalité offerte par le module dès lors que cette interface
+spéciale est offerte.
+
+On a alors une situation quelque peu paradoxale où le programmeur soucieux de
+l’intégrité de son code le ficelle dans un module, mais ce faisant empêche tout
+autre programmeur d’étendre son code dynamiquement.  La solution proposée ici
+casse effectivement la barrière du module, et permet donc d’étendre le code de
+façon que l’on peut qualifier de /modulaire/, car les changements et
+fonctionnalités supplémentaires sont tous déclarés et isolés dans des modules
+séparés; et en même temps, l’intégrité du module initial ne peut plus être
+garantie.  On a donc une tension créée par deux forces en opposition: l’une qui
+tend à protéger le code, le rendre prévisible en empêchant toute modification
+dynamique non anticipée; et l’autre qui tend à ouvrir le code, permettre ces
+modifications dynamiques, même invasives, pour offrir une grande flexibilité de
+reconfiguration.
+
+Les propriétés du code offertes par l’une et l’autre force sont toutes
+désirables: a priori, on préférerait avoir un programme prévisible et
+reconfigurable à souhait.  Mais les deux buts ne sont pas réconciliables.
+
+
 
 
 ** Discussion
@@ -6770,23 +6860,6 @@ enough to get 90% of the changes without modifying the code.
 - opted for the simpler mechanism known to work reliably
 - ~around~ can be added (we did so) as a function of 3 lines of code
 
-** Evaluation on Narcissus
-Performance is on par with straightforward instrumentation.  20% increase when
-comparing non-instrumented interpreter.  10% increase when comparing
-instrumented (analysis matters more).
-
-| Interpreter     | time (seconds) |
-|-----------------+----------------|
-| raw (baseline)  |           1167 |
-| base            |           1410 |
-|-----------------+----------------|
-| facets (Austin) |           1233 |
-| facets (us)     |           1357 |
-
-We have corrected bugs in Narcissus without touching the instrumented
-evaluation, since we reduce copy-pasting.  (e.g., =S12.11_A1_T3.js=)
-
-** Discussion
 *** Insights
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
 for every bit of functionality (i.e., identify moving pieces and put them in

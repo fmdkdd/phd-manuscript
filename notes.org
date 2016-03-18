@@ -2282,6 +2282,105 @@ words a purpose.
 
 Idea of the year right there.
 
+** [2016-03-18 ven.]
+*** Finding duplicates in code
+As I translate the DLS paper, it is evident that the core motivation of the
+whole endeavor is to eliminate (or, rather, minimize) duplicated code.
+
+Duplicated code is more code to maintain.  A fix in one part will have to be
+mirrored into the duplicates.  Factorisation is often the prescribed medicine.
+Once duplications are factorized, there is only one path to maintain.
+
+So, in DLS, we find ways to structure the intepreter and the instrumentations
+without repeating as much code as the previous instrumentation.  Benefits
+abound.
+
+But there are drawbacks.  Using ~with~ is a dirty hack. And the control flow of
+the whole program is not necessarily cleaner.  The base interpreter is simpler,
+because devoid of instrumentation-specific code, and has no facility for
+injecting code (other than ~with~).  But to understand instrumentation code you
+still need to understand how the interpreter works.  And to understand
+concurrent instrumentations, ... well.  You need to consider the order in which
+they are activated, and look at what pieces of the interpreter they override.
+The point is, it’s not free.
+
+By now I must face the evidence that there are no free solutions, only different
+compromises.  It’s interesting that way too, chasing the nuances.
+
+There is an alternative to duplicate code elimination.  What if we could live
+with this duplication?  After all, it’s the /downsides/ of the duplications we
+don’t want to live with, the burden of maintenance.  But what if this burden was
+eased by tools?  We would not have to pay the price of inadequate abstractions
+in clarity and performance.
+
+My main grief with duplicated code is the need to replicate changes to all
+duplicates.  If I have the /exact same lines/ repeated over and over, then
+factoring it into a function is a no-brainer.  But often, there are a few
+variations, and then a few others, and then it turns out you need the code to do
+something else entirely.  And you are left with a function that is called not
+twice, but only once.  Do you keep it?  It’s an indirection.  When you read the
+code, it’s just a verb, so you have to jump to definition just to know what it
+does.
+
+So sometimes you feel a pattern, a /groove/ that warrants abstraction.  But then
+later you need to undo this abstraction to get its components out, and rewire
+them.  But still, you feel it is part of a coherent unit.  Is this unit a
+function, or just a paragraph?
+
+In Inkscape you can group SVG objects together and treat them as one unit.  But
+then you can always access the individual components, even if they are part of
+the group, to copy them elsewhere, or change them.  And you can as easily
+ungroup them.
+
+That could alleviate the cost of going back and forth between abstracting and
+destroying these abstractions.  “Group code”/”Ungroup code”.  But that opens the
+problem of /saving/ those groups.  In the source file itself?  In a metadata
+file?
+
+To avoid the manual replication of changes to duplicated parts, the editor can
+take over.  “Do you want to replicate those changes to these parts, which have
+stayed in sync so far?”.
+
+Detecting duplicate changes seems computationally intensive.  But, it’s
+fortunately a problem that has been [[https://en.wikipedia.org/wiki/Duplicate_code#Detecting_duplicate_code][investigated]].  [[http://pmd.sourceforge.net/pmd-4.3.0/cpd.html][PMD]] mentions using [[http://www-igm.univ-mlv.fr/~lecroq/string/node5.html][Karp-Rabin]]
+string matching after having tried two other algorithms.  And the [[http://students.cis.uab.edu/tairasr/clones/literature/][literature]]
+over University of Alabama is absurdly long.
+
+[[http://www.iam.unibe.ch/~scg/Archive/Papers/Rieg98aEcoopWorkshop.pdf][One technique]] that is intuitive is to compare all the lines of code of a
+project, and draw a matrix.  A dot indicates identical lines.  A diagonal is a
+repeated sequence of lines.  So you can see at a glance the amount of duplicates
+in a project (and then, jump to the file to inspect further).
+
+*** A leitmotiv for the manuscript
+THE theme that has been going through all my work during these three (plus)
+years, that has been my constant adversary, the greatest difficulty to overcome,
+is the tension between static, safe, predictible programs and dynamic,
+unknowable, but reconfigurable programs.
+
+The thesis started with AOP.  AOP allows one to extend a program, statically or
+dynamically, in a way that makes the running behavior of the program difficult
+to predict.  If you have a ~cflow~, you cannot say anything about the code
+unless you know exactly what happens at runtime.
+
+Then extending interpreters in Haskell, wanting to mix AOP with strong static
+guarantees thanks to Ismael’s AOP library and the type system.  Turns out, the
+evident ways to extend the interpreter are also hard to type, because if you
+want full flexbility you are turning an AST -> Value function into an AST -> M
+Whatever, so you need to be free on the return type and effects.  So the
+static/dynamic duality only leaves you with cumbersome ways to deal with that.
+
+Not sure if the free monad changes that perspective.
+
+Then it’s clear in the JavaScript works, that the dynamic nature of the language
+allowed greater flexbility.  Of course, the cost is paid in static guarantees,
+and possible optimizations.
+
+Behind that theme was the question: why can’t we have modular programs first?
+Why is it so hard?  And the answer is, primarily because there are multiple
+tensions at work, and when you design a solution, you have to take all those
+tensions into account; they are the dimensions of your design space, and any one
+solution can never satisfy all the tensions at once.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
