@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-17 jeu. 17:35 -->
+<!-- 2016-03-18 ven. 18:12 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,7 +267,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline143">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline142">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
@@ -284,24 +284,23 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#orgheadline121">8.4. Discussion</a></li>
-<li><a href="#orgheadline122">8.5. Evaluation on Narcissus</a></li>
-<li><a href="#orgheadline142">8.6. Discussion</a>
+<li><a href="#orgheadline141">8.5. Discussion</a>
 <ul>
-<li><a href="#orgheadline123">8.6.1. Insights</a></li>
-<li><a href="#orgheadline124">8.6.2. Broad applications</a></li>
-<li><a href="#orgheadline125">8.6.3. Other JS interpreters</a></li>
-<li><a href="#orgheadline131">8.6.4. Related work</a></li>
-<li><a href="#orgheadline141">8.6.5. Objections and downsides</a></li>
+<li><a href="#orgheadline122">8.5.1. Insights</a></li>
+<li><a href="#orgheadline123">8.5.2. Broad applications</a></li>
+<li><a href="#orgheadline124">8.5.3. Other JS interpreters</a></li>
+<li><a href="#orgheadline130">8.5.4. Related work</a></li>
+<li><a href="#orgheadline140">8.5.5. Objections and downsides</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline145">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline144">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline144">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline143">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline146">Références</a></li>
+<li><a href="#orgheadline145">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7311,8 +7310,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline143" class="outline-2">
-<h2 id="orgheadline143"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</h2>
+<div id="outline-container-orgheadline142" class="outline-2">
+<h2 id="orgheadline142"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -8589,15 +8588,130 @@ exécutés par le script <code>jstests.py</code> développé par Mozilla.
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-</div>
 
+<aside>
+<p>
+En moyenne, un test prend donc environ 0.5 seconde à s’exécuter.  Comme
+l’interpréteur est relancé pour chaque test, et que, dans le cas de Narcissus, il
+faut <i>évaluer</i> tout l’intepréteur avant de pouvoir exécuter le test, ce temps de
+lancement se rajoute à chaque test.  Sur la même machine, lancer Narcissus sur
+un fichier vide prend 0.07 seconde en moyenne.  Activer les différentes analyses
+ne change pas cette mesure.
+</p>
+</aside>
 
+<p>
+L’écart type est à moins de 1% pour toutes les versions de Narcissus, donc les
+temps moyens sont représentatifs.  Si on compare l’interpréteur non instrumenté
+avec la version où on ajoute juste <code>with</code> autour du code du module, la seconde
+version prend 17% de temps supplémentaire pour exécuter le jeu de tests.  Ce
+surcoût est probablement dû à l’utilisation de <code>with</code>, qui rajoute un
+environnement dans la chaîne de résolution des noms.  Non seulement ça fait un
+objet de plus à parcourir lors de la résolution de <i>n’importe quel nom</i> du
+module, mais en plus les fonctions qui ont des variables libres ne peuvent pas
+être optimisées par le compilateur.  Là où, sans <code>with</code>, un accès à une variable
+libre peut être résolu statiquement en regardant dans l’environnement lexical de
+la fonction, avec <code>with</code> la variable peut changer dynamiquement, donc le moteur
+d’exécution doit toujours résoudre le nom dynamiquement; aucun raccourci n’est
+possible.
+</p>
+
+<aside>
+<p>
+Et il faut aussi comprendre que <code>with</code> est un mot-clé du langage qui
+est rarement utilisé, c’est donc raisonnable si les développeurs de moteurs
+d’exécution ne cherchent pas à l’optimiser davantage.
+</p>
+</aside>
+
+<p>
+Si on compare l’interpréteur instrumenté par Austin et Flanagan pour
+l’évaluation multi-facettes, le surcoût de temps n’est plus que 7%.  Notons
+cependant que notre implémentation de l’évaluation multi-facettes factorise
+quelques changements par rapport à l’implémentation de base, on ne mesure pas
+seulement l’utilisation de <code>with</code>.
+</p>
+
+<p>
+De toutes façons, comme l’indique le tableau, exécuter n’importe quel exemple
+avec Narcissus est d’un ordre de magnitude plus lent qu’avec SpiderMonkey
+directement.  C’est évidemment dû au fait que Narcissus est écrit en JavaScript.
+Mais pour nos besoins, les plus gros exemples qu’on a voulu exécuter avec les
+différentes analyses qu’on a ajouté à Narcissus n’ont pris que quelques
+secondes.  À cette échelle, une différence de 17% est insignifiante.
+</p>
+
+<p>
+Le gain de temps en écriture de code et en clarté de l’instrumentation est,
+quant à lui, tangible.  Avant de pouvoir exécuter la suite <code>test262</code> avec
+Narcissus, il a fallu corriger quelques erreurs dans son interprétation du code
+JavaScript et compléter sa couverture du standard.  En corrigeant ces erreurs
+dans l’interpréteur d’origine, il a fallu dupliquer les correctifs dans la
+version instrumentée par Austin et Flanagan, mais pas dans notre
+instrumentation.  Notre version de l’évaluation multi-facettes ne duplique pas
+le code de l’interpréteur, donc une fois le correctif appliqué à l’interpréteur
+de base, l’évaluation multi-facettes bénéficiait du correctif automatiquement.
+Cette anecdote illustre l’intérêt d’une décomposition qui cherche à minimiser la
+duplication de code.
+</p>
+</div>
+</div>
+</div>
 
 <div id="outline-container-orgheadline121" class="outline-3">
 <h3 id="orgheadline121"><span class="section-number-3">8.4</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-4">
+<p>
+L’idée principale de ce chapitre est que la manipulation de la portée des
+variables d’un module est suffisante pour changer totalement le comportement de
+ce module.  Et puisqu’on peut changer intégralement le comportement du module,
+on peut nécessairement en changer une partie, ce qui nous a permis de modifier
+dynamiquement Narcissus pour différentes analyses.
+</p>
+
+<p>
+On peut voir la propriété <code>env</code> qui expose l’environnement manipulable du module
+comment une interface spéciale, une interface d’instrumentation, qu’on peut
+rapprocher du concept d’”implémentation ouverte” de Rao.  Cette interface
+spéciale expose <i>tous</i> les noms de l’interpréteur, et confère donc aux
+programmeurs qui l’utilisent le pouvoir de modifier le code du module, mais
+également de casser ce code en créant des situations non anticipées par le
+créateur du module.  Comme on a pu changer la fonction <code>execute</code> pour étendre sa
+fonctionnalité, on aurait pu tout aussi bien fournir une version qui lance une
+exception.  Pas très utile dans notre cas, mais ça montre qu’il est très facile
+de rompre la fonctionnalité offerte par le module dès lors que cette interface
+spéciale est offerte.
+</p>
+
+<p>
+On a alors une situation quelque peu paradoxale où le programmeur soucieux de
+l’intégrité de son code le ficelle dans un module, mais ce faisant empêche tout
+autre programmeur d’étendre son code dynamiquement.  La solution proposée ici
+casse effectivement la barrière du module, et permet donc d’étendre le code de
+façon que l’on peut qualifier de <i>modulaire</i>, car les changements et
+fonctionnalités supplémentaires sont tous déclarés et isolés dans des modules
+séparés; et en même temps, l’intégrité du module initial ne peut plus être
+garantie.  On a donc une tension créée par deux forces en opposition: l’une qui
+tend à protéger le code, le rendre prévisible en empêchant toute modification
+dynamique non anticipée; et l’autre qui tend à ouvrir le code, permettre ces
+modifications dynamiques, même invasives, pour offrir une grande flexibilité de
+reconfiguration.
+</p>
+
+<p>
+Les propriétés du code offertes par l’une et l’autre force sont toutes
+désirables: a priori, on préférerait avoir un programme prévisible et
+reconfigurable à souhait.  Mais les deux buts ne sont pas réconciliables.
+</p>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-orgheadline141" class="outline-3">
+<h3 id="orgheadline141"><span class="section-number-3">8.5</span> Discussion</h3>
+<div class="outline-text-3" id="text-8-5">
 <p>
 Comparison to putting all bindings in global scope, rather than using this
 pattern:
@@ -8657,68 +8771,10 @@ enough to get 90% of the changes without modifying the code.
 <li><code>around</code> can be added (we did so) as a function of 3 lines of code</li>
 </ul>
 </div>
-</div>
 
-<div id="outline-container-orgheadline122" class="outline-3">
-<h3 id="orgheadline122"><span class="section-number-3">8.5</span> Evaluation on Narcissus</h3>
-<div class="outline-text-3" id="text-8-5">
-<p>
-Performance is on par with straightforward instrumentation.  20% increase when
-comparing non-instrumented interpreter.  10% increase when comparing
-instrumented (analysis matters more).
-</p>
-
-<table>
-
-
-<colgroup>
-<col  class="org-left">
-
-<col  class="org-right">
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">Interpreter</th>
-<th scope="col" class="org-right">time (seconds)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">raw (baseline)</td>
-<td class="org-right">1167</td>
-</tr>
-
-<tr>
-<td class="org-left">base</td>
-<td class="org-right">1410</td>
-</tr>
-</tbody>
-<tbody>
-<tr>
-<td class="org-left">facets (Austin)</td>
-<td class="org-right">1233</td>
-</tr>
-
-<tr>
-<td class="org-left">facets (us)</td>
-<td class="org-right">1357</td>
-</tr>
-</tbody>
-</table>
-
-<p>
-We have corrected bugs in Narcissus without touching the instrumented
-evaluation, since we reduce copy-pasting.  (e.g., <code>S12.11_A1_T3.js</code>)
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline142" class="outline-3">
-<h3 id="orgheadline142"><span class="section-number-3">8.6</span> Discussion</h3>
-<div class="outline-text-3" id="text-8-6">
-</div><div id="outline-container-orgheadline123" class="outline-4">
-<h4 id="orgheadline123"><span class="section-number-4">8.6.1</span> Insights</h4>
-<div class="outline-text-4" id="text-8-6-1">
+<div id="outline-container-orgheadline122" class="outline-4">
+<h4 id="orgheadline122"><span class="section-number-4">8.5.1</span> Insights</h4>
+<div class="outline-text-4" id="text-8-5-1">
 <p>
 Let the bindings be dynamically changed, and that’s all you need.  Use bindings
 for every bit of functionality (i.e., identify moving pieces and put them in
@@ -8746,9 +8802,9 @@ there is none.  Open scope is not ideal, but practical.
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-4">
-<h4 id="orgheadline124"><span class="section-number-4">8.6.2</span> Broad applications</h4>
-<div class="outline-text-4" id="text-8-6-2">
+<div id="outline-container-orgheadline123" class="outline-4">
+<h4 id="orgheadline123"><span class="section-number-4">8.5.2</span> Broad applications</h4>
+<div class="outline-text-4" id="text-8-5-2">
 <p>
 Not only dynamic analyses, but any variation of the interpreter.  Strict mode
 comes to mind.  As it applies to the module pattern, there is nothing specific
@@ -8763,9 +8819,9 @@ More generally, it applies to <i>customizing software</i> at the source level.
 </div>
 </div>
 
-<div id="outline-container-orgheadline125" class="outline-4">
-<h4 id="orgheadline125"><span class="section-number-4">8.6.3</span> Other JS interpreters</h4>
-<div class="outline-text-4" id="text-8-6-3">
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">8.5.3</span> Other JS interpreters</h4>
+<div class="outline-text-4" id="text-8-5-3">
 <p>
 ES5.1 interpreter written using a module pattern:
 </p>
@@ -8789,12 +8845,12 @@ Written as several modules (ES5 + flow analysis):
 </div>
 </div>
 
-<div id="outline-container-orgheadline131" class="outline-4">
-<h4 id="orgheadline131"><span class="section-number-4">8.6.4</span> Related work</h4>
-<div class="outline-text-4" id="text-8-6-4">
-</div><div id="outline-container-orgheadline126" class="outline-5">
-<h5 id="orgheadline126">Open modules</h5>
-<div class="outline-text-5" id="text-orgheadline126">
+<div id="outline-container-orgheadline130" class="outline-4">
+<h4 id="orgheadline130"><span class="section-number-4">8.5.4</span> Related work</h4>
+<div class="outline-text-4" id="text-8-5-4">
+</div><div id="outline-container-orgheadline125" class="outline-5">
+<h5 id="orgheadline125">Open modules</h5>
+<div class="outline-text-5" id="text-orgheadline125">
 <p>
 Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
 offer a clearly-defined boundary between the module writer and the writer of an
@@ -8812,9 +8868,9 @@ modular.
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-5">
-<h5 id="orgheadline127">Isn’t a visitor pattern enough?</h5>
-<div class="outline-text-5" id="text-orgheadline127">
+<div id="outline-container-orgheadline126" class="outline-5">
+<h5 id="orgheadline126">Isn’t a visitor pattern enough?</h5>
+<div class="outline-text-5" id="text-orgheadline126">
 <p>
 In general, a good idea.  But Narcissus is not object-oriented, so it cannot
 apply here.
@@ -8827,9 +8883,9 @@ could just rewrite from scratch and design for extensibility.
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-5">
-<h5 id="orgheadline128">Object-oriented interpreter</h5>
-<div class="outline-text-5" id="text-orgheadline128">
+<div id="outline-container-orgheadline127" class="outline-5">
+<h5 id="orgheadline127">Object-oriented interpreter</h5>
+<div class="outline-text-5" id="text-orgheadline127">
 <p>
 Other ways to instrument would depend on the form of the target interpreter.
 Here we have a module pattern with lexical scoping.  What if the interpreter was
@@ -8857,9 +8913,9 @@ on object attributes.
 </div>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-5">
-<h5 id="orgheadline129">&#x2026;AOP?</h5>
-<div class="outline-text-5" id="text-orgheadline129">
+<div id="outline-container-orgheadline128" class="outline-5">
+<h5 id="orgheadline128">&#x2026;AOP?</h5>
+<div class="outline-text-5" id="text-orgheadline128">
 <ul class="org-ul">
 <li>No satisfying AOP framework we could apply.  AspectScript is costly because
 parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.</li>
@@ -8872,9 +8928,9 @@ is just standard JavaScript.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline130" class="outline-5">
-<h5 id="orgheadline130">Scoping strategies</h5>
-<div class="outline-text-5" id="text-orgheadline130">
+<div id="outline-container-orgheadline129" class="outline-5">
+<h5 id="orgheadline129">Scoping strategies</h5>
+<div class="outline-text-5" id="text-orgheadline129">
 <p>
 Scoping strategies specify how aspects are applied dynamically.
 </p>
@@ -8912,12 +8968,12 @@ expressiveness of scoping strategies would be needed, or more useful.
 </div>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-4">
-<h4 id="orgheadline141"><span class="section-number-4">8.6.5</span> Objections and downsides</h4>
-<div class="outline-text-4" id="text-8-6-5">
-</div><div id="outline-container-orgheadline132" class="outline-5">
-<h5 id="orgheadline132"><code>with</code> is deprecated</h5>
-<div class="outline-text-5" id="text-orgheadline132">
+<div id="outline-container-orgheadline140" class="outline-4">
+<h4 id="orgheadline140"><span class="section-number-4">8.5.5</span> Objections and downsides</h4>
+<div class="outline-text-4" id="text-8-5-5">
+</div><div id="outline-container-orgheadline131" class="outline-5">
+<h5 id="orgheadline131"><code>with</code> is deprecated</h5>
+<div class="outline-text-5" id="text-orgheadline131">
 <p>
 <code>with</code> is disallowed in Strict mode because it makes static analysis difficult
 by violating lexical scope.  But this is precisely why we need it in this
@@ -8939,9 +8995,9 @@ lists pro and contra arguments.
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-5">
-<h5 id="orgheadline133">Open scope defeats the purpose of the module pattern</h5>
-<div class="outline-text-5" id="text-orgheadline133">
+<div id="outline-container-orgheadline132" class="outline-5">
+<h5 id="orgheadline132">Open scope defeats the purpose of the module pattern</h5>
+<div class="outline-text-5" id="text-orgheadline132">
 <p>
 Module pattern is for hiding information, and exposing only what is required.
 </p>
@@ -8965,9 +9021,9 @@ information?  (WeakMap, Symbols, or dunder prefix).
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-5">
-<h5 id="orgheadline134">It’s not modular if there is no interface for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline134">
+<div id="outline-container-orgheadline133" class="outline-5">
+<h5 id="orgheadline133">It’s not modular if there is no interface for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline133">
 <p>
 Open scope means an instrumentation is free to change any binding, without an
 explicit interface.  No interface means no contract between instrumentation
@@ -8984,9 +9040,9 @@ hooks everywhere.
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-5">
-<h5 id="orgheadline135">It’s still ad-hoc</h5>
-<div class="outline-text-5" id="text-orgheadline135">
+<div id="outline-container-orgheadline134" class="outline-5">
+<h5 id="orgheadline134">It’s still ad-hoc</h5>
+<div class="outline-text-5" id="text-orgheadline134">
 <p>
 Some refactoring made to Narcissus was specific to the implementation (salami
 the <code>switch</code>, <code>reflectClass</code>).  But the open scope pattern makes few hypotheses
@@ -9003,9 +9059,9 @@ eyeball the implementation of facets and compare it to a spec document.
 </div>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-5">
-<h5 id="orgheadline136">Application of open scope if not module pattern?</h5>
-<div class="outline-text-5" id="text-orgheadline136">
+<div id="outline-container-orgheadline135" class="outline-5">
+<h5 id="orgheadline135">Application of open scope if not module pattern?</h5>
+<div class="outline-text-5" id="text-orgheadline135">
 <p>
 The idea is to manipulate scopes, so it is general.  <i>How</i> to manipulate the
 scope depends on the situation.  If the target is not a module pattern, then
@@ -9018,9 +9074,9 @@ If the target is OO, <code>this</code> also provides a kind dynamic scope.
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-5">
-<h5 id="orgheadline137">Open scope only captures top-level declaration of module</h5>
-<div class="outline-text-5" id="text-orgheadline137">
+<div id="outline-container-orgheadline136" class="outline-5">
+<h5 id="orgheadline136">Open scope only captures top-level declaration of module</h5>
+<div class="outline-text-5" id="text-orgheadline136">
 <p>
 Declarations inside functions are not captured, cannot be overridden.
 </p>
@@ -9039,9 +9095,9 @@ information.
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-5">
-<h5 id="orgheadline138">Aliasing inside the module can be problematic</h5>
-<div class="outline-text-5" id="text-orgheadline138">
+<div id="outline-container-orgheadline137" class="outline-5">
+<h5 id="orgheadline137">Aliasing inside the module can be problematic</h5>
+<div class="outline-text-5" id="text-orgheadline137">
 <p>
 Open scope allows an instrumentation to change bindings inside the module.  If a
 binding is aliased inside the module, the instrumentation should override the
@@ -9091,9 +9147,9 @@ That’s not an issue we have encountered in instrumenting Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-5">
-<h5 id="orgheadline139">What about interferences between instrumentations?</h5>
-<div class="outline-text-5" id="text-orgheadline139">
+<div id="outline-container-orgheadline138" class="outline-5">
+<h5 id="orgheadline138">What about interferences between instrumentations?</h5>
+<div class="outline-text-5" id="text-orgheadline138">
 <p>
 Is
 </p>
@@ -9113,9 +9169,9 @@ If not, what do you have to pay attention to when writing analyses?
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-5">
-<h5 id="orgheadline140">Performance costs</h5>
-<div class="outline-text-5" id="text-orgheadline140">
+<div id="outline-container-orgheadline139" class="outline-5">
+<h5 id="orgheadline139">Performance costs</h5>
+<div class="outline-text-5" id="text-orgheadline139">
 <p>
 Are expected due to the added indirection.
 </p>
@@ -9136,11 +9192,11 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline145" class="outline-2">
-<h2 id="orgheadline145"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline144" class="outline-2">
+<h2 id="orgheadline144"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline144" class="outline-3">
-<h3 id="orgheadline144"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline143" class="outline-3">
+<h3 id="orgheadline143"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -9168,9 +9224,9 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline146" class="outline-2">
-<h2 id="orgheadline146">Références</h2>
-<div class="outline-text-2" id="text-orgheadline146">
+<div id="outline-container-orgheadline145" class="outline-2">
+<h2 id="orgheadline145">Références</h2>
+<div class="outline-text-2" id="text-orgheadline145">
 <div id="bibliography">
 
 <table>
@@ -10802,7 +10858,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-17 jeu. 17:35 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-18 ven. 18:12 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
