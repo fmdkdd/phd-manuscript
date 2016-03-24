@@ -2381,6 +2381,36 @@ tensions at work, and when you design a solution, you have to take all those
 tensions into account; they are the dimensions of your design space, and any one
 solution can never satisfy all the tensions at once.
 
+** [2016-03-24 jeu.]
+*** SVG export not cropping to the selected element
+Rogntudju.
+
+This one has been driving me nuts.  rsvg-convert, /sometimes/, decided to leave
+huge whitespace around exported SVG when using the ‘export-id’ option.
+
+I found a minimum example: a simple SVG path won’t be cropped correctly.
+
+Diving into [[https://github.com/GNOME/librsvg/blob/master/rsvg-convert.c][the source]], I found that to crop, it first draws the selected object
+through Cairo, and then gets the bounding box of the render area.  And it turns
+out that the bounding box of the render is /not/ the bounding box of the
+object.  The render always starts at (0,0) when drawing a path, then executes
+the path commands.  The bounding box is then always (0,0)--(end of path).
+
+The render bounding box is the union of all the bounding boxes of the objects
+that are rendered.  And, in ~cairo_render_path~, there was a special case to
+take into account the bounding box of the filled area of a path, /even if the
+fill wasn’t set/.  This was made to accommodate a use-case for GNOME SVG icons.
+
+Discarding this bounding box when no fill is set fixed the issue.
+
+While I’m in the code, the bounding box was one pixel too narrow, because the
+computations are done with double precision, and rsvg-convert those to ints,
+without rounding.  I just added 2 pixels to the final width and height, to
+ensure we don’t lose any part of the SVG (1 pixel for the ‘width’ rounding, and
+1 pixel for the ‘x’ coordinate of the top left corner).
+
+I made a [[file:bin/librsvg-bbfix.patch][patch]], to ensure I can reproduce the build at a later point.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

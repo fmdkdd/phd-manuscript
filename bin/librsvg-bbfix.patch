@@ -1,0 +1,28 @@
+diff -b -u librsvg-2.40.13/rsvg-cairo-draw.c librsvg-2.40.13-bbfix/rsvg-cairo-draw.c
+--- librsvg-2.40.13/rsvg-cairo-draw.c	2016-01-07 23:12:03.000000000 +0100
++++ librsvg-2.40.13-bbfix/rsvg-cairo-draw.c	2016-03-24 17:32:58.259054604 +0100
+@@ -494,7 +494,7 @@
+      * paths for the icon's shape.  We need to be able to compute the bounding
+      * rectangle's extents, even when it has no fill nor stroke.
+      */
+-    {
++    if (state->fill != NULL) {
+         RsvgBbox fb;
+         rsvg_bbox_init (&fb, &state->affine);
+         cairo_fill_extents (cr, &fb.rect.x, &fb.rect.y, &fb.rect.width, &fb.rect.height);
+Only in librsvg-2.40.13-bbfix/: rsvg-convert
+diff -b -u librsvg-2.40.13/rsvg-convert.c librsvg-2.40.13-bbfix/rsvg-convert.c
+--- librsvg-2.40.13/rsvg-convert.c	2015-12-02 02:18:33.000000000 +0100
++++ librsvg-2.40.13-bbfix/rsvg-convert.c	2016-03-24 17:40:39.895065605 +0100
+@@ -350,6 +350,11 @@
+
+             _rsvg_size_callback (&dimensions.width, &dimensions.height, &size_data);
+
++            /* Offset the loss of precision of going from double to int.
++             * Without this fix, bottom right corner of bounding boxes is cut. */
++            dimensions.width += 2;
++            dimensions.height += 2;
++
+             if (!format || !strcmp (format, "png"))
+                 surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+                                                       dimensions.width, dimensions.height);
