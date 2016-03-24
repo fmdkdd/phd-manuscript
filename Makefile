@@ -35,17 +35,23 @@ img/%.multi.svg: svg/%.multi.svg bin/svgsplit
   # Makefile.  So we use a phony file to know when we need to keep track of
   # the last time we ran the command.
 	@touch $@
+  # Need to update timestamp of img whenever we create an image, for the
+  # html/img: img rule below.
+	@touch img
 
 img/%.svg: svg/%.svg
 	cp $< $@
+	@touch img
 
 # Same as above, but for the PNG exports.
 img/%.multi.png: svg/%.multi.svg bin/svgsplit
 	./bin/svgsplit png $< img
 	@touch $@
+	@touch img
 
 img/%.png: svg/%.svg
 	rsvg-convert --format png --output $@ $<
+	@touch img
 
 html/style.css: html-src/style.css
 	cp $< $@
@@ -53,9 +59,12 @@ html/style.css: html-src/style.css
 # img created by Org and rsvg-convert are put into the img/ folder by the
 # `draft` and `final` targets.  To make standalone HTML folder to be pushed onto
 # a web server, we need to copy the img folder as well.  The target is simply
-# the folder.
+# the folder, whose timestamp is updated if any image is generated.
 html/img: img
-	cp --recursive $< $@
+	cp --recursive img html/
+  # Need to update timestamp of destination folder, as a cp will only update it
+  # if there are new files, not on updates to existing files.
+	@touch html/img
 
 clean:
 	rm --force $(TARGET)
