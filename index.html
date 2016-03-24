@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-18 ven. 18:12 -->
+<!-- 2016-03-24 jeu. 17:48 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -7469,6 +7469,15 @@ comportement observable:
 </pre>
 </div>
 
+<div style="margin-top:-10rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls0.svg" alt="dls0.svg">
+</p>
+</figure>
+
+</div>
+
 <p>
 On a ici un simple module qui retourne une seule fonction, <code>g</code>.  Cette fonction
 appelle la fonction <code>f</code> et retourne sa valeur, et <code>f</code> à son tour retourne
@@ -8664,17 +8673,17 @@ duplication de code.
 <p>
 L’idée principale de ce chapitre est que la manipulation de la portée des
 variables d’un module est suffisante pour changer totalement le comportement de
-ce module.  Et puisqu’on peut changer intégralement le comportement du module,
-on peut nécessairement en changer une partie, ce qui nous a permis de modifier
-dynamiquement Narcissus pour différentes analyses.
+ce module.  Et si on peut changer intégralement le comportement du module, on
+peut nécessairement en changer une partie; c’est ce qui nous a permis de
+modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 </p>
 
 <p>
 On peut voir la propriété <code>env</code> qui expose l’environnement manipulable du module
-comment une interface spéciale, une interface d’instrumentation, qu’on peut
+comme une interface spéciale, une interface d’instrumentation, qu’on peut
 rapprocher du concept d’”implémentation ouverte” de Rao.  Cette interface
 spéciale expose <i>tous</i> les noms de l’interpréteur, et confère donc aux
-programmeurs qui l’utilisent le pouvoir de modifier le code du module, mais
+programmeurs non seulement le pouvoir de modifier le code du module, mais
 également de casser ce code en créant des situations non anticipées par le
 créateur du module.  Comme on a pu changer la fonction <code>execute</code> pour étendre sa
 fonctionnalité, on aurait pu tout aussi bien fournir une version qui lance une
@@ -8686,28 +8695,29 @@ spéciale est offerte.
 <p>
 On a alors une situation quelque peu paradoxale où le programmeur soucieux de
 l’intégrité de son code le ficelle dans un module, mais ce faisant empêche tout
-autre programmeur d’étendre son code dynamiquement.  La solution proposée ici
-casse effectivement la barrière du module, et permet donc d’étendre le code de
-façon que l’on peut qualifier de <i>modulaire</i>, car les changements et
-fonctionnalités supplémentaires sont tous déclarés et isolés dans des modules
-séparés; et en même temps, l’intégrité du module initial ne peut plus être
-garantie.  On a donc une tension créée par deux forces en opposition: l’une qui
-tend à protéger le code, le rendre prévisible en empêchant toute modification
-dynamique non anticipée; et l’autre qui tend à ouvrir le code, permettre ces
-modifications dynamiques, même invasives, pour offrir une grande flexibilité de
-reconfiguration.
+autre programmeur d’étendre son code dynamiquement.  Le code a beau utiliser un
+module, il ne peut être étendu; il n’est donc pas <i>modulaire</i> par rapport aux
+changements que l’on souhaite y apporter, car il faut modifier le code source à
+l’intérieur du module pour effectuer ces changements.  Et à l’inverse, la
+solution proposée ici casse la protection offerte par le module, mais ce faisant
+permet d’étendre le code en écrivant les changements et fonctionnalités
+supplémentaires dans des fichiers distincts; une situation que l’on peut
+qualifier de <i>modulaire</i>.
 </p>
 
 <p>
-Les propriétés du code offertes par l’une et l’autre force sont toutes
+La version originale du module, et notre version modifiable dynamiquement sont
+deux points opposés sur un même axe.  D’un côté, un programme prévisible, sur
+lequel il est facile de raisonner statiquement, car son comportement ne peut
+être modifié dynamiquement; et de l’autre, un programme ouvert, dont le
+comportement peut changer à tout moment de l’exécution, mais qui offre une
+grande flexibilité.  Les propriétés offertes par l’un et l’autre sont toutes
 désirables: a priori, on préférerait avoir un programme prévisible et
-reconfigurable à souhait.  Mais les deux buts ne sont pas réconciliables.
+reconfigurable à souhait.  Mais il est facile de voir que les deux buts ne sont
+pas réconciliables.
 </p>
 </div>
 </div>
-
-
-
 
 <div id="outline-container-orgheadline141" class="outline-3">
 <h3 id="orgheadline141"><span class="section-number-3">8.5</span> Discussion</h3>
@@ -10858,7 +10868,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-18 ven. 18:12 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-24 jeu. 17:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
