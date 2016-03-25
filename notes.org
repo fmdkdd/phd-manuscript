@@ -2411,6 +2411,27 @@ ensure we don’t lose any part of the SVG (1 pixel for the ‘width’ rounding
 
 I made a [[file:bin/librsvg-bbfix.patch][patch]], to ensure I can reproduce the build at a later point.
 
+** [2016-03-25 ven.]
+*** Interactive SVG diagrams
+I can highlight parts of the SVG diagrams just by hovering the mouse over words,
+just like Org already highlights line numbers for code examples.
+
+It’s a matter of selecting the element in the SVG, and toggling a class.  But
+for that, I need to be able to target the right element.
+
+I should use id, but rsvg-convert discards all the meta data from the extracted
+SVG :(  Since this a side-effect of rendering to SVG using Cairo, there’s not
+much I can do; there are no guarantees that a path in the original multi-SVG
+will end up as a path in the extracted SVG, and I can’t find any way to leave
+labels intact after rsvg-convert.
+
+That would, of course, work if extracting through Inkscape.  So it’s not out of
+reach for a final version.
+
+But I would also need to add the necessary syntax to Org; probably as a custom
+link type.  And then add a simple JavaScript function to be called on mouseover
+and on mouseout, just like code highlighting.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

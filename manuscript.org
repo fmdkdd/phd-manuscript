@@ -6,6 +6,7 @@
 #+OPTIONS: tags:nil H:4 num:3 toc:3
 
 #+MACRO: acr @@latex:\textsc{$1}@@
+#+MACRO: color @@html:<span class="color $1">▬</span>@@
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
@@ -5832,18 +5833,13 @@ comportement observable:
 #+BEGIN_SRC js -n -r
 var m = (function(){
   var a = 1                               (ref:ex1-defs-start)
-  var f = function(x) { return x + a }
-  var g = function(x) { return f(x) }     (ref:ex1-defs-end)
+  function f(x) { return x + a }
+  function g(x) { return f(x) }           (ref:ex1-defs-end)
   return {g: g}                           (ref:ex1-return)
 }())
 
 m.g(0) //: 1                              (ref:ex1-test)
 #+END_SRC
-
-#+ATTR_HTML: :style margin-top:-10rem
-#+BEGIN_side-figure
-[[file:img/dls0.svg]]
-#+END_side-figure
 
 On a ici un simple module qui retourne une seule fonction, ~g~.  Cette fonction
 appelle la fonction ~f~ et retourne sa valeur, et ~f~ à son tour retourne
@@ -5851,46 +5847,56 @@ l’addition de son argument et de ~a~, une variable interne au module.  Quand o
 appelle ~m.g(0)~ à l’extérieur du module, on obtient ~1~, qui est la valeur de
 ~a~.
 
+#+ATTR_HTML: :style margin-top:-20rem
+#+BEGIN_side-figure
+[[file:img/dls0.svg]]
+#+END_side-figure
+
 Le diagramme illustre les environnements les objets crées après l’appel de le la
 FIA et avant l’appel de la ligne ~m.g~ à la ligne [[(ex1-test)]].  Les objets
 JavaScript sont représentés par des boîtes qui contiennent des paires.  Une
 paire est une propriété, avec à gauche le nom de la propriété et à droite sa
 valeur.  Lorsque la valeur de la pair est une référence, la case contient une
-puce d’où part flèche qui pointe vers l’objet référencé.  Par exemple, on peut
-voir que l’objet ~global~ a une propriété ~m~ qui pointe vers l’objet exporté.
+puce d’où part un trait qui finit sur l’objet référencé.  Par exemple, on peut
+voir l’objet exporté à gauche, qui a une propriété ~g~ qui pointe vers la
+fonction ~g~.
 
-On représente les environnements avec des boîtes également, et une flèche solide
-indique l’environnement parent.  Lorsqu’un nom est recherché dans un
-environnement et que ce nom n’est pas présent dans les propriétés de cet
-environnement, la recherche continue dans l’environnement parent, et
-récursivement jusqu’à ce que soit le parent n’existe pas, soit la propriété est
-trouvée.
+On représente les environnements avec des boîtes également, et l’environnement
+parent est relié par le trait qui part de la puce du coin supérieur gauche de
+l’environnement.  Lorsqu’un nom est recherché dans un environnement et que ce
+nom n’est pas présent dans les propriétés de cet environnement, la recherche
+continue dans l’environnement parent, et récursivement jusqu’à ce que soit le
+parent n’existe pas, soit la propriété est trouvée.  L’environnement global est
+en haut à gauche.
 
 On peut expliquer le motif module en regardant seulement le diagramme.  Avant
-d’exécuter la code de l’exemple, l’objet /global/ est vide.  Lorsque la FIA est
-appelée, elle crée un environnement marqué “environnement FIA” dans le
-diagramme.  Puisque la FIA est définie à la racine, l’environnement parent est
-l’objet global.  À l’intérieur de la FIA, trois noms sont définis: une variable
-~a~ et deux fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).
-Lorsqu’une fonction est définie, un objet fonction est crée qui contient sont
-code et l’environnement dans lequel la fonction a été définie.  Cet
-environnement sera utilisé pour exécuter le corps de la fonction lorsqu’elle
-sera invoquée.  Avant que la FIA ne retourne, elle crée l’objet exporté (ligne
-[[(ex1-return)]]) qui contient une propriété ~g~.  Cette propriété réfère la
-fonction ~g~ définie à l’intérieur du module.  Notons qu’il y a /deux/
-références à la fonction ~g~ à l’exécution.  Enfin, la FIA retourne l’objet
-exporté, qui devient la valeur de la variable globale ~m~.
+d’exécuter la code de l’exemple, l’environnement global est vide.  Lorsque la
+FIA est appelée, elle crée l’environnement en {{{color(c1)}}}.  Puisque la FIA
+est définie à la racine, l’environnement parent est l’objet global.  À
+l’intérieur de la FIA, trois noms sont définis: une variable ~a~ et deux
+fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).  Lorsqu’une
+fonction est définie, un objet fonction est crée qui contient son code et son
+environnement lexical.  Cet environnement sera utilisé pour exécuter le corps de
+la fonction lorsqu’elle sera invoquée.  Avant que la FIA ne retourne, elle crée
+l’objet exporté (ligne [[(ex1-return)]]) qui contient la propriété ~g~.  Cette
+propriété réfère la fonction ~g~ définie à l’intérieur du module.  Notons qu’il
+y a /deux/ références à la fonction ~g~ à l’exécution.  Enfin, la FIA retourne
+l’objet exporté, qui devient la valeur de la variable globale ~m~.
+
+#+BEGIN_side-figure
+[[file:img/dls1.svg]]
+#+END_side-figure
 
 On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
 [[(ex1-test)]] sur le second diagramme.  D’abord, la référence ~m.g~ est résolue en
 cherchant la propriété ~m~ dans l’environnement courant, c’est à dire,
 l’environnement global.  ~m~ existe et pointe vers un objet, donc l’interpréteur
 cherche maintenant la propriété ~g~ dans cet objet.  ~g~ existe, et réfère un
-objet fonction, on peut donc procéder pour l’appel ~m.g(0)~.  Lorsque la
-fonction est appelée dans l’environnement global, l’interpréteur crée un
-environnement pour le corps de la fonction qu’on appelle l’objet /d’activation/
-de ~g~.  Cet objet associe les noms des paramètres déclarés par la fonction aux
-valeurs passés par l’appel; ici, il y a donc une seule entrée ~x : 0~.  L’objet
+objet fonction, on peut donc procéder à l’appel ~m.g(0)~.  Lorsque la fonction
+est appelée dans l’environnement global, l’interpréteur crée un environnement
+pour le corps de la fonction qu’on appelle l’objet /d’activation/ de ~g~.  Cet
+objet associe les noms des paramètres déclarés par la fonction aux valeurs
+passées par l’appel; ici, il y a donc une seule entrée ~x : 0~.  L’objet
 d’activation de ~g~ est un environnement, et il a comme environnement parent
 l’objet référencé par la propriété /env/ de l’objet fonction de ~g~.  Puis, le
 contrôle est transféré au corps de la fonction ~g~, qui contient ~f(x)~.
@@ -5905,6 +5911,12 @@ corps de ~f~, ~x+a~.  La propriété ~x~ se trouve dans l’objet d’activation
 ~f~ (0), et la propriété ~a~ dans l’environnement parent (1).  L’interpréteur
 somme les deux valeurs et retourne le résultat.
 
+#+BEGIN_aside
+Dans les diagrammes suivants, on n’illustrera plus les objets d’activation des
+fonctions, puisque l’environnement parent est déjà indiqué par la propriété
+~env~ de l’objet fonction.
+#+END_aside
+
 Le second diagramme sert à illustrer deux points importants sur le motif module:
 
 1. La seul façon que du code extérieur au module a d’accéder aux définitions
@@ -5917,7 +5929,7 @@ Le second diagramme sert à illustrer deux points importants sur le motif module
    modifie les références internes au module, il faut accéder directement à
    l’environnement de la FIA.
 
-2. Toutes les fonctions créées à l’intérieur du module utilise l’environnement
+2. Toutes les fonctions créées à l’intérieur du module utilisent l’environnement
    de la FIA comme environnement parent.  Autrement dit, les fonctions se
    referment sur leur environnement de définition (leur environnement
    /lexical/), et c’est pourquoi on appelle ces fonctions des /fermetures/.  Si
@@ -5941,17 +5953,16 @@ de la FIA.
 
 #+BEGIN_SRC js -n -r
 var m = (function(){
-  var a = 1
-  var f = function(x) { return x + a }
   var mkG = function() {
-    var g = function(x) { return f(x) }
-    return g
+    return function(x) { return x }
   }
   return {g: mkG()}                                     (ref:ex2-return)
 }())
-
-m.g(0)
 #+END_SRC
+
+#+BEGIN_side-figure
+[[file:img/dls3.svg]]
+#+END_side-figure
 
 Dans cet exemple, la fonction ~g~ exportée par le module ne capture pas
 l’environnement de la FIA.  À la ligne [[(ex2-return)]] on exporte la valeur de
@@ -5960,11 +5971,11 @@ exactement la même fonction ~g~ que dans l’exemple précédent, avec une
 différence notable: cette fonction ~g~ capture l’environnement de l’appel à
 ~mkG~.  Le diagramme qui l’accompagne illustre cette différence par l’apparition
 d’un nouvel objet d’activation pour ~mkG~ qui est référencé comme environnement
-de ~g~.  On a ~m.g.scope~ qui pointe vers l’environnement crée par ~mkG~, et non
-l’environnement crée par la FIA.  Au contraire, la fonction ~f~ pointe
-directement vers l’environnement de la FIA.  On voit alors que la propriété
-~env~ d’une fonction n’est pas garantie de pointer vers l’environnement dont
-nous avons besoin.
+de ~g~.  On a ~m.g.env~ qui pointe vers l’environnement crée par ~mkG~
+({{{color(c1)}}}), et non l’environnement crée par la FIA ({{{color(c2)}}}).  Au
+contraire, la fonction ~f~ pointe directement vers l’environnement de la FIA.
+On voit alors que la propriété ~env~ d’une fonction n’est pas garantie de
+pointer vers l’environnement dont nous avons besoin.
 
 On va maintenant s’éloigner du comportement standard de JavaScript que nous
 avons suivi jusqu’ici.  Supposons que nous /pouvons/ accéder à l’environnement
@@ -5978,11 +5989,11 @@ La section suivante montre comment retrouver cette fonctionnalité dans le
 langage standard.
 #+END_aside
 
-#+BEGIN_SRC -n -r
+#+BEGIN_SRC js -n -r
 var m = (function(){
   var a = 1
-  var f = function(x) { return x + a }
-  var g = function(x) { return f(x) }
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
   return {g: g}
 }())
 
