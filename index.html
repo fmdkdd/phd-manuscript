@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-24 jeu. 17:48 -->
+<!-- 2016-03-25 ven. 17:08 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -7460,22 +7460,13 @@ comportement observable:
 
 <pre class="src src-js"><span class="linenr">1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
 <span id="coderef-ex1-defs-start" class="coderef-off"><span class="linenr">2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1</span>
-<span class="linenr">3: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-<span id="coderef-ex1-defs-end" class="coderef-off"><span class="linenr">4: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }</span>
+<span class="linenr">3: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span id="coderef-ex1-defs-end" class="coderef-off"><span class="linenr">4: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }</span>
 <span id="coderef-ex1-return" class="coderef-off"><span class="linenr">5: </span>  <span style="font-weight: bold;">return</span> {g: g}</span>
 <span class="linenr">6: </span>}())
 <span class="linenr">7: </span>
 <span id="coderef-ex1-test" class="coderef-off"><span class="linenr">8: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span></span>
 </pre>
-</div>
-
-<div style="margin-top:-10rem" class="side-figure">
-
-<figure>
-<p><img src="img/dls0.svg" alt="dls0.svg">
-</p>
-</figure>
-
 </div>
 
 <p>
@@ -7486,41 +7477,60 @@ appelle <code>m.g(0)</code> à l’extérieur du module, on obtient <code>1</cod
 <code>a</code>.
 </p>
 
+<div style="margin-top:-20rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls0.svg" alt="dls0.svg">
+</p>
+</figure>
+
+</div>
+
 <p>
 Le diagramme illustre les environnements les objets crées après l’appel de le la
 FIA et avant l’appel de la ligne <code>m.g</code> à la ligne <a href="#coderef-ex1-test"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-test');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-test');">8</a>.  Les objets
 JavaScript sont représentés par des boîtes qui contiennent des paires.  Une
 paire est une propriété, avec à gauche le nom de la propriété et à droite sa
 valeur.  Lorsque la valeur de la pair est une référence, la case contient une
-puce d’où part flèche qui pointe vers l’objet référencé.  Par exemple, on peut
-voir que l’objet <code>global</code> a une propriété <code>m</code> qui pointe vers l’objet exporté.
+puce d’où part un trait qui finit sur l’objet référencé.  Par exemple, on peut
+voir l’objet exporté à gauche, qui a une propriété <code>g</code> qui pointe vers la
+fonction <code>g</code>.
 </p>
 
 <p>
-On représente les environnements avec des boîtes également, et une flèche solide
-indique l’environnement parent.  Lorsqu’un nom est recherché dans un
-environnement et que ce nom n’est pas présent dans les propriétés de cet
-environnement, la recherche continue dans l’environnement parent, et
-récursivement jusqu’à ce que soit le parent n’existe pas, soit la propriété est
-trouvée.
+On représente les environnements avec des boîtes également, et l’environnement
+parent est relié par le trait qui part de la puce du coin supérieur gauche de
+l’environnement.  Lorsqu’un nom est recherché dans un environnement et que ce
+nom n’est pas présent dans les propriétés de cet environnement, la recherche
+continue dans l’environnement parent, et récursivement jusqu’à ce que soit le
+parent n’existe pas, soit la propriété est trouvée.  L’environnement global est
+en haut à gauche.
 </p>
 
 <p>
 On peut expliquer le motif module en regardant seulement le diagramme.  Avant
-d’exécuter la code de l’exemple, l’objet <i>global</i> est vide.  Lorsque la FIA est
-appelée, elle crée un environnement marqué “environnement FIA” dans le
-diagramme.  Puisque la FIA est définie à la racine, l’environnement parent est
-l’objet global.  À l’intérieur de la FIA, trois noms sont définis: une variable
-<code>a</code> et deux fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).
-Lorsqu’une fonction est définie, un objet fonction est crée qui contient sont
-code et l’environnement dans lequel la fonction a été définie.  Cet
-environnement sera utilisé pour exécuter le corps de la fonction lorsqu’elle
-sera invoquée.  Avant que la FIA ne retourne, elle crée l’objet exporté (ligne
-<a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient une propriété <code>g</code>.  Cette propriété réfère la
-fonction <code>g</code> définie à l’intérieur du module.  Notons qu’il y a <i>deux</i>
-références à la fonction <code>g</code> à l’exécution.  Enfin, la FIA retourne l’objet
-exporté, qui devient la valeur de la variable globale <code>m</code>.
+d’exécuter la code de l’exemple, l’environnement global est vide.  Lorsque la
+FIA est appelée, elle crée l’environnement en <span class="color c1">▬</span>.  Puisque la FIA
+est définie à la racine, l’environnement parent est l’objet global.  À
+l’intérieur de la FIA, trois noms sont définis: une variable <code>a</code> et deux
+fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).  Lorsqu’une
+fonction est définie, un objet fonction est crée qui contient son code et son
+environnement lexical.  Cet environnement sera utilisé pour exécuter le corps de
+la fonction lorsqu’elle sera invoquée.  Avant que la FIA ne retourne, elle crée
+l’objet exporté (ligne <a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient la propriété <code>g</code>.  Cette
+propriété réfère la fonction <code>g</code> définie à l’intérieur du module.  Notons qu’il
+y a <i>deux</i> références à la fonction <code>g</code> à l’exécution.  Enfin, la FIA retourne
+l’objet exporté, qui devient la valeur de la variable globale <code>m</code>.
 </p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls1.svg" alt="dls1.svg">
+</p>
+</figure>
+
+</div>
 
 <p>
 On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
@@ -7528,11 +7538,11 @@ On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
 cherchant la propriété <code>m</code> dans l’environnement courant, c’est à dire,
 l’environnement global.  <code>m</code> existe et pointe vers un objet, donc l’interpréteur
 cherche maintenant la propriété <code>g</code> dans cet objet.  <code>g</code> existe, et réfère un
-objet fonction, on peut donc procéder pour l’appel <code>m.g(0)</code>.  Lorsque la
-fonction est appelée dans l’environnement global, l’interpréteur crée un
-environnement pour le corps de la fonction qu’on appelle l’objet <i>d’activation</i>
-de <code>g</code>.  Cet objet associe les noms des paramètres déclarés par la fonction aux
-valeurs passés par l’appel; ici, il y a donc une seule entrée <code>x : 0</code>.  L’objet
+objet fonction, on peut donc procéder à l’appel <code>m.g(0)</code>.  Lorsque la fonction
+est appelée dans l’environnement global, l’interpréteur crée un environnement
+pour le corps de la fonction qu’on appelle l’objet <i>d’activation</i> de <code>g</code>.  Cet
+objet associe les noms des paramètres déclarés par la fonction aux valeurs
+passées par l’appel; ici, il y a donc une seule entrée <code>x : 0</code>.  L’objet
 d’activation de <code>g</code> est un environnement, et il a comme environnement parent
 l’objet référencé par la propriété <i>env</i> de l’objet fonction de <code>g</code>.  Puis, le
 contrôle est transféré au corps de la fonction <code>g</code>, qui contient <code>f(x)</code>.
@@ -7547,6 +7557,14 @@ corps de <code>f</code>, <code>x+a</code>.  La propriété <code>x</code> se tro
 <code>f</code> (0), et la propriété <code>a</code> dans l’environnement parent (1).  L’interpréteur
 somme les deux valeurs et retourne le résultat.
 </p>
+
+<aside>
+<p>
+Dans les diagrammes suivants, on n’illustrera plus les objets d’activation des
+fonctions, puisque l’environnement parent est déjà indiqué par la propriété
+<code>env</code> de l’objet fonction.
+</p>
+</aside>
 
 <p>
 Le second diagramme sert à illustrer deux points importants sur le motif module:
@@ -7563,7 +7581,7 @@ toujours référence à la fonction <code>g</code> définie dans le module.  Si 
 modifie les références internes au module, il faut accéder directement à
 l’environnement de la FIA.</li>
 
-<li>Toutes les fonctions créées à l’intérieur du module utilise l’environnement
+<li>Toutes les fonctions créées à l’intérieur du module utilisent l’environnement
 de la FIA comme environnement parent.  Autrement dit, les fonctions se
 referment sur leur environnement de définition (leur environnement
 <i>lexical</i>), et c’est pourquoi on appelle ces fonctions des <i>fermetures</i>.  Si
@@ -7596,33 +7614,37 @@ de la FIA.
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-<span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
-<span class="linenr"> 3: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
-<span class="linenr"> 4: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">mkG</span> = <span style="font-weight: bold;">function</span>() {
-<span class="linenr"> 5: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-<span class="linenr"> 6: </span>    <span style="font-weight: bold;">return</span> g
-<span class="linenr"> 7: </span>  }
-<span id="coderef-ex2-return" class="coderef-off"><span class="linenr"> 8: </span>  <span style="font-weight: bold;">return</span> {g: mkG()}</span>
-<span class="linenr"> 9: </span>}())
-<span class="linenr">10: </span>
-<span class="linenr">11: </span>m.g(0)
+<pre class="src src-js"><span class="linenr">1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
+<span class="linenr">2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">mkG</span> = <span style="font-weight: bold;">function</span>() {
+<span class="linenr">3: </span>    <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x }
+<span class="linenr">4: </span>  }
+<span id="coderef-ex2-return" class="coderef-off"><span class="linenr">5: </span>  <span style="font-weight: bold;">return</span> {g: mkG()}</span>
+<span class="linenr">6: </span>}())
 </pre>
+</div>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls3.svg" alt="dls3.svg">
+</p>
+</figure>
+
 </div>
 
 <p>
 Dans cet exemple, la fonction <code>g</code> exportée par le module ne capture pas
-l’environnement de la FIA.  À la ligne <a href="#coderef-ex2-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex2-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex2-return');">8</a> on exporte la valeur de
+l’environnement de la FIA.  À la ligne <a href="#coderef-ex2-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex2-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex2-return');">5</a> on exporte la valeur de
 retour de la function <code>mkG</code> sous le nom <code>g</code>.  La fonction <code>mkG</code> retourne
 exactement la même fonction <code>g</code> que dans l’exemple précédent, avec une
 différence notable: cette fonction <code>g</code> capture l’environnement de l’appel à
 <code>mkG</code>.  Le diagramme qui l’accompagne illustre cette différence par l’apparition
 d’un nouvel objet d’activation pour <code>mkG</code> qui est référencé comme environnement
-de <code>g</code>.  On a <code>m.g.scope</code> qui pointe vers l’environnement crée par <code>mkG</code>, et non
-l’environnement crée par la FIA.  Au contraire, la fonction <code>f</code> pointe
-directement vers l’environnement de la FIA.  On voit alors que la propriété
-<code>env</code> d’une fonction n’est pas garantie de pointer vers l’environnement dont
-nous avons besoin.
+de <code>g</code>.  On a <code>m.g.env</code> qui pointe vers l’environnement crée par <code>mkG</code>
+(<span class="color c1">▬</span>), et non l’environnement crée par la FIA (<span class="color c2">▬</span>).  Au
+contraire, la fonction <code>f</code> pointe directement vers l’environnement de la FIA.
+On voit alors que la propriété <code>env</code> d’une fonction n’est pas garantie de
+pointer vers l’environnement dont nous avons besoin.
 </p>
 
 <p>
@@ -7643,16 +7665,16 @@ langage standard.
 
 <div class="org-src-container">
 
-<pre class="src src--n">var m = (function(){
-  var a = 1
-  var f = function(x) { return x + a }
-  var g = function(x) { return f(x) }
-  return {g: g}
-}())
-
-<span id="coderef-ex3-test1" class="coderef-off">m.g(0) //: 1</span>
-<span id="coderef-ex3-change" class="coderef-off">m.env.a = 2</span>
-<span id="coderef-ex3-test2" class="coderef-off">m.g(0) //: 2</span>
+<pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
+<span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span class="linenr"> 3: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span class="linenr"> 4: </span>  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
+<span class="linenr"> 5: </span>  <span style="font-weight: bold;">return</span> {g: g}
+<span class="linenr"> 6: </span>}())
+<span class="linenr"> 7: </span>
+<span id="coderef-ex3-test1" class="coderef-off"><span class="linenr"> 8: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span></span>
+<span id="coderef-ex3-change" class="coderef-off"><span class="linenr"> 9: </span>m.env.a = 2</span>
+<span id="coderef-ex3-test2" class="coderef-off"><span class="linenr">10: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span></span>
 </pre>
 </div>
 
@@ -10868,7 +10890,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-24 jeu. 17:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-25 ven. 17:08 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
