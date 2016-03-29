@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-25 ven. 17:08 -->
+<!-- 2016-03-29 mar. 17:54 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -7508,19 +7508,20 @@ en haut à gauche.
 </p>
 
 <p>
-On peut expliquer le motif module en regardant seulement le diagramme.  Avant
-d’exécuter la code de l’exemple, l’environnement global est vide.  Lorsque la
-FIA est appelée, elle crée l’environnement en <span class="color c1">▬</span>.  Puisque la FIA
-est définie à la racine, l’environnement parent est l’objet global.  À
-l’intérieur de la FIA, trois noms sont définis: une variable <code>a</code> et deux
-fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).  Lorsqu’une
-fonction est définie, un objet fonction est crée qui contient son code et son
-environnement lexical.  Cet environnement sera utilisé pour exécuter le corps de
-la fonction lorsqu’elle sera invoquée.  Avant que la FIA ne retourne, elle crée
-l’objet exporté (ligne <a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient la propriété <code>g</code>.  Cette
-propriété réfère la fonction <code>g</code> définie à l’intérieur du module.  Notons qu’il
-y a <i>deux</i> références à la fonction <code>g</code> à l’exécution.  Enfin, la FIA retourne
-l’objet exporté, qui devient la valeur de la variable globale <code>m</code>.
+On peut expliquer le motif module en regardant le diagramme qui accompagne le
+code.  Avant d’exécuter la code de l’exemple, l’environnement global est vide.
+Lorsque la FIA est appelée, elle crée l’environnement en <span class="color c1">▬</span>.
+Puisque la FIA est définie à la racine, l’environnement parent est l’objet
+global.  À l’intérieur de la FIA, trois noms sont définis: une variable <code>a</code> et
+deux fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).
+Lorsqu’une fonction est définie, un objet fonction est crée qui contient son
+code et son environnement lexical.  Cet environnement sera utilisé pour exécuter
+le corps de la fonction lorsqu’elle sera invoquée.  Avant que la FIA ne
+retourne, elle crée l’objet exporté (ligne <a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient la
+propriété <code>g</code>.  Cette propriété réfère la fonction <code>g</code> définie à l’intérieur du
+module.  Notons qu’il y a <i>deux</i> références à la fonction <code>g</code> à l’exécution.
+Enfin, la FIA retourne l’objet exporté, qui devient la valeur de la variable
+globale <code>m</code>.
 </p>
 
 <div class="side-figure">
@@ -7534,7 +7535,7 @@ l’objet exporté, qui devient la valeur de la variable globale <code>m</code>.
 
 <p>
 On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
-<a href="#coderef-ex1-test"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-test');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-test');">8</a> sur le second diagramme.  D’abord, la référence <code>m.g</code> est résolue en
+<a href="#coderef-ex1-test"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-test');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-test');">8</a> sur ce second diagramme.  D’abord, la référence <code>m.g</code> est résolue en
 cherchant la propriété <code>m</code> dans l’environnement courant, c’est à dire,
 l’environnement global.  <code>m</code> existe et pointe vers un objet, donc l’interpréteur
 cherche maintenant la propriété <code>g</code> dans cet objet.  <code>g</code> existe, et réfère un
@@ -7557,14 +7558,6 @@ corps de <code>f</code>, <code>x+a</code>.  La propriété <code>x</code> se tro
 <code>f</code> (0), et la propriété <code>a</code> dans l’environnement parent (1).  L’interpréteur
 somme les deux valeurs et retourne le résultat.
 </p>
-
-<aside>
-<p>
-Dans les diagrammes suivants, on n’illustrera plus les objets d’activation des
-fonctions, puisque l’environnement parent est déjà indiqué par la propriété
-<code>env</code> de l’objet fonction.
-</p>
-</aside>
 
 <p>
 Le second diagramme sert à illustrer deux points importants sur le motif module:
@@ -7605,11 +7598,13 @@ module.
 <p>
 On cherche maintenant à accéder à l’environnement de la FIA de l’extérieur du
 module; c’est à dire obtenir une référence vers cet environnement.  En regardant
-le diagramme, on pourrait penser que <code>m.g.env</code> suffit: il s’agit bien d’une
-référence à l’environnement qui nous intéresse depuis l’extérieur du module.
-Malheureusement, cette référence n’est pas fiable.  Suivant la construction de
-<code>g</code>, l’environnement qu’elle retourne pourrait très bien être différent de celui
-de la FIA.
+les diagrammes précédents, on pourrait penser que <code>m.g.env</code> suffit: il s’agit
+bien d’une référence à l’environnement qui nous intéresse depuis l’extérieur du
+module.  Malheureusement, cette référence est <i>interne</i> au moteur d’exécution du
+langage, donc n’est pas accessible par le code exécuté.  Mais même si on
+modifiait le moteur d’exécution pour rendre cette référence publique, elle n’est
+pas fiable.  Suivant la construction de <code>g</code>, l’environnement qu’elle retourne
+pourrait très bien être différent de celui de la FIA.
 </p>
 
 <div class="org-src-container">
@@ -7623,7 +7618,7 @@ de la FIA.
 </pre>
 </div>
 
-<div class="side-figure">
+<div style="margin-top:-10rem" class="side-figure">
 
 <figure>
 <p><img src="img/dls3.svg" alt="dls3.svg">
@@ -7631,6 +7626,14 @@ de la FIA.
 </figure>
 
 </div>
+
+<aside style="margin-top:7rem">
+<p>
+Dans les diagrammes suivants, on n’illustrera plus les objets d’activation des
+fonctions.  Il suffit de se rappeler que l’environnement utilisé pour rechercher
+les variables libres est celui de la propriété <code>env</code>.
+</p>
+</aside>
 
 <p>
 Dans cet exemple, la fonction <code>g</code> exportée par le module ne capture pas
@@ -7641,8 +7644,7 @@ différence notable: cette fonction <code>g</code> capture l’environnement de 
 <code>mkG</code>.  Le diagramme qui l’accompagne illustre cette différence par l’apparition
 d’un nouvel objet d’activation pour <code>mkG</code> qui est référencé comme environnement
 de <code>g</code>.  On a <code>m.g.env</code> qui pointe vers l’environnement crée par <code>mkG</code>
-(<span class="color c1">▬</span>), et non l’environnement crée par la FIA (<span class="color c2">▬</span>).  Au
-contraire, la fonction <code>f</code> pointe directement vers l’environnement de la FIA.
+(<span class="color c1">▬</span>), et non l’environnement crée par la FIA (<span class="color c2">▬</span>).
 On voit alors que la propriété <code>env</code> d’une fonction n’est pas garantie de
 pointer vers l’environnement dont nous avons besoin.
 </p>
@@ -7650,13 +7652,13 @@ pointer vers l’environnement dont nous avons besoin.
 <p>
 On va maintenant s’éloigner du comportement standard de JavaScript que nous
 avons suivi jusqu’ici.  Supposons que nous <i>pouvons</i> accéder à l’environnement
-crée par la FIA grâce à une nouvelle propriété <i>env</i> qui serait automatiquement
+crée par la FIA grâce à une nouvelle propriété <i>E</i> qui serait automatiquement
 ajoutée sur l’objet exporté par le module.  Supposons également que cet
 environnement se comporte comme un objet JavaScript régulier; on peut lire et
 changer ses propriétés.
 </p>
 
-<aside>
+<aside style="margin-top:-4rem">
 <p>
 La section suivante montre comment retrouver cette fonctionnalité dans le
 langage standard.
@@ -7673,84 +7675,105 @@ langage standard.
 <span class="linenr"> 6: </span>}())
 <span class="linenr"> 7: </span>
 <span id="coderef-ex3-test1" class="coderef-off"><span class="linenr"> 8: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span></span>
-<span id="coderef-ex3-change" class="coderef-off"><span class="linenr"> 9: </span>m.env.a = 2</span>
+<span id="coderef-ex3-change" class="coderef-off"><span class="linenr"> 9: </span>m.E.a = 2</span>
 <span id="coderef-ex3-test2" class="coderef-off"><span class="linenr">10: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span></span>
 </pre>
 </div>
 
+<div style="margin-top:-6rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls4.svg" alt="dls4.svg">
+</p>
+</figure>
+
+</div>
+
 <p>
 Reprenons le module du début, mais avec l’addition de cette nouvelle propriété
-<code>env</code>.  Si on exécute <code>m.g(0)</code> à la ligne <a href="#coderef-ex3-test1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-test1');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-test1');">8</a>, on obtient toujours <code>1</code>.
+<code>E</code>.  Si on exécute <code>m.g(0)</code> à la ligne <a href="#coderef-ex3-test1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-test1');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-test1');">8</a>, on obtient toujours <code>1</code>.
 Par contre, cette fois on a accès à l’environnement interne au module via la
-propriété <code>m.env</code>.  Si on change la valeur de <code>a</code> dans cet environnement (ligne
+propriété <code>m.E</code>.  Si on change la valeur de <code>a</code> dans cet environnement (ligne
 <a href="#coderef-ex3-change"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-change');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-change');">9</a>), alors l’appel <code>m.g(0)</code> qui suit utilise cette nouvelle valeur, et
 c’est pourquoi <i>le même appel</i> donne le résultat différent, <code>2</code>, à la ligne
 <a href="#coderef-ex3-test2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-test2');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-test2');">10</a>.  Le diagramme qui accompagne l’exemple donne une autre façon de
-voir ce qui se passe.  On y voit la nouvelle propriété <code>env</code> sur l’objet
-exporté et référencé par la propriété globale <code>m</code>.  Cette propriété <code>m.env</code>
-donne un accès en lecture et écriture sur l’environnement de la FIA.  Ainsi,
-l’affectation de la ligne <a href="#coderef-ex3-change"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-change');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-change');">9</a> modifie la valeur de <code>a</code> dans le module;
-dans le diagramme <code>a</code> a la valeur 2 en conséquence.
+voir ce qui se passe.  On y voit la nouvelle propriété <code>E</code> en <span class="color c1">▬</span>
+sur l’objet exporté et référencé par la propriété globale <code>m</code>.  Cette propriété
+<code>m.E</code> donne un accès en lecture et écriture sur l’environnement de la FIA.
+Ainsi, l’affectation de la ligne <a href="#coderef-ex3-change"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-change');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-change');">9</a> modifie la valeur de <code>a</code> dans le
+module; dans le diagramme <code>a</code> a la valeur 2 en conséquence.
 </p>
 
 <p>
 En ajoutant cette référence directe à l’environnement interne du module, on est
 déjà capable de changer les résultats de l’appel <code>m.g</code>, juste en changeant la
-valeur de la variable <code>a</code>.  Maintenant, si l’on souhaite changer la fonction <code>f</code>
-pour qu’elle retourne <code>x + 2 * a</code> au lieu de <code>x + a</code>, c’est aussi possible.
-La ligne <a href="#coderef-ex4-change-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex4-change-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex4-change-f');">4</a> de l’exemple suivant nous indique comment:
+valeur de la variable <code>a</code>.  Mais on peut aussi changer les fonctions.  Si l’on
+souhaite changer la fonction <code>f</code> pour qu’elle retourne <code>x + 2 * a</code> au lieu de
+<code>x + a</code>, la ligne <a href="#coderef-ex4-change-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex4-change-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex4-change-f');">4</a> de l’exemple suivant nous indique comment:
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src--n">var m = (function() { ... }())
-
-m.g(0) //: 1
-<span id="coderef-ex4-change-f" class="coderef-off">m.env.f = function(x) { return x + 2 * m.env.a }</span>
-m.g(0) //: 2
-<span id="coderef-ex4-change-a" class="coderef-off">m.env.a = 2</span>
-m.g(0) //: 4
+<pre class="src src-js"><span class="linenr">1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>() { ... }())
+<span class="linenr">2: </span>
+<span class="linenr">3: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+<span id="coderef-ex4-change-f" class="coderef-off"><span class="linenr">4: </span>m.E.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.E.a }</span>
+<span class="linenr">5: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span id="coderef-ex4-change-a" class="coderef-off"><span class="linenr">6: </span>m.E.a = 2</span>
+<span class="linenr">7: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
 </pre>
 </div>
 
+<div style="margin-top:-4rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls5.svg" alt="dls5.svg">
+</p>
+</figure>
+
+</div>
+
 <p>
-Néanmoins, on ne peut pas simplement écrire <code>x + 2 * a</code>.  Si on changeait la
+Notons qu’on ne peut pas simplement écrire <code>x + 2 * a</code>.  Si on changeait la
 définition de <code>f</code> à l’intérieur du module, on pourrait référencer <code>a</code>
 directement.  Mais ici, on crée une fonction à l’extérieur du module, qui doit
-faire référence au <code>a</code> qui n’est déclaré que dans l’environnement du module.
-Si on écrit juste <code>a</code>, ce sera une variable libre pour cette fonction.  Mais
-puisqu’on a une référence à l’environnement du module via <code>m.env</code>, on peut
-accéder au <code>a</code> à travers elle.
+faire référence au <code>a</code> qui n’est déclaré que dans l’environnement du module.  Si
+on écrit juste <code>a</code>, ce sera une variable libre pour cette fonction.  Mais
+puisqu’on a une référence à l’environnement du module via <code>m.E</code>, on peut accéder
+au <code>a</code> à travers elle.
 </p>
 
 <p>
-Une autre façon de faire serait de modifier la propriété <code>env</code> de la fonction
-qui vient remplacer <code>f</code>.  La fonction <code>f</code> définie dans le module a son <code>env</code> qui
-pointe vers l’environnement dans lequel elle est créée—l’environnement de la
-FIA.  La nouvelle fonction qui vient remplacer <code>f</code> est créée dans
-l’environnement global.  Si l’on modifie cette propriété pour pointer vers
-l’environnement de la FIA, la variable <code>a</code> ne sera plus libre; c’est comme si
-l’on créait une fermeture dans le module, mais définit de l’extérieur.
+Le diagramme illustre clairement le problème: la nouvelle fonction <code>f</code>
+(<span class="color c1">▬</span>) n’a pas le même environnement que l’ancienne.  Puisqu’elle est
+créée en dehors du module, son environnement est l’objet global (lien
+<span class="color c2">▬</span>).  Le diagramme nous indique aussi une autre solution: modifier
+la propriété <code>env</code> de la fonction qui vient remplacer <code>f</code>.  Si l’on modifie
+cette propriété pour pointer vers l’environnement de la FIA, la variable <code>a</code> ne
+sera recherchée dans le même environnement que pour la fonction <code>f</code> d’origine;
+c’est comme si l’on créait une fermeture dans le module, mais définit de
+l’extérieur:
 </p>
 
 <aside>
 <p>
 Malheureusement, on ne peut pas modifier l’environnement capturé par une
 fonction en JavaScript.  On ne peut même pas <i>accéder</i> à l’environnement
-capturé.  Cette solution ne peut donc pas être implémentée.
+capturé.  Cette solution ne peut donc pas être implémentée sans modifier le
+moteur d’exécution du langage, ce qui n’est pas notre but ici.
 </p>
 </aside>
 
 <div class="org-src-container">
 
-<pre class="src src-js">m.env.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * a }
-m.env.f.env = m.env
+<pre class="src src-js">m.E.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * a }
+m.E.f.env = m.E
 </pre>
 </div>
 
 <p>
 Les deux approches pour référencer <code>a</code> sont des compromis différents.  Utiliser
-<code>m.env</code> est plus explicite, et permet à la nouvelle fonction de capturer
+<code>m.E</code> est plus explicite, et permet à la nouvelle fonction de capturer
 l’environnement dans lequel elle est définie.  Modifier l’environnement de
 définition permet d’écrire le code de la fonction comme si on l’écrivait à
 l’intérieur du module, ce qui rend les différences de code plus lisibles.
@@ -7779,8 +7802,8 @@ pouvoir les réutiliser après:
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a_orig</span> = m.env.a
-<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f_orig</span> = m.en.f
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a_orig</span> = m.E.a
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f_orig</span> = m.E.f
 </pre>
 </div>
 
@@ -7803,45 +7826,64 @@ la chaîne d’environnement s’arrête car le lien vers l’environnement pare
 de changer les définitions internes au module.
 </p>
 
+<div style="margin-top:-16rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls6.svg" alt="dls6.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Exemple de recherche dans une chaîne d’environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété “a”; ici c’est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l’objet en tête de la chaîne.</figcaption>
+</figure>
+
+</div>
+
 <p>
 Nous allons faire une seconde addition à notre variante de JavaScript.  On
 suppose que lorsqu’un module est crée, un nouvel environnement vide, appelé
 <i>l’environnement frontal</i> est crée également.  L’environnement frontal a pour
 parent l’environnement de la FIA, mais les fonctions définies à la racine du
 module capturent l’environnement frontal plutôt que celui de la FIA.  La
-propriété <code>m.env</code> est modifiée également pour pointer vers cet environnement
+propriété <code>m.E</code> est modifiée également pour pointer vers cet environnement
 frontal.
 </p>
+
+<div style="margin-top:12rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls7.svg" alt="dls7.svg">
+</p>
+</figure>
+
+</div>
 
 <p>
 Si l’on reprend exactement le code du module, sans modifications, mais qu’on
 l’exécute avec cette modification sémantique, on obtient la situation de la
 figure suivante.  La redéfinition de <code>a</code> à <code>2</code> est enregistrée par
-l’environnement frontal, plutôt que l’environnement de la FIA.  Puisque les deux
-fonctions <code>f</code> et <code>g</code> capturent l’environnement frontal, elles utilisent bien la
-valeur redéfinie de <code>a</code> quand elles sont appelées.  Le mécanisme de résolution
-des noms de variable examine les environnements de la droite vers la gauche, en
-suivant les flèches.  On voit donc que n’importe quelle propriété présente dans
-l’environnement frontal a priorité sur les propriétés de l’environnement de la
-FIA.  C’est pourquoi la redéfinition de <code>a</code> affecte bien l’appel <code>m.g(0)</code> de la
-même manière que dans les exemples précédents.  Mais on a maintenant la
-possibilité <i>d’annuler</i> cette redéfinition en supprimant la propriété <code>m.env.a</code>
-de l’environnement frontal.  Puisque l’environnement frontal ne contient que
-notre redéfinition, la valeur originale n’est jamais altérée.  Lorsque l’on
-supprime <code>m.env.a</code>, on vide l’environnement frontal, et l’appel final <code>m.g(0)</code>
-va trouver la propriété <code>a</code> dans l’environnement de la FIA, où la valeur est
-restée à <code>1</code>.
+l’environnement frontal (<span class="color c1">▬</span>), plutôt que l’environnement de la FIA.
+Puisque les deux fonctions <code>f</code> et <code>g</code> capturent l’environnement frontal, elles
+utilisent bien la valeur redéfinie de <code>a</code> quand elles sont appelées.  Le
+mécanisme de résolution des noms de variable examine les environnements de bas
+en haut, en suivant les liens des coins des objets.  On voit donc que n’importe
+quelle propriété présente dans l’environnement frontal a priorité sur les
+propriétés de l’environnement de la FIA.  C’est pourquoi la redéfinition de <code>a</code>
+affecte bien l’appel <code>m.g(0)</code> de la même manière que dans les exemples
+précédents.  Mais on a maintenant la possibilité <i>d’annuler</i> cette redéfinition
+en supprimant la propriété <code>m.E.a</code> de l’environnement frontal.  Puisque
+l’environnement frontal ne contient que notre redéfinition, la valeur originale
+n’est jamais altérée.  Lorsque l’on supprime <code>m.E.a</code>, on vide l’environnement
+frontal, et l’appel final <code>m.g(0)</code> va trouver la propriété <code>a</code> dans
+l’environnement de la FIA, où la valeur est restée à <code>1</code>.
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src--n">var m = (function() { ... }())
-
-m.g(0) //: 1
-m.env.a = 2
-m.g(0) //: 2
-delete m.env.a
-m.g(0) //: 1
+<pre class="src src-js"><span class="linenr">1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>() { ... }())
+<span class="linenr">2: </span>
+<span class="linenr">3: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+<span class="linenr">4: </span>m.E.a = 2
+<span class="linenr">5: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span class="linenr">6: </span><span style="font-weight: bold;">delete</span> m.E.a
+<span class="linenr">7: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
 </pre>
 </div>
 
@@ -7857,16 +7899,16 @@ en utiliser plusieurs.
 </p>
 
 <p>
-Pour cela, il faut ajouter une dernière addition à la sémantique du langage:
-on suppose que l’on peut récupérer et modifier le parent de n’importe quel
+Pour cela, il faut faire une dernière addition à la sémantique du langage: on
+suppose que l’on peut récupérer et modifier le parent de n’importe quel
 environnement à travers la propriété <code>parent</code>.  Avec cette propriété, on peut
 étendre la chaîne d’environnements utilisée par les fonctions définies dans le
-module avec un nombre quelconque d’environnements.  Puisque tout environnement
-a un parent, et que l’on a une référence vers l’environnement par lequel débute
-la résolution de noms (<code>m.env</code>), la chaîne d’environnement a une structure
-similaire à une liste chaînée, où l’environnement frontal serait la tête de la
-liste.  Et puisqu’on peut modifier le parent d’un environnement, on peut insérer
-de nouveaux environnements à n’importe quel point dans cette chaîne.
+module avec un nombre quelconque d’environnements.  Puisque tout environnement a
+un parent, et que l’on a une référence vers l’environnement par lequel débute la
+résolution de noms (<code>m.E</code>), la chaîne d’environnement a une structure similaire
+à une liste chaînée, où l’environnement frontal serait la tête de la liste.  Et
+puisqu’on peut modifier le parent d’un environnement, on peut insérer de
+nouveaux environnements à n’importe quel point dans cette chaîne.
 </p>
 
 <p>
@@ -7882,20 +7924,23 @@ l’environnement de la chaîne (quelque soit sa position).  Alors on peut écri
 <pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>() { ... }())
 <span class="linenr"> 2: </span>
 <span class="linenr"> 3: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-<span class="linenr"> 4: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">e1</span> = { a:2, f: <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.env.a }}
-<span id="coderef-ex6-push1" class="coderef-off"><span class="linenr"> 5: </span>pushEnv(e1, m.env)</span>
-<span class="linenr"> 6: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
-<span class="linenr"> 7: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">e2</span> = { f: <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> -m.env.a }}
-<span class="linenr"> 8: </span>pushEnv(e2, m.env)
-<span id="coderef-ex6-diag" class="coderef-off"><span class="linenr"> 9: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -2</span></span>
-<span class="linenr">10: </span>removeEnv(e1, m.env)
-<span class="linenr">11: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -1</span>
+<span class="linenr"> 4: </span>
+<span class="linenr"> 5: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">e1</span> = { a:2, f: <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.E.a }}
+<span id="coderef-ex6-push1" class="coderef-off"><span class="linenr"> 6: </span>pushEnv(e1, m.E)</span>
+<span class="linenr"> 7: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
+<span class="linenr"> 8: </span>
+<span class="linenr"> 9: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">e2</span> = { f: <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> -m.E.a }}
+<span class="linenr">10: </span>pushEnv(e2, m.E)
+<span id="coderef-ex6-diag" class="coderef-off"><span class="linenr">11: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -2</span></span>
+<span class="linenr">12: </span>
+<span class="linenr">13: </span>removeEnv(e1, m.E)
+<span class="linenr">14: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: -1</span>
 </pre>
 </div>
 
 <p>
 Sans changer le module, on ajoute toutes les redéfinitions de <code>e1</code> en appelant
-<code>pushEnv</code> (ligne <a href="#coderef-ex6-push1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex6-push1');" onmouseout="CodeHighlightOff(this, 'coderef-ex6-push1');">5</a>).  On change à nouveau le comportement de <code>f</code> dans
+<code>pushEnv</code> (ligne <a href="#coderef-ex6-push1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex6-push1');" onmouseout="CodeHighlightOff(this, 'coderef-ex6-push1');">6</a>).  On change à nouveau le comportement de <code>f</code> dans
 l’environnement <code>e2</code> qu’on insère dans le module grâce au second appel à
 <code>pushEnv</code>.  On voit que l’appel <code>m.g(0)</code> qui suit utilise la fonction <code>f</code> de
 <code>e2</code>, puisque le résultat est négatif, et la valeur de <code>a</code> de l’environnement
@@ -7904,14 +7949,28 @@ l’environnement <code>e2</code> qu’on insère dans le module grâce au secon
 de <code>a</code> est la valeur initiale du module, <code>1</code>.
 </p>
 
+<div style="margin-top:-10rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls8.svg" alt="dls8.svg">
+</p>
+</figure>
+
+</div>
+
 <p>
 Le diagramme illustre la chaîne d’environnements quand l’exécution atteint la
-ligne <a href="#coderef-ex6-diag"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex6-diag');" onmouseout="CodeHighlightOff(this, 'coderef-ex6-diag');">9</a>.  Chaque ensemble de changements est isolé des autres, et tous
-sont ordonnés linéairement, comme les couches d’un gâteau.  Ainsi, la priorité
-de chaque ensemble est toujours déterministe: les définitions qui se trouvent
-le plus en tête (plus proches de l’environnement frontal) ont toujours priorité
-sur celles des environnements du bout de la chaîne.
+ligne <a href="#coderef-ex6-diag"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex6-diag');" onmouseout="CodeHighlightOff(this, 'coderef-ex6-diag');">11</a>.  L’environnement frontal (vide) a pour parent l’environnement
+<code>e2</code> (<span class="color c3">▬</span>), qui lui a comme parent <code>e1</code> (<span class="color c1">▬</span>), qui
+délègue à l’environnement de la FIA.  Chaque ensemble de changements est isolé
+des autres, ce qui permet de les supprimer sans toucher aux autres, et tous sont
+ordonnés linéairement (le fil <span class="color c2">▬</span>), comme les couches d’un gâteau.
+Ainsi, la priorité de redéfinition est toujours déterministe: les définitions
+qui se trouvent le plus en tête (plus proches de l’environnement frontal) ont
+toujours priorité sur celles des environnements du bout de la chaîne.
 </p>
+
+<hr >
 
 <p>
 On a donc une façon de modifier le comportement d’un module sans toucher au code
@@ -10890,7 +10949,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-25 ven. 17:08 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-29 mar. 17:54 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
