@@ -5869,26 +5869,27 @@ continue dans l’environnement parent, et récursivement jusqu’à ce que soit
 parent n’existe pas, soit la propriété est trouvée.  L’environnement global est
 en haut à gauche.
 
-On peut expliquer le motif module en regardant seulement le diagramme.  Avant
-d’exécuter la code de l’exemple, l’environnement global est vide.  Lorsque la
-FIA est appelée, elle crée l’environnement en {{{color(c1)}}}.  Puisque la FIA
-est définie à la racine, l’environnement parent est l’objet global.  À
-l’intérieur de la FIA, trois noms sont définis: une variable ~a~ et deux
-fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).  Lorsqu’une
-fonction est définie, un objet fonction est crée qui contient son code et son
-environnement lexical.  Cet environnement sera utilisé pour exécuter le corps de
-la fonction lorsqu’elle sera invoquée.  Avant que la FIA ne retourne, elle crée
-l’objet exporté (ligne [[(ex1-return)]]) qui contient la propriété ~g~.  Cette
-propriété réfère la fonction ~g~ définie à l’intérieur du module.  Notons qu’il
-y a /deux/ références à la fonction ~g~ à l’exécution.  Enfin, la FIA retourne
-l’objet exporté, qui devient la valeur de la variable globale ~m~.
+On peut expliquer le motif module en regardant le diagramme qui accompagne le
+code.  Avant d’exécuter la code de l’exemple, l’environnement global est vide.
+Lorsque la FIA est appelée, elle crée l’environnement en {{{color(c1)}}}.
+Puisque la FIA est définie à la racine, l’environnement parent est l’objet
+global.  À l’intérieur de la FIA, trois noms sont définis: une variable ~a~ et
+deux fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).
+Lorsqu’une fonction est définie, un objet fonction est crée qui contient son
+code et son environnement lexical.  Cet environnement sera utilisé pour exécuter
+le corps de la fonction lorsqu’elle sera invoquée.  Avant que la FIA ne
+retourne, elle crée l’objet exporté (ligne [[(ex1-return)]]) qui contient la
+propriété ~g~.  Cette propriété réfère la fonction ~g~ définie à l’intérieur du
+module.  Notons qu’il y a /deux/ références à la fonction ~g~ à l’exécution.
+Enfin, la FIA retourne l’objet exporté, qui devient la valeur de la variable
+globale ~m~.
 
 #+BEGIN_side-figure
 [[file:img/dls1.svg]]
 #+END_side-figure
 
 On peut aussi suivre le flot de contrôle suscité par l’appel à la ligne
-[[(ex1-test)]] sur le second diagramme.  D’abord, la référence ~m.g~ est résolue en
+[[(ex1-test)]] sur ce second diagramme.  D’abord, la référence ~m.g~ est résolue en
 cherchant la propriété ~m~ dans l’environnement courant, c’est à dire,
 l’environnement global.  ~m~ existe et pointe vers un objet, donc l’interpréteur
 cherche maintenant la propriété ~g~ dans cet objet.  ~g~ existe, et réfère un
@@ -5910,12 +5911,6 @@ environnement parent.  Après ça, l’interpréteur continue l’exécution ave
 corps de ~f~, ~x+a~.  La propriété ~x~ se trouve dans l’objet d’activation de
 ~f~ (0), et la propriété ~a~ dans l’environnement parent (1).  L’interpréteur
 somme les deux valeurs et retourne le résultat.
-
-#+BEGIN_aside
-Dans les diagrammes suivants, on n’illustrera plus les objets d’activation des
-fonctions, puisque l’environnement parent est déjà indiqué par la propriété
-~env~ de l’objet fonction.
-#+END_aside
 
 Le second diagramme sert à illustrer deux points importants sur le motif module:
 
@@ -5945,11 +5940,13 @@ module.
 *** Ouvrir le motif module
 On cherche maintenant à accéder à l’environnement de la FIA de l’extérieur du
 module; c’est à dire obtenir une référence vers cet environnement.  En regardant
-le diagramme, on pourrait penser que ~m.g.env~ suffit: il s’agit bien d’une
-référence à l’environnement qui nous intéresse depuis l’extérieur du module.
-Malheureusement, cette référence n’est pas fiable.  Suivant la construction de
-~g~, l’environnement qu’elle retourne pourrait très bien être différent de celui
-de la FIA.
+les diagrammes précédents, on pourrait penser que ~m.g.env~ suffit: il s’agit
+bien d’une référence à l’environnement qui nous intéresse depuis l’extérieur du
+module.  Malheureusement, cette référence est /interne/ au moteur d’exécution du
+langage, donc n’est pas accessible par le code exécuté.  Mais même si on
+modifiait le moteur d’exécution pour rendre cette référence publique, elle n’est
+pas fiable.  Suivant la construction de ~g~, l’environnement qu’elle retourne
+pourrait très bien être différent de celui de la FIA.
 
 #+BEGIN_SRC js -n -r
 var m = (function(){
@@ -5960,9 +5957,17 @@ var m = (function(){
 }())
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
 [[file:img/dls3.svg]]
 #+END_side-figure
+
+#+ATTR_HTML: :style margin-top:7rem
+#+BEGIN_aside
+Dans les diagrammes suivants, on n’illustrera plus les objets d’activation des
+fonctions.  Il suffit de se rappeler que l’environnement utilisé pour rechercher
+les variables libres est celui de la propriété ~env~.
+#+END_aside
 
 Dans cet exemple, la fonction ~g~ exportée par le module ne capture pas
 l’environnement de la FIA.  À la ligne [[(ex2-return)]] on exporte la valeur de
@@ -5972,18 +5977,18 @@ différence notable: cette fonction ~g~ capture l’environnement de l’appel �
 ~mkG~.  Le diagramme qui l’accompagne illustre cette différence par l’apparition
 d’un nouvel objet d’activation pour ~mkG~ qui est référencé comme environnement
 de ~g~.  On a ~m.g.env~ qui pointe vers l’environnement crée par ~mkG~
-({{{color(c1)}}}), et non l’environnement crée par la FIA ({{{color(c2)}}}).  Au
-contraire, la fonction ~f~ pointe directement vers l’environnement de la FIA.
+({{{color(c1)}}}), et non l’environnement crée par la FIA ({{{color(c2)}}}).
 On voit alors que la propriété ~env~ d’une fonction n’est pas garantie de
 pointer vers l’environnement dont nous avons besoin.
 
 On va maintenant s’éloigner du comportement standard de JavaScript que nous
 avons suivi jusqu’ici.  Supposons que nous /pouvons/ accéder à l’environnement
-crée par la FIA grâce à une nouvelle propriété /env/ qui serait automatiquement
+crée par la FIA grâce à une nouvelle propriété /E/ qui serait automatiquement
 ajoutée sur l’objet exporté par le module.  Supposons également que cet
 environnement se comporte comme un objet JavaScript régulier; on peut lire et
 changer ses propriétés.
 
+#+ATTR_HTML: :style margin-top:-4rem
 #+BEGIN_aside
 La section suivante montre comment retrouver cette fonctionnalité dans le
 langage standard.
@@ -5998,68 +6003,81 @@ var m = (function(){
 }())
 
 m.g(0) //: 1                             (ref:ex3-test1)
-m.env.a = 2                              (ref:ex3-change)
+m.E.a = 2                                (ref:ex3-change)
 m.g(0) //: 2                             (ref:ex3-test2)
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_side-figure
+[[file:img/dls4.svg]]
+#+END_side-figure
+
 Reprenons le module du début, mais avec l’addition de cette nouvelle propriété
-~env~.  Si on exécute ~m.g(0)~ à la ligne [[(ex3-test1)]], on obtient toujours ~1~.
+~E~.  Si on exécute ~m.g(0)~ à la ligne [[(ex3-test1)]], on obtient toujours ~1~.
 Par contre, cette fois on a accès à l’environnement interne au module via la
-propriété ~m.env~.  Si on change la valeur de ~a~ dans cet environnement (ligne
+propriété ~m.E~.  Si on change la valeur de ~a~ dans cet environnement (ligne
 [[(ex3-change)]]), alors l’appel ~m.g(0)~ qui suit utilise cette nouvelle valeur, et
 c’est pourquoi /le même appel/ donne le résultat différent, ~2~, à la ligne
 [[(ex3-test2)]].  Le diagramme qui accompagne l’exemple donne une autre façon de
-voir ce qui se passe.  On y voit la nouvelle propriété ~env~ sur l’objet
-exporté et référencé par la propriété globale ~m~.  Cette propriété ~m.env~
-donne un accès en lecture et écriture sur l’environnement de la FIA.  Ainsi,
-l’affectation de la ligne [[(ex3-change)]] modifie la valeur de ~a~ dans le module;
-dans le diagramme ~a~ a la valeur 2 en conséquence.
+voir ce qui se passe.  On y voit la nouvelle propriété ~E~ en {{{color(c1)}}}
+sur l’objet exporté et référencé par la propriété globale ~m~.  Cette propriété
+~m.E~ donne un accès en lecture et écriture sur l’environnement de la FIA.
+Ainsi, l’affectation de la ligne [[(ex3-change)]] modifie la valeur de ~a~ dans le
+module; dans le diagramme ~a~ a la valeur 2 en conséquence.
 
 En ajoutant cette référence directe à l’environnement interne du module, on est
 déjà capable de changer les résultats de l’appel ~m.g~, juste en changeant la
-valeur de la variable ~a~.  Maintenant, si l’on souhaite changer la fonction ~f~
-pour qu’elle retourne ~x + 2 * a~ au lieu de ~x + a~, c’est aussi possible.
-La ligne [[(ex4-change-f)]] de l’exemple suivant nous indique comment:
+valeur de la variable ~a~.  Mais on peut aussi changer les fonctions.  Si l’on
+souhaite changer la fonction ~f~ pour qu’elle retourne ~x + 2 * a~ au lieu de
+~x + a~, la ligne [[(ex4-change-f)]] de l’exemple suivant nous indique comment:
 
-#+BEGIN_SRC -n -r
+#+BEGIN_SRC js -n -r
 var m = (function() { ... }())
 
 m.g(0) //: 1
-m.env.f = function(x) { return x + 2 * m.env.a }  (ref:ex4-change-f)
+m.E.f = function(x) { return x + 2 * m.E.a }  (ref:ex4-change-f)
 m.g(0) //: 2
-m.env.a = 2                                       (ref:ex4-change-a)
+m.E.a = 2                                     (ref:ex4-change-a)
 m.g(0) //: 4
 #+END_SRC
 
-Néanmoins, on ne peut pas simplement écrire ~x + 2 * a~.  Si on changeait la
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_side-figure
+[[file:img/dls5.svg]]
+#+END_side-figure
+
+Notons qu’on ne peut pas simplement écrire ~x + 2 * a~.  Si on changeait la
 définition de ~f~ à l’intérieur du module, on pourrait référencer ~a~
 directement.  Mais ici, on crée une fonction à l’extérieur du module, qui doit
-faire référence au ~a~ qui n’est déclaré que dans l’environnement du module.
-Si on écrit juste ~a~, ce sera une variable libre pour cette fonction.  Mais
-puisqu’on a une référence à l’environnement du module via ~m.env~, on peut
-accéder au ~a~ à travers elle.
+faire référence au ~a~ qui n’est déclaré que dans l’environnement du module.  Si
+on écrit juste ~a~, ce sera une variable libre pour cette fonction.  Mais
+puisqu’on a une référence à l’environnement du module via ~m.E~, on peut accéder
+au ~a~ à travers elle.
 
-Une autre façon de faire serait de modifier la propriété ~env~ de la fonction
-qui vient remplacer ~f~.  La fonction ~f~ définie dans le module a son ~env~ qui
-pointe vers l’environnement dans lequel elle est créée—l’environnement de la
-FIA.  La nouvelle fonction qui vient remplacer ~f~ est créée dans
-l’environnement global.  Si l’on modifie cette propriété pour pointer vers
-l’environnement de la FIA, la variable ~a~ ne sera plus libre; c’est comme si
-l’on créait une fermeture dans le module, mais définit de l’extérieur.
+Le diagramme illustre clairement le problème: la nouvelle fonction ~f~
+({{{color(c1)}}}) n’a pas le même environnement que l’ancienne.  Puisqu’elle est
+créée en dehors du module, son environnement est l’objet global (lien
+{{{color(c2)}}}).  Le diagramme nous indique aussi une autre solution: modifier
+la propriété ~env~ de la fonction qui vient remplacer ~f~.  Si l’on modifie
+cette propriété pour pointer vers l’environnement de la FIA, la variable ~a~ ne
+sera recherchée dans le même environnement que pour la fonction ~f~ d’origine;
+c’est comme si l’on créait une fermeture dans le module, mais définit de
+l’extérieur:
 
 #+BEGIN_aside
 Malheureusement, on ne peut pas modifier l’environnement capturé par une
 fonction en JavaScript.  On ne peut même pas /accéder/ à l’environnement
-capturé.  Cette solution ne peut donc pas être implémentée.
+capturé.  Cette solution ne peut donc pas être implémentée sans modifier le
+moteur d’exécution du langage, ce qui n’est pas notre but ici.
 #+END_aside
 
 #+BEGIN_SRC js
-m.env.f = function(x) { return x + 2 * a }
-m.env.f.env = m.env
+m.E.f = function(x) { return x + 2 * a }
+m.E.f.env = m.E
 #+END_SRC
 
 Les deux approches pour référencer ~a~ sont des compromis différents.  Utiliser
-~m.env~ est plus explicite, et permet à la nouvelle fonction de capturer
+~m.E~ est plus explicite, et permet à la nouvelle fonction de capturer
 l’environnement dans lequel elle est définie.  Modifier l’environnement de
 définition permet d’écrire le code de la fonction comme si on l’écrivait à
 l’intérieur du module, ce qui rend les différences de code plus lisibles.
@@ -6082,8 +6100,8 @@ affectations, on peut sauvegarder la valeur initiale dans une variable pour
 pouvoir les réutiliser après:
 
 #+BEGIN_SRC js
-var a_orig = m.env.a
-var f_orig = m.en.f
+var a_orig = m.E.a
+var f_orig = m.E.f
 #+END_SRC
 
 Il y a une solution plus élégante qui tire partie du mécanisme de résolution des
@@ -6097,39 +6115,54 @@ la chaîne d’environnement s’arrête car le lien vers l’environnement pare
 à ~null~.  On peut profiter de ce mécanisme pour construire une façon élégante
 de changer les définitions internes au module.
 
+#+ATTR_HTML: :style margin-top:-16rem
+#+BEGIN_side-figure
+#+CAPTION: Exemple de recherche dans une chaîne d’environnements.  La recherche
+#+CAPTION: de la propriété ~a~ commence par en bas, et retourne la valeur de la
+#+CAPTION: première cellule qui contient une propriété “a”; ici c’est le second
+#+CAPTION: objet.  La recherche de ~g~ échoue.  Notons que le ~f~ du second
+#+CAPTION: objet est caché par le ~f~ de l’objet en tête de la chaîne.
+[[file:img/dls6.svg]]
+#+END_side-figure
+
 Nous allons faire une seconde addition à notre variante de JavaScript.  On
 suppose que lorsqu’un module est crée, un nouvel environnement vide, appelé
 /l’environnement frontal/ est crée également.  L’environnement frontal a pour
 parent l’environnement de la FIA, mais les fonctions définies à la racine du
 module capturent l’environnement frontal plutôt que celui de la FIA.  La
-propriété ~m.env~ est modifiée également pour pointer vers cet environnement
+propriété ~m.E~ est modifiée également pour pointer vers cet environnement
 frontal.
+
+#+ATTR_HTML: :style margin-top:12rem
+#+BEGIN_side-figure
+[[file:img/dls7.svg]]
+#+END_side-figure
 
 Si l’on reprend exactement le code du module, sans modifications, mais qu’on
 l’exécute avec cette modification sémantique, on obtient la situation de la
 figure suivante.  La redéfinition de ~a~ à ~2~ est enregistrée par
-l’environnement frontal, plutôt que l’environnement de la FIA.  Puisque les deux
-fonctions ~f~ et ~g~ capturent l’environnement frontal, elles utilisent bien la
-valeur redéfinie de ~a~ quand elles sont appelées.  Le mécanisme de résolution
-des noms de variable examine les environnements de la droite vers la gauche, en
-suivant les flèches.  On voit donc que n’importe quelle propriété présente dans
-l’environnement frontal a priorité sur les propriétés de l’environnement de la
-FIA.  C’est pourquoi la redéfinition de ~a~ affecte bien l’appel ~m.g(0)~ de la
-même manière que dans les exemples précédents.  Mais on a maintenant la
-possibilité /d’annuler/ cette redéfinition en supprimant la propriété ~m.env.a~
-de l’environnement frontal.  Puisque l’environnement frontal ne contient que
-notre redéfinition, la valeur originale n’est jamais altérée.  Lorsque l’on
-supprime ~m.env.a~, on vide l’environnement frontal, et l’appel final ~m.g(0)~
-va trouver la propriété ~a~ dans l’environnement de la FIA, où la valeur est
-restée à ~1~.
+l’environnement frontal ({{{color(c1)}}}), plutôt que l’environnement de la FIA.
+Puisque les deux fonctions ~f~ et ~g~ capturent l’environnement frontal, elles
+utilisent bien la valeur redéfinie de ~a~ quand elles sont appelées.  Le
+mécanisme de résolution des noms de variable examine les environnements de bas
+en haut, en suivant les liens des coins des objets.  On voit donc que n’importe
+quelle propriété présente dans l’environnement frontal a priorité sur les
+propriétés de l’environnement de la FIA.  C’est pourquoi la redéfinition de ~a~
+affecte bien l’appel ~m.g(0)~ de la même manière que dans les exemples
+précédents.  Mais on a maintenant la possibilité /d’annuler/ cette redéfinition
+en supprimant la propriété ~m.E.a~ de l’environnement frontal.  Puisque
+l’environnement frontal ne contient que notre redéfinition, la valeur originale
+n’est jamais altérée.  Lorsque l’on supprime ~m.E.a~, on vide l’environnement
+frontal, et l’appel final ~m.g(0)~ va trouver la propriété ~a~ dans
+l’environnement de la FIA, où la valeur est restée à ~1~.
 
-#+BEGIN_SRC -n -r
+#+BEGIN_SRC js -n -r
 var m = (function() { ... }())
 
 m.g(0) //: 1
-m.env.a = 2
+m.E.a = 2
 m.g(0) //: 2
-delete m.env.a
+delete m.E.a
 m.g(0) //: 1
 #+END_SRC
 
@@ -6142,16 +6175,16 @@ activer un premier ensemble, puis un second, puis désactiver le premier.
 L’environnement frontal n’est pas suffisant pour ce scénario, mais on peut
 en utiliser plusieurs.
 
-Pour cela, il faut ajouter une dernière addition à la sémantique du langage:
-on suppose que l’on peut récupérer et modifier le parent de n’importe quel
+Pour cela, il faut faire une dernière addition à la sémantique du langage: on
+suppose que l’on peut récupérer et modifier le parent de n’importe quel
 environnement à travers la propriété ~parent~.  Avec cette propriété, on peut
 étendre la chaîne d’environnements utilisée par les fonctions définies dans le
-module avec un nombre quelconque d’environnements.  Puisque tout environnement
-a un parent, et que l’on a une référence vers l’environnement par lequel débute
-la résolution de noms (~m.env~), la chaîne d’environnement a une structure
-similaire à une liste chaînée, où l’environnement frontal serait la tête de la
-liste.  Et puisqu’on peut modifier le parent d’un environnement, on peut insérer
-de nouveaux environnements à n’importe quel point dans cette chaîne.
+module avec un nombre quelconque d’environnements.  Puisque tout environnement a
+un parent, et que l’on a une référence vers l’environnement par lequel débute la
+résolution de noms (~m.E~), la chaîne d’environnement a une structure similaire
+à une liste chaînée, où l’environnement frontal serait la tête de la liste.  Et
+puisqu’on peut modifier le parent d’un environnement, on peut insérer de
+nouveaux environnements à n’importe quel point dans cette chaîne.
 
 Le plus utile pour nos besoins est d’insérer un environnement juste après
 l’environnement frontal.  Supposons que l’on dispose d’une fonction
@@ -6163,13 +6196,16 @@ l’environnement de la chaîne (quelque soit sa position).  Alors on peut écri
 var m = (function() { ... }())
 
 m.g(0) //: 1
-var e1 = { a:2, f: function(x) { return x + 2 * m.env.a }}
-pushEnv(e1, m.env)                                          (ref:ex6-push1)
+
+var e1 = { a:2, f: function(x) { return x + 2 * m.E.a }}
+pushEnv(e1, m.E)                                          (ref:ex6-push1)
 m.g(0) //: 4
-var e2 = { f: function(x) { return -m.env.a }}
-pushEnv(e2, m.env)
-m.g(0) //: -2                                               (ref:ex6-diag)
-removeEnv(e1, m.env)
+
+var e2 = { f: function(x) { return -m.E.a }}
+pushEnv(e2, m.E)
+m.g(0) //: -2                                             (ref:ex6-diag)
+
+removeEnv(e1, m.E)
 m.g(0) //: -1
 #+END_SRC
 
@@ -6182,12 +6218,21 @@ l’environnement ~e2~ qu’on insère dans le module grâce au second appel à
 à ~removeEnv~.  L’appel ~m.g(0)~ utilise encore le ~f~ de ~e2~, mais la valeur
 de ~a~ est la valeur initiale du module, ~1~.
 
+#+ATTR_HTML: :style margin-top:-10rem
+#+BEGIN_side-figure
+[[file:img/dls8.svg]]
+#+END_side-figure
+
 Le diagramme illustre la chaîne d’environnements quand l’exécution atteint la
-ligne [[(ex6-diag)]].  Chaque ensemble de changements est isolé des autres, et tous
-sont ordonnés linéairement, comme les couches d’un gâteau.  Ainsi, la priorité
-de chaque ensemble est toujours déterministe: les définitions qui se trouvent
-le plus en tête (plus proches de l’environnement frontal) ont toujours priorité
-sur celles des environnements du bout de la chaîne.
+ligne [[(ex6-diag)]].  L’environnement frontal (vide) a pour parent l’environnement
+~e2~ ({{{color(c3)}}}), qui lui a comme parent ~e1~ ({{{color(c1)}}}), qui
+délègue à l’environnement de la FIA.  Chaque ensemble de changements est isolé
+des autres, ce qui permet de les supprimer sans toucher aux autres, et tous sont
+ordonnés linéairement (le fil {{{color(c2)}}}), comme les couches d’un gâteau.
+Ainsi, la priorité de redéfinition est toujours déterministe: les définitions
+qui se trouvent le plus en tête (plus proches de l’environnement frontal) ont
+toujours priorité sur celles des environnements du bout de la chaîne.
+
 
 On a donc une façon de modifier le comportement d’un module sans toucher au code
 qui le définit.  Les changements sont écrits à l’extérieur du module, et peuvent
