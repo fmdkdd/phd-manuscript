@@ -5722,6 +5722,27 @@ Combine all the extensions without effort.
 * TRANSLATE Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [[cite:KNS-15b][KNS-15b]]/.
 
+#+BEGIN_QUOTE
+The whole purpose of this work is to be able to modify the original interpreter
+in the less possible intrusive way, and this appears to be the case, so I find
+this work interesting, and since it is self-contained and properly grounded into
+existing work, it is certainly worthy of publication. -- Relecteur DLS n°1
+
+Readers not familiar with evaluation contexts and scoping will find that the
+paper provides a didactic introduction to the concepts, but familiarised readers
+will find the paper rather dull. -- Relecteur DLS n°2
+
+The pattern is either elegant JavaScript hacking or severe abuse of
+modularity. I can't tell which! I guess I like it. It illustrates how using
+language constructs to implement your own module system, rather than having a
+built-in one, enables it to be modified to allow extensibility.  -- Relecteur
+DLS n°3
+
+I like the simplicity of the approach and the clever use of the “with” statement
+semantics to achieve the dynamic extension of the scope from the outside code.
+-- Relecteur SAC n°1
+#+END_QUOTE
+
 #+ATTR_HTML: :class todo
 #+BEGIN_aside
 TODO: Plenty of diagrams missing.  From DLS paper, with s/scope/env/.  And add a
