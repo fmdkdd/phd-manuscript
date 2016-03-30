@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-30 mer. 12:40 -->
+<!-- 2016-03-30 mer. 15:01 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -7322,27 +7322,27 @@ Combine all the extensions without effort.
 The whole purpose of this work is to be able to modify the original interpreter
 in the less possible intrusive way, and this appears to be the case, so I find
 this work interesting, and since it is self-contained and properly grounded into
-existing work, it is certainly worthy of publication. &#x2013; Relecteur DLS n°1
+existing work, it is certainly worthy of publication. &#x2013; Relecteur DLS n°1
 </p>
 
 <p>
 Readers not familiar with evaluation contexts and scoping will find that the
 paper provides a didactic introduction to the concepts, but familiarised readers
-will find the paper rather dull. &#x2013; Relecteur DLS n°2
+will find the paper rather dull. &#x2013; Relecteur DLS n°2
 </p>
 
 <p>
 The pattern is either elegant JavaScript hacking or severe abuse of
 modularity. I can't tell which! I guess I like it. It illustrates how using
 language constructs to implement your own module system, rather than having a
-built-in one, enables it to be modified to allow extensibility.  &#x2013; Relecteur
-DLS n°3
+built-in one, enables it to be modified to allow
+extensibility. &#x2013; Relecteur DLS n°3
 </p>
 
 <p>
 I like the simplicity of the approach and the clever use of the “with” statement
 semantics to achieve the dynamic extension of the scope from the outside code.
-&#x2013; Relecteur SAC n°1
+&#x2013; Relecteur SAC n°1
 </p>
 </blockquote>
 
@@ -8055,14 +8055,7 @@ JavaScript qui suit le standard ECMAScript 5.1.
 L’expression <code>with</code> est grammaticalement similaire à un <code>if</code>.  Elle prend une
 expression entre parenthèses, qui est évaluée pour constituer son <i>objet de
 liaison</i>, et un bloc de code entre accolades.  Voici un exemple d’utilisation de
-<code>with</code>.  On définit une fonction <code>f</code> dans le corps de <code>with</code> à la ligne
-<a href="#coderef-ex7-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex7-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex7-f');">3</a>.  La fonction va simplement retourner la valeur de la variable <code>a</code>.
-Notons que <code>a</code> est libre dans ce contexte, mais pourtant l’appel de <code>f</code> à la
-ligne <a href="#coderef-ex7-call"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex7-call');" onmouseout="CodeHighlightOff(this, 'coderef-ex7-call');">5</a> retourne 42.  Quand <code>f</code> est définie, elle capture
-l’environnement lexical, et il se trouve que <code>with</code> crée un environnement
-lexical pour le code qu’il entoure; cet environnement est basé sur l’objet de
-liaison, <code>o</code>.  Puisque <code>o</code> associe le nom <code>a</code> à 42, l’appel de <code>f</code> va trouver
-cette association et renvoyer 42.
+<code>with</code>:
 </p>
 
 <div class="org-src-container">
@@ -8074,6 +8067,16 @@ cette association et renvoyer 42.
 <span id="coderef-ex7-call" class="coderef-off"><span class="linenr">5: </span>f() <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 42</span></span>
 </pre>
 </div>
+
+<p>
+On définit une fonction <code>f</code> dans le corps de <code>with</code> à la ligne <a href="#coderef-ex7-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex7-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex7-f');">3</a>.  La
+fonction va simplement retourner la valeur de la variable <code>a</code>.  Notons que <code>a</code>
+est libre dans ce contexte, mais pourtant l’appel de <code>f</code> à la ligne <a href="#coderef-ex7-call"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex7-call');" onmouseout="CodeHighlightOff(this, 'coderef-ex7-call');">5</a>
+retourne 42.  Quand <code>f</code> est définie, elle capture l’environnement lexical, et il
+se trouve que <code>with</code> crée un environnement lexical pour le code qu’il entoure;
+cet environnement est basé sur l’objet de liaison, <code>o</code>.  Puisque <code>o</code> associe le
+nom <code>a</code> à 42, l’appel de <code>f</code> va trouver cette association et renvoyer 42.
+</p>
 
 <p>
 En voyant cet exemple, on peut se demander si l’effet de <code>with</code> sur le bloc de
@@ -10978,7 +10981,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-30 mer. 12:40 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-30 mer. 15:01 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
