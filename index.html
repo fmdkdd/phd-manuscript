@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-30 mer. 15:01 -->
+<!-- 2016-03-30 mer. 18:44 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -8044,7 +8044,7 @@ répliquer les exemples de composition d’environnement par couches grâce aux
 prototypes.
 </p>
 
-<aside>
+<aside style="margin-top:-7rem">
 <p>
 Tous les exemples de cette section sont exécutables sur un interpréteur
 JavaScript qui suit le standard ECMAScript 5.1.
@@ -8068,6 +8068,16 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d’utilisati
 </pre>
 </div>
 
+<div style="margin-top:-8rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls9.svg" alt="dls9.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;24&nbsp;:</span> L’environnement crée par <code>with</code> entoure l’objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l’objet de liaison, tandis que <code>f.env</code> pointe vers l’environnement.</figcaption>
+</figure>
+
+</div>
+
 <p>
 On définit une fonction <code>f</code> dans le corps de <code>with</code> à la ligne <a href="#coderef-ex7-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex7-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex7-f');">3</a>.  La
 fonction va simplement retourner la valeur de la variable <code>a</code>.  Notons que <code>a</code>
@@ -8083,12 +8093,12 @@ En voyant cet exemple, on peut se demander si l’effet de <code>with</code> sur
 code qu’il entoure n’est pas simplement de la liaison dynamique.  Dans un
 langage qui permet la liaison dynamique des fonctions, les variables libres sont
 résolues en parcourant les environnements de la pile d’appel, plutôt que de
-parcourir l’environnement lexical.  Or, ce n’est ce qui se passe ici.  Dans
-l’exemple ci-dessous, on appelle crée la fonction <code>f</code> à la racine, puis on
-l’appelle à l’intérieur d’un <code>with</code>, de façon à ce que <code>with</code> crée un
-environnement sur la pile lorsque <code>f</code> est appelée.  L’appel échoue, car la
-résolution de noms ne trouve aucune occurrence de <code>a</code>.  La fonction <code>f</code> n’est
-donc dynamiquement liée si elle est appelée dans un <code>with</code>.
+parcourir l’environnement lexical.  Or, ce n’est pas ce qui se passe ici.  Dans
+l’exemple ci-dessous, on crée la fonction <code>f</code> à la racine, puis on l’appelle à
+l’intérieur d’un <code>with</code>, de façon à ce que <code>with</code> crée un environnement sur la
+pile lorsque <code>f</code> est appelée.  L’appel échoue, car la résolution de noms ne
+trouve aucune occurrence de <code>a</code>.  La fonction <code>f</code> n’est donc pas dynamiquement
+liée si elle est appelée dans un <code>with</code>.
 </p>
 
 <div class="org-src-container">
@@ -8097,6 +8107,15 @@ donc dynamiquement liée si elle est appelée dans un <code>with</code>.
 <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">o</span> = { a: 42 }
 <span style="font-weight: bold;">with</span> (o) { f() } <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: ReferenceError: a is undefined</span>
 </pre>
+</div>
+
+<div style="margin-top:-6rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls10.svg" alt="dls10.svg">
+</p>
+</figure>
+
 </div>
 
 <p>
@@ -8108,18 +8127,23 @@ l’objet de liaison.  Et l’objet de liaison peut être dynamique: on peut y
 ajouter ou y supprimer des propriétés.  Donc, on dira que la fonction <code>f</code>
 <i>capture statiquement un environnement dynamique</i>.  L’environnement ne peut être
 capturé qu’à la définition de <code>f</code>, mais cet environnement peut être modifié par
-la suite.  Ce comportement de <code>with</code> est exactement ce qu’il nous faut pour
-ouvrir le motif module.
+la suite.  Les deux diagrammes illustrent clairement la différence de
+comportement: dans le premier, <code>f.env</code> pointe vers l’environnement crée par
+<code>with</code>, et dans le second cas, <code>f.env</code> pointe vers l’environnement global; cette
+propriété <code>f.env</code> ne peut pas être changée dynamiquement, donc l’appel de <code>f</code>
+dans <code>with</code> n’a aucun effet.  Ce comportement des fonctions définies à
+l’intérieur d’un <code>with</code> est exactement ce qu’il nous faut pour ouvrir le motif
+module.
 </p>
 
 <p>
 Dans le code qui suit, on utilise <code>with</code> pour créer l’environnement capturé par
 <code>f</code> et <code>g</code>, et obtenir une référence vers cet environnement.  On commence par
-créer un objet vide <code>env</code> ligne <a href="#coderef-ex8-create"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex8-create');" onmouseout="CodeHighlightOff(this, 'coderef-ex8-create');">2</a>.  Puis on passe cet objet à <code>with</code>,
+créer un objet vide <code>E</code> ligne <a href="#coderef-ex8-create"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex8-create');" onmouseout="CodeHighlightOff(this, 'coderef-ex8-create');">2</a>.  Puis on passe cet objet à <code>with</code>,
 pour qu’il devienne son objet de liaison.  Dans le corps de <code>with</code>, on déclare
 la variable <code>a</code> et les deux fonctions <code>g</code> exactement comme dans le module qui
 nous intéressait dans la section précédente.  Ligne <a href="#coderef-ex8-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex8-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex8-return');">7</a> en revanche on
-retourne une propriété supplémentaire: l’objet <code>env</code>.  Le premier appel <code>m.g(0)</code>
+retourne une propriété supplémentaire: l’objet <code>E</code>.  Le premier appel <code>m.g(0)</code>
 retourne encore 1, indiquant que <code>g</code> appelle bien <code>f</code>, qui fait bien référence
 au <code>a</code> défini dans le module.
 </p>
@@ -8127,122 +8151,162 @@ au <code>a</code> défini dans le module.
 <div class="org-src-container">
 
 <pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-<span id="coderef-ex8-create" class="coderef-off"><span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">env</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)</span>
-<span class="linenr"> 3: </span>  <span style="font-weight: bold;">with</span> (env) {
+<span id="coderef-ex8-create" class="coderef-off"><span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">E</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)</span>
+<span class="linenr"> 3: </span>  <span style="font-weight: bold;">with</span> (E) {
 <span class="linenr"> 4: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
 <span class="linenr"> 5: </span>    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
 <span class="linenr"> 6: </span>    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
-<span id="coderef-ex8-return" class="coderef-off"><span class="linenr"> 7: </span>    <span style="font-weight: bold;">return</span> { g: g, env: env }</span>
+<span id="coderef-ex8-return" class="coderef-off"><span class="linenr"> 7: </span>    <span style="font-weight: bold;">return</span> { g: g, E: E }</span>
 <span class="linenr"> 8: </span>  }
 <span class="linenr"> 9: </span>}())
 <span class="linenr">10: </span>
 <span class="linenr">11: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-<span id="coderef-ex8-a" class="coderef-off"><span class="linenr">12: </span>m.env.a = 2</span>
-<span class="linenr">13: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span class="linenr">12: </span>
+<span id="coderef-ex8-a" class="coderef-off"><span class="linenr">13: </span>m.E.a = 2</span>
+<span class="linenr">14: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
 </pre>
 </div>
 
 <p>
-Comme on a une référence à l’objet de liaison <code>env</code>, on redéfinit la valeur de
-<code>a</code> ligne <a href="#coderef-ex8-a"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex8-a');" onmouseout="CodeHighlightOff(this, 'coderef-ex8-a');">12</a>.  L’appel <code>m.g(0)</code> qui suit retourne 2, ce qui montre que la
-fonction <code>f</code> va bien prendre la valeur de <code>a</code> de l’objet <code>env</code>.
+Comme on a une référence vers l’objet de liaison <code>E</code>, on redéfinit la valeur de
+<code>a</code> ligne <a href="#coderef-ex8-a"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex8-a');" onmouseout="CodeHighlightOff(this, 'coderef-ex8-a');">13</a>.  L’appel <code>m.g(0)</code> qui suit retourne 2, ce qui montre que la
+fonction <code>f</code> va bien prendre la valeur de <code>a</code> dans l’objet <code>E</code>.
 </p>
 
-<p>
-On peut se demander pourquoi la valeur de <code>m.env.a</code> est préférée à la
-déclaration de <code>a</code>, alors que cette dernière est <i>plus proche</i> lexicalement de
-la fonction <code>f</code> que le début du <code>with</code>.  On a vu que <code>with</code> crée un
-environnement pour le code qu’il entoure, mais cet environnement <i>ne capture
-pas</i> les déclarations.  Les déclarations de variables et fonctions sont
-capturées par l’environnement crée par la fonction qui enrobe le module—la FIA.
-Le diagramme illustre la situation.  L’environnement crée par <code>with</code> est mis en
-évidence; il contient l’objet de liaison.  Dans l’objet de liaison il n’y a que
-la propriété <code>a</code> associée à 2.  Les déclarations de <code>a</code>, <code>f</code> et <code>g</code> faites dans
-le module n’existent que dans l’environnement crée par la FIA.  On voit par
-contre que <code>f</code> et <code>g</code> capturent l’environnement crée par <code>with</code>, puisque leur
-propriété <code>env</code> pointe dessus.  C’est pourquoi la valeur de <code>m.env.a</code> est
-trouvée en premier par la résolution de nom lors de l’exécution de <code>f</code>.
+<div style="margin-top:-20rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls11.svg" alt="dls11.svg">
 </p>
+</figure>
+
+</div>
+
+<p>
+On peut se demander pourquoi la valeur de <code>m.E.a</code> est préférée à la déclaration
+de <code>a</code>, alors que cette dernière est <i>plus proche</i> lexicalement de la fonction
+<code>f</code> que le début du <code>with</code>.  On a vu que <code>with</code> crée un environnement pour le
+code qu’il entoure, mais cet environnement <i>ne capture pas</i> les déclarations.
+Les déclarations de variables et fonctions sont capturées par l’environnement
+crée par la fonction qui enrobe le module—la FIA.  Le diagramme illustre la
+situation.  L’environnement crée par <code>with</code> est mis en évidence; il contient
+l’objet de liaison.  Dans l’objet de liaison il n’y a que la propriété <code>a</code>
+associée à 2.  Les déclarations de <code>a</code>, <code>f</code> et <code>g</code> faites dans le module
+n’existent que dans l’environnement crée par la FIA.  On voit par contre que <code>f</code>
+et <code>g</code> capturent l’environnement crée par <code>with</code>, puisque leur propriété <code>env</code>
+pointe dessus.  C’est pourquoi la valeur de <code>m.E.a</code> est trouvée en premier par
+la résolution de nom lors de l’exécution de <code>f</code>.
+</p>
+
+<aside style="margin-top:-14rem">
+<p>
+En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
+capturer la fonction dans ce cas; c’est laissé à la discrétion du moteur
+d’exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comportement
+décrit ici.  Mais V8, utilisé par Chrome, suit des règles différentes, et pour
+pouvoir répliquer l’exemple, il faut déclarer les fonctions par des expressions
+(<code>var f = function...</code>).  Le créateur de JavaScript, Brendan Eich, <a href="https://bugs.chromium.org/p/v8/issues/detail?id=686">indique</a> que
+le comportement de Firefox dans ce cas est compatible avec la prochaine version
+du standard.  N’ayant pas encore accès à une implémentation complète de ce
+standard, j’invite donc le lecteur du futur à tester si ce comportement est
+effectivement standard.
+</p>
+</aside>
 
 <p>
 D’après le diagramme, il est clair que si l’objet de liaison est vide, le module
-se comportera exactement comme si <code>with</code> n’était pas utilisé.  La seule
+se comportera exactement comme si <code>with</code> n’était pas utilisé, puisque
+l’environnement de <code>with</code> a pour parent l’environnement de la FIA.  La seule
 différence observable serait un léger surcoût dû à l’objet supplémentaire sur la
 chaîne de résolution de noms.
 </p>
 
 <p>
-Une différence cruciale entre le modèle de la figure ?? et de ce qu’on obtient
-ici, c’est qu’ci l’environnement crée par <code>with</code> et l’objet de liaison sont deux
-objets séparés, alors que dans le modèle il ne sont qu’un seul et même objet.
-On peut voir qu’avec <code>with</code>, l’environnement a un environnement
-parent (l’environnement de la FIA), mais que l’objet de liaison n’a pas d‘objet
-parent (il est <i>null</i>, d’après sa définition ligne <a href="#coderef-ex8-create"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex8-create');" onmouseout="CodeHighlightOff(this, 'coderef-ex8-create');">2</a>).  Et la
-propriété <code>m.env</code> pointe vers l’objet de liaison, tandis que les propriétés
-<code>env</code> des fonctions <code>f</code> et <code>g</code> pointent vers l’environnement.  La conséquence de
-cette distinction, c’est qu’on si peut se servir de <code>m.env</code> pour surcharger les
-définitions faites dans le module, on ne peut pas s’en servir pour <i>accéder</i> aux
-valeurs de ces définitions de l’extérieur du module.  <code>m.env.f</code> ne fait pas
-référence au <code>f</code> de l’environnement de la FIA; <code>m.env.f</code> n’est pas défini.
+Une différence cruciale entre le modèle annoncé dans la section précédente et ce
+qu’on obtient ici, c’est qu’ci l’environnement crée par <code>with</code> et l’objet de
+liaison sont deux objets distincts, alors que dans le modèle il ne sont qu’un
+seul et même objet.  En particulier, la propriété <code>m.E</code> pointe vers l’objet de
+liaison, tandis que les propriétés <code>env</code> des fonctions <code>f</code> et <code>g</code> pointent vers
+l’environnement.  La conséquence de cette distinction est qu’on si peut se
+servir de <code>m.env</code> pour surcharger les définitions faites dans le module, on ne
+peut pas s’en servir pour <i>accéder</i> aux valeurs de ces définitions de
+l’extérieur du module.  Par exemple, <code>m.E.f</code> ne fait pas référence au <code>f</code> de
+l’environnement de la FIA; <code>m.E.f</code> n’est pas défini.
 </p>
 
 <p>
-Pour remédier à cette déviation du modèle, on peut créer un objet parent à
-<code>env</code>.  Cet objet contiendra une référence pour chaque déclaration faite dans le
-module.  On assigne ensuite cet objet parent au <i>prototype</i> de l’objet de
-liaison, <code>env</code>.  JavaScript est un objet à prototypes: chaque objet a un lien de
-prototype vers un autre objet, ou vers <code>null</code>.  Lorsque la résolution de nom
-cherche la propriété <code>p</code> sur un objet qui ne la contient pas, la recherche
-continue sur le prototype, et s’arrête si le prototype est nul.  La recherche de
-nom dans la chaîne de prototype d’un objet se comporte donc exactement comme la
-résolution de noms de variable dans les environnements lexicaux.  La solution se
-présente donc ainsi:
+Pour remédier à cette déviation du modèle, on peut créer un objet parent à <code>E</code>.
+Cet objet contiendra une référence pour chaque déclaration faite dans le module.
+On assigne ensuite cet objet parent au <i>prototype</i> de l’objet de liaison, <code>E</code>.
+JavaScript est un objet à prototypes: chaque objet a un lien de prototype vers
+un autre objet, ou vers <code>null</code>.  Lorsque la résolution de nom cherche la
+propriété <code>p</code> sur un objet qui ne la contient pas, la recherche continue sur le
+prototype, et s’arrête si le prototype est nul.  La recherche de nom dans la
+chaîne de prototype d’un objet se comporte donc exactement comme la résolution
+de noms de variable dans les environnements.  La solution se présente donc
+ainsi:
 </p>
 
 <div class="org-src-container">
 
 <pre class="src src-js"><span class="linenr"> 1: </span><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>(){
-<span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">env</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
-<span class="linenr"> 3: </span>  <span style="font-weight: bold;">with</span> (env) {
+<span class="linenr"> 2: </span>  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">E</span> = Object.create(<span style="font-weight: bold; text-decoration: underline;">null</span>)
+<span class="linenr"> 3: </span>  <span style="font-weight: bold;">with</span> (E) {
 <span class="linenr"> 4: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
 <span class="linenr"> 5: </span>    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
 <span class="linenr"> 6: </span>    <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
 <span class="linenr"> 7: </span>
-<span id="coderef-ex9-parent" class="coderef-off"><span class="linenr"> 8: </span>    <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">parent</span> = { a: a, f: f, g: g }</span>
-<span class="linenr"> 9: </span>    Object.setPrototypeOf(env, parent)
-<span class="linenr">10: </span>    <span style="font-weight: bold;">return</span> { g: g, scope: scope }
-<span class="linenr">11: </span>  }
-<span class="linenr">12: </span>}())
-<span class="linenr">13: </span>
-<span class="linenr">14: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
-<span id="coderef-ex9-f" class="coderef-off"><span class="linenr">15: </span>m.env.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.env.a }</span>
-<span class="linenr">16: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-<span class="linenr">17: </span>m.env.a = 2
-<span class="linenr">18: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
-<span class="linenr">19: </span><span style="font-weight: bold;">delete</span> m.env.f
-<span class="linenr">20: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
-<span class="linenr">21: </span><span style="font-weight: bold;">delete</span> m.env.a
-<span class="linenr">22: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+<span class="linenr"> 8: </span>    Object.setPrototypeOf(E,
+<span id="coderef-ex9-parent" class="coderef-off"><span class="linenr"> 9: </span>      { a: a, f: f, g: g }</span>
+<span class="linenr">10: </span>    )
+<span class="linenr">11: </span>    <span style="font-weight: bold;">return</span> { g: g, E: E }
+<span class="linenr">12: </span>  }
+<span class="linenr">13: </span>}())
+<span class="linenr">14: </span>
+<span class="linenr">15: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+<span class="linenr">16: </span>
+<span id="coderef-ex9-f" class="coderef-off"><span class="linenr">17: </span>m.E.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + 2 * m.E.a }</span>
+<span class="linenr">18: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span class="linenr">19: </span>
+<span class="linenr">20: </span>m.E.a = 2
+<span class="linenr">21: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 4</span>
+<span class="linenr">22: </span>
+<span class="linenr">23: </span><span style="font-weight: bold;">delete</span> m.E.f
+<span class="linenr">24: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+<span class="linenr">25: </span>
+<span class="linenr">26: </span><span style="font-weight: bold;">delete</span> m.E.a
+<span class="linenr">27: </span>m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
 </pre>
 </div>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls12.svg" alt="dls12.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;27&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l’objet de liaison et l’environnement crée par <code>with</code>.</figcaption>
+</figure>
+
+</div>
+
 <p>
-On crée un objet <code>parent</code> ligne <a href="#coderef-ex9-parent"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-parent');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-parent');">8</a> qui contient une référence pour
-chaque déclaration du module.  Puis on assigne <code>parent</code> au prototype de <code>env</code>.
-Grâce à cet objet, on peut faire référence à <code>a</code> à travers <code>m.env.a</code> lors de la
-redéfinition de <code>f</code> ligne <a href="#coderef-ex9-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-f');">15</a>.  Puis, lorsqu’on redéfinit <code>a</code> à travers
-<code>m.env.a</code>, cette nouvelle valeur a priorité sur la valeur initiale du module, et
+On crée un objet parent ligne <a href="#coderef-ex9-parent"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-parent');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-parent');">9</a> qui contient une référence pour
+chaque déclaration du module, et on assigne cet objet au prototype de <code>E</code>.
+Grâce à cet objet, on peut faire référence à <code>a</code> à travers <code>m.E.a</code> lors de la
+redéfinition de <code>f</code> ligne <a href="#coderef-ex9-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-f');">17</a>.  Puis, lorsqu’on redéfinit <code>a</code> à travers
+<code>m.E.a</code>, cette nouvelle valeur a priorité sur la valeur initiale du module, et
 est bien capturée par la nouvelle fonction <code>f</code>.  Tout cela est illustré par le
-diagramme.  La propriété <code>m.env</code> pointe sur l’objet de liaison, qui contient les
-redéfinitions de <code>a</code> et <code>f</code>.  Si l’objet de liaison est vide, alors on recherche
-les propriétés sur l’objet <code>parent</code> avant de les chercher dans l’environnement
-de la FIA.  Ainsi, lorsque l’on supprime les propriétés <code>a</code> et <code>f</code>, le dernier
-appel <code>m.g(0)</code> retourne la même valeur que le premier, avant les modifications.
+diagramme.  La propriété <code>m.E</code> pointe sur l’objet de liaison (<span class="color c1">▬</span>),
+qui contient les redéfinitions de <code>a</code> et <code>f</code>.  Si l’objet de liaison est vide,
+alors on recherche les propriétés sur l’objet parent (<span class="color c2">▬</span>) avant de
+les chercher dans l’environnement de la FIA.  Ainsi, lorsque l’on supprime les
+propriétés <code>a</code> et <code>f</code>, le dernier appel <code>m.g(0)</code> retourne la même valeur que le
+premier, avant les modifications.
 </p>
 
 <p>
-On peut se demander si l’objet <code>parent</code> n’apporte que de la redondance de code.
-Principalement oui, mais cette redondance nous apporte aussi une flexibilité
+On peut se demander si l’objet parent n’apporte que de la redondance de code.
+Principalement oui.  Mais cette redondance nous apporte aussi une flexibilité
 supplémentaire par rapport au modèle.  Seules les propriétés mentionnées dans
 l’objet parent seront accessibles de l’extérieur du module, ce qui nous permet
 de contrôler quelles propriétés sont exposées.  Mais surtout, les valeurs
@@ -10981,7 +11045,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-30 mer. 15:01 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-30 mer. 18:44 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
