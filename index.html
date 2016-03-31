@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-31 jeu. 17:30 -->
+<!-- 2016-03-31 jeu. 18:27 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -8599,6 +8599,13 @@ en paramètre, ce qui nous donne l’ordre d’évaluation du programme.  Puisqu
 profondeur de la pile d’appel.  Le simple code:
 </p>
 
+<aside>
+<p>
+Cette analyse nous a été particulièrement utile pour déboguer certains cas
+épineux d’interaction entre les analyses et l’interpréteur.
+</p>
+</aside>
+
 <pre class="example">
 $ cat tests/function.js
 function f(a) { return a }
@@ -8750,11 +8757,148 @@ ce motif d’extension:
 <h4 id="orgheadline120"><span class="section-number-4">8.3.3</span> Ajouter l’analyse FlowR</h4>
 <div class="outline-text-4" id="text-8-3-3">
 <p>
-L’analyse
+Le principe de l’analyse FlowR est d’empêcher des flots de données illicites
+dans le programme.  Pour cela, on colle des étiquettes sur les fonctions, comme
+“privée” ou “interne”, une approche similaire aux <i>principals</i> des valeurs à
+facettes.  Il y a deux catégories d’étiquettes: les étiquettes d'<i>envoi</i> et les
+étiquettes de <i>réception</i>.  Une étiquette d’envoi est propagée aux données
+retournées par la fonction, et une étiquette de réception indique quelles
+données peuvent être passées en argument à la fonction.  L’algorithme de FlowR
+intercepte chaque appel de fonction, vérifie les étiquettes de réception pour
+s’assurer que les arguments reçus sont compatibles, puis exécute la fonction, et
+propage les étiquettes d’envoi sur la valeur retournée.
 </p>
-</div>
+
+<aside>
+<p>
+Cette description est incomplète, car il n’est pas nécessaire de détailler le
+fonctionnement de l’analyse pour la suite.  Le lecteur intéressé par ces détails
+peut se plonger dans [<a href="#PBS-14">PBS</a>].
+</p>
+</aside>
+
+<p>
+Un exemple, tiré de [<a href="#PBS-14">PBS</a>], où, après assignation des étiquettes aux objets
+<code>Patient</code> et <code>PublicData</code>, le premier appel de méthode est exécuté, mais le
+second est interrompu pour cause de flot invalide de données:
+</p>
+
+<pre class="example">
+$ cat tests/flowr.js
+setTag(Patient, 'receive', 'medical', 1);
+setTag(Patient, 'receive', 'default', 0);
+// [...] set other tags
+
+var p = new Patient();
+var d = new PublicData();
+
+d.add(p.generate_anonymised_record());  // should pass
+d.add(p.get_record());                  // should fail
+</pre>
+
+<pre class="example">
+$ ./njs -l flowr -f tests/flowr.js
+Illegal flow: undefined to [object Object]
+</pre>
+
+<p>
+Pour réaliser cette analyse, il suffit donc de permettre au code client
+d’ajouter des étiquettes aux fonctions (via une fonction qu’on appellera
+<code>setTag</code>), et de capturer chaque appel de fonction afin d’appliquer
+l’algorithme.  Dans Narcissus, l’exécution de fonction se fait sur les nœuds de
+l’AST de type <code>CALL</code>, traité dans <code>execute</code>.  Mais en réalité le vrai travail
+est délégué à la fonction <code>__call__</code> de l’objet <code>FunctionObject</code>.  Pour
+intercepter les appels de fonction, on pourrait donc se greffer à l’un ou
+l’autre endroit.  Nous allons choisir le second, puisqu’il nous permet
+d’illustrer un autre motif d’instrumentation.
+</p>
+
+<p>
+On souhaite remplacer la fonction <code>__call__</code> par notre propre version, qui
+exécute l’algorithme de FlowR.  Voici notre version:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">flowrCall</span>(<span style="font-weight: bold; font-style: italic;">__call__</span>, <span style="font-weight: bold; font-style: italic;">receiver</span>, <span style="font-weight: bold; font-style: italic;">args</span>, <span style="font-weight: bold; font-style: italic;">caller</span>) {
+
+  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">[...] check send labels</span>
+
+  <span style="font-weight: bold;">let</span> <span style="font-weight: bold; font-style: italic;">ret</span> = __call__.call(<span style="font-weight: bold; text-decoration: underline;">this</span>, receiver, args, caller);
+
+  <span style="font-weight: bold; font-style: italic;">// </span><span style="font-weight: bold; font-style: italic;">[...] propagate labels to return value</span>
+
+  <span style="font-weight: bold;">return</span> ret;
+}
+</pre>
 </div>
 
+<p>
+Il n’est pas utile de s’attarder sur le code qui applique l’algorithme; ce sont
+de simples appels à des fonctions définies dans le même module.  En revanche, on
+peut voir que l’on fait ici appel à la fonction <code>__call__</code> d’origine, reçue
+comme premier argument.  Donc notre <code>flowrCall</code> pourra être installé sur
+<code>FunctionObjet</code> en utilisant <code>i13n.around</code> défini plus haut.
+</p>
+
+<p>
+L’objet <code>FunctionObject</code> est l’objet à partir duquel toutes les fonctions du
+code client sont instanciées—leur objet <i>prototype</i>.  Lorse l’interpréteur
+exécute un appel de fonction, il délègue le travail à la propriété <code>__call__</code> de
+la fonction en question.  Si on installe notre version <code>flowrCall</code> sur cet
+objet, on remplace donc la fonction <code>__call__</code> sur toutes les instances de
+fonctions client.  Mais on ne veut pas modifier directement un objet de
+l’interpréteur, car ce serait un changement irréversible.
+</p>
+
+<p>
+Comme pour l’analyse de trace, on va créer un nouvel objet qui va contenir notre
+nouvelle version <code>flowrCall</code>, et déléguer le reste des propriétés à l’objet
+<code>FunctionObject</code> d’origine.  On insère ensuite ce nouvel objet dans une couche,
+avec <code>i13n.pushLayer</code>, ce qui permettra de pouvoir le retirer dynamiquement.  Et
+comme pour l’analyse de trace, on peut utiliser <code>i13n.delegate</code> pour cela.
+</p>
+
+<p>
+Mais il y a une légère différence ici: <code>FunctionObjet</code>, contrairement
+<code>globalBase</code>, est utilisé comme <i>constructeur</i> d’objet (pour créer les fonctions
+client).  Donc il faut aussi créer notre propre constructeur.  Toute cette
+machinerie est effectuée par la fonction <code>i13n.override</code>, qui utilise simplement
+<code>around</code> et <code>delegate</code> après avoir créer le constructeur:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">override</span>(<span style="font-weight: bold; font-style: italic;">base</span>, <span style="font-weight: bold; font-style: italic;">methods</span>) {
+  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">newConstr</span> = <span style="font-weight: bold;">function</span>(...args) {
+    <span style="font-weight: bold;">return</span> base.apply(<span style="font-weight: bold; text-decoration: underline;">this</span>, args)
+  }
+
+  <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> <span style="font-weight: bold;">in</span> methods)
+    methods[m] = around(base.<span style="font-weight: bold; text-decoration: underline;">prototype</span>[m], methods[m])
+
+  newConstr.<span style="font-weight: bold; text-decoration: underline;">prototype</span> = delegate(base.<span style="font-weight: bold; text-decoration: underline;">prototype</span>, methods)
+
+  <span style="font-weight: bold;">return</span> newConstr
+}
+</pre>
+</div>
+
+<p>
+Et celle-ci nous permet d’installer l’analyse FlowR en quatre lignes:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js">i13n.pushLayer(___, {
+  FunctionObject: i13n.override(___.FunctionObject, {
+    __call__: flowrCall }),
+  globalBase: i13n.delegate(___.globalBase, {setTag}),
+})
+</pre>
+</div>
+</div>
+</div>
 
 <div id="outline-container-orgheadline121" class="outline-4">
 <h4 id="orgheadline121"><span class="section-number-4">8.3.4</span> Ajouter l’analyse d’environnements</h4>
@@ -11250,7 +11394,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-31 jeu. 17:30 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-03-31 jeu. 18:27 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
