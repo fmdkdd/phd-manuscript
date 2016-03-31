@@ -6523,7 +6523,8 @@ function pushEnv(e, head) {
 }
 
 function removeEnv(e, head) {
-  while (Object.getPrototypeOf(head) != null && Object.getPrototypeOf(head) !== e)
+  while (Object.getPrototypeOf(head) != null
+      && Object.getPrototypeOf(head) !== e)
     head = Object.getPrototypeOf(head)
 
   if (Object.getPrototypeOf(head) === e) {
@@ -6534,15 +6535,15 @@ function removeEnv(e, head) {
 
 m.g(0) //: 1
 
-var e1 = { a: 2, f: function(x) { return x + 2 * m.env.a }}
-pushEnv(e1, m.env)
+var e1 = { a: 2, f: function(x) { return x + 2 * m.E.a }}
+pushEnv(e1, m.E)
 m.g(0) //: 4
 
-var e2 = { f: function() { return -m.env.a }}
-pushEnv(e2, m.env)
+var e2 = { f: function() { return -m.E.a }}
+pushEnv(e2, m.E)
 m.g(0) //: -2
 
-removeEnv(e1, m.env)
+removeEnv(e1, m.E)
 m.g(0) //: -1
 #+END_SRC
 
@@ -6550,10 +6551,12 @@ Donc ~with~ permet de réaliser l’idée de l’environnement frontal, et la ch
 de prototype de l’objet de liaison de ~with~ permet de disposer les
 environnements en couches.  Et grâce à ces mécanismes, on parvient à ouvrir le
 motif module; on peut changer les définitions internes au module par du code
-écrit à l’extérieur.  Mais les exemples que l’on a utilisés sont restés très
-simples.  Il serait plus intéressant de voir comment on peut ouvrir un module
-plus complexe, et quels sont les problèmes qui apparaissent.  Dans la section
-suivante, on applique ces mécanismes à Narcissus.
+écrit à l’extérieur.
+
+Cependant, les exemples que l’on a utilisés sont restés très simples.  Il serait
+plus intéressant de voir comment on peut ouvrir un module plus réaliste, et
+quels sont les problèmes qui apparaissent.  Dans la section suivante, on
+applique ces mécanismes à Narcissus.
 
 ** Étendre Narcissus par manipulation de portée
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -6745,6 +6748,7 @@ noter qu’il était tout de même nécessaire de modifier le code de Narcissus.
 changements, même mineurs, ont nécessité d’inspecter et de comprendre les
 différentes étapes de construction de l’interpréteur.
 
+#+ATTR_HTML: :style margin-top:-4rem
 #+BEGIN_aside
 Bien sûr, on aurait pu écrire un outil pour modifier automatiquement les lignes
 de Narcissus qui nous intéressent, et considérer ainsi qu’aucune ligne de
@@ -6765,14 +6769,14 @@ L’analyse de trace écrit sur la sortie standard le type de chaque nœud de l�
 dans l’ordre de leur exécution par l’interpréteur.  C’est une information utile
 pour déboguer des exemples, et pour comprendre le fonctionnement de
 l’interpréteur.  En utilisant la technique de disposition en couches de la
-section ??, on peut activer plusieurs analyses à l’exécution avec des options de
-lancement.  Par exemple:
+section [[*Disposer les environnements en couches]], on peut activer plusieurs
+analyses à l’exécution avec des options de lancement.  Par exemple:
 
 : ./njs -l flowr -l trace -f tests/flowr.js
 
-lance l’interpréteur, active l’analyse FlowR, et active aussi la trace en même
-temps avant d’exécuter le code du fichier “example.js”.  Un extrait de la sortie
-montre que les deux analyses fonctionnent correctement:
+lance l’interpréteur, active l’analyse FlowR, et active aussi la trace avant
+d’exécuter le code du fichier “tests/flowr.js”.  Un extrait de la sortie montre
+que les deux analyses fonctionnent en même temps:
 
 #+BEGIN_EXAMPLE
               BLOCK
@@ -6792,7 +6796,7 @@ Illegal flow: undefined to [object Object]
 #+END_EXAMPLE
 
 Les ~Illegal flow~ sont produits par FlowR, et les autres par la trace.  L’union
-des deux sorties permet de localiser précisément les endroits du code où les
+des deux sorties permet de visualiser à quel moment de l’interprétation les
 flots non autorisés se produisent, sans avoir à rajouter du code spécifique à la
 trace dans l’analyse FlowR.
 
