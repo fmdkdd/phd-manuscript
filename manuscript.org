@@ -7058,7 +7058,23 @@ flots non autorisés se produisent, sans avoir à rajouter du code spécifique �
 trace dans l’analyse FlowR.
 
 La trace ne modifie qu’une seule fonction de l’interpréteur, et cette
-modification est compatible avec les modifications apportées par FlowR.
+modification est compatible avec les modifications apportées par FlowR:
+
+#+BEGIN_aside
+#+BEGIN_SRC js
+function execute(proceed, n, x) {
+  printIndentation(indentation);
+  print(nodetypesToNames[n.type]);
+
+  indentation += indentationStep;
+  let ret = proceed(n, x);
+  indentation -= indentationStep;
+
+  return ret;
+}
+#+END_SRC
+#+END_aside
+
 Intuitivement, on voit bien que la trace est orthogonale au contrôle d’accès
 effectué par FlowR.  C’est pourquoi les deux analyses peuvent être activées en
 même temps sans que l’on ait besoin de rajouter du code spécifique à
