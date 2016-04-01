@@ -2432,6 +2432,18 @@ But I would also need to add the necessary syntax to Org; probably as a custom
 link type.  And then add a simple JavaScript function to be called on mouseover
 and on mouseout, just like code highlighting.
 
+** [2016-03-31 jeu.]
+*** Publish hooks do not use the commit version
+The hooks I’ve written do not really use the working tree.  If I have pending
+changes that are not committed yet (WIP), the hooks will ‘make’ the file in the
+directory, /with/ the uncommitted changes.  That means that when I push, I push
+the version with WIP.
+
+The correct thing to do would then be to build the thing for each commit.  But
+that would take more time.  And also that would complexify the hook scripts.
+
+For now, I just need to remember that pushed version = WIP version, not HEAD.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
