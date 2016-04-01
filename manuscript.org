@@ -6840,6 +6840,16 @@ function around(fn, a) {
 }
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-8rem
+#+BEGIN_aside
+Après un remplacement de la fonction ~f~ par ~i13n.around(f, g)~ dans un module,
+tous les appels à ~f~ dans le module feront appel à ~g~.  L’effet est équivalent
+à la réécriture:
+#+BEGIN_SRC js
+f(a, b, ...) => g(f, a, b, ...)
+#+END_SRC
+#+END_aside
+
 C’est proche de la sémantique du /pointcut/ d’AspectJ du même nom.  Notons
 cependant qu’ici aucun tissage ne prend place: le code n’est pas modifié, et en
 particulier la fonction ~a~ n’est pas /inlinée/ dans ~fn~.
@@ -6862,6 +6872,14 @@ function delegate(o, r) {
   return n
 }
 #+END_SRC
+
+#+ATTR_HTML: :style margin-top:-18rem
+#+BEGIN_side-figure
+#+CAPTION: ~delegate(o, r)~ retourne un nouvel objet ({{{color(c1)}}}), qui
+#+CAPTION: contient les propriétés de ~r~, et délègue les autres à ~o~.
+#+CAPTION: C’est ce nouvel objet qu’on insère dans l’environnement du module.
+[[file:img/dls13.svg]]
+#+END_side-figure
 
 *** Ajouter l’analyse FlowR
 Le principe de l’analyse FlowR est d’empêcher des flots de données illicites
@@ -6973,17 +6991,116 @@ function override(base, methods) {
 Et celle-ci nous permet d’installer l’analyse FlowR en quatre lignes:
 
 #+BEGIN_SRC js
-i13n.pushLayer(___, {
-  FunctionObject: i13n.override(___.FunctionObject, {
+i13n.pushLayer(_env, {
+  FunctionObject: i13n.override(_env.FunctionObject, {
     __call__: flowrCall }),
-  globalBase: i13n.delegate(___.globalBase, {setTag}),
+  globalBase: i13n.delegate(_env.globalBase, {setTag}),
 })
 #+END_SRC
 
 *** Ajouter l’analyse d’environnements
+Les techniques que l’on propose dans ce chapitre sont basées essentiellement sur
+la manipulation d’environnements.  Pour mieux comprendre ces manipulations, on a
+utilisé des diagrammes qui représentent les objets et les environnements
+créés par l’interpréteur, et leur relations.  Ces diagrammes sont un modèle
+simplifié du fonctionnement de l’interpréteur, mais sont basés sur les
+informations récoltées par l’analyse d’environnements.
 
+L’analyse d’environnements est à la fois le dernier exemple d’anayse, mais
+aussi un outil qui a servi pour construire les diagrammes de ce chapitre.  On va
+donc s’intéresser à son fonctionnement en plus de la façon de l’implémenter sur
+l’interpréteur.
 
+L’analyse collecte tous les environnements créés par l’intepréteur, et les
+inspecte pour récolter tous les objets créés, en suivant les références des
+propriétés, les liens de prototype, et les liens d’envrionnement parent.
 
+Mais tous les objets ne nous intéressent pas de la même façon.  De nombreux
+objets font partie de l’API standard offerte par le langage, comme ~Array~ ou
+~String~.  Ce n’est pas nécessaire de voir toutes leurs fonctions, toutes leurs
+propriétés, quand on s’intéresse au fonctionnement de ~with~.  On peut donc
+paramétrer le collecte d’objet par:
+
+- une liste noire indique quels objets il n’est pas nécessaire d’inspecter.  Si
+  l’analyse recolte un objet présent dans la liste noire, ses propriétés ne sont
+  pas collectées récursivement.  Typiquement, ~Object.prototype~ est un bon
+  candidat pour la liste noire.
+
+- une liste blanche permet d’inspecter seulement les propriétés nommées dans un
+  objet, et d’ignorer les autres.  Quand on sait quel objet nous intéresse,
+  cette liste permet de réduire considérablement le bruit dans le graphe créé.
+  Dans l’exemple ci dessous, seule la propriété ~m~ de l’objet global est
+  inspectée.
+
+- la profondeur de recherche est le nombre d’appels récursifs maximum quand
+  l’analyse suit les références d’un environnement.  Au delà, les objets sont
+  “opaques”: leurs propriétés ne sont pas affichées.  La boîte dessinée contient
+  juste un identifiant unique.
+
+Sur cet exemple d’utilisation de ~with~, que l’on a vu de nombreuses fois dans
+ce chapitre:
+
+#+BEGIN_EXAMPLE
+$ cat tests/with.js
+var m = (function() {
+  var E = {};
+  with (E) {
+    var a = 1;
+    return {E:E};
+  }
+}());
+
+m.E.a = 2;
+
+// [...] set up whitelist and blacklist of objects
+
+printScope(2, whitelist, blacklist);
+#+END_EXAMPLE
+
+L’analyse produit un graphe au format [[https://en.wikipedia.org/wiki/DOT_(graph_description_language)][DOT]] utilisé par GraphViz.  On peut donc
+produire une image en invoquant ~dot~:
+
+#+BEGIN_EXAMPLE
+$ ./njs -l scope -f tests/with.js | dot -Tsvg
+#+END_EXAMPLE
+
+#+BEGIN_figure
+#+CAPTION: Les flêches en pointillés indiquent les liens de prototype.  Les
+#+CAPTION: flêches solides sont des références.  On peut remarquer en haut à
+#+CAPTION: gauche les environnements, qui font référence aux objets créés par
+#+CAPTION: le code de l’exemple.
+[[file:img/env-with.svg]]
+#+END_figure
+
+Le rendu est un peu brouillon, mais toute l’information est là.  On peut y
+retrouver l’objet ~E~, l’objet d’activation de la FIA, l’environnement créé par
+~with~.  Et en faisant quelques simplifications, et en réorganisant les boîtes
+manuellement, on obtient les diagrammes du chapitre.
+
+Pour collecter les environnements, il suffit de se greffer dans la fonction
+~execute~ de l’interpréteur, et de conserver les environnements dans un
+ensemble.
+
+#+BEGIN_SRC js
+let scopeObjects = new Set();
+
+function harvestScopeObject(n, x) {
+  scopeObjects.add(x.scope);
+}
+
+i13n.pushLayer(_env, {
+  execute: i13n.before(_env.execute, harvestScopeObject),
+  globalBase: i13n.delegate(_env.globalBase, {printScope}),
+});
+#+END_SRC
+
+On utilise cette fois ~i13n.before~ plutôt que ~around~, qui fait aussi écho au
+/pointcut/ d’AspectJ.  La fonction ~harvestScopeObject~ sera invoquée avant
+chaque appel d'~execute~, et récoltera l’environnement courant.
+
+La fonction ~printScope~, que l’on rajoute dans l’environnement client, va
+d’abord construire le graphe en parcourant tous les objets récoltés, puis
+produire le fichier au format au DOT.
 
 *** Évaluation
 L’instrumentation de Narcissus pour l’évaluation multi-facettes que l’on a
@@ -7016,18 +7133,16 @@ sémantique.
 #+END_aside
 
 En plus de l’évaluation multi-facettes, on a défini trois autres analyses sur
-l’interpréteur: une analyse de flot d’information, FlowR, décrite par Pasquier,
-Bacon et Shand [[cite:PBS-14][PBS-14]], une simple analyse de trace, et une analyse qui extrait
-les objets et les environnements alloués par l’interpréteur, afin de générer les
-diagrammes de cette section.  On a pu écrire ces trois analyses ont dans des
-fichiers séparés, sans avoir besoin de modifier le code de l’interpréteur.
+l’interpréteur: une analyse de flot d’information, une simple analyse de trace,
+et une analyse qui extrait les environnements alloués par l’interpréteur.  On a
+pu écrire ces trois analyses ont dans des fichiers séparés, sans avoir besoin de
+modifier le code de l’interpréteur.  Qui plus est, on a pu extraire des motifs
+communs d’instrumentation de fonctions (~around~, ~before~), d’objets
+(~delegate~), ou les deux (~override~).
 
-L’analyse de trace écrit sur la sortie standard le type de chaque nœud de l’AST,
-dans l’ordre de leur exécution par l’interpréteur.  C’est une information utile
-pour déboguer des exemples, et pour comprendre le fonctionnement de
-l’interpréteur.  En utilisant la technique de disposition en couches de la
-section [[*Disposer les environnements en couches]], on peut activer plusieurs
-analyses à l’exécution avec des options de lancement.  Par exemple:
+En utilisant la technique de disposition en couches de la section [[*Disposer
+les environnements en couches]], on peut activer plusieurs analyses à
+l’exécution avec des options de lancement.  Par exemple:
 
 : ./njs -l flowr -l trace -f tests/flowr.js
 
@@ -7036,45 +7151,25 @@ d’exécuter le code du fichier “tests/flowr.js”.  Un extrait de la sortie 
 que les deux analyses fonctionnent en même temps:
 
 #+BEGIN_EXAMPLE
-              BLOCK
-                SEMICOLON
-                  CALL
-                    IDENTIFIER
-                    LIST
-                      IDENTIFIER
-Illegal flow: undefined to [object Object]
-            FUNCTION
-            SEMICOLON
-              CALL
-                IDENTIFIER
-                LIST
-                SCRIPT
+    CALL d.add(p.get_record())
+      DOT d.add
+        IDENTIFIER d
+      LIST
+        CALL p.get_record()
+          DOT p.get_record
+            IDENTIFIER p
+          LIST
+          SCRIPT
 Illegal flow: undefined to [object Object]
 #+END_EXAMPLE
 
-Les ~Illegal flow~ sont produits par FlowR, et les autres par la trace.  L’union
-des deux sorties permet de visualiser à quel moment de l’interprétation les
-flots non autorisés se produisent, sans avoir à rajouter du code spécifique à la
-trace dans l’analyse FlowR.
+Le ~Illegal flow~ est produit par FlowR, et les autres lignes par la trace.
+L’union des deux sorties permet de visualiser à quel moment de l’interprétation
+les flots non autorisés se produisent, sans avoir à rajouter du code spécifique
+à la trace dans l’analyse FlowR.
 
 La trace ne modifie qu’une seule fonction de l’interpréteur, et cette
-modification est compatible avec les modifications apportées par FlowR:
-
-#+BEGIN_aside
-#+BEGIN_SRC js
-function execute(proceed, n, x) {
-  printIndentation(indentation);
-  print(nodetypesToNames[n.type]);
-
-  indentation += indentationStep;
-  let ret = proceed(n, x);
-  indentation -= indentationStep;
-
-  return ret;
-}
-#+END_SRC
-#+END_aside
-
+modification est compatible avec les modifications apportées par FlowR.
 Intuitivement, on voit bien que la trace est orthogonale au contrôle d’accès
 effectué par FlowR.  C’est pourquoi les deux analyses peuvent être activées en
 même temps sans que l’on ait besoin de rajouter du code spécifique à
@@ -7089,6 +7184,7 @@ facilement activer plusieurs modifications de l’interpréteur en même temps, 
 que le résultat n’a de sens que si ces modifications n’interfèrent pas entre
 elles.
 
+#+ATTR_HTML: :style margin-top:-4rem
 #+BEGIN_aside
 Comment détecter et résoudre ces interférences reste un problème ouvert.
 #+END_aside
@@ -7197,9 +7293,9 @@ ce module.  Et si on peut changer intégralement le comportement du module, on
 peut nécessairement en changer une partie; c’est ce qui nous a permis de
 modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 
-On peut voir la propriété ~env~ qui expose l’environnement manipulable du module
+On peut voir la propriété ~E~ qui expose l’environnement manipulable du module
 comme une interface spéciale, une interface d’instrumentation, qu’on peut
-rapprocher du concept d’”implémentation ouverte” de Rao.  Cette interface
+rapprocher du concept d’”implémentation ouverte” de [[cite:Kic-96][Kic-96]].  Cette interface
 spéciale expose /tous/ les noms de l’interpréteur, et confère donc aux
 programmeurs non seulement le pouvoir de modifier le code du module, mais
 également de casser ce code en créant des situations non anticipées par le
@@ -7227,16 +7323,91 @@ lequel il est facile de raisonner statiquement, car son comportement ne peut
 comportement peut changer à tout moment de l’exécution, mais qui offre une
 grande flexibilité.  Les propriétés offertes par l’un et l’autre sont toutes
 désirables: a priori, on préférerait avoir un programme prévisible et
-reconfigurable à souhait.  Mais il est facile de voir que les deux buts ne sont
-pas réconciliables.
+reconfigurable à souhait.  Mais il est facile de voir que les deux buts sont
+antagonistes.
 
-# interpreter is AST -> Value + effects
-# if you want to know what form Value has, you cannot change it later
-# The more you specify, the less you can change later
+Prennons une simple fermeture:
 
-# But what if you specify that things change?
-# Yes, but what guarantees do you have then?  You can only say “I don’t know.
-# I’m sure I don’t know”.
+#+BEGIN_SRC js
+const a = 1
+function f() { return a }
+#+END_SRC
+
+À voir le code, on peut déclarer que lorsqu’on appelle ~f~, elle renvoie
+toujours 1.  C’est une fermeture sur ~a~, et la valeur de ~a~ ne peut pas être
+modifiée car ~a~ est constante.  "~f~ renvoie 1" est donc un invariant qui est
+utile pour le programmeur, une garantie du code qui permet de mieux comprendre
+les comportement des sites d’appels de ~f~.
+
+Mais en même temps, cette garantie rend la fonction inflexible.  On ne peut pas
+changer le comportement de ~f~ sans violer cette garantie.  Si on applique la
+technique de ce chapitre pour ouvrir la fonction avec ~with~:
+
+#+BEGIN_SRC js
+const a = 1
+var E = {}
+with (E) {
+  function f() { return a }
+}
+
+f() //: 1
+
+E.a = 2
+f() //: 2
+#+END_SRC
+
+alors maintenant on peut modifier la valeur de retour de ~f~, car on peut
+modifier ~a~.  C’est donc que la garantie ne tient plus.  Tout ce qu’on peut
+dire de ~f~ c’est quelle retourne la valeur de ~a~ contenue dans ~E~, si elle
+existe, et 1 sinon.  Mais comme on ne sait rien de la valeur de ~a~ contenue
+dans ~E~, autant dire que ~f~ renvoie n’importe quoi.  On n’a plus aucune
+garantie, mais une flexibilité complète.
+
+On pourrait retrouver certaines garanties.  Par exemple, si on veut que ~a~ soit
+toujours un nombre plus petit que 10, on peut protéger l’objet ~E~ et renvoyer
+un proxy:
+
+#+BEGIN_SRC js
+const a = 1
+
+var m = (function() {
+  var E = {}
+  with (E) { function f() { return a } }
+
+  return {f,  E: {
+    set a(v) {
+      if (typeof v === 'number'
+       && v < 10)
+        E.a = v
+    }
+  }}
+}())
+
+m.f() //: 1
+
+m.E.a = 2
+m.f() //: 2
+
+m.E.a = "44"
+m.f() //: 2
+#+END_SRC
+
+De cette façon, on retrouve une garantie: ~m.f~ renverra toujours un nombre plus
+petit que 10.  Mais ce faisant, on perd en flexibilité: dès lors qu’on ajoute
+une contrainte, comme ~a < 10~, la négation de cette contrainte n’est plus un
+cas possible pour le programme.  Chaque contrainte restreint le programme, et
+assure ainsi des garanties supplémentaires, mais chaque contrainte exclut
+également des possibilités.
+
+#+BEGIN_side-figure
+#+CAPTION: Imposer une contrainte sur une variable, ce n’est pas
+#+CAPTION: seulement définir ses valeurs /possibles/, c’est aussi
+#+CAPTION: définir les valeurs qui ne le seront plus.
+[[file:img/dls14.svg]]
+#+END_side-figure
+
+# Le motif module impose des contraintes sur le code qu’il entoure: ce code ne
+# peut plus être modifié par du code extérieur.  Et ces
 
 ** Discussion
 Comparison to putting all bindings in global scope, rather than using this
