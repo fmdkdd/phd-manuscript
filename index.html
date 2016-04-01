@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-03-31 jeu. 18:27 -->
+<!-- 2016-04-01 ven. 19:01 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -8586,7 +8586,7 @@ simplement donné un nom.
 <p>
 En plus de l’évaluation multi-facettes, on a défini trois autres analyses sur
 l’interpréteur: une analyse de flot d’information, FlowR, décrite par Pasquier,
-Bacon et Shand [<a href="#PBS-14">PBS</a>], une simple analyse de trace, et une analyse qui extrait
+Bacon et Shand [<a href="#PBS-14">PBS14</a>], une simple analyse de trace, et une analyse qui extrait
 les objets et les environnements alloués par l’interpréteur, afin de recolter
 les informations pour dessiner les diagrammes de cette section.
 </p>
@@ -8720,6 +8720,19 @@ argument:
 </pre>
 </div>
 
+<aside style="margin-top:-8rem">
+<p>
+Après un remplacement de la fonction <code>f</code> par <code>i13n.around(f, g)</code> dans un module,
+tous les appels à <code>f</code> dans le module feront appel à <code>g</code>.  L’effet est équivalent
+à la réécriture:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-js">f(a, b, ...) =&gt; g(f, a, b, ...)
+</pre>
+</div>
+</aside>
+
 <p>
 C’est proche de la sémantique du <i>pointcut</i> d’AspectJ du même nom.  Notons
 cependant qu’ici aucun tissage ne prend place: le code n’est pas modifié, et en
@@ -8733,7 +8746,7 @@ question (ici, <code>globalBase</code>), mais le changement serait irréversible
 ce changement soit désactivable par <code>i13n.removeLayer</code>, il faut mettre dans
 notre couche d’instrumentation un objet qui contient la nouvelle propriété, et
 qui délègue les autres propriétés à l’objet initial.  C’est conceptuellement le
-même principle que pour <code>around</code>, mais appliqué aux objets.
+même principe que pour <code>around</code>, mais appliqué aux objets.
 </p>
 
 <p>
@@ -8749,6 +8762,16 @@ ce motif d’extension:
   <span style="font-weight: bold;">return</span> n
 }
 </pre>
+</div>
+
+<div style="margin-top:-18rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls13.svg" alt="dls13.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;28&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C’est ce nouvel objet qu’on insère dans l’environnement du module.</figcaption>
+</figure>
+
 </div>
 </div>
 </div>
@@ -8773,12 +8796,12 @@ propage les étiquettes d’envoi sur la valeur retournée.
 <p>
 Cette description est incomplète, car il n’est pas nécessaire de détailler le
 fonctionnement de l’analyse pour la suite.  Le lecteur intéressé par ces détails
-peut se plonger dans [<a href="#PBS-14">PBS</a>].
+peut se plonger dans [<a href="#PBS-14">PBS14</a>].
 </p>
 </aside>
 
 <p>
-Un exemple, tiré de [<a href="#PBS-14">PBS</a>], où, après assignation des étiquettes aux objets
+Un exemple, tiré de [<a href="#PBS-14">PBS14</a>], où, après assignation des étiquettes aux objets
 <code>Patient</code> et <code>PublicData</code>, le premier appel de méthode est exécuté, mais le
 second est interrompu pour cause de flot invalide de données:
 </p>
@@ -8890,10 +8913,10 @@ Et celle-ci nous permet d’installer l’analyse FlowR en quatre lignes:
 
 <div class="org-src-container">
 
-<pre class="src src-js">i13n.pushLayer(___, {
-  FunctionObject: i13n.override(___.FunctionObject, {
+<pre class="src src-js">i13n.pushLayer(_env, {
+  FunctionObject: i13n.override(_env.FunctionObject, {
     __call__: flowrCall }),
-  globalBase: i13n.delegate(___.globalBase, {setTag}),
+  globalBase: i13n.delegate(_env.globalBase, {setTag}),
 })
 </pre>
 </div>
@@ -8902,10 +8925,136 @@ Et celle-ci nous permet d’installer l’analyse FlowR en quatre lignes:
 
 <div id="outline-container-orgheadline121" class="outline-4">
 <h4 id="orgheadline121"><span class="section-number-4">8.3.4</span> Ajouter l’analyse d’environnements</h4>
+<div class="outline-text-4" id="text-8-3-4">
+<p>
+Les techniques que l’on propose dans ce chapitre sont basées essentiellement sur
+la manipulation d’environnements.  Pour mieux comprendre ces manipulations, on a
+utilisé des diagrammes qui représentent les objets et les environnements
+créés par l’interpréteur, et leur relations.  Ces diagrammes sont un modèle
+simplifié du fonctionnement de l’interpréteur, mais sont basés sur les
+informations récoltées par l’analyse d’environnements.
+</p>
+
+<p>
+L’analyse d’environnements est à la fois le dernier exemple d’anayse, mais
+aussi un outil qui a servi pour construire les diagrammes de ce chapitre.  On va
+donc s’intéresser à son fonctionnement en plus de la façon de l’implémenter sur
+l’interpréteur.
+</p>
+
+<p>
+L’analyse collecte tous les environnements créés par l’intepréteur, et les
+inspecte pour récolter tous les objets créés, en suivant les références des
+propriétés, les liens de prototype, et les liens d’envrionnement parent.
+</p>
+
+<p>
+Mais tous les objets ne nous intéressent pas de la même façon.  De nombreux
+objets font partie de l’API standard offerte par le langage, comme <code>Array</code> ou
+<code>String</code>.  Ce n’est pas nécessaire de voir toutes leurs fonctions, toutes leurs
+propriétés, quand on s’intéresse au fonctionnement de <code>with</code>.  On peut donc
+paramétrer le collecte d’objet par:
+</p>
+
+<ul class="org-ul">
+<li>une liste noire indique quels objets il n’est pas nécessaire d’inspecter.  Si
+l’analyse recolte un objet présent dans la liste noire, ses propriétés ne sont
+pas collectées récursivement.  Typiquement, <code>Object.prototype</code> est un bon
+candidat pour la liste noire.</li>
+
+<li>une liste blanche permet d’inspecter seulement les propriétés nommées dans un
+objet, et d’ignorer les autres.  Quand on sait quel objet nous intéresse,
+cette liste permet de réduire considérablement le bruit dans le graphe créé.
+Dans l’exemple ci dessous, seule la propriété <code>m</code> de l’objet global est
+inspectée.</li>
+
+<li>la profondeur de recherche est le nombre d’appels récursifs maximum quand
+l’analyse suit les références d’un environnement.  Au delà, les objets sont
+“opaques”: leurs propriétés ne sont pas affichées.  La boîte dessinée contient
+juste un identifiant unique.</li>
+</ul>
+
+<p>
+Sur cet exemple d’utilisation de <code>with</code>, que l’on a vu de nombreuses fois dans
+ce chapitre:
+</p>
+
+<pre class="example">
+$ cat tests/with.js
+var m = (function() {
+  var E = {};
+  with (E) {
+    var a = 1;
+    return {E:E};
+  }
+}());
+
+m.E.a = 2;
+
+// [...] set up whitelist and blacklist of objects
+
+printScope(2, whitelist, blacklist);
+</pre>
+
+<p>
+L’analyse produit un graphe au format <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT</a> utilisé par GraphViz.  On peut donc
+produire une image en invoquant <code>dot</code>:
+</p>
+
+<pre class="example">
+$ ./njs -l scope -f tests/with.js | dot -Tsvg
+</pre>
+
+<figure>
+
+<figure>
+<p><img src="img/env-with.svg" alt="env-with.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l’exemple.</figcaption>
+</figure>
+</figure>
+
+<p>
+Le rendu est un peu brouillon, mais toute l’information est là.  On peut y
+retrouver l’objet <code>E</code>, l’objet d’activation de la FIA, l’environnement créé par
+<code>with</code>.  Et en faisant quelques simplifications, et en réorganisant les boîtes
+manuellement, on obtient les diagrammes du chapitre.
+</p>
+
+<p>
+Pour collecter les environnements, il suffit de se greffer dans la fonction
+<code>execute</code> de l’interpréteur, et de conserver les environnements dans un
+ensemble.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">let</span> <span style="font-weight: bold; font-style: italic;">scopeObjects</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Set</span>();
+
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">harvestScopeObject</span>(<span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; font-style: italic;">x</span>) {
+  scopeObjects.add(x.scope);
+}
+
+i13n.pushLayer(_env, {
+  execute: i13n.before(_env.execute, harvestScopeObject),
+  globalBase: i13n.delegate(_env.globalBase, {printScope}),
+});
+</pre>
 </div>
 
+<p>
+On utilise cette fois <code>i13n.before</code> plutôt que <code>around</code>, qui fait aussi écho au
+<i>pointcut</i> d’AspectJ.  La fonction <code>harvestScopeObject</code> sera invoquée avant
+chaque appel d'<code>execute</code>, et récoltera l’environnement courant.
+</p>
 
-
+<p>
+La fonction <code>printScope</code>, que l’on rajoute dans l’environnement client, va
+d’abord construire le graphe en parcourant tous les objets récoltés, puis
+produire le fichier au format au DOT.
+</p>
+</div>
+</div>
 
 <div id="outline-container-orgheadline122" class="outline-4">
 <h4 id="orgheadline122"><span class="section-number-4">8.3.5</span> Évaluation</h4>
@@ -8946,20 +9095,17 @@ sémantique.
 
 <p>
 En plus de l’évaluation multi-facettes, on a défini trois autres analyses sur
-l’interpréteur: une analyse de flot d’information, FlowR, décrite par Pasquier,
-Bacon et Shand [<a href="#PBS-14">PBS</a>], une simple analyse de trace, et une analyse qui extrait
-les objets et les environnements alloués par l’interpréteur, afin de générer les
-diagrammes de cette section.  On a pu écrire ces trois analyses ont dans des
-fichiers séparés, sans avoir besoin de modifier le code de l’interpréteur.
+l’interpréteur: une analyse de flot d’information, une simple analyse de trace,
+et une analyse qui extrait les environnements alloués par l’interpréteur.  On a
+pu écrire ces trois analyses ont dans des fichiers séparés, sans avoir besoin de
+modifier le code de l’interpréteur.  Qui plus est, on a pu extraire des motifs
+communs d’instrumentation de fonctions (<code>around</code>, <code>before</code>), d’objets
+(<code>delegate</code>), ou les deux (<code>override</code>).
 </p>
 
 <p>
-L’analyse de trace écrit sur la sortie standard le type de chaque nœud de l’AST,
-dans l’ordre de leur exécution par l’interpréteur.  C’est une information utile
-pour déboguer des exemples, et pour comprendre le fonctionnement de
-l’interpréteur.  En utilisant la technique de disposition en couches de la
-section <a href="#orgheadline115">8.1.3</a>, on peut activer plusieurs
-analyses à l’exécution avec des options de lancement.  Par exemple:
+En utilisant la technique de disposition en couches de la section <a href="#orgheadline115">8.1.3</a>, on peut activer plusieurs analyses à
+l’exécution avec des options de lancement.  Par exemple:
 </p>
 
 <pre class="example">
@@ -8973,52 +9119,28 @@ que les deux analyses fonctionnent en même temps:
 </p>
 
 <pre class="example">
-              BLOCK
-                SEMICOLON
-                  CALL
-                    IDENTIFIER
-                    LIST
-                      IDENTIFIER
-Illegal flow: undefined to [object Object]
-            FUNCTION
-            SEMICOLON
-              CALL
-                IDENTIFIER
-                LIST
-                SCRIPT
+    CALL d.add(p.get_record())
+      DOT d.add
+        IDENTIFIER d
+      LIST
+        CALL p.get_record()
+          DOT p.get_record
+            IDENTIFIER p
+          LIST
+          SCRIPT
 Illegal flow: undefined to [object Object]
 </pre>
 
 <p>
-Les <code>Illegal flow</code> sont produits par FlowR, et les autres par la trace.  L’union
-des deux sorties permet de visualiser à quel moment de l’interprétation les
-flots non autorisés se produisent, sans avoir à rajouter du code spécifique à la
-trace dans l’analyse FlowR.
+Le <code>Illegal flow</code> est produit par FlowR, et les autres lignes par la trace.
+L’union des deux sorties permet de visualiser à quel moment de l’interprétation
+les flots non autorisés se produisent, sans avoir à rajouter du code spécifique
+à la trace dans l’analyse FlowR.
 </p>
 
 <p>
 La trace ne modifie qu’une seule fonction de l’interpréteur, et cette
-modification est compatible avec les modifications apportées par FlowR:
-</p>
-
-<aside>
-<div class="org-src-container">
-
-<pre class="src src-js"><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">execute</span>(<span style="font-weight: bold; font-style: italic;">proceed</span>, <span style="font-weight: bold; font-style: italic;">n</span>, <span style="font-weight: bold; font-style: italic;">x</span>) {
-  printIndentation(indentation);
-  print(nodetypesToNames[n.type]);
-
-  indentation += indentationStep;
-  <span style="font-weight: bold;">let</span> <span style="font-weight: bold; font-style: italic;">ret</span> = proceed(n, x);
-  indentation -= indentationStep;
-
-  <span style="font-weight: bold;">return</span> ret;
-}
-</pre>
-</div>
-</aside>
-
-<p>
+modification est compatible avec les modifications apportées par FlowR.
 Intuitivement, on voit bien que la trace est orthogonale au contrôle d’accès
 effectué par FlowR.  C’est pourquoi les deux analyses peuvent être activées en
 même temps sans que l’on ait besoin de rajouter du code spécifique à
@@ -9034,7 +9156,7 @@ que le résultat n’a de sens que si ces modifications n’interfèrent pas ent
 elles.
 </p>
 
-<aside>
+<aside style="margin-top:-4rem">
 <p>
 Comment détecter et résoudre ces interférences reste un problème ouvert.
 </p>
@@ -9205,9 +9327,9 @@ modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 </p>
 
 <p>
-On peut voir la propriété <code>env</code> qui expose l’environnement manipulable du module
+On peut voir la propriété <code>E</code> qui expose l’environnement manipulable du module
 comme une interface spéciale, une interface d’instrumentation, qu’on peut
-rapprocher du concept d’”implémentation ouverte” de Rao.  Cette interface
+rapprocher du concept d’”implémentation ouverte” de [<a href="#Kic-96">Kic96</a>].  Cette interface
 spéciale expose <i>tous</i> les noms de l’interpréteur, et confère donc aux
 programmeurs non seulement le pouvoir de modifier le code du module, mais
 également de casser ce code en créant des situations non anticipées par le
@@ -9239,9 +9361,110 @@ lequel il est facile de raisonner statiquement, car son comportement ne peut
 comportement peut changer à tout moment de l’exécution, mais qui offre une
 grande flexibilité.  Les propriétés offertes par l’un et l’autre sont toutes
 désirables: a priori, on préférerait avoir un programme prévisible et
-reconfigurable à souhait.  Mais il est facile de voir que les deux buts ne sont
-pas réconciliables.
+reconfigurable à souhait.  Mais il est facile de voir que les deux buts sont
+antagonistes.
 </p>
+
+<p>
+Prennons une simple fermeture:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">const</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>() { <span style="font-weight: bold;">return</span> a }
+</pre>
+</div>
+
+<p>
+À voir le code, on peut déclarer que lorsqu’on appelle <code>f</code>, elle renvoie
+toujours 1.  C’est une fermeture sur <code>a</code>, et la valeur de <code>a</code> ne peut pas être
+modifiée car <code>a</code> est constante.  "<code>f</code> renvoie 1" est donc un invariant qui est
+utile pour le programmeur, une garantie du code qui permet de mieux comprendre
+les comportement des sites d’appels de <code>f</code>.
+</p>
+
+<p>
+Mais en même temps, cette garantie rend la fonction inflexible.  On ne peut pas
+changer le comportement de <code>f</code> sans violer cette garantie.  Si on applique la
+technique de ce chapitre pour ouvrir la fonction avec <code>with</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">const</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">E</span> = {}
+<span style="font-weight: bold;">with</span> (E) {
+  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>() { <span style="font-weight: bold;">return</span> a }
+}
+
+f() <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+
+E.a = 2
+f() <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+</pre>
+</div>
+
+<p>
+alors maintenant on peut modifier la valeur de retour de <code>f</code>, car on peut
+modifier <code>a</code>.  C’est donc que la garantie ne tient plus.  Tout ce qu’on peut
+dire de <code>f</code> c’est quelle retourne la valeur de <code>a</code> contenue dans <code>E</code>, si elle
+existe, et 1 sinon.  Mais comme on ne sait rien de la valeur de <code>a</code> contenue
+dans <code>E</code>, autant dire que <code>f</code> renvoie n’importe quoi.  On n’a plus aucune
+garantie, mais une flexibilité complète.
+</p>
+
+<p>
+On pourrait retrouver certaines garanties.  Par exemple, si on veut que <code>a</code> soit
+toujours un nombre plus petit que 10, on peut protéger l’objet <code>E</code> et renvoyer
+un proxy:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">const</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>() {
+  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">E</span> = {}
+  <span style="font-weight: bold;">with</span> (E) { <span style="font-weight: bold;">function</span> f() { <span style="font-weight: bold;">return</span> a } }
+
+  <span style="font-weight: bold;">return</span> {f,  E: {
+    set a(v) {
+      <span style="font-weight: bold;">if</span> (<span style="font-weight: bold;">typeof</span> v === <span style="font-style: italic;">'number'</span>
+       &amp;&amp; v &lt; 10)
+        E.a = v
+    }
+  }}
+}())
+
+m.f() <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+
+m.E.a = 2
+m.f() <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+
+m.E.a = <span style="font-style: italic;">"44"</span>
+m.f() <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+</pre>
+</div>
+
+<p>
+De cette façon, on retrouve une garantie: <code>m.f</code> renverra toujours un nombre plus
+petit que 10.  Mais ce faisant, on perd en flexibilité: dès lors qu’on ajoute
+une contrainte, comme <code>a &lt; 10</code>, la négation de cette contrainte n’est plus un
+cas possible pour le programme.  Chaque contrainte restreint le programme, et
+assure ainsi des garanties supplémentaires, mais chaque contrainte exclut
+également des possibilités.
+</p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls14.svg" alt="dls14.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir ses valeurs <i>possibles</i>, c’est aussi définir les valeurs qui ne le seront plus.</figcaption>
+</figure>
+
+</div>
 </div>
 </div>
 
@@ -10955,13 +11178,15 @@ David&nbsp;Lorge Parnas.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="PBS-14">PBS</a>]
+[<a name="PBS-14">PBS14</a>]
 </td>
 <td class="bibtexitem">
-Thomas Pasquier, Jean Bacon, and Brian Shand.
- Flowr: Aspect oriented programming for information flow control in
+Thomas F.&nbsp;J.-M. Pasquier, Jean Bacon, and Brian Shand.
+ Flowr: aspect oriented programming for information flow control in
   ruby.
- Submitted to Modularity'14.
+ In <em>13th International Conference on Modularity, MODULARITY
+  '14, Lugano, Switzerland, April 22-26, 2014</em>, pages 37-48, 2014.
+[&nbsp;<a href="http://dx.doi.org/10.1145/2577080.2577090">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -11394,7 +11619,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-03-31 jeu. 18:27 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-04-01 ven. 19:01 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
 </div>
 </body>
 </html>
