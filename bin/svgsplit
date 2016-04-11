@@ -45,21 +45,21 @@ case $TYPE in
     # with --verb, but it's takes several seconds to process just one SVG.
     # rsvg-convert is much faster, but might not give the exact same output for
     # bitmap export.
-    pdf) parallel rsvg-convert --export-id 'export:{}' \
-                               --format pdf \
-                               --output ${OUTPUT}/{}.pdf \
-                               ${SVG} ::: ${filenames}
+    pdf) parallel --will-cite rsvg-convert --export-id 'export:{}' \
+                                           --format pdf \
+                                           --output ${OUTPUT}/{}.pdf \
+                                           ${SVG} ::: ${filenames}
          ;;
 
-    png) parallel rsvg-convert --export-id 'export:{}' \
-                               --format png \
-                               --output ${OUTPUT}/{}.png \
-                               ${SVG} ::: ${filenames}
+    png) parallel --will-cite rsvg-convert --export-id 'export:{}' \
+                                           --format png \
+                                           --output ${OUTPUT}/{}.png \
+                                           ${SVG} ::: ${filenames}
          ;;
 
-    svg) parallel rsvg-convert --export-id 'export:{}' \
-                               --format svg \
-                               --output ${OUTPUT}/{}.svg \
-                               ${SVG} ::: ${filenames}
+    svg) parallel --will-cite rsvg-convert --export-id 'export:{}' \
+                                           --format svg \
+                                           --output ${OUTPUT}/{}.svg \
+                                           ${SVG} ::: ${filenames}
          ;;
 esac
