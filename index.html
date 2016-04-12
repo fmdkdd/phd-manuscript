@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-01 ven. 19:01 -->
+<!-- 2016-04-12 Tue 18:40 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -148,7 +148,7 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline5">1. <span class="todo nilBARE">BARE</span> Introduction</a>
+<li><a href="#orgheadline5">1. <span class="todo BARE">BARE</span> Introduction</a>
 <ul>
 <li><a href="#orgheadline1">1.1. Problème: étendre un interprèteur par de multiple analyses</a></li>
 <li><a href="#orgheadline2">1.2. But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations</a></li>
@@ -156,60 +156,60 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline4">1.4. Survol</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline55">2. <span class="todo nilUNSTABLE">UNSTABLE</span> État de l’art</a>
+<li><a href="#orgheadline55">2. <span class="todo UNSTABLE">UNSTABLE</span> État de l’art</a>
 <ul>
-<li><a href="#orgheadline24">2.1. <span class="todo nilUNSTABLE">UNSTABLE</span> Une chronologie de la modularité dans les langages de programmation</a>
+<li><a href="#orgheadline24">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Une chronologie de la modularité dans les langages de programmation</a>
 <ul>
-<li><a href="#orgheadline6">2.1.1. <span class="todo nilUNSTABLE">UNSTABLE</span> De l’exécution du programme au code source</a></li>
-<li><a href="#orgheadline7">2.1.2. <span class="todo nilUNSTABLE">UNSTABLE</span> La programmation structurée</a></li>
-<li><a href="#orgheadline9">2.1.3. <span class="todo nilBARE">BARE</span> Class-based programming: Smalltalk</a></li>
-<li><a href="#orgheadline11">2.1.4. <span class="todo nilTRANSLATE">TRANSLATE</span> Literate programming</a></li>
-<li><a href="#orgheadline12">2.1.5. <span class="todo nilBARE">BARE</span> Prototype-based programming</a></li>
-<li><a href="#orgheadline14">2.1.6. <span class="todo nilTRANSLATE">TRANSLATE</span> Self</a></li>
-<li><a href="#orgheadline17">2.1.7. <span class="todo nilTRANSLATE">TRANSLATE</span> Open Implementation</a></li>
-<li><a href="#orgheadline19">2.1.8. <span class="todo nilTRANSLATE">TRANSLATE</span> Aspect-Oriented Programming</a></li>
-<li><a href="#orgheadline20">2.1.9. <span class="todo nilBARE">BARE</span> Caesar</a></li>
-<li><a href="#orgheadline22">2.1.10. <span class="todo nilTRANSLATE">TRANSLATE</span> Hyper/J</a></li>
-<li><a href="#orgheadline23">2.1.11. <span class="todo nilBARE">BARE</span> Information transparency</a></li>
+<li><a href="#orgheadline6">2.1.1. <span class="todo UNSTABLE">UNSTABLE</span> De l’exécution du programme au code source</a></li>
+<li><a href="#orgheadline7">2.1.2. <span class="todo UNSTABLE">UNSTABLE</span> La programmation structurée</a></li>
+<li><a href="#orgheadline9">2.1.3. <span class="todo BARE">BARE</span> Class-based programming: Smalltalk</a></li>
+<li><a href="#orgheadline11">2.1.4. <span class="todo TRANSLATE">TRANSLATE</span> Literate programming</a></li>
+<li><a href="#orgheadline12">2.1.5. <span class="todo BARE">BARE</span> Prototype-based programming</a></li>
+<li><a href="#orgheadline14">2.1.6. <span class="todo TRANSLATE">TRANSLATE</span> Self</a></li>
+<li><a href="#orgheadline17">2.1.7. <span class="todo TRANSLATE">TRANSLATE</span> Open Implementation</a></li>
+<li><a href="#orgheadline19">2.1.8. <span class="todo TRANSLATE">TRANSLATE</span> Aspect-Oriented Programming</a></li>
+<li><a href="#orgheadline20">2.1.9. <span class="todo BARE">BARE</span> Caesar</a></li>
+<li><a href="#orgheadline22">2.1.10. <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</a></li>
+<li><a href="#orgheadline23">2.1.11. <span class="todo BARE">BARE</span> Information transparency</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline30">2.2. <span class="todo nilUNSTABLE">UNSTABLE</span> La modularité du progamme n’est pas la modularité du code source</a>
+<li><a href="#orgheadline30">2.2. <span class="todo UNSTABLE">UNSTABLE</span> La modularité du progamme n’est pas la modularité du code source</a>
 <ul>
-<li><a href="#orgheadline26">2.2.1. <span class="done nilSTABLE">STABLE</span> La modularité selon Parnas</a></li>
-<li><a href="#orgheadline28">2.2.2. <span class="done nilSTABLE">STABLE</span> La théorie de Naur derrière le programme</a></li>
+<li><a href="#orgheadline26">2.2.1. <span class="done STABLE">STABLE</span> La modularité selon Parnas</a></li>
+<li><a href="#orgheadline28">2.2.2. <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</a></li>
 <li><a href="#orgheadline29">2.2.3. Notion of modularity</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline36">2.3. <span class="todo nilUNSTABLE">UNSTABLE</span> Moyens techniques pour l’instrumentation</a>
+<li><a href="#orgheadline36">2.3. <span class="todo UNSTABLE">UNSTABLE</span> Moyens techniques pour l’instrumentation</a>
 <ul>
-<li><a href="#orgheadline31">2.3.1. <span class="todo nilBARE">BARE</span> Le problème d’expression</a></li>
-<li><a href="#orgheadline32">2.3.2. <span class="todo nilBARE">BARE</span> Dynamic binding</a></li>
-<li><a href="#orgheadline15">2.3.3. <span class="todo nilTRANSLATE">TRANSLATE</span> Reflection</a></li>
-<li><a href="#orgheadline33">2.3.4. <span class="todo nilBARE">BARE</span> Building from modules</a></li>
-<li><a href="#orgheadline34">2.3.5. <span class="todo nilBARE">BARE</span> Building with monads</a></li>
-<li><a href="#orgheadline35">2.3.6. <span class="todo nilBARE">BARE</span> Bytecode instrumentation</a></li>
+<li><a href="#orgheadline31">2.3.1. <span class="todo BARE">BARE</span> Le problème d’expression</a></li>
+<li><a href="#orgheadline32">2.3.2. <span class="todo BARE">BARE</span> Dynamic binding</a></li>
+<li><a href="#orgheadline15">2.3.3. <span class="todo TRANSLATE">TRANSLATE</span> Reflection</a></li>
+<li><a href="#orgheadline33">2.3.4. <span class="todo BARE">BARE</span> Building from modules</a></li>
+<li><a href="#orgheadline34">2.3.5. <span class="todo BARE">BARE</span> Building with monads</a></li>
+<li><a href="#orgheadline35">2.3.6. <span class="todo BARE">BARE</span> Bytecode instrumentation</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline54">2.4. <span class="todo nilUNSTABLE">UNSTABLE</span> Travaux connexes concernant l’instrumentation</a>
+<li><a href="#orgheadline54">2.4. <span class="todo UNSTABLE">UNSTABLE</span> Travaux connexes concernant l’instrumentation</a>
 <ul>
-<li><a href="#orgheadline37">2.4.1. <span class="todo nilBARE">BARE</span> Domain-specific languages</a></li>
-<li><a href="#orgheadline38">2.4.2. <span class="todo nilBARE">BARE</span> Scripting languages</a></li>
-<li><a href="#orgheadline40">2.4.3. <span class="todo nilTRANSLATE">TRANSLATE</span> Emacs</a></li>
-<li><a href="#orgheadline42">2.4.4. <span class="todo nilTRANSLATE">TRANSLATE</span> Eclipse and other IDEs</a></li>
-<li><a href="#orgheadline44">2.4.5. <span class="todo nilBARE">BARE</span> Web browsers</a></li>
-<li><a href="#orgheadline46">2.4.6. <span class="todo nilTRANSLATE">TRANSLATE</span> Lua</a></li>
-<li><a href="#orgheadline47">2.4.7. <span class="todo nilBARE">BARE</span> Context-Oriented Programming</a></li>
-<li><a href="#orgheadline48">2.4.8. <span class="todo nilBARE">BARE</span> Feature-Oriented Programming</a></li>
-<li><a href="#orgheadline49">2.4.9. <span class="todo nilBARE">BARE</span> Model-driven development</a></li>
-<li><a href="#orgheadline52">2.4.10. <span class="todo nilTRANSLATE">TRANSLATE</span> Software product lines</a></li>
-<li><a href="#orgheadline50">2.4.11. <span class="todo nilTRANSLATE">TRANSLATE</span> Semantic patches</a></li>
+<li><a href="#orgheadline37">2.4.1. <span class="todo BARE">BARE</span> Domain-specific languages</a></li>
+<li><a href="#orgheadline38">2.4.2. <span class="todo BARE">BARE</span> Scripting languages</a></li>
+<li><a href="#orgheadline40">2.4.3. <span class="todo TRANSLATE">TRANSLATE</span> Emacs</a></li>
+<li><a href="#orgheadline42">2.4.4. <span class="todo TRANSLATE">TRANSLATE</span> Eclipse and other IDEs</a></li>
+<li><a href="#orgheadline44">2.4.5. <span class="todo BARE">BARE</span> Web browsers</a></li>
+<li><a href="#orgheadline46">2.4.6. <span class="todo TRANSLATE">TRANSLATE</span> Lua</a></li>
+<li><a href="#orgheadline47">2.4.7. <span class="todo BARE">BARE</span> Context-Oriented Programming</a></li>
+<li><a href="#orgheadline48">2.4.8. <span class="todo BARE">BARE</span> Feature-Oriented Programming</a></li>
+<li><a href="#orgheadline49">2.4.9. <span class="todo BARE">BARE</span> Model-driven development</a></li>
+<li><a href="#orgheadline52">2.4.10. <span class="todo TRANSLATE">TRANSLATE</span> Software product lines</a></li>
+<li><a href="#orgheadline50">2.4.11. <span class="todo TRANSLATE">TRANSLATE</span> Semantic patches</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline56">3. <span class="todo nilUNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
-<li><a href="#orgheadline57">4. <span class="todo nilUNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
-<li><a href="#orgheadline96">5. <span class="todo nilTRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</a>
+<li><a href="#orgheadline56">3. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
+<li><a href="#orgheadline57">4. <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
+<li><a href="#orgheadline96">5. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</a>
 <ul>
 <li>
 <ul>
@@ -239,7 +239,7 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline101">6. <span class="todo nilTRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</a>
+<li><a href="#orgheadline101">6. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</a>
 <ul>
 <li><a href="#orgheadline97">6.1. Ajouter des termes</a></li>
 <li><a href="#orgheadline98">6.2. Ajouter des opérations</a></li>
@@ -267,7 +267,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline145">8. <span class="todo nilTRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline145">8. <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
@@ -298,9 +298,9 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline147">9. <span class="todo nilBARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline147">9. <span class="todo BARE">BARE</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline146">9.1. <span class="todo nilBARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline146">9.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
 </ul>
 </li>
 <li><a href="#orgheadline148">Références</a></li>
@@ -9366,7 +9366,7 @@ antagonistes.
 </p>
 
 <p>
-Prennons une simple fermeture:
+Prenons une simple fermeture:
 </p>
 
 <div class="org-src-container">
@@ -9411,7 +9411,7 @@ modifier <code>a</code>.  C’est donc que la garantie ne tient plus.  Tout ce q
 dire de <code>f</code> c’est quelle retourne la valeur de <code>a</code> contenue dans <code>E</code>, si elle
 existe, et 1 sinon.  Mais comme on ne sait rien de la valeur de <code>a</code> contenue
 dans <code>E</code>, autant dire que <code>f</code> renvoie n’importe quoi.  On n’a plus aucune
-garantie, mais une flexibilité complète.
+garantie sur <code>f</code>, mais une flexibilité complète pour la modifier.
 </p>
 
 <p>
@@ -9428,12 +9428,12 @@ un proxy:
   <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">E</span> = {}
   <span style="font-weight: bold;">with</span> (E) { <span style="font-weight: bold;">function</span> f() { <span style="font-weight: bold;">return</span> a } }
 
-  <span style="font-weight: bold;">return</span> {f,  E: {
-    set a(v) {
-      <span style="font-weight: bold;">if</span> (<span style="font-weight: bold;">typeof</span> v === <span style="font-style: italic;">'number'</span>
-       &amp;&amp; v &lt; 10)
-        E.a = v
-    }
+  <span style="font-weight: bold;">return</span> {f,
+    E: {
+      set a(v) {
+        <span style="font-weight: bold;">if</span> (<span style="font-weight: bold;">typeof</span> v === <span style="font-style: italic;">'number'</span> &amp;&amp; v &lt; 10)
+          E.a = v
+      }
   }}
 }())
 
@@ -9449,11 +9449,11 @@ m.f() <span style="font-weight: bold; font-style: italic;">//</span><span style=
 
 <p>
 De cette façon, on retrouve une garantie: <code>m.f</code> renverra toujours un nombre plus
-petit que 10.  Mais ce faisant, on perd en flexibilité: dès lors qu’on ajoute
-une contrainte, comme <code>a &lt; 10</code>, la négation de cette contrainte n’est plus un
-cas possible pour le programme.  Chaque contrainte restreint le programme, et
-assure ainsi des garanties supplémentaires, mais chaque contrainte exclut
-également des possibilités.
+petit que 10.  Mais en échange, on perd en flexibilité, puisque <code>a</code> doit obéir à
+cette contrainte.  Dès lors qu’on ajoute une contrainte, comme <code>a &lt; 10</code>, la
+négation de cette contrainte n’est plus un cas possible pour le programme.
+Chaque contrainte restreint le programme, et assure ainsi des garanties
+supplémentaires, mais chaque contrainte exclut également des possibilités.
 </p>
 
 <div class="side-figure">
@@ -9461,52 +9461,180 @@ assure ainsi des garanties supplémentaires, mais chaque contrainte exclut
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir ses valeurs <i>possibles</i>, c’est aussi définir les valeurs qui ne le seront plus.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir l’ensemble de ses valeurs <i>possibles</i>, c’est aussi définir l’ensemble des valeurs <i>impossibles</i>.</figcaption>
 </figure>
 
 </div>
+
+<p>
+Si on ne peut pas complètement réconcilier la flexibilité dynamique et la
+garantie statique, on peut <i>choisir</i> le compromis entre ces deux extrêmes.  Il y
+a toute une dimension entre le motif module, qui fixe les définitions, et
+l’utilisation de <code>with</code> dans le module, qui permet de les changer.  C’est au
+programmeur de choisir le compromis le mieux adapté au problème.
+</p>
+
+<hr >
+
+<p>
+Il y a d’autres façons, plus évidentes, d’ouvrir le module.  Pour commencer,
+puisqu’on cherche à briser la protection offerte par la fonction anonyme,
+pourquoi ne pas l’enlever?  Et définir nos fonctions directement à la racine:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
+
+g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+</pre>
+</div>
+
+<p>
+Ainsi, on peut redéfinir les fonctions et les valeurs comme on le souhaite, et
+même dans des fichiers séparés, puisque toutes définitions résident dans le même
+environnement.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a }
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x) }
+
+g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+
+<span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> 2 }
+g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+</pre>
+</div>
+
+<p>
+Mais utiliser <code>with</code> pour ouvrir le module n’anéantit pas toutes les protections
+offertes par la FIA.  Avec <code>with</code>, on bénéficie encore de l’espace de nommage
+fourni par la fonction: toutes les définitions sont exportées dans un objet <code>m</code>,
+ou <code>Narcissus.interpreter</code>, ce qui réduit les chances d’une redéfinition
+accidentelle.  Si on met toutes les définitions à la racine, alors on perd cet
+avantage.
+</p>
+
+<p>
+On peut utiliser un objet pour protéger les définitions mais garder la
+possibilité de les modifier:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = {
+  a: 1,
+  f(x) { <span style="font-weight: bold;">return</span> x + m.a },
+  g(x) { <span style="font-weight: bold;">return</span> m.f(x) },
+}
+
+m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 1</span>
+
+m.f = <span style="font-weight: bold;">function</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> 2 }
+m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="font-weight: bold; font-style: italic;">: 2</span>
+</pre>
+</div>
+
+<p>
+Ça demande de toujours préfixer les références aux définitions du module par
+l’identifiant de l’objet (ici, <code>m</code>).  Pour cet exemple, ça ne fait que deux
+caractères en plus.  Mais pour modifier un module existant, comme Narcissus, il
+faudrait préfixer des centaines de références.  Et cette tâche ne peut pas être
+automatisée à tout coup, puisque le langage nous permet d’accéder à des
+références indirectement (<code>m["f"]</code>).  C’est donc une solution moins pratique que
+de juste ajouter <code>with</code> autour du code.
+</p>
+
+<p>
+Une autre solution, plus classique, serait de commencer par établir les points
+d’extension nécessaires pour les différentes analyses qu’on envisage d’utiliser
+(la fonction <code>execute</code>, par exemple), puis de rajouter un mécanismes explicite
+d’appel aux analyses quand l’interpréteur entre dans ces points.  On pourrait
+utiliser des <i>hooks</i>, ou le patron Observateur, ou encore accepter un Visiteur;
+les trois méthodes permettent d’appeler du code extérieur au module à un moment
+précis du flot d’exécution.
+</p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls15.svg" alt="dls15.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;31&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C’est le code extérieur au module qui s’ajoute dans cette liste.</figcaption>
+</figure>
+
+</div>
+
+<p>
+Avec des <i>hooks</i>, ou un Observateur, il faut rajouter du code à l’intérieur du
+module, à tous les endroits où du code externe voudrait s’insérer, pour appeler
+<i>explicitement</i> soit une liste de fonctions, soit une liste d’observateurs.  Le
+code externe doit à son tour déclarer quelles fonctions ou quel observateur il
+souhaite ajouter dans l’interpréteur.  Le transfert de contrôle est explicite:
+il suffit de suivre le code dans l’interpréteur pour voir les appels à des
+<i>hooks</i>, ou une levée d’événements pour des observateurs.  L’inconvénient est
+d’avoir à identifier les endroits qui peuvent intéresser du code externe, et
+d’ajouter des <i>hooks</i> explicitement dans le code pour chacun d’eux.
+</p>
+
+<p>
+On utilise généralement ces techniques pour appeler du code qui <i>ne change pas</i>
+le flot de contrôle du module.  Une fonction appelée par un <i>hook</i> n’effectue
+que des effets de bord (affichage sur la sortie standard), ou modifie des
+valeurs de son propre module; le processus de l’interpréteur n’est pas impacté.
+Ce serait donc une technique suffisante pour implémenter l’analyse de trace ou
+d’environnement, qui ne font qu'observer la descente récursive de
+l’interpréteur, mais l’analyse multi-facettes et l’analyse de flot requièrent de
+changer le résultat.
+</p>
+
+<p>
+Le patron Visiteur permettrait de changer le résultat de l’interpréteur.  Si on
+suit ce patron, il faut réécrire l’interpréteur pour appeler, pour chaque nœud
+de l’AST, la méthode correspondante sur objet <i>visiteur</i>.  Cet objet est passé à
+l’interpréteur avant l’évaluation de code, et c’est ce visiteur qui contient la
+logique d’évaluation.  L’évaluation du code JavaScript standard devrait donc
+être mise dans un tel objet, pour obéir à l’interface du visiteur.  Et les
+analyses pourraient alors également obéir à cette interface, et réutiliser le
+code de l’évaluation standard par simple délégation.
+</p>
+
+<p>
+Ici encore, le flot de contrôle est explicite: toute la logique est déléguée au
+visiteur.  L’inconvénient majeur est qu’il faut d’abord établir une interface de
+visiteur qui convient à tous les besoins des différentes analyses, puis
+complètement réécrire l’interpréteur pour se conformer à cette interface.
+</p>
+
+<p>
+Toutes ces techniques demandent donc de modifier l’interpréteur en profondeur,
+alors qu’on a vu que <code>with</code> suffisait pour redéfinir n’importe quelle fonction
+de l’interpréteur, sans avoir à définir d’interface au préalable, et en
+n’ajoutant que quelques lignes.
+</p>
+
+<p>
+Une différence majeure néanmoins est que si le module utilise un hook, un
+observateur, ou un visiteur, alors les extensions de ce module (les analyses
+dans le cas de l’interpréteur) doivent nécessairement passer par l’interface
+d’extension définies par l’interpréteur.  Avec <code>with</code>, ce sont les extensions
+elles-mêmes qui peuvent redéfinir n’importe quelle fonction du module; comme si
+l’interface d’extension était totale, mais sans avoir à le déclarer
+explicitement.
+</p>
+
+<hr >
 </div>
 </div>
 
 <div id="outline-container-orgheadline144" class="outline-3">
 <h3 id="orgheadline144"><span class="section-number-3">8.5</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-5">
-<p>
-Comparison to putting all bindings in global scope, rather than using this
-pattern:
-</p>
-<ul class="org-ul">
-<li>global scope needs manual namespacing (i.e., prefixing bindings).</li>
-<li>overriding is easy, canceling an override needs to manually keep track of the
-overridden.</li>
-<li>open scope maintains an unalterable copy of the original bindings in module
-scope.</li>
-<li>in Narcissus, global scope would require a tedious rewriting.  Open scope only
-requires additions at the top and bottom of the file (local changes, easily
-removable).</li>
-</ul>
-
-<p>
-Why not refactor the interpreter and leave holes, inversion of control style?
-</p>
-<ul class="org-ul">
-<li>cleaner (more common), no need for weird <code>with</code> tricks</li>
-<li>allow for describing the instrumentation in its own file</li>
-</ul>
-<p>
-Yes but:
-</p>
-<ul class="org-ul">
-<li>need to refactor the interpreter heavily</li>
-<li>indirection of control flow complexifies clarity of interpreter code</li>
-<li>can’t design an API for unknown requirements</li>
-<li><code>with</code> is quite harmless if understood and used properly</li>
-<li>burden of instrumentation in open scope is the sole responsability of</li>
-</ul>
-<p>
-instrumentation programmer, not shared by interpreter writer
-</p>
-
 <p>
 Why not use AOP?
 </p>
@@ -10014,7 +10142,7 @@ Thomas&nbsp;H. Austin, Tim Disney, and Cormac Flanagan.
  In <em>Proceedings of the 26th Annual ACM SIGPLAN Conference on
   Object-Oriented Programming, Systems, Languages, and Applications, OOPSLA
   2011, part of SPLASH 2011, Portland, OR, USA, October 22 - 27, 2011</em>, pages
-  921-938, 2011.
+  921--938, 2011.
 [&nbsp;<a href="http://dx.doi.org/10.1145/2048066.2048136">DOI</a>&nbsp;]
 
 </td>
@@ -10028,7 +10156,7 @@ Thomas&nbsp;H. Austin, Tim Disney, and Cormac Flanagan.
 <td class="bibtexitem">
 Thomas&nbsp;H. Austin and Cormac Flanagan.
  Multiple facets for dynamic information flow.
- In <em>POPL</em>, pages 165-178, 2012.
+ In <em>POPL</em>, pages 165--178, 2012.
 
 </td>
 </tr>
@@ -10042,7 +10170,7 @@ Thomas&nbsp;H. Austin and Cormac Flanagan.
 Ivica Aracic, Vaidas Gasiunas, Mira Mezini, and Klaus Ostermann.
  An overview of caesarj.
  <em>Transactions on Aspect-Oriented Software Development</em>, pages
-  135-173, 2006.
+  135--173, 2006.
 [&nbsp;<a href="http://dx.doi.org/10.1007/11687061_5">DOI</a>&nbsp;]
 
 </td>
@@ -10056,7 +10184,7 @@ Ivica Aracic, Vaidas Gasiunas, Mira Mezini, and Klaus Ostermann.
 <td class="bibtexitem">
 Sven Apel and Christian Kästner.
  Virtual separation of concerns - A second chance for preprocessors.
- <em>Journal of Object Technology</em>, 8(6):59-78, 2009.
+ <em>Journal of Object Technology</em>, 8(6):59--78, 2009.
 [&nbsp;<a href="http://dx.doi.org/10.5381/jot.2009.8.6.c5">DOI</a>&nbsp;]
 
 </td>
@@ -10071,7 +10199,7 @@ Sven Apel and Christian Kästner.
 Sven Apel, Christian Kästner, and Christian Lengauer.
  Language-independent and automated software composition: The
   featurehouse experience.
- <em>IEEE Trans. Software Eng.</em>, 39(1):63-79, 2013.
+ <em>IEEE Trans. Software Eng.</em>, 39(1):63--79, 2013.
 [&nbsp;<a href="http://dx.doi.org/10.1109/TSE.2011.120">DOI</a>&nbsp;]
 
 </td>
@@ -10085,7 +10213,7 @@ Sven Apel, Christian Kästner, and Christian Lengauer.
 <td class="bibtexitem">
 Jonathan Aldrich.
  Open modules: Modular reasoning about advice.
- In <em>ECOOP</em>, pages 144-168, 2005.
+ In <em>ECOOP</em>, pages 144--168, 2005.
 [&nbsp;<a href="http://dx.doi.org/10.1007/11531142_7">DOI</a>&nbsp;]
 
 </td>
@@ -10143,7 +10271,7 @@ Andrew&nbsp;P. Black.
 Günther Blaschek.
  Type-safe object-oriented programming with prototypes - the concepts
   of omega.
- <em>Structured Programming</em>, 12(4):217-226, 1991.
+ <em>Structured Programming</em>, 12(4):217--226, 1991.
 
 </td>
 </tr>
@@ -10183,7 +10311,7 @@ Azad Bolour.
 Alan Borning.
  Classes versus prototypes in object-oriented languages.
  In <em>Proceedings of the Fall Joint Computer Conference, November
-  2-6, 1986, Dallas, Texas, USA</em>, pages 36-40, 1986.
+  2-6, 1986, Dallas, Texas, USA</em>, pages 36--40, 1986.
 
 </td>
 </tr>
@@ -10199,7 +10327,7 @@ Abhishek Bichhawat, Vineet Rajani, Deepak Garg, and Christian Hammer.
  In <em>Principles of Security and Trust - Third International
   Conference, POST 2014, Held as Part of the European Joint Conferences on
   Theory and Practice of Software, ETAPS 2014, Grenoble, France, April 5-13,
-  2014, Proceedings</em>, pages 159-178, 2014.
+  2014, Proceedings</em>, pages 159--178, 2014.
 [&nbsp;<a href="http://dx.doi.org/10.1007/978-3-642-54792-8_9">DOI</a>&nbsp;]
 
 </td>
@@ -10213,7 +10341,7 @@ Abhishek Bichhawat, Vineet Rajani, Deepak Garg, and Christian Hammer.
 <td class="bibtexitem">
 Don&nbsp;S. Batory, Jacob&nbsp;Neal Sarvela, and Axel Rauschmayer.
  Scaling step-wise refinement.
- <em>IEEE Trans. Software Eng.</em>, 30(6):355-371, 2004.
+ <em>IEEE Trans. Software Eng.</em>, 30(6):355--371, 2004.
 [&nbsp;<a href="http://dx.doi.org/10.1109/TSE.2004.23">DOI</a>&nbsp;]
 
 </td>
@@ -10242,7 +10370,7 @@ Shigeru Chiba.
  A metaobject protocol for C++.
  In <em>OOPSLA'95, Proceedings of the Tenth Annual Conference on
   Object-Oriented Programming Systems, Languages, and Applications, Austin,
-  Texas, USA, October 15-19, 1995.</em>, pages 285-299, 1995.
+  Texas, USA, October 15-19, 1995.</em>, pages 285--299, 1995.
 [&nbsp;<a href="http://dx.doi.org/10.1145/217838.217868">DOI</a>&nbsp;]
 
 </td>
@@ -10258,7 +10386,7 @@ Craig Chambers and David Ungar.
  Making pure object-oriented languages practical.
  In <em>Conference on Object-Oriented Programming Systems, Languages,
   and Applications (OOPSLA'91), Sixth Annual Conference, Phoenix, Arizona, USA,
-  October 6-11, 1991, Proceedings.</em>, pages 1-15, 1991.
+  October 6-11, 1991, Proceedings.</em>, pages 1--15, 1991.
 [&nbsp;<a href="http://dx.doi.org/10.1145/117954.117955">DOI</a>&nbsp;]
 
 </td>
@@ -10274,7 +10402,7 @@ Premkumar&nbsp;T. Devanbu, Robert Balzer, Don&nbsp;S. Batory, Gregor Kiczales, J
   Launchbury, David&nbsp;Lorge Parnas, and Peri&nbsp;L. Tarr.
  Modularity in the new millenium: A panel summary.
  In <em>Proceedings of the 25th International Conference on Software
-  Engineering, May 3-10, 2003, Portland, Oregon, USA</em>, pages 723-725, 2003.
+  Engineering, May 3-10, 2003, Portland, Oregon, USA</em>, pages 723--725, 2003.
 
 </td>
 </tr>
@@ -10287,7 +10415,7 @@ Premkumar&nbsp;T. Devanbu, Robert Balzer, Don&nbsp;S. Batory, Gregor Kiczales, J
 <td class="bibtexitem">
 Edsger&nbsp;W. Dijkstra.
  Letters to the editor: go to statement considered harmful.
- <em>Communications of the ACM</em>, 11(3):147-148, 1968.
+ <em>Communications of the ACM</em>, 11(3):147--148, 1968.
 [&nbsp;<a href="http://dx.doi.org/10.1145/362929.362947">DOI</a>&nbsp;]
 
 </td>
@@ -10316,7 +10444,7 @@ Christophe Dony, Jacques Malenfant, and Daniel Bardou.
  Les langages à prototypes.
  In Roland Ducournau, Jérôme Euzenat, Gérald Masini, and Amedeo
   Napoli, editors, <em>Langages et modèles à objets</em>, volume&nbsp;19 of <em>
-  Collection Didactique</em>, chapter&nbsp;8, pages 227-256. INRIA, July 1998.
+  Collection Didactique</em>, chapter&nbsp;8, pages 227--256. INRIA, July 1998.
 
 </td>
 </tr>
@@ -10330,7 +10458,7 @@ Christophe Dony, Jacques Malenfant, and Daniel Bardou.
 Rémi Douence and Mario Südholt.
  A generic reification technique for object-oriented reflective
   languages.
- <em>Higher-Order and Symbolic Computation</em>, 14(1):7-34, 2001.
+ <em>Higher-Order and Symbolic Computation</em>, 14(1):7--34, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1023/A:1011549115358">DOI</a>&nbsp;]
 
 </td>
@@ -10347,7 +10475,7 @@ Jim Dowling, Tilman Schäfer, Vinny Cahill, Peter Haraszti, and Barry Redmond.
   A case study driven evaluation.
  In <em>Reflection and Software Engineering, Papers from OORaSE 1999,
   1st OOPSLA Workshop on Reflection and Software Engineering, Denver, CO,
-  USA, November 1999</em>, pages 169-188, 1999.
+  USA, November 1999</em>, pages 169--188, 1999.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45046-7_10">DOI</a>&nbsp;]
 
 </td>
@@ -10363,7 +10491,7 @@ Bruno&nbsp;C. d.&nbsp;S.&nbsp;Oliveira and William&nbsp;R. Cook.
  Extensibility for the masses - practical extensibility with object
   algebras.
  In <em>ECOOP 2012 - Object-Oriented Programming - 26th European
-  Conference, Beijing, China, June 11-16, 2012. Proceedings</em>, pages 2-27,
+  Conference, Beijing, China, June 11-16, 2012. Proceedings</em>, pages 2--27,
   2012.
 [&nbsp;<a href="http://dx.doi.org/10.1007/978-3-642-31057-7_2">DOI</a>&nbsp;]
 
@@ -10395,7 +10523,7 @@ Douglas&nbsp;C. Engelbart and William&nbsp;K. English.
  A research center for augmenting human intellect.
  In <em>American Federation of Information Processing Societies:
   Proceedings of the AFIPS '68 Fall Joint Computer Conference, December 9-11,
-  1968, San Francisco, California, USA - Part I</em>, pages 395-410, 1968.
+  1968, San Francisco, California, USA - Part I</em>, pages 395--410, 1968.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1476589.1476645">DOI</a>&nbsp;]
 
 </td>
@@ -10465,7 +10593,7 @@ Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides.
 Bernard&nbsp;S. Greenberg.
  Prose and CONS.
  In <em>Proceedings of the 1980 ACM Conference on LISP and
-  Functional Programming</em>, pages 6-12, 1980.
+  Functional Programming</em>, pages 6--12, 1980.
 
 </td>
 </tr>
@@ -10481,7 +10609,7 @@ William&nbsp;G. Griswold.
   transparency.
  In <em>Metalevel Architectures and Separation of Crosscutting
   Concerns, Third International Conference, REFLECTION 2001, Kyoto, Japan,
-  September 25-28, 2001, Proceedings</em>, pages 250-265, 2001.
+  September 25-28, 2001, Proceedings</em>, pages 250--265, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45429-2_17">DOI</a>&nbsp;]
 
 </td>
@@ -10495,7 +10623,7 @@ William&nbsp;G. Griswold.
 <td class="bibtexitem">
 Heikki Halme.
  GNU emacs as a dynamically extensible programming environment.
- <em>Softw., Pract. Exper.</em>, 18(10):999-1009, 1988.
+ <em>Softw., Pract. Exper.</em>, 18(10):999--1009, 1988.
 [&nbsp;<a href="http://dx.doi.org/10.1002/spe.4380181006">DOI</a>&nbsp;]
 
 </td>
@@ -10509,7 +10637,7 @@ Heikki Halme.
 <td class="bibtexitem">
 Anna Hester, Renato Borges, and Roberto Ierusalimschy.
  Building flexible and extensible web applications with lua.
- <em>Journal of Universal Computer Science</em>, 4(9):748-762, 1998.
+ <em>Journal of Universal Computer Science</em>, 4(9):748--762, 1998.
 [&nbsp;<a href="http://dx.doi.org/10.3217/jucs-004-09-0748">DOI</a>&nbsp;]
 
 </td>
@@ -10523,7 +10651,7 @@ Anna Hester, Renato Borges, and Roberto Ierusalimschy.
 <td class="bibtexitem">
 Daniel&nbsp;C. Halbert and Patrick&nbsp;D. O'Brien.
  Using types and inheritance in object-oriented programming.
- <em>IEEE Software</em>, 4(5):71-79, 1987.
+ <em>IEEE Software</em>, 4(5):71--79, 1987.
 [&nbsp;<a href="http://dx.doi.org/10.1109/MS.1987.231776">DOI</a>&nbsp;]
 
 </td>
@@ -10539,7 +10667,7 @@ Christian Hofer and Klaus Ostermann.
  On the relation of aspects and monads.
  In <em>Proceedings of the 6th Workshop on Foundations of
   Aspect-Oriented Languages, FOAL 2007, Vancouver, British Columbia, Canada,
-  March 13, 2007</em>, pages 27-33, 2007.
+  March 13, 2007</em>, pages 27--33, 2007.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1233833.1233838">DOI</a>&nbsp;]
 
 </td>
@@ -10553,7 +10681,7 @@ Christian Hofer and Klaus Ostermann.
 <td class="bibtexitem">
 Brent Hailpern and Peri&nbsp;L. Tarr.
  Model-driven development: The good, the bad, and the ugly.
- <em>IBM Systems Journal</em>, 45(3):451-462, 2006.
+ <em>IBM Systems Journal</em>, 45(3):451--462, 2006.
 [&nbsp;<a href="http://dx.doi.org/10.1147/sj.453.0451">DOI</a>&nbsp;]
 
 </td>
@@ -10567,7 +10695,7 @@ Brent Hailpern and Peri&nbsp;L. Tarr.
 <td class="bibtexitem">
 Roberto Ierusalimschy, Luiz&nbsp;Henrique de&nbsp;Figueiredo, and Waldemar&nbsp;Celes Filho.
  Lua-an extensible extension language.
- <em>Software: Practice and Experence</em>, 26(6):635-652, 1996.
+ <em>Software: Practice and Experence</em>, 26(6):635--652, 1996.
 [&nbsp;<a href="http://dx.doi.org/10.1002/(SICI)1097-024X(199606)26:6<635::AID-SPE26>3.0.CO;2-P">DOI</a>&nbsp;]
 
 </td>
@@ -10583,7 +10711,7 @@ Roberto Ierusalimschy, Luiz&nbsp;Henrique de&nbsp;Figueiredo, and Waldemar&nbsp;
  The evolution of lua.
  In Barbara&nbsp;G. Ryder and Brent Hailpern, editors, <em>Proceedings of
   the Third ACM SIGPLAN History of Programming Languages Conference
-  (HOPL-III), San Diego, California, USA, 9-10 June 2007</em>, pages 1-26. ACM,
+  (HOPL-III), San Diego, California, USA, 9-10 June 2007</em>, pages 1--26. ACM,
   2007.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1238844.1238846">DOI</a>&nbsp;]
 
@@ -10600,7 +10728,7 @@ Daniel H.&nbsp;H. Ingalls.
  The Smalltalk-76 Programming System.
  In <em>Conference Record of the Fifth Annual ACM Symposium on
   Principles of Programming Languages, Tucson, Arizona, USA, January 1978</em>,
-  pages 9-16, 1978.
+  pages 9--16, 1978.
 [&nbsp;<a href="http://dx.doi.org/10.1145/512760.512762">DOI</a>&nbsp;]
 
 </td>
@@ -10629,7 +10757,7 @@ Neil&nbsp;D. Jones and René&nbsp;Rydhof Hansen.
   transformation for the working programmer.
  In <em>Programming Languages and Systems, 5th Asian Symposium,
   APLAS 2007, Singapore, November 29-December 1, 2007, Proceedings</em>, pages
-  303-318, 2007.
+  303--318, 2007.
 [&nbsp;<a href="http://dx.doi.org/10.1007/978-3-540-76637-7_21">DOI</a>&nbsp;]
 
 </td>
@@ -10644,7 +10772,7 @@ Neil&nbsp;D. Jones and René&nbsp;Rydhof Hansen.
 Alan&nbsp;C. Kay.
  The early history of smalltalk.
  In John A.&nbsp;N. Lee and Jean&nbsp;E. Sammet, editors, <em>History of
-  Programming Languages Conference (HOPL-II)</em>, pages 69-95. ACM, 1993.
+  Programming Languages Conference (HOPL-II)</em>, pages 69--95. ACM, 1993.
 [&nbsp;<a href="http://dx.doi.org/10.1145/154766.155364">DOI</a>&nbsp;]
 
 </td>
@@ -10674,7 +10802,7 @@ Gregor Kiczales, Erik Hilsdale, Jim Hugunin, Mik Kersten, Jeffrey Palm, and
  An overview of aspectj.
  In <em>ECOOP 2001 - Object-Oriented Programming, 15th European
   Conference, Budapest, Hungary, June 18-22, 2001, Proceedings</em>, pages
-  327-353, 2001.
+  327--353, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45337-7_18">DOI</a>&nbsp;]
 
 </td>
@@ -10688,7 +10816,7 @@ Gregor Kiczales, Erik Hilsdale, Jim Hugunin, Mik Kersten, Jeffrey Palm, and
 <td class="bibtexitem">
 Gregor Kiczales.
  Beyond the black box: Open implementation.
- <em>IEEE Software</em>, 13(1):8-11, 1996.
+ <em>IEEE Software</em>, 13(1):8--11, 1996.
 [&nbsp;<a href="http://dx.doi.org/10.1109/52.476280">DOI</a>&nbsp;]
 
 </td>
@@ -10705,7 +10833,7 @@ Gregor Kiczales, John Lamping, Cristina&nbsp;Videira Lopes, Chris Maeda, Anurag
  Open implementation design guidelines.
  In <em>Pulling Together, Proceedings of the 19th International
   Conference on Software Engineering, Boston, Massachusetts, USA, May 17-23,
-  1997.</em>, pages 481-490, 1997.
+  1997.</em>, pages 481--490, 1997.
 [&nbsp;<a href="http://dx.doi.org/10.1145/253228.253431">DOI</a>&nbsp;]
 
 </td>
@@ -10720,7 +10848,7 @@ Gregor Kiczales, John Lamping, Cristina&nbsp;Videira Lopes, Chris Maeda, Anurag
 Gregor Kiczales, John Lamping, Anurag Mendhekar, Chris Maeda, Cristina&nbsp;Videira
   Lopes, Jean-Marc Loingtier, and John Irwin.
  Aspect-oriented programming.
- In <em>ECOOP</em>, pages 220-242, 1997.
+ In <em>ECOOP</em>, pages 220--242, 1997.
 [&nbsp;<a href="http://dx.doi.org/10.1007/BFb0053381">DOI</a>&nbsp;]
 
 </td>
@@ -10734,7 +10862,7 @@ Gregor Kiczales, John Lamping, Anurag Mendhekar, Chris Maeda, Cristina&nbsp;Vide
 <td class="bibtexitem">
 Donald&nbsp;E. Knuth.
  Structured programming with GO TO statements.
- <em>ACM Comput. Surv.</em>, 6(4):261-301, 1974.
+ <em>ACM Comput. Surv.</em>, 6(4):261--301, 1974.
 [&nbsp;<a href="http://dx.doi.org/10.1145/356635.356640">DOI</a>&nbsp;]
 
 </td>
@@ -10748,7 +10876,7 @@ Donald&nbsp;E. Knuth.
 <td class="bibtexitem">
 Donald&nbsp;E. Knuth.
  Literate programming.
- <em>The Computer Journal</em>, 27(2):97-111, 1984.
+ <em>The Computer Journal</em>, 27(2):97--111, 1984.
 [&nbsp;<a href="http://dx.doi.org/10.1093/comjnl/27.2.97">DOI</a>&nbsp;]
 
 </td>
@@ -10764,7 +10892,7 @@ Matthias Keil and Peter Thiemann.
  Efficient dynamic access analysis using javascript proxies.
  In <em>DLS'13, Proceedings of the 9th Symposium on Dynamic
   Languages, part of SPLASH 2013, Indianapolis, IN, USA, October 26-31,
-  2013</em>, pages 49-60, 2013.
+  2013</em>, pages 49--60, 2013.
 [&nbsp;<a href="http://dx.doi.org/10.1145/2508168.2508176">DOI</a>&nbsp;]
 
 </td>
@@ -10797,7 +10925,7 @@ Henry Lieberman.
   oriented systems.
  In <em>Conference on Object-Oriented Programming Systems, Languages,
   and Applications (OOPSLA'86), Portland, Oregon, Proceedings.</em>, pages
-  214-223, 1986.
+  214--223, 1986.
 [&nbsp;<a href="http://dx.doi.org/10.1145/28697.28718">DOI</a>&nbsp;]
 
 </td>
@@ -10813,7 +10941,7 @@ Jeffrey&nbsp;R. Lewis, John Launchbury, Erik Meijer, and Mark Shields.
  Implicit parameters: Dynamic scoping with static types.
  In <em>POPL 2000, Proceedings of the 27th ACM SIGPLAN-SIGACT
   Symposium on Principles of Programming Languages, Boston, Massachusetts, USA,
-  January 19-21, 2000</em>, pages 108-118, 2000.
+  January 19-21, 2000</em>, pages 108--118, 2000.
 [&nbsp;<a href="http://dx.doi.org/10.1145/325694.325708">DOI</a>&nbsp;]
 
 </td>
@@ -10842,7 +10970,7 @@ Bruce&nbsp;J. MacLennan.
 John McCarthy.
  Recursive functions of symbolic expressions and their computation by
   machine, part I.
- <em>Communications of the ACM</em>, 3(4):184-195, 1960.
+ <em>Communications of the ACM</em>, 3(4):184--195, 1960.
 [&nbsp;<a href="http://dx.doi.org/10.1145/367177.367199">DOI</a>&nbsp;]
 
 </td>
@@ -10874,7 +11002,7 @@ Florent Marchand&nbsp;de Kerchove, Jacques Noyé, and Mario Südholt.
  Towards modular instrumentation of interpreters in javascript.
  In <em>Companion Proceedings of the 14th International Conference on
   Modularity, MODULARITY 2015, Fort Collins, CO, USA, March 16 - 19, 2015</em>,
-  pages 64-69, 2015.
+  pages 64--69, 2015.
 [&nbsp;<a href="http://dx.doi.org/10.1145/2735386.2736753">DOI</a>&nbsp;]
 
 </td>
@@ -10932,7 +11060,7 @@ Jacques Malenfant, M.&nbsp;Jacques, and F.-N. Demers.
 Hidehiko Masuhara and Gregor Kiczales.
  Modeling crosscutting in aspect-oriented mechanisms.
  In <em>ECOOP 2003 - Object-Oriented Programming, 17th European
-  Conference, Darmstadt, Germany, July 21-25, 2003, Proceedings</em>, pages 2-28,
+  Conference, Darmstadt, Germany, July 21-25, 2003, Proceedings</em>, pages 2--28,
   2003.
 [&nbsp;<a href="http://dx.doi.org/10.1007/978-3-540-45070-2_2">DOI</a>&nbsp;]
 
@@ -10947,7 +11075,7 @@ Hidehiko Masuhara and Gregor Kiczales.
 <td class="bibtexitem">
 Chris Maeda, Arthur Lee, Gail&nbsp;C. Murphy, and Gregor Kiczales.
  Open Implementation Analysis and Design.
- In <em>SSR</em>, pages 44-52, 1997.
+ In <em>SSR</em>, pages 44--52, 1997.
 [&nbsp;<a href="http://dx.doi.org/10.1145/258366.258383">DOI</a>&nbsp;]
 
 </td>
@@ -10977,7 +11105,7 @@ Mira Mezini and Klaus Ostermann.
  Integrating independent components with on-demand remodularization.
  In <em>Proceedings of the 2002 ACM SIGPLAN Conference on
   Object-Oriented Programming Systems, Languages and Applications, OOPSLA
-  2002, Seattle, Washington, USA, November 4-8, 2002.</em>, pages 52-67, 2002.
+  2002, Seattle, Washington, USA, November 4-8, 2002.</em>, pages 52--67, 2002.
 [&nbsp;<a href="http://dx.doi.org/10.1145/582419.582426">DOI</a>&nbsp;]
 
 </td>
@@ -10993,7 +11121,7 @@ Mira Mezini and Klaus Ostermann.
  Variability management with feature-oriented programming and aspects.
  In <em>Proceedings of the 12th ACM SIGSOFT International
   Symposium on Foundations of Software Engineering, 2004, Newport Beach, CA,
-  USA, October 31 - November 6, 2004</em>, pages 127-136, 2004.
+  USA, October 31 - November 6, 2004</em>, pages 127--136, 2004.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1029894.1029915">DOI</a>&nbsp;]
 
 </td>
@@ -11009,7 +11137,7 @@ Ivan Moore.
  Automatic inheritance hierarchy restructuring and method refactoring.
  In <em>Proceedings of the 1996 ACM SIGPLAN Conference on
   Object-Oriented Programming Systems, Languages &amp; Applications (OOPSLA
-  '96), San Jose, California, October 6-10, 1996.</em>, pages 235-250, 1996.
+  '96), San Jose, California, October 6-10, 1996.</em>, pages 235--250, 1996.
 [&nbsp;<a href="http://dx.doi.org/10.1145/236337.236361">DOI</a>&nbsp;]
 
 </td>
@@ -11023,7 +11151,7 @@ Ivan Moore.
 <td class="bibtexitem">
 Luc Moreau.
  A Syntactic Theory of Dynamic Binding.
- <em>Higher-Order and Symbolic Computation</em>, 11(3):233-279, 1998.
+ <em>Higher-Order and Symbolic Computation</em>, 11(3):233--279, 1998.
 [&nbsp;<a href="http://dx.doi.org/10.1023/A:1010087314987">DOI</a>&nbsp;]
 
 </td>
@@ -11062,7 +11190,7 @@ The narcissus meta-circular javascript interpreter.
 <td class="bibtexitem">
 Peter Naur.
  Programming as theory building.
- <em>Microprocessing and Microprogramming</em>, 15(5):253-261, 1985.
+ <em>Microprocessing and Microprogramming</em>, 15(5):253--261, 1985.
 
 </td>
 </tr>
@@ -11077,7 +11205,7 @@ James Noble.
  Visualising objects: Abstraction, encapsulation, aliasing, and
   ownership.
  In <em>Software Visualization, International Seminar Dagstuhl
-  Castle, Germany, May 20-25, 2001, Revised Lectures</em>, pages 58-72, 2001.
+  Castle, Germany, May 20-25, 2001, Revised Lectures</em>, pages 58--72, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45875-1_5">DOI</a>&nbsp;]
 
 </td>
@@ -11093,7 +11221,7 @@ Matthias Neubauer and Michael Sperber.
  Down with emacs lisp: Dynamic scope analysis.
  In <em>Proceedings of the Sixth ACM SIGPLAN International
   Conference on Functional Programming (ICFP '01), Firenze (Florence), Italy,
-  September 3-5, 2001.</em>, pages 38-49, 2001.
+  September 3-5, 2001.</em>, pages 38--49, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1145/507635.507642">DOI</a>&nbsp;]
 
 </td>
@@ -11109,7 +11237,7 @@ Klaus Ostermann, Paolo&nbsp;G. Giarrusso, Christian Kästner, and Tillmann Rende
  Revisiting information hiding: Reflections on classical and
   nonclassical modularity.
  In <em>ECOOP 2011 - Object-Oriented Programming - 25th European
-  Conference, Lancaster, UK, July 25-29, 2011 Proceedings</em>, pages 155-178,
+  Conference, Lancaster, UK, July 25-29, 2011 Proceedings</em>, pages 155--178,
   2011.
 [&nbsp;<a href="http://dx.doi.org/10.1007/978-3-642-22655-7_8">DOI</a>&nbsp;]
 
@@ -11139,7 +11267,7 @@ Martin Odersky and Matthias Zenger.
 <td class="bibtexitem">
 David&nbsp;Lorge Parnas.
  On the criteria to be used in decomposing systems into modules.
- <em>Communications of the ACM</em>, 15(12):1053-1058, 1972.
+ <em>Communications of the ACM</em>, 15(12):1053--1058, 1972.
 [&nbsp;<a href="http://dx.doi.org/10.1145/361598.361623">DOI</a>&nbsp;]
 
 </td>
@@ -11155,7 +11283,7 @@ David&nbsp;Lorge Parnas.
  Software engineering or methods for the multi - person construction
   of multi - version programs.
  In <em>Programming Methodology, 4th Informatik Symposium, IBM
-  Germany, Wildbad, September 25-27, 1974</em>, pages 225-235, 1974.
+  Germany, Wildbad, September 25-27, 1974</em>, pages 225--235, 1974.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-07131-8_28">DOI</a>&nbsp;]
 
 </td>
@@ -11169,7 +11297,7 @@ David&nbsp;Lorge Parnas.
 <td class="bibtexitem">
 David&nbsp;Lorge Parnas.
  Why software jewels are rare.
- <em>IEEE Computer</em>, 29(2):57-60, 1996.
+ <em>IEEE Computer</em>, 29(2):57--60, 1996.
 [&nbsp;<a href="http://dx.doi.org/10.1109/2.485847">DOI</a>&nbsp;]
 
 </td>
@@ -11185,7 +11313,7 @@ Thomas F.&nbsp;J.-M. Pasquier, Jean Bacon, and Brian Shand.
  Flowr: aspect oriented programming for information flow control in
   ruby.
  In <em>13th International Conference on Modularity, MODULARITY
-  '14, Lugano, Switzerland, April 22-26, 2014</em>, pages 37-48, 2014.
+  '14, Lugano, Switzerland, April 22-26, 2014</em>, pages 37--48, 2014.
 [&nbsp;<a href="http://dx.doi.org/10.1145/2577080.2577090">DOI</a>&nbsp;]
 
 </td>
@@ -11213,7 +11341,7 @@ Plato.
 Yoann Padioleau, Julia&nbsp;L. Lawall, and Gilles Muller.
  Understanding Collateral Evolution in Linux Device Drivers.
  In <em>Proceedings of the 2006 EuroSys Conference, Leuven, Belgium,
-  April 18-21, 2006</em>, pages 59-71, 2006.
+  April 18-21, 2006</em>, pages 59--71, 2006.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1217935.1217942">DOI</a>&nbsp;]
 
 </td>
@@ -11228,7 +11356,7 @@ Yoann Padioleau, Julia&nbsp;L. Lawall, and Gilles Muller.
 Yoann Padioleau, Julia&nbsp;L. Lawall, and Gilles Muller.
  Semantic patches.
  In <em>Proceedings of the Linux Symposium</em>, volume&nbsp;2, pages
-  107-118, 2007.
+  107--118, 2007.
 [&nbsp;<a href="https://www.kernel.org/doc/ols/2007/ols2007v2-pages-107-118.pdf">.pdf</a>&nbsp;]
 
 </td>
@@ -11256,7 +11384,7 @@ Christian Queinnec.
 Ramana Rao.
  Implementational reflection in silica.
  In <em>ECOOP'91 European Conference on Object-Oriented Programming,
-  Geneva, Switzerland, July 15-19, 1991, Proceedings</em>, pages 251-267, 1991.
+  Geneva, Switzerland, July 15-19, 1991, Proceedings</em>, pages 251--267, 1991.
 [&nbsp;<a href="http://dx.doi.org/10.1007/BFb0057026">DOI</a>&nbsp;]
 
 </td>
@@ -11271,7 +11399,7 @@ Ramana Rao.
 Barry Redmond and Vinny Cahill.
  Supporting unanticipated dynamic adaptation of application behaviour.
  In <em>ECOOP 2002 - Object-Oriented Programming, 16th European
-  Conference, Malaga, Spain, June 10-14, 2002, Proceedings</em>, pages 205-230,
+  Conference, Malaga, Spain, June 10-14, 2002, Proceedings</em>, pages 205--230,
   2002.
 
 </td>
@@ -11312,7 +11440,7 @@ s3c - online javascript editor with code evaluation.
 Walter&nbsp;R. Smith.
  Using a prototype-based language for user interface: The newton
   project's experience.
- In <em>OOPSLA</em>, pages 61-72, 1995.
+ In <em>OOPSLA</em>, pages 61--72, 1995.
 
 </td>
 </tr>
@@ -11326,7 +11454,7 @@ Walter&nbsp;R. Smith.
 Richard&nbsp;M. Stallman.
  EMACS The Extensible, Customizable Self-documenting Display Editor.
  In <em>Proceedings of the ACM SIGPLAN SIGOA Symposium on Text
-  Manipulation</em>, pages 147-156, 1981.
+  Manipulation</em>, pages 147--156, 1981.
 [&nbsp;<a href="http://dx.doi.org/10.1145/800209.806466">DOI</a>&nbsp;]
 
 </td>
@@ -11356,7 +11484,7 @@ Friedrich Steimann.
  The paradoxical success of aspect-oriented programming.
  In <em>Proceedings of the 21th Annual ACM SIGPLAN Conference on
   Object-Oriented Programming, Systems, Languages, and Applications, OOPSLA
-  2006, October 22-26, 2006, Portland, Oregon, USA</em>, pages 481-497, 2006.
+  2006, October 22-26, 2006, Portland, Oregon, USA</em>, pages 481--497, 2006.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1167473.1167514">DOI</a>&nbsp;]
 
 </td>
@@ -11372,7 +11500,7 @@ Randall&nbsp;B. Smith and David Ungar.
  Programming as an experience: The inspiration for self.
  In <em>ECOOP'95 - Object-Oriented Programming, 9th European
   Conference, &Aring;rhus, Denmark, August 7-11, 1995, Proceedings</em>, pages
-  303-330, 1995.
+  303--330, 1995.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-49538-X_15">DOI</a>&nbsp;]
 
 </td>
@@ -11414,7 +11542,7 @@ Antero Taivalsaari.
 <td class="bibtexitem">
 Antero Taivalsaari.
  On the notion of object.
- <em>Journal of Systems and Software</em>, 21(1):3-16, 1993.
+ <em>Journal of Systems and Software</em>, 21(1):3--16, 1993.
 [&nbsp;<a href="http://dx.doi.org/10.1016/0164-1212(93)90013-N">DOI</a>&nbsp;]
 
 </td>
@@ -11429,7 +11557,7 @@ Antero Taivalsaari.
 Antero Taivalsaari.
  Classes versus prototypes: Some philosophical and historical
   observations.
- <em>Journal of Object-Oriented Programming</em>, 10(7):44-50, 1997.
+ <em>Journal of Object-Oriented Programming</em>, 10(7):44--50, 1997.
 
 </td>
 </tr>
@@ -11458,7 +11586,7 @@ Peri&nbsp;L. Tarr, Harold Ossher, William&nbsp;H. Harrison, and Stanley M.&nbsp;
   concerns.
  In <em>Proceedings of the 1999 International Conference on Software
   Engineering, ICSE' 99, Los Angeles, CA, USA, May 16-22, 1999.</em>, pages
-  107-119, 1999.
+  107--119, 1999.
 [&nbsp;<a href="http://dx.doi.org/10.1145/302405.302457">DOI</a>&nbsp;]
 
 </td>
@@ -11472,7 +11600,7 @@ Peri&nbsp;L. Tarr, Harold Ossher, William&nbsp;H. Harrison, and Stanley M.&nbsp;
 <td class="bibtexitem">
 David Ungar, Craig Chambers&nbsp;Bay-Wei Chang, and Urs Hölzle.
  Organizing programs without classes.
- <em>Lisp and Symbolic Computation</em>, 4(3):223-242, 1991.
+ <em>Lisp and Symbolic Computation</em>, 4(3):223--242, 1991.
 
 </td>
 </tr>
@@ -11485,7 +11613,7 @@ David Ungar, Craig Chambers&nbsp;Bay-Wei Chang, and Urs Hölzle.
 <td class="bibtexitem">
 David Ungar and Randall&nbsp;B. Smith.
  SELF: The power of simplicity.
- <em>Lisp and Symbolic Computation</em>, 4(3):187-205, 1991.
+ <em>Lisp and Symbolic Computation</em>, 4(3):187--205, 1991.
 
 </td>
 </tr>
@@ -11511,7 +11639,7 @@ Philip Wadler.
 <td class="bibtexitem">
 Niklaus Wirth.
  On the composition of well-structured programs.
- <em>ACM Computing Surveys</em>, 6(4):247-259, 1974.
+ <em>ACM Computing Surveys</em>, 6(4):247--259, 1974.
 [&nbsp;<a href="http://dx.doi.org/10.1145/356635.356639">DOI</a>&nbsp;]
 
 </td>
@@ -11525,7 +11653,7 @@ Niklaus Wirth.
 <td class="bibtexitem">
 Niklaus Wirth.
  On the design of programming languages.
- In <em>IFIP Congress</em>, pages 386-393, 1974.
+ In <em>IFIP Congress</em>, pages 386--393, 1974.
 
 </td>
 </tr>
@@ -11538,7 +11666,7 @@ Niklaus Wirth.
 <td class="bibtexitem">
 Niklaus Wirth.
  A plea for lean software.
- <em>IEEE Computer</em>, 28(2):64-68, 1995.
+ <em>IEEE Computer</em>, 28(2):64--68, 1995.
 [&nbsp;<a href="http://dx.doi.org/10.1109/2.348001">DOI</a>&nbsp;]
 
 </td>
@@ -11578,7 +11706,7 @@ Mario Wolczko.
 Éric Tanter.
  Beyond static and dynamic scope.
  In <em>Proceedings of the 5th Symposium on Dynamic Languages, DLS
-  2009, October 26, 2010, Orlando, Florida, USA</em>, pages 3-14, 2009.
+  2009, October 26, 2010, Orlando, Florida, USA</em>, pages 3--14, 2009.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1640134.1640137">DOI</a>&nbsp;]
 
 </td>
@@ -11607,7 +11735,7 @@ Mario Wolczko.
  Altering java semantics via bytecode manipulation.
  In <em>Generative Programming and Component Engineering, ACM
   SIGPLAN/SIGSOFT Conference, GPCE 2002, Pittsburgh, PA, USA, October 6-8,
-  2002, Proceedings</em>, pages 283-298, 2002.
+  2002, Proceedings</em>, pages 283--298, 2002.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45821-2_18">DOI</a>&nbsp;]
 
 </td>
@@ -11619,7 +11747,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-01 ven. 19:01 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.3))</p>
+<p class="created">Crée: 2016-04-12 Tue 18:40 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
