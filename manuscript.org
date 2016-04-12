@@ -7326,7 +7326,7 @@ désirables: a priori, on préférerait avoir un programme prévisible et
 reconfigurable à souhait.  Mais il est facile de voir que les deux buts sont
 antagonistes.
 
-Prennons une simple fermeture:
+Prenons une simple fermeture:
 
 #+BEGIN_SRC js
 const a = 1
@@ -7361,7 +7361,7 @@ modifier ~a~.  C’est donc que la garantie ne tient plus.  Tout ce qu’on peut
 dire de ~f~ c’est quelle retourne la valeur de ~a~ contenue dans ~E~, si elle
 existe, et 1 sinon.  Mais comme on ne sait rien de la valeur de ~a~ contenue
 dans ~E~, autant dire que ~f~ renvoie n’importe quoi.  On n’a plus aucune
-garantie, mais une flexibilité complète.
+garantie sur ~f~, mais une flexibilité complète pour la modifier.
 
 On pourrait retrouver certaines garanties.  Par exemple, si on veut que ~a~ soit
 toujours un nombre plus petit que 10, on peut protéger l’objet ~E~ et renvoyer
@@ -7374,12 +7374,12 @@ var m = (function() {
   var E = {}
   with (E) { function f() { return a } }
 
-  return {f,  E: {
-    set a(v) {
-      if (typeof v === 'number'
-       && v < 10)
-        E.a = v
-    }
+  return {f,
+    E: {
+      set a(v) {
+        if (typeof v === 'number' && v < 10)
+          E.a = v
+      }
   }}
 }())
 
@@ -7393,44 +7393,154 @@ m.f() //: 2
 #+END_SRC
 
 De cette façon, on retrouve une garantie: ~m.f~ renverra toujours un nombre plus
-petit que 10.  Mais ce faisant, on perd en flexibilité: dès lors qu’on ajoute
-une contrainte, comme ~a < 10~, la négation de cette contrainte n’est plus un
-cas possible pour le programme.  Chaque contrainte restreint le programme, et
-assure ainsi des garanties supplémentaires, mais chaque contrainte exclut
-également des possibilités.
+petit que 10.  Mais en échange, on perd en flexibilité, puisque ~a~ doit obéir à
+cette contrainte.  Dès lors qu’on ajoute une contrainte, comme ~a < 10~, la
+négation de cette contrainte n’est plus un cas possible pour le programme.
+Chaque contrainte restreint le programme, et assure ainsi des garanties
+supplémentaires, mais chaque contrainte exclut également des possibilités.
 
 #+BEGIN_side-figure
 #+CAPTION: Imposer une contrainte sur une variable, ce n’est pas
-#+CAPTION: seulement définir ses valeurs /possibles/, c’est aussi
-#+CAPTION: définir les valeurs qui ne le seront plus.
+#+CAPTION: seulement définir l’ensemble de ses valeurs /possibles/, c’est aussi
+#+CAPTION: définir l’ensemble des valeurs /impossibles/.
 [[file:img/dls14.svg]]
 #+END_side-figure
 
-# Le motif module impose des contraintes sur le code qu’il entoure: ce code ne
-# peut plus être modifié par du code extérieur.  Et ces
+Si on ne peut pas complètement réconcilier la flexibilité dynamique et la
+garantie statique, on peut /choisir/ le compromis entre ces deux extrêmes.  Il y
+a toute une dimension entre le motif module, qui fixe les définitions, et
+l’utilisation de ~with~ dans le module, qui permet de les changer.  C’est au
+programmeur de choisir le compromis le mieux adapté au problème.
+
+------
+
+Il y a d’autres façons, plus évidentes, d’ouvrir le module.  Pour commencer,
+puisqu’on cherche à briser la protection offerte par la fonction anonyme,
+pourquoi ne pas l’enlever?  Et définir nos fonctions directement à la racine:
+
+#+BEGIN_SRC js
+var a = 1
+function f(x) { return x + a }
+function g(x) { return f(x) }
+
+g(0) //: 1
+#+END_SRC
+
+Ainsi, on peut redéfinir les fonctions et les valeurs comme on le souhaite, et
+même dans des fichiers séparés, puisque toutes définitions résident dans le même
+environnement.
+
+#+BEGIN_SRC js
+var a = 1
+function f(x) { return x + a }
+function g(x) { return f(x) }
+
+g(0) //: 1
+
+function f(x) { return 2 }
+g(0) //: 2
+#+END_SRC
+
+Mais utiliser ~with~ pour ouvrir le module n’anéantit pas toutes les protections
+offertes par la FIA.  Avec ~with~, on bénéficie encore de l’espace de nommage
+fourni par la fonction: toutes les définitions sont exportées dans un objet ~m~,
+ou ~Narcissus.interpreter~, ce qui réduit les chances d’une redéfinition
+accidentelle.  Si on met toutes les définitions à la racine, alors on perd cet
+avantage.
+
+On peut utiliser un objet pour protéger les définitions mais garder la
+possibilité de les modifier:
+
+#+BEGIN_SRC js
+var m = {
+  a: 1,
+  f(x) { return x + m.a },
+  g(x) { return m.f(x) },
+}
+
+m.g(0) //: 1
+
+m.f = function(x) { return 2 }
+m.g(0) //: 2
+#+END_SRC
+
+Ça demande de toujours préfixer les références aux définitions du module par
+l’identifiant de l’objet (ici, ~m~).  Pour cet exemple, ça ne fait que deux
+caractères en plus.  Mais pour modifier un module existant, comme Narcissus, il
+faudrait préfixer des centaines de références.  Et cette tâche ne peut pas être
+automatisée à tout coup, puisque le langage nous permet d’accéder à des
+références indirectement (~m["f"]~).  C’est donc une solution moins pratique que
+de juste ajouter ~with~ autour du code.
+
+Une autre solution, plus classique, serait de commencer par établir les points
+d’extension nécessaires pour les différentes analyses qu’on envisage d’utiliser
+(la fonction ~execute~, par exemple), puis de rajouter un mécanismes explicite
+d’appel aux analyses quand l’interpréteur entre dans ces points.  On pourrait
+utiliser des /hooks/, ou le patron Observateur, ou encore accepter un Visiteur;
+les trois méthodes permettent d’appeler du code extérieur au module à un moment
+précis du flot d’exécution.
+
+#+BEGIN_side-figure
+#+CAPTION: Un /hook/ est juste un appel explicite à une liste de fonctions.
+#+CAPTION: C’est le code extérieur au module qui s’ajoute dans cette liste.
+[[file:img/dls15.svg]]
+#+END_side-figure
+
+Avec des /hooks/, ou un Observateur, il faut rajouter du code à l’intérieur du
+module, à tous les endroits où du code externe voudrait s’insérer, pour appeler
+/explicitement/ soit une liste de fonctions, soit une liste d’observateurs.  Le
+code externe doit à son tour déclarer quelles fonctions ou quel observateur il
+souhaite ajouter dans l’interpréteur.  Le transfert de contrôle est explicite:
+il suffit de suivre le code dans l’interpréteur pour voir les appels à des
+/hooks/, ou une levée d’événements pour des observateurs.  L’inconvénient est
+d’avoir à identifier les endroits qui peuvent intéresser du code externe, et
+d’ajouter des /hooks/ explicitement dans le code pour chacun d’eux.
+
+On utilise généralement ces techniques pour appeler du code qui /ne change pas/
+le flot de contrôle du module.  Une fonction appelée par un /hook/ n’effectue
+que des effets de bord (affichage sur la sortie standard), ou modifie des
+valeurs de son propre module; le processus de l’interpréteur n’est pas impacté.
+Ce serait donc une technique suffisante pour implémenter l’analyse de trace ou
+d’environnement, qui ne font qu'observer la descente récursive de
+l’interpréteur, mais l’analyse multi-facettes et l’analyse de flot requièrent de
+changer le résultat.
+
+Le patron Visiteur permettrait de changer le résultat de l’interpréteur.  Si on
+suit ce patron, il faut réécrire l’interpréteur pour appeler, pour chaque nœud
+de l’AST, la méthode correspondante sur objet /visiteur/.  Cet objet est passé à
+l’interpréteur avant l’évaluation de code, et c’est ce visiteur qui contient la
+logique d’évaluation.  L’évaluation du code JavaScript standard devrait donc
+être mise dans un tel objet, pour obéir à l’interface du visiteur.  Et les
+analyses pourraient alors également obéir à cette interface, et réutiliser le
+code de l’évaluation standard par simple délégation.
+
+Ici encore, le flot de contrôle est explicite: toute la logique est déléguée au
+visiteur.  L’inconvénient majeur est qu’il faut d’abord établir une interface de
+visiteur qui convient à tous les besoins des différentes analyses, puis
+complètement réécrire l’interpréteur pour se conformer à cette interface.
+
+Toutes ces techniques demandent donc de modifier l’interpréteur en profondeur,
+alors qu’on a vu que ~with~ suffisait pour redéfinir n’importe quelle fonction
+de l’interpréteur, sans avoir à définir d’interface au préalable, et en
+n’ajoutant que quelques lignes.
+
+Une différence majeure néanmoins est que si le module utilise un hook, un
+observateur, ou un visiteur, alors les extensions de ce module (les analyses
+dans le cas de l’interpréteur) doivent nécessairement passer par l’interface
+d’extension définies par l’interpréteur.  Avec ~with~, ce sont les extensions
+elles-mêmes qui peuvent redéfinir n’importe quelle fonction du module; comme si
+l’interface d’extension était totale, mais sans avoir à le déclarer
+explicitement.
+
+# This makes me think of Éric’s talk at AOSD’13, with joinpoint interfaces where
+# you can say at the class level which joinpoints are viewed by outside aspects,
+# and which joinpoints are hidden.
+# export * except a,b  (intension)
+# export c,d,f         (extension)
+
+-----
 
 ** Discussion
-Comparison to putting all bindings in global scope, rather than using this
-pattern:
-- global scope needs manual namespacing (i.e., prefixing bindings).
-- overriding is easy, canceling an override needs to manually keep track of the
-  overridden.
-- open scope maintains an unalterable copy of the original bindings in module
-  scope.
-- in Narcissus, global scope would require a tedious rewriting.  Open scope only
-  requires additions at the top and bottom of the file (local changes, easily
-  removable).
-
-Why not refactor the interpreter and leave holes, inversion of control style?
-- cleaner (more common), no need for weird ~with~ tricks
-- allow for describing the instrumentation in its own file
-Yes but:
-- need to refactor the interpreter heavily
-- indirection of control flow complexifies clarity of interpreter code
-- can’t design an API for unknown requirements
-- ~with~ is quite harmless if understood and used properly
-- burden of instrumentation in open scope is the sole responsability of
-instrumentation programmer, not shared by interpreter writer
 
 Why not use AOP?
 - well known solution

@@ -2465,6 +2465,21 @@ on the gh-pages branch:
 : cd html
 : git checkout gh-pages
 
+** [2016-04-12 Tue]
+***  Also forgot the Inkscape palette
+But I actually [[http://goinkscape.com/custom-color-palettes-in-inkscape/][found]] a better way than putting a GIMP-format palette of RGB
+values in ~.config/inkscape/palettes~: using swatches.
+
+For the fill (or stroke) color of an objet, instead of “Flat”, use “Swatch”.
+This defines a “swatch” with a unique identifier.  You can change the color of
+this swatch using the wheel or RGB values.
+
+Then, any new object can be assigned this swatch as fill or stroke color.  This
+is like an indexed color in GIFs, so you can just edit the swatch and change all
+the object that have it at once!
+
+And bonus, all swatches of the current document appear in the “Auto” palette.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
