@@ -113,39 +113,19 @@
      - [[#non-destructive-modification][Non-destructive modification]]
    - [[#passing-state][Passing state]]
    - [[#all-in-one][All in one]]
- - [[#translate-Étendre-un-interpréteur-par-manipulation-de-portée][TRANSLATE Étendre un interpréteur par manipulation de portée]]
-   - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l’instrumentation]]
+ - [[#Étendre-un-interpréteur-par-manipulation-de-portée][Étendre un interpréteur par manipulation de portée]]
+   - [[#stable-manipuler-la-portée-des-variables-pour-linstrumentation][STABLE Manipuler la portée des variables pour l’instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
      - [[#ouvrir-le-motif-module][Ouvrir le motif module]]
      - [[#disposer-les-environnements-en-couches][Disposer les environnements en couches]]
-   - [[#ouvrir-le-motif-module-en-javascript][Ouvrir le motif module en JavaScript]]
-   - [[#Étendre-narcissus-par-manipulation-de-portée][Étendre Narcissus par manipulation de portée]]
+   - [[#stable-ouvrir-le-motif-module-en-javascript][STABLE Ouvrir le motif module en JavaScript]]
+   - [[#stable-Étendre-narcissus-par-manipulation-de-portée][STABLE Étendre Narcissus par manipulation de portée]]
      - [[#ajouter-lanalyse-dévaluation-multi-facettes][Ajouter l’analyse d’évaluation multi-facettes]]
      - [[#ajouter-lanalyse-de-trace][Ajouter l’analyse de trace]]
      - [[#ajouter-lanalyse-flowr][Ajouter l’analyse FlowR]]
      - [[#ajouter-lanalyse-denvironnements][Ajouter l’analyse d’environnements]]
      - [[#Évaluation][Évaluation]]
-   - [[#discussion][Discussion]]
-   - [[#discussion][Discussion]]
-     - [[#insights][Insights]]
-     - [[#broad-applications][Broad applications]]
-     - [[#other-js-interpreters][Other JS interpreters]]
-     - [[#related-work][Related work]]
-       - [[#open-modules][Open modules]]
-       - [[#isnt-a-visitor-pattern-enough][Isn’t a visitor pattern enough?]]
-       - [[#object-oriented-interpreter][Object-oriented interpreter]]
-       - [[#aop][...AOP?]]
-       - [[#scoping-strategies][Scoping strategies]]
-     - [[#objections-and-downsides][Objections and downsides]]
-       - [[#with-is-deprecated][=with= is deprecated]]
-       - [[#open-scope-defeats-the-purpose-of-the-module-pattern][Open scope defeats the purpose of the module pattern]]
-       - [[#its-not-modular-if-there-is-no-interface-for-instrumentation][It’s not modular if there is no interface for instrumentation]]
-       - [[#its-still-ad-hoc][It’s still ad-hoc]]
-       - [[#application-of-open-scope-if-not-module-pattern][Application of open scope if not module pattern?]]
-       - [[#open-scope-only-captures-top-level-declaration-of-module][Open scope only captures top-level declaration of module]]
-       - [[#aliasing-inside-the-module-can-be-problematic][Aliasing inside the module can be problematic]]
-       - [[#what-about-interferences-between-instrumentations][What about interferences between instrumentations?]]
-       - [[#performance-costs][Performance costs]]
+   - [[#unstable-discussion][UNSTABLE Discussion]]
  - [[#bare-synthèse][BARE Synthèse]]
    - [[#bare-séparation-des-préoccupations-pourquoi][BARE Séparation des préoccupations: pourquoi?]]
  - [[#références][Références]]
@@ -5722,7 +5702,7 @@ Combine all the extensions without effort.
 
 # [[file:img/all-in-one.svg]]
 
-* TRANSLATE Étendre un interpréteur par manipulation de portée
+* Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [[cite:KNS-15b][KNS-15b]]/.
 
 #+BEGIN_epigraph
@@ -5751,7 +5731,7 @@ modulaire.  Dans ce chapitre, on propose une façon simple d’étendre cet
 interpréteur, en se basant uniquement sur les fonctionnalités présentes dans le
 langage JavaScript.
 
-** Manipuler la portée des variables pour l’instrumentation
+** STABLE Manipuler la portée des variables pour l’instrumentation
 L’ingrédient clé de cette section est la notion de /portée de variable/, et
 comment manipuler cette portée.  Une variable déclarée dans une fonction n’est
 pas accessible depuis une autre fonction; on dit alors que la portée de cette
@@ -6276,7 +6256,7 @@ Aucune de ces suppositions n’est valide en JavaScript.  Cependant, il y a moye
 de réaliser ce modèle en utilisant des constructions JavaScript standard.  C’est
 l’objet de la section suivante.
 
-** Ouvrir le motif module en JavaScript
+** STABLE Ouvrir le motif module en JavaScript
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
 partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
@@ -6561,7 +6541,7 @@ plus intéressant de voir comment on peut ouvrir un module plus réaliste, et
 quels sont les problèmes qui apparaissent.  Dans la section suivante, on
 applique ces mécanismes à Narcissus.
 
-** Étendre Narcissus par manipulation de portée
+** STABLE Étendre Narcissus par manipulation de portée
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
 laquelle on va ajouter plusieurs analyses en essayant de minimiser les
 changements de code à l’intérieur du module de Narcissus.  Pour ouvrir le module
@@ -7286,7 +7266,7 @@ de base, l’évaluation multi-facettes bénéficiait du correctif automatiqueme
 Cette anecdote illustre l’intérêt d’une décomposition qui cherche à minimiser la
 duplication de code.
 
-** Discussion
+** UNSTABLE Discussion
 L’idée principale de ce chapitre est que la manipulation de la portée des
 variables d’un module est suffisante pour changer totalement le comportement de
 ce module.  Et si on peut changer intégralement le comportement du module, on
@@ -7530,7 +7510,12 @@ dans le cas de l’interpréteur) doivent nécessairement passer par l’interfa
 d’extension définies par l’interpréteur.  Avec ~with~, ce sont les extensions
 elles-mêmes qui peuvent redéfinir n’importe quelle fonction du module; comme si
 l’interface d’extension était totale, mais sans avoir à le déclarer
-explicitement.
+explicitement.  Avec ~with~, le programmeur des extensions a la responsabilité
+de maintenir le lien qui lui permet d’inclure son code dans le processus de
+l’interpréteur (les appels à ~around~, ~override~, ~delegate~, ...); le
+programmeur de l’interpréteur ne peut pas savoir où les extensions vont se
+greffer, il n’a pas à s’en soucier, d’où moins de code à maintenir.  C’est
+l’inverse pour les techniques explicites.
 
 # This makes me think of Éric’s talk at AOSD’13, with joinpoint interfaces where
 # you can say at the class level which joinpoints are viewed by outside aspects,
@@ -7540,250 +7525,187 @@ explicitement.
 
 -----
 
-** Discussion
+Étendre un module par du code extérieur sans que le code du module n’expose
+d’interface pour, activer et désactiver les extensions dynamiquement, les
+combiner ... ces objectifs rappellent fortement la programmation par aspects.
 
-Why not use AOP?
-- well known solution
-- allow for describing the instrumentation in its own file
-- provides ~around~ and ~proceed~, which seems to be what you need
-Yes but:
-- no satisfying AOP library for JS
-- could /write/ one, but looking at what we needed, scope manipulation was
-enough to get 90% of the changes without modifying the code.
-- opted for the simpler mechanism known to work reliably
-- ~around~ can be added (we did so) as a function of 3 lines of code
+Comme on l’a vu dans les différentes analyses ajoutées à Narcissus, on utilise le
+vocabulaire d’AspectJ: ~around~, ~before~, ~proceed~.  Donc pourquoi ne pas
+utiliser directement la programmation par aspects, qui est un paradigme général,
+plutôt que de passer par ~with~ et les prototypes, qui sont des mécanismes
+propres à JavaScript?
 
-*** Insights
-Let the bindings be dynamically changed, and that’s all you need.  Use bindings
-for every bit of functionality (i.e., identify moving pieces and put them in
-variables or functions).
+En utilisant une bibliothèque d’aspect pour JavaScript, on pourrait définir
+chaque analyse dans son propre fichier, puis l’intégrer dynamiquement à
+l’exécution de l’interpréteur avec des /advice/ qui ciblent les /joinpoint/
+adéquats (l’appel de ~execute~).  On pourrait activer et désactiver les /advice/
+pour activer ou désactiver dynamiquement les analyses.  On aurait effectivement
+le même résultat, mais exprimé en terme d’aspects; une technique qui pourrait
+plus facilement se transporter à tout langage disposant d’une bibliothèque de
+programmation par aspects.
 
-JavaScript has mechanisms that promote modular instrumentation, though they are
-often shunned because they can create subtle bugs.  =with= creates a local
-dynamic scope, and this is precisely what you want when instrumenting.
+Idéalement.
 
-Tension between exposing bindings and information hiding/encapsulation.  Good
-practice argues for minimizing exposition to implementation details from client
-code.  Open scope goes against this practice.  We would argue that
-instrumentation is special case of “client code”, which definitely /needs/
-access to implementation details, unless a clean interface is provided (which
-often is not).  See also LVG-10: extensions for Firefox often used deep
-modifications into Firefox code (monkey patching).  See also Minecraft:
-extensions writers not afraid of modifying obfuscated Java bytecode.  Yes,
-ideally there should be a clean interface for instrumenters.  No, in practice
-there is none.  Open scope is not ideal, but practical.
+On a initialement cherché à utiliser une bibliothèque d’aspects pour
+instrumenter Narcissus: AspectScript est la plus complète [[cite:TLT-10][TLT-10]].  Il y a deux
+raisons majeures de préférer l’approche de ce chapitre à AspectScript pour
+l’instrumentation de Narcissus: la compatibilité et la performance.
 
-*** Broad applications
-Not only dynamic analyses, but any variation of the interpreter.  Strict mode
-comes to mind.  As it applies to the module pattern, there is nothing specific
-to an interpreter there.  Extending any module is possible.  Browsers, games,
-and text editors all often provide custom interfaces for extension, but the open
-scope can be a low-cost option for customization.
-
-More generally, it applies to /customizing software/ at the source level.
-
-*** Other JS interpreters
-ES5.1 interpreter written using a module pattern:
-- https://github.com/metaes/metaes/blob/master/metaes.js
-
-Written as an object (in strict mode):
-- https://github.com/NeilFraser/JS-Interpreter/blob/master/interpreter.js
-
-Written as several modules (ES5 + flow analysis):
-- http://www.jsflow.net/
-
-*** Related work
-**** Open modules
-Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
-offer a clearly-defined boundary between the module writer and the writer of an
-extension to this module.  In our case, we do not presume to know what interface
-an instrumentation would require, so we leave the doors wide open.  Also, open
-modules is based on AOP, which we don’t require here.
-
-The open scope is not a contract with the writer of an instrumentation; it’s a
-convenience.  The instrumentation writer is responsible if the base writer
-changes its bindings.  This is not modular, but unanticipated extension is not
-modular.
-
-**** Isn’t a visitor pattern enough?
-In general, a good idea.  But Narcissus is not object-oriented, so it cannot
-apply here.
-
-Point of the approach is to minimize the changes to Narcissus.  Otherwise we
-could just rewrite from scratch and design for extensibility.
-
-**** Object-oriented interpreter
-Other ways to instrument would depend on the form of the target interpreter.
-Here we have a module pattern with lexical scoping.  What if the interpreter was
-written as a class?  The function bindings would be available to extending
-classes, and we could write the instrumentation using inheritance.
-
-But rewriting Narcissus using a class was not an option: the instrumentation
-ought to be lightweight.
-
-Using dynamic inheritance, we would be able to inject a trace class and modify
-running instances of interpreters.  This suggests that dynamic inheritance is in
-some way similar to dynamic scoping.  If that is the case, then we can focus on
-scope.
-
-Just by comparing their effect on bindings, we can see that they both solve the
-problem equally: =with= creates an indirection of binding just like =this= does
-on object attributes.
-
-**** ...AOP?
-- No satisfying AOP framework we could apply.  AspectScript is costly because
-  parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.
-- Building our own would not be pragmatic.
-- Open scope would not be applicable when you cannot modify base code.  AOP
-  would be a better choice then.  Performance costs vary, but the highest cost
-  is technical debt: who writes the AOP extension, who maintains it?  Open scope
-  is just standard JavaScript.
-
-**** Scoping strategies
-Scoping strategies specify how aspects are applied dynamically.
-
-Here we just manipulate bindings.  Essentially, an instrumentation is just
-defining =around= advices.
-
-Tanter also provided an intuition of scoping strategies outside the aspect
-paradigm.  A scoping strategy for bindings is a triplet of two propagation
-functions, and one filter (activation) function.
-
-The two propagation functions determine if the binding propagates on 1) the call
-stack, or 2) in delayed lambdas.  The filter function can toggle the binding for
-any function execution event.
-
-In our case, we do not initiate the call to the interpreter, and our code is not
-lexically shared, so the propagation functions would not help us in overriding
-the bindings.  The activation function is then useless, as it serves only to
-toggle bindings present in the environment.
-
-However, if we redefined =evaluate= we could override the bindings using
-standard dynamic scoping semantics.  It is unclear whether the added
-expressiveness of scoping strategies would be needed, or more useful.
-
-*** Objections and downsides
-**** =with= is deprecated
-=with= is disallowed in Strict mode because it makes static analysis difficult
-by violating lexical scope.  But this is precisely why we need it in this
-pattern.  This evokes an interesting compromise in language design: security
-(knowing in advance what the program will do) versus flexibility (leaving room
-for the program to change meaning dynamically).  These two goals are
-antagonists.
-
-Since JS does not have dynamic scoping, =with= is very helpful in our case.  Not
-sure we could do it as easily in, say, Python.
-
-[[https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml#with___{}][Google's style guide]] prohibits =with=.  As does [[http://javascript.crockford.com/code.html#with%2520statement][Douglas Crockford]].  The [[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with][MDN page]]
-lists pro and contra arguments.
-
-**** Open scope defeats the purpose of the module pattern
-Module pattern is for hiding information, and exposing only what is required.
-
-Open scope leaves a backdoor that exposes private bindings.
-
-The two are antagonists.
-
-Is open scope necessary when the interpreter is not written defensively?
-
-Is open scope applicable when the interpreter uses another pattern for hiding
-information?  (WeakMap, Symbols, or dunder prefix).
-
-**** It’s not modular if there is no interface for instrumentation
-Open scope means an instrumentation is free to change any binding, without an
-explicit interface.  No interface means no contract between instrumentation
-writer and module writer.  Instrumentation is brittle if module is liable to
-change.
-
-Attitude is more: “here is a free pass to change anything inside the module; you
-are responsible if your instrumentation breaks in the future”.  Because it’s
-more convenient to open scope rather than having to design an interface, or add
-hooks everywhere.
-
-**** It’s still ad-hoc
-Some refactoring made to Narcissus was specific to the implementation (salami
-the =switch=, =reflectClass=).  But the open scope pattern makes few hypotheses
-on the language (must deal with names, bindings, and scopes).
-
-True that we are not generic in the sense “now you can write the facets
-implementation once, and run on any interpreter satisfying Our Genial
-Interface”.  But that is a pipe dream, as different languages will require
-adaptation of analysis (facets is incomplete on JS).  At least now you can
-eyeball the implementation of facets and compare it to a spec document.
-
-**** Application of open scope if not module pattern?
-The idea is to manipulate scopes, so it is general.  /How/ to manipulate the
-scope depends on the situation.  If the target is not a module pattern, then
-maybe =with= is not the right tool to use.
-
-If the target is OO, =this= also provides a kind dynamic scope.
-
-**** Open scope only captures top-level declaration of module
-Declarations inside functions are not captured, cannot be overridden.
-
-True.  Such declarations should be moved to top-level of module for this pattern
-to work.  Same goes for anonymous functions, which should be named.
-Implementation of open scope pattern is responsibility of module writer; such
-changes are required for the pattern.
-
-Can be useful for preventing bindings to be overridden, or for hiding
-information.
-
-**** Aliasing inside the module can be problematic
-Open scope allows an instrumentation to change bindings inside the module.  If a
-binding is aliased inside the module, the instrumentation should override the
-alias as well.  This creates redundant noise in the instrumentation.
+AspectScript est une bibliothèque d’aspect qui réifie /tout le code/ qui doit
+être instrumenté.  Pour qu’un module puisse émettre des /joinpoint/, il faut
+l’envoyer à AspectScript, qui va le parser, et émettre du code qui réifie les
+déclarations, les appels de fonction, les affectations de variable, toutes les
+constructions du langage en appels explicites à AspectScript.  C’est comme ça
+qu’AspectScript peut capturer n’importe quel évènement du module.  En somme,
+AspectScript /interprète/ le code du module, délègue l’évaluation au moteur
+d’exécution sous-jacent.  Au passage, il émet des /joinpoint/ pour chaque
+construction, teste les /pointcut/ pour tous les /advice/ enregistrés, et
+exécute le code si le /pointcut/ correspond.
 
 #+BEGIN_EXAMPLE
-a = V
-b = a
+<<Exemple de code émis par AspectScript ici>>
 #+END_EXAMPLE
 
-#+BEGIN_EXAMPLE
-a -> V
-     ^
-     |
-b ---/
-#+END_EXAMPLE
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Fill example
+#+END_aside
 
-=a= and =b= are references to the same value =V=.  If the instrumentation want
-to override the value =V=, it needs to override both bindings =a= and =b= in the
-open scope.
+Ce mode de fonctionnement a deux inconvénients.  D’abord, AspectScript duplique
+évidemment le travail du moteur d’exécution de JavaScript, ce qui est
+inefficace, mais surtout qui peut changer la sémantique du programme
+instrumenté.  Puisqu’AspectScript interprète le code du module ciblé, et délègue
+l’évaluation au moteur d’exécution, on n’a aucune garantie qu’un appel de
+fonction capturé par AspectScript obéit aux mêmes invariants qu’un appel de
+fonction standard.  Quand on instrumente un module aussi large que Narcissus, on
+cherche à éviter d’introduire des erreurs subtiles dans du code qu’on ne
+maîtrise pas.  Mais comme AspectScript ajoute une étape d’interprétation
+supplémentaire, si on cherche à comprendre un bogue de Narcissus il faut aussi
+prendre en compte l’implémentation d’AspectScript.
 
-#+BEGIN_EXAMPLE
-a ---> V’
-b ---> V’
-#+END_EXAMPLE
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+Exemple de déviation de l’évaluation standard de JavaScript: AspectScript ne
+peut pas instrumenter du code qui contient ~with~.
+#+END_aside
 
-However, it could be the case that only one binding should be overridden.
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Show what it looks like for function calls
+#+END_aside
 
-#+BEGIN_EXAMPLE
-a ---> V’
-b ---> V (no change)
-#+END_EXAMPLE
+Le second inconvénient est que pour parser le code, AspectScript utilise son
+propre parser, ce qui encore une fois peut introduire des déviations par rapport
+au parser du moteur d’exécution.  JavaScript est un langage en évolution, et le
+parser d’AspectScript ne suit pas cette évolution.  Du code qui utilise des
+extensions de syntaxe des dernières versions de JavaScript s’exécutera
+correctement sur le navigateur, mais pas s’il est instrumenté par AspectScript.
 
-If we need both facilities, we need a way to say that we override at the left of
-the arrow (per binding) or at the right (per value).
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Isn’t the AspectScript parser taken from Narcissus?
+#+END_aside
 
-That’s not an issue we have encountered in instrumenting Narcissus.
+Parce qu’AspectScript re-interprète le code, et utilise son propre parser, il
+pose des problèmes de compatibilité.  Mais ces mécanismes ont également un coût
+important en temps d’exécution et espace mémoire.  AspectScript est X fois plus
+lent qu’un moteur d’exécution de JavaScript.  Sachant qu’on cherche ici à
+instrumenter un interpréteur de JavaScript, et qu’on perd déjà un ordre de
+magnitude de performance en utilisant un interpréteur meta-circulaire, rajouter
+une la couche d’interprétation d’AspectScript n’est pas idéal, surtout s’il y a
+une alternative qui nous permet d’étendre l’interpréteur avec la même
+flexibilité à un coût de performance moindre.
 
-**** What about interferences between instrumentations?
-Is
-: njs -l flowr -l trace
-the same as
-: njs -l trace -l flowr
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Numbers from AspectScript paper here
+#+END_aside
 
-If not, what do you have to pay attention to when writing analyses?
+La programmation par aspect est donc un bon candidat pour le scénario
+d’instrumentation de Narcissus, mais l’implémentation d’AspectScript n’est pas
+une solution adéquate pour des raisons techniques.  Une autre implémentation
+d’aspects pour JavaScript existe dans la littérature [[cite:LVG-10][LVG-10]], mais elle ne
+cible qu’une version interne modifiée du navigateur Internet Explorer.
 
-**** Performance costs
-Are expected due to the added indirection.
+-----
 
-We could partially evaluate the interpreter + the activated instrumentations to
-produce an interpreter without =with=, but with direct references to the
-overloaded bindings.
+On n’a pas utilisé une bibliothèque d’aspect, mais l’approche de ce chapitre est
+certainement ancrée dans le paradigme de la programmation par aspects.  Et c’est
+justement intéressant de voir que la simple manipulation de la portée des
+variables /suffit/ pour obtenir la flexibilité souhaitée pour ajouter des
+analyses à l’interpréteur.
 
-We would then lose the ability to change the bindings dynamically, as far as I
-can see.
+AspectJ fournit des /pointcut/ bien plus riches que ceux qu’on a utilisé ici.
+On n’a pas eu besoin d’intercepter des appels de fonction en testant les
+paramètres (le pointcut ~args~), ni de connaître l’état de la pile d’appels
+(~cflow~).  Les fonctions que l’on a emprunté à AspectJ, ~around~, ~before~,
+sont triviales, définies en 3 lignes.
+
+Le seul mécanisme dont on a eu besoin existait déjà en JavaScript: la
+possibilité d’intercepter la résolution d’un nom (de variable ou de fonction)
+via ~with~.  Autrement dit, la manipulation de la portée des variables suffit
+pour instrumenter Narcissus de façon modulaire.
+
+Et la portée est un concept qui se retrouve dans de nombreux langages de
+programmation, pas seulement en JavaScript.  Ce qui veut dire que la
+manipulation de portée effectuée dans ce chapitre, et illustrée par les
+diagrammes, est applicable à d’autres langages, même s’ils ne disposent pas
+d’une construction analogue à ~with~.   Il suffit de permettre au code client de
+manipuler directement la résolution de portée, par un mécanisme réflexif par
+exemple.
+
+-----
+
+L’utilisation de ~with~ vient d’ailleurs avec son lot d’inconvénients.  On
+utilise ~with~ ici juste parce que c’est le seul moyen qu’on a de manipuler la
+portée des variables du code du module en JavaScript standard.  Ça nous évite
+d’avoir à modifier le moteur d’exécution pour exposer le mécanisme de résolution
+de portée, ce qui permet à notre solution de fonctionner sur n’importe quel
+interpréteur JavaScript.
+
+Mais ~with~ est une construction dépréciée du langage, et notamment interdite
+dans le “mode strict” du standard ECMASCript 5.1.  Concrètement, ça veut dire
+qu’un module écrit dans ce mode strict ne peut pas être étendu avec ~with~.
+C’est une nouvelle manifestation du compromis entre flexibilité et sécurité du
+code; le mode stricte offre davantage de garanties pour le programmeur (en
+particulier, l’absence de ~with~), et en échange il perd la possibilité
+d’appliquer la technique de ce chapitre.
+
+L’environnement créé par ~with~ ne capture pas les déclarations de fonctions qui
+ne sont pas écrites à la racine du module.  Une fonction interne ne peut donc
+pas être instrumentée.  Les alias de fonctions ne sont pas instrumentés
+automatiquement non plus: si ~m.a~ et ~m.b~ sont deux références au même objet
+dans le module, alors redéfinir ~m.a~ ne change pas ~m.b~, puisqu’on ne souhaite
+pas modifier les objets du module, seulement changer les références pour pointer
+vers de nouvelles variantes.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Other downsides from DLS paper?
+#+END_aside
+
+# **** Scoping strategies
+# Scoping strategies specify how aspects are applied dynamically.
+
+# Here we just manipulate bindings.  Essentially, an instrumentation is just
+# defining =around= advices.
+
+# Tanter also provided an intuition of scoping strategies outside the aspect
+# paradigm.  A scoping strategy for bindings is a triplet of two propagation
+# functions, and one filter (activation) function.
+
+# The two propagation functions determine if the binding propagates on 1) the call
+# stack, or 2) in delayed lambdas.  The filter function can toggle the binding for
+# any function execution event.
+
+# In our case, we do not initiate the call to the interpreter, and our code is not
+# lexically shared, so the propagation functions would not help us in overriding
+# the bindings.  The activation function is then useless, as it serves only to
+# toggle bindings present in the environment.
+
+# However, if we redefined =evaluate= we could override the bindings using
+# standard dynamic scoping semantics.  It is unclear whether the added
+# expressiveness of scoping strategies would be needed, or more useful.
 
 * BARE Synthèse
 ** BARE Séparation des préoccupations: pourquoi?
