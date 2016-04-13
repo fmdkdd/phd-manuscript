@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-12 Tue 18:40 -->
+<!-- 2016-04-13 Wed 18:02 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,17 +267,17 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline145">8. <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline125">8. Étendre un interpréteur par manipulation de portée</a>
 <ul>
-<li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
+<li><a href="#orgheadline116">8.1. <span class="done STABLE">STABLE</span> Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
 <li><a href="#orgheadline113">8.1.1. La portée dans le motif module</a></li>
 <li><a href="#orgheadline114">8.1.2. Ouvrir le motif module</a></li>
 <li><a href="#orgheadline115">8.1.3. Disposer les environnements en couches</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline117">8.2. Ouvrir le motif module en JavaScript</a></li>
-<li><a href="#orgheadline123">8.3. Étendre Narcissus par manipulation de portée</a>
+<li><a href="#orgheadline117">8.2. <span class="done STABLE">STABLE</span> Ouvrir le motif module en JavaScript</a></li>
+<li><a href="#orgheadline123">8.3. <span class="done STABLE">STABLE</span> Étendre Narcissus par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline118">8.3.1. Ajouter l’analyse d’évaluation multi-facettes</a></li>
 <li><a href="#orgheadline119">8.3.2. Ajouter l’analyse de trace</a></li>
@@ -286,24 +286,15 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline122">8.3.5. Évaluation</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline124">8.4. Discussion</a></li>
-<li><a href="#orgheadline144">8.5. Discussion</a>
+<li><a href="#orgheadline124">8.4. <span class="todo UNSTABLE">UNSTABLE</span> Discussion</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline127">9. <span class="todo BARE">BARE</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline125">8.5.1. Insights</a></li>
-<li><a href="#orgheadline126">8.5.2. Broad applications</a></li>
-<li><a href="#orgheadline127">8.5.3. Other JS interpreters</a></li>
-<li><a href="#orgheadline133">8.5.4. Related work</a></li>
-<li><a href="#orgheadline143">8.5.5. Objections and downsides</a></li>
+<li><a href="#orgheadline126">9.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#orgheadline147">9. <span class="todo BARE">BARE</span> Synthèse</a>
-<ul>
-<li><a href="#orgheadline146">9.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline148">Références</a></li>
+<li><a href="#orgheadline128">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7313,8 +7304,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline145" class="outline-2">
-<h2 id="orgheadline145"><span class="section-number-2">8</span> <span class="todo TRANSLATE">TRANSLATE</span> Étendre un interpréteur par manipulation de portée</h2>
+<div id="outline-container-orgheadline125" class="outline-2">
+<h2 id="orgheadline125"><span class="section-number-2">8</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -7359,7 +7350,7 @@ langage JavaScript.
 </div>
 
 <div id="outline-container-orgheadline116" class="outline-3">
-<h3 id="orgheadline116"><span class="section-number-3">8.1</span> Manipuler la portée des variables pour l’instrumentation</h3>
+<h3 id="orgheadline116"><span class="section-number-3">8.1</span> <span class="done STABLE">STABLE</span> Manipuler la portée des variables pour l’instrumentation</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 L’ingrédient clé de cette section est la notion de <i>portée de variable</i>, et
@@ -8031,7 +8022,7 @@ l’objet de la section suivante.
 </div>
 
 <div id="outline-container-orgheadline117" class="outline-3">
-<h3 id="orgheadline117"><span class="section-number-3">8.2</span> Ouvrir le motif module en JavaScript</h3>
+<h3 id="orgheadline117"><span class="section-number-3">8.2</span> <span class="done STABLE">STABLE</span> Ouvrir le motif module en JavaScript</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
@@ -8378,7 +8369,7 @@ applique ces mécanismes à Narcissus.
 </div>
 
 <div id="outline-container-orgheadline123" class="outline-3">
-<h3 id="orgheadline123"><span class="section-number-3">8.3</span> Étendre Narcissus par manipulation de portée</h3>
+<h3 id="orgheadline123"><span class="section-number-3">8.3</span> <span class="done STABLE">STABLE</span> Étendre Narcissus par manipulation de portée</h3>
 <div class="outline-text-3" id="text-8-3">
 <p>
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -9316,7 +9307,7 @@ duplication de code.
 </div>
 
 <div id="outline-container-orgheadline124" class="outline-3">
-<h3 id="orgheadline124"><span class="section-number-3">8.4</span> Discussion</h3>
+<h3 id="orgheadline124"><span class="section-number-3">8.4</span> <span class="todo UNSTABLE">UNSTABLE</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 L’idée principale de ce chapitre est que la manipulation de la portée des
@@ -9625,465 +9616,223 @@ dans le cas de l’interpréteur) doivent nécessairement passer par l’interfa
 d’extension définies par l’interpréteur.  Avec <code>with</code>, ce sont les extensions
 elles-mêmes qui peuvent redéfinir n’importe quelle fonction du module; comme si
 l’interface d’extension était totale, mais sans avoir à le déclarer
-explicitement.
+explicitement.  Avec <code>with</code>, le programmeur des extensions a la responsabilité
+de maintenir le lien qui lui permet d’inclure son code dans le processus de
+l’interpréteur (les appels à <code>around</code>, <code>override</code>, <code>delegate</code>, &#x2026;); le
+programmeur de l’interpréteur ne peut pas savoir où les extensions vont se
+greffer, il n’a pas à s’en soucier, d’où moins de code à maintenir.  C’est
+l’inverse pour les techniques explicites.
 </p>
 
 <hr >
-</div>
-</div>
 
-<div id="outline-container-orgheadline144" class="outline-3">
-<h3 id="orgheadline144"><span class="section-number-3">8.5</span> Discussion</h3>
-<div class="outline-text-3" id="text-8-5">
 <p>
-Why not use AOP?
-</p>
-<ul class="org-ul">
-<li>well known solution</li>
-<li>allow for describing the instrumentation in its own file</li>
-<li>provides <code>around</code> and <code>proceed</code>, which seems to be what you need</li>
-</ul>
-<p>
-Yes but:
-</p>
-<ul class="org-ul">
-<li>no satisfying AOP library for JS</li>
-<li>could <i>write</i> one, but looking at what we needed, scope manipulation was</li>
-</ul>
-<p>
-enough to get 90% of the changes without modifying the code.
-</p>
-<ul class="org-ul">
-<li>opted for the simpler mechanism known to work reliably</li>
-<li><code>around</code> can be added (we did so) as a function of 3 lines of code</li>
-</ul>
-</div>
-
-<div id="outline-container-orgheadline125" class="outline-4">
-<h4 id="orgheadline125"><span class="section-number-4">8.5.1</span> Insights</h4>
-<div class="outline-text-4" id="text-8-5-1">
-<p>
-Let the bindings be dynamically changed, and that’s all you need.  Use bindings
-for every bit of functionality (i.e., identify moving pieces and put them in
-variables or functions).
+Étendre un module par du code extérieur sans que le code du module n’expose
+d’interface pour, activer et désactiver les extensions dynamiquement, les
+combiner &#x2026; ces objectifs rappellent fortement la programmation par aspects.
 </p>
 
 <p>
-JavaScript has mechanisms that promote modular instrumentation, though they are
-often shunned because they can create subtle bugs.  <code>with</code> creates a local
-dynamic scope, and this is precisely what you want when instrumenting.
+Comme on l’a vu dans les différentes analyses ajoutées à Narcissus, on utilise le
+vocabulaire d’AspectJ: <code>around</code>, <code>before</code>, <code>proceed</code>.  Donc pourquoi ne pas
+utiliser directement la programmation par aspects, qui est un paradigme général,
+plutôt que de passer par <code>with</code> et les prototypes, qui sont des mécanismes
+propres à JavaScript?
 </p>
 
 <p>
-Tension between exposing bindings and information hiding/encapsulation.  Good
-practice argues for minimizing exposition to implementation details from client
-code.  Open scope goes against this practice.  We would argue that
-instrumentation is special case of “client code”, which definitely <i>needs</i>
-access to implementation details, unless a clean interface is provided (which
-often is not).  See also LVG-10: extensions for Firefox often used deep
-modifications into Firefox code (monkey patching).  See also Minecraft:
-extensions writers not afraid of modifying obfuscated Java bytecode.  Yes,
-ideally there should be a clean interface for instrumenters.  No, in practice
-there is none.  Open scope is not ideal, but practical.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline126" class="outline-4">
-<h4 id="orgheadline126"><span class="section-number-4">8.5.2</span> Broad applications</h4>
-<div class="outline-text-4" id="text-8-5-2">
-<p>
-Not only dynamic analyses, but any variation of the interpreter.  Strict mode
-comes to mind.  As it applies to the module pattern, there is nothing specific
-to an interpreter there.  Extending any module is possible.  Browsers, games,
-and text editors all often provide custom interfaces for extension, but the open
-scope can be a low-cost option for customization.
+En utilisant une bibliothèque d’aspect pour JavaScript, on pourrait définir
+chaque analyse dans son propre fichier, puis l’intégrer dynamiquement à
+l’exécution de l’interpréteur avec des <i>advice</i> qui ciblent les <i>joinpoint</i>
+adéquats (l’appel de <code>execute</code>).  On pourrait activer et désactiver les <i>advice</i>
+pour activer ou désactiver dynamiquement les analyses.  On aurait effectivement
+le même résultat, mais exprimé en terme d’aspects; une technique qui pourrait
+plus facilement se transporter à tout langage disposant d’une bibliothèque de
+programmation par aspects.
 </p>
 
 <p>
-More generally, it applies to <i>customizing software</i> at the source level.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline127" class="outline-4">
-<h4 id="orgheadline127"><span class="section-number-4">8.5.3</span> Other JS interpreters</h4>
-<div class="outline-text-4" id="text-8-5-3">
-<p>
-ES5.1 interpreter written using a module pattern:
-</p>
-<ul class="org-ul">
-<li><a href="https://github.com/metaes/metaes/blob/master/metaes.js">https://github.com/metaes/metaes/blob/master/metaes.js</a></li>
-</ul>
-
-<p>
-Written as an object (in strict mode):
-</p>
-<ul class="org-ul">
-<li><a href="https://github.com/NeilFraser/JS-Interpreter/blob/master/interpreter.js">https://github.com/NeilFraser/JS-Interpreter/blob/master/interpreter.js</a></li>
-</ul>
-
-<p>
-Written as several modules (ES5 + flow analysis):
-</p>
-<ul class="org-ul">
-<li><a href="http://www.jsflow.net/">http://www.jsflow.net/</a></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgheadline133" class="outline-4">
-<h4 id="orgheadline133"><span class="section-number-4">8.5.4</span> Related work</h4>
-<div class="outline-text-4" id="text-8-5-4">
-</div><div id="outline-container-orgheadline128" class="outline-5">
-<h5 id="orgheadline128">Open modules</h5>
-<div class="outline-text-5" id="text-orgheadline128">
-<p>
-Module with open scope is not ‘open modules’ [Aldrich, ECOOP’05].  Open modules
-offer a clearly-defined boundary between the module writer and the writer of an
-extension to this module.  In our case, we do not presume to know what interface
-an instrumentation would require, so we leave the doors wide open.  Also, open
-modules is based on AOP, which we don’t require here.
+Idéalement.
 </p>
 
 <p>
-The open scope is not a contract with the writer of an instrumentation; it’s a
-convenience.  The instrumentation writer is responsible if the base writer
-changes its bindings.  This is not modular, but unanticipated extension is not
-modular.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline129" class="outline-5">
-<h5 id="orgheadline129">Isn’t a visitor pattern enough?</h5>
-<div class="outline-text-5" id="text-orgheadline129">
-<p>
-In general, a good idea.  But Narcissus is not object-oriented, so it cannot
-apply here.
+On a initialement cherché à utiliser une bibliothèque d’aspects pour
+instrumenter Narcissus: AspectScript est la plus complète [<a href="#TLT-10">TL�T10</a>].  Il y a deux
+raisons majeures de préférer l’approche de ce chapitre à AspectScript pour
+l’instrumentation de Narcissus: la compatibilité et la performance.
 </p>
 
 <p>
-Point of the approach is to minimize the changes to Narcissus.  Otherwise we
-could just rewrite from scratch and design for extensibility.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline130" class="outline-5">
-<h5 id="orgheadline130">Object-oriented interpreter</h5>
-<div class="outline-text-5" id="text-orgheadline130">
-<p>
-Other ways to instrument would depend on the form of the target interpreter.
-Here we have a module pattern with lexical scoping.  What if the interpreter was
-written as a class?  The function bindings would be available to extending
-classes, and we could write the instrumentation using inheritance.
-</p>
-
-<p>
-But rewriting Narcissus using a class was not an option: the instrumentation
-ought to be lightweight.
-</p>
-
-<p>
-Using dynamic inheritance, we would be able to inject a trace class and modify
-running instances of interpreters.  This suggests that dynamic inheritance is in
-some way similar to dynamic scoping.  If that is the case, then we can focus on
-scope.
-</p>
-
-<p>
-Just by comparing their effect on bindings, we can see that they both solve the
-problem equally: <code>with</code> creates an indirection of binding just like <code>this</code> does
-on object attributes.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline131" class="outline-5">
-<h5 id="orgheadline131">&#x2026;AOP?</h5>
-<div class="outline-text-5" id="text-orgheadline131">
-<ul class="org-ul">
-<li>No satisfying AOP framework we could apply.  AspectScript is costly because
-parsing + rewriting.  LVG-10 is custom modification of Microsoft’s JIT.</li>
-<li>Building our own would not be pragmatic.</li>
-<li>Open scope would not be applicable when you cannot modify base code.  AOP
-would be a better choice then.  Performance costs vary, but the highest cost
-is technical debt: who writes the AOP extension, who maintains it?  Open scope
-is just standard JavaScript.</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgheadline132" class="outline-5">
-<h5 id="orgheadline132">Scoping strategies</h5>
-<div class="outline-text-5" id="text-orgheadline132">
-<p>
-Scoping strategies specify how aspects are applied dynamically.
-</p>
-
-<p>
-Here we just manipulate bindings.  Essentially, an instrumentation is just
-defining <code>around</code> advices.
-</p>
-
-<p>
-Tanter also provided an intuition of scoping strategies outside the aspect
-paradigm.  A scoping strategy for bindings is a triplet of two propagation
-functions, and one filter (activation) function.
-</p>
-
-<p>
-The two propagation functions determine if the binding propagates on 1) the call
-stack, or 2) in delayed lambdas.  The filter function can toggle the binding for
-any function execution event.
-</p>
-
-<p>
-In our case, we do not initiate the call to the interpreter, and our code is not
-lexically shared, so the propagation functions would not help us in overriding
-the bindings.  The activation function is then useless, as it serves only to
-toggle bindings present in the environment.
-</p>
-
-<p>
-However, if we redefined <code>evaluate</code> we could override the bindings using
-standard dynamic scoping semantics.  It is unclear whether the added
-expressiveness of scoping strategies would be needed, or more useful.
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgheadline143" class="outline-4">
-<h4 id="orgheadline143"><span class="section-number-4">8.5.5</span> Objections and downsides</h4>
-<div class="outline-text-4" id="text-8-5-5">
-</div><div id="outline-container-orgheadline134" class="outline-5">
-<h5 id="orgheadline134"><code>with</code> is deprecated</h5>
-<div class="outline-text-5" id="text-orgheadline134">
-<p>
-<code>with</code> is disallowed in Strict mode because it makes static analysis difficult
-by violating lexical scope.  But this is precisely why we need it in this
-pattern.  This evokes an interesting compromise in language design: security
-(knowing in advance what the program will do) versus flexibility (leaving room
-for the program to change meaning dynamically).  These two goals are
-antagonists.
-</p>
-
-<p>
-Since JS does not have dynamic scoping, <code>with</code> is very helpful in our case.  Not
-sure we could do it as easily in, say, Python.
-</p>
-
-<p>
-<a href="https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml#with___%7B%7D">Google's style guide</a> prohibits <code>with</code>.  As does <a href="http://javascript.crockford.com/code.html#with%20statement">Douglas Crockford</a>.  The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with">MDN page</a>
-lists pro and contra arguments.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline135" class="outline-5">
-<h5 id="orgheadline135">Open scope defeats the purpose of the module pattern</h5>
-<div class="outline-text-5" id="text-orgheadline135">
-<p>
-Module pattern is for hiding information, and exposing only what is required.
-</p>
-
-<p>
-Open scope leaves a backdoor that exposes private bindings.
-</p>
-
-<p>
-The two are antagonists.
-</p>
-
-<p>
-Is open scope necessary when the interpreter is not written defensively?
-</p>
-
-<p>
-Is open scope applicable when the interpreter uses another pattern for hiding
-information?  (WeakMap, Symbols, or dunder prefix).
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline136" class="outline-5">
-<h5 id="orgheadline136">It’s not modular if there is no interface for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline136">
-<p>
-Open scope means an instrumentation is free to change any binding, without an
-explicit interface.  No interface means no contract between instrumentation
-writer and module writer.  Instrumentation is brittle if module is liable to
-change.
-</p>
-
-<p>
-Attitude is more: “here is a free pass to change anything inside the module; you
-are responsible if your instrumentation breaks in the future”.  Because it’s
-more convenient to open scope rather than having to design an interface, or add
-hooks everywhere.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline137" class="outline-5">
-<h5 id="orgheadline137">It’s still ad-hoc</h5>
-<div class="outline-text-5" id="text-orgheadline137">
-<p>
-Some refactoring made to Narcissus was specific to the implementation (salami
-the <code>switch</code>, <code>reflectClass</code>).  But the open scope pattern makes few hypotheses
-on the language (must deal with names, bindings, and scopes).
-</p>
-
-<p>
-True that we are not generic in the sense “now you can write the facets
-implementation once, and run on any interpreter satisfying Our Genial
-Interface”.  But that is a pipe dream, as different languages will require
-adaptation of analysis (facets is incomplete on JS).  At least now you can
-eyeball the implementation of facets and compare it to a spec document.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline138" class="outline-5">
-<h5 id="orgheadline138">Application of open scope if not module pattern?</h5>
-<div class="outline-text-5" id="text-orgheadline138">
-<p>
-The idea is to manipulate scopes, so it is general.  <i>How</i> to manipulate the
-scope depends on the situation.  If the target is not a module pattern, then
-maybe <code>with</code> is not the right tool to use.
-</p>
-
-<p>
-If the target is OO, <code>this</code> also provides a kind dynamic scope.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline139" class="outline-5">
-<h5 id="orgheadline139">Open scope only captures top-level declaration of module</h5>
-<div class="outline-text-5" id="text-orgheadline139">
-<p>
-Declarations inside functions are not captured, cannot be overridden.
-</p>
-
-<p>
-True.  Such declarations should be moved to top-level of module for this pattern
-to work.  Same goes for anonymous functions, which should be named.
-Implementation of open scope pattern is responsibility of module writer; such
-changes are required for the pattern.
-</p>
-
-<p>
-Can be useful for preventing bindings to be overridden, or for hiding
-information.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline140" class="outline-5">
-<h5 id="orgheadline140">Aliasing inside the module can be problematic</h5>
-<div class="outline-text-5" id="text-orgheadline140">
-<p>
-Open scope allows an instrumentation to change bindings inside the module.  If a
-binding is aliased inside the module, the instrumentation should override the
-alias as well.  This creates redundant noise in the instrumentation.
+AspectScript est une bibliothèque d’aspect qui réifie <i>tout le code</i> qui doit
+être instrumenté.  Pour qu’un module puisse émettre des <i>joinpoint</i>, il faut
+l’envoyer à AspectScript, qui va le parser, et émettre du code qui réifie les
+déclarations, les appels de fonction, les affectations de variable, toutes les
+constructions du langage en appels explicites à AspectScript.  C’est comme ça
+qu’AspectScript peut capturer n’importe quel évènement du module.  En somme,
+AspectScript <i>interprète</i> le code du module, délègue l’évaluation au moteur
+d’exécution sous-jacent.  Au passage, il émet des <i>joinpoint</i> pour chaque
+construction, teste les <i>pointcut</i> pour tous les <i>advice</i> enregistrés, et
+exécute le code si le <i>pointcut</i> correspond.
 </p>
 
 <pre class="example">
-a = V
-b = a
+&lt;&lt;Exemple de code émis par AspectScript ici&gt;&gt;
 </pre>
 
-<pre class="example">
-a -&gt; V
-     ^
-     |
-b ---/
-</pre>
+<aside class="todo">
+<p>
+Fill example
+</p>
+</aside>
 
 <p>
-<code>a</code> and <code>b</code> are references to the same value <code>V</code>.  If the instrumentation want
-to override the value <code>V</code>, it needs to override both bindings <code>a</code> and <code>b</code> in the
-open scope.
+Ce mode de fonctionnement a deux inconvénients.  D’abord, AspectScript duplique
+évidemment le travail du moteur d’exécution de JavaScript, ce qui est
+inefficace, mais surtout qui peut changer la sémantique du programme
+instrumenté.  Puisqu’AspectScript interprète le code du module ciblé, et délègue
+l’évaluation au moteur d’exécution, on n’a aucune garantie qu’un appel de
+fonction capturé par AspectScript obéit aux mêmes invariants qu’un appel de
+fonction standard.  Quand on instrumente un module aussi large que Narcissus, on
+cherche à éviter d’introduire des erreurs subtiles dans du code qu’on ne
+maîtrise pas.  Mais comme AspectScript ajoute une étape d’interprétation
+supplémentaire, si on cherche à comprendre un bogue de Narcissus il faut aussi
+prendre en compte l’implémentation d’AspectScript.
 </p>
 
-<pre class="example">
-a ---&gt; V’
-b ---&gt; V’
-</pre>
+<aside style="margin-top:-6rem">
+<p>
+Exemple de déviation de l’évaluation standard de JavaScript: AspectScript ne
+peut pas instrumenter du code qui contient <code>with</code>.
+</p>
+</aside>
+
+<aside class="todo">
+<p>
+Show what it looks like for function calls
+</p>
+</aside>
 
 <p>
-However, it could be the case that only one binding should be overridden.
+Le second inconvénient est que pour parser le code, AspectScript utilise son
+propre parser, ce qui encore une fois peut introduire des déviations par rapport
+au parser du moteur d’exécution.  JavaScript est un langage en évolution, et le
+parser d’AspectScript ne suit pas cette évolution.  Du code qui utilise des
+extensions de syntaxe des dernières versions de JavaScript s’exécutera
+correctement sur le navigateur, mais pas s’il est instrumenté par AspectScript.
 </p>
 
-<pre class="example">
-a ---&gt; V’
-b ---&gt; V (no change)
-</pre>
+<aside class="todo">
+<p>
+Isn’t the AspectScript parser taken from Narcissus?
+</p>
+</aside>
 
 <p>
-If we need both facilities, we need a way to say that we override at the left of
-the arrow (per binding) or at the right (per value).
+Parce qu’AspectScript re-interprète le code, et utilise son propre parser, il
+pose des problèmes de compatibilité.  Mais ces mécanismes ont également un coût
+important en temps d’exécution et espace mémoire.  AspectScript est X fois plus
+lent qu’un moteur d’exécution de JavaScript.  Sachant qu’on cherche ici à
+instrumenter un interpréteur de JavaScript, et qu’on perd déjà un ordre de
+magnitude de performance en utilisant un interpréteur meta-circulaire, rajouter
+une la couche d’interprétation d’AspectScript n’est pas idéal, surtout s’il y a
+une alternative qui nous permet d’étendre l’interpréteur avec la même
+flexibilité à un coût de performance moindre.
+</p>
+
+<aside class="todo">
+<p>
+Numbers from AspectScript paper here
+</p>
+</aside>
+
+<p>
+La programmation par aspect est donc un bon candidat pour le scénario
+d’instrumentation de Narcissus, mais l’implémentation d’AspectScript n’est pas
+une solution adéquate pour des raisons techniques.  Une autre implémentation
+d’aspects pour JavaScript existe dans la littérature [<a href="#LVG-10">LVG</a>], mais elle ne
+cible qu’une version interne modifiée du navigateur Internet Explorer.
+</p>
+
+<hr >
+
+<p>
+On n’a pas utilisé une bibliothèque d’aspect, mais l’approche de ce chapitre est
+certainement ancrée dans le paradigme de la programmation par aspects.  Et c’est
+justement intéressant de voir que la simple manipulation de la portée des
+variables <i>suffit</i> pour obtenir la flexibilité souhaitée pour ajouter des
+analyses à l’interpréteur.
 </p>
 
 <p>
-That’s not an issue we have encountered in instrumenting Narcissus.
+AspectJ fournit des <i>pointcut</i> bien plus riches que ceux qu’on a utilisé ici.
+On n’a pas eu besoin d’intercepter des appels de fonction en testant les
+paramètres (le pointcut <code>args</code>), ni de connaître l’état de la pile d’appels
+(<code>cflow</code>).  Les fonctions que l’on a emprunté à AspectJ, <code>around</code>, <code>before</code>,
+sont triviales, définies en 3 lignes.
 </p>
+
+<p>
+Le seul mécanisme dont on a eu besoin existait déjà en JavaScript: la
+possibilité d’intercepter la résolution d’un nom (de variable ou de fonction)
+via <code>with</code>.  Autrement dit, la manipulation de la portée des variables suffit
+pour instrumenter Narcissus de façon modulaire.
+</p>
+
+<p>
+Et la portée est un concept qui se retrouve dans de nombreux langages de
+programmation, pas seulement en JavaScript.  Ce qui veut dire que la
+manipulation de portée effectuée dans ce chapitre, et illustrée par les
+diagrammes, est applicable à d’autres langages, même s’ils ne disposent pas
+d’une construction analogue à <code>with</code>.   Il suffit de permettre au code client de
+manipuler directement la résolution de portée, par un mécanisme réflexif par
+exemple.
+</p>
+
+<hr >
+
+<p>
+L’utilisation de <code>with</code> vient d’ailleurs avec son lot d’inconvénients.  On
+utilise <code>with</code> ici juste parce que c’est le seul moyen qu’on a de manipuler la
+portée des variables du code du module en JavaScript standard.  Ça nous évite
+d’avoir à modifier le moteur d’exécution pour exposer le mécanisme de résolution
+de portée, ce qui permet à notre solution de fonctionner sur n’importe quel
+interpréteur JavaScript.
+</p>
+
+<p>
+Mais <code>with</code> est une construction dépréciée du langage, et notamment interdite
+dans le “mode strict” du standard ECMASCript 5.1.  Concrètement, ça veut dire
+qu’un module écrit dans ce mode strict ne peut pas être étendu avec <code>with</code>.
+C’est une nouvelle manifestation du compromis entre flexibilité et sécurité du
+code; le mode stricte offre davantage de garanties pour le programmeur (en
+particulier, l’absence de <code>with</code>), et en échange il perd la possibilité
+d’appliquer la technique de ce chapitre.
+</p>
+
+<p>
+L’environnement créé par <code>with</code> ne capture pas les déclarations de fonctions qui
+ne sont pas écrites à la racine du module.  Une fonction interne ne peut donc
+pas être instrumentée.  Les alias de fonctions ne sont pas instrumentés
+automatiquement non plus: si <code>m.a</code> et <code>m.b</code> sont deux références au même objet
+dans le module, alors redéfinir <code>m.a</code> ne change pas <code>m.b</code>, puisqu’on ne souhaite
+pas modifier les objets du module, seulement changer les références pour pointer
+vers de nouvelles variantes.
+</p>
+
+<aside class="todo">
+<p>
+Other downsides from DLS paper?
+</p>
+</aside>
 </div>
 </div>
-
-<div id="outline-container-orgheadline141" class="outline-5">
-<h5 id="orgheadline141">What about interferences between instrumentations?</h5>
-<div class="outline-text-5" id="text-orgheadline141">
-<p>
-Is
-</p>
-<pre class="example">
-njs -l flowr -l trace
-</pre>
-<p>
-the same as
-</p>
-<pre class="example">
-njs -l trace -l flowr
-</pre>
-
-<p>
-If not, what do you have to pay attention to when writing analyses?
-</p>
-</div>
 </div>
 
-<div id="outline-container-orgheadline142" class="outline-5">
-<h5 id="orgheadline142">Performance costs</h5>
-<div class="outline-text-5" id="text-orgheadline142">
-<p>
-Are expected due to the added indirection.
-</p>
-
-<p>
-We could partially evaluate the interpreter + the activated instrumentations to
-produce an interpreter without <code>with</code>, but with direct references to the
-overloaded bindings.
-</p>
-
-<p>
-We would then lose the ability to change the bindings dynamically, as far as I
-can see.
-</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgheadline147" class="outline-2">
-<h2 id="orgheadline147"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline127" class="outline-2">
+<h2 id="orgheadline127"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline146" class="outline-3">
-<h3 id="orgheadline146"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline126" class="outline-3">
+<h3 id="orgheadline126"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -10111,9 +9860,9 @@ can see.
 </div>
 </div>
 
-<div id="outline-container-orgheadline148" class="outline-2">
-<h2 id="orgheadline148">Références</h2>
-<div class="outline-text-2" id="text-orgheadline148">
+<div id="outline-container-orgheadline128" class="outline-2">
+<h2 id="orgheadline128">Références</h2>
+<div class="outline-text-2" id="text-orgheadline128">
 <div id="bibliography">
 
 <table>
@@ -10950,6 +10699,23 @@ Jeffrey&nbsp;R. Lewis, John Launchbury, Erik Meijer, and Mark Shields.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="LVG-10">LVG</a>]
+</td>
+<td class="bibtexitem">
+Benjamin&nbsp;S. Lerner, Herman Venter, and Dan Grossman.
+ Supporting dynamic, third-party code customizations in javascript
+  using aspects.
+ pages 361--376.
+<blockquote><font size="-1">
+Keywords: JavaScript, aspects, extensions, AspectScript, JIT compiler
+</font></blockquote>
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Mac-87">Mac87</a>]
 </td>
 <td class="bibtexitem">
@@ -11565,6 +11331,20 @@ Antero Taivalsaari.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="TLT-10">TL�T10</a>]
+</td>
+<td class="bibtexitem">
+Rodolfo Toledo, Paul Leger, and Éric Tanter.
+ Aspectscript: expressive aspects for the web.
+ In Jean-Marc Jézéquel and Mario Südholt, editors, <em>AOSD</em>. ACM,
+  2010.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="TO-00">TO00</a>]
 </td>
 <td class="bibtexitem">
@@ -11747,7 +11527,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-12 Tue 18:40 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-13 Wed 18:02 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
