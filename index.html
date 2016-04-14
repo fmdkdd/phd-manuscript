@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-13 Wed 18:02 -->
+<!-- 2016-04-14 Thu 17:43 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,7 +267,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline125">8. Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline130">8. Étendre un interpréteur par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline116">8.1. <span class="done STABLE">STABLE</span> Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
@@ -286,15 +286,23 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline122">8.3.5. Évaluation</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline124">8.4. <span class="todo UNSTABLE">UNSTABLE</span> Discussion</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline127">9. <span class="todo BARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline129">8.4. <span class="todo UNSTABLE">UNSTABLE</span> Discussion</a>
 <ul>
-<li><a href="#orgheadline126">9.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline124">8.4.1. La tension entre flexibilité et sécurité</a></li>
+<li><a href="#orgheadline125">8.4.2. D’autres façons d’étendre l’interpréteur</a></li>
+<li><a href="#orgheadline126">8.4.3. Pourquoi ne pas utiliser la programmation par aspects?</a></li>
+<li><a href="#orgheadline127">8.4.4. Appliquer la manipulation de portée à d’autres langages</a></li>
+<li><a href="#orgheadline128">8.4.5. Inconvénients de la manipulation de portée avec <code>with</code></a></li>
 </ul>
 </li>
-<li><a href="#orgheadline128">Références</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline132">9. <span class="todo BARE">BARE</span> Synthèse</a>
+<ul>
+<li><a href="#orgheadline131">9.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline133">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -7304,8 +7312,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline125" class="outline-2">
-<h2 id="orgheadline125"><span class="section-number-2">8</span> Étendre un interpréteur par manipulation de portée</h2>
+<div id="outline-container-orgheadline130" class="outline-2">
+<h2 id="orgheadline130"><span class="section-number-2">8</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -9306,8 +9314,8 @@ duplication de code.
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-3">
-<h3 id="orgheadline124"><span class="section-number-3">8.4</span> <span class="todo UNSTABLE">UNSTABLE</span> Discussion</h3>
+<div id="outline-container-orgheadline129" class="outline-3">
+<h3 id="orgheadline129"><span class="section-number-3">8.4</span> <span class="todo UNSTABLE">UNSTABLE</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 L’idée principale de ce chapitre est que la manipulation de la portée des
@@ -9316,7 +9324,11 @@ ce module.  Et si on peut changer intégralement le comportement du module, on
 peut nécessairement en changer une partie; c’est ce qui nous a permis de
 modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 </p>
+</div>
 
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">8.4.1</span> La tension entre flexibilité et sécurité</h4>
+<div class="outline-text-4" id="text-8-4-1">
 <p>
 On peut voir la propriété <code>E</code> qui expose l’environnement manipulable du module
 comme une interface spéciale, une interface d’instrumentation, qu’on peut
@@ -9464,9 +9476,12 @@ a toute une dimension entre le motif module, qui fixe les définitions, et
 l’utilisation de <code>with</code> dans le module, qui permet de les changer.  C’est au
 programmeur de choisir le compromis le mieux adapté au problème.
 </p>
+</div>
+</div>
 
-<hr >
-
+<div id="outline-container-orgheadline125" class="outline-4">
+<h4 id="orgheadline125"><span class="section-number-4">8.4.2</span> D’autres façons d’étendre l’interpréteur</h4>
+<div class="outline-text-4" id="text-8-4-2">
 <p>
 Il y a d’autres façons, plus évidentes, d’ouvrir le module.  Pour commencer,
 puisqu’on cherche à briser la protection offerte par la fonction anonyme,
@@ -9623,9 +9638,12 @@ programmeur de l’interpréteur ne peut pas savoir où les extensions vont se
 greffer, il n’a pas à s’en soucier, d’où moins de code à maintenir.  C’est
 l’inverse pour les techniques explicites.
 </p>
+</div>
+</div>
 
-<hr >
-
+<div id="outline-container-orgheadline126" class="outline-4">
+<h4 id="orgheadline126"><span class="section-number-4">8.4.3</span> Pourquoi ne pas utiliser la programmation par aspects?</h4>
+<div class="outline-text-4" id="text-8-4-3">
 <p>
 Étendre un module par du code extérieur sans que le code du module n’expose
 d’interface pour, activer et désactiver les extensions dynamiquement, les
@@ -9668,22 +9686,74 @@ AspectScript est une bibliothèque d’aspect qui réifie <i>tout le code</i> qu
 l’envoyer à AspectScript, qui va le parser, et émettre du code qui réifie les
 déclarations, les appels de fonction, les affectations de variable, toutes les
 constructions du langage en appels explicites à AspectScript.  C’est comme ça
-qu’AspectScript peut capturer n’importe quel évènement du module.  En somme,
-AspectScript <i>interprète</i> le code du module, délègue l’évaluation au moteur
-d’exécution sous-jacent.  Au passage, il émet des <i>joinpoint</i> pour chaque
+qu’AspectScript peut capturer n’importe quel évènement du module.
+</p>
+
+<p>
+AspectScript transforme ce module:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = (<span style="font-weight: bold;">function</span>() {
+  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = 1;
+  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">f</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> x + a; }
+  <span style="font-weight: bold;">function</span> <span style="font-weight: bold;">g</span>(<span style="font-weight: bold; font-style: italic;">x</span>) { <span style="font-weight: bold;">return</span> f(x); }
+  <span style="font-weight: bold;">return</span> {g: g, f: f};
+}());
+</pre>
+</div>
+
+<p>
+en ce code:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">m</span> = AS.i13n.propWrite(
+  AS.globalObject, <span style="font-style: italic;">"m"</span>,
+  (AS.i13n.call(
+    AS.globalObject,
+    AS.i13n.wrap(<span style="font-weight: bold;">function</span>(){<span style="font-weight: bold;">return</span> (<span style="font-weight: bold;">function</span> (){
+      {<span style="font-weight: bold; text-decoration: underline;">arguments</span>.callee = <span style="font-weight: bold; text-decoration: underline;">arguments</span>.callee.wrapper;
+       <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = AS.i13n.varWrite(
+         <span style="font-style: italic;">"f"</span>,
+         AS.i13n.wrap(<span style="font-weight: bold;">function</span>(){<span style="font-weight: bold;">return</span> (<span style="font-weight: bold;">function</span> f(<span style="font-weight: bold; font-style: italic;">x</span>){
+           {<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">f</span> = <span style="font-weight: bold; text-decoration: underline;">arguments</span>.callee
+                  = <span style="font-weight: bold; text-decoration: underline;">arguments</span>.callee.wrapper;
+            <span style="font-weight: bold;">return</span> (AS.i13n.varRead(<span style="font-style: italic;">"x"</span>,x))
+                   + (AS.i13n.varRead(<span style="font-style: italic;">"a"</span>,a));
+           }})}),<span style="font-weight: bold; text-decoration: underline;">undefined</span>);
+       <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = AS.i13n.varWrite(
+         <span style="font-style: italic;">"g"</span>,
+         AS.i13n.wrap(<span style="font-weight: bold;">function</span>(){<span style="font-weight: bold;">return</span> (<span style="font-weight: bold;">function</span> g(<span style="font-weight: bold; font-style: italic;">x</span>){
+           {<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">g</span> = <span style="font-weight: bold; text-decoration: underline;">arguments</span>.callee
+                  = <span style="font-weight: bold; text-decoration: underline;">arguments</span>.callee.wrapper;
+            <span style="font-weight: bold;">return</span> AS.i13n.call(
+              AS.globalObject,
+              (AS.i13n.varRead(<span style="font-style: italic;">"f"</span>,f)),
+              [(AS.i13n.varRead(<span style="font-style: italic;">"x"</span>,x))],<span style="font-weight: bold; text-decoration: underline;">this</span>);
+           }})}),<span style="font-weight: bold; text-decoration: underline;">undefined</span>);
+       <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">a</span> = (AS.i13n.varWrite(<span style="font-style: italic;">"a"</span>, 1, <span style="font-weight: bold; text-decoration: underline;">undefined</span>));
+       <span style="font-weight: bold;">return</span> AS.i13n.creation2(
+         <span style="font-weight: bold;">function</span>(){
+           <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">$__this__</span>=<span style="font-weight: bold; text-decoration: underline;">arguments</span>[0];
+           <span style="font-weight: bold; text-decoration: underline;">arguments</span>=<span style="font-weight: bold; text-decoration: underline;">arguments</span>[1];
+           AS.i13n.propWrite($__this__, <span style="font-style: italic;">"g"</span>,
+                             (AS.i13n.varRead(<span style="font-style: italic;">"g"</span>,g)));
+           AS.i13n.propWrite($__this__, <span style="font-style: italic;">"f"</span>,
+                             (AS.i13n.varRead(<span style="font-style: italic;">"f"</span>,f)));
+         },<span style="font-weight: bold; text-decoration: underline;">this</span>,<span style="font-weight: bold; text-decoration: underline;">arguments</span>);
+      }})}),[],<span style="font-weight: bold; text-decoration: underline;">this</span>)));
+</pre>
+</div>
+
+<p>
+En somme, AspectScript <i>interprète</i> le code du module, délègue l’évaluation au
+moteur d’exécution sous-jacent.  Au passage, il émet des <i>joinpoint</i> pour chaque
 construction, teste les <i>pointcut</i> pour tous les <i>advice</i> enregistrés, et
 exécute le code si le <i>pointcut</i> correspond.
 </p>
-
-<pre class="example">
-&lt;&lt;Exemple de code émis par AspectScript ici&gt;&gt;
-</pre>
-
-<aside class="todo">
-<p>
-Fill example
-</p>
-</aside>
 
 <p>
 Ce mode de fonctionnement a deux inconvénients.  D’abord, AspectScript duplique
@@ -9706,11 +9776,30 @@ peut pas instrumenter du code qui contient <code>with</code>.
 </p>
 </aside>
 
-<aside class="todo">
-<p>
-Show what it looks like for function calls
-</p>
-</aside>
+<div class="org-src-container">
+<label class="org-src-name">Le code invoqué dans AspectScript pour un appel réifié de fonction.</label>
+<pre class="src src-js"><span style="font-weight: bold;">call</span>: <span style="font-weight: bold;">function</span> (<span style="font-weight: bold; font-style: italic;">obj</span>, <span style="font-weight: bold; font-style: italic;">fun</span>, <span style="font-weight: bold; font-style: italic;">args</span>, <span style="font-weight: bold; font-style: italic;">context</span>){
+  acChecker.checkCall(obj, fun);
+
+  <span style="font-weight: bold;">if</span>(!weavingNeeded()){
+    <span style="font-weight: bold;">return</span> fun.apply(obj, args);
+  }
+
+  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">call</span> = jpPool.get(JP_CALL, obj, fun, args,
+                        context, currentJoinPoint);
+  <span style="font-weight: bold;">if</span>(systemObjects.indexOf(obj) &gt;= 0){
+    <span style="font-weight: bold;">try</span>{
+      <span style="font-weight: bold;">return</span> call._proceed();
+    }
+    <span style="font-weight: bold;">finally</span>{
+      jpPool.release(call);
+    }
+  }
+
+  <span style="font-weight: bold;">return</span> weave(call);
+},
+</pre>
+</div>
 
 <p>
 Le second inconvénient est que pour parser le code, AspectScript utilise son
@@ -9721,29 +9810,17 @@ extensions de syntaxe des dernières versions de JavaScript s’exécutera
 correctement sur le navigateur, mais pas s’il est instrumenté par AspectScript.
 </p>
 
-<aside class="todo">
-<p>
-Isn’t the AspectScript parser taken from Narcissus?
-</p>
-</aside>
-
 <p>
 Parce qu’AspectScript re-interprète le code, et utilise son propre parser, il
 pose des problèmes de compatibilité.  Mais ces mécanismes ont également un coût
-important en temps d’exécution et espace mémoire.  AspectScript est X fois plus
-lent qu’un moteur d’exécution de JavaScript.  Sachant qu’on cherche ici à
+important en temps d’exécution et espace mémoire.  AspectScript est 5 à 15 fois
+plus lent qu’un moteur d’exécution de JavaScript.  Sachant qu’on cherche ici à
 instrumenter un interpréteur de JavaScript, et qu’on perd déjà un ordre de
 magnitude de performance en utilisant un interpréteur meta-circulaire, rajouter
 une la couche d’interprétation d’AspectScript n’est pas idéal, surtout s’il y a
 une alternative qui nous permet d’étendre l’interpréteur avec la même
 flexibilité à un coût de performance moindre.
 </p>
-
-<aside class="todo">
-<p>
-Numbers from AspectScript paper here
-</p>
-</aside>
 
 <p>
 La programmation par aspect est donc un bon candidat pour le scénario
@@ -9752,9 +9829,12 @@ une solution adéquate pour des raisons techniques.  Une autre implémentation
 d’aspects pour JavaScript existe dans la littérature [<a href="#LVG-10">LVG</a>], mais elle ne
 cible qu’une version interne modifiée du navigateur Internet Explorer.
 </p>
+</div>
+</div>
 
-<hr >
-
+<div id="outline-container-orgheadline127" class="outline-4">
+<h4 id="orgheadline127"><span class="section-number-4">8.4.4</span> Appliquer la manipulation de portée à d’autres langages</h4>
+<div class="outline-text-4" id="text-8-4-4">
 <p>
 On n’a pas utilisé une bibliothèque d’aspect, mais l’approche de ce chapitre est
 certainement ancrée dans le paradigme de la programmation par aspects.  Et c’est
@@ -9787,9 +9867,12 @@ d’une construction analogue à <code>with</code>.   Il suffit de permettre au 
 manipuler directement la résolution de portée, par un mécanisme réflexif par
 exemple.
 </p>
+</div>
+</div>
 
-<hr >
-
+<div id="outline-container-orgheadline128" class="outline-4">
+<h4 id="orgheadline128"><span class="section-number-4">8.4.5</span> Inconvénients de la manipulation de portée avec <code>with</code></h4>
+<div class="outline-text-4" id="text-8-4-5">
 <p>
 L’utilisation de <code>with</code> vient d’ailleurs avec son lot d’inconvénients.  On
 utilise <code>with</code> ici juste parce que c’est le seul moyen qu’on a de manipuler la
@@ -9816,23 +9899,19 @@ pas être instrumentée.  Les alias de fonctions ne sont pas instrumentés
 automatiquement non plus: si <code>m.a</code> et <code>m.b</code> sont deux références au même objet
 dans le module, alors redéfinir <code>m.a</code> ne change pas <code>m.b</code>, puisqu’on ne souhaite
 pas modifier les objets du module, seulement changer les références pour pointer
-vers de nouvelles variantes.
+vers de nouvelles variantes.  Les fonctions anonymes, n’ayant de nom pour
+pouvoir les références, ne peuvent pas être instrumentées non plus.
 </p>
-
-<aside class="todo">
-<p>
-Other downsides from DLS paper?
-</p>
-</aside>
+</div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-2">
-<h2 id="orgheadline127"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline132" class="outline-2">
+<h2 id="orgheadline132"><span class="section-number-2">9</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline126" class="outline-3">
-<h3 id="orgheadline126"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline131" class="outline-3">
+<h3 id="orgheadline131"><span class="section-number-3">9.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-9-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -9860,9 +9939,9 @@ Other downsides from DLS paper?
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-2">
-<h2 id="orgheadline128">Références</h2>
-<div class="outline-text-2" id="text-orgheadline128">
+<div id="outline-container-orgheadline133" class="outline-2">
+<h2 id="orgheadline133">Références</h2>
+<div class="outline-text-2" id="text-orgheadline133">
 <div id="bibliography">
 
 <table>
@@ -11527,7 +11606,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-13 Wed 18:02 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-14 Thu 17:43 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
