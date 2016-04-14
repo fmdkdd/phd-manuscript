@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-14 Thu 17:43 -->
+<!-- 2016-04-14 Thu 18:01 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -267,17 +267,17 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline111">7.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline130">8. Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline130">8. <span class="done STABLE">STABLE</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
-<li><a href="#orgheadline116">8.1. <span class="done STABLE">STABLE</span> Manipuler la portée des variables pour l’instrumentation</a>
+<li><a href="#orgheadline116">8.1. Manipuler la portée des variables pour l’instrumentation</a>
 <ul>
 <li><a href="#orgheadline113">8.1.1. La portée dans le motif module</a></li>
 <li><a href="#orgheadline114">8.1.2. Ouvrir le motif module</a></li>
 <li><a href="#orgheadline115">8.1.3. Disposer les environnements en couches</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline117">8.2. <span class="done STABLE">STABLE</span> Ouvrir le motif module en JavaScript</a></li>
-<li><a href="#orgheadline123">8.3. <span class="done STABLE">STABLE</span> Étendre Narcissus par manipulation de portée</a>
+<li><a href="#orgheadline117">8.2. Ouvrir le motif module en JavaScript</a></li>
+<li><a href="#orgheadline123">8.3. Étendre Narcissus par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline118">8.3.1. Ajouter l’analyse d’évaluation multi-facettes</a></li>
 <li><a href="#orgheadline119">8.3.2. Ajouter l’analyse de trace</a></li>
@@ -286,9 +286,9 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline122">8.3.5. Évaluation</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline129">8.4. <span class="todo UNSTABLE">UNSTABLE</span> Discussion</a>
+<li><a href="#orgheadline129">8.4. Discussion</a>
 <ul>
-<li><a href="#orgheadline124">8.4.1. La tension entre flexibilité et sécurité</a></li>
+<li><a href="#orgheadline124">8.4.1. La tension entre flexibilité et sûreté</a></li>
 <li><a href="#orgheadline125">8.4.2. D’autres façons d’étendre l’interpréteur</a></li>
 <li><a href="#orgheadline126">8.4.3. Pourquoi ne pas utiliser la programmation par aspects?</a></li>
 <li><a href="#orgheadline127">8.4.4. Appliquer la manipulation de portée à d’autres langages</a></li>
@@ -7313,7 +7313,7 @@ Combine all the extensions without effort.
 </div>
 
 <div id="outline-container-orgheadline130" class="outline-2">
-<h2 id="orgheadline130"><span class="section-number-2">8</span> Étendre un interpréteur par manipulation de portée</h2>
+<h2 id="orgheadline130"><span class="section-number-2">8</span> <span class="done STABLE">STABLE</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 <i>Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -7358,7 +7358,7 @@ langage JavaScript.
 </div>
 
 <div id="outline-container-orgheadline116" class="outline-3">
-<h3 id="orgheadline116"><span class="section-number-3">8.1</span> <span class="done STABLE">STABLE</span> Manipuler la portée des variables pour l’instrumentation</h3>
+<h3 id="orgheadline116"><span class="section-number-3">8.1</span> Manipuler la portée des variables pour l’instrumentation</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
 L’ingrédient clé de cette section est la notion de <i>portée de variable</i>, et
@@ -8030,7 +8030,7 @@ l’objet de la section suivante.
 </div>
 
 <div id="outline-container-orgheadline117" class="outline-3">
-<h3 id="orgheadline117"><span class="section-number-3">8.2</span> <span class="done STABLE">STABLE</span> Ouvrir le motif module en JavaScript</h3>
+<h3 id="orgheadline117"><span class="section-number-3">8.2</span> Ouvrir le motif module en JavaScript</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
@@ -8377,7 +8377,7 @@ applique ces mécanismes à Narcissus.
 </div>
 
 <div id="outline-container-orgheadline123" class="outline-3">
-<h3 id="orgheadline123"><span class="section-number-3">8.3</span> <span class="done STABLE">STABLE</span> Étendre Narcissus par manipulation de portée</h3>
+<h3 id="orgheadline123"><span class="section-number-3">8.3</span> Étendre Narcissus par manipulation de portée</h3>
 <div class="outline-text-3" id="text-8-3">
 <p>
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -9315,7 +9315,7 @@ duplication de code.
 </div>
 
 <div id="outline-container-orgheadline129" class="outline-3">
-<h3 id="orgheadline129"><span class="section-number-3">8.4</span> <span class="todo UNSTABLE">UNSTABLE</span> Discussion</h3>
+<h3 id="orgheadline129"><span class="section-number-3">8.4</span> Discussion</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 L’idée principale de ce chapitre est que la manipulation de la portée des
@@ -9327,7 +9327,7 @@ modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 </div>
 
 <div id="outline-container-orgheadline124" class="outline-4">
-<h4 id="orgheadline124"><span class="section-number-4">8.4.1</span> La tension entre flexibilité et sécurité</h4>
+<h4 id="orgheadline124"><span class="section-number-4">8.4.1</span> La tension entre flexibilité et sûreté</h4>
 <div class="outline-text-4" id="text-8-4-1">
 <p>
 On peut voir la propriété <code>E</code> qui expose l’environnement manipulable du module
@@ -9459,12 +9459,12 @@ Chaque contrainte restreint le programme, et assure ainsi des garanties
 supplémentaires, mais chaque contrainte exclut également des possibilités.
 </p>
 
-<div class="side-figure">
+<div style="margin-top:-10rem" class="side-figure">
 
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir l’ensemble de ses valeurs <i>possibles</i>, c’est aussi définir l’ensemble des valeurs <i>impossibles</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir l’ensemble de ses valeurs <i>possibles</i>, c’est aussi définir l’ensemble des valeurs <i>exclues</i>.</figcaption>
 </figure>
 
 </div>
@@ -9500,8 +9500,8 @@ g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style="
 
 <p>
 Ainsi, on peut redéfinir les fonctions et les valeurs comme on le souhaite, et
-même dans des fichiers séparés, puisque toutes définitions résident dans le même
-environnement.
+même dans des fichiers séparés, puisque toutes les définitions résident dans le
+même environnement.
 </p>
 
 <div class="org-src-container">
@@ -9886,7 +9886,7 @@ interpréteur JavaScript.
 Mais <code>with</code> est une construction dépréciée du langage, et notamment interdite
 dans le “mode strict” du standard ECMASCript 5.1.  Concrètement, ça veut dire
 qu’un module écrit dans ce mode strict ne peut pas être étendu avec <code>with</code>.
-C’est une nouvelle manifestation du compromis entre flexibilité et sécurité du
+C’est une nouvelle manifestation du compromis entre flexibilité et sûreté du
 code; le mode stricte offre davantage de garanties pour le programmeur (en
 particulier, l’absence de <code>with</code>), et en échange il perd la possibilité
 d’appliquer la technique de ce chapitre.
@@ -10785,9 +10785,6 @@ Benjamin&nbsp;S. Lerner, Herman Venter, and Dan Grossman.
  Supporting dynamic, third-party code customizations in javascript
   using aspects.
  pages 361--376.
-<blockquote><font size="-1">
-Keywords: JavaScript, aspects, extensions, AspectScript, JIT compiler
-</font></blockquote>
 
 </td>
 </tr>
@@ -11606,7 +11603,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-14 Thu 17:43 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-14 Thu 18:01 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
