@@ -126,6 +126,11 @@
      - [[#ajouter-lanalyse-denvironnements][Ajouter l’analyse d’environnements]]
      - [[#Évaluation][Évaluation]]
    - [[#unstable-discussion][UNSTABLE Discussion]]
+     - [[#la-tension-entre-flexibilité-et-sécurité][La tension entre flexibilité et sécurité]]
+     - [[#dautres-façons-détendre-linterpréteur][D’autres façons d’étendre l’interpréteur]]
+     - [[#pourquoi-ne-pas-utiliser-la-programmation-par-aspects][Pourquoi ne pas utiliser la programmation par aspects?]]
+     - [[#appliquer-la-manipulation-de-portée-à-dautres-langages][Appliquer la manipulation de portée à d’autres langages]]
+     - [[#inconvénients-de-la-manipulation-de-portée-avec-with][Inconvénients de la manipulation de portée avec ~with~]]
  - [[#bare-synthèse][BARE Synthèse]]
    - [[#bare-séparation-des-préoccupations-pourquoi][BARE Séparation des préoccupations: pourquoi?]]
  - [[#références][Références]]
@@ -7273,6 +7278,7 @@ ce module.  Et si on peut changer intégralement le comportement du module, on
 peut nécessairement en changer une partie; c’est ce qui nous a permis de
 modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 
+*** La tension entre flexibilité et sécurité
 On peut voir la propriété ~E~ qui expose l’environnement manipulable du module
 comme une interface spéciale, une interface d’instrumentation, qu’on peut
 rapprocher du concept d’”implémentation ouverte” de [[cite:Kic-96][Kic-96]].  Cette interface
@@ -7392,8 +7398,7 @@ a toute une dimension entre le motif module, qui fixe les définitions, et
 l’utilisation de ~with~ dans le module, qui permet de les changer.  C’est au
 programmeur de choisir le compromis le mieux adapté au problème.
 
-------
-
+*** D’autres façons d’étendre l’interpréteur
 Il y a d’autres façons, plus évidentes, d’ouvrir le module.  Pour commencer,
 puisqu’on cherche à briser la protection offerte par la fonction anonyme,
 pourquoi ne pas l’enlever?  Et définir nos fonctions directement à la racine:
@@ -7523,8 +7528,7 @@ l’inverse pour les techniques explicites.
 # export * except a,b  (intension)
 # export c,d,f         (extension)
 
------
-
+*** Pourquoi ne pas utiliser la programmation par aspects?
 Étendre un module par du code extérieur sans que le code du module n’expose
 d’interface pour, activer et désactiver les extensions dynamiquement, les
 combiner ... ces objectifs rappellent fortement la programmation par aspects.
@@ -7556,20 +7560,63 @@ AspectScript est une bibliothèque d’aspect qui réifie /tout le code/ qui doi
 l’envoyer à AspectScript, qui va le parser, et émettre du code qui réifie les
 déclarations, les appels de fonction, les affectations de variable, toutes les
 constructions du langage en appels explicites à AspectScript.  C’est comme ça
-qu’AspectScript peut capturer n’importe quel évènement du module.  En somme,
-AspectScript /interprète/ le code du module, délègue l’évaluation au moteur
-d’exécution sous-jacent.  Au passage, il émet des /joinpoint/ pour chaque
+qu’AspectScript peut capturer n’importe quel évènement du module.
+
+AspectScript transforme ce module:
+
+#+BEGIN_SRC js
+var m = (function() {
+  var a = 1;
+  function f(x) { return x + a; }
+  function g(x) { return f(x); }
+  return {g: g, f: f};
+}());
+#+END_SRC
+
+en ce code:
+
+#+BEGIN_SRC js
+var m = AS.i13n.propWrite(
+  AS.globalObject, "m",
+  (AS.i13n.call(
+    AS.globalObject,
+    AS.i13n.wrap(function(){return (function (){
+      {arguments.callee = arguments.callee.wrapper;
+       var f = AS.i13n.varWrite(
+         "f",
+         AS.i13n.wrap(function(){return (function f(x){
+           {var f = arguments.callee
+                  = arguments.callee.wrapper;
+            return (AS.i13n.varRead("x",x))
+                   + (AS.i13n.varRead("a",a));
+           }})}),undefined);
+       var g = AS.i13n.varWrite(
+         "g",
+         AS.i13n.wrap(function(){return (function g(x){
+           {var g = arguments.callee
+                  = arguments.callee.wrapper;
+            return AS.i13n.call(
+              AS.globalObject,
+              (AS.i13n.varRead("f",f)),
+              [(AS.i13n.varRead("x",x))],this);
+           }})}),undefined);
+       var a = (AS.i13n.varWrite("a", 1, undefined));
+       return AS.i13n.creation2(
+         function(){
+           var $__this__=arguments[0];
+           arguments=arguments[1];
+           AS.i13n.propWrite($__this__, "g",
+                             (AS.i13n.varRead("g",g)));
+           AS.i13n.propWrite($__this__, "f",
+                             (AS.i13n.varRead("f",f)));
+         },this,arguments);
+      }})}),[],this)));
+#+END_SRC
+
+En somme, AspectScript /interprète/ le code du module, délègue l’évaluation au
+moteur d’exécution sous-jacent.  Au passage, il émet des /joinpoint/ pour chaque
 construction, teste les /pointcut/ pour tous les /advice/ enregistrés, et
 exécute le code si le /pointcut/ correspond.
-
-#+BEGIN_EXAMPLE
-<<Exemple de code émis par AspectScript ici>>
-#+END_EXAMPLE
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Fill example
-#+END_aside
 
 Ce mode de fonctionnement a deux inconvénients.  D’abord, AspectScript duplique
 évidemment le travail du moteur d’exécution de JavaScript, ce qui est
@@ -7589,10 +7636,29 @@ Exemple de déviation de l’évaluation standard de JavaScript: AspectScript ne
 peut pas instrumenter du code qui contient ~with~.
 #+END_aside
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Show what it looks like for function calls
-#+END_aside
+#+CAPTION: Le code invoqué dans AspectScript pour un appel réifié de fonction.
+#+BEGIN_SRC js
+call: function (obj, fun, args, context){
+  acChecker.checkCall(obj, fun);
+
+  if(!weavingNeeded()){
+    return fun.apply(obj, args);
+  }
+
+  var call = jpPool.get(JP_CALL, obj, fun, args,
+                        context, currentJoinPoint);
+  if(systemObjects.indexOf(obj) >= 0){
+    try{
+      return call._proceed();
+    }
+    finally{
+      jpPool.release(call);
+    }
+  }
+
+  return weave(call);
+},
+#+END_SRC
 
 Le second inconvénient est que pour parser le code, AspectScript utilise son
 propre parser, ce qui encore une fois peut introduire des déviations par rapport
@@ -7601,25 +7667,15 @@ parser d’AspectScript ne suit pas cette évolution.  Du code qui utilise des
 extensions de syntaxe des dernières versions de JavaScript s’exécutera
 correctement sur le navigateur, mais pas s’il est instrumenté par AspectScript.
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Isn’t the AspectScript parser taken from Narcissus?
-#+END_aside
-
 Parce qu’AspectScript re-interprète le code, et utilise son propre parser, il
 pose des problèmes de compatibilité.  Mais ces mécanismes ont également un coût
-important en temps d’exécution et espace mémoire.  AspectScript est X fois plus
-lent qu’un moteur d’exécution de JavaScript.  Sachant qu’on cherche ici à
+important en temps d’exécution et espace mémoire.  AspectScript est 5 à 15 fois
+plus lent qu’un moteur d’exécution de JavaScript.  Sachant qu’on cherche ici à
 instrumenter un interpréteur de JavaScript, et qu’on perd déjà un ordre de
 magnitude de performance en utilisant un interpréteur meta-circulaire, rajouter
 une la couche d’interprétation d’AspectScript n’est pas idéal, surtout s’il y a
 une alternative qui nous permet d’étendre l’interpréteur avec la même
 flexibilité à un coût de performance moindre.
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Numbers from AspectScript paper here
-#+END_aside
 
 La programmation par aspect est donc un bon candidat pour le scénario
 d’instrumentation de Narcissus, mais l’implémentation d’AspectScript n’est pas
@@ -7627,8 +7683,7 @@ une solution adéquate pour des raisons techniques.  Une autre implémentation
 d’aspects pour JavaScript existe dans la littérature [[cite:LVG-10][LVG-10]], mais elle ne
 cible qu’une version interne modifiée du navigateur Internet Explorer.
 
------
-
+*** Appliquer la manipulation de portée à d’autres langages
 On n’a pas utilisé une bibliothèque d’aspect, mais l’approche de ce chapitre est
 certainement ancrée dans le paradigme de la programmation par aspects.  Et c’est
 justement intéressant de voir que la simple manipulation de la portée des
@@ -7654,8 +7709,7 @@ d’une construction analogue à ~with~.   Il suffit de permettre au code client
 manipuler directement la résolution de portée, par un mécanisme réflexif par
 exemple.
 
------
-
+*** Inconvénients de la manipulation de portée avec ~with~
 L’utilisation de ~with~ vient d’ailleurs avec son lot d’inconvénients.  On
 utilise ~with~ ici juste parce que c’est le seul moyen qu’on a de manipuler la
 portée des variables du code du module en JavaScript standard.  Ça nous évite
@@ -7677,35 +7731,8 @@ pas être instrumentée.  Les alias de fonctions ne sont pas instrumentés
 automatiquement non plus: si ~m.a~ et ~m.b~ sont deux références au même objet
 dans le module, alors redéfinir ~m.a~ ne change pas ~m.b~, puisqu’on ne souhaite
 pas modifier les objets du module, seulement changer les références pour pointer
-vers de nouvelles variantes.
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Other downsides from DLS paper?
-#+END_aside
-
-# **** Scoping strategies
-# Scoping strategies specify how aspects are applied dynamically.
-
-# Here we just manipulate bindings.  Essentially, an instrumentation is just
-# defining =around= advices.
-
-# Tanter also provided an intuition of scoping strategies outside the aspect
-# paradigm.  A scoping strategy for bindings is a triplet of two propagation
-# functions, and one filter (activation) function.
-
-# The two propagation functions determine if the binding propagates on 1) the call
-# stack, or 2) in delayed lambdas.  The filter function can toggle the binding for
-# any function execution event.
-
-# In our case, we do not initiate the call to the interpreter, and our code is not
-# lexically shared, so the propagation functions would not help us in overriding
-# the bindings.  The activation function is then useless, as it serves only to
-# toggle bindings present in the environment.
-
-# However, if we redefined =evaluate= we could override the bindings using
-# standard dynamic scoping semantics.  It is unclear whether the added
-# expressiveness of scoping strategies would be needed, or more useful.
+vers de nouvelles variantes.  Les fonctions anonymes, n’ayant de nom pour
+pouvoir les références, ne peuvent pas être instrumentées non plus.
 
 * BARE Synthèse
 ** BARE Séparation des préoccupations: pourquoi?
