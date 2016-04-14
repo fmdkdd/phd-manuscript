@@ -113,20 +113,20 @@
      - [[#non-destructive-modification][Non-destructive modification]]
    - [[#passing-state][Passing state]]
    - [[#all-in-one][All in one]]
- - [[#Étendre-un-interpréteur-par-manipulation-de-portée][Étendre un interpréteur par manipulation de portée]]
-   - [[#stable-manipuler-la-portée-des-variables-pour-linstrumentation][STABLE Manipuler la portée des variables pour l’instrumentation]]
+ - [[#stable-Étendre-un-interpréteur-par-manipulation-de-portée][STABLE Étendre un interpréteur par manipulation de portée]]
+   - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l’instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
      - [[#ouvrir-le-motif-module][Ouvrir le motif module]]
      - [[#disposer-les-environnements-en-couches][Disposer les environnements en couches]]
-   - [[#stable-ouvrir-le-motif-module-en-javascript][STABLE Ouvrir le motif module en JavaScript]]
-   - [[#stable-Étendre-narcissus-par-manipulation-de-portée][STABLE Étendre Narcissus par manipulation de portée]]
+   - [[#ouvrir-le-motif-module-en-javascript][Ouvrir le motif module en JavaScript]]
+   - [[#Étendre-narcissus-par-manipulation-de-portée][Étendre Narcissus par manipulation de portée]]
      - [[#ajouter-lanalyse-dévaluation-multi-facettes][Ajouter l’analyse d’évaluation multi-facettes]]
      - [[#ajouter-lanalyse-de-trace][Ajouter l’analyse de trace]]
      - [[#ajouter-lanalyse-flowr][Ajouter l’analyse FlowR]]
      - [[#ajouter-lanalyse-denvironnements][Ajouter l’analyse d’environnements]]
      - [[#Évaluation][Évaluation]]
-   - [[#unstable-discussion][UNSTABLE Discussion]]
-     - [[#la-tension-entre-flexibilité-et-sécurité][La tension entre flexibilité et sécurité]]
+   - [[#discussion][Discussion]]
+     - [[#la-tension-entre-flexibilité-et-sûreté][La tension entre flexibilité et sûreté]]
      - [[#dautres-façons-détendre-linterpréteur][D’autres façons d’étendre l’interpréteur]]
      - [[#pourquoi-ne-pas-utiliser-la-programmation-par-aspects][Pourquoi ne pas utiliser la programmation par aspects?]]
      - [[#appliquer-la-manipulation-de-portée-à-dautres-langages][Appliquer la manipulation de portée à d’autres langages]]
@@ -5707,7 +5707,7 @@ Combine all the extensions without effort.
 
 # [[file:img/all-in-one.svg]]
 
-* Étendre un interpréteur par manipulation de portée
+* STABLE Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d’un papier rejeté à DLS’15 et à SAC’16 [[cite:KNS-15b][KNS-15b]]/.
 
 #+BEGIN_epigraph
@@ -5736,7 +5736,7 @@ modulaire.  Dans ce chapitre, on propose une façon simple d’étendre cet
 interpréteur, en se basant uniquement sur les fonctionnalités présentes dans le
 langage JavaScript.
 
-** STABLE Manipuler la portée des variables pour l’instrumentation
+** Manipuler la portée des variables pour l’instrumentation
 L’ingrédient clé de cette section est la notion de /portée de variable/, et
 comment manipuler cette portée.  Une variable déclarée dans une fonction n’est
 pas accessible depuis une autre fonction; on dit alors que la portée de cette
@@ -6261,7 +6261,7 @@ Aucune de ces suppositions n’est valide en JavaScript.  Cependant, il y a moye
 de réaliser ce modèle en utilisant des constructions JavaScript standard.  C’est
 l’objet de la section suivante.
 
-** STABLE Ouvrir le motif module en JavaScript
+** Ouvrir le motif module en JavaScript
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
 partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
@@ -6546,7 +6546,7 @@ plus intéressant de voir comment on peut ouvrir un module plus réaliste, et
 quels sont les problèmes qui apparaissent.  Dans la section suivante, on
 applique ces mécanismes à Narcissus.
 
-** STABLE Étendre Narcissus par manipulation de portée
+** Étendre Narcissus par manipulation de portée
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
 laquelle on va ajouter plusieurs analyses en essayant de minimiser les
 changements de code à l’intérieur du module de Narcissus.  Pour ouvrir le module
@@ -7271,14 +7271,14 @@ de base, l’évaluation multi-facettes bénéficiait du correctif automatiqueme
 Cette anecdote illustre l’intérêt d’une décomposition qui cherche à minimiser la
 duplication de code.
 
-** UNSTABLE Discussion
+** Discussion
 L’idée principale de ce chapitre est que la manipulation de la portée des
 variables d’un module est suffisante pour changer totalement le comportement de
 ce module.  Et si on peut changer intégralement le comportement du module, on
 peut nécessairement en changer une partie; c’est ce qui nous a permis de
 modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 
-*** La tension entre flexibilité et sécurité
+*** La tension entre flexibilité et sûreté
 On peut voir la propriété ~E~ qui expose l’environnement manipulable du module
 comme une interface spéciale, une interface d’instrumentation, qu’on peut
 rapprocher du concept d’”implémentation ouverte” de [[cite:Kic-96][Kic-96]].  Cette interface
@@ -7385,10 +7385,11 @@ négation de cette contrainte n’est plus un cas possible pour le programme.
 Chaque contrainte restreint le programme, et assure ainsi des garanties
 supplémentaires, mais chaque contrainte exclut également des possibilités.
 
+#+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
 #+CAPTION: Imposer une contrainte sur une variable, ce n’est pas
 #+CAPTION: seulement définir l’ensemble de ses valeurs /possibles/, c’est aussi
-#+CAPTION: définir l’ensemble des valeurs /impossibles/.
+#+CAPTION: définir l’ensemble des valeurs /exclues/.
 [[file:img/dls14.svg]]
 #+END_side-figure
 
@@ -7412,8 +7413,8 @@ g(0) //: 1
 #+END_SRC
 
 Ainsi, on peut redéfinir les fonctions et les valeurs comme on le souhaite, et
-même dans des fichiers séparés, puisque toutes définitions résident dans le même
-environnement.
+même dans des fichiers séparés, puisque toutes les définitions résident dans le
+même environnement.
 
 #+BEGIN_SRC js
 var a = 1
@@ -7720,7 +7721,7 @@ interpréteur JavaScript.
 Mais ~with~ est une construction dépréciée du langage, et notamment interdite
 dans le “mode strict” du standard ECMASCript 5.1.  Concrètement, ça veut dire
 qu’un module écrit dans ce mode strict ne peut pas être étendu avec ~with~.
-C’est une nouvelle manifestation du compromis entre flexibilité et sécurité du
+C’est une nouvelle manifestation du compromis entre flexibilité et sûreté du
 code; le mode stricte offre davantage de garanties pour le programmeur (en
 particulier, l’absence de ~with~), et en échange il perd la possibilité
 d’appliquer la technique de ce chapitre.
