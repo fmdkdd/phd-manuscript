@@ -31,7 +31,7 @@
      - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#translate-open-implementation][TRANSLATE Open Implementation]]
+     - [[#translate-limplémentation-ouverte][TRANSLATE L’implémentation ouverte]]
        - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
      - [[#translate-aspect-oriented-programming][TRANSLATE Aspect-Oriented Programming]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
@@ -876,23 +876,88 @@ instrumentation?  In the case of Narcissus, it was not, since the interpreter
 was not OO.  But the open scope pattern might be equivalent, dynamically, to
 inheritance.
 
-*** TRANSLATE Open Implementation
-Before AOP, there was the concept of Open Implementation [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]]
-[[cite:KLL+97][KLL+97]].
+*** TRANSLATE L’implémentation ouverte
+La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
+des programmes de contrôler, d’inspecter, de modifier, et d’étendre la
+sémantique du langage.
 
-[[cite:Rao-91][Rao-91]] introduces the concept of a system with /open implementation/, which has
-two interfaces: the base level interface and the metalevel interface that
-reveals parts of the implementation of the base level.  They use reflection to
-customize the behavior of a window system for writing a spreadsheet.  They find
-that OO languages have advantages:
-1. Object-centered specification closely maps the domain (here, a window
-   system).
-2. Polymorphism allows multiple implementation to coexist.
-3. Inheritance allows reuse and differential programming.
+#+BEGIN_QUOTE
+One meaning of the word reflect is to consider some subject matter.  Another is
+to turn back something (e.g. light or sound).  Punning on these two meanings, we
+get the notion of turning back one's consideration or considering one's own
+activities as a subject matter.  Our ability as humans to reflect in this sense
+has been credited, since Aristotle, with our success in adapting to new
+situations and mastering our environment.  Naturally, it was widely conjectured
+in the artificial intelligence community that by providing reflective
+capabilities to computational systems, we would obtain systems with greater
+plasticity and consequently, enhanced functionality. — [[cite:Rao-91][Rao-91]]
+#+END_QUOTE
 
-Reflection is only one mechanism, that may not be optimal for clients of the
-meta level interface (can be complex).  They believe in a more declarative
-approach to meta level interfaces.
+Mais la réflexion n’est pas restreinte aux implémentations de langages à objets,
+ni aux langages de programmation.  Les membres de Xerox PARC se sont donc
+intéressés à appliquer la réflexion sur à d’autres systèmes, ce qu’ils appellent
+plus généralement “implémentation ouverte” [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]] [[cite:KLL+97][KLL+97]].
+
+[[cite:Rao-91][Rao-91]] commence par remarquer que l’interprète d’un langage de programmation
+engendre un processus à partir d’un programme, et que, parallèlement, tout
+système définit une /interface/ qui peut être vue comme un langage; tout système
+est donc un interprète.  Donc, la réflexion dans les langages de programmation
+n’est qu’un cas particulier de réflexion, qu’on peut appliquer à tout système
+qui expose une interface.  Et comme un interprète réflexif permet au programme
+d’inspecter et de modifier le processus engendré par l’interprète, il en va de
+même pour un système plus général.
+
+Rao définit un système à implémentation ouverte comme un système ayant deux
+interfaces: l’interface /de base/, qui est l’interface classique associée au
+système, et l’interface de /meta-niveau/, qui révèle en partie l’implémentation
+de l’interface de base.
+
+Le papier donne un exemple d’un système de gestion de fenêtre pour CLOS, appelé
+Silica.  Dans un système de gestion de fenêtre, l’interface de base est la
+construction d’arbres de fenêtres, d’interroger et de modifier ces arbres (pour
+accéder aux fenêtres, en ajouter, les retirer...), et de lire et écrire dans les
+fenêtres.  Comment les fenêtres, et la structure d’arbre sont implémentés peut
+impacter l’utilisateur du système de fenêtre.
+
+En particulier, Rao donne l’exemple d’un tableur qui créé une fenêtre pour
+chaque cellule de la feuille de calcul.  Ce choix peut paraître curieux, mais la
+justification est de réutiliser la fonctionnalité du système de fenêtre (capture
+de la souris, peindre les cellules en fonction de leur visibilité, ...) pour
+simplifier l’implémentation du tableur.  Mais dans un système de fenêtre naïf,
+il faut allouer de la mémoire pour chaque fenêtre, même si dans le cas du
+tableur, on pourrait partager bon nombre de propriétés entre les fenêtres
+utilisées comme cellules.  De plus, lorsque qu’un clic de souris est détecté par
+le système de fenêtre, il faut parcourir les arbres de fenêtres pour déterminer
+la fenêtre qui est actuellement au dessus des autres, parce que les fenêtres
+peuvent se superposer.  Mais dans un tableur, les cellules ne peuvent pas se
+superposer, donc on peut déterminer le clic de souris directement grâce à ses
+coordonnées.  Ces optimisations ne sont possibles que si le système de fenêtre
+laisse au programme client la possibilité de modifier son implémentation.
+
+Les langages à objets ont des avantages pour Silica: le paradigme objet
+correspond bien au domaine d’application (ici, les fenêtres); le polymorphisme
+permet à plusieurs implémentations de coexister et d’interagir; et l’héritage
+permet de réutiliser et d’étendre du code existant.
+
+
+La réflexion n’est en revanche qu’un mécanisme parmi d’autres pour
+l’implémentation ouverte.  L’implémentation ouverte ne préconise que d’offrir
+une interface supplémentaire pour avoir plus de contrôle sur l’implémentation du
+système.  Que cette interface soit une interface réflexive est orthogonal.
+
+[[cite:KLL+97][KLL+97]] donne des recettes pour construire des implémentations ouvertes, en
+fonction des besoins des programmes clients:
+
+1. Client has no control: the module adapts its implementation by observing the
+   client.
+2. Client declares its usage pattern, module selects a strategy.
+3. Client specifies the strategy among the predefined ones.
+4. Client provides the strategy.
+
+
+
+
+-----
 
 #+BEGIN_QUOTE
 An Open Implementation of a software module exposes facets of its internal
