@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-14 Thu 18:01 -->
+<!-- 2016-04-15 Fri 17:53 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -166,7 +166,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline11">2.1.4. <span class="todo TRANSLATE">TRANSLATE</span> Literate programming</a></li>
 <li><a href="#orgheadline12">2.1.5. <span class="todo BARE">BARE</span> Prototype-based programming</a></li>
 <li><a href="#orgheadline14">2.1.6. <span class="todo TRANSLATE">TRANSLATE</span> Self</a></li>
-<li><a href="#orgheadline17">2.1.7. <span class="todo TRANSLATE">TRANSLATE</span> Open Implementation</a></li>
+<li><a href="#orgheadline17">2.1.7. <span class="todo TRANSLATE">TRANSLATE</span> L’implémentation ouverte</a></li>
 <li><a href="#orgheadline19">2.1.8. <span class="todo TRANSLATE">TRANSLATE</span> Aspect-Oriented Programming</a></li>
 <li><a href="#orgheadline20">2.1.9. <span class="todo BARE">BARE</span> Caesar</a></li>
 <li><a href="#orgheadline22">2.1.10. <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</a></li>
@@ -1266,31 +1266,110 @@ inheritance.
 </div>
 
 <div id="outline-container-orgheadline17" class="outline-4">
-<h4 id="orgheadline17"><span class="section-number-4">2.1.7</span> <span class="todo TRANSLATE">TRANSLATE</span> Open Implementation</h4>
+<h4 id="orgheadline17"><span class="section-number-4">2.1.7</span> <span class="todo TRANSLATE">TRANSLATE</span> L’implémentation ouverte</h4>
 <div class="outline-text-4" id="text-2-1-7">
 <p>
-Before AOP, there was the concept of Open Implementation [<a href="#Rao-91">Rao91</a>,<a href="#Kic-96">Kic96</a>,<a href="#MLM+97">MLM+97</a>,<a href="#KLL+97">KLL+97</a>].
+La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
+des programmes de contrôler, d’inspecter, de modifier, et d’étendre la
+sémantique du langage.
+</p>
+
+<blockquote>
+<p>
+One meaning of the word reflect is to consider some subject matter.  Another is
+to turn back something (e.g. light or sound).  Punning on these two meanings, we
+get the notion of turning back one's consideration or considering one's own
+activities as a subject matter.  Our ability as humans to reflect in this sense
+has been credited, since Aristotle, with our success in adapting to new
+situations and mastering our environment.  Naturally, it was widely conjectured
+in the artificial intelligence community that by providing reflective
+capabilities to computational systems, we would obtain systems with greater
+plasticity and consequently, enhanced functionality. — [<a href="#Rao-91">Rao91</a>]</p>
+</blockquote>
+
+<p>
+Mais la réflexion n’est pas restreinte aux implémentations de langages à objets,
+ni aux langages de programmation.  Les membres de Xerox PARC se sont donc
+intéressés à appliquer la réflexion sur à d’autres systèmes, ce qu’ils appellent
+plus généralement “implémentation ouverte” [<a href="#Rao-91">Rao91</a>,<a href="#Kic-96">Kic96</a>,<a href="#MLM+97">MLM+97</a>,<a href="#KLL+97">KLL+97</a>].
 </p>
 
 <p>
-[<a href="#Rao-91">Rao91</a>] introduces the concept of a system with <i>open implementation</i>, which has
-two interfaces: the base level interface and the metalevel interface that
-reveals parts of the implementation of the base level.  They use reflection to
-customize the behavior of a window system for writing a spreadsheet.  They find
-that OO languages have advantages:
+[<a href="#Rao-91">Rao91</a>] commence par remarquer que l’interprète d’un langage de programmation
+engendre un processus à partir d’un programme, et que, parallèlement, tout
+système définit une <i>interface</i> qui peut être vue comme un langage; tout système
+est donc un interprète.  Donc, la réflexion dans les langages de programmation
+n’est qu’un cas particulier de réflexion, qu’on peut appliquer à tout système
+qui expose une interface.  Et comme un interprète réflexif permet au programme
+d’inspecter et de modifier le processus engendré par l’interprète, il en va de
+même pour un système plus général.
 </p>
+
+<p>
+Rao définit un système à implémentation ouverte comme un système ayant deux
+interfaces: l’interface <i>de base</i>, qui est l’interface classique associée au
+système, et l’interface de <i>meta-niveau</i>, qui révèle en partie l’implémentation
+de l’interface de base.
+</p>
+
+<p>
+Le papier donne un exemple d’un système de gestion de fenêtre pour CLOS, appelé
+Silica.  Dans un système de gestion de fenêtre, l’interface de base est la
+construction d’arbres de fenêtres, d’interroger et de modifier ces arbres (pour
+accéder aux fenêtres, en ajouter, les retirer&#x2026;), et de lire et écrire dans les
+fenêtres.  Comment les fenêtres, et la structure d’arbre sont implémentés peut
+impacter l’utilisateur du système de fenêtre.
+</p>
+
+<p>
+En particulier, Rao donne l’exemple d’un tableur qui créé une fenêtre pour
+chaque cellule de la feuille de calcul.  Ce choix peut paraître curieux, mais la
+justification est de réutiliser la fonctionnalité du système de fenêtre (capture
+de la souris, peindre les cellules en fonction de leur visibilité, &#x2026;) pour
+simplifier l’implémentation du tableur.  Mais dans un système de fenêtre naïf,
+il faut allouer de la mémoire pour chaque fenêtre, même si dans le cas du
+tableur, on pourrait partager bon nombre de propriétés entre les fenêtres
+utilisées comme cellules.  De plus, lorsque qu’un clic de souris est détecté par
+le système de fenêtre, il faut parcourir les arbres de fenêtres pour déterminer
+la fenêtre qui est actuellement au dessus des autres, parce que les fenêtres
+peuvent se superposer.  Mais dans un tableur, les cellules ne peuvent pas se
+superposer, donc on peut déterminer le clic de souris directement grâce à ses
+coordonnées.  Ces optimisations ne sont possibles que si le système de fenêtre
+laisse au programme client la possibilité de modifier son implémentation.
+</p>
+
+<p>
+Les langages à objets ont des avantages pour Silica: le paradigme objet
+correspond bien au domaine d’application (ici, les fenêtres); le polymorphisme
+permet à plusieurs implémentations de coexister et d’interagir; et l’héritage
+permet de réutiliser et d’étendre du code existant.
+</p>
+
+
+<p>
+La réflexion n’est en revanche qu’un mécanisme parmi d’autres pour
+l’implémentation ouverte.  L’implémentation ouverte ne préconise que d’offrir
+une interface supplémentaire pour avoir plus de contrôle sur l’implémentation du
+système.  Que cette interface soit une interface réflexive est orthogonal.
+</p>
+
+<p>
+[<a href="#KLL+97">KLL+97</a>] donne des recettes pour construire des implémentations ouvertes, en
+fonction des besoins des programmes clients:
+</p>
+
 <ol class="org-ol">
-<li>Object-centered specification closely maps the domain (here, a window
-system).</li>
-<li>Polymorphism allows multiple implementation to coexist.</li>
-<li>Inheritance allows reuse and differential programming.</li>
+<li>Client has no control: the module adapts its implementation by observing the
+client.</li>
+<li>Client declares its usage pattern, module selects a strategy.</li>
+<li>Client specifies the strategy among the predefined ones.</li>
+<li>Client provides the strategy.</li>
 </ol>
 
-<p>
-Reflection is only one mechanism, that may not be optimal for clients of the
-meta level interface (can be complex).  They believe in a more declarative
-approach to meta level interfaces.
-</p>
+
+
+
+<hr >
 
 <blockquote>
 <p>
@@ -11603,7 +11682,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-14 Thu 18:01 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-15 Fri 17:53 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
