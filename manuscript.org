@@ -31,8 +31,7 @@
      - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#translate-limplémentation-ouverte][TRANSLATE L’implémentation ouverte]]
-       - [[#mechanisms-for-open-implementation][Mechanisms for open implementation]]
+     - [[#stable-limplémentation-ouverte][STABLE L’implémentation ouverte]]
      - [[#translate-aspect-oriented-programming][TRANSLATE Aspect-Oriented Programming]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
      - [[#bare-caesar][BARE Caesar]]
@@ -876,7 +875,7 @@ instrumentation?  In the case of Narcissus, it was not, since the interpreter
 was not OO.  But the open scope pattern might be equivalent, dynamically, to
 inheritance.
 
-*** TRANSLATE L’implémentation ouverte
+*** STABLE L’implémentation ouverte
 La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
 des programmes de contrôler, d’inspecter, de modifier, et d’étendre la
 sémantique du langage.
@@ -901,156 +900,92 @@ plus généralement “implémentation ouverte” [[cite:Rao-91][Rao-91]] [[cite
 [[cite:Rao-91][Rao-91]] commence par remarquer que l’interprète d’un langage de programmation
 engendre un processus à partir d’un programme, et que, parallèlement, tout
 système définit une /interface/ qui peut être vue comme un langage; tout système
-est donc un interprète.  Donc, la réflexion dans les langages de programmation
-n’est qu’un cas particulier de réflexion, qu’on peut appliquer à tout système
-qui expose une interface.  Et comme un interprète réflexif permet au programme
-d’inspecter et de modifier le processus engendré par l’interprète, il en va de
-même pour un système plus général.
+est donc un interprète.  Alors, la réflexion dans les langages de programmation
+n’est qu’un cas particulier, et on peut l’appliquer à tout système qui expose
+une interface.  Et comme un interprète réflexif permet au programme d’inspecter
+et de modifier le processus engendré par l’interprète, il en va de même pour un
+système plus général.
 
-Rao définit un système à implémentation ouverte comme un système ayant deux
-interfaces: l’interface /de base/, qui est l’interface classique associée au
-système, et l’interface de /meta-niveau/, qui révèle en partie l’implémentation
-de l’interface de base.
+Mais à quoi ressemble un système réflexif, en général?  Rao définit un système
+/à implémentation ouverte/ comme un système ayant deux interfaces: l’interface
+de base, qui est l’interface classique associée au système, et l’interface de
+meta-niveau, qui révèle en partie l’implémentation de l’interface de base.
 
-Le papier donne un exemple d’un système de gestion de fenêtre pour CLOS, appelé
-Silica.  Dans un système de gestion de fenêtre, l’interface de base est la
-construction d’arbres de fenêtres, d’interroger et de modifier ces arbres (pour
-accéder aux fenêtres, en ajouter, les retirer...), et de lire et écrire dans les
-fenêtres.  Comment les fenêtres, et la structure d’arbre sont implémentés peut
-impacter l’utilisateur du système de fenêtre.
+#+BEGIN_aside
+On va préférer ici le terme “interface d’implémentation” pour l’interface de
+meta-niveau.
+#+END_aside
 
-En particulier, Rao donne l’exemple d’un tableur qui créé une fenêtre pour
-chaque cellule de la feuille de calcul.  Ce choix peut paraître curieux, mais la
-justification est de réutiliser la fonctionnalité du système de fenêtre (capture
-de la souris, peindre les cellules en fonction de leur visibilité, ...) pour
-simplifier l’implémentation du tableur.  Mais dans un système de fenêtre naïf,
-il faut allouer de la mémoire pour chaque fenêtre, même si dans le cas du
-tableur, on pourrait partager bon nombre de propriétés entre les fenêtres
-utilisées comme cellules.  De plus, lorsque qu’un clic de souris est détecté par
-le système de fenêtre, il faut parcourir les arbres de fenêtres pour déterminer
-la fenêtre qui est actuellement au dessus des autres, parce que les fenêtres
-peuvent se superposer.  Mais dans un tableur, les cellules ne peuvent pas se
-superposer, donc on peut déterminer le clic de souris directement grâce à ses
-coordonnées.  Ces optimisations ne sont possibles que si le système de fenêtre
-laisse au programme client la possibilité de modifier son implémentation.
+Pour illustrer ces deux interfaces, il prend l’exemple d’un système de gestion
+de fenêtre pour CLOS, appelé Silica.  Dans un système de gestion de fenêtre,
+l’interface de base permet de construire des arbres de fenêtres, d’interroger et
+de modifier ces arbres (pour accéder aux fenêtres, en ajouter, les retirer...),
+et de lire et écrire dans les fenêtres.
 
-Les langages à objets ont des avantages pour Silica: le paradigme objet
-correspond bien au domaine d’application (ici, les fenêtres); le polymorphisme
-permet à plusieurs implémentations de coexister et d’interagir; et l’héritage
-permet de réutiliser et d’étendre du code existant.
+Comment les fenêtres, et la structure d’arbre sont implémentés peut impacter
+l’utilisateur du système de fenêtre.  En particulier, Rao prend l’exemple d’un
+tableur qui créé une fenêtre pour chaque cellule de la feuille de calcul.  Ce
+choix peut paraître curieux, mais est justifié par la réutilisation des
+fonctionnalités du système de fenêtre (capture de la souris, peindre les
+cellules en fonction de leur visibilité, ...) pour simplifier l’implémentation
+du tableur.  Dans un système de fenêtre naïf, il faut allouer de la mémoire pour
+chaque fenêtre, alors que dans le cas du tableur on pourrait partager bon nombre
+de propriétés entre les fenêtres utilisées comme cellules.  De même, lorsque
+qu’un clic de souris est détecté par le système de fenêtre, il faut parcourir
+les arbres de fenêtres pour déterminer la fenêtre qui est actuellement au dessus
+des autres, car les fenêtres peuvent se superposer.  Mais dans un tableur, les
+cellules ne peuvent pas se superposer, donc on peut déterminer le clic de souris
+directement grâce à ses coordonnées.  Ces optimisations ne sont possibles que si
+le système de fenêtre laisse au programme client la possibilité de modifier son
+implémentation.  En l’occurrence, Silica est un système à implémentation
+ouverte, et Rao montre qu’il peut supporter ces optimisations en utilisant
+l’interface d’implémentation.
 
+Pour réaliser cette interface, Silica est construit en deux couches: une couche
+qui implémente les fenêtres, pour fournir l’interface de base; et une couche qui
+implémente les contrats, pour stipuler la politique d’utilisation des fenêtres
+par le client de l’interface (comment redessiner une fenêtre, comment rapporter
+les événements souris, comment gérer les sous-fenêtres, ...).
 
-La réflexion n’est en revanche qu’un mécanisme parmi d’autres pour
-l’implémentation ouverte.  L’implémentation ouverte ne préconise que d’offrir
-une interface supplémentaire pour avoir plus de contrôle sur l’implémentation du
-système.  Que cette interface soit une interface réflexive est orthogonal.
+Le client de l’interface de base n’a pas besoin de modifier les contrats par
+défaut.  En revanche, c’est par cette couche qu’il faut passer pour réaliser les
+optimisations du tableur.
 
-[[cite:KLL+97][KLL+97]] donne des recettes pour construire des implémentations ouvertes, en
-fonction des besoins des programmes clients:
+Mais il ne s’agit pas ici de simplement séparer le /mécanisme/ de la
+/politique/; un système à implémentation ouverte ne propose pas nécessairement
+toute liberté au client.  Tout comme un interprète peut n’exposer que certaines
+parties du langage par une interface réflexive, ici aussi un système à
+implémentation ouverte peut choisir l’étendue de son interface d’implémentation.
 
-1. Client has no control: the module adapts its implementation by observing the
-   client.
-2. Client declares its usage pattern, module selects a strategy.
-3. Client specifies the strategy among the predefined ones.
-4. Client provides the strategy.
+[[cite:KLL+97][KLL+97]] donne des recettes pour construire ces systèmes, en fonction des besoins
+des programmes clients:
 
+1. Le client n’a aucun contrôle: le système adapte son implémentation en
+   observant le programme client.
+2. Le client déclare son utilisation du système, et le système sélectionne une
+   stratégie pré-établie.
+3. Le client spécifie la stratégie parmi celles pré-établies par le système.
+4. Le client fournit la stratégie au système.
 
-
+Le degré 4 donne le plus de contrôle au client, mais on voit que d’autres styles
+d’implémentation ouverte sont possibles.
 
 -----
 
-#+BEGIN_QUOTE
-An Open Implementation of a software module exposes facets of its internal
-operation to client control in a principled way.  They key assumption behind
-Open Implementation is that software modules can be more reusable if they can be
-designed to accommodate a range of implementation strategies.  Since no
-implementation strategy is adequate for all clients, the module should support
-several implementation strategies and allow clients to help select the strategy
-actually used.
-#+END_QUOTE
-[[cite:MLM+97][MLM+97]]
+En somme, le concept d’implémentation ouverte répond au besoin de certains
+programmes d’avoir à optimiser des choix d’implémentation du système qu’ils
+utilisent.  Le système laisse au programme la possibilité de modifier ces choix,
+statiquement ou même dynamiquement, via une interface d’implémentation.  Le
+système peut être adapté à plus de cas qu’un système qui ne proposerait pas
+d’interface d’implémentation; le système à implémentation ouverte promet
+davantage de réutilisation de code.
 
-The first sentence does not give the full picture.  Open Implementation is not
-just about exposing an alternate interface.  The primary concern is to allow
-client code to select different implementation strategies (to answer different
-performance needs, for instance).
-
-Metaobject protocols [[cite:KRB-91][KRB-91]] are given as an example of open implementation, for
-object-oriented systems.
-
-#+BEGIN_QUOTE
-The goals of any Open Implementation are to ensure that suitable implementation
-strategies are available for a range of clients, to ensure that the appropriate
-strategy may be selected for or by a client, and to ensure that the benefits
-associated with black-box abstraction are not unreasonably compromised.
-#+END_QUOTE
-[[cite:MLM+97][MLM+97]]
-
-One key tenet of OI is “give control to the client in a disciplined way”.  That
-means, some structure should be in place, otherwise the client is free to mess
-with the implementation in any way.
-
-#+BEGIN_QUOTE
-Whereas black-box modules hide all aspects of their implementation, open
-implementation modules allow clients some control over selection of their
-implementation strategy, while still hiding many true details of their
-implementation.
-#+END_QUOTE
-[[cite:KLL+97][KLL+97]]
-
-The paper is broad: it considers what solution should a module implementer chose
-for open implementation, depending on the client requirements.  It provides a
-methodology for designing an open module.
-
-They define 4 styles of open interface:
-1. Client has no control: the module adapts its implementation by observing the
-   client.
-2. Client declares its usage pattern, module selects a strategy.
-3. Client specifies the strategy among the predefined ones.
-4. Client provides the strategy.
-
-Style 4 is the one we want for modular instrumentation.  It is also recommended
-in half the cases they consider, though it “might be difficult to engineer”.
-They note that style 4 cannot be used when the integrity of the module must not
-be compromised.
-
-[[cite:KLL+97][KLL+97]] describes the four styles further.  Style 4 subsumes styles 1 and 3 (and
-could be adapted to style 2), and is said to be /layered/, in the sense that
-clients can choose the style better suited for their needs.
-
-#+BEGIN_QUOTE
-When there is a simple interface that can describe strategies that will satisfy
-a significant fraction of clients, but it is impractical to accommodate all
-important strategies in that interface, then the interfaces should be layered.
-#+END_QUOTE
-[[cite:KLL+97][KLL+97]]
-
-From the set of client requirements, the module implementer should refine the
-open interface in stages, until all requirements can be expressed.
-
-**** Mechanisms for open implementation
-Sadly, the language mechanisms for open implementation are not covered.
-
-#+BEGIN_QUOTE
-While the implementation techniques that support theses interfaces are crucial,
-they are beyond the scope of this paper.  [footnote:] Many of the implementation
-techniques are straightforward, and will be apparent simply from looking at the
-interface design.  Others are more subtle, and involve recently developed
-techniques in language and system implementation [[cite:KRB-91][KRB-91]] [[cite:CU-91][CU-91]] [[cite:Chi-95][Chi-95]].  There is,
-as yet, no unified presentation of these techniques; a separate paper describing
-this is in preparation.
-#+END_QUOTE
-[[cite:KLL+97][KLL+97]]
-
-Could not find a trace of this paper in preparation.
-
-The Strategy pattern comes to mind [[cite:GHJ+94][GHJ+94]] (though they actually cite [[cite:HO-87][HO-87]] for
-the specific case of selecting algorithms with different space/time trade-offs).
-
-Open Module [[cite:Ald-05][Ald-05]] does not mention Open Implementation, although they certainly
-fit the description of style 4.
-
-[[Reflection]] is another mechanism.
+On ne spécifie pas /comment/ cette interface d’implémentation est rendue
+disponible par le système.  Dans les interprètes, la réflexion est souvent
+utilisée, mais d’autres solutions sont envisageables suivant le système:
+inversion de contrôle, patrons de conception Stratégie, n’importe quel moyen
+d’exécuter le code du client pour modifier le processus considéré comme étant de
+la responsabilité du module.
 
 *** TRANSLATE Aspect-Oriented Programming
 Manipulation of static and runtime code.  Joinpoints reifie extension points.
