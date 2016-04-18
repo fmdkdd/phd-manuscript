@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-18 Mon 16:58 -->
+<!-- 2016-04-18 Mon 18:08 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1312,12 +1312,15 @@ de base, qui est l’interface classique associée au système, et l’interface
 meta-niveau, qui révèle en partie l’implémentation de l’interface de base.
 </p>
 
-<aside>
-<p>
-On va préférer ici le terme “interface d’implémentation” pour l’interface de
-meta-niveau.
+<div style="margin-top:-8rem" class="side-figure">
+
+<figure>
+<p><img src="img/sota1.svg" alt="sota1.svg">
 </p>
-</aside>
+<figcaption><span class="figure-number">Figure&nbsp;7&nbsp;:</span> On va préférer ici le terme “interface d’implémentation” pour l’interface de meta-niveau.</figcaption>
+</figure>
+
+</div>
 
 <p>
 Pour illustrer ces deux interfaces, il prend l’exemple d’un système de gestion
@@ -1355,6 +1358,16 @@ implémente les contrats, pour stipuler la politique d’utilisation des fenêtr
 par le client de l’interface (comment redessiner une fenêtre, comment rapporter
 les événements souris, comment gérer les sous-fenêtres, &#x2026;).
 </p>
+
+<div style="margin-top:-10rem" class="side-figure">
+
+<figure>
+<p><img src="img/sota2.svg" alt="sota2.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;8&nbsp;:</span> Une façon de fournir l’interface d’implémentation est de structurer le système en deux parties, une de bas-niveau qui gère les détails d’implémentation et est manipulable via l’interface d’implémentation, et une de haut-niveau qui utilise la partie inférieure pour présenter l’interface de base.</figcaption>
+</figure>
+
+</div>
 
 <p>
 Le client de l’interface de base n’a pas besoin de modifier les contrats par
@@ -2046,7 +2059,7 @@ concepteur.
 <figure>
 <p><img src="img/parnas-0.svg" alt="parnas-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;7&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;9&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
 </figure>
 
 </div>
@@ -2056,7 +2069,7 @@ concepteur.
 <figure>
 <p><img src="img/flowchart.svg" alt="flowchart.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;8&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;10&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
 </figure>
 
 </div>
@@ -2120,7 +2133,7 @@ les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 <figure>
 <p><img src="img/parnas-overhead.svg" alt="parnas-overhead.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;9&nbsp;:</span> L’encapsulation cause de l’indirection, ce qui peut réduire l’efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;11&nbsp;:</span> L’encapsulation cause de l’indirection, ce qui peut réduire l’efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
 </figure>
 
 </div>
@@ -2398,7 +2411,7 @@ partie.
 <figure>
 <p><img src="img/naur-theory.svg" alt="naur-theory.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;10&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l’activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;12&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l’activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
 </figure>
 
 </div>
@@ -3541,7 +3554,7 @@ de l’exécution; cette liste est appelée <i>program counter</i> (PC).
 <figure>
 <p><img src="img/a-facet.svg" alt="a-facet.svg" height="40rem">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;11&nbsp;:</span> Une valeur à deux facettes.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;13&nbsp;:</span> Une valeur à deux facettes.</figcaption>
 </figure>
 
 </div>
@@ -3587,7 +3600,7 @@ les lignes vides.
 Pour réaliser l’instrumentation de Narcissus pour l’évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l’interpréteur Narcissus.
 On peut obtenir l’ensemble des changements effectués en extrayant un <i>diff</i> des
-deux versions.  La figure <a href="#orgparagraph1">13</a> donne une vue d’ensemble des
+deux versions.  La figure <a href="#orgparagraph1">15</a> donne une vue d’ensemble des
 changements.
 </p>
 
@@ -3602,7 +3615,7 @@ Le <i>diff</i> est extrait des HEAD de <a href="https://github.com/taustin/narci
 <figure id="orgparagraph1">
 <p><img src="img/narcissus-diff.svg" alt="narcissus-diff.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;13&nbsp;:</span> Visualisation des modifications apportées par l’instrumentation de Narcissus pour l’évaluation multi-facettes.  Le diff de “jsexec” y est représenté intégralement, coupés en colonnes de même taille. Chaque ligne est colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l’instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;15&nbsp;:</span> Visualisation des modifications apportées par l’instrumentation de Narcissus pour l’évaluation multi-facettes.  Le diff de “jsexec” y est représenté intégralement, coupés en colonnes de même taille. Chaque ligne est colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l’instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
 </figure>
 
 <p>
@@ -4101,7 +4114,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;14&nbsp;:</span> Définition d’un interpréteur en utilisant la délégation par prototype.  L’objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;16&nbsp;:</span> Définition d’un interpréteur en utilisant la délégation par prototype.  L’objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -6554,7 +6567,7 @@ l’expression qui précède.  C’est la syntaxe de l’éditeur interactif [<a
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;15&nbsp;:</span> Représentation de la mémoire du programme après la création de l’objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Représentation de la mémoire du programme après la création de l’objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -7834,7 +7847,7 @@ de changer les définitions internes au module.
 <figure>
 <p><img src="img/dls6.svg" alt="dls6.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Exemple de recherche dans une chaîne d’environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété “a”; ici c’est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l’objet en tête de la chaîne.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;23&nbsp;:</span> Exemple de recherche dans une chaîne d’environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété “a”; ici c’est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l’objet en tête de la chaîne.</figcaption>
 </figure>
 
 </div>
@@ -8047,7 +8060,7 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d’utilisati
 <figure>
 <p><img src="img/dls9.svg" alt="dls9.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;24&nbsp;:</span> L’environnement crée par <code>with</code> entoure l’objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l’objet de liaison, tandis que <code>f.env</code> pointe vers l’environnement.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;26&nbsp;:</span> L’environnement crée par <code>with</code> entoure l’objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l’objet de liaison, tandis que <code>f.env</code> pointe vers l’environnement.</figcaption>
 </figure>
 
 </div>
@@ -8258,7 +8271,7 @@ ainsi:
 <figure>
 <p><img src="img/dls12.svg" alt="dls12.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;27&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l’objet de liaison et l’environnement crée par <code>with</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l’objet de liaison et l’environnement crée par <code>with</code>.</figcaption>
 </figure>
 
 </div>
@@ -8746,7 +8759,7 @@ ce motif d’extension:
 <figure>
 <p><img src="img/dls13.svg" alt="dls13.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;28&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C’est ce nouvel objet qu’on insère dans l’environnement du module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C’est ce nouvel objet qu’on insère dans l’environnement du module.</figcaption>
 </figure>
 
 </div>
@@ -8987,7 +9000,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l’exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;31&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l’exemple.</figcaption>
 </figure>
 </figure>
 
@@ -9442,7 +9455,7 @@ supplémentaires, mais chaque contrainte exclut également des possibilités.
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir l’ensemble de ses valeurs <i>possibles</i>, c’est aussi définir l’ensemble des valeurs <i>exclues</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;32&nbsp;:</span> Imposer une contrainte sur une variable, ce n’est pas seulement définir l’ensemble de ses valeurs <i>possibles</i>, c’est aussi définir l’ensemble des valeurs <i>exclues</i>.</figcaption>
 </figure>
 
 </div>
@@ -9549,7 +9562,7 @@ précis du flot d’exécution.
 <figure>
 <p><img src="img/dls15.svg" alt="dls15.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;31&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C’est le code extérieur au module qui s’ajoute dans cette liste.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;33&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C’est le code extérieur au module qui s’ajoute dans cette liste.</figcaption>
 </figure>
 
 </div>
@@ -11521,7 +11534,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-18 Mon 16:58 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-18 Mon 18:08 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
