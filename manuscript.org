@@ -911,10 +911,12 @@ Mais à quoi ressemble un système réflexif, en général?  Rao définit un sys
 de base, qui est l’interface classique associée au système, et l’interface de
 meta-niveau, qui révèle en partie l’implémentation de l’interface de base.
 
-#+BEGIN_aside
-On va préférer ici le terme “interface d’implémentation” pour l’interface de
-meta-niveau.
-#+END_aside
+#+ATTR_HTML: :style margin-top:-8rem
+#+BEGIN_side-figure
+#+CAPTION: On va préférer ici le terme “interface d’implémentation” pour
+#+CAPTION: l’interface de meta-niveau.
+[[file:img/sota1.svg]]
+#+END_side-figure
 
 Pour illustrer ces deux interfaces, il prend l’exemple d’un système de gestion
 de fenêtre pour CLOS, appelé Silica.  Dans un système de gestion de fenêtre,
@@ -946,6 +948,16 @@ qui implémente les fenêtres, pour fournir l’interface de base; et une couche
 implémente les contrats, pour stipuler la politique d’utilisation des fenêtres
 par le client de l’interface (comment redessiner une fenêtre, comment rapporter
 les événements souris, comment gérer les sous-fenêtres, ...).
+
+#+ATTR_HTML: :style margin-top:-10rem
+#+BEGIN_side-figure
+#+CAPTION: Une façon de fournir l’interface d’implémentation est de structurer
+#+CAPTION: le système en deux parties, une de bas-niveau qui gère les détails
+#+CAPTION: d’implémentation et est manipulable via l’interface d’implémentation,
+#+CAPTION: et une de haut-niveau qui utilise la partie inférieure pour présenter
+#+CAPTION: l’interface de base.
+[[file:img/sota2.svg]]
+#+END_side-figure
 
 Le client de l’interface de base n’a pas besoin de modifier les contrats par
 défaut.  En revanche, c’est par cette couche qu’il faut passer pour réaliser les
