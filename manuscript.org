@@ -32,7 +32,7 @@
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#stable-limplémentation-ouverte][STABLE L’implémentation ouverte]]
-     - [[#translate-aspect-oriented-programming][TRANSLATE Aspect-Oriented Programming]]
+     - [[#translate-la-programmation-par-aspects][TRANSLATE La programmation par aspects]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
      - [[#bare-caesar][BARE Caesar]]
      - [[#translate-hyperj][TRANSLATE Hyper/J]]
@@ -999,7 +999,113 @@ inversion de contrôle, patrons de conception Stratégie, n’importe quel moyen
 d’exécuter le code du client pour modifier le processus considéré comme étant de
 la responsabilité du module.
 
-*** TRANSLATE Aspect-Oriented Programming
+*** TRANSLATE La programmation par aspects
+Autre production du laboratoire PARC de Xerox, la programmation par aspects est
+une technique qui pourrait être utilisée pour fournir l’interface
+d’implémentation d’un système.
+
+La motivation derrière la programmation par aspects est très proche de la
+motivation pour l’implémentation ouverte: les deux approches proposent de
+nouvelles techniques pour organiser le code pour qu’il soit à la fois simple à
+écrire, facile à maintenir, et ne sacrifie pas l’efficacité.  Dans
+l’implémentation ouverte l’idée est que le système expose une interface
+secondaire qui donne un accès direct à son fonctionnement interne, ce qui permet
+certaines optimisations.  Dans la programmation par aspects, l’idée est de
+reconnaître que la décomposition d’un programme selon l’axe classique des
+fonctions et des classes n’est pas suffisante pour maintenir ces trois qualités;
+les aspects y remédient en introduisant une nouvelle dimension de composition.
+
+#+BEGIN_QUOTE
+A design process and a programming language work well together when the
+programming language provides abstraction and composition mechanisms that
+cleanly support the kinds of units the design process breaks the system into.
+#+END_QUOTE
+
+Pour expliquer ce qu’est un aspect, [[cite:KLM+97][KLM+97]] part d’un exemple.  Le système qui
+les intéresse prend une image en noir et blanc et lui applique une série de
+filtres, pour au final pouvoir reconnaître les caractères de l’image.  Ils
+souhaitent que le système soit facile à développer et à maintenir, mais aussi
+efficace, car les images traitées sont grandes, et les filtres rapidement
+coûteux.
+
+Pour satisfaire la première contrainte, il suffit de créer des filtres
+composables.  D’abord des filtres basiques, comme ~Or~, ~And~, ~Not~, analogues
+des opérateurs communs sur les bits, mais appliqués aux images, pixel par pixel:
+
+#+BEGIN_SRC js
+function Or(a, b) {
+  var result = Image.new(a.width, a.height)
+
+  for (var x=0; x < a.width; ++x) {
+    for (var y=0; y < a.height; ++y) {
+      result.pixel(x, y,
+                   a.pixel(x, y) || b.pixel(x, y))
+    }
+  }
+
+  return result
+}
+#+END_SRC
+
+Puis, à partir de ces filtres élémentaires, on peut en définir des plus
+complexes:
+
+#+BEGIN_SRC js
+var Remove = (a, b) => And(a, Not(b))
+var TopEdge = (a) => Remove(a, Down(a))
+var HorizontalEdge = (a) => Or(TopEdge(a),
+                               BottomEdge(a))
+...
+#+END_SRC
+
+On voit que les filtres complexes se définissent très facilement à partir des
+filtres précédents.  Le code est clair, simple et direct, donc facile à écrire
+et à maintenir.  Et pour ce faire, on n’a besoin que de composer des procédures.
+
+En revanche, côté efficacité, c’est loin d’être optimal.  Tous les filtres
+élémentaires, ~Or~, ~And~, ~Not~ créent une nouvelle image résultat, et bouclent
+sur les pixels de l’image.  Un filtre composite comme ~Remove~ appelle que deux
+filtres élémentaires, et donc va créer deux images intermédiaires, et itérer
+deux fois sur tous les pixels de l’image: une fois dans ~And~, et une fois dans
+~Not~.  Le gaspillage est encore plus important pour les filtres plus complexes,
+comme ~HorizontalEdge~.
+
+Une version optimisée de ~Remove~ ne contiendrait qu’une seule boucle et ne
+créerait qu’une seule image résultat.  Mais il faut alors écrire cette version
+optimisée directement, et on ne bénéficie plus alors de la composition des
+filtres élémentaires.  Cherchant l’efficacité, les auteurs ont réécrit tous les
+filtres complexes directement.  Le système efficace comporte 35213 lignes de
+code, alors que la version “simple”, mais non efficace, en comporte 768.  5 fois
+plus de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
+versions optimisées suivent toujours le même motif: fusionner les boucles, pour
+combiner les opérations à l’intérieur des boucles plutôt qu’à l’extérieur.
+
+Alors, peut-on réconcilier l’efficacité avec la simplicité de la composition des
+filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
+buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
+filtres est incompatible avec la composition nécessaire pour optimiser les
+boucles.  Composer les filtres hiérarchiquement c’est composer les
+/fonctionnalité/ offertes par les filtres, de façon simple et homogène.  Mais
+pour optimiser ces filtres complexes, il faut fusionner les boucles qui
+appartiennent à des procédures différentes.  La première composition est
+réalisée par la composition des procédures du langage de programmation, mais la
+seconde décomposition n’est pas supportée par le langage, et doit être réalisée
+manuellement.
+
+Les auteurs distinguent alors les /composants/ des /aspects/.  Si une
+fonctionnalité du système peut être implémentée par une procédure (ou une
+méthode, un objet, une API), alors c’est un composant; sinon, c’est un aspect.
+Dans leur expérience, un aspect ne concerne pas la fonctionnalité principale du
+système, mais plutôt la performance, des propriétés orthogonales ou
+complémentaires au système.
+
+
+
+# Reification of language constructs
+# Implicit vs explicit extension
+# COMEFROM vs GOTO
+# Duality, other side of the coin
+
 Manipulation of static and runtime code.  Joinpoints reifie extension points.
 Pointcuts give powerful quantification over joinpoints.  Aspects promote
 separation of concerns.
@@ -1009,43 +1115,6 @@ both a blessing and a curse.  COMEFROM destroys local reasoning or referential
 transparency.
 
 Did the initial vision of AOP covered the problem of extensibility?
-
-[[cite:KLM+97][KLM+97]]
-Motivation of AOP is a better match between design processes and programming
-language mechanisms.
-
-#+BEGIN_QUOTE
-A design process and a programming language work well together when the
-programming language provides abstraction and composition mechanisms that
-cleanly support the kinds of units the design process breaks the system into.
-#+END_QUOTE
-
-OO languages, procedural languages, functional languages all provide a
-/generalized procedure/ as key abstraction mechanism.  Design processes for a GP
-language decompose systems into units of behavior.
-
-First example of tangling: an efficient image filter system.  A filter loops on
-all the pixels of the input image, and produces a new image.  Higher-level
-filters (‘horizontal-edge’) are defined by composing lower-level ones (‘or’,
-‘and’).  This is elegant, but inefficient as temporary images are created and
-deleted, and many loops are made where only one sufficed.
-
-The alternate solution is to code the higher-level filters explicitly with only
-one loop.  Then the code is tangled.  Their actual system is 768 lines when
-implemented “cleanly”, but the efficient version is 35213 lines.
-
-The language only supports one kind of composition, the functional one, while
-there is a need to also specify the fusion of loops, which is a composition of
-data flow.
-
-They distinguish /components/ from /aspects/:
-- Components :: encapsulate cleanly a feature through a “generalized procedure”
-                (object, method, procedure, API).  Components tend to be the
-                unit of functional decomposition of the system.
-- Aspects :: for features that cannot be cleanly encapsulated through a
-             generalized procedure.  Aspects tend to be features orthogonal to
-             the functionality of the system: data representation,
-             synchronization constraints ...
 
 The goal of AOP is to provide mechanisms to cleanly separate components from
 aspects, components from components, and aspects from aspects.  GP languages
