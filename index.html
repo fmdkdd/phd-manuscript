@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-18 Mon 18:08 -->
+<!-- 2016-04-20 Wed 17:50 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -167,7 +167,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline12">2.1.5. <span class="todo BARE">BARE</span> Prototype-based programming</a></li>
 <li><a href="#orgheadline14">2.1.6. <span class="todo TRANSLATE">TRANSLATE</span> Self</a></li>
 <li><a href="#orgheadline15">2.1.7. <span class="done STABLE">STABLE</span> L’implémentation ouverte</a></li>
-<li><a href="#orgheadline18">2.1.8. <span class="todo TRANSLATE">TRANSLATE</span> Aspect-Oriented Programming</a></li>
+<li><a href="#orgheadline18">2.1.8. <span class="todo TRANSLATE">TRANSLATE</span> La programmation par aspects</a></li>
 <li><a href="#orgheadline19">2.1.9. <span class="todo BARE">BARE</span> Caesar</a></li>
 <li><a href="#orgheadline21">2.1.10. <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</a></li>
 <li><a href="#orgheadline22">2.1.11. <span class="todo BARE">BARE</span> Information transparency</a></li>
@@ -1426,8 +1426,135 @@ la responsabilité du module.
 </div>
 
 <div id="outline-container-orgheadline18" class="outline-4">
-<h4 id="orgheadline18"><span class="section-number-4">2.1.8</span> <span class="todo TRANSLATE">TRANSLATE</span> Aspect-Oriented Programming</h4>
+<h4 id="orgheadline18"><span class="section-number-4">2.1.8</span> <span class="todo TRANSLATE">TRANSLATE</span> La programmation par aspects</h4>
 <div class="outline-text-4" id="text-2-1-8">
+<p>
+Autre production du laboratoire PARC de Xerox, la programmation par aspects est
+une technique qui pourrait être utilisée pour fournir l’interface
+d’implémentation d’un système.
+</p>
+
+<p>
+La motivation derrière la programmation par aspects est très proche de la
+motivation pour l’implémentation ouverte: les deux approches proposent de
+nouvelles techniques pour organiser le code pour qu’il soit à la fois simple à
+écrire, facile à maintenir, et ne sacrifie pas l’efficacité.  Dans
+l’implémentation ouverte l’idée est que le système expose une interface
+secondaire qui donne un accès direct à son fonctionnement interne, ce qui permet
+certaines optimisations.  Dans la programmation par aspects, l’idée est de
+reconnaître que la décomposition d’un programme selon l’axe classique des
+fonctions et des classes n’est pas suffisante pour maintenir ces trois qualités;
+les aspects y remédient en introduisant une nouvelle dimension de composition.
+</p>
+
+<blockquote>
+<p>
+A design process and a programming language work well together when the
+programming language provides abstraction and composition mechanisms that
+cleanly support the kinds of units the design process breaks the system into.
+</p>
+</blockquote>
+
+<p>
+Pour expliquer ce qu’est un aspect, [<a href="#KLM+97">KLM+97</a>] part d’un exemple.  Le système qui
+les intéresse prend une image en noir et blanc et lui applique une série de
+filtres, pour au final pouvoir reconnaître les caractères de l’image.  Ils
+souhaitent que le système soit facile à développer et à maintenir, mais aussi
+efficace, car les images traitées sont grandes, et les filtres rapidement
+coûteux.
+</p>
+
+<p>
+Pour satisfaire la première contrainte, il suffit de créer des filtres
+composables.  D’abord des filtres basiques, comme <code>Or</code>, <code>And</code>, <code>Not</code>, analogues
+des opérateurs communs sur les bits, mais appliqués aux images, pixel par pixel:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">function</span> <span style="font-weight: bold;">Or</span>(<span style="font-weight: bold; font-style: italic;">a</span>, <span style="font-weight: bold; font-style: italic;">b</span>) {
+  <span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">result</span> = Image.<span style="font-weight: bold;">new</span>(a.width, a.height)
+
+  <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">x</span>=0; x &lt; a.width; ++x) {
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">y</span>=0; y &lt; a.height; ++y) {
+      result.pixel(x, y,
+                   a.pixel(x, y) || b.pixel(x, y))
+    }
+  }
+
+  <span style="font-weight: bold;">return</span> result
+}
+</pre>
+</div>
+
+<p>
+Puis, à partir de ces filtres élémentaires, on peut en définir des plus
+complexes:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">Remove</span> = (a, b) =&gt; And(a, Not(b))
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">TopEdge</span> = (a) =&gt; Remove(a, Down(a))
+<span style="font-weight: bold;">var</span> <span style="font-weight: bold; font-style: italic;">HorizontalEdge</span> = (a) =&gt; Or(TopEdge(a),
+                               BottomEdge(a))
+...
+</pre>
+</div>
+
+<p>
+On voit que les filtres complexes se définissent très facilement à partir des
+filtres précédents.  Le code est clair, simple et direct, donc facile à écrire
+et à maintenir.  Et pour ce faire, on n’a besoin que de composer des procédures.
+</p>
+
+<p>
+En revanche, côté efficacité, c’est loin d’être optimal.  Tous les filtres
+élémentaires, <code>Or</code>, <code>And</code>, <code>Not</code> créent une nouvelle image résultat, et bouclent
+sur les pixels de l’image.  Un filtre composite comme <code>Remove</code> appelle que deux
+filtres élémentaires, et donc va créer deux images intermédiaires, et itérer
+deux fois sur tous les pixels de l’image: une fois dans <code>And</code>, et une fois dans
+<code>Not</code>.  Le gaspillage est encore plus important pour les filtres plus complexes,
+comme <code>HorizontalEdge</code>.
+</p>
+
+<p>
+Une version optimisée de <code>Remove</code> ne contiendrait qu’une seule boucle et ne
+créerait qu’une seule image résultat.  Mais il faut alors écrire cette version
+optimisée directement, et on ne bénéficie plus alors de la composition des
+filtres élémentaires.  Cherchant l’efficacité, les auteurs ont réécrit tous les
+filtres complexes directement.  Le système efficace comporte 35213 lignes de
+code, alors que la version “simple”, mais non efficace, en comporte 768.  5 fois
+plus de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
+versions optimisées suivent toujours le même motif: fusionner les boucles, pour
+combiner les opérations à l’intérieur des boucles plutôt qu’à l’extérieur.
+</p>
+
+<p>
+Alors, peut-on réconcilier l’efficacité avec la simplicité de la composition des
+filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
+buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
+filtres est incompatible avec la composition nécessaire pour optimiser les
+boucles.  Composer les filtres hiérarchiquement c’est composer les
+<i>fonctionnalité</i> offertes par les filtres, de façon simple et homogène.  Mais
+pour optimiser ces filtres complexes, il faut fusionner les boucles qui
+appartiennent à des procédures différentes.  La première composition est
+réalisée par la composition des procédures du langage de programmation, mais la
+seconde décomposition n’est pas supportée par le langage, et doit être réalisée
+manuellement.
+</p>
+
+<p>
+Les auteurs distinguent alors les <i>composants</i> des <i>aspects</i>.  Si une
+fonctionnalité du système peut être implémentée par une procédure (ou une
+méthode, un objet, une API), alors c’est un composant; sinon, c’est un aspect.
+Dans leur expérience, un aspect ne concerne pas la fonctionnalité principale du
+système, mais plutôt la performance, des propriétés orthogonales ou
+complémentaires au système.
+</p>
+
+
+
 <p>
 Manipulation of static and runtime code.  Joinpoints reifie extension points.
 Pointcuts give powerful quantification over joinpoints.  Aspects promote
@@ -1443,59 +1570,6 @@ transparency.
 <p>
 Did the initial vision of AOP covered the problem of extensibility?
 </p>
-
-<p>
-[<a href="#KLM+97">KLM+97</a>]
-Motivation of AOP is a better match between design processes and programming
-language mechanisms.
-</p>
-
-<blockquote>
-<p>
-A design process and a programming language work well together when the
-programming language provides abstraction and composition mechanisms that
-cleanly support the kinds of units the design process breaks the system into.
-</p>
-</blockquote>
-
-<p>
-OO languages, procedural languages, functional languages all provide a
-<i>generalized procedure</i> as key abstraction mechanism.  Design processes for a GP
-language decompose systems into units of behavior.
-</p>
-
-<p>
-First example of tangling: an efficient image filter system.  A filter loops on
-all the pixels of the input image, and produces a new image.  Higher-level
-filters (‘horizontal-edge’) are defined by composing lower-level ones (‘or’,
-‘and’).  This is elegant, but inefficient as temporary images are created and
-deleted, and many loops are made where only one sufficed.
-</p>
-
-<p>
-The alternate solution is to code the higher-level filters explicitly with only
-one loop.  Then the code is tangled.  Their actual system is 768 lines when
-implemented “cleanly”, but the efficient version is 35213 lines.
-</p>
-
-<p>
-The language only supports one kind of composition, the functional one, while
-there is a need to also specify the fusion of loops, which is a composition of
-data flow.
-</p>
-
-<p>
-They distinguish <i>components</i> from <i>aspects</i>:
-</p>
-<dl class="org-dl">
-<dt>Components</dt><dd>encapsulate cleanly a feature through a “generalized procedure”
-(object, method, procedure, API).  Components tend to be the
-unit of functional decomposition of the system.</dd>
-<dt>Aspects</dt><dd>for features that cannot be cleanly encapsulated through a
-generalized procedure.  Aspects tend to be features orthogonal to
-the functionality of the system: data representation,
-synchronization constraints &#x2026;</dd>
-</dl>
 
 <p>
 The goal of AOP is to provide mechanisms to cleanly separate components from
@@ -11534,7 +11608,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-18 Mon 18:08 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-20 Wed 17:50 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
