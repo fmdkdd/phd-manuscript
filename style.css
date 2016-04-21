@@ -1,8 +1,9 @@
 * { box-sizing: border-box }
 
 html {
-  font-family: 'Alegreya', serif;
-  font-size: 16px;
+  font-family: 'Charter', serif;
+  font-size: 18px;
+  line-height: 1.35;
 
   color: #333;
   background-color: #fff;
@@ -11,9 +12,23 @@ html {
 a {color: hsl(3, 76%, 37%)}
 a:visited {color: hsl(3, 66%, 27%)}
 
+#table-of-contents {
+  font-family: 'Fira Sans', sans;
+}
+#table-of-contents a {
+  color: #333;
+  text-decoration: none;
+}
+#table-of-contents a:hover {
+  text-decoration: underline;
+}
+#table-of-contents li {
+  margin-top: 0.2rem;
+}
+
 .todo, .done { font-weight: bold }
-.todo.nilUNSTABLE { color: #cb4b16 }
-.todo.nilTRANSLATE { color: #b58900 }
+.todo.UNSTABLE { color: #cb4b16 }
+.todo.TRANSLATE { color: #b58900 }
 
 .color.c1 { color: #4ecdc4 }
 .color.c2 { color: #ff6b6b }
@@ -21,32 +36,40 @@ a:visited {color: hsl(3, 66%, 27%)}
 
 .epigraph {
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: 16px;
+  line-height: 1.3;
   text-align: right;
   margin-left: 5rem;
 }
 
-blockquote:before {
-	content: "\201C";
-	font-size: 3.5rem;
-	position: relative;
-	height: 0;
-	float: left;
-	right: 1.3rem;
-	top: -1.3rem;
-  color: #556270;
+blockquote {
+  font-size: 16px;
+  line-height: 1.3;
 }
 
 hr { margin: 2rem auto; width: 3rem }
 
+h1, h2, h3, h4, h5 {
+  font-family: 'Fira Sans', sans;
+}
 h5 { font-size: 100%; margin-bottom: 0.5rem; }
 
 pre, code {
-  font-family: 'Ubuntu Mono';
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: -1px;
+}
+
+pre {
+  font-size: 16px;
+  line-height: 1.2;
 }
 
 pre.src {
   padding-top: 8pt;
+}
+
+li + li {
+  margin-top: 1rem;
 }
 
 #content, #postamble { width: 35rem }
@@ -65,7 +88,8 @@ figcaption img { max-width: 21rem }
 
 .side-figure p, aside p {
   text-align: left;
-  font-size: 90%;
+  font-size: 16px;
+  line-height: 1.3;
   width: 21rem;
 }
 
@@ -78,7 +102,8 @@ figure figcaption {
   top: 0;
   left: 37rem;
   text-align: left;
-  font-size: 90%;
+  font-size: 16px;
+  line-height: 1.3;
   width: 21rem;
   margin: 0;
 }
@@ -90,13 +115,15 @@ figure figcaption {
   margin: 0;
   float: right;
   text-align: left;
-  font-size: 90%;
+  font-size: 16px;
+  line-height: 1.3;
   width: 21rem;
 }
 .org-src-name {
   position: absolute;
   left: 37rem;
-  font-size: 90%;
+  font-size: 16px;
+  line-height: 1.3;
   width: 21rem;
 }
 

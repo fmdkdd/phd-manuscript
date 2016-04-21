@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-20 Wed 17:50 -->
+<!-- 2016-04-21 Thu 14:48 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1458,7 +1458,7 @@ cleanly support the kinds of units the design process breaks the system into.
 <p>
 Pour expliquer ce qu’est un aspect, [<a href="#KLM+97">KLM+97</a>] part d’un exemple.  Le système qui
 les intéresse prend une image en noir et blanc et lui applique une série de
-filtres, pour au final pouvoir reconnaître les caractères de l’image.  Ils
+filtres; c’est une partie d’un système de reconnaissance de caractères.  Ils
 souhaitent que le système soit facile à développer et à maintenir, mais aussi
 efficace, car les images traitées sont grandes, et les filtres rapidement
 coûteux.
@@ -1510,22 +1510,22 @@ et à maintenir.  Et pour ce faire, on n’a besoin que de composer des procédu
 
 <p>
 En revanche, côté efficacité, c’est loin d’être optimal.  Tous les filtres
-élémentaires, <code>Or</code>, <code>And</code>, <code>Not</code> créent une nouvelle image résultat, et bouclent
-sur les pixels de l’image.  Un filtre composite comme <code>Remove</code> appelle que deux
-filtres élémentaires, et donc va créer deux images intermédiaires, et itérer
-deux fois sur tous les pixels de l’image: une fois dans <code>And</code>, et une fois dans
-<code>Not</code>.  Le gaspillage est encore plus important pour les filtres plus complexes,
-comme <code>HorizontalEdge</code>.
+élémentaires, <code>Or</code>, <code>And</code>, <code>Not</code> créent une nouvelle image intermédiaire, et
+bouclent sur les pixels de l’image.  Un filtre composite comme <code>Remove</code> appelle
+deux filtres élémentaires, et donc va créer deux images intermédiaires, et
+itérer deux fois sur tous les pixels de l’image: une fois dans <code>And</code>, et une
+fois dans <code>Not</code>.  Le gaspillage est encore plus important pour les filtres plus
+complexes, comme <code>HorizontalEdge</code>.
 </p>
 
 <p>
 Une version optimisée de <code>Remove</code> ne contiendrait qu’une seule boucle et ne
-créerait qu’une seule image résultat.  Mais il faut alors écrire cette version
+créerait qu’une seule image, le résultat.  Mais il faut écrire cette version
 optimisée directement, et on ne bénéficie plus alors de la composition des
 filtres élémentaires.  Cherchant l’efficacité, les auteurs ont réécrit tous les
 filtres complexes directement.  Le système efficace comporte 35213 lignes de
-code, alors que la version “simple”, mais non efficace, en comporte 768.  5 fois
-plus de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
+code, alors que la version simple, mais non efficace, en comporte 768; 5 fois
+moins de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
 versions optimisées suivent toujours le même motif: fusionner les boucles, pour
 combiner les opérations à l’intérieur des boucles plutôt qu’à l’extérieur.
 </p>
@@ -1536,7 +1536,7 @@ filtres?  Peut-on arranger les procédures différemment, pour satisfaire les de
 buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
 filtres est incompatible avec la composition nécessaire pour optimiser les
 boucles.  Composer les filtres hiérarchiquement c’est composer les
-<i>fonctionnalité</i> offertes par les filtres, de façon simple et homogène.  Mais
+<i>fonctionnalités</i> offertes par les filtres, de façon simple et homogène.  Mais
 pour optimiser ces filtres complexes, il faut fusionner les boucles qui
 appartiennent à des procédures différentes.  La première composition est
 réalisée par la composition des procédures du langage de programmation, mais la
@@ -1549,9 +1549,21 @@ Les auteurs distinguent alors les <i>composants</i> des <i>aspects</i>.  Si une
 fonctionnalité du système peut être implémentée par une procédure (ou une
 méthode, un objet, une API), alors c’est un composant; sinon, c’est un aspect.
 Dans leur expérience, un aspect ne concerne pas la fonctionnalité principale du
-système, mais plutôt la performance, des propriétés orthogonales ou
-complémentaires au système.
+système, mais plutôt des propriétés orthogonales ou complémentaires au système,
+comme la performance, ou la gestion d’erreurs.  Le but de la programmation par
+aspects est donc:
 </p>
+
+<blockquote>
+<p>
+To support the programmer in cleanly separating components and aspects from each
+other, by providing mechanisms that make it possible to abstract and compose
+them to produce the overall system.  This is in contrast to [classic]
+programming, which supports programmers in separating only components from each
+other by providing mechanisms that make it possible to abstract and compose them
+to produce the overall system.
+</p>
+</blockquote>
 
 
 
@@ -11608,7 +11620,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-20 Wed 17:50 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-21 Thu 14:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
