@@ -1023,7 +1023,7 @@ cleanly support the kinds of units the design process breaks the system into.
 
 Pour expliquer ce qu’est un aspect, [[cite:KLM+97][KLM+97]] part d’un exemple.  Le système qui
 les intéresse prend une image en noir et blanc et lui applique une série de
-filtres, pour au final pouvoir reconnaître les caractères de l’image.  Ils
+filtres; c’est une partie d’un système de reconnaissance de caractères.  Ils
 souhaitent que le système soit facile à développer et à maintenir, mais aussi
 efficace, car les images traitées sont grandes, et les filtres rapidement
 coûteux.
@@ -1063,20 +1063,20 @@ filtres précédents.  Le code est clair, simple et direct, donc facile à écri
 et à maintenir.  Et pour ce faire, on n’a besoin que de composer des procédures.
 
 En revanche, côté efficacité, c’est loin d’être optimal.  Tous les filtres
-élémentaires, ~Or~, ~And~, ~Not~ créent une nouvelle image résultat, et bouclent
-sur les pixels de l’image.  Un filtre composite comme ~Remove~ appelle que deux
-filtres élémentaires, et donc va créer deux images intermédiaires, et itérer
-deux fois sur tous les pixels de l’image: une fois dans ~And~, et une fois dans
-~Not~.  Le gaspillage est encore plus important pour les filtres plus complexes,
-comme ~HorizontalEdge~.
+élémentaires, ~Or~, ~And~, ~Not~ créent une nouvelle image intermédiaire, et
+bouclent sur les pixels de l’image.  Un filtre composite comme ~Remove~ appelle
+deux filtres élémentaires, et donc va créer deux images intermédiaires, et
+itérer deux fois sur tous les pixels de l’image: une fois dans ~And~, et une
+fois dans ~Not~.  Le gaspillage est encore plus important pour les filtres plus
+complexes, comme ~HorizontalEdge~.
 
 Une version optimisée de ~Remove~ ne contiendrait qu’une seule boucle et ne
-créerait qu’une seule image résultat.  Mais il faut alors écrire cette version
+créerait qu’une seule image, le résultat.  Mais il faut écrire cette version
 optimisée directement, et on ne bénéficie plus alors de la composition des
 filtres élémentaires.  Cherchant l’efficacité, les auteurs ont réécrit tous les
 filtres complexes directement.  Le système efficace comporte 35213 lignes de
-code, alors que la version “simple”, mais non efficace, en comporte 768.  5 fois
-plus de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
+code, alors que la version simple, mais non efficace, en comporte 768; 5 fois
+moins de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
 versions optimisées suivent toujours le même motif: fusionner les boucles, pour
 combiner les opérations à l’intérieur des boucles plutôt qu’à l’extérieur.
 
@@ -1085,7 +1085,7 @@ filtres?  Peut-on arranger les procédures différemment, pour satisfaire les de
 buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
 filtres est incompatible avec la composition nécessaire pour optimiser les
 boucles.  Composer les filtres hiérarchiquement c’est composer les
-/fonctionnalité/ offertes par les filtres, de façon simple et homogène.  Mais
+/fonctionnalités/ offertes par les filtres, de façon simple et homogène.  Mais
 pour optimiser ces filtres complexes, il faut fusionner les boucles qui
 appartiennent à des procédures différentes.  La première composition est
 réalisée par la composition des procédures du langage de programmation, mais la
