@@ -1002,7 +1002,7 @@ la responsabilité du module.
 *** TRANSLATE La programmation par aspects
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l’interface
-d’implémentation d’un système.
+d’implémentation d’un système [[cite:KLM+97][KLM+97]].
 
 La motivation derrière la programmation par aspects est très proche de la
 motivation pour l’implémentation ouverte: les deux approches proposent de
@@ -1021,7 +1021,7 @@ programming language provides abstraction and composition mechanisms that
 cleanly support the kinds of units the design process breaks the system into.
 #+END_QUOTE
 
-Pour expliquer ce qu’est un aspect, [[cite:KLM+97][KLM+97]] part d’un exemple.  Le système qui
+Pour expliquer ce qu’est un aspect, part d’un exemple [[cite:MKL-97][MKL-97]].  Le système qui
 les intéresse prend une image en noir et blanc et lui applique une série de
 filtres; c’est une partie d’un système de reconnaissance de caractères.  Ils
 souhaitent que le système soit facile à développer et à maintenir, mais aussi
@@ -1074,11 +1074,14 @@ Une version optimisée de ~Remove~ ne contiendrait qu’une seule boucle et ne
 créerait qu’une seule image, le résultat.  Mais il faut écrire cette version
 optimisée directement, et on ne bénéficie plus alors de la composition des
 filtres élémentaires.  Cherchant l’efficacité, les auteurs ont réécrit tous les
-filtres complexes directement.  Le système efficace comporte 35213 lignes de
-code, alors que la version simple, mais non efficace, en comporte 768; 5 fois
-moins de code à écrire, et à maintenir.  C’est d’autant plus dommage que les
-versions optimisées suivent toujours le même motif: fusionner les boucles, pour
-combiner les opérations à l’intérieur des boucles plutôt qu’à l’extérieur.
+filtres complexes directement.  Le système efficace comporte trois optimisations
+majeures: la fusion de boucle, l’utilisation d’un bassin d’objet pour éviter
+l’allocation d’images intermédiaires, et la mémoisation des résultats
+intermédiaires.  Le système efficace comporte 35213 lignes de code, alors que la
+version simple, mais non efficace, en comporte 768; 5 fois moins de code à
+écrire, et à maintenir.  C’est d’autant plus dommage que les versions optimisées
+suivent toujours le même motif: fusionner les boucles, pour combiner les
+opérations à l’intérieur des boucles plutôt qu’à l’extérieur.
 
 Alors, peut-on réconcilier l’efficacité avec la simplicité de la composition des
 filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
@@ -1087,10 +1090,10 @@ filtres est incompatible avec la composition nécessaire pour optimiser les
 boucles.  Composer les filtres hiérarchiquement c’est composer les
 /fonctionnalités/ offertes par les filtres, de façon simple et homogène.  Mais
 pour optimiser ces filtres complexes, il faut fusionner les boucles qui
-appartiennent à des procédures différentes.  La première composition est
+appartiennent à des procédures différentes.  La composition hiérarchique est
 réalisée par la composition des procédures du langage de programmation, mais la
-seconde décomposition n’est pas supportée par le langage, et doit être réalisée
-manuellement.
+seconde composition, qui dépasse l’unité de la procédure, n’est pas supportée
+par le langage, et doit être réalisée manuellement.
 
 Les auteurs distinguent alors les /composants/ des /aspects/.  Si une
 fonctionnalité du système peut être implémentée par une procédure (ou une
@@ -1098,7 +1101,8 @@ méthode, un objet, une API), alors c’est un composant; sinon, c’est un aspe
 Dans leur expérience, un aspect ne concerne pas la fonctionnalité principale du
 système, mais plutôt des propriétés orthogonales ou complémentaires au système,
 comme la performance, ou la gestion d’erreurs.  Le but de la programmation par
-aspects est de bien distinguer les deux:
+aspects est de pouvoir exprimer clairement ces deux catégories de
+fonctionnalités:
 
 #+BEGIN_QUOTE
 The goal of AOP is to support the programmer in cleanly separating components
@@ -1109,7 +1113,66 @@ from each other by providing mechanisms that make it possible to abstract and
 compose them to produce the overall system.
 #+END_QUOTE
 
+Une implémentation par aspects reflète cette distinction.  Pour une application
+écrite dans un langage classique, il y a trois éléments importants: le
+programme, le langage dans lequel le programme est écrit, et le compilateur pour
+ce langage.  Pour une application écrite suivant la programmation par aspects,
+on distingue: le programme des composants, le (ou les) programme des aspects, le
+langage des composants, le langage des aspects, et un compilateur qui prend en
+compte les deux langages en même temps, qu’on appelle le /tisseur d’aspects/.
 
+Dans l’exemple des filtres d’images, le langage de composants est CommonLisp
+avec des primitives de plus haut niveau.  Le filtre ~Or~ ne s’exprime plus avec
+une boucle, mais avec une construction plus déclarative:
+
+#+BEGIN_SRC lisp
+(define-filter or! (a a)
+  (pixelwise (a b) (aa bb) (or aa bb)))
+#+END_SRC
+
+Plutôt que de définir une fonction, on définit un /filtre/, qui itère sur chaque
+pixel avec l’itérateur ~pixelwise~.
+
+Les filtres ainsi définis sont passés au tisseur d’aspects, qui va interpréter
+le code pour récolter les filtres et itérateurs utilisés: un filtre complexe,
+comme ~Remove~, va faire appel aux filtres primitifs ~And~ et ~Not~; le tisseur
+lui associe donc ces filtres.  Ce faisant, le tisseur construit la seconde
+composition, la composition que le langage procédural ne pouvait pas exprimer.
+
+Dans un second temps, le tisseur passe cette information aux programmes
+d’aspects, qui vont pouvoir réaliser les trois optimisations; la fusion de
+boucle, la mémoisation, et le bassin d’objets sont trois programmes d’aspects
+différents.  La fusion de boucle par exemple teste si les arguments d’un filtre
+ont une itération compatible avec l’itération faite par le filtre; si c’est le
+cas, on peut générer une seule boucle qui applique les opérations des arguments
+et du filtre:
+
+#+BEGIN_SRC lisp
+(cond ((and (eq (loop-shape node) 'pixelwise)
+            (eq (loop-shape node) 'pixelwise))
+       (fuse loop input 'pixelwise
+             ...)))
+#+END_SRC
+
+Enfin, dans ce système, le tisseur génère du code C pour les filtres.
+
+Au final, l’implémentation par aspects a une performance comparable à
+l’implémentation optimisée manuellement, en seulement 4500 lignes de code (dont
+3500 pour le tisseur), soit seulement 13% du code de la version optimisée.  La
+version par aspects permet de clairement séparer les composants des aspects, ce
+qui atteint le but de simplicité d’écriture et de maintenance, mais sans
+sacrifier l’efficacité.
+
+-----
+
+# Aspect languages is the important contribution of the original paper, but
+# AspectJ is just /one/ generalized language, not the original implementation.
+
+# Lamping [[cite:Lam-97][Lam-97]] nails it: aspects are interesting /because/ they interact with
+# components.  They are /not/ components; they are pervasive issues.
+
+# Wolfgang [[cite:Meu-97][Meu-97]] links AOP to Monads.  Monads can be seen as encapsulating code
+# for one concern
 
 # Reification of language constructs
 # Implicit vs explicit extension
@@ -1126,31 +1189,15 @@ transparency.
 
 Did the initial vision of AOP covered the problem of extensibility?
 
-The goal of AOP is to provide mechanisms to cleanly separate components from
-aspects, components from components, and aspects from aspects.  GP languages
-only provide mechanisms to separate components from each other.
-
 They feel that dynamic scoping and catch/throw already help implementing
 /aspects/, since they provide a complementary composition mechanism.
 
-Error handling and performance issues are often aspects because they cross-cut
-the components decomposition.
 
 An AOP implementation has: a component language, an aspect language, and an
 aspect weaver.  For example, in AspectJ the component language is Java, the
 aspect language is the pointcuts/advice language provided by AspectJ.  But the
 component language does not have to be a vanilla language — it can be a specific
 one.
-
-In the image filter example, the component language is procedural and allows
-high-level filters to be defined cleanly, using a DSL for describing loops.  The
-aspect language is also procedural, but allows to specify loop fusion.  The
-weaver then creates a data-flow graph from the components, runs aspects on them,
-and produces efficient C code.
-
-They significantly improved the performance of the clean version by adding 352
-lines of aspects (not counting the size of the weaver).  Though the manually
-optimized version is still more efficient.
 
 #+BEGIN_QUOTE
 [...] the aspect languages must address different issues than the component
