@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-25 lun. 14:00 -->
+<!-- 2016-04-25 lun. 17:35 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1431,13 +1431,13 @@ la responsabilité du module.
 <p>
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l&rsquo;interface
-d&rsquo;implémentation d&rsquo;un système [<a href="#KLM+97">KLM+97</a>].
+d&rsquo;implémentation d&rsquo;un système [<a href="#KLM+97">KLM+97</a>,<a href="#MKL-97">MKL97</a>].
 </p>
 
 <p>
 La motivation derrière la programmation par aspects est très proche de la
 motivation pour l&rsquo;implémentation ouverte: les deux approches proposent de
-nouvelles techniques pour organiser le code pour qu&rsquo;il soit à la fois simple à
+nouvelles techniques pour organiser le code, pour qu&rsquo;il soit à la fois simple à
 écrire, facile à maintenir, et ne sacrifie pas l&rsquo;efficacité.  Dans
 l&rsquo;implémentation ouverte l&rsquo;idée est que le système expose une interface
 secondaire qui donne un accès direct à son fonctionnement interne, ce qui permet
@@ -1456,18 +1456,18 @@ cleanly support the kinds of units the design process breaks the system into.
 </blockquote>
 
 <p>
-Pour expliquer ce qu&rsquo;est un aspect, part d&rsquo;un exemple [<a href="#MKL-97">MKL97</a>].  Le système qui
+Pour expliquer ce qu&rsquo;est un aspect, [<a href="#MKL-97">MKL97</a>] part d&rsquo;un exemple.  Le système qui
 les intéresse prend une image en noir et blanc et lui applique une série de
 filtres; c&rsquo;est une partie d&rsquo;un système de reconnaissance de caractères.  Ils
 souhaitent que le système soit facile à développer et à maintenir, mais aussi
 efficace, car les images traitées sont grandes, et les filtres rapidement
-coûteux.
+coûteux à calculer.
 </p>
 
 <p>
-Pour satisfaire la première contrainte, il suffit de créer des filtres
-composables.  D&rsquo;abord des filtres basiques, comme <code>Or</code>, <code>And</code>, <code>Not</code>, analogues
-des opérateurs communs sur les bits, mais appliqués aux images, pixel par pixel:
+Pour faciliter le développement, il suffit de créer des filtres composables.
+D&rsquo;abord des filtres basiques, comme <code>Or</code>, <code>And</code>, <code>Not</code>, analogues des opérateurs
+communs sur les bits, mais appliqués aux images, pixel par pixel:
 </p>
 
 <div class="org-src-container">
@@ -1504,7 +1504,7 @@ complexes:
 
 <p>
 On voit que les filtres complexes se définissent très facilement à partir des
-filtres précédents.  Le code est clair, simple et direct, donc facile à écrire
+filtres élémentaires.  Le code est clair, simple et direct, donc facile à écrire
 et à maintenir.  Et pour ce faire, on n&rsquo;a besoin que de composer des procédures.
 </p>
 
@@ -1520,17 +1520,17 @@ complexes, comme <code>HorizontalEdge</code>.
 
 <p>
 Une version optimisée de <code>Remove</code> ne contiendrait qu&rsquo;une seule boucle et ne
-créerait qu&rsquo;une seule image, le résultat.  Mais il faut écrire cette version
-optimisée directement, et on ne bénéficie plus alors de la composition des
-filtres élémentaires.  Cherchant l&rsquo;efficacité, les auteurs ont réécrit tous les
-filtres complexes directement.  Le système efficace comporte trois optimisations
-majeures: la fusion de boucle, l&rsquo;utilisation d&rsquo;un bassin d&rsquo;objet pour éviter
-l&rsquo;allocation d&rsquo;images intermédiaires, et la mémoisation des résultats
-intermédiaires.  Le système efficace comporte 35213 lignes de code, alors que la
-version simple, mais non efficace, en comporte 768; 5 fois moins de code à
-écrire, et à maintenir.  C&rsquo;est d&rsquo;autant plus dommage que les versions optimisées
-suivent toujours le même motif: fusionner les boucles, pour combiner les
-opérations à l&rsquo;intérieur des boucles plutôt qu&rsquo;à l&rsquo;extérieur.
+créerait qu&rsquo;une seule image, le résultat.  Mais si on écrit cette version
+optimisée directement, on perd alors la composition des filtres élémentaires.
+Cherchant l&rsquo;efficacité, les auteurs ont réécrit tous les filtres complexes
+directement.  Le système efficace comporte trois optimisations majeures: la
+fusion de boucle, l&rsquo;utilisation d&rsquo;un bassin d&rsquo;objet pour éviter l&rsquo;allocation
+d&rsquo;images intermédiaires, et la mémoisation des résultats.  Le système efficace
+comporte 35213 lignes de code, alors que la version simple, mais non efficace,
+en comporte 768; 5 fois moins de code à écrire, et à maintenir.  C&rsquo;est d&rsquo;autant
+plus dommage que les versions optimisées suivent toujours le même motif:
+fusionner les boucles, pour combiner les opérations à l&rsquo;intérieur des boucles
+plutôt qu&rsquo;à l&rsquo;extérieur.
 </p>
 
 <p>
@@ -1548,8 +1548,8 @@ par le langage, et doit être réalisée manuellement.
 </p>
 
 <p>
-Les auteurs distinguent alors les <i>composants</i> des <i>aspects</i>.  Si une
-fonctionnalité du système peut être implémentée par une procédure (ou une
+C&rsquo;est la distinction que les auteurs font entre <i>composants</i> et <i>aspects</i>.  Si
+une fonctionnalité du système peut être implémentée par une procédure (ou une
 méthode, un objet, une API), alors c&rsquo;est un composant; sinon, c&rsquo;est un aspect.
 Dans leur expérience, un aspect ne concerne pas la fonctionnalité principale du
 système, mais plutôt des propriétés orthogonales ou complémentaires au système,
@@ -1560,21 +1560,29 @@ fonctionnalités:
 
 <blockquote>
 <p>
-The goal of AOP is to support the programmer in cleanly separating components
-and aspects from each other, by providing mechanisms that make it possible to
-abstract and compose them to produce the overall system.  This is in contrast to
-[classic] programming, which supports programmers in separating only components
-from each other by providing mechanisms that make it possible to abstract and
-compose them to produce the overall system.
+The goal of Aspect-Oriented Programming is to support the programmer in cleanly
+separating components and aspects from each other, by providing mechanisms that
+make it possible to abstract and compose them to produce the overall system.
+This is in contrast to [classic] programming, which supports programmers in
+separating only components from each other by providing mechanisms that make it
+possible to abstract and compose them to produce the overall system.
 </p>
 </blockquote>
+
+<aside style="margin-top:-10rem">
+<p>
+Tout mécanisme qui transcende la décomposition en procédure peut supporter la
+création d&rsquo;aspect.  Deux exemples communs sont le <code>try/catch</code> et la portée
+dynamique.
+</p>
+</aside>
 
 <p>
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
 programme, le langage dans lequel le programme est écrit, et le compilateur pour
-ce langage.  Pour une application écrite suivant la programmation par aspects,
-on distingue: le programme des composants, le (ou les) programme des aspects, le
+ce langage.  Pour une application écrite en programmation par aspects, on
+distingue: le programme des composants, le (ou les) programme des aspects, le
 langage des composants, le langage des aspects, et un compilateur qui prend en
 compte les deux langages en même temps, qu&rsquo;on appelle le <i>tisseur d&rsquo;aspects</i>.
 </p>
@@ -1608,11 +1616,11 @@ composition, la composition que le langage procédural ne pouvait pas exprimer.
 <p>
 Dans un second temps, le tisseur passe cette information aux programmes
 d&rsquo;aspects, qui vont pouvoir réaliser les trois optimisations; la fusion de
-boucle, la mémoisation, et le bassin d&rsquo;objets sont trois programmes d&rsquo;aspects
-différents.  La fusion de boucle par exemple teste si les arguments d&rsquo;un filtre
-ont une itération compatible avec l&rsquo;itération faite par le filtre; si c&rsquo;est le
-cas, on peut générer une seule boucle qui applique les opérations des arguments
-et du filtre:
+boucle, la mémoisation, et le bassin d&rsquo;objets.  Chaque optimisation sont un
+programme d&rsquo;aspect différent.  La fusion de boucle par exemple teste si les
+arguments d&rsquo;un filtre ont une itération compatible avec l&rsquo;itération faite par le
+filtre; si c&rsquo;est le cas, on peut générer une seule boucle qui applique les
+opérations des arguments et du filtre:
 </p>
 
 <div class="org-src-container">
@@ -1625,7 +1633,7 @@ et du filtre:
 </div>
 
 <p>
-Enfin, dans ce système, le tisseur génère du code C pour les filtres.
+Enfin, dans ce système, le tisseur génère du code C pour chaque filtre.
 </p>
 
 <p>
@@ -1635,6 +1643,14 @@ l&rsquo;implémentation optimisée manuellement, en seulement 4500 lignes de cod
 version par aspects permet de clairement séparer les composants des aspects, ce
 qui atteint le but de simplicité d&rsquo;écriture et de maintenance, mais sans
 sacrifier l&rsquo;efficacité.
+</p>
+
+<p>
+Dans cet exemple, il est intéressant de noter la place importante du tisseur.
+La version simple, mais inefficace, du programme ne comportait que 770 lignes.
+En 1000 lignes, la version par aspects décrit les filtres, et les trois
+programmes d&rsquo;aspects qui correspondent aux optimisations.  Même ordre de
+grandeur.
 </p>
 
 <hr >
@@ -1652,7 +1668,7 @@ transparency.
 </p>
 
 <p>
-Did the initial vision of AOP covered the problem of extensibility?
+Did the initial vision of AOP cover the problem of extensibility?
 </p>
 
 <p>
@@ -9415,7 +9431,7 @@ seulement l&rsquo;utilisation de <code>with</code>.
 
 <p>
 De toutes façons, comme l&rsquo;indique le tableau, exécuter n&rsquo;importe quel exemple
-avec Narcissus est d&rsquo;un ordre de magnitude plus lent qu&rsquo;avec SpiderMonkey
+avec Narcissus est d&rsquo;un ordre de grandeur plus lent qu&rsquo;avec SpiderMonkey
 directement.  C&rsquo;est évidemment dû au fait que Narcissus est écrit en JavaScript.
 Mais pour nos besoins, les plus gros exemples qu&rsquo;on a voulu exécuter avec les
 différentes analyses qu&rsquo;on a ajouté à Narcissus n&rsquo;ont pris que quelques
@@ -9941,7 +9957,7 @@ pose des problèmes de compatibilité.  Mais ces mécanismes ont également un c
 important en temps d&rsquo;exécution et espace mémoire.  AspectScript est 5 à 15 fois
 plus lent qu&rsquo;un moteur d&rsquo;exécution de JavaScript.  Sachant qu&rsquo;on cherche ici à
 instrumenter un interpréteur de JavaScript, et qu&rsquo;on perd déjà un ordre de
-magnitude de performance en utilisant un interpréteur meta-circulaire, rajouter
+grandeur de performance en utilisant un interpréteur meta-circulaire, rajouter
 une la couche d&rsquo;interprétation d&rsquo;AspectScript n&rsquo;est pas idéal, surtout s&rsquo;il y a
 une alternative qui nous permet d&rsquo;étendre l&rsquo;interpréteur avec la même
 flexibilité à un coût de performance moindre.
@@ -11682,7 +11698,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-25 lun. 14:00 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-25 lun. 17:35 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
