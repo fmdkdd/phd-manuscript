@@ -1002,11 +1002,11 @@ la responsabilité du module.
 *** TRANSLATE La programmation par aspects
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
-d'implémentation d'un système [[cite:KLM+97][KLM+97]].
+d'implémentation d'un système [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].
 
 La motivation derrière la programmation par aspects est très proche de la
 motivation pour l'implémentation ouverte: les deux approches proposent de
-nouvelles techniques pour organiser le code pour qu'il soit à la fois simple à
+nouvelles techniques pour organiser le code, pour qu'il soit à la fois simple à
 écrire, facile à maintenir, et ne sacrifie pas l'efficacité.  Dans
 l'implémentation ouverte l'idée est que le système expose une interface
 secondaire qui donne un accès direct à son fonctionnement interne, ce qui permet
@@ -1021,16 +1021,16 @@ programming language provides abstraction and composition mechanisms that
 cleanly support the kinds of units the design process breaks the system into.
 #+END_QUOTE
 
-Pour expliquer ce qu'est un aspect, part d'un exemple [[cite:MKL-97][MKL-97]].  Le système qui
+Pour expliquer ce qu'est un aspect, [[cite:MKL-97][MKL-97]] part d'un exemple.  Le système qui
 les intéresse prend une image en noir et blanc et lui applique une série de
 filtres; c'est une partie d'un système de reconnaissance de caractères.  Ils
 souhaitent que le système soit facile à développer et à maintenir, mais aussi
 efficace, car les images traitées sont grandes, et les filtres rapidement
-coûteux.
+coûteux à calculer.
 
-Pour satisfaire la première contrainte, il suffit de créer des filtres
-composables.  D'abord des filtres basiques, comme ~Or~, ~And~, ~Not~, analogues
-des opérateurs communs sur les bits, mais appliqués aux images, pixel par pixel:
+Pour faciliter le développement, il suffit de créer des filtres composables.
+D'abord des filtres basiques, comme ~Or~, ~And~, ~Not~, analogues des opérateurs
+communs sur les bits, mais appliqués aux images, pixel par pixel:
 
 #+BEGIN_SRC js
 function Or(a, b) {
@@ -1059,7 +1059,7 @@ var HorizontalEdge = (a) => Or(TopEdge(a),
 #+END_SRC
 
 On voit que les filtres complexes se définissent très facilement à partir des
-filtres précédents.  Le code est clair, simple et direct, donc facile à écrire
+filtres élémentaires.  Le code est clair, simple et direct, donc facile à écrire
 et à maintenir.  Et pour ce faire, on n'a besoin que de composer des procédures.
 
 En revanche, côté efficacité, c'est loin d'être optimal.  Tous les filtres
@@ -1071,17 +1071,17 @@ fois dans ~Not~.  Le gaspillage est encore plus important pour les filtres plus
 complexes, comme ~HorizontalEdge~.
 
 Une version optimisée de ~Remove~ ne contiendrait qu'une seule boucle et ne
-créerait qu'une seule image, le résultat.  Mais il faut écrire cette version
-optimisée directement, et on ne bénéficie plus alors de la composition des
-filtres élémentaires.  Cherchant l'efficacité, les auteurs ont réécrit tous les
-filtres complexes directement.  Le système efficace comporte trois optimisations
-majeures: la fusion de boucle, l'utilisation d'un bassin d'objet pour éviter
-l'allocation d'images intermédiaires, et la mémoisation des résultats
-intermédiaires.  Le système efficace comporte 35213 lignes de code, alors que la
-version simple, mais non efficace, en comporte 768; 5 fois moins de code à
-écrire, et à maintenir.  C'est d'autant plus dommage que les versions optimisées
-suivent toujours le même motif: fusionner les boucles, pour combiner les
-opérations à l'intérieur des boucles plutôt qu'à l'extérieur.
+créerait qu'une seule image, le résultat.  Mais si on écrit cette version
+optimisée directement, on perd alors la composition des filtres élémentaires.
+Cherchant l'efficacité, les auteurs ont réécrit tous les filtres complexes
+directement.  Le système efficace comporte trois optimisations majeures: la
+fusion de boucle, l'utilisation d'un bassin d'objet pour éviter l'allocation
+d'images intermédiaires, et la mémoisation des résultats.  Le système efficace
+comporte 35213 lignes de code, alors que la version simple, mais non efficace,
+en comporte 768; 5 fois moins de code à écrire, et à maintenir.  C'est d'autant
+plus dommage que les versions optimisées suivent toujours le même motif:
+fusionner les boucles, pour combiner les opérations à l'intérieur des boucles
+plutôt qu'à l'extérieur.
 
 Alors, peut-on réconcilier l'efficacité avec la simplicité de la composition des
 filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
@@ -1095,8 +1095,8 @@ réalisée par la composition des procédures du langage de programmation, mais 
 seconde composition, qui dépasse l'unité de la procédure, n'est pas supportée
 par le langage, et doit être réalisée manuellement.
 
-Les auteurs distinguent alors les /composants/ des /aspects/.  Si une
-fonctionnalité du système peut être implémentée par une procédure (ou une
+C'est la distinction que les auteurs font entre /composants/ et /aspects/.  Si
+une fonctionnalité du système peut être implémentée par une procédure (ou une
 méthode, un objet, une API), alors c'est un composant; sinon, c'est un aspect.
 Dans leur expérience, un aspect ne concerne pas la fonctionnalité principale du
 système, mais plutôt des propriétés orthogonales ou complémentaires au système,
@@ -1116,8 +1116,8 @@ compose them to produce the overall system.
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
 programme, le langage dans lequel le programme est écrit, et le compilateur pour
-ce langage.  Pour une application écrite suivant la programmation par aspects,
-on distingue: le programme des composants, le (ou les) programme des aspects, le
+ce langage.  Pour une application écrite en programmation par aspects, on
+distingue: le programme des composants, le (ou les) programme des aspects, le
 langage des composants, le langage des aspects, et un compilateur qui prend en
 compte les deux langages en même temps, qu'on appelle le /tisseur d'aspects/.
 
@@ -1141,11 +1141,11 @@ composition, la composition que le langage procédural ne pouvait pas exprimer.
 
 Dans un second temps, le tisseur passe cette information aux programmes
 d'aspects, qui vont pouvoir réaliser les trois optimisations; la fusion de
-boucle, la mémoisation, et le bassin d'objets sont trois programmes d'aspects
-différents.  La fusion de boucle par exemple teste si les arguments d'un filtre
-ont une itération compatible avec l'itération faite par le filtre; si c'est le
-cas, on peut générer une seule boucle qui applique les opérations des arguments
-et du filtre:
+boucle, la mémoisation, et le bassin d'objets.  Chaque optimisation sont un
+programme d'aspect différent.  La fusion de boucle par exemple teste si les
+arguments d'un filtre ont une itération compatible avec l'itération faite par le
+filtre; si c'est le cas, on peut générer une seule boucle qui applique les
+opérations des arguments et du filtre:
 
 #+BEGIN_SRC lisp
 (cond ((and (eq (loop-shape node) 'pixelwise)
@@ -1154,7 +1154,7 @@ et du filtre:
              ...)))
 #+END_SRC
 
-Enfin, dans ce système, le tisseur génère du code C pour les filtres.
+Enfin, dans ce système, le tisseur génère du code C pour chaque filtre.
 
 Au final, l'implémentation par aspects a une performance comparable à
 l'implémentation optimisée manuellement, en seulement 4500 lignes de code (dont
@@ -1187,7 +1187,7 @@ Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
 both a blessing and a curse.  COMEFROM destroys local reasoning or referential
 transparency.
 
-Did the initial vision of AOP covered the problem of extensibility?
+Did the initial vision of AOP cover the problem of extensibility?
 
 They feel that dynamic scoping and catch/throw already help implementing
 /aspects/, since they provide a complementary composition mechanism.
