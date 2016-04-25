@@ -2491,6 +2491,22 @@ And I switched fonts for Charter, which is more legible.  I like Fira Sans for
 the headlines.  And Source Code Pro is good for the source blocks.  It keeps me
 on my toes, having a fresh font I’m not used to.
 
+** [2016-04-25 lun.]
+*** In other news...
+The V8 team is [[https://groups.google.com/forum/m/#!msg/strengthen-js/ojj3TDxbHpQ/5ENNAiUzEgAJ][dropping strong mode]].  While there were semantic difficulties in
+"locking down" the language (especially forbidding mutation of class
+properties), one reason that caught my eye was the implementation complexity:
+
+#+BEGIN_QUOTE
+Strong mode tweaks many small bits of the language semantics (see the list at
+the end). Consequently, it requires special-casing all over the compiler(s), run
+time, and libraries. In V8, it amounts to literally hundreds of new code paths,
+and that does not even include libraries. As you can probably imagine, VM
+implementors are not happy about such added complexity, and it gets in the way
+frequently. While some of that was to be expected, it was worse than we had
+anticipated.
+#+END_QUOTE
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

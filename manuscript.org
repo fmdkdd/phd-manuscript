@@ -1105,12 +1105,12 @@ aspects est de pouvoir exprimer clairement ces deux catégories de
 fonctionnalités:
 
 #+BEGIN_QUOTE
-The goal of AOP is to support the programmer in cleanly separating components
-and aspects from each other, by providing mechanisms that make it possible to
-abstract and compose them to produce the overall system.  This is in contrast to
-[classic] programming, which supports programmers in separating only components
-from each other by providing mechanisms that make it possible to abstract and
-compose them to produce the overall system.
+The goal of Aspect-Oriented Programming is to support the programmer in cleanly
+separating components and aspects from each other, by providing mechanisms that
+make it possible to abstract and compose them to produce the overall system.
+This is in contrast to [classic] programming, which supports programmers in
+separating only components from each other by providing mechanisms that make it
+possible to abstract and compose them to produce the overall system.
 #+END_QUOTE
 
 Une implémentation par aspects reflète cette distinction.  Pour une application
@@ -1162,6 +1162,55 @@ l'implémentation optimisée manuellement, en seulement 4500 lignes de code (don
 version par aspects permet de clairement séparer les composants des aspects, ce
 qui atteint le but de simplicité d'écriture et de maintenance, mais sans
 sacrifier l'efficacité.
+
+Dans cet exemple, il est intéressant de noter la place importante du tisseur.
+La version simple, mais inefficace, du programme ne comportait que 770 lignes.
+En 1000 lignes, la version par aspects décrit les filtres, et les trois
+programmes d'aspects qui correspondent aux optimisations.  Même ordre de
+grandeur.  Mais pour que la version par aspects fonctionne, elle nécessite le
+tisseur, et celui-ci fait 3 fois la taille du programme client.  Même si des
+parties du tisseur peuvent être réutilisées pour d'autres programmes, le langage
+reste spécifique à la création de filtres pour traiter des images en deux
+dimensions.  On peut se poser la question: si l'on souhaite appliquer la
+programmation par aspects, faut-il réimplémenter un tisseur pour chaque
+application?  Y a-t-il d'autres façons de faire?
+
+La caractéristique principale de la programmation par aspects est la distinction
+entre composants et aspects.  Cette distinction, si elle apparaît au moment du
+design du programme doit être maintenue dans son implémentation.  Tout
+mécanisme, tout façon de réaliser cette distinction dans le programme est donc
+compatible avec la programmation par aspects.  Un langage spécifique pour
+l'application, qui permet de distinguer composants et aspects, est une façon de
+faire.  La réflexion en est une autre.
+
+Un système réflexif permet d'observer et de modifier le processus d'exécution du
+programme, au delà de la séparation entre procédures.  Un système réflexif peut
+observer la pile d'appels, ou tous les messages reçus par une classe, ou par
+toutes les objets du programme.  La réflexion permet de composer un programme
+selon un axe complémentaire à celui des procédures; c'est donc mécanisme de
+programmation par aspects.  Les auteurs, certainement familiers avec le concept,
+le note:
+
+#+BEGIN_QUOTE
+A reflective system provides the base language and (one or more) meta-languages
+that provide control over the base language's semantics and implementation.  In
+Aspect-Oriented Programming terms, meta-languages are lower-level aspect
+languages whose join points are the "hooks" tat the reflective system provides.
+Aspect-Oriented Programming is a goal, for which reflection is one powerful
+tool. — [[cite:KLM+97][KLM+97]]
+#+END_QUOTE
+
+D'autres exemples de mécanismes bas-niveau.  Le ~try/catch~, ou le mécanisme
+d'exceptions, transcende la frontière des procédures.  Les exceptions ne sont
+qu'un cas particulier des continuations (~call/cc~ en Scheme), qui permettent de
+manipuler le flot d'exécution du programme de façon arbitraire.  Les variables à
+portée dynamique permettent de changer le comportement d'une procédure qu'on
+appelle pas directement; c'est une forme de recomposition, moins puissante que
+les précédentes.
+
+Les auteurs de la programmation par aspects justifient la présence de ces
+mécanismes par le besoin des programmeurs d'exprimer les aspects dans des
+langages qui ne proposent d'assembler que des composants.
 
 -----
 
