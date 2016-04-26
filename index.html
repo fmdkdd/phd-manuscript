@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-26 mar. 11:51 -->
+<!-- 2016-04-26 mar. 18:27 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -158,7 +158,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#orgheadline54">2. <span class="todo UNSTABLE">UNSTABLE</span> État de l&rsquo;art</a>
 <ul>
-<li><a href="#orgheadline23">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Une chronologie de la modularité dans les langages de programmation</a>
+<li><a href="#orgheadline22">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Une chronologie de la modularité dans les langages de programmation</a>
 <ul>
 <li><a href="#orgheadline6">2.1.1. <span class="todo UNSTABLE">UNSTABLE</span> De l&rsquo;exécution du programme au code source</a></li>
 <li><a href="#orgheadline7">2.1.2. <span class="todo UNSTABLE">UNSTABLE</span> La programmation structurée</a></li>
@@ -167,24 +167,24 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline12">2.1.5. <span class="todo BARE">BARE</span> Prototype-based programming</a></li>
 <li><a href="#orgheadline14">2.1.6. <span class="todo TRANSLATE">TRANSLATE</span> Self</a></li>
 <li><a href="#orgheadline15">2.1.7. <span class="done STABLE">STABLE</span> L&rsquo;implémentation ouverte</a></li>
-<li><a href="#orgheadline18">2.1.8. <span class="todo TRANSLATE">TRANSLATE</span> La programmation par aspects</a></li>
-<li><a href="#orgheadline19">2.1.9. <span class="todo BARE">BARE</span> Caesar</a></li>
-<li><a href="#orgheadline21">2.1.10. <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</a></li>
-<li><a href="#orgheadline22">2.1.11. <span class="todo BARE">BARE</span> Information transparency</a></li>
+<li><a href="#orgheadline17">2.1.8. <span class="todo TRANSLATE">TRANSLATE</span> La programmation par aspects</a></li>
+<li><a href="#orgheadline18">2.1.9. <span class="todo BARE">BARE</span> Caesar</a></li>
+<li><a href="#orgheadline20">2.1.10. <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</a></li>
+<li><a href="#orgheadline21">2.1.11. <span class="todo BARE">BARE</span> Information transparency</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline29">2.2. <span class="todo UNSTABLE">UNSTABLE</span> La modularité du progamme n&rsquo;est pas la modularité du code source</a>
+<li><a href="#orgheadline28">2.2. <span class="todo UNSTABLE">UNSTABLE</span> La modularité du progamme n&rsquo;est pas la modularité du code source</a>
 <ul>
-<li><a href="#orgheadline25">2.2.1. <span class="done STABLE">STABLE</span> La modularité selon Parnas</a></li>
-<li><a href="#orgheadline27">2.2.2. <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</a></li>
-<li><a href="#orgheadline28">2.2.3. Notion of modularity</a></li>
+<li><a href="#orgheadline24">2.2.1. <span class="done STABLE">STABLE</span> La modularité selon Parnas</a></li>
+<li><a href="#orgheadline26">2.2.2. <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</a></li>
+<li><a href="#orgheadline27">2.2.3. Notion of modularity</a></li>
 </ul>
 </li>
 <li><a href="#orgheadline35">2.3. <span class="todo UNSTABLE">UNSTABLE</span> Moyens techniques pour l&rsquo;instrumentation</a>
 <ul>
-<li><a href="#orgheadline30">2.3.1. <span class="todo BARE">BARE</span> Le problème d&rsquo;expression</a></li>
-<li><a href="#orgheadline31">2.3.2. <span class="todo BARE">BARE</span> Dynamic binding</a></li>
-<li><a href="#orgheadline16">2.3.3. <span class="todo TRANSLATE">TRANSLATE</span> Reflection</a></li>
+<li><a href="#orgheadline29">2.3.1. <span class="todo BARE">BARE</span> Le problème d&rsquo;expression</a></li>
+<li><a href="#orgheadline30">2.3.2. <span class="todo BARE">BARE</span> Dynamic binding</a></li>
+<li><a href="#orgheadline31">2.3.3. <span class="todo TRANSLATE">TRANSLATE</span> Reflection</a></li>
 <li><a href="#orgheadline32">2.3.4. <span class="todo BARE">BARE</span> Building from modules</a></li>
 <li><a href="#orgheadline33">2.3.5. <span class="todo BARE">BARE</span> Building with monads</a></li>
 <li><a href="#orgheadline34">2.3.6. <span class="todo BARE">BARE</span> Bytecode instrumentation</a></li>
@@ -375,8 +375,8 @@ particulier.</li>
 <div id="outline-container-orgheadline54" class="outline-2">
 <h2 id="orgheadline54"><span class="section-number-2">2</span> <span class="todo UNSTABLE">UNSTABLE</span> État de l&rsquo;art</h2>
 <div class="outline-text-2" id="text-2">
-</div><div id="outline-container-orgheadline23" class="outline-3">
-<h3 id="orgheadline23"><span class="section-number-3">2.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Une chronologie de la modularité dans les langages de programmation</h3>
+</div><div id="outline-container-orgheadline22" class="outline-3">
+<h3 id="orgheadline22"><span class="section-number-3">2.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Une chronologie de la modularité dans les langages de programmation</h3>
 <div class="outline-text-3" id="text-2-1">
 </div><div id="outline-container-orgheadline6" class="outline-4">
 <h4 id="orgheadline6"><span class="section-number-4">2.1.1</span> <span class="todo UNSTABLE">UNSTABLE</span> De l&rsquo;exécution du programme au code source</h4>
@@ -1425,8 +1425,8 @@ la responsabilité du module.
 </div>
 </div>
 
-<div id="outline-container-orgheadline18" class="outline-4">
-<h4 id="orgheadline18"><span class="section-number-4">2.1.8</span> <span class="todo TRANSLATE">TRANSLATE</span> La programmation par aspects</h4>
+<div id="outline-container-orgheadline17" class="outline-4">
+<h4 id="orgheadline17"><span class="section-number-4">2.1.8</span> <span class="todo TRANSLATE">TRANSLATE</span> La programmation par aspects</h4>
 <div class="outline-text-4" id="text-2-1-8">
 <p>
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
@@ -1560,14 +1560,20 @@ fonctionnalités:
 
 <blockquote>
 <p>
-The goal of Aspect-Oriented Programming is to support the programmer in cleanly
-separating components and aspects from each other, by providing mechanisms that
-make it possible to abstract and compose them to produce the overall system.
-This is in contrast to [classic] programming, which supports programmers in
-separating only components from each other by providing mechanisms that make it
-possible to abstract and compose them to produce the overall system.
+The goal of AOP is to support the programmer in cleanly separating components
+and aspects from each other, by providing mechanisms that make it possible to
+abstract and compose them to produce the overall system.  This is in contrast to
+[classic] programming, which supports programmers in separating only components
+from each other by providing mechanisms that make it possible to abstract and
+compose them to produce the overall system.
 </p>
 </blockquote>
+
+<aside style="margin-top:-11rem">
+<p>
+<i>AOP := Aspect-Oriented Programming</i>
+</p>
+</aside>
 
 <p>
 Une implémentation par aspects reflète cette distinction.  Pour une application
@@ -1675,14 +1681,13 @@ le note:
 <p>
 A reflective system provides the base language and (one or more) meta-languages
 that provide control over the base language&rsquo;s semantics and implementation.  In
-Aspect-Oriented Programming terms, meta-languages are lower-level aspect
-languages whose join points are the &laquo;&nbsp;hooks&nbsp;&raquo; that the reflective system provides.
-Aspect-Oriented Programming is a goal, for which reflection is one powerful
-tool. — [<a href="#KLM+97">KLM+97</a>]</p>
+AOP terms, meta-languages are lower-level aspect languages whose join points are
+the &laquo;&nbsp;hooks&nbsp;&raquo; that the reflective system provides.  AOP is a goal, for which
+reflection is one powerful tool. — [<a href="#KLM+97">KLM+97</a>]</p>
 </blockquote>
 
 <p>
-D&rsquo;autres exemples de mécanismes bas-niveau.  Le <code>try/catch</code>, ou le mécanisme
+Et il y a d&rsquo;autres mécanismes connus.  Le <code>try/catch</code>, ou le mécanisme
 d&rsquo;exceptions, transcende la frontière des procédures.  Les exceptions ne sont
 qu&rsquo;un cas particulier des continuations (<code>call/cc</code> en Scheme), qui permettent de
 manipuler le flot d&rsquo;exécution du programme de façon arbitraire.  Les variables à
@@ -1694,7 +1699,53 @@ puissante que les précédentes.
 <p>
 Les auteurs de la programmation par aspects justifient la présence de ces
 mécanismes par le besoin des programmeurs d&rsquo;exprimer les aspects dans des
-langages qui proposent de n&rsquo;assembler que des composants.
+langages qui proposent de n&rsquo;assembler que des composants.  Mais bien qu&rsquo;ils
+permettent d&rsquo;exprimer des aspects, ces mécanismes sont considérés de bas-niveau,
+au même titre que la réflexion.  Un langage dédié d&rsquo;aspects, comme celui utilisé
+pour optimiser les filtres d&rsquo;image, est déclaratif, et correspond plus
+directement à l&rsquo;intention du programmeur.  Fournir les outils qui permettent au
+programmeur d&rsquo;exprimer cette intention est un des but de la programmation par
+aspects:
+</p>
+
+<blockquote>
+<p>
+When we say &laquo;&nbsp;separation of concerns&nbsp;&raquo; we mean the idea that it should be possible
+to work with the design or implementation of a system in the natural units of
+concern – concept, goal, team structure etc. – rather than in units imposed on
+us by the tools we are using.  We would like the modularity of a system to
+reflect the way &laquo;&nbsp;we want to think about it&nbsp;&raquo; rather than the way the language or
+other tools force us to think about it.  In software, Parnas is generally
+credited with this idea [<a href="#Par-72">Par72</a>,<a href="#Par-74">Par74</a>]. — [<a href="#KHH+01">KHH+01</a>]</p>
+</blockquote>
+
+<aside style="margin-top:-10rem">
+<p>
+On retrouve ce souci dans l&rsquo;implémentation ouverte; les auteurs préfèrent une
+interface d&rsquo;implémentation où le programmeur déclare l&rsquo;optimisation souhaitée
+plutôt qu&rsquo;une qui fournit les mécanismes pour la réaliser directement.
+</p>
+</aside>
+
+<p>
+Néanmoins, créer un langage dédié pour chaque application est un coût qui peut
+être trop élevé pour adopter la programmation par aspects.  Et tous les langages
+ne supportent pas les mécanismes bas-niveau qui pourraient servir à exprimer des
+aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
+d&rsquo;AspectJ [<a href="#KHH+01">KHH+01</a>].
+</p>
+
+<blockquote>
+<p>
+AspectJ is intended to be a practical AOP language that provides, in a Java
+compatible package, a solid and well-worked-out set of AOP features.
+</p>
+</blockquote>
+
+<p>
+AspectJ est un langage d&rsquo;aspect pour Java.  Dans un système par aspects, il y a
+un langage d&rsquo;aspects, ici AspectJ, et un langage de composants, ici ce sera
+Java.
 </p>
 
 <hr >
@@ -1715,50 +1766,10 @@ transparency.
 Did the initial vision of AOP cover the problem of extensibility?
 </p>
 
-<p>
-They feel that dynamic scoping and catch/throw already help implementing
-<i>aspects</i>, since they provide a complementary composition mechanism.
-</p>
-
-
-<p>
-An AOP implementation has: a component language, an aspect language, and an
-aspect weaver.  For example, in AspectJ the component language is Java, the
-aspect language is the pointcuts/advice language provided by AspectJ.  But the
-component language does not have to be a vanilla language — it can be a specific
-one.
-</p>
-
 <blockquote>
 <p>
 [&#x2026;] the aspect languages must address different issues than the component
 languages.
-</p>
-</blockquote>
-
-<p>
-The second example is a book repository.  The component language is (a subset
-of) Java, and the aspect language is a meta-program which captures method
-invocation using compile-time reflective techniques.
-</p>
-
-<p>
-<a href="#orgheadline16">2.3.3</a> can be used to write aspects, but may be too powerful a tool (hence,
-a costly one).  A reflective system provides a component language and a
-low-level aspect language, as well as the weaving mechanism.  The reflected
-structures provide join points.  Reflective systems are general-purpose, and in
-the paper they aim for more declarative aspects.
-</p>
-
-<p>
-AspectJ is more limited than reflection, but still general.  Domain-specific
-aspect languages are recommended to write aspects while retaining static
-control.
-</p>
-
-<blockquote>
-<p>
-AOP is a goal, for which reflection is a powerful tool.
 </p>
 </blockquote>
 
@@ -1944,9 +1955,9 @@ AOP is <a href="https://encrypted.google.com/patents/US6467086">patented</a> sin
 </p>
 </div>
 
-<div id="outline-container-orgheadline17" class="outline-5">
-<h5 id="orgheadline17">Mechanisms for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline17">
+<div id="outline-container-orgheadline16" class="outline-5">
+<h5 id="orgheadline16">Mechanisms for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline16">
 <p>
 The distinction between aspects and components is the most important
 contribution of AOP.  Though it is unclear whether ‘aspects&rsquo; are inevitable
@@ -2024,8 +2035,8 @@ support, using AOP mechanisms will only satisfy one notion of locality.
 </div>
 </div>
 
-<div id="outline-container-orgheadline19" class="outline-4">
-<h4 id="orgheadline19"><span class="section-number-4">2.1.9</span> <span class="todo BARE">BARE</span> Caesar</h4>
+<div id="outline-container-orgheadline18" class="outline-4">
+<h4 id="orgheadline18"><span class="section-number-4">2.1.9</span> <span class="todo BARE">BARE</span> Caesar</h4>
 <div class="outline-text-4" id="text-2-1-9">
 <p>
 [<a href="#AGM+06">AGM+06</a>]</p>
@@ -2042,8 +2053,8 @@ the benefit brought by the new mechanisms.
 </div>
 </div>
 
-<div id="outline-container-orgheadline21" class="outline-4">
-<h4 id="orgheadline21"><span class="section-number-4">2.1.10</span> <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</h4>
+<div id="outline-container-orgheadline20" class="outline-4">
+<h4 id="orgheadline20"><span class="section-number-4">2.1.10</span> <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</h4>
 <div class="outline-text-4" id="text-2-1-10">
 <p>
 [<a href="#TOH+99">TOH+99</a>] argues for a multi-dimensional separation of concerns.  First, they note
@@ -2117,9 +2128,9 @@ exactly one feature.  No overlap between hyperslices.
 </p>
 </div>
 
-<div id="outline-container-orgheadline20" class="outline-5">
-<h5 id="orgheadline20">Mechanisms for instrumentation</h5>
-<div class="outline-text-5" id="text-orgheadline20">
+<div id="outline-container-orgheadline19" class="outline-5">
+<h5 id="orgheadline19">Mechanisms for instrumentation</h5>
+<div class="outline-text-5" id="text-orgheadline19">
 <p>
 Realization that the tyranny of the dominant decomposition is a manifestation of
 looking at a multi-dimensional object through low-dimensional projections.  All
@@ -2133,8 +2144,8 @@ The Hyper/J solution is basically superimposition.
 </div>
 </div>
 
-<div id="outline-container-orgheadline22" class="outline-4">
-<h4 id="orgheadline22"><span class="section-number-4">2.1.11</span> <span class="todo BARE">BARE</span> Information transparency</h4>
+<div id="outline-container-orgheadline21" class="outline-4">
+<h4 id="orgheadline21"><span class="section-number-4">2.1.11</span> <span class="todo BARE">BARE</span> Information transparency</h4>
 <div class="outline-text-4" id="text-2-1-11">
 <p>
 [<a href="#Gri-01">Gri01</a>]</p>
@@ -2204,8 +2215,8 @@ the human visual system, identifiable <i>symbols</i> are a viable alternative to
 </div>
 </div>
 
-<div id="outline-container-orgheadline29" class="outline-3">
-<h3 id="orgheadline29"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> La modularité du progamme n&rsquo;est pas la modularité du code source</h3>
+<div id="outline-container-orgheadline28" class="outline-3">
+<h3 id="orgheadline28"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> La modularité du progamme n&rsquo;est pas la modularité du code source</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Les travaux de la section précédente cherchent à obtenir la modularité à travers
@@ -2217,8 +2228,8 @@ Mais un programme n&rsquo;est pas que son code source.
 </p>
 </div>
 
-<div id="outline-container-orgheadline25" class="outline-4">
-<h4 id="orgheadline25"><span class="section-number-4">2.2.1</span> <span class="done STABLE">STABLE</span> La modularité selon Parnas</h4>
+<div id="outline-container-orgheadline24" class="outline-4">
+<h4 id="orgheadline24"><span class="section-number-4">2.2.1</span> <span class="done STABLE">STABLE</span> La modularité selon Parnas</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
 David Parnas est fréquemment cité comme référence pour la notion de modularité
@@ -2531,9 +2542,9 @@ machines.
 </blockquote>
 </div>
 
-<div id="outline-container-orgheadline24" class="outline-5">
-<h5 id="orgheadline24">Conclusions</h5>
-<div class="outline-text-5" id="text-orgheadline24">
+<div id="outline-container-orgheadline23" class="outline-5">
+<h5 id="orgheadline23">Conclusions</h5>
+<div class="outline-text-5" id="text-orgheadline23">
 <p>
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n&rsquo;est pas toujours bien entendu.  On trouve dans l&rsquo;article
@@ -2578,8 +2589,8 @@ modularité/efficacité me semblent inévitables.
 </div>
 </div>
 
-<div id="outline-container-orgheadline27" class="outline-4">
-<h4 id="orgheadline27"><span class="section-number-4">2.2.2</span> <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</h4>
+<div id="outline-container-orgheadline26" class="outline-4">
+<h4 id="orgheadline26"><span class="section-number-4">2.2.2</span> <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <p>
 Un point de vue qui complémente celui de Parnas est celui de Peter Naur.  Dans
@@ -2836,9 +2847,9 @@ guidance, in an active and constructive environment.
 </blockquote>
 </div>
 
-<div id="outline-container-orgheadline26" class="outline-5">
-<h5 id="orgheadline26">Conclusions</h5>
-<div class="outline-text-5" id="text-orgheadline26">
+<div id="outline-container-orgheadline25" class="outline-5">
+<h5 id="orgheadline25">Conclusions</h5>
+<div class="outline-text-5" id="text-orgheadline25">
 <p>
 Naur établit une distinction importante entre le source code d&rsquo;un programme, et
 la connaissance que le programmeur a de son fonctionnement.  C&rsquo;est une
@@ -2889,8 +2900,8 @@ real world matters dealt with by the program.
 </div>
 </div>
 
-<div id="outline-container-orgheadline28" class="outline-4">
-<h4 id="orgheadline28"><span class="section-number-4">2.2.3</span> Notion of modularity</h4>
+<div id="outline-container-orgheadline27" class="outline-4">
+<h4 id="orgheadline27"><span class="section-number-4">2.2.3</span> Notion of modularity</h4>
 <div class="outline-text-4" id="text-2-2-3">
 <p>
 Notion of modularity [<a href="#OGK+11">OGK+11</a>].  Modularity is rooted in classical logic thinking.
@@ -2907,16 +2918,16 @@ logics.
 <div id="outline-container-orgheadline35" class="outline-3">
 <h3 id="orgheadline35"><span class="section-number-3">2.3</span> <span class="todo UNSTABLE">UNSTABLE</span> Moyens techniques pour l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-2-3">
-</div><div id="outline-container-orgheadline30" class="outline-4">
-<h4 id="orgheadline30"><span class="section-number-4">2.3.1</span> <span class="todo BARE">BARE</span> Le problème d&rsquo;expression</h4>
+</div><div id="outline-container-orgheadline29" class="outline-4">
+<h4 id="orgheadline29"><span class="section-number-4">2.3.1</span> <span class="todo BARE">BARE</span> Le problème d&rsquo;expression</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <p>
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) &#x2026;
 </p>
 </div>
 </div>
-<div id="outline-container-orgheadline31" class="outline-4">
-<h4 id="orgheadline31"><span class="section-number-4">2.3.2</span> <span class="todo BARE">BARE</span> Dynamic binding</h4>
+<div id="outline-container-orgheadline30" class="outline-4">
+<h4 id="orgheadline30"><span class="section-number-4">2.3.2</span> <span class="todo BARE">BARE</span> Dynamic binding</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
 Introduced by McCarthy&rsquo;s LISP [<a href="#McC-60">McC60</a>] as a bug.  Can be emulated by passing a
@@ -2949,8 +2960,8 @@ on the binding semantics of Scheme, which reduce its applicability.
 </div>
 </div>
 
-<div id="outline-container-orgheadline16" class="outline-4">
-<h4 id="orgheadline16"><span class="section-number-4">2.3.3</span> <span class="todo TRANSLATE">TRANSLATE</span> Reflection</h4>
+<div id="outline-container-orgheadline31" class="outline-4">
+<h4 id="orgheadline31"><span class="section-number-4">2.3.3</span> <span class="todo TRANSLATE">TRANSLATE</span> Reflection</h4>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 [<a href="#Tan-09">�T09b</a>] gives a nice survey of reflection and its uses.  Useful distinctions are
@@ -3187,7 +3198,7 @@ Especially they list &laquo;&nbsp;Language features for extensibility&nbsp;&raqu
 </p>
 <ol class="org-ol">
 <li>Global variables.  They can be queried, referred to, and redefined.</li>
-<li><a href="#orgheadline31">2.3.2</a>.  Useful for redefining binding on the fly.</li>
+<li><a href="#orgheadline30">2.3.2</a>.  Useful for redefining binding on the fly.</li>
 <li>File-local variables.  Good for customization, but really they give a
 file-local value for a global variable.</li>
 <li>Hooks.  They give points in the control flow to insert extension code.
@@ -3555,7 +3566,7 @@ essentially instances of superimposition.
 FOP is well-suited to implementing <i>heterogeneous concerns</i> (one variation per
 join point), while AOP is better for <i>homogeneous concerns</i> (one variation,
 multiple join points). [<a href="#MO-04">MO04</a>] illustrates the compromises of each approaches (and
-presents <a href="#orgheadline19">2.1.9</a> as the superior solution).
+presents <a href="#orgheadline18">2.1.9</a> as the superior solution).
 </p>
 
 <p>
@@ -11742,7 +11753,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-26 mar. 11:51 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-26 mar. 18:27 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
