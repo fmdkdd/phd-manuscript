@@ -1252,7 +1252,112 @@ compatible package, a solid and well-worked-out set of AOP features.
 
 AspectJ est un langage d'aspect pour Java.  Dans un système par aspects, il y a
 un langage d'aspects, ici AspectJ, et un langage de composants, ici ce sera
-Java.
+Java.  AspectJ est un langage d'aspect /général/, qui fournit des mécanismes de
+recomposition applicables à tout programme Java.  Et pour ce faire, AspectJ
+propose deux types de recomposition.
+
+En premier, les déclarations inter-types permettent de définir, au sein d'un
+même aspect, des attributs et des méthodes pour un ou plusieurs types [[cite:Asp-03][Asp-03]].
+Ces attributs augmentent des types existants à la compilation.  La classe est,
+en Java, et comme dans d'autres langages à classe pour la programmation objet,
+l'unité de composition des composants.  Elle décrit les attributs et les
+méthodes partagées par toutes ses instances; la structure statique du programme.
+Comme c'est une unité de composition, une classe n'a pas vocation à pouvoir
+affecter les attributs et méthodes d'une autre classe.  Mais un aspect est une
+unité de composition qui /traverse/ la composition des composants, et c'est donc
+naturel de permettre, dans un aspect, d'ajouter attributs et méthodes à
+plusieurs classes.  C'est une recomposition de la structure statique.
+
+#+CAPTION: Une déclaration inter-type qui ajoute un attribut et une méthode sur
+#+CAPTION: la classe ~Point~.
+#+BEGIN_SRC java
+public int Point.x = 0;
+public int Point.getX() { return this.x; }
+#+END_SRC
+
+Le second type de recomposition d'AspectJ permet de modifier la structure
+/dynamique/ du programme, son comportement à l'exécution.  C'est rendu possible
+par trois constructions:
+
+- les jonctions (/joinpoints/) sont des points d'exécution du programme bien
+  définis: l'appel d'une méthode, l'affectation d'un attribut, la création d'une
+  instance de classe, etc.
+- les coupes (/pointcuts/) permettent de cibler un ensemble de jonctions, et
+  d'en extraire de l'information comme le nom de la méthode appelée, et ses
+  arguments.
+- les méthodes d'aspect (/advice/) contiennent le code à exécuter lorsque le
+  programme atteint les jonctions décrites par la coupe de la méthode.  Une
+  méthode d'aspect décrit également /comment/ le code doit s'insérer dans le
+  processus d'exécution: avant, après, ou autour de la jonction.
+
+Le programmeur ne manipule pas les jonctions directement, mais utilise les
+coupes pour les cibler dans des méthodes d'aspect.  On pourra ainsi écrire:
+
+#+BEGIN_SRC java
+after(): calls(void Point.setX(int)) {
+  System.out.println("setX was called")
+}
+#+END_SRC
+
+pour déclencher l'affichage sur la sortie standard après (~after~) tout appel
+(~calls~) de la méthode ~Point.setX(int)~ dans le programme.
+
+Les coupes sont des prédicats, et peuvent être combinées avec les opérateurs
+booléens ~&&~, ~||~, et ~!~:
+
+#+BEGIN_SRC java
+receptions(void Point.setX(int))
+|| receptions(void Point.setY(int))
+
+calls(void FigureElement.incrXY(int, int))
+&& !instanceof(FigureElement)
+#+END_SRC
+
+Ce qui permet de définir de capturer des ensembles de jonctions pertinentes pour
+une préoccupation particulière.  AspectJ permet d'ailleurs de nommer les coupes
+pour plus de clarté:
+
+#+BEGIN_SRC java
+pointcut moves():
+  receptions(void FigureElement.incrXY(int, int))
+  || receptions(void Point.setX(int))
+  || receptions(void Point.setY(int));
+
+after(): moves() {
+  ...
+}
+#+END_SRC
+
+Une coupe nommée peut être utilisée par une méthode d'aspect, mais aussi par
+n'importe quelle autre coupe, ce qui encourage la composition, et réduit la
+duplication de code.
+
+Les jonctions exposées par AspectJ évoquent fortement les réifications d'un
+protocole méta-objet: appel et exécution de méthode, création d'une instance.
+Mais il y a d'autres coupes intéressantes qui sont applicables à n'importe quel
+langage à procédures: ~withincode(method)~ permet de cibler n'importe quelle
+jonction qui émane de la méthode donnée.  C'est particulièrement utile associé à
+d'autres coupes:
+
+#+BEGIN_SRC java
+call(void m()) && withincode(void m())
+#+END_SRC
+
+capture uniquement les appels récursifs directs de ~m~.  Inversement, si l'on souhaite
+capturer les appels /non/ récursifs à ~m~, on peut utiliser ~cflow~:
+
+#+BEGIN_SRC java
+call(void m()) && !cflow(call(void m()))
+#+END_SRC
+
+~cflow(coupe)~ capture toutes les jonctions qui sont dans le flot de contrôle de
+la coupe passée en argument; c'est à dire, ici, toutes les jonctions qui
+existent sous un appel de ~m~ dans la pile d'appels.  Du coup, la coupe composée
+capture les appels de ~m~ lorsqu'aucun appel à ~m~ n'existe sur la pile.
+
+# Glissement de la méthode (séparer composants et aspects) vers le mécanisme
+# (jonctions/coupes/méthodes d'aspect)
+
 
 -----
 
@@ -1285,26 +1390,6 @@ Did the initial vision of AOP cover the problem of extensibility?
 languages.
 #+END_QUOTE
 
-[[cite:KHH+01][KHH+01]] presents the AspectJ AOP system.  It contains an intuitive footnote about
-the separation of concerns.
-
-#+BEGIN_QUOTE
-When we say "separation of concerns" we mean the idea that it should be possible
-to work with the design or implementation of a system in the natural units of
-concern – concept, goal, team structure etc. – rather than in units imposed on
-us by the tools we are using.  We would like the modularity of a system to
-reflect the way "we want to think about it" rather than the way the language or
-other tools force us to think about it.  In software, Parnas is generally
-credited with this idea [[cite:Par-72][Par-72]] [[cite:Par-74][Par-74]].
-#+END_QUOTE
-
-The shift from domain-specific to general-purpose AOP is motivated by a desire
-for adoption: providing an alternative paradigm for all Java programmers.
-
-#+BEGIN_QUOTE
-AspectJ is intended to be a practical AOP language that provides, in a Java
-compatible package, a solid and well-worked-out set of AOP features.
-#+END_QUOTE
 
 They describe the joinpoints, pointcuts, and advice of AspectJ, as well as
 the rules of advice precedence, and sketch the compilation strategy.
