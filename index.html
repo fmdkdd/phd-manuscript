@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-27 mer. 17:36 -->
+<!-- 2016-04-27 mer. 18:53 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1765,7 +1765,7 @@ plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
 </p>
 
 <div class="org-src-container">
-
+<label class="org-src-name">Une déclaration inter-type qui ajoute un attribut et une méthode sur la classe <code>Point</code>.</label>
 <pre class="src src-java"><span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">int</span> Point.<span style="font-weight: bold; font-style: italic;">x</span> = 0;
 <span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">int</span> Point.<span style="font-weight: bold;">getX</span>() { <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">this</span>.x; }
 </pre>
@@ -1791,9 +1791,95 @@ processus d&rsquo;exécution: avant, après, ou autour de la jonction.</li>
 </ul>
 
 <p>
-Les
+Le programmeur ne manipule pas les jonctions directement, mais utilise les
+coupes pour les cibler dans des méthodes d&rsquo;aspect.  On pourra ainsi écrire:
 </p>
 
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">after</span>(): <span style="font-weight: bold;">calls</span>(<span style="font-weight: bold; text-decoration: underline;">void</span> Point.<span style="font-weight: bold; font-style: italic;">setX</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>)) {
+  System.out.println(<span style="font-style: italic;">"setX was called"</span>)
+}
+</pre>
+</div>
+
+<p>
+pour déclencher l&rsquo;affichage sur la sortie standard après (<code>after</code>) tout appel
+(<code>calls</code>) de la méthode <code>Point.setX(int)</code> dans le programme.
+</p>
+
+<p>
+Les coupes sont des prédicats, et peuvent être combinées avec les opérateurs
+booléens <code>&amp;&amp;</code>, <code>||</code>, et <code>!</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">receptions(<span style="font-weight: bold; text-decoration: underline;">void</span> Point.<span style="font-weight: bold; font-style: italic;">setX</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>))
+|| receptions(<span style="font-weight: bold; text-decoration: underline;">void</span> Point.<span style="font-weight: bold; font-style: italic;">setY</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>))
+
+calls(<span style="font-weight: bold; text-decoration: underline;">void</span> FigureElement.<span style="font-weight: bold; font-style: italic;">incrXY</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>))
+&amp;&amp; !<span style="font-weight: bold;">instanceof</span>(FigureElement)
+</pre>
+</div>
+
+<p>
+Ce qui permet de définir de capturer des ensembles de jonctions pertinentes pour
+une préoccupation particulière.  AspectJ permet d&rsquo;ailleurs de nommer les coupes
+pour plus de clarté:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">pointcut</span> <span style="font-weight: bold;">moves</span>():
+  receptions(<span style="font-weight: bold; text-decoration: underline;">void</span> FigureElement.<span style="font-weight: bold; font-style: italic;">incrXY</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>))
+  || receptions(<span style="font-weight: bold; text-decoration: underline;">void</span> Point.<span style="font-weight: bold; font-style: italic;">setX</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>))
+  || receptions(<span style="font-weight: bold; text-decoration: underline;">void</span> Point.<span style="font-weight: bold; font-style: italic;">setY</span>(<span style="font-weight: bold; text-decoration: underline;">int</span>));
+
+<span style="font-weight: bold; text-decoration: underline;">after</span>(): <span style="font-weight: bold;">moves</span>() {
+  ...
+}
+</pre>
+</div>
+
+<p>
+Une coupe nommée peut être utilisée par une méthode d&rsquo;aspect, mais aussi par
+n&rsquo;importe quelle autre coupe, ce qui encourage la composition, et réduit la
+duplication de code.
+</p>
+
+<p>
+Les jonctions exposées par AspectJ évoquent fortement les réifications d&rsquo;un
+protocole méta-objet: appel et exécution de méthode, création d&rsquo;une instance.
+Mais il y a d&rsquo;autres coupes intéressantes qui sont applicables à n&rsquo;importe quel
+langage à procédures: <code>withincode(method)</code> permet de cibler n&rsquo;importe quelle
+jonction qui émane de la méthode donnée.  C&rsquo;est particulièrement utile associé à
+d&rsquo;autres coupes:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">call(<span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold; font-style: italic;">m</span>()) &amp;&amp; withincode(<span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold; font-style: italic;">m</span>())
+</pre>
+</div>
+
+<p>
+capture uniquement les appels récursifs directs de <code>m</code>.  Inversement, si l&rsquo;on souhaite
+capturer les appels <i>non</i> récursifs à <code>m</code>, on peut utiliser <code>cflow</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">call(<span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold; font-style: italic;">m</span>()) &amp;&amp; !cflow(call(<span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold; font-style: italic;">m</span>()))
+</pre>
+</div>
+
+<p>
+<code>cflow(coupe)</code> capture toutes les jonctions qui sont dans le flot de contrôle de
+la coupe passée en argument; c&rsquo;est à dire, ici, toutes les jonctions qui
+existent sous un appel de <code>m</code> dans la pile d&rsquo;appels.  Du coup, la coupe composée
+capture les appels de <code>m</code> lorsqu&rsquo;aucun appel à <code>m</code> n&rsquo;existe sur la pile.
+</p>
 
 <hr >
 
@@ -11786,7 +11872,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-27 mer. 17:36 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-27 mer. 18:53 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
