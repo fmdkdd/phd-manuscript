@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-26 mar. 18:27 -->
+<!-- 2016-04-27 mer. 17:36 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1745,8 +1745,55 @@ compatible package, a solid and well-worked-out set of AOP features.
 <p>
 AspectJ est un langage d&rsquo;aspect pour Java.  Dans un système par aspects, il y a
 un langage d&rsquo;aspects, ici AspectJ, et un langage de composants, ici ce sera
-Java.
+Java.  AspectJ est un langage d&rsquo;aspect <i>général</i>, qui fournit des mécanismes de
+recomposition applicables à tout programme Java.  Et pour ce faire, AspectJ
+propose deux types de recomposition.
 </p>
+
+<p>
+En premier, les déclarations inter-types permettent de définir, au sein d&rsquo;un
+même aspect, des attributs et des méthodes pour un ou plusieurs types [<a href="#Asp-03">Asp03</a>].
+Ces attributs augmentent des types existants à la compilation.  La classe est,
+en Java, et comme dans d&rsquo;autres langages à classe pour la programmation objet,
+l&rsquo;unité de composition des composants.  Elle décrit les attributs et les
+méthodes partagées par toutes ses instances; la structure statique du programme.
+Comme c&rsquo;est une unité de composition, une classe n&rsquo;a pas vocation à pouvoir
+affecter les attributs et méthodes d&rsquo;une autre classe.  Mais un aspect est une
+unité de composition qui <i>traverse</i> la composition des composants, et c&rsquo;est donc
+naturel de permettre, dans un aspect, d&rsquo;ajouter attributs et méthodes à
+plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">int</span> Point.<span style="font-weight: bold; font-style: italic;">x</span> = 0;
+<span style="font-weight: bold;">public</span> <span style="font-weight: bold; text-decoration: underline;">int</span> Point.<span style="font-weight: bold;">getX</span>() { <span style="font-weight: bold;">return</span> <span style="font-weight: bold;">this</span>.x; }
+</pre>
+</div>
+
+<p>
+Le second type de recomposition d&rsquo;AspectJ permet de modifier la structure
+<i>dynamique</i> du programme, son comportement à l&rsquo;exécution.  C&rsquo;est rendu possible
+par trois constructions:
+</p>
+
+<ul class="org-ul">
+<li>les jonctions (<i>joinpoints</i>) sont des points d&rsquo;exécution du programme bien
+définis: l&rsquo;appel d&rsquo;une méthode, l&rsquo;affectation d&rsquo;un attribut, la création d&rsquo;une
+instance de classe, etc.</li>
+<li>les coupes (<i>pointcuts</i>) permettent de cibler un ensemble de jonctions, et
+d&rsquo;en extraire de l&rsquo;information comme le nom de la méthode appelée, et ses
+arguments.</li>
+<li>les méthodes d&rsquo;aspect (<i>advice</i>) contiennent le code à exécuter lorsque le
+programme atteint les jonctions décrites par la coupe de la méthode.  Une
+méthode d&rsquo;aspect décrit également <i>comment</i> le code doit s&rsquo;insérer dans le
+processus d&rsquo;exécution: avant, après, ou autour de la jonction.</li>
+</ul>
+
+<p>
+Les
+</p>
+
 
 <hr >
 
@@ -1773,34 +1820,6 @@ languages.
 </p>
 </blockquote>
 
-<p>
-[<a href="#KHH+01">KHH+01</a>] presents the AspectJ AOP system.  It contains an intuitive footnote about
-the separation of concerns.
-</p>
-
-<blockquote>
-<p>
-When we say &laquo;&nbsp;separation of concerns&nbsp;&raquo; we mean the idea that it should be possible
-to work with the design or implementation of a system in the natural units of
-concern – concept, goal, team structure etc. – rather than in units imposed on
-us by the tools we are using.  We would like the modularity of a system to
-reflect the way &laquo;&nbsp;we want to think about it&nbsp;&raquo; rather than the way the language or
-other tools force us to think about it.  In software, Parnas is generally
-credited with this idea [<a href="#Par-72">Par72</a>,<a href="#Par-74">Par74</a>].
-</p>
-</blockquote>
-
-<p>
-The shift from domain-specific to general-purpose AOP is motivated by a desire
-for adoption: providing an alternative paradigm for all Java programmers.
-</p>
-
-<blockquote>
-<p>
-AspectJ is intended to be a practical AOP language that provides, in a Java
-compatible package, a solid and well-worked-out set of AOP features.
-</p>
-</blockquote>
 
 <p>
 They describe the joinpoints, pointcuts, and advice of AspectJ, as well as
@@ -10246,6 +10265,20 @@ Aristotle.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Asp-03">Asp03</a>]
+</td>
+<td class="bibtexitem">
+AspectJ Team.
+ The AspectJ programming guide.
+ October 2003.
+[&nbsp;<a href="https://eclipse.org/aspectj/doc/released/progguide/index.html">.html</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="BFK+85">BFKM85</a>]
 </td>
 <td class="bibtexitem">
@@ -11753,7 +11786,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-26 mar. 18:27 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-27 mer. 17:36 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
