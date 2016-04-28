@@ -1354,34 +1354,113 @@ call(void m()) && !cflow(call(void m()))
 ~cflow(coupe)~ capture toutes les jonctions qui sont dans le flot de contrôle de
 la coupe passée en argument; c'est à dire, ici, toutes les jonctions qui
 existent après qu'au moins un appel de ~m~ soit présent sur la pile d'appels.
-Du coup, la coupe composée capture les appels de ~m~ lorsqu'aucun appel à ~m~
-n'existe sur la pile, ce qui exclut les appels récursifs (directs et indirects).
+Dans l'exemple, la coupe composée capture les appels de ~m~ lorsqu'aucun appel à
+~m~ n'existe sur la pile, ce qui exclut les appels récursifs (directs et
+indirects).
 
+À travers les différents types de jonctions observées, le langage d'aspect
+d'AspectJ permet de capturer de nombreux points d'exécution du programme, et
+d'exécuter du code au delà des frontières délimitées par les classes et les
+méthodes de Java.  On voit bien comment le langage permet de séparer les
+composants des aspects, et ce pour n'importe quelle application.  Puisqu'ici,
+contrairement au langage spécifique d'aspects du premier papier, le mécanisme
+est général; il s'applique à n'importe quel programme Java.
 
+Les auteurs donnent l'exemple d'un aspect qui enregistre toutes les erreurs
+levées par toutes les méthodes publiques d'un package:
 
-# Glissement de la méthode (séparer composants et aspects) vers le mécanisme
-# (jonctions/coupes/méthodes d'aspect)
+#+BEGIN_SRC java
+aspect SimpleErrorLogging {
+  Log log = new Log();
+
+  pointcut publicEntries():
+    receptions(public * com.xerox.printers.*.*(..));
+
+  after() throwing(Error e): publicEntries() {
+    log.write(e)
+  }
+}
+#+END_SRC
+
+Cet aspect est équivalent à rajouter enrober chaque appel dans un ~try/catch~ et
+appeler ~log.write~ sur l'erreur levée.  Mais ici c'est fait en 8 lignes, pour
+toutes les classes du package, même les classes futures.
+
+Un désavantage du langage spécifique c'est qu'il faut réécrire le programme des
+composants dans le nouveau langage à composants.  Ici, le langage d'aspects
+manipule directement le langage à composant déjà existant: Java.  Un programmeur
+peut donc directement appliquer la programmation par aspects à un programme Java
+existant, simplement en ajoutant des programmes d'aspect, et en invoquant le
+tisseur à la compilation.  Aucune modification du programme des composants n'est
+nécessaire, mais pourtant ce programme va être modifié par des aspects.  Les
+déclarations inter-types peuvent étendre des classes sans modifier le code de
+celles-ci.  Et les méthodes d'aspect vont modifier le comportement à l'exécution
+de plusieurs classes, ici encore sans en altérer le code.
+
+La programmation par aspect nous donne donc deux façons de modifier un
+programme: dans les filtres d'images, la modification est /explicite/, car il
+faut réécrire les filtres pour expliciter quel type de boucle est utilisée; mais
+dans AspectJ, le programme est modifié /implicitement/ par les aspects.
+
+En revanche, dans les deux cas, les programmes des composants /ne dépendent pas
+des programmes d'aspects/ pour fonctionner.  Dans l'exemple de l'aspect de
+journalisation des erreurs, on pourrait compiler le programme sans cet aspect
+(sans tisser l'aspect), et on obtiendrait un programme qui a les mêmes
+fonctionnalités, mais sans la journalisation.  Aucune modification du code du
+programme n'est nécessaire pour activer ou désactiver la journalisation; c'est
+uniquement le choix des aspects à activer au moment du tissage qui détermine les
+fonctionnalités du programme final.  De même, dans les filtres d'image, ne pas
+inclure les programmes d'aspects n'impacte que l'efficacité du programme, mais
+pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
+/oubliables/ (/obliviousness property/).
+
+D'être oubliable est une propriété qui peut être considérée comme
+caractéristique de la programmation par aspects [[cite:FF-04][FF-04]].  Filman et Friedman
+cherchent à identifier les systèmes qui suivent la programmation par aspects.
+Il semble clair que lorsqu'on utilise AspectJ, on fait de la programmation par
+aspect.  Mais si on construit un système similaire à celui des filtres d'images,
+avec un langage dédié pour les filtres, est-ce que c'est un système d'aspects?
+À l'inverse, il ne s'agit pas de rajouter une construction à un langage qui
+permet de créer des "aspects", qui regroupent des méthodes, pour en faire un
+langage de programmation par aspects.
+
+Dans la publication d'origine [[cite:KLM+97][KLM+97]], le seul critère de définition d'un système
+par aspects est qu'il permet d'exprimer séparément les composants des aspects,
+des unités issues de la phase de conception du système.  Mais Filman et Friedman
+ne s'intéressent pas tant à la /méthodologie/ de la programmation par aspects,
+qu'aux /mécanismes/ qui la supportent:
+
+#+BEGIN_QUOTE
+Understanding something involves both understanding how it works (mechanism) and
+what it's good for (methodology).  In computer science, we're rarely shy about
+grandiose methodological claims (see, for example, the literature of AI or the
+Internet).  But mechanism is important – appreciating mechanisms leads to
+improved mechanisms, recognition of commonalities and isomorphisms, and plain
+old clarity about what's actually happening. — [[cite:FF-04][FF-04]]
+#+END_QUOTE
+
+D'après eux, un mécanisme pour la programmation par aspect peut se résumer à
+faire des déclarations de la forme:
+
+: Dans les programmes P, quand la condition C est remplie, faire l'action A.
+
+Ce qui suggère trois axes de liberté pour ces mécanismes:
 
 
 -----
 
-# Aspect languages is the important contribution of the original paper, but
-# AspectJ is just /one/ generalized language, not the original implementation.
+Aspect languages is the important contribution of the original paper, but
+AspectJ is just /one/ generalized language, not the original implementation.
 
-# Lamping [[cite:Lam-97][Lam-97]] nails it: aspects are interesting /because/ they interact with
-# components.  They are /not/ components; they are pervasive issues.
+Lamping [[cite:Lam-97][Lam-97]] nails it: aspects are interesting /because/ they interact with
+components.  They are /not/ components; they are pervasive issues.
 
-# Wolfgang [[cite:Meu-97][Meu-97]] links AOP to Monads.  Monads can be seen as encapsulating code
-# for one concern
+Wolfgang [[cite:Meu-97][Meu-97]] links AOP to Monads.  Monads can be seen as encapsulating code
+for one concern
 
-# Reification of language constructs
-# Implicit vs explicit extension
-# COMEFROM vs GOTO
-# Duality, other side of the coin
-
-Manipulation of static and runtime code.  Joinpoints reifie extension points.
-Pointcuts give powerful quantification over joinpoints.  Aspects promote
-separation of concerns.
+Reification of language constructs
+COMEFROM vs GOTO
+Duality, other side of the coin
 
 Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
 both a blessing and a curse.  COMEFROM destroys local reasoning or referential
@@ -1393,16 +1472,6 @@ Did the initial vision of AOP cover the problem of extensibility?
 [...] the aspect languages must address different issues than the component
 languages.
 #+END_QUOTE
-
-
-They describe the joinpoints, pointcuts, and advice of AspectJ, as well as
-the rules of advice precedence, and sketch the compilation strategy.
-
-Advice declarations in AspectJ, through CLOS [[cite:KRB-91][KRB-91]], owe much to Flavors
-[[cite:Can-03][Can-03]].
-
-[[cite:MK-03][MK-03]] provides models and scheme implementations of four AOP systems; the
-Pointcuts-Advice model for AspectJ in particular.
 
 [[cite:FF-04][FF-04]] wants to answer the question "when are we looking at an AOP system?".
 They find two essential traits of AOP systems: quantification and obliviousness.
