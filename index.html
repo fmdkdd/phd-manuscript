@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-28 jeu. 15:10 -->
+<!-- 2016-04-28 jeu. 19:09 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1879,18 +1879,146 @@ l&rsquo;on souhaite capturer les appels <i>non</i> récursifs à <code>m</code>,
 <code>cflow(coupe)</code> capture toutes les jonctions qui sont dans le flot de contrôle de
 la coupe passée en argument; c&rsquo;est à dire, ici, toutes les jonctions qui
 existent après qu&rsquo;au moins un appel de <code>m</code> soit présent sur la pile d&rsquo;appels.
-Du coup, la coupe composée capture les appels de <code>m</code> lorsqu&rsquo;aucun appel à <code>m</code>
-n&rsquo;existe sur la pile, ce qui exclut les appels récursifs (directs et indirects).
+Dans l&rsquo;exemple, la coupe composée capture les appels de <code>m</code> lorsqu&rsquo;aucun appel à
+<code>m</code> n&rsquo;existe sur la pile, ce qui exclut les appels récursifs (directs et
+indirects).
 </p>
 
+<p>
+À travers les différents types de jonctions observées, le langage d&rsquo;aspect
+d&rsquo;AspectJ permet de capturer de nombreux points d&rsquo;exécution du programme, et
+d&rsquo;exécuter du code au delà des frontières délimitées par les classes et les
+méthodes de Java.  On voit bien comment le langage permet de séparer les
+composants des aspects, et ce pour n&rsquo;importe quelle application.  Puisqu&rsquo;ici,
+contrairement au langage spécifique d&rsquo;aspects du premier papier, le mécanisme
+est général; il s&rsquo;applique à n&rsquo;importe quel programme Java.
+</p>
+
+<p>
+Les auteurs donnent l&rsquo;exemple d&rsquo;un aspect qui enregistre toutes les erreurs
+levées par toutes les méthodes publiques d&rsquo;un package:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="font-weight: bold; text-decoration: underline;">aspect</span> <span style="font-weight: bold; font-style: italic;">SimpleErrorLogging</span> {
+  <span style="font-weight: bold; text-decoration: underline;">Log</span> <span style="font-weight: bold; font-style: italic;">log</span> = <span style="font-weight: bold;">new</span> <span style="font-weight: bold; text-decoration: underline;">Log</span>();
+
+  <span style="font-weight: bold; text-decoration: underline;">pointcut</span> <span style="font-weight: bold; font-style: italic;">publicEntries</span>():
+    receptions(<span style="font-weight: bold;">public</span> * <span style="font-weight: bold; text-decoration: underline;">com</span>.<span style="font-weight: bold; text-decoration: underline;">xerox</span>.<span style="font-weight: bold; text-decoration: underline;">printers</span>.*.*(..));
+
+  after() throwing(<span style="font-weight: bold; text-decoration: underline;">Error</span> <span style="font-weight: bold; font-style: italic;">e</span>): publicEntries() {
+    log.write(e)
+  }
+}
+</pre>
+</div>
+
+<p>
+Cet aspect est équivalent à rajouter enrober chaque appel dans un <code>try/catch</code> et
+appeler <code>log.write</code> sur l&rsquo;erreur levée.  Mais ici c&rsquo;est fait en 8 lignes, pour
+toutes les classes du package, même les classes futures.
+</p>
+
+<p>
+Un désavantage du langage spécifique c&rsquo;est qu&rsquo;il faut réécrire le programme des
+composants dans le nouveau langage à composants.  Ici, le langage d&rsquo;aspects
+manipule directement le langage à composant déjà existant: Java.  Un programmeur
+peut donc directement appliquer la programmation par aspects à un programme Java
+existant, simplement en ajoutant des programmes d&rsquo;aspect, et en invoquant le
+tisseur à la compilation.  Aucune modification du programme des composants n&rsquo;est
+nécessaire, mais pourtant ce programme va être modifié par des aspects.  Les
+déclarations inter-types peuvent étendre des classes sans modifier le code de
+celles-ci.  Et les méthodes d&rsquo;aspect vont modifier le comportement à l&rsquo;exécution
+de plusieurs classes, ici encore sans en altérer le code.
+</p>
+
+<p>
+La programmation par aspect nous donne donc deux façons de modifier un
+programme: dans les filtres d&rsquo;images, la modification est <i>explicite</i>, car il
+faut réécrire les filtres pour expliciter quel type de boucle est utilisée; mais
+dans AspectJ, le programme est modifié <i>implicitement</i> par les aspects.
+</p>
+
+<p>
+En revanche, dans les deux cas, les programmes des composants <i>ne dépendent pas
+des programmes d&rsquo;aspects</i> pour fonctionner.  Dans l&rsquo;exemple de l&rsquo;aspect de
+journalisation des erreurs, on pourrait compiler le programme sans cet aspect
+(sans tisser l&rsquo;aspect), et on obtiendrait un programme qui a les mêmes
+fonctionnalités, mais sans la journalisation.  Aucune modification du code du
+programme n&rsquo;est nécessaire pour activer ou désactiver la journalisation; c&rsquo;est
+uniquement le choix des aspects à activer au moment du tissage qui détermine les
+fonctionnalités du programme final.  De même, dans les filtres d&rsquo;image, ne pas
+inclure les programmes d&rsquo;aspects n&rsquo;impacte que l&rsquo;efficacité du programme, mais
+pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
+<i>oubliables</i> (<i>obliviousness property</i>).
+</p>
+
+<p>
+D&rsquo;être oubliable est une propriété qui peut être considérée comme
+caractéristique de la programmation par aspects [<a href="#FF-04">FF04</a>].  Filman et Friedman
+cherchent à identifier les systèmes qui suivent la programmation par aspects.
+Il semble clair que lorsqu&rsquo;on utilise AspectJ, on fait de la programmation par
+aspect.  Mais si on construit un système similaire à celui des filtres d&rsquo;images,
+avec un langage dédié pour les filtres, est-ce que c&rsquo;est un système d&rsquo;aspects?
+À l&rsquo;inverse, il ne s&rsquo;agit pas de rajouter une construction à un langage qui
+permet de créer des &laquo;&nbsp;aspects&nbsp;&raquo;, qui regroupent des méthodes, pour en faire un
+langage de programmation par aspects.
+</p>
+
+<p>
+Dans la publication d&rsquo;origine [<a href="#KLM+97">KLM+97</a>], le seul critère de définition d&rsquo;un système
+par aspects est qu&rsquo;il permet d&rsquo;exprimer séparément les composants des aspects,
+des unités issues de la phase de conception du système.  Mais Filman et Friedman
+ne s&rsquo;intéressent pas tant à la <i>méthodologie</i> de la programmation par aspects,
+qu&rsquo;aux <i>mécanismes</i> qui la supportent:
+</p>
+
+<blockquote>
+<p>
+Understanding something involves both understanding how it works (mechanism) and
+what it&rsquo;s good for (methodology).  In computer science, we&rsquo;re rarely shy about
+grandiose methodological claims (see, for example, the literature of AI or the
+Internet).  But mechanism is important – appreciating mechanisms leads to
+improved mechanisms, recognition of commonalities and isomorphisms, and plain
+old clarity about what&rsquo;s actually happening. — [<a href="#FF-04">FF04</a>]</p>
+</blockquote>
+
+<p>
+D&rsquo;après eux, un mécanisme pour la programmation par aspect peut se résumer à
+faire des déclarations de la forme:
+</p>
+
+<pre class="example">
+Dans les programmes P, quand la condition C est remplie, faire l'action A.
+</pre>
+
+<p>
+Ce qui suggère trois axes de liberté pour ces mécanismes:
+</p>
 
 
 <hr >
 
 <p>
-Manipulation of static and runtime code.  Joinpoints reifie extension points.
-Pointcuts give powerful quantification over joinpoints.  Aspects promote
-separation of concerns.
+Aspect languages is the important contribution of the original paper, but
+AspectJ is just <i>one</i> generalized language, not the original implementation.
+</p>
+
+<p>
+Lamping [<a href="#Lam-97">Lam97</a>] nails it: aspects are interesting <i>because</i> they interact with
+components.  They are <i>not</i> components; they are pervasive issues.
+</p>
+
+<p>
+Wolfgang [<a href="#Meu-97">Meu97</a>] links AOP to Monads.  Monads can be seen as encapsulating code
+for one concern
+</p>
+
+<p>
+Reification of language constructs
+COMEFROM vs GOTO
+Duality, other side of the coin
 </p>
 
 <p>
@@ -1909,22 +2037,6 @@ Did the initial vision of AOP cover the problem of extensibility?
 languages.
 </p>
 </blockquote>
-
-
-<p>
-They describe the joinpoints, pointcuts, and advice of AspectJ, as well as
-the rules of advice precedence, and sketch the compilation strategy.
-</p>
-
-<p>
-Advice declarations in AspectJ, through CLOS [<a href="#KRB-91">KdRB91</a>], owe much to Flavors
-[<a href="#Can-03">Can03</a>].
-</p>
-
-<p>
-[<a href="#MK-03">MK03</a>] provides models and scheme implementations of four AOP systems; the
-Pointcuts-Advice model for AspectJ in particular.
-</p>
 
 <p>
 [<a href="#FF-04">FF04</a>] wants to answer the question &laquo;&nbsp;when are we looking at an AOP system?&nbsp;&raquo;.
@@ -10483,19 +10595,6 @@ Don&nbsp;S. Batory, Jacob&nbsp;Neal Sarvela, and Axel Rauschmayer.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Can-03">Can03</a>]
-</td>
-<td class="bibtexitem">
-Howard&nbsp;I. Cannon.
- Flavors: A non-hierarchial approach to object-oriented programming,
-  2003.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="DBB+03">DBB<sup>+</sup>03</a>]
 </td>
 <td class="bibtexitem">
@@ -10868,19 +10967,6 @@ Alan&nbsp;C. Kay.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="KRB-91">KdRB91</a>]
-</td>
-<td class="bibtexitem">
-Gregor Kiczales, Jim des Rivières, and Daniel&nbsp;G. Bobrow.
- <em>The Art of the Metaobject Protocol</em>.
- MIT Press, 1991.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="KHH+01">KHH<sup>+</sup>01</a>]
 </td>
 <td class="bibtexitem">
@@ -10981,6 +11067,22 @@ Matthias Keil and Peter Thiemann.
   Languages, part of SPLASH 2013, Indianapolis, IN, USA, October 26-31,
   2013</em>, pages 49--60, 2013.
 [&nbsp;<a href="http://dx.doi.org/10.1145/2508168.2508176">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="Lam-97">Lam97</a>]
+</td>
+<td class="bibtexitem">
+John Lamping.
+ The interaction of components and aspects.
+ In Cristina Lopes, Gregor Kiczales, Bedir Tekinerdo&#x11F;an, and
+  Kim Mens, editors, <em>Workshop on Aspect Oriented Programming (ECOOP
+  1997)</em>, June 1997.
+[&nbsp;<a href="http://trese.cs.utwente.nl/aop-ecoop97/aop_papers/lamping.txt">.txt</a>&nbsp;]
 
 </td>
 </tr>
@@ -11148,22 +11250,6 @@ Jacques Malenfant, M.&nbsp;Jacques, and F.-N. Demers.
  In <em>Proceedings of the 1st International Conference on Metalevel
   Architectures and Reflection (Reflection 96), San Francisco, CA, USA, April
   1996</em>, 1996.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="MK-03">MK03</a>]
-</td>
-<td class="bibtexitem">
-Hidehiko Masuhara and Gregor Kiczales.
- Modeling crosscutting in aspect-oriented mechanisms.
- In <em>ECOOP 2003 - Object-Oriented Programming, 17th European
-  Conference, Darmstadt, Germany, July 21-25, 2003, Proceedings</em>, pages 2--28,
-  2003.
-[&nbsp;<a href="http://dx.doi.org/10.1007/978-3-540-45070-2_2">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -11876,7 +11962,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-28 jeu. 15:10 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-28 jeu. 19:09 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
