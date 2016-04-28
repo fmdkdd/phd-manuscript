@@ -1257,16 +1257,16 @@ recomposition applicables à tout programme Java.  Et pour ce faire, AspectJ
 propose deux types de recomposition.
 
 En premier, les déclarations inter-types permettent de définir, au sein d'un
-même aspect, des attributs et des méthodes pour un ou plusieurs types [[cite:Asp-03][Asp-03]].
-Ces attributs augmentent des types existants à la compilation.  La classe est,
-en Java, et comme dans d'autres langages à classe pour la programmation objet,
-l'unité de composition des composants.  Elle décrit les attributs et les
-méthodes partagées par toutes ses instances; la structure statique du programme.
-Comme c'est une unité de composition, une classe n'a pas vocation à pouvoir
-affecter les attributs et méthodes d'une autre classe.  Mais un aspect est une
-unité de composition qui /traverse/ la composition des composants, et c'est donc
-naturel de permettre, dans un aspect, d'ajouter attributs et méthodes à
-plusieurs classes.  C'est une recomposition de la structure statique.
+même aspect, des attributs et des méthodes pour une ou plusieurs classes [[cite:Asp-03][Asp-03]].
+Ces attributs augmentent les classes au moment de la compilation.  La classe
+est, en Java, et comme dans d'autres langages à classe pour la programmation
+objet, l'unité de composition des composants.  Elle décrit les attributs et les
+méthodes partagées par toutes ses instances; c'est la structure statique du
+programme.  Comme c'est une unité de composition, une classe n'a pas vocation à
+pouvoir affecter les attributs et méthodes d'une autre classe.  Mais un aspect
+est une unité de composition qui /traverse/ la composition des composants, et
+c'est donc naturel de permettre, dans un aspect, d'ajouter attributs et méthodes
+à plusieurs classes.  C'est une recomposition de la structure statique.
 
 #+CAPTION: Une déclaration inter-type qui ajoute un attribut et une méthode sur
 #+CAPTION: la classe ~Point~.
@@ -1276,8 +1276,8 @@ public int Point.getX() { return this.x; }
 #+END_SRC
 
 Le second type de recomposition d'AspectJ permet de modifier la structure
-/dynamique/ du programme, son comportement à l'exécution.  C'est rendu possible
-par trois constructions:
+/dynamique/ du programme; de modifier le comportement du programme à
+l'exécution.  C'est rendu possible par trois constructions:
 
 - les jonctions (/joinpoints/) sont des points d'exécution du programme bien
   définis: l'appel d'une méthode, l'affectation d'un attribut, la création d'une
@@ -1313,9 +1313,9 @@ calls(void FigureElement.incrXY(int, int))
 && !instanceof(FigureElement)
 #+END_SRC
 
-Ce qui permet de définir de capturer des ensembles de jonctions pertinentes pour
-une préoccupation particulière.  AspectJ permet d'ailleurs de nommer les coupes
-pour plus de clarté:
+Ce qui permet de capturer des ensembles de jonctions pertinents pour cibler une
+préoccupation particulière.  AspectJ permet d'ailleurs de nommer les coupes pour
+plus de clarté:
 
 #+BEGIN_SRC java
 pointcut moves():
@@ -1343,8 +1343,9 @@ d'autres coupes:
 call(void m()) && withincode(void m())
 #+END_SRC
 
-capture uniquement les appels récursifs directs de ~m~.  Inversement, si l'on souhaite
-capturer les appels /non/ récursifs à ~m~, on peut utiliser ~cflow~:
+Là on capture uniquement les appels récursifs directs de ~m~.  Inversement, si
+l'on souhaite capturer les appels /non/ récursifs à ~m~, on peut utiliser
+~cflow~:
 
 #+BEGIN_SRC java
 call(void m()) && !cflow(call(void m()))
@@ -1352,8 +1353,11 @@ call(void m()) && !cflow(call(void m()))
 
 ~cflow(coupe)~ capture toutes les jonctions qui sont dans le flot de contrôle de
 la coupe passée en argument; c'est à dire, ici, toutes les jonctions qui
-existent sous un appel de ~m~ dans la pile d'appels.  Du coup, la coupe composée
-capture les appels de ~m~ lorsqu'aucun appel à ~m~ n'existe sur la pile.
+existent après qu'au moins un appel de ~m~ soit présent sur la pile d'appels.
+Du coup, la coupe composée capture les appels de ~m~ lorsqu'aucun appel à ~m~
+n'existe sur la pile, ce qui exclut les appels récursifs (directs et indirects).
+
+
 
 # Glissement de la méthode (séparer composants et aspects) vers le mécanisme
 # (jonctions/coupes/méthodes d'aspect)
