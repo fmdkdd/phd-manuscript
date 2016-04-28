@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-27 mer. 18:53 -->
+<!-- 2016-04-28 jeu. 15:10 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1752,16 +1752,16 @@ propose deux types de recomposition.
 
 <p>
 En premier, les déclarations inter-types permettent de définir, au sein d&rsquo;un
-même aspect, des attributs et des méthodes pour un ou plusieurs types [<a href="#Asp-03">Asp03</a>].
-Ces attributs augmentent des types existants à la compilation.  La classe est,
-en Java, et comme dans d&rsquo;autres langages à classe pour la programmation objet,
-l&rsquo;unité de composition des composants.  Elle décrit les attributs et les
-méthodes partagées par toutes ses instances; la structure statique du programme.
-Comme c&rsquo;est une unité de composition, une classe n&rsquo;a pas vocation à pouvoir
-affecter les attributs et méthodes d&rsquo;une autre classe.  Mais un aspect est une
-unité de composition qui <i>traverse</i> la composition des composants, et c&rsquo;est donc
-naturel de permettre, dans un aspect, d&rsquo;ajouter attributs et méthodes à
-plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
+même aspect, des attributs et des méthodes pour une ou plusieurs classes [<a href="#Asp-03">Asp03</a>].
+Ces attributs augmentent les classes au moment de la compilation.  La classe
+est, en Java, et comme dans d&rsquo;autres langages à classe pour la programmation
+objet, l&rsquo;unité de composition des composants.  Elle décrit les attributs et les
+méthodes partagées par toutes ses instances; c&rsquo;est la structure statique du
+programme.  Comme c&rsquo;est une unité de composition, une classe n&rsquo;a pas vocation à
+pouvoir affecter les attributs et méthodes d&rsquo;une autre classe.  Mais un aspect
+est une unité de composition qui <i>traverse</i> la composition des composants, et
+c&rsquo;est donc naturel de permettre, dans un aspect, d&rsquo;ajouter attributs et méthodes
+à plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
 </p>
 
 <div class="org-src-container">
@@ -1773,8 +1773,8 @@ plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
 
 <p>
 Le second type de recomposition d&rsquo;AspectJ permet de modifier la structure
-<i>dynamique</i> du programme, son comportement à l&rsquo;exécution.  C&rsquo;est rendu possible
-par trois constructions:
+<i>dynamique</i> du programme; de modifier le comportement du programme à
+l&rsquo;exécution.  C&rsquo;est rendu possible par trois constructions:
 </p>
 
 <ul class="org-ul">
@@ -1824,9 +1824,9 @@ calls(<span style="font-weight: bold; text-decoration: underline;">void</span> F
 </div>
 
 <p>
-Ce qui permet de définir de capturer des ensembles de jonctions pertinentes pour
-une préoccupation particulière.  AspectJ permet d&rsquo;ailleurs de nommer les coupes
-pour plus de clarté:
+Ce qui permet de capturer des ensembles de jonctions pertinents pour cibler une
+préoccupation particulière.  AspectJ permet d&rsquo;ailleurs de nommer les coupes pour
+plus de clarté:
 </p>
 
 <div class="org-src-container">
@@ -1864,8 +1864,9 @@ d&rsquo;autres coupes:
 </div>
 
 <p>
-capture uniquement les appels récursifs directs de <code>m</code>.  Inversement, si l&rsquo;on souhaite
-capturer les appels <i>non</i> récursifs à <code>m</code>, on peut utiliser <code>cflow</code>:
+Là on capture uniquement les appels récursifs directs de <code>m</code>.  Inversement, si
+l&rsquo;on souhaite capturer les appels <i>non</i> récursifs à <code>m</code>, on peut utiliser
+<code>cflow</code>:
 </p>
 
 <div class="org-src-container">
@@ -1877,9 +1878,12 @@ capturer les appels <i>non</i> récursifs à <code>m</code>, on peut utiliser <c
 <p>
 <code>cflow(coupe)</code> capture toutes les jonctions qui sont dans le flot de contrôle de
 la coupe passée en argument; c&rsquo;est à dire, ici, toutes les jonctions qui
-existent sous un appel de <code>m</code> dans la pile d&rsquo;appels.  Du coup, la coupe composée
-capture les appels de <code>m</code> lorsqu&rsquo;aucun appel à <code>m</code> n&rsquo;existe sur la pile.
+existent après qu&rsquo;au moins un appel de <code>m</code> soit présent sur la pile d&rsquo;appels.
+Du coup, la coupe composée capture les appels de <code>m</code> lorsqu&rsquo;aucun appel à <code>m</code>
+n&rsquo;existe sur la pile, ce qui exclut les appels récursifs (directs et indirects).
 </p>
+
+
 
 <hr >
 
@@ -11872,7 +11876,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-27 mer. 18:53 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-28 jeu. 15:10 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
