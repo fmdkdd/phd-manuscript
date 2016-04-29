@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-28 jeu. 19:09 -->
+<!-- 2016-04-29 ven. 18:36 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1976,27 +1976,68 @@ qu&rsquo;aux <i>mécanismes</i> qui la supportent:
 
 <blockquote>
 <p>
+Here we address the structural essence of AOP, not its application—somewhat
+similar to the difference between defining object-oriented programming systems
+in terms of polymorphic methods and inheritance versus waxing euphoric about
+objects as the appropriate way to model the world.
+</p>
+
+<p>
+[&#x2026;]
+</p>
+
+<p>
 Understanding something involves both understanding how it works (mechanism) and
 what it&rsquo;s good for (methodology).  In computer science, we&rsquo;re rarely shy about
 grandiose methodological claims (see, for example, the literature of AI or the
 Internet).  But mechanism is important – appreciating mechanisms leads to
 improved mechanisms, recognition of commonalities and isomorphisms, and plain
-old clarity about what&rsquo;s actually happening. — [<a href="#FF-04">FF04</a>]</p>
+old clarity about what&rsquo;s actually happening.
+</p>
+
+<p>
+— [<a href="#FF-04">FF04</a>]</p>
 </blockquote>
 
 <p>
-D&rsquo;après eux, un mécanisme pour la programmation par aspect peut se résumer à
-faire des déclarations de la forme:
+D&rsquo;après eux, le mécanisme essentiel de la programmation par aspect c&rsquo;est de
+permettre de faire des déclarations de la forme:
 </p>
 
-<pre class="example">
-Dans les programmes P, quand la condition C est remplie, faire l'action A.
-</pre>
+<blockquote>
+<p>
+Dans les programmes P, quand la condition C est vraie, réaliser l&rsquo;action A.
+</p>
+</blockquote>
+
+<aside>
+<p>
+Encore dit autrement, le mécanisme n&rsquo;est pas différent d&rsquo;un <code>COMEFROM</code> [<a href="#Cla-73">Cla73</a>],
+le dual du <code>GOTO</code>.
+</p>
+</aside>
 
 <p>
-Ce qui suggère trois axes de liberté pour ces mécanismes:
+Autrement dit, un système d&rsquo;aspects <i>quantifie</i>, au sens logique, les programmes
+et les conditions, afin d&rsquo;exécuter du code.  Les systèmes d&rsquo;aspects varient
+suivant ce qu&rsquo;ils permettent de quantifier.  Les systèmes boîtes noires
+quantifient l&rsquo;interface publique des composants: les fonctions et les méthodes
+d&rsquo;objets uniquement.  Les systèmes transparents quantifient l&rsquo;arbre de syntaxe:
+affectation de variables, structures de contrôle, distinction entre envoi et
+réception de message.  AspectJ et le langage d&rsquo;aspect pour les filtres d&rsquo;images
+sont tous deux des systèmes transparents dans cette classification.
 </p>
 
+<p>
+En ne prenant en compte que le mécanisme, on peut déterminer si d&rsquo;autres
+systèmes ou langages, qui ne sont pas présentés comme des systèmes d&rsquo;aspects,
+permettent tout de même de faire de la programmation par aspects.  En
+particulier, les systèmes à événements permettent la quantification; si les
+composants ne communiquent qu&rsquo;à travers des événements, on peut écrire des
+aspects qui quantifient ces événements, sans impacter le reste du système (les
+aspects sont oubliables).  Un système à événements peut donc être utilisé pour
+faire de la programmation par aspects.
+</p>
 
 <hr >
 
@@ -10595,6 +10636,20 @@ Don&nbsp;S. Batory, Jacob&nbsp;Neal Sarvela, and Axel Rauschmayer.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Cla-73">Cla73</a>]
+</td>
+<td class="bibtexitem">
+R.&nbsp;Lawrence Clark.
+ We don't know where to goto if we don't know where we've come from.
+ <em>Datamation</em>, 1973.
+[&nbsp;<a href="http://www.fortran.com/fortran/come_from.html">.html</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="DBB+03">DBB<sup>+</sup>03</a>]
 </td>
 <td class="bibtexitem">
@@ -11962,7 +12017,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-28 jeu. 19:09 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-04-29 ven. 18:36 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
