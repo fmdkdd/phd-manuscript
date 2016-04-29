@@ -1431,21 +1431,52 @@ ne s'intéressent pas tant à la /méthodologie/ de la programmation par aspects
 qu'aux /mécanismes/ qui la supportent:
 
 #+BEGIN_QUOTE
+Here we address the structural essence of AOP, not its application—somewhat
+similar to the difference between defining object-oriented programming systems
+in terms of polymorphic methods and inheritance versus waxing euphoric about
+objects as the appropriate way to model the world.
+
+[...]
+
 Understanding something involves both understanding how it works (mechanism) and
 what it's good for (methodology).  In computer science, we're rarely shy about
 grandiose methodological claims (see, for example, the literature of AI or the
 Internet).  But mechanism is important – appreciating mechanisms leads to
 improved mechanisms, recognition of commonalities and isomorphisms, and plain
-old clarity about what's actually happening. — [[cite:FF-04][FF-04]]
+old clarity about what's actually happening.
+
+— [[cite:FF-04][FF-04]]
 #+END_QUOTE
 
-D'après eux, un mécanisme pour la programmation par aspect peut se résumer à
-faire des déclarations de la forme:
+D'après eux, le mécanisme essentiel de la programmation par aspect c'est de
+permettre de faire des déclarations de la forme:
 
-: Dans les programmes P, quand la condition C est remplie, faire l'action A.
+#+BEGIN_QUOTE
+Dans les programmes P, quand la condition C est vraie, réaliser l'action A.
+#+END_QUOTE
 
-Ce qui suggère trois axes de liberté pour ces mécanismes:
+#+BEGIN_aside
+Encore dit autrement, le mécanisme n'est pas différent d'un ~COMEFROM~ [[cite:Cla-73][Cla-73]],
+le dual du ~GOTO~.
+#+END_aside
 
+Autrement dit, un système d'aspects /quantifie/, au sens logique, les programmes
+et les conditions, afin d'exécuter du code.  Les systèmes d'aspects varient
+suivant ce qu'ils permettent de quantifier.  Les systèmes boîtes noires
+quantifient l'interface publique des composants: les fonctions et les méthodes
+d'objets uniquement.  Les systèmes transparents quantifient l'arbre de syntaxe:
+affectation de variables, structures de contrôle, distinction entre envoi et
+réception de message.  AspectJ et le langage d'aspect pour les filtres d'images
+sont tous deux des systèmes transparents dans cette classification.
+
+En ne prenant en compte que le mécanisme, on peut déterminer si d'autres
+systèmes ou langages, qui ne sont pas présentés comme des systèmes d'aspects,
+permettent tout de même de faire de la programmation par aspects.  En
+particulier, les systèmes à événements permettent la quantification; si les
+composants ne communiquent qu'à travers des événements, on peut écrire des
+aspects qui quantifient ces événements, sans impacter le reste du système (les
+aspects sont oubliables).  Un système à événements peut donc être utilisé pour
+faire de la programmation par aspects.
 
 -----
 
