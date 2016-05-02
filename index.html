@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-04-29 ven. 18:36 -->
+<!-- 2016-05-02 lun. 18:40 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -2000,8 +2000,8 @@ old clarity about what&rsquo;s actually happening.
 </blockquote>
 
 <p>
-D&rsquo;après eux, le mécanisme essentiel de la programmation par aspect c&rsquo;est de
-permettre de faire des déclarations de la forme:
+D&rsquo;après eux, pour faire de la programmation par aspect il suffit de pouvoir
+exprimer des déclarations de la forme:
 </p>
 
 <blockquote>
@@ -2010,34 +2010,71 @@ Dans les programmes P, quand la condition C est vraie, réaliser l&rsquo;action 
 </p>
 </blockquote>
 
-<aside>
 <p>
-Encore dit autrement, le mécanisme n&rsquo;est pas différent d&rsquo;un <code>COMEFROM</code> [<a href="#Cla-73">Cla73</a>],
-le dual du <code>GOTO</code>.
+Autrement dit, il suffit de disposer d&rsquo;un <code>COMEFROM</code> [<a href="#Cla-73">Cla73</a>].  Le <code>COMEFROM</code> est
+le dual du <code>GOTO</code>: un <code>GOTO 10</code> transfère le contrôle à la ligne 10, alors qu&rsquo;un
+<code>COMEFROM 10</code> <i>capture</i> le contrôle après l&rsquo;exécution de la ligne 10.
 </p>
-</aside>
+
+<pre class="example">
+10 J=1
+11 COME FROM 20
+12 WRITE (6,40) J STOP
+13 COME FROM 10
+20 J=J+2
+40 FORMAT (14)
+</pre>
 
 <p>
-Autrement dit, un système d&rsquo;aspects <i>quantifie</i>, au sens logique, les programmes
-et les conditions, afin d&rsquo;exécuter du code.  Les systèmes d&rsquo;aspects varient
-suivant ce qu&rsquo;ils permettent de quantifier.  Les systèmes boîtes noires
-quantifient l&rsquo;interface publique des composants: les fonctions et les méthodes
-d&rsquo;objets uniquement.  Les systèmes transparents quantifient l&rsquo;arbre de syntaxe:
-affectation de variables, structures de contrôle, distinction entre envoi et
-réception de message.  AspectJ et le langage d&rsquo;aspect pour les filtres d&rsquo;images
-sont tous deux des systèmes transparents dans cette classification.
+Dans cet exemple, les lignes exécutées sont, dans l&rsquo;ordre: 10, 13, 20, 11, 12
+(<code>STOP</code> termine le programme).  On voit tout de suite qu&rsquo;un <code>COMEFROM</code> rend le
+code encore plus difficile à suivre qu&rsquo;un <code>GOTO</code>.  C&rsquo;est bien l&rsquo;intention de son
+auteur, qui voit le débat autour du <code>GOTO</code> avec humour:
+</p>
+
+<blockquote>
+<p>
+Nearly six years after publication of Dijkstra&rsquo;s now-famous letter, the subject
+of GOTO-less programming still stirs considerable controversy.
+</p>
+
+<p>
+The author has developed a new language construct on which, he believes, both
+the pro- and the anti-GOTO factions can agree.
+</p>
+</blockquote>
+
+<p>
+Le <code>COMEFROM</code> est donc une plaisanterie élaborée, qui n&rsquo;a a priori rien à voir
+avec la programmation par aspects.  Mais on s&rsquo;intéresse ici aux mécanismes, et
+le mécanisme du ~COMEFROM~—la possibilité de capturer le contrôle—est l&rsquo;essence
+des jonctions et des coupes proposées par AspectJ.
+</p>
+
+<p>
+Bien sûr, le <code>COMEFROM</code> décrit par Clark ne permet de venir que d&rsquo;une autre
+ligne du programme, alors qu&rsquo;AspectJ permet de capturer le contrôle lors
+d&rsquo;appels de méthodes, la lecture ou l&rsquo;affectation d&rsquo;une variable.  Mais en
+réalité, le <code>COMEFROM</code> de Clark est adapté à la granularité offerte par le
+langage: la ligne.  Dans AspectJ, l&rsquo;unité de composition est la méthode, et la
+classe.
 </p>
 
 <p>
 En ne prenant en compte que le mécanisme, on peut déterminer si d&rsquo;autres
 systèmes ou langages, qui ne sont pas présentés comme des systèmes d&rsquo;aspects,
 permettent tout de même de faire de la programmation par aspects.  En
-particulier, les systèmes à événements permettent la quantification; si les
-composants ne communiquent qu&rsquo;à travers des événements, on peut écrire des
-aspects qui quantifient ces événements, sans impacter le reste du système (les
-aspects sont oubliables).  Un système à événements peut donc être utilisé pour
-faire de la programmation par aspects.
+particulier, les systèmes à événements peuvent être vus comme équivalents à un
+<code>COMEFROM</code>; si les composants ne communiquent qu&rsquo;à travers des événements, on
+peut écrire des aspects qui capturent ces événements, sans impacter le reste du
+système (les aspects sont oubliables): il s&rsquo;agit simplement de souscrire à ces
+événements.  Un système à événements fournit donc un mécanisme qui peut être
+utilisé pour faire de la programmation par aspects.
 </p>
+
+<hr >
+
+
 
 <hr >
 
@@ -2053,12 +2090,12 @@ components.  They are <i>not</i> components; they are pervasive issues.
 
 <p>
 Wolfgang [<a href="#Meu-97">Meu97</a>] links AOP to Monads.  Monads can be seen as encapsulating code
-for one concern
+for one concern.  The similarity is in the methodology, not in the mecanism.
+Thus, it is best left described in the Monad section, with Wadler&rsquo;s paper.
 </p>
 
 <p>
 Reification of language constructs
-COMEFROM vs GOTO
 Duality, other side of the coin
 </p>
 
@@ -2093,39 +2130,6 @@ In programs P, whenever condition C arises, perform action A.
 </pre>
 
 <p>
-suggesting three axes of choices for AOP systems:
-</p>
-<ol class="org-ol">
-<li>What kinds of conditions can we specify? (Quantification)</li>
-<li>How do actions interact with programs and with each other? (Interface)</li>
-<li>How will the system mix the execution of programs and actions? (Weaving)</li>
-</ol>
-
-<p>
-For quantification, they distinguish between static (conditions on the source
-code structure) and dynamic (conditions on the runtime behavior).  Furthermore,
-black-box systems quantify over the public interface of components (e.g.,
-functions or object methods), and clear-box systems quantify over the internal
-structure of the code (AST).
-</p>
-
-<p>
-They note that rule-based systems (Prolog, OPS-5 [<a href="#BFK+85">BFK+85</a>]) would not need AOP.
-However
-</p>
-
-<blockquote>
-<p>
-But by and large, people don&rsquo;t program with rule-based systems.  This is because
-rule-based systems are notoriously difficult to code.  They&rsquo;ve destroyed the
-fundamental sequentiality of almost everything.  The sequential, local, unitary
-style is really very good for expressing most things.  The cleverness of
-classical AOP is augmenting conventional sequentiality with quantification,
-rather than supplanting it wholesale.
-</p>
-</blockquote>
-
-<p>
 The paper has an interesting stance on the evolution of programming languages
 with respect to <i>local</i> and <i>unitary</i> statements (&sect;2.2).
 </p>
@@ -2149,17 +2153,6 @@ a form of quantification.
 [<a href="#Ste-06">Ste06</a>] questions the success of AOP by opposing the AOP vision to the actual
 mechanisms provided.  Quoting [<a href="#FF-04">FF04</a>]:
 </p>
-
-<blockquote>
-<p>
-Understanding something involves both understanding how it works (mechanism) and
-what it&rsquo;s good for (methodology).  In computer science, we&rsquo;re rarely shy about
-grandiose methodological claims (see, for example, the literature of AI or the
-Internet).  But mechanism is important – appreciating mechanisms leads to
-improved mechanisms, recognition of commonalities and isomorphisms, and plain
-old clarity about what&rsquo;s actually happening.
-</p>
-</blockquote>
 
 <p>
 AOP has the issue of <i>fragile pointcuts</i>: sensitive to changes in the target
@@ -10522,20 +10515,6 @@ AspectJ Team.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="BFK+85">BFKM85</a>]
-</td>
-<td class="bibtexitem">
-Lee Brownston, Robert Farrell, Elaine Kant, and Nancy Martin.
- <em>Programming Expert Systems in OPS5: An Introduction to
-  Rule-based Programming</em>.
- Addison-Wesley, 1985.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="Bla-82">Bla82</a>]
 </td>
 <td class="bibtexitem">
@@ -12017,7 +11996,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-04-29 ven. 18:36 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-02 lun. 18:40 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
