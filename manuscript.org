@@ -1503,21 +1503,27 @@ système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
 événements.  Un système à événements fournit donc un mécanisme qui peut être
 utilisé pour faire de la programmation par aspects.
 
------
-
-
+Criticism of AOP?
 
 -----
 
-Aspect languages is the important contribution of the original paper, but
-AspectJ is just /one/ generalized language, not the original implementation.
+La contribution principale de la programmation par aspects est de distinguer
+deux types de programmes qui cohabitent dans un même système: les composants, en
+charge de la fonctionnalité du système, et les aspects, qui décrivent des
+préoccupations orthogonales à la fonctionnalité principale.  La programmation
+par aspects est donc premièrement une méthodologie plutôt qu'un mécanisme.
 
-Lamping [[cite:Lam-97][Lam-97]] nails it: aspects are interesting /because/ they interact with
-components.  They are /not/ components; they are pervasive issues.
+Et il y a plusieurs mécanismes qui permettent de réaliser la séparation des
+composants et des aspects: le langage des jonctions, coupes, et méthodes
+d'aspects proposé par AspectJ est le mieux connu, mais on peut aussi utiliser
+les événements, les ~try/catch~, les variables à portée dynamique, ou créer un
+langage dédié pour les composants et un pour les aspects.  Dans le monde de la
+programmation fonctionnelle, les monades sont aussi un moyen de séparer les
+préoccupations orthogonales [[cite:Meu-97][Meu-97]].
 
-Wolfgang [[cite:Meu-97][Meu-97]] links AOP to Monads.  Monads can be seen as encapsulating code
-for one concern.  The similarity is in the methodology, not in the mecanism.
-Thus, it is best left described in the Monad section, with Wadler's paper.
+Paragraph on criticism of AOP?
+
+-----
 
 Reification of language constructs
 Duality, other side of the coin
@@ -1527,18 +1533,6 @@ both a blessing and a curse.  COMEFROM destroys local reasoning or referential
 transparency.
 
 Did the initial vision of AOP cover the problem of extensibility?
-
-#+BEGIN_QUOTE
-[...] the aspect languages must address different issues than the component
-languages.
-#+END_QUOTE
-
-[[cite:FF-04][FF-04]] wants to answer the question "when are we looking at an AOP system?".
-They find two essential traits of AOP systems: quantification and obliviousness.
-
-They describe AOP as the desire to make statements of the form
-
-: In programs P, whenever condition C arises, perform action A.
 
 The paper has an interesting stance on the evolution of programming languages
 with respect to /local/ and /unitary/ statements (\sect2.2).
