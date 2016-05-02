@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-02 lun. 18:40 -->
+<!-- 2016-05-02 lun. 18:59 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -2072,27 +2072,35 @@ système (les aspects sont oubliables): il s&rsquo;agit simplement de souscrire 
 utilisé pour faire de la programmation par aspects.
 </p>
 
+<p>
+Criticism of AOP?
+</p>
+
 <hr >
 
+<p>
+La contribution principale de la programmation par aspects est de distinguer
+deux types de programmes qui cohabitent dans un même système: les composants, en
+charge de la fonctionnalité du système, et les aspects, qui décrivent des
+préoccupations orthogonales à la fonctionnalité principale.  La programmation
+par aspects est donc premièrement une méthodologie plutôt qu&rsquo;un mécanisme.
+</p>
 
+<p>
+Et il y a plusieurs mécanismes qui permettent de réaliser la séparation des
+composants et des aspects: le langage des jonctions, coupes, et méthodes
+d&rsquo;aspects proposé par AspectJ est le mieux connu, mais on peut aussi utiliser
+les événements, les <code>try/catch</code>, les variables à portée dynamique, ou créer un
+langage dédié pour les composants et un pour les aspects.  Dans le monde de la
+programmation fonctionnelle, les monades sont aussi un moyen de séparer les
+préoccupations orthogonales [<a href="#Meu-97">Meu97</a>].
+</p>
+
+<p>
+Paragraph on criticism of AOP?
+</p>
 
 <hr >
-
-<p>
-Aspect languages is the important contribution of the original paper, but
-AspectJ is just <i>one</i> generalized language, not the original implementation.
-</p>
-
-<p>
-Lamping [<a href="#Lam-97">Lam97</a>] nails it: aspects are interesting <i>because</i> they interact with
-components.  They are <i>not</i> components; they are pervasive issues.
-</p>
-
-<p>
-Wolfgang [<a href="#Meu-97">Meu97</a>] links AOP to Monads.  Monads can be seen as encapsulating code
-for one concern.  The similarity is in the methodology, not in the mecanism.
-Thus, it is best left described in the Monad section, with Wadler&rsquo;s paper.
-</p>
 
 <p>
 Reification of language constructs
@@ -2108,26 +2116,6 @@ transparency.
 <p>
 Did the initial vision of AOP cover the problem of extensibility?
 </p>
-
-<blockquote>
-<p>
-[&#x2026;] the aspect languages must address different issues than the component
-languages.
-</p>
-</blockquote>
-
-<p>
-[<a href="#FF-04">FF04</a>] wants to answer the question &laquo;&nbsp;when are we looking at an AOP system?&nbsp;&raquo;.
-They find two essential traits of AOP systems: quantification and obliviousness.
-</p>
-
-<p>
-They describe AOP as the desire to make statements of the form
-</p>
-
-<pre class="example">
-In programs P, whenever condition C arises, perform action A.
-</pre>
 
 <p>
 The paper has an interesting stance on the evolution of programming languages
@@ -11108,22 +11096,6 @@ Matthias Keil and Peter Thiemann.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Lam-97">Lam97</a>]
-</td>
-<td class="bibtexitem">
-John Lamping.
- The interaction of components and aspects.
- In Cristina Lopes, Gregor Kiczales, Bedir Tekinerdo&#x11F;an, and
-  Kim Mens, editors, <em>Workshop on Aspect Oriented Programming (ECOOP
-  1997)</em>, June 1997.
-[&nbsp;<a href="http://trese.cs.utwente.nl/aop-ecoop97/aop_papers/lamping.txt">.txt</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="Ler-11">Ler11</a>]
 </td>
 <td class="bibtexitem">
@@ -11996,7 +11968,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-02 lun. 18:40 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-02 lun. 18:59 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
