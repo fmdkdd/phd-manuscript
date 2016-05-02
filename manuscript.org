@@ -1448,35 +1448,64 @@ old clarity about what's actually happening.
 — [[cite:FF-04][FF-04]]
 #+END_QUOTE
 
-D'après eux, le mécanisme essentiel de la programmation par aspect c'est de
-permettre de faire des déclarations de la forme:
+D'après eux, pour faire de la programmation par aspect il suffit de pouvoir
+exprimer des déclarations de la forme:
 
 #+BEGIN_QUOTE
 Dans les programmes P, quand la condition C est vraie, réaliser l'action A.
 #+END_QUOTE
 
-#+BEGIN_aside
-Encore dit autrement, le mécanisme n'est pas différent d'un ~COMEFROM~ [[cite:Cla-73][Cla-73]],
-le dual du ~GOTO~.
-#+END_aside
+Autrement dit, il suffit de disposer d'un ~COMEFROM~ [[cite:Cla-73][Cla-73]].  Le ~COMEFROM~ est
+le dual du ~GOTO~: un ~GOTO 10~ transfère le contrôle à la ligne 10, alors qu'un
+~COMEFROM 10~ /capture/ le contrôle après l'exécution de la ligne 10.
 
-Autrement dit, un système d'aspects /quantifie/, au sens logique, les programmes
-et les conditions, afin d'exécuter du code.  Les systèmes d'aspects varient
-suivant ce qu'ils permettent de quantifier.  Les systèmes boîtes noires
-quantifient l'interface publique des composants: les fonctions et les méthodes
-d'objets uniquement.  Les systèmes transparents quantifient l'arbre de syntaxe:
-affectation de variables, structures de contrôle, distinction entre envoi et
-réception de message.  AspectJ et le langage d'aspect pour les filtres d'images
-sont tous deux des systèmes transparents dans cette classification.
+#+BEGIN_EXAMPLE fortran
+10 J=1
+11 COME FROM 20
+12 WRITE (6,40) J STOP
+13 COME FROM 10
+20 J=J+2
+40 FORMAT (14)
+#+END_EXAMPLE
+
+Dans cet exemple, les lignes exécutées sont, dans l'ordre: 10, 13, 20, 11, 12
+(~STOP~ termine le programme).  On voit tout de suite qu'un ~COMEFROM~ rend le
+code encore plus difficile à suivre qu'un ~GOTO~.  C'est bien l'intention de son
+auteur, qui voit le débat autour du ~GOTO~ avec humour:
+
+#+BEGIN_QUOTE
+Nearly six years after publication of Dijkstra's now-famous letter, the subject
+of GOTO-less programming still stirs considerable controversy.
+
+The author has developed a new language construct on which, he believes, both
+the pro- and the anti-GOTO factions can agree.
+#+END_QUOTE
+
+Le ~COMEFROM~ est donc une plaisanterie élaborée, qui n'a a priori rien à voir
+avec la programmation par aspects.  Mais on s'intéresse ici aux mécanismes, et
+le mécanisme du ~COMEFROM~—la possibilité de capturer le contrôle—est l'essence
+des jonctions et des coupes proposées par AspectJ.
+
+Bien sûr, le ~COMEFROM~ décrit par Clark ne permet de venir que d'une autre
+ligne du programme, alors qu'AspectJ permet de capturer le contrôle lors
+d'appels de méthodes, la lecture ou l'affectation d'une variable.  Mais en
+réalité, le ~COMEFROM~ de Clark est adapté à la granularité offerte par le
+langage: la ligne.  Dans AspectJ, l'unité de composition est la méthode, et la
+classe.
 
 En ne prenant en compte que le mécanisme, on peut déterminer si d'autres
 systèmes ou langages, qui ne sont pas présentés comme des systèmes d'aspects,
 permettent tout de même de faire de la programmation par aspects.  En
-particulier, les systèmes à événements permettent la quantification; si les
-composants ne communiquent qu'à travers des événements, on peut écrire des
-aspects qui quantifient ces événements, sans impacter le reste du système (les
-aspects sont oubliables).  Un système à événements peut donc être utilisé pour
-faire de la programmation par aspects.
+particulier, les systèmes à événements peuvent être vus comme équivalents à un
+~COMEFROM~; si les composants ne communiquent qu'à travers des événements, on
+peut écrire des aspects qui capturent ces événements, sans impacter le reste du
+système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
+événements.  Un système à événements fournit donc un mécanisme qui peut être
+utilisé pour faire de la programmation par aspects.
+
+-----
+
+
 
 -----
 
@@ -1487,10 +1516,10 @@ Lamping [[cite:Lam-97][Lam-97]] nails it: aspects are interesting /because/ they
 components.  They are /not/ components; they are pervasive issues.
 
 Wolfgang [[cite:Meu-97][Meu-97]] links AOP to Monads.  Monads can be seen as encapsulating code
-for one concern
+for one concern.  The similarity is in the methodology, not in the mecanism.
+Thus, it is best left described in the Monad section, with Wadler's paper.
 
 Reification of language constructs
-COMEFROM vs GOTO
 Duality, other side of the coin
 
 Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
@@ -1511,29 +1540,6 @@ They describe AOP as the desire to make statements of the form
 
 : In programs P, whenever condition C arises, perform action A.
 
-suggesting three axes of choices for AOP systems:
-1. What kinds of conditions can we specify? (Quantification)
-2. How do actions interact with programs and with each other? (Interface)
-3. How will the system mix the execution of programs and actions? (Weaving)
-
-For quantification, they distinguish between static (conditions on the source
-code structure) and dynamic (conditions on the runtime behavior).  Furthermore,
-black-box systems quantify over the public interface of components (e.g.,
-functions or object methods), and clear-box systems quantify over the internal
-structure of the code (AST).
-
-They note that rule-based systems (Prolog, OPS-5 [[cite:BFK+85][BFK+85]]) would not need AOP.
-However
-
-#+BEGIN_QUOTE
-But by and large, people don't program with rule-based systems.  This is because
-rule-based systems are notoriously difficult to code.  They've destroyed the
-fundamental sequentiality of almost everything.  The sequential, local, unitary
-style is really very good for expressing most things.  The cleverness of
-classical AOP is augmenting conventional sequentiality with quantification,
-rather than supplanting it wholesale.
-#+END_QUOTE
-
 The paper has an interesting stance on the evolution of programming languages
 with respect to /local/ and /unitary/ statements (\sect2.2).
 
@@ -1550,15 +1556,6 @@ a form of quantification.
 
 [[cite:Ste-06][Ste-06]] questions the success of AOP by opposing the AOP vision to the actual
 mechanisms provided.  Quoting [[cite:FF-04][FF-04]]:
-
-#+BEGIN_QUOTE
-Understanding something involves both understanding how it works (mechanism) and
-what it's good for (methodology).  In computer science, we're rarely shy about
-grandiose methodological claims (see, for example, the literature of AI or the
-Internet).  But mechanism is important – appreciating mechanisms leads to
-improved mechanisms, recognition of commonalities and isomorphisms, and plain
-old clarity about what's actually happening.
-#+END_QUOTE
 
 AOP has the issue of /fragile pointcuts/: sensitive to changes in the target
 program.
