@@ -32,14 +32,13 @@
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
-     - [[#translate-la-programmation-par-aspects][TRANSLATE La programmation par aspects]]
+     - [[#stable-la-programmation-par-aspects][STABLE La programmation par aspects]]
        - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
        - [[#exprimer-les-aspects-par-un-langage-dédié][Exprimer les aspects par un langage dédié]]
        - [[#dautres-mécanismes-pour-la-programmation-par-aspects][D'autres mécanismes pour la programmation par aspects]]
-       - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ, jonctions, coupes, et méthodes d'aspect]]
+       - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
-       - [[#les-critiques-de-la-programmation-par-aspects][Les critiques de la programmation par aspects]]
-       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
+       - [[#limites-de-la-programmation-par-aspects][Limites de la programmation par aspects]]
      - [[#bare-caesar][BARE Caesar]]
      - [[#translate-hyperj][TRANSLATE Hyper/J]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
@@ -138,6 +137,7 @@
      - [[#inconvénients-de-la-manipulation-de-portée-avec-with][Inconvénients de la manipulation de portée avec ~with~]]
  - [[#bare-synthèse][BARE Synthèse]]
    - [[#bare-séparation-des-préoccupations-pourquoi][BARE Séparation des préoccupations: pourquoi?]]
+   - [[#locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][Locality of concerns and locality of execution are irreconciable in the source text]]
  - [[#références][Références]]
 
 * Acknowledgements                                                 :noexport:
@@ -1005,7 +1005,7 @@ inversion de contrôle, patrons de conception Stratégie, n'importe quel moyen
 d'exécuter le code du client pour modifier le processus considéré comme étant de
 la responsabilité du module.
 
-*** TRANSLATE La programmation par aspects
+*** STABLE La programmation par aspects
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
 d'implémentation d'un système [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].
@@ -1255,7 +1255,7 @@ ne supportent pas les mécanismes bas-niveau qui pourraient servir à exprimer d
 aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
 d'AspectJ [[cite:KHH+01][KHH+01]].
 
-**** AspectJ, jonctions, coupes, et méthodes d'aspect
+**** AspectJ: jonctions, coupes, et méthodes d'aspect
 #+BEGIN_QUOTE
 AspectJ is intended to be a practical AOP language that provides, in a Java
 compatible package, a solid and well-worked-out set of AOP features.
@@ -1516,7 +1516,39 @@ système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
 événements.  Un système à événements fournit donc un mécanisme qui peut être
 utilisé pour faire de la programmation par aspects.
 
-**** Les critiques de la programmation par aspects
+**** Limites de la programmation par aspects
+Le but de la programmation par aspects est louable: distinguer les composants
+des aspects dans le programme, c'est mettre de l'ordre, c'est séparer les choses
+différentes, et regrouper les fonctionnalités similaires.  Le bénéfice, c'est
+qu'un code source ordonné est, a priori, plus simple, et donc plus facile à
+maintenir.  Mais il y a aussi des inconvénients à faire cette distinction.
+
+Le fait que les aspects capturent l'exécution de façon implicite nuit à la
+compréhension modulaire du programme.  On ne peut plus raisonner sur le
+comportement d'un module seulement en regardant son code, il faut prendre en
+compte tous les aspects qui peuvent intervenir pendant l'exécution du code du
+module.  La compréhension du programme devient nécessairement globale: il faut
+connaître tous les aspects qui peuvent s'y appliquer, et en prenant en compte
+les aspects qui pourraient être activés dynamiquement.
+
+Une façon de mitiger ce problème est de faire apparaître, dans l'environnement
+de développement du programmeur, les endroits du code où des aspects pourraient
+s'exécuter; l'article qui introduit AspectJ montre une telle fonctionnalité dans
+Emacs.  Les aspects deviennent explicites, mais l'intégrité du module demeure
+compromise.  Le système nécessite toujours une analyse globale pour être
+compris, et les aspects traversent encore la barrière du module, ce qui empêche
+de développer le module indépendamment des aspects.
+
+Les aspects capturent les points d'exécution du module, ce qui revient à dire
+que tout module expose une interface /implicite/ qui est utilisée par les
+aspects.  Que cette interface soit implicite rend les aspects fragiles: tout
+changement du code peut rendre des aspects inopérables.  Mais c'est aussi le
+fait qu'elle soit implicite qui permet aux aspects d'être oubliables, et donc de
+pouvoir s'appliquer à plusieurs points d'exécution sans avoir à modifier le code
+des composants.  L'interface implicite est donc un choix de conception du
+système, à adopter si le besoin de modifier plusieurs modules en un seul lieu
+(dans un aspect) surpasse le besoin de comprendre et développer les modules
+indépendamment.
 
 -----
 
@@ -1532,129 +1564,21 @@ façons de réaliser la séparation des composants et des aspects: on peut utili
 la programmation événementielle, les ~try/catch~, les variables à portée
 dynamique, ou créer un langage dédié pour les composants et un pour les aspects.
 Dans le monde de la programmation fonctionnelle, les monades sont aussi un moyen
-de séparer les préoccupations orthogonales [[cite:Meu-97][Meu-97]].
+de séparer les préoccupations orthogonales [[cite:Meu-97][Meu-97]] [[cite:HO-07][HO-07]].
 
-Paragraph on criticism of AOP?
+Il ne faut donc pas mélanger la méthodologie—le but philosophique de la
+programmation par aspects—et les (multiples) mécanismes qui permettent
+d'atteindre ce but.  En particulier, on peut faire de la programmation par
+aspects sans AspectJ, sans jonctions, sans coupes, et sans méthodes d'aspects.
 
------
-
-Reification of language constructs
-Duality, other side of the coin
-
-Treats the code as an implicit interface.  Runtime code is data.  Obliviousness
-both a blessing and a curse.  COMEFROM destroys local reasoning or referential
-transparency.
-
-Did the initial vision of AOP cover the problem of extensibility?
-
-The paper has an interesting stance on the evolution of programming languages
-with respect to /local/ and /unitary/ statements (\sect2.2).
-
-#+BEGIN_QUOTE
-The earliest computer machine-language programs had a strict correspondence
-between the program text and the execution pattern.  Generally, each programming
-language statement was both /unitary/ and /local/ — unitary in that it ended up
-having effect in precisely /one/ place in the elaborated program, and local in
-that it was almost always proximate to the statements executing around it.
-#+END_QUOTE
-
-They point out that adding code to a base class that has multiple subclasses is
-a form of quantification.
-
-[[cite:Ste-06][Ste-06]] questions the success of AOP by opposing the AOP vision to the actual
-mechanisms provided.  Quoting [[cite:FF-04][FF-04]]:
-
-AOP has the issue of /fragile pointcuts/: sensitive to changes in the target
-program.
-
-AOP is detrimental to Parnas's notion of modularity because of the strong
-coupling between an aspect and the target program.  Independent development
-cannot continue.
-
-Interestingly, Parnas considers modularity as a design issue, not a language
-one.  Confusing the two is harmful: using the module functionality of a language
-does not mean the system is modular in the sense meant by Parnas.  Each task is
-a single module with a clear interface, and implementation-specific information
-is not shared across modules.
-
-They suggest that AOP use should be restricted to applications where programmers
-do not have to see it; e.g., generated code.  They do not regard AOP as
-a "new paradigm", especially they do not find convincing applications for it.
-
-AOP promotes the localization of concerns (bringing tangled code in one place),
-but this actually breaks the locality of code (executed statements are not
-together in the source code).
-
-I find strange that a critique of AOP does not even mention the original AOP
-paper [[cite:KLM+97][KLM+97]].  This critique is focused on the AOP mechanism as realized by
-AspectJ, mostly.  But the original paper focused on domain-specific aspect
-languages, which /hid/ the weaver, joinpoints and pointcuts.  The original
-contribution was also in formulating the goal of separating components from
-aspects.  AspectJ is just one way to achieve this goal, but it might not be best
-one, depending on the domain.
-
-Overall, it is a critique of one mechanism for AOP, rather than a critique of
-the methodology (separating aspects from components).
-
-Aspects and monads are sometimes both viewed as mechanisms to achieve modularity
-in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]].
-
-AOP is [[https://encrypted.google.com/patents/US6467086][patented]] since 2002 by XEROX (US6467086 B1).
-
-**** Mechanisms for instrumentation
-The distinction between aspects and components is the most important
-contribution of AOP.  Though it is unclear whether ‘aspects' are inevitable
-because of the complexity of the problem domain, or if they are accidental
-artifacts created by the chosen programming model (like most design patterns are
-motivated by the lack of first-class functions).
-
-Java + AspectJ is only one aspect system: useful for tracing, logging, but
-cumbersome for more specific needs.  The pointcuts/advice model is the
-underlying formalism of AspectJ, but not necessarily of the AOP methodology.
-
-Like Parnas's modules, aspects are a design-time issue.  Solving the module
-issues with language mechanisms was, according to Parnas [[cite:DBB+03][DBB+03]], a mistake.
-Maybe the same can be said of aspects.
-
-Is AOP useful for the instrumentation problem?  First, the initial use case of
-AOP, like open implementation, is tangential concerns: algorithmic complexity,
-choice of data representation, optimizations, etc.  Post-hoc extension is not
-exactly a tangential concern: changing the behavior of the interpreter is a
-primary concern.
-
-Second, we have to consider separately the usefulness of the AOP methodology,
-and of the AOP mechanisms.
-
-The methodology of separating components from aspects is applicable if our
-analyses are tangential.  They are not.  The problem we deal with is that
-extensibility was not considered when designing the interpreter, and solutions
-must be built on the implementation.
-
-Preserving locality is a guiding tenet of the AOP methodology (avoiding
-tangling).  It is also a motivation for writing modular analyses: we want the
-analysis code to be in one place.  However, by regrouping the analysis code, we
-are sacrificing locality of code execution: statements executed at runtime are
-not next to each other in the source code.  Satisfying both notions of locality
-would lead to duplication in the code, which is a worse state of affairs.
-Solutions to this duplication must come from the tools used to write and browse
-code, since the textual format we use offer none.  An editor can maintain two
-views of the same unit of code: changes in one view will affect both places.
-That way, both notions of locality can coexist.
-
-The second notion of locality, the one from [[cite:FF-04][FF-04]], is one manifestation of the
-more general need of a match between runtime behavior and static program
-description.  The program source should tell readers what it does, and
-navigating through dynamically-bound method calls and oblivious advices hinders
-the reading.
-
-Organization of the code should reflect the design decisions: what is primary is
-explained first, then exceptions or tangential concerns are relegated to
-appendices.  Literate programming [[cite:Knu-84][Knu-84]] can help organize the code in a such
-way.
-
-The mechanisms of AOP may serve to extend the interpreter with analyses, without
-necessarily obeying the component/aspect decomposition.  Though without editor
-support, using AOP mechanisms will only satisfy one notion of locality.
+Enfin, la programmation par aspects n'est pas une balle en argent.  Les
+jonctions et les coupes sont oubliables par les composants, mais sacrifient le
+raisonnement modulaire.  Les autres mécanismes qui permettent de séparer les
+composants des aspects ont également cette caractéristique: recomposer le flot
+d'exécution dynamiquement rend le programme moins prévisible, et moins
+compréhensible.  Tous ces mécanismes présentent donc des avantages et des
+inconvénients, et le choix du bon compromis est dans les mains du concepteur du
+système.
 
 *** BARE Caesar
 [[cite:AGM+06][AGM+06]]
@@ -2422,6 +2346,28 @@ expression gives you either integer evaluation, or pretty-printing.
 Their solution is applicable to Java with generics, without significant
 syntactic overhead (less than related work).  And, they leverage the type system
 to capture erroneous composition.
+
+Aspects and monads are sometimes both viewed as mechanisms to achieve modularity
+in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]].
+
+De Meuter shows we can use a monad to memoize ~fib~, so efficiency concern is
+cleanly separated.  But a function is enough to memoize ~fib~, so the example is
+not very convincing.  Well, he does not write ~fib~ as a function, but as a
+method in a custom OO language embedded in Scheme.  Then, he is just
+intercepting the method name in the ~bind~ of the "interpreter".  Which is kinda
+like reflection.
+
+Hofer and Ostermann are more on point, noting that common monads correspond to
+concerns that can be written as aspects: error handling (Error monad), dynamic
+scoping (Reader monad), continuations (Continuation monad).  Their conclusion is
+AOP != monad: monads manipulate computation on a finer granularity that AOP
+can't do.  On the other hand, AOP is more declarative, and can come in different
+degrees of obliviousness, but monads are always explicit.
+
+I think the better angle is to just say "Monads are a mecanism touted as
+separating concerns and promoting modularity", and that's enough to consider
+them.  Maybe mention that some have related them to aspects, but there is no
+sign of equivalence between the mecanisms.
 
 *** BARE Bytecode instrumentation
 Ansaloni.  Targets bytecode, which is low-level code.
@@ -8143,6 +8089,47 @@ pouvoir les références, ne peuvent pas être instrumentées non plus.
   - Un programme doit d'abord être correct.
   - Puis il doit être maintenable -> bonne documentation des choix de structure
   - Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?
+
+** Locality of concerns and locality of execution are irreconciable in the source text
+Is AOP useful for the instrumentation problem?  First, the initial use case of
+AOP, like open implementation, is tangential concerns: algorithmic complexity,
+choice of data representation, optimizations, etc.  Post-hoc extension is not
+exactly a tangential concern: changing the behavior of the interpreter is a
+primary concern.
+
+Second, we have to consider separately the usefulness of the AOP methodology,
+and of the AOP mechanisms.
+
+The methodology of separating components from aspects is applicable if our
+analyses are tangential.  They are not.  The problem we deal with is that
+extensibility was not considered when designing the interpreter, and solutions
+must be built on the implementation.
+
+Preserving locality is a guiding tenet of the AOP methodology (avoiding
+tangling).  It is also a motivation for writing modular analyses: we want the
+analysis code to be in one place.  However, by regrouping the analysis code, we
+are sacrificing locality of code execution: statements executed at runtime are
+not next to each other in the source code.  Satisfying both notions of locality
+would lead to duplication in the code, which is a worse state of affairs.
+Solutions to this duplication must come from the tools used to write and browse
+code, since the textual format we use offer none.  An editor can maintain two
+views of the same unit of code: changes in one view will affect both places.
+That way, both notions of locality can coexist.
+
+The second notion of locality, the one from [[cite:FF-04][FF-04]], is one manifestation of the
+more general need of a match between runtime behavior and static program
+description.  The program source should tell readers what it does, and
+navigating through dynamically-bound method calls and oblivious advices hinders
+the reading.
+
+Organization of the code should reflect the design decisions: what is primary is
+explained first, then exceptions or tangential concerns are relegated to
+appendices.  Literate programming [[cite:Knu-84][Knu-84]] can help organize the code in a such
+way.
+
+The mechanisms of AOP may serve to extend the interpreter with analyses, without
+necessarily obeying the component/aspect decomposition.  Though without editor
+support, using AOP mechanisms will only satisfy one notion of locality.
 
 * Références
 :PROPERTIES:
