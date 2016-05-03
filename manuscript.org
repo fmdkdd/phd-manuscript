@@ -33,6 +33,12 @@
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
      - [[#translate-la-programmation-par-aspects][TRANSLATE La programmation par aspects]]
+       - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
+       - [[#exprimer-les-aspects-par-un-langage-dédié][Exprimer les aspects par un langage dédié]]
+       - [[#dautres-mécanismes-pour-la-programmation-par-aspects][D'autres mécanismes pour la programmation par aspects]]
+       - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ, jonctions, coupes, et méthodes d'aspect]]
+       - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
+       - [[#les-critiques-de-la-programmation-par-aspects][Les critiques de la programmation par aspects]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
      - [[#bare-caesar][BARE Caesar]]
      - [[#translate-hyperj][TRANSLATE Hyper/J]]
@@ -1015,10 +1021,12 @@ reconnaître que la décomposition d'un programme selon l'axe classique des
 fonctions et des classes n'est pas suffisante pour maintenir ces trois qualités;
 les aspects y remédient en introduisant une nouvelle dimension de composition.
 
+**** La distinction entre les composants et les aspects
 #+BEGIN_QUOTE
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
 cleanly support the kinds of units the design process breaks the system into.
+— [[cite:KLM+97][KLM+97]]
 #+END_QUOTE
 
 Pour expliquer ce qu'est un aspect, [[cite:MKL-97][MKL-97]] part d'un exemple.  Le système qui
@@ -1118,6 +1126,7 @@ compose them to produce the overall system.
 /AOP := Aspect-Oriented Programming/
 #+END_aside
 
+**** Exprimer les aspects par un langage dédié
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
 programme, le langage dans lequel le programme est écrit, et le compilateur pour
@@ -1180,6 +1189,7 @@ dimensions.  On peut se poser la question: si l'on souhaite appliquer la
 programmation par aspects, faut-il réimplémenter un tisseur pour chaque
 application?  Y a-t-il d'autres façons de faire?
 
+**** D'autres mécanismes pour la programmation par aspects
 La caractéristique principale de la programmation par aspects est la distinction
 entre composants et aspects.  Cette distinction, si elle apparaît au moment du
 design du programme doit être maintenue dans son implémentation.  Tout
@@ -1245,6 +1255,7 @@ ne supportent pas les mécanismes bas-niveau qui pourraient servir à exprimer d
 aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
 d'AspectJ [[cite:KHH+01][KHH+01]].
 
+**** AspectJ, jonctions, coupes, et méthodes d'aspect
 #+BEGIN_QUOTE
 AspectJ is intended to be a practical AOP language that provides, in a Java
 compatible package, a solid and well-worked-out set of AOP features.
@@ -1414,6 +1425,7 @@ inclure les programmes d'aspects n'impacte que l'efficacité du programme, mais
 pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
 /oubliables/ (/obliviousness property/).
 
+**** Le mécanisme essentiel pour la programmation par aspects
 D'être oubliable est une propriété qui peut être considérée comme
 caractéristique de la programmation par aspects [[cite:FF-04][FF-04]].  Filman et Friedman
 cherchent à identifier les systèmes qui suivent la programmation par aspects.
@@ -1491,7 +1503,8 @@ ligne du programme, alors qu'AspectJ permet de capturer le contrôle lors
 d'appels de méthodes, la lecture ou l'affectation d'une variable.  Mais en
 réalité, le ~COMEFROM~ de Clark est adapté à la granularité offerte par le
 langage: la ligne.  Dans AspectJ, l'unité de composition est la méthode, et la
-classe.
+classe.  Un ~COMEFROM~ pour Java pourrait ressembler à ce qu'AspectJ offre à
+travers le langage des coupes de jonctions.
 
 En ne prenant en compte que le mécanisme, on peut déterminer si d'autres
 systèmes ou langages, qui ne sont pas présentés comme des systèmes d'aspects,
@@ -1503,7 +1516,7 @@ système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
 événements.  Un système à événements fournit donc un mécanisme qui peut être
 utilisé pour faire de la programmation par aspects.
 
-Criticism of AOP?
+**** Les critiques de la programmation par aspects
 
 -----
 
@@ -1511,15 +1524,15 @@ La contribution principale de la programmation par aspects est de distinguer
 deux types de programmes qui cohabitent dans un même système: les composants, en
 charge de la fonctionnalité du système, et les aspects, qui décrivent des
 préoccupations orthogonales à la fonctionnalité principale.  La programmation
-par aspects est donc premièrement une méthodologie plutôt qu'un mécanisme.
+par aspects est donc avant tout une méthodologie.
 
-Et il y a plusieurs mécanismes qui permettent de réaliser la séparation des
-composants et des aspects: le langage des jonctions, coupes, et méthodes
-d'aspects proposé par AspectJ est le mieux connu, mais on peut aussi utiliser
-les événements, les ~try/catch~, les variables à portée dynamique, ou créer un
-langage dédié pour les composants et un pour les aspects.  Dans le monde de la
-programmation fonctionnelle, les monades sont aussi un moyen de séparer les
-préoccupations orthogonales [[cite:Meu-97][Meu-97]].
+Le langage des jonctions et des coupes, popularisé par AspectJ, est le mécanisme
+principalement associé à la programmation par aspects.  Mais il y d'autres
+façons de réaliser la séparation des composants et des aspects: on peut utiliser
+la programmation événementielle, les ~try/catch~, les variables à portée
+dynamique, ou créer un langage dédié pour les composants et un pour les aspects.
+Dans le monde de la programmation fonctionnelle, les monades sont aussi un moyen
+de séparer les préoccupations orthogonales [[cite:Meu-97][Meu-97]].
 
 Paragraph on criticism of AOP?
 
