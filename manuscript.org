@@ -1036,6 +1036,10 @@ souhaitent que le système soit facile à développer et à maintenir, mais auss
 efficace, car les images traitées sont grandes, et les filtres rapidement
 coûteux à calculer.
 
+#+BEGIN_side-figure
+[[file:img/aop1.svg]]
+#+END_side-figure
+
 Pour faciliter le développement, il suffit de créer des filtres composables.
 D'abord des filtres basiques, comme ~Or~, ~And~, ~Not~, analogues des opérateurs
 communs sur les bits, mais appliqués aux images, pixel par pixel:
@@ -1102,6 +1106,15 @@ appartiennent à des procédures différentes.  La composition hiérarchique est
 réalisée par la composition des procédures du langage de programmation, mais la
 seconde composition, qui dépasse l'unité de la procédure, n'est pas supportée
 par le langage, et doit être réalisée manuellement.
+
+#+ATTR_HTML: :style margin-top:-15rem
+#+BEGIN_side-figure
+#+CAPTION: Dans ~Remove~, on ne peut pas fusionner les boucles de ~And~
+#+CAPTION: et de ~Not~ sans outrepasser les frontières imposées par les
+#+CAPTION: fonctions ({{{color(c0)}}}).  Il faut un nouvel axe
+#+CAPTION: ({{{color(c1)}}}) de composition.
+[[file:img/aop2.svg]]
+#+END_side-figure
 
 C'est la distinction que les auteurs font entre /composants/ et /aspects/.  Si
 une fonctionnalité du système peut être implémentée par une procédure (ou une
@@ -1362,6 +1375,14 @@ l'on souhaite capturer les appels /non/ récursifs à ~m~, on peut utiliser
 call(void m()) && !cflow(call(void m()))
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_side-figure
+#+CAPTION: Les appels non récursifs de ~m~ sont capturés ({{{color(c3)}}})
+#+CAPTION: par la coupe, et les appels récursifs échouent le test de
+#+CAPTION: ~cflow~ ({{{color(c2)}}}).
+[[file:img/aop3.svg]]
+#+END_side-figure
+
 ~cflow(coupe)~ capture toutes les jonctions qui sont dans le flot de contrôle de
 la coupe passée en argument; c'est à dire, ici, toutes les jonctions qui
 existent après qu'au moins un appel de ~m~ soit présent sur la pile d'appels.
@@ -1424,6 +1445,13 @@ fonctionnalités du programme final.  De même, dans les filtres d'image, ne pas
 inclure les programmes d'aspects n'impacte que l'efficacité du programme, mais
 pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
 /oubliables/ (/obliviousness property/).
+
+#+ATTR_HTML: :style margin-top:-18rem
+#+BEGIN_side-figure
+#+CAPTION: Le programme peut être compilé avec ou sans les aspects, et
+#+CAPTION: engendrer deux exécutables différents.
+[[file:img/aop4.svg]]
+#+END_side-figure
 
 **** Le mécanisme essentiel pour la programmation par aspects
 D'être oubliable est une propriété qui peut être considérée comme
