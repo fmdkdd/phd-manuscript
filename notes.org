@@ -2507,6 +2507,53 @@ frequently. While some of that was to be expected, it was worse than we had
 anticipated.
 #+END_QUOTE
 
+** [2016-05-04 mer.]
+*** How to recompile librsvg in Archlinux
+To apply the patch to the latest version.
+
+Update ABS (just for this package):
+
+: sudo abs extra/librsvg
+
+Copy the folder to a build dir:
+
+: cp -r /var/abs/extra/librsvg/ librsvg
+
+Copy the patch to the folder.
+
+Modify the PKGBUILD by adding this before the ~make~ line in the ~build~
+function:
+
+: # Bounding box fix
+: patch -p1 < ../../librsvg-bbfix.patch.
+
+Then build and install the package:
+
+: makepkg -sri
+
+*** RG image processing was looking for functors?
+[[cite:MKL-97][MKL-97]] was an image processing system in Lisp.  Each filter was a pure function
+that took one or two images as input, and returned a new image.
+
+#+BEGIN_SRC haskell
+or = map ||
+and = map &&
+remove a b = and a (not b)
+#+END_SRC
+
+While the filter were nice to compose, they were inefficient because of
+redundant allocations and iterations.  So they created a custom language that
+did loop fusion and object pooling.  Essentially, a custom compiler.
+
+Now if we look at how the filter compose, it looks like the property they rely
+on is that ~map~ distributes on function composition:
+
+: map (f . g) = map f . map g
+
+Which is the [[https://en.wikibooks.org/wiki/Haskell/The_Functor_class#The_functor_laws][second functor law]].  And based on that equivalence, GHC for
+instance is able to [[https://wiki.haskell.org/GHC/Using_rules][rewrite]] code and generate only one loop when this is
+advantageous to do so.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
