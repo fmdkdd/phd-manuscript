@@ -38,7 +38,7 @@
        - [[#dautres-mécanismes-pour-la-programmation-par-aspects][D'autres mécanismes pour la programmation par aspects]]
        - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
-       - [[#limites-de-la-programmation-par-aspects][Limites de la programmation par aspects]]
+       - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
      - [[#bare-caesar][BARE Caesar]]
      - [[#translate-hyperj][TRANSLATE Hyper/J]]
        - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
@@ -1155,7 +1155,7 @@ composition, la composition que le langage procédural ne pouvait pas exprimer.
 
 Dans un second temps, le tisseur passe cette information aux programmes
 d'aspects, qui vont pouvoir réaliser les trois optimisations; la fusion de
-boucle, la mémoisation, et le bassin d'objets.  Chaque optimisation sont un
+boucle, la mémoisation, et le bassin d'objets.  Chaque optimisation est un
 programme d'aspect différent.  La fusion de boucle par exemple teste si les
 arguments d'un filtre ont une itération compatible avec l'itération faite par le
 filtre; si c'est le cas, on peut générer une seule boucle qui applique les
@@ -1495,8 +1495,8 @@ the pro- and the anti-GOTO factions can agree.
 
 Le ~COMEFROM~ est donc une plaisanterie élaborée, qui n'a a priori rien à voir
 avec la programmation par aspects.  Mais on s'intéresse ici aux mécanismes, et
-le mécanisme du ~COMEFROM~—la possibilité de capturer le contrôle—est l'essence
-des jonctions et des coupes proposées par AspectJ.
+le mécanisme du ~COMEFROM~ — la possibilité de capturer le contrôle — est
+l'essence des jonctions et des coupes proposées par AspectJ.
 
 Bien sûr, le ~COMEFROM~ décrit par Clark ne permet de venir que d'une autre
 ligne du programme, alors qu'AspectJ permet de capturer le contrôle lors
@@ -1516,7 +1516,7 @@ système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
 événements.  Un système à événements fournit donc un mécanisme qui peut être
 utilisé pour faire de la programmation par aspects.
 
-**** Limites de la programmation par aspects
+**** Les limites de la programmation par aspects
 Le but de la programmation par aspects est louable: distinguer les composants
 des aspects dans le programme, c'est mettre de l'ordre, c'est séparer les choses
 différentes, et regrouper les fonctionnalités similaires.  Le bénéfice, c'est
