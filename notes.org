@@ -2554,6 +2554,28 @@ Which is the [[https://en.wikibooks.org/wiki/Haskell/The_Functor_class#The_funct
 instance is able to [[https://wiki.haskell.org/GHC/Using_rules][rewrite]] code and generate only one loop when this is
 advantageous to do so.
 
+** [2016-05-05 jeu.]
+*** Cleaning fonts in the diagrams
+Found a few tricks to inspect and change the fonts all at once.
+
+To list the fonts used by the diagrams:
+
+: grep -io 'font-family:[^;]\+' svg/*  | sort | uniq -c
+
+In the font selection droplist, Inkscape has a "Select all objects with this
+font".  Then you can change the font for the selected objects.
+
+Otherwise, there is Edit -> Find and Replace to match on XML attributes, like
+font-family, and replace them all at once.
+
+But, for some reasons, I have text objects that hold only paths, not text.  So
+the text object node is redundant, but I don't know of any way inside Inkscape
+to change that.  Especially since the text objects hold the matrix transform to
+place the paths...
+
+Maybe it doesn't matter anyway because rsvg-convert traces all text to paths.
+So the redundant node might disappear in the end SVG.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
