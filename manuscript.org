@@ -1626,23 +1626,32 @@ But overall, I failed to see the problems that it solved.  Both papers [[cite:AG
 the benefit brought by the new mechanisms.
 
 *** TRANSLATE Hyper/J
-[[cite:TOH+99][TOH+99]] argues for a multi-dimensional separation of concerns.  First, they note
-that modern software technologies provide mechanisms for the /decomposition/ and
-/composition/ of source code, in order to cut the code into manageable pieces,
-and put the pieces back together to produce the running program.
+Hyper/J est un autre système qui permet la séparation des préoccupations [[cite:TOH+99][TOH+99]].
+Dans la programmation par aspects, l'axe des composants est l'axe principal et
+les aspects offrent un axe de recomposition orthogonal, mais secondaire.  De
+même, Hyper/J offre plusieurs axes de composition du programme.  Mais
+contrairement aux aspects, ici aucun axe ne prime sur l'autre.
 
-Existing software formalisms provide decomposition and composition mechanisms,
-but typically support a single dominant dimension of decomposition.  They dub
-this phenomenon the "tyranny of the dominant decomposition".
+Les auteurs remarquent que les formalismes logiciels existants permettent des
+mécanismes pour décomposer et recomposer les logiciels en unités gérables par le
+programmeur: modules, classes, méthodes, procédures.  Ces unités permettent de
+séparer les préoccupations du domaine d'application.  Mais la décomposition est
+en général insuffisante, car il y a toujours une dimension qui prédomine sur les
+autres; c'est ce qu'ils nomment "la tyrannie de la décomposition dominante".
 
-A class hierarchy is insufficient for anticipating all the evolutions of an
-expression language (see Expression problem).  Subclassing and design patterns
-require pre-planning.
+Dans un système, il y a toujours des plusieurs préoccupations qu'il faut
+équilibrer, et la décomposition dominante en favorise certaines au détriment
+d'autres.  C'est une preuve que le système a en réalité plusieurs dimensions, et
+chaque décomposition n'est qu'une projection, une vue, du système dans un espace
+de dimension inférieure.  Aucune vue n'est satisfaisante, car il y a toujours
+une dimension qui n'est pas prioritaire.
 
-There are many concerns we need to manage simultaneously, and the dominant
-decomposition typically sacrifices some of those concerns for the benefit of
-others.  Thus, we are in presence of a multi-dimensional artifact, and each
-decomposition gives only a lower-dimensional view of said artifact.
+Ils proposent donc des /hypercoupes/: des façons d'organiser le système selon
+toutes les dimensions qui ont rapport à une préoccupation.  Une hypercoupe
+contient toutes les unités de changements de cette préoccupation.  Et les unités
+peuvent apparaître dans plusieurs hypercoupes.
+
+-----
 
 They propose /hyperslices/ as way to organize artifacts along all desired
 dimensions of concern.  An hyperslice contains all the units of change related
