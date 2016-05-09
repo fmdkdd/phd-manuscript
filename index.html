@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-04 mer. 19:32 -->
+<!-- 2016-05-09 lun. 15:19 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -2080,6 +2080,16 @@ le dual du <code>GOTO</code>: un <code>GOTO 10</code> transfère le contrôle à
 <code>COMEFROM 10</code> <i>capture</i> le contrôle après l&rsquo;exécution de la ligne 10.
 </p>
 
+<div style="margin-top:-3rem" class="side-figure">
+
+<figure>
+<p><img src="img/aop5.svg" alt="aop5.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;13&nbsp;:</span> <code>COMEFROM</code> est le dual de <code>GOTO</code>.</figcaption>
+</figure>
+
+</div>
+
 <pre class="example">
 10 J=1
 11 COME FROM 20
@@ -2247,30 +2257,39 @@ the benefit brought by the new mechanisms.
 <h4 id="orgheadline25"><span class="section-number-4">2.1.10</span> <span class="todo TRANSLATE">TRANSLATE</span> Hyper/J</h4>
 <div class="outline-text-4" id="text-2-1-10">
 <p>
-[<a href="#TOH+99">TOH+99</a>] argues for a multi-dimensional separation of concerns.  First, they note
-that modern software technologies provide mechanisms for the <i>decomposition</i> and
-<i>composition</i> of source code, in order to cut the code into manageable pieces,
-and put the pieces back together to produce the running program.
+Hyper/J est un autre système qui permet la séparation des préoccupations [<a href="#TOH+99">TOH+99</a>].
+Dans la programmation par aspects, l&rsquo;axe des composants est l&rsquo;axe principal et
+les aspects offrent un axe de recomposition orthogonal, mais secondaire.  De
+même, Hyper/J offre plusieurs axes de composition du programme.  Mais
+contrairement aux aspects, ici aucun axe ne prime sur l&rsquo;autre.
 </p>
 
 <p>
-Existing software formalisms provide decomposition and composition mechanisms,
-but typically support a single dominant dimension of decomposition.  They dub
-this phenomenon the &laquo;&nbsp;tyranny of the dominant decomposition&nbsp;&raquo;.
+Les auteurs remarquent que les formalismes logiciels existants permettent des
+mécanismes pour décomposer et recomposer les logiciels en unités gérables par le
+programmeur: modules, classes, méthodes, procédures.  Ces unités permettent de
+séparer les préoccupations du domaine d&rsquo;application.  Mais la décomposition est
+en général insuffisante, car il y a toujours une dimension qui prédomine sur les
+autres; c&rsquo;est ce qu&rsquo;ils nomment &laquo;&nbsp;la tyrannie de la décomposition dominante&nbsp;&raquo;.
 </p>
 
 <p>
-A class hierarchy is insufficient for anticipating all the evolutions of an
-expression language (see Expression problem).  Subclassing and design patterns
-require pre-planning.
+Dans un système, il y a toujours des plusieurs préoccupations qu&rsquo;il faut
+équilibrer, et la décomposition dominante en favorise certaines au détriment
+d&rsquo;autres.  C&rsquo;est une preuve que le système a en réalité plusieurs dimensions, et
+chaque décomposition n&rsquo;est qu&rsquo;une projection, une vue, du système dans un espace
+de dimension inférieure.  Aucune vue n&rsquo;est satisfaisante, car il y a toujours
+une dimension qui n&rsquo;est pas prioritaire.
 </p>
 
 <p>
-There are many concerns we need to manage simultaneously, and the dominant
-decomposition typically sacrifices some of those concerns for the benefit of
-others.  Thus, we are in presence of a multi-dimensional artifact, and each
-decomposition gives only a lower-dimensional view of said artifact.
+Ils proposent donc des <i>hypercoupes</i>: des façons d&rsquo;organiser le système selon
+toutes les dimensions qui ont rapport à une préoccupation.  Une hypercoupe
+contient toutes les unités de changements de cette préoccupation.  Et les unités
+peuvent apparaître dans plusieurs hypercoupes.
 </p>
+
+<hr >
 
 <p>
 They propose <i>hyperslices</i> as way to organize artifacts along all desired
@@ -2454,7 +2473,7 @@ concepteur.
 <figure>
 <p><img src="img/parnas-0.svg" alt="parnas-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;13&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;14&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
 </figure>
 
 </div>
@@ -2464,7 +2483,7 @@ concepteur.
 <figure>
 <p><img src="img/flowchart.svg" alt="flowchart.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;14&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;15&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
 </figure>
 
 </div>
@@ -2528,7 +2547,7 @@ les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 <figure>
 <p><img src="img/parnas-overhead.svg" alt="parnas-overhead.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;15&nbsp;:</span> L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;16&nbsp;:</span> L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
 </figure>
 
 </div>
@@ -2806,7 +2825,7 @@ partie.
 <figure>
 <p><img src="img/naur-theory.svg" alt="naur-theory.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;16&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l&rsquo;activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l&rsquo;activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
 </figure>
 
 </div>
@@ -3979,7 +3998,7 @@ de l&rsquo;exécution; cette liste est appelée <i>program counter</i> (PC).
 <figure>
 <p><img src="img/a-facet.svg" alt="a-facet.svg" height="40rem">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Une valeur à deux facettes.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;18&nbsp;:</span> Une valeur à deux facettes.</figcaption>
 </figure>
 
 </div>
@@ -4025,7 +4044,7 @@ les lignes vides.
 Pour réaliser l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l&rsquo;interpréteur Narcissus.
 On peut obtenir l&rsquo;ensemble des changements effectués en extrayant un <i>diff</i> des
-deux versions.  La figure <a href="#orgparagraph1">19</a> donne une vue d&rsquo;ensemble des
+deux versions.  La figure <a href="#orgparagraph1">20</a> donne une vue d&rsquo;ensemble des
 changements.
 </p>
 
@@ -4040,7 +4059,7 @@ Le <i>diff</i> est extrait des HEAD de <a href="https://github.com/taustin/narci
 <figure id="orgparagraph1">
 <p><img src="img/narcissus-diff.svg" alt="narcissus-diff.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;19&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Le diff de &laquo;&nbsp;jsexec&nbsp;&raquo; y est représenté intégralement, coupés en colonnes de même taille. Chaque ligne est colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;20&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Le diff de &laquo;&nbsp;jsexec&nbsp;&raquo; y est représenté intégralement, coupés en colonnes de même taille. Chaque ligne est colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
 </figure>
 
 <p>
@@ -4539,7 +4558,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;20&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -6992,7 +7011,7 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;22&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -8272,7 +8291,7 @@ de changer les définitions internes au module.
 <figure>
 <p><img src="img/dls6.svg" alt="dls6.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;27&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;28&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
 </figure>
 
 </div>
@@ -8485,7 +8504,7 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d&rsquo;utili
 <figure>
 <p><img src="img/dls9.svg" alt="dls9.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l&rsquo;objet de liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;31&nbsp;:</span> L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l&rsquo;objet de liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.</figcaption>
 </figure>
 
 </div>
@@ -8696,7 +8715,7 @@ ainsi:
 <figure>
 <p><img src="img/dls12.svg" alt="dls12.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;33&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;34&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
 </figure>
 
 </div>
@@ -9184,7 +9203,7 @@ ce motif d&rsquo;extension:
 <figure>
 <p><img src="img/dls13.svg" alt="dls13.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;34&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;35&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
 </figure>
 
 </div>
@@ -9425,7 +9444,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;35&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 </figure>
 
@@ -9880,7 +9899,7 @@ supplémentaires, mais chaque contrainte exclut également des possibilités.
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;37&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
 </figure>
 
 </div>
@@ -9987,7 +10006,7 @@ précis du flot d&rsquo;exécution.
 <figure>
 <p><img src="img/dls15.svg" alt="dls15.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;37&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;38&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
 </figure>
 
 </div>
@@ -12004,7 +12023,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-04 mer. 19:32 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-09 lun. 15:19 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
