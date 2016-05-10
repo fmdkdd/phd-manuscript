@@ -41,7 +41,6 @@
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
      - [[#bare-caesar][BARE Caesar]]
      - [[#translate-hyperj][TRANSLATE Hyper/J]]
-       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
      - [[#bare-information-transparency][BARE Information transparency]]
    - [[#unstable-la-modularité-du-progamme-nest-pas-la-modularité-du-code-source][UNSTABLE La modularité du progamme n'est pas la modularité du code source]]
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
@@ -1626,72 +1625,113 @@ But overall, I failed to see the problems that it solved.  Both papers [[cite:AG
 the benefit brought by the new mechanisms.
 
 *** TRANSLATE Hyper/J
-Hyper/J est un autre système qui permet la séparation des préoccupations [[cite:TOH+99][TOH+99]].
-Dans la programmation par aspects, l'axe des composants est l'axe principal et
-les aspects offrent un axe de recomposition orthogonal, mais secondaire.  De
-même, Hyper/J offre plusieurs axes de composition du programme.  Mais
-contrairement aux aspects, ici aucun axe ne prime sur l'autre.
+La programmation par aspects a pour but la séparation des composants et des
+aspects.  C'est à dire, la séparation de /certaines/ préoccupations: les
+préoccupations transversales, orthogonales à la fonctionnalité du code.  En
+programmation par aspects, on a deux axes de composition du programme: l'axe
+des composants, pour la fonctionnalité principale, et l'axe des aspects, pour
+les fonctionnalités transversales.  L'axe des aspects est toujours inférieur à
+l'axe des composants: ce dernier est l'axe dominant, qui impose la structure du
+programme, ce qui peut limiter les choix de composition du programme.  D'autres
+recompositions sont possibles, comme celle proposée par Hyper/J [[cite:TOH+99][TOH+99]], [[cite:TO-00][TO-00]].
 
-Les auteurs remarquent que les formalismes logiciels existants permettent des
-mécanismes pour décomposer et recomposer les logiciels en unités gérables par le
-programmeur: modules, classes, méthodes, procédures.  Ces unités permettent de
-séparer les préoccupations du domaine d'application.  Mais la décomposition est
-en général insuffisante, car il y a toujours une dimension qui prédomine sur les
-autres; c'est ce qu'ils nomment "la tyrannie de la décomposition dominante".
+#+BEGIN_index
+séplution
+#+END_index
 
-Dans un système, il y a toujours des plusieurs préoccupations qu'il faut
-équilibrer, et la décomposition dominante en favorise certaines au détriment
-d'autres.  C'est une preuve que le système a en réalité plusieurs dimensions, et
-chaque décomposition n'est qu'une projection, une vue, du système dans un espace
-de dimension inférieure.  Aucune vue n'est satisfaisante, car il y a toujours
-une dimension qui n'est pas prioritaire.
+Hyper/J est une implémentation de la séparation pluridimensionnelle des
+préoccupations (/séplution/) pour Java, tout comme AspectJ est une
+implémentation de la programmation par aspects pour Java.  La séplution est un
+paradigme qui permet la recomposition des préoccupations selon plusieurs axes,
+et de façon symétrique, contrairement à la programmation par aspects.
 
-Ils proposent donc des /hypercoupes/: des façons d'organiser le système selon
-toutes les dimensions qui ont rapport à une préoccupation.  Une hypercoupe
-contient toutes les unités de changements de cette préoccupation.  Et les unités
-peuvent apparaître dans plusieurs hypercoupes.
+Dans [[cite:TOH+99][TOH+99]], les auteurs motivent la séplution avec l'exemple d'un système qui
+permet de construire des programmes dans un langage simple, une instance du
+problème de l'expression.  Le système permet de créer des expressions
+arithmétiques, qui sont des additions ou des soustractions de sous-expressions,
+soit des nombres.
+
+Pour implémenter ce système, ils proposent de représenter chaque nœud de l'arbre
+syntaxique par une classe: une classe ~Expression~, une classe ~Number~, une
+classe ~Plus~, etc.  Chaque classe implémente trois méthodes, qui correspondent
+à trois traitements différents de l'arbre syntaxique: ~eval~ évalue la valeur
+arithmétique de l'expression, ~display~ affiche l'expression, et ~check~ vérifie
+qui l'expression est bien formée.
+
+Immédiatement, ils constatent que chaque traitement peut être considéré comme
+une préoccupation, et que selon cette décomposition en classes, ces
+préoccupations sont toutes éparpillées dans les méthodes correspondantes des
+différentes classes.  Il n'y a pas de vue centralisée d'une préoccupation.
+
+Cet éparpillement est un problème lorsqu'ils cherchent à étendre la
+fonctionnalité du système.  Modifier une fonctionnalité nécessite de toucher à
+une méthode dans différentes classes.  Ajouter la synchronisation des expressions
+dans une base de donnée requiert d'ajouter des appels dans les constructeurs et
+accesseurs de chaque classe.  Les modifications ont un impact élevé sur
+l'implémentation, que les auteurs souhaitent minimiser:
+
+#+BEGIN_QUOTE
+The goal of low impact of changes requires /additive/, rather than /invasive/,
+change.  Yet conceptually simple changes, like those in the expression system,
+often have widespread and invasive effects, both within the modified artifact
+and on related pieces of other artifacts.  This is primarily because units of
+change often do not match the units of abstraction and encapsulation within the
+artifcats.  Thus, additive changes in one artifact, like requirements, may not
+translate to additive changes in other artifacts, like design and code.
+#+END_QUOTE
+
+La séplution doit donc permettre de modifier le système sans avoir à modifier sa
+structure en profondeur.  Une nouvelle fonctionnalité devrait se traduire par un
+ajout de code, et pas par de la modification de code existant.  Et pour réaliser
+ce but, l'exemple du problème de l'expression montre que les unités
+d'abstraction classiques sont insuffisantes; elles imposent toutes une dimension
+de composition.  Et même si elles permettent plusieurs dimensions de
+composition, comme la programmation par aspects, il y a toujours une dimension
+qui prime sur l'autre.  C'est un constat qu'ils nomment la "tyrannie de la
+décomposition dominante".
+
+Pour remédier à cette tyranie, ils proposent l'/hypercoupe/: une façon de
+regrouper tous les artefacts du système qui touchent à une même préoccupation.
+Une hypercoupe contient le code source, la description informelle de la
+fonctionnalité, sa spécification, son design, sa documentation, etc.
+
+Continuant l'exemple, on peut regrouper les fonctionnalités d'évaluation,
+d'affichage, de vérification et de synchronisation par des hypercoupes
+différentes.  Le papier illustre à travers des diagrammes UML ce qu'Hyper/J
+permet de faire en Java.
+
+Une hypercoupe n'isole pas nécessairement une partie du système.  Les unités
+d'abstraction que sont les classes et méthodes peuvent apparaître dans plusieurs
+hypercoupes.  C'est le cas ici: la classe ~Expression~ apparaît dans toutes les
+hypercoupes.  Les hypercoupes sont des organisations, des vues différentes du
+même système, et certaines parties du systèmes sont pertinentes pour plusieurs
+vues.
+
+Une fois les hypercoupes définies, il faut également décrire comment elles se
+composent pour former le système final: comment composer la documentation pour
+produire un document unique, et comment composer le code pour produire un
+exécutable.  Cette composition dépend évidemment des artefacts considérés.
+
+En Hyper/J, la composition du code source se fait sur le nom de classe ou de
+méthodes: deux classes ayant le même nom dans deux hypercoupes différentes
+combineront leur contenu, et récursivement pour leurs méthodes.  Pour les
+méthodes, on peut aussi spécifier qu'il faut surcharger la méthode de même nom
+de l'hypercoupe précédente, sans pour autant utiliser l'héritage de classe.
 
 -----
 
-They propose /hyperslices/ as way to organize artifacts along all desired
-dimensions of concern.  An hyperslice contains all the units of change related
-to one concern.  Units of change can appear in multiple hyperslices, and thus
-hyperslices can overlap.  In the expression example, one slice for the kernel
-language, one slice for the pretty-printing, one slice for syntax checking, etc.
+Seplution wants to minimize impact of change, abolish symmetry to avoid dominant
+decomposition.  Applies to all artefacts pertaining to preoccupation, not only
+code.  Goes beyond AOP, and into FOP and MDD territory, that is not our path.
 
-Composition of hyperslices must be specified manually, though a default strategy
-can be installed.  They suggest one strategy based on name matching for merging
-classes together (akin to superimposition).
+HyperJ realizes seplution for source code in Java.  Write Java in hyperslices,
+compile to recompose program.  The merging mechanism is basically
+superimposition.
 
-Throughout the paper, they only use hyperslices on UML diagrams, not source
-code.  Hyperslices can be applied to specification, design documents and code.
-Though they do not highlight a way to link the related parts from those
-different artifacts together, other than putting them in the same hyperslice.
-There does not seem to be a way to deal with duplicates.
-
-Compared to AOP, where components are the primary decomposition and aspects
-gravitate around them, hyperslices do not impose a dominant structure (though it
-may often appear in practice, e.g., the kernel slice of the expression
-language).
-
-There are no descriptive papers of Hyper/J, but there is a manual [[cite:TO-00][TO-00]].  The
-manual gives details on how to implement the example of expression language.
-Using Hyper/J requires to write three files describing: the hyperspace (all
-classes that Hyper/J will care about), the concern mappings (which
-package/class/method/field maps to which concern), and the hypermodules (which
-features are part of a module, and how composition happens).  Running the
-Hyper/J tool will compose all the hypermodules using the specified rules (merge
-by name) to produce the final program.
-
-Hyper/J simplifies the multi-dimensional concept by mapping units of change to
-exactly one feature.  No overlap between hyperslices.
-
-**** Mechanisms for instrumentation
 Realization that the tyranny of the dominant decomposition is a manifestation of
 looking at a multi-dimensional object through low-dimensional projections.  All
 projections are unsatisfactory as they sacrifice one or more dimensions.
 
-The Hyper/J solution is basically superimposition.
 
 *** BARE Information transparency
 [[cite:Gri-01][Gri-01]]
