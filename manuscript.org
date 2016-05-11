@@ -40,7 +40,7 @@
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
      - [[#bare-caesar][BARE Caesar]]
-     - [[#translate-hyperj][TRANSLATE Hyper/J]]
+     - [[#stable-hyperj][STABLE Hyper/J]]
      - [[#bare-information-transparency][BARE Information transparency]]
    - [[#unstable-la-modularité-du-progamme-nest-pas-la-modularité-du-code-source][UNSTABLE La modularité du progamme n'est pas la modularité du code source]]
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
@@ -1624,7 +1624,7 @@ But overall, I failed to see the problems that it solved.  Both papers [[cite:AG
 [[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
 the benefit brought by the new mechanisms.
 
-*** TRANSLATE Hyper/J
+*** STABLE Hyper/J
 La programmation par aspects a pour but la séparation des composants et des
 aspects.  C'est à dire, la séparation de /certaines/ préoccupations: les
 préoccupations transversales, orthogonales à la fonctionnalité du code.  En
@@ -1633,11 +1633,7 @@ des composants, pour la fonctionnalité principale, et l'axe des aspects, pour
 les fonctionnalités transversales.  L'axe des aspects est toujours inférieur à
 l'axe des composants: ce dernier est l'axe dominant, qui impose la structure du
 programme, ce qui peut limiter les choix de composition du programme.  D'autres
-recompositions sont possibles, comme celle proposée par Hyper/J [[cite:TOH+99][TOH+99]], [[cite:TO-00][TO-00]].
-
-#+BEGIN_index
-séplution
-#+END_index
+recompositions sont possibles, comme celle proposée par Hyper/J [[cite:TOH+99][TOH+99]] [[cite:TO-00][TO-00]].
 
 Hyper/J est une implémentation de la séparation pluridimensionnelle des
 préoccupations (/séplution/) pour Java, tout comme AspectJ est une
@@ -1720,18 +1716,29 @@ de l'hypercoupe précédente, sans pour autant utiliser l'héritage de classe.
 
 -----
 
-Seplution wants to minimize impact of change, abolish symmetry to avoid dominant
-decomposition.  Applies to all artefacts pertaining to preoccupation, not only
-code.  Goes beyond AOP, and into FOP and MDD territory, that is not our path.
+La séplution a pour but de minimiser les modifications à apporter au code source
+lorsqu'une nouvelle fonctionnalité est implémentée, et d'abolir l'asymétrie de
+la décomposition dominante.  L'idée importante de la séplution est de
+reconnaître qu'une préoccupation a plusieurs dimensions dans le programme, et
+n'apparaît pas seulement dans le code source.  Les hypercoupes sont des
+projections de cet objet pluridimensionnel qui regroupent tous les artefacts
+relatifs à une préoccupation: le code source, mais aussi les documents de
+conception.  La séplution est donc une méthodologie de développement, du design
+à l'implémentation, dont les unités d'abstraction sont les fonctionnalités du
+système.
 
-HyperJ realizes seplution for source code in Java.  Write Java in hyperslices,
-compile to recompose program.  The merging mechanism is basically
-superimposition.
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+Une méthodologie qui est proche des domaines de la programmation par
+fonctionnalité (/Feature-Oriented Programming/) et de l'ingénierie des modèles
+(/Model-Driven Engineering/).  Domaines qui sont ne sont pas les objets de ce
+document.
+#+END_aside
 
-Realization that the tyranny of the dominant decomposition is a manifestation of
-looking at a multi-dimensional object through low-dimensional projections.  All
-projections are unsatisfactory as they sacrifice one or more dimensions.
-
+Hyper/J est une implémentation de la séplution pour Java.  Un programmeur écrit
+des hypercoupes, et précise leur composition avant de les passer au compilateur,
+qui génère du bytecode Java.  Le mécanisme de composition est une instance de
+/superimposition/.
 
 *** BARE Information transparency
 [[cite:Gri-01][Gri-01]]
