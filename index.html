@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-10 mar. 19:21 -->
+<!-- 2016-05-11 mer. 14:34 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -2268,13 +2268,6 @@ programme, ce qui peut limiter les choix de composition du programme.  D&rsquo;a
 recompositions sont possibles, comme celle proposée par Hyper/J [<a href="#TOH+99">TOH+99</a>], [<a href="#TO-00">TO00</a>].
 </p>
 
-<div class="index">
-<p>
-séplution
-</p>
-
-</div>
-
 <p>
 Hyper/J est une implémentation de la séparation pluridimensionnelle des
 préoccupations (<i>séplution</i>) pour Java, tout comme AspectJ est une
@@ -2381,25 +2374,35 @@ de l&rsquo;hypercoupe précédente, sans pour autant utiliser l&rsquo;héritage 
 <hr >
 
 <p>
-Seplution wants to minimize impact of change, abolish symmetry to avoid dominant
-decomposition.  Applies to all artefacts pertaining to preoccupation, not only
-code.  Goes beyond AOP, and into FOP and MDD territory, that is not our path.
+La séplution a pour but de minimiser les modifications à apporter au code source
+lorsqu&rsquo;une nouvelle fonctionnalité est implémentée, et d&rsquo;abolir l&rsquo;asymétrie de
+la décomposition dominante.  L&rsquo;idée importante de la séplution est de
+reconnaître qu&rsquo;une préoccupation a plusieurs dimensions dans le programme, et
+n&rsquo;apparaît pas seulement dans le code source.  Les hypercoupes sont des
+projections de cet objet pluridimensionnel qui regroupent tous les artefacts
+relatifs à une préoccupation: le code source, mais aussi les documents de
+conception.  La séplution est donc une méthodologie de développement, du design
+à l&rsquo;implémentation, dont les unités d&rsquo;abstraction sont les fonctionnalités du
+système.
 </p>
 
+<aside style="margin-top:-6rem">
 <p>
-HyperJ realizes seplution for source code in Java.  Write Java in hyperslices,
-compile to recompose program.  The merging mechanism is basically
-superimposition.
+Une méthodologie qui est proche des domaines de la programmation par
+fonctionnalité (<i>Feature-Oriented Programming</i>) et de l&rsquo;ingénierie des modèles
+(<i>Model-Driven Engineering</i>).  Domaines qui sont ne sont pas les objets de ce
+document.
 </p>
+</aside>
 
 <p>
-Realization that the tyranny of the dominant decomposition is a manifestation of
-looking at a multi-dimensional object through low-dimensional projections.  All
-projections are unsatisfactory as they sacrifice one or more dimensions.
+Hyper/J est une implémentation de la séplution pour Java.  Un programmeur écrit
+des hypercoupes, et précise leur composition avant de les passer au compilateur,
+qui génère du bytecode Java.  Le mécanisme de composition est une instance de
+<i>superimposition</i>.
 </p>
 </div>
 </div>
-
 
 <div id="outline-container-orgheadline25" class="outline-4">
 <h4 id="orgheadline25"><span class="section-number-4">2.1.11</span> <span class="todo BARE">BARE</span> Information transparency</h4>
@@ -12071,7 +12074,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-10 mar. 19:21 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-11 mer. 14:34 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
