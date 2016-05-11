@@ -20,17 +20,17 @@
    - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
- - [[#unstable-État-de-lart][UNSTABLE État de l'art]]
-   - [[#unstable-une-chronologie-de-la-modularité-dans-les-langages-de-programmation][UNSTABLE Une chronologie de la modularité dans les langages de programmation]]
-     - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
-     - [[#unstable-la-programmation-structurée][UNSTABLE La programmation structurée]]
-     - [[#bare-class-based-programming-smalltalk][BARE Class-based programming: Smalltalk]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#translate-literate-programming][TRANSLATE Literate programming]]
+ - [[#État-de-lart][État de l'art]]
+   - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
+   - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
+   - [[#modéliser-le-monde-la-programmation-objet][Modéliser le monde: la programmation objet]]
+     - [[#bare-smalltak][BARE Smalltak]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
+   - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
+     - [[#translate-reflection][TRANSLATE Reflection]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
      - [[#stable-la-programmation-par-aspects][STABLE La programmation par aspects]]
        - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
@@ -39,22 +39,28 @@
        - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
-     - [[#bare-caesar][BARE Caesar]]
+   - [[#tisser-les-facettes-dun-artefact-dinnombrable-dimensions][Tisser les facettes d'un artefact d'innombrable dimensions]]
+     - [[#translate-literate-programming][TRANSLATE Literate programming]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#stable-hyperj][STABLE Hyper/J]]
      - [[#bare-information-transparency][BARE Information transparency]]
-   - [[#unstable-la-modularité-du-progamme-nest-pas-la-modularité-du-code-source][UNSTABLE La modularité du progamme n'est pas la modularité du code source]]
+   - [[#bare-limiter-les-effets-de-bord-la-programmation-fonctionnelle][BARE Limiter les effets de bord: La programmation fonctionnelle]]
+   - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source][La modularité du programme n'est pas la modularité du code source]]
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
      - [[#stable-la-théorie-de-naur-derrière-le-programme][STABLE La théorie de Naur derrière le programme]]
        - [[#conclusions][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
-   - [[#unstable-moyens-techniques-pour-linstrumentation][UNSTABLE Moyens techniques pour l'instrumentation]]
-     - [[#bare-le-problème-dexpression][BARE Le problème d'expression]]
+   - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
+     - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
      - [[#bare-dynamic-binding][BARE Dynamic binding]]
-     - [[#translate-reflection][TRANSLATE Reflection]]
      - [[#bare-building-from-modules][BARE Building from modules]]
      - [[#bare-building-with-monads][BARE Building with monads]]
      - [[#bare-bytecode-instrumentation][BARE Bytecode instrumentation]]
+     - [[#superimposition][Superimposition]]
+       - [[#bare-caesar][BARE Caesar]]
+       - [[#translate-software-product-lines][TRANSLATE Software product lines]]
+       - [[#translate-semantic-patches][TRANSLATE Semantic patches]]
    - [[#unstable-travaux-connexes-concernant-linstrumentation][UNSTABLE Travaux connexes concernant l'instrumentation]]
      - [[#bare-domain-specific-languages][BARE Domain-specific languages]]
      - [[#bare-scripting-languages][BARE Scripting languages]]
@@ -66,13 +72,6 @@
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#translate-lua][TRANSLATE Lua]]
         - [[#mechanisms-for-extension][Mechanisms for extension]]
-     - [[#bare-context-oriented-programming][BARE Context-Oriented Programming]]
-     - [[#bare-feature-oriented-programming][BARE Feature-Oriented Programming]]
-     - [[#bare-model-driven-development][BARE Model-driven development]]
-     - [[#translate-software-product-lines][TRANSLATE Software product lines]]
-       - [[#mechanisms-for-instrumentation][Mechanisms for instrumentation]]
-     - [[#translate-semantic-patches][TRANSLATE Semantic patches]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
  - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
  - [[#unstable-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNSTABLE Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#translate-construire-un-interpréteur-extensible][TRANSLATE Construire un interpréteur extensible]]
@@ -181,9 +180,10 @@ languages and the dynamic processes they describe.  Also, for inspiration.
 
 ** Survol
 
-* UNSTABLE État de l'art
-** UNSTABLE Une chronologie de la modularité dans les langages de programmation
-*** UNSTABLE De l'exécution du programme au code source
+* État de l'art
+Une chronologie de la modularité dans les langages de programmation.
+
+** UNSTABLE De l'exécution du programme au code source
 Pour modifier l'exécution d'un programme, il est bon de savoir /comment/ le
 programme est exécuté par la machine.  Du point de vue de la machine, un
 programme est une simple liste d'instructions.  Une séquence d'additions, de
@@ -364,7 +364,16 @@ digraph {
 #+RESULTS:
 [[file:img/bg-map3.png]]
 
-*** UNSTABLE La programmation structurée
+** UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée
+#+BEGIN_epigraph
+At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
+Japan, who cheerfully complained that he was always being eliminated. — [[cite:Knu-74][Knu-74]].
+#+END_epigraph
+
+#+CAPTION: Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.
+#+ATTR_HTML: :title すみません、高橋秀俊さん。
+[[file:img/goto.jpg]]
+
 La programmation structurée n'est pas un ensemble de techniques, ni une méthode
 de programmation, mais plutôt un but à atteindre.  Dans sa célèbre lettre à
 l'éditeur des communications de l'ACM, "Go To Statement Considered Harmful"
@@ -573,7 +582,13 @@ Mais peut-être que Knuth s'en est lui-même rendu compte.  Le langage du futur
 Programming qui permet de mêler une description haut-niveau du programme en
 toutes lettres et code machine bas-niveau.
 
-*** BARE Class-based programming: Smalltalk
+** Modéliser le monde: la programmation objet
+#+BEGIN_full-figure
+#+CAPTION: L'École d'Athènes. Raphaël, 1509--1510.
+[[file:img/scuola.jpg]]
+#+END_full-figure
+
+*** BARE Smalltak
 Design and Implementation [[cite:Ing-78][Ing-78]].
 
 Opens with a definition of modularity:
@@ -628,117 +643,6 @@ perspective is given in [[cite:Mul-15][Mul-15]].
 **** Mechanisms for extension
 Subclassing, and reflection.  Everything as an object, so message dispatch is
 just a method on the meta class, and can be altered.
-
-*** TRANSLATE Literate programming
-Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
-mode.
-
-[[cite:Knu-84][Knu-84]] for the original notion:
-
-#+BEGIN_QUOTE
-Instead of imagining that our main task is to instruct a /computer/ what to do,
-let us concentrate rather on explaining to /human beings/ what we want to do.
-#+END_QUOTE
-
-As usual, Knuth writing is delightfully witty:
-
-#+BEGIN_QUOTE
-I must confess that there may also be a bit of malice in my choice of a title.
-During the 1970s I was coerced like everybody else into adopting the ideas of
-structured programming, because I couldn't bear to be found guilty of writing
-/unstructured/ programs.  Now I have a chance to get even.  By coining the
-phrase "literate programming," I am imposing a moral commitment on everyone who
-hears the term; surely nobody wants to admit writing an /illiterate/ program.
-#+END_QUOTE
-
-The WEB system allows one to write a TeX + source code document, and then
-produce documentation (using the WEAVE program) or complete program (using
-TANGLE).  The focus is on documenting first what the program does, then
-producing a machine version as a second concern.  The source code can be
-presented out-of-order in the document, for expository purposes, using links and
-macros.
-
-The WEB way of writing programs is "psychologically correct", as it reflects the
-way in which the program was conceived and elaborated.
-
-#+BEGIN_QUOTE
-When I first began to work with the ideas that eventually became the WEB system,
-I thought that I would be designing a language for "top-down" programming, where
-a top-level description is given first and successively refined.  On the other
-hand I knew that I often created major parts of programs in a "bottom-up"
-fashion, starting with the definitions of basic procedures and data structures
-and gradually building more and more powerful routines.  I had the feeling that
-top-down and bottom-up were opposing methodologies: one more suitable for
-program exposition and the other more suitable for program creation.
-
-[...] I have come to realize that there is no need to choose once and for all
-between top-down and bottom-up, because a program is best thought of as a web
-instead of a tree.  [...] A complex piece of software consists of simple parts
-and simple relations between those parts; the programmer's task is to state
-those parts and those relationships, in whatever order is best for human
-comprehension – not in some rigidly determined order like top-down or
-bottom-up.
-
-[...]
-
-Thus the  WEB language allows a person to express programs in a "stream of
-consciousness" order.
-#+END_QUOTE
-
-An unexpected benefit of WEB is a better separation of concerns.  Although Knuth
-does not use the term, each part of a program can be described in its own
-section, thus each section can focus on one concern.  He gives the example of
-separating error recovery from a simple data structure update routine.
-
-#+BEGIN_QUOTE
-While writing the program for [error recovery], a programmer subconsciously
-tries to get by with the fewest possible lines of code, since the program for
-[updating the structure] is quite short.  If an extensive error recovery is
-actually programmed, the subroutine will appear to have error-messages printing
-as its main purpose.  But the programmer knows that the error is really an
-exceptional case that arises only rarely; therefore a lengthy error recovery
-doesn't look right, and most programmers will minimize it [...] in order to make
-the subroutine's appearance match its intended behavior.  [Programming] with
-WEB, the purpose of =update= can be be shown quite clearly, and the possibility
-of error recovery can be reduce to a mere mention when =update= is defined.
-When another section [related to error recovery] is subsequently written, the
-whole point of that section is to do the best error recovery, and it becomes
-quite natural to write a better program.
-#+END_QUOTE
-
-Knuth notes that the target programming language can impact the writing of WEB
-programs.  Having to declare variables at the start of a program leads to
-appending to the same "Local variables" program section.
-
-Taking the time to document the code as you write it is not free, but is
-beneficial in the long run.
-
-#+BEGIN_QUOTE
-I had known for a long time that the programs I construct for publication in a
-book, or the programs that I construct in front of a class, have tended to be
-comparatively free of errors, because I am forced to clarify my thoughts as I do
-the programming.  By contrast, when writing for myself alone, I have often taken
-shortcuts that proved later to be dreadful mistakes.  It's harder for me to fool
-myself in such ways when I'm writing a WEB program, because I'm in "expository
-mode" (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
-less debugging time.
-#+END_QUOTE
-
-#+BEGIN_QUOTE
-WEB may be only for the subset of computer scientists who like to write and to
-explain what they are doing.
-#+END_QUOTE
-
-Noweb is a language-agnostic syntax and implementation of WEB, which is used in
-Org-mode.
-
-**** Mechanisms for extension
-The idea of documenting as you program is important, as is the focus on writing
-"what the human meant to do".
-
-The mechanisms of including and referencing code snippets allows one to
-structure the program as they see fit.  Especially, it allows to separate
-concerns through quantification.
 
 *** BARE Prototype-based programming
 A collection of (at least) the following papers (or revisions of them):
@@ -879,6 +783,80 @@ Is differential programming sufficient to solve the problem of modular
 instrumentation?  In the case of Narcissus, it was not, since the interpreter
 was not OO.  But the open scope pattern might be equivalent, dynamically, to
 inheritance.
+
+** Réifier le langage pour séparer les préoccupations
+#+CAPTION: Le baron de Münchhausen évite la noyade en se hissant par les
+#+CAPTION: cheveux. Gustave Doré, 1862.
+[[file:img/münchhausen.jpg]]
+
+*** TRANSLATE Reflection
+[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
+made between /introspection/, /introcession/, /structural reflection/, and
+/behavioral reflection/; also between a program (a textual description) and a
+/computational system/ (a running process described by a program).
+
+A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
+#+BEGIN_QUOTE
+The general trend in the evolution of programming languages has been to postpone
+formal binding times towards the running of programs, but to use more and more
+sophisticated analysis and implementation techniques to bring actual times back
+to the earlier stages.
+#+END_QUOTE
+Later binding = more runtime flexibility, but also less guarantees and less
+performance.  The DLS submission is a perfect example.
+
+[[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
+interpreter.
+
+[[cite:Ste-94a][Ste-94a]] studies object-oriented languages which support open implementation.
+The open implementation of a language (the interpreter) is itself written in one
+language called the /implementation language/, and its meta-level interface
+allows the system to interpret a range of /engendered languages/.
+
+[[cite:SW-96][SW-96]] describe three approaches to code non-functional requirements while
+preserving the separation of concerns: systems-based, language-based, and
+MOP-based.  They find that MOP-based solutions are more flexible, especially as
+they can be applied to other domains without modifying the code.  However, they
+consider non-functional requirements like persistence and atomicity.
+
+Reflection for dynamic adaptation [[cite:DSC+99][DSC+99]].  Dynamic adaptation echoes the
+motivation of open implementation: an application should adapt dynamically to
+the need of the users, thereby enhancing performance.  This is mostly a concern
+in systems software, operating systems and middlewares.  They use a memory
+allocator example and compare using design patterns, DLLs and reflection.
+Essentially, reflection is more flexible, but also less efficient.
+
+[[cite:RC-02][RC-02]] illustrates how unanticipated dynamic adaptation can be achieved using
+MOPs in Java.
+
+Unifying AOP and OOP [[cite:RS-09a][RS-09a]].
+
+[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
+proxy which has a handful of traps that are useful to override: when the value
+is called as a function, when the value is used as a record, when the value is
+used as an index in an array, when the value is used in a binary operation ...
+
+They exhibit several scenarios where virtual values are useful: lazy evaluation,
+revocable membranes, and tainting.  They modified Narcissus (again!) to add
+their virtual values extension, but the implementation seems incomplete
+regarding all operations available in JavaScript.
+
+They motivate virtual values as a nice way to extend languages without having to
+touch the interpreter.  Though they do not talk at all of the limitations of
+this approach: can you write any extension that you would write by modifying the
+interpreter with virtual values?  The only downsides they acknowledge are
+performance hits and potential breakage of JS invariants (‘x*x' returning a
+negative number, or ‘x === x' returning false).
+
+It seems evident that virtual values are only hooks for values.  So you cannot
+override any other part of the module which is not explicitly given by a trap.
+Getting a trace of the interpreter execution is out.  Also, you need to specify
+your analysis from the point of view of handler on values, not by altering the
+interpreter semantics.
+
+[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
+previous implementation which used code transformation; better performance, less
+maintenance.
 
 *** STABLE L'implémentation ouverte
 La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
@@ -1614,15 +1592,120 @@ compréhensible.  Tous ces mécanismes présentent donc des avantages et des
 inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
-*** BARE Caesar
-[[cite:AGM+06][AGM+06]]
+** Tisser les facettes d'un artefact d'innombrable dimensions
+#+CAPTION: Tapis turc "Holbein", fin du XVe siècle.
+[[file:img/rug.jpg]]
 
-CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
-All these mechanisms are brought together to allow composition along many axis.
+*** TRANSLATE Literate programming
+Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
+mode.
 
-But overall, I failed to see the problems that it solved.  Both papers [[cite:AGM+06][AGM+06]]
-[[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
-the benefit brought by the new mechanisms.
+[[cite:Knu-84][Knu-84]] for the original notion:
+
+#+BEGIN_QUOTE
+Instead of imagining that our main task is to instruct a /computer/ what to do,
+let us concentrate rather on explaining to /human beings/ what we want to do.
+#+END_QUOTE
+
+As usual, Knuth writing is delightfully witty:
+
+#+BEGIN_QUOTE
+I must confess that there may also be a bit of malice in my choice of a title.
+During the 1970s I was coerced like everybody else into adopting the ideas of
+structured programming, because I couldn't bear to be found guilty of writing
+/unstructured/ programs.  Now I have a chance to get even.  By coining the
+phrase "literate programming," I am imposing a moral commitment on everyone who
+hears the term; surely nobody wants to admit writing an /illiterate/ program.
+#+END_QUOTE
+
+The WEB system allows one to write a TeX + source code document, and then
+produce documentation (using the WEAVE program) or complete program (using
+TANGLE).  The focus is on documenting first what the program does, then
+producing a machine version as a second concern.  The source code can be
+presented out-of-order in the document, for expository purposes, using links and
+macros.
+
+The WEB way of writing programs is "psychologically correct", as it reflects the
+way in which the program was conceived and elaborated.
+
+#+BEGIN_QUOTE
+When I first began to work with the ideas that eventually became the WEB system,
+I thought that I would be designing a language for "top-down" programming, where
+a top-level description is given first and successively refined.  On the other
+hand I knew that I often created major parts of programs in a "bottom-up"
+fashion, starting with the definitions of basic procedures and data structures
+and gradually building more and more powerful routines.  I had the feeling that
+top-down and bottom-up were opposing methodologies: one more suitable for
+program exposition and the other more suitable for program creation.
+
+[...] I have come to realize that there is no need to choose once and for all
+between top-down and bottom-up, because a program is best thought of as a web
+instead of a tree.  [...] A complex piece of software consists of simple parts
+and simple relations between those parts; the programmer's task is to state
+those parts and those relationships, in whatever order is best for human
+comprehension – not in some rigidly determined order like top-down or
+bottom-up.
+
+[...]
+
+Thus the  WEB language allows a person to express programs in a "stream of
+consciousness" order.
+#+END_QUOTE
+
+An unexpected benefit of WEB is a better separation of concerns.  Although Knuth
+does not use the term, each part of a program can be described in its own
+section, thus each section can focus on one concern.  He gives the example of
+separating error recovery from a simple data structure update routine.
+
+#+BEGIN_QUOTE
+While writing the program for [error recovery], a programmer subconsciously
+tries to get by with the fewest possible lines of code, since the program for
+[updating the structure] is quite short.  If an extensive error recovery is
+actually programmed, the subroutine will appear to have error-messages printing
+as its main purpose.  But the programmer knows that the error is really an
+exceptional case that arises only rarely; therefore a lengthy error recovery
+doesn't look right, and most programmers will minimize it [...] in order to make
+the subroutine's appearance match its intended behavior.  [Programming] with
+WEB, the purpose of =update= can be be shown quite clearly, and the possibility
+of error recovery can be reduce to a mere mention when =update= is defined.
+When another section [related to error recovery] is subsequently written, the
+whole point of that section is to do the best error recovery, and it becomes
+quite natural to write a better program.
+#+END_QUOTE
+
+Knuth notes that the target programming language can impact the writing of WEB
+programs.  Having to declare variables at the start of a program leads to
+appending to the same "Local variables" program section.
+
+Taking the time to document the code as you write it is not free, but is
+beneficial in the long run.
+
+#+BEGIN_QUOTE
+I had known for a long time that the programs I construct for publication in a
+book, or the programs that I construct in front of a class, have tended to be
+comparatively free of errors, because I am forced to clarify my thoughts as I do
+the programming.  By contrast, when writing for myself alone, I have often taken
+shortcuts that proved later to be dreadful mistakes.  It's harder for me to fool
+myself in such ways when I'm writing a WEB program, because I'm in "expository
+mode" (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
+less debugging time.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+WEB may be only for the subset of computer scientists who like to write and to
+explain what they are doing.
+#+END_QUOTE
+
+Noweb is a language-agnostic syntax and implementation of WEB, which is used in
+Org-mode.
+
+**** Mechanisms for extension
+The idea of documenting as you program is important, as is the focus on writing
+"what the human meant to do".
+
+The mechanisms of including and referencing code snippets allows one to
+structure the program as they see fit.  Especially, it allows to separate
+concerns through quantification.
 
 *** STABLE Hyper/J
 La programmation par aspects a pour but la séparation des composants et des
@@ -1784,12 +1867,20 @@ the human visual system, identifiable /symbols/ are a viable alternative to
 /locality/ as a way of managing changes to software.
 #+END_QUOTE
 
-** UNSTABLE La modularité du progamme n'est pas la modularité du code source
-Les travaux de la section précédente cherchent à obtenir la modularité à travers
-le code source.
+** BARE Limiter les effets de bord: La programmation fonctionnelle
+Parallel evolution to OO.
 
-Mais un programme n'est pas que son code source.
+Pure functions, immutability, side-step the complications of side-effects
+entirely.
 
+Functional is simple, because referential transparency.
+
+Real programs need side effects, they are delimited by monads, effect systems.
+
+Functional languages historically have the more advanced type systems.  Strong
+static guarantes, but less runtime flexibility.
+
+** La modularité du programme n'est pas la modularité du code source
 *** STABLE La modularité selon Parnas
 David Parnas est fréquemment cité comme référence pour la notion de modularité
 d'un système, en particulier l'article "On the Critera to be Used In Decomposing
@@ -2327,9 +2418,10 @@ development that seem to break information hiding, and even oppose modular
 reasoning, have their virtues.  Those can be thought of using nonclassical
 logics.
 
-** UNSTABLE Moyens techniques pour l'instrumentation
-*** BARE Le problème d'expression
+** Les mécanismes de recomposition du programme
+*** BARE Le problème de l'expression
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
+
 *** BARE Dynamic binding
 Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
 dynamic environment in lexical binding [[cite:Que-03][Que-03]].
@@ -2349,75 +2441,6 @@ Some use-cases are mentioned, but none are demonstrated in the paper.  The
 proposal is not motivated enough by concrete applications that would be
 difficult to solve using existing mechanisms.  Also, the work is really focused
 on the binding semantics of Scheme, which reduce its applicability.
-
-*** TRANSLATE Reflection
-[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
-made between /introspection/, /introcession/, /structural reflection/, and
-/behavioral reflection/; also between a program (a textual description) and a
-/computational system/ (a running process described by a program).
-
-A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
-#+BEGIN_QUOTE
-The general trend in the evolution of programming languages has been to postpone
-formal binding times towards the running of programs, but to use more and more
-sophisticated analysis and implementation techniques to bring actual times back
-to the earlier stages.
-#+END_QUOTE
-Later binding = more runtime flexibility, but also less guarantees and less
-performance.  The DLS submission is a perfect example.
-
-[[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
-interpreter.
-
-[[cite:Ste-94a][Ste-94a]] studies object-oriented languages which support open implementation.
-The open implementation of a language (the interpreter) is itself written in one
-language called the /implementation language/, and its meta-level interface
-allows the system to interpret a range of /engendered languages/.
-
-[[cite:SW-96][SW-96]] describe three approaches to code non-functional requirements while
-preserving the separation of concerns: systems-based, language-based, and
-MOP-based.  They find that MOP-based solutions are more flexible, especially as
-they can be applied to other domains without modifying the code.  However, they
-consider non-functional requirements like persistence and atomicity.
-
-Reflection for dynamic adaptation [[cite:DSC+99][DSC+99]].  Dynamic adaptation echoes the
-motivation of open implementation: an application should adapt dynamically to
-the need of the users, thereby enhancing performance.  This is mostly a concern
-in systems software, operating systems and middlewares.  They use a memory
-allocator example and compare using design patterns, DLLs and reflection.
-Essentially, reflection is more flexible, but also less efficient.
-
-[[cite:RC-02][RC-02]] illustrates how unanticipated dynamic adaptation can be achieved using
-MOPs in Java.
-
-Unifying AOP and OOP [[cite:RS-09a][RS-09a]].
-
-[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
-proxy which has a handful of traps that are useful to override: when the value
-is called as a function, when the value is used as a record, when the value is
-used as an index in an array, when the value is used in a binary operation ...
-
-They exhibit several scenarios where virtual values are useful: lazy evaluation,
-revocable membranes, and tainting.  They modified Narcissus (again!) to add
-their virtual values extension, but the implementation seems incomplete
-regarding all operations available in JavaScript.
-
-They motivate virtual values as a nice way to extend languages without having to
-touch the interpreter.  Though they do not talk at all of the limitations of
-this approach: can you write any extension that you would write by modifying the
-interpreter with virtual values?  The only downsides they acknowledge are
-performance hits and potential breakage of JS invariants (‘x*x' returning a
-negative number, or ‘x === x' returning false).
-
-It seems evident that virtual values are only hooks for values.  So you cannot
-override any other part of the module which is not explicitly given by a trap.
-Getting a trace of the interpreter execution is out.  Also, you need to specify
-your analysis from the point of view of handler on values, not by altering the
-interpreter semantics.
-
-[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
-previous implementation which used code transformation; better performance, less
-maintenance.
 
 *** BARE Building from modules
 Findler & Flatt, Newspeak
@@ -2473,6 +2496,190 @@ details of the source code like "when does an if block ends".  They have to
 build a control-flow graph to know when to discard program counters used by the
 information flow analysis.  Also, instrumenting the bytecode is specific to the
 bytecode compiler of WebKit (there is no standard, unlike Java).
+
+*** Superimposition
+**** BARE Caesar
+Caesar has everything and the kitchen sink.
+[[cite:AGM+06][AGM+06]]
+
+CaesarJ regroups virtual classes, mixins, pointcut-advice and binding classes.
+All these mechanisms are brought together to allow composition along many axis.
+
+But overall, I failed to see the problems that it solved.  Both papers [[cite:AGM+06][AGM+06]]
+[[cite:MO-02][MO-02]] are dense and opaque; the examples are too complicated to make sense of
+the benefit brought by the new mechanisms.
+
+**** TRANSLATE Software product lines
+[[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
+
+An engineering methodology to create and maintain variants of a software
+product, with optional features (analogy with car assembly lines, which allow
+for adding optional features while reusing the same assembly process).
+
+Inspired by the similar evolution in the mass production of consumer goods.
+From handcrafting to mass production, to mass customization: product lines that
+cover a spectrum of variations.  Examples abound: cars, multi-flavored
+detergent, phones, Subway sandwiches ...  Software product lines are the
+realization of mass customization for software products (yeah!).
+
+A product line engineering platform combines all the artifacts, documentation
+and methodologies of a family of products.  The goal of PLE is to manage the
+/commonality/ and /variability/ of a product family.  PLE is not specific to
+software.
+
+Properties of a SPL:
+- binding time (composition can happen at compile-time, load-time or run-time)
+- language solution vs. tool based
+- annotation (think C preprocessor) vs. composition (features in their own unit)
+- preplanning effort (can you add features without designing for it?)
+- feature traceability (mapping between feature model to solution space)
+- separation of concerns
+- information hiding
+- uniformity
+
+Software product lines mechanisms include:
+- global parameters
+- design patterns (observer, strategy, decorator)
+- frameworks
+- components
+
+Using version control branches to manage variability is also discussed.  Each
+branch correspond to a product, and code sharing is provided by the version
+control tool.  However, version control manages /products/ rather than
+/features/.  Features are not apparent independently of the base code, except
+when looking at diffs.
+
+Feature-oriented programming allows the decomposition of a program into features
+first.  Jak is a Java extension that supports FOP [[cite:BSR-04][BSR-04]].  A feature corresponds
+to a layer, and each layer can contain multiple classes that implement the
+feature.  Further layers can /refine/ the classes of previous layer, and refer
+to their implementation via the =original= keyword.
+
+FeatureHouse [[cite:AKL-13][AKL-13]] is akin to [[Semantic patches]], in that it uses a reduced
+syntax tree in order to transform code.  One writes a base program, then another
+program can be superimposed on it by matching their reduced syntax trees.  The
+base program code can be called using the =original= keyword.  Three-way merges
+are also possible, and resolved like in version control systems.  The model of
+reduced syntax trees of FeatureHouse is language independent, as are the
+composition mechanisms.  Language plugins can be written to tell
+FeatureHouse how to generate, compose, and pretty-print reduced syntax trees.
+
+#+BEGIN_EXAMPLE
+public class A {
+  private int foo() { return 0; }
+}
+
+public class A {
+  private int foo() { original(); return 1; }
+}
+#+END_EXAMPLE
+
+FeatureHouse also supports quantification.  Mixins and traits mechanisms are
+essentially instances of superimposition.
+
+FOP is well-suited to implementing /heterogeneous concerns/ (one variation per
+join point), while AOP is better for /homogeneous concerns/ (one variation,
+multiple join points). [[cite:MO-04][MO-04]] illustrates the compromises of each approaches (and
+presents [[Caesar]] as the superior solution).
+
+If you cannot maintain a separation of concerns in the code itself, you can
+emulate it through views.  /Virtual separation of concerns/ is using tools to
+provide coherent views of features that are scattered in the code [[cite:AK-09][AK-09]].
+
+Virtual separation of concerns has few downsides and many benefits: simplicity
+and flexibility being the chief advantages.
+
+Handling feature interactions is an open problem.  Detecting them also.
+
+***** Mechanisms for instrumentation
+FOP implementations presented here are static organization of code into
+features.  Much like design patterns or frameworks, they require the programmer
+to design for extensibility beforehand.  AspectJ allows extending an existing
+code base (unlike the original AOP vision, which emphasized the design decision
+of separating components from aspects).
+
+The notion of superimposition is nice.  Recognizing that inheritance, mixins and
+traits are all instances of superimposition is a powerful insight.
+
+Virtual separation of concerns makes some good points.  If the primary
+decomposition is tyranny, then we have no hope of organizing the physical code
+into features.  However, we can leverage editing tools to re-arrange and view
+the code in any way we like.  One physical representation, many views.  Each
+view can provide different information about the system.
+
+The motivation behind all such mechanisms is a desire to organize snippets of
+code, to structure modules, and avoid repetitions.  The ultimate conclusion of
+that trend is a language-agnostic manipulation syntax based on hypertext.  Each
+snippet has a name, and tags (for marking membership of a feature, but mostly
+for non-hierarchical organization).  Any snippets can be referenced by another
+(for documentation), and can be included for execution.  Snippets can be
+referenced to by name, or by tags.  Tags and wildcards allow quantification.
+
+Tags also allow to view the program through different lenses.  Snippets can have
+parameters, hence are a form a macros.
+
+Links are two way, and kept in sync by the programming system (editor): this
+prevents obliviousness.
+
+**** TRANSLATE Semantic patches
+[[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
+name, or gains an argument, client code must makes the necessary changes.  The
+changes in client code are collateral.
+
+In a semantic patch, one describes the pattern of collateral changes needed to
+adapt client code.
+
+#+BEGIN_EXAMPLE
+@ rule2 @
+identifier proc_info_func;
+identifier hostptr;
+@@
+proc_info_func (
++ struct Scsi_Host *hostptr,
+- int hostno
+) {
+  ...
+- struct Scsi_Host *hostptr;
+  ...
+- hostptr = scri_host_hn_get(hostno);
+  ...
+- if (!hostptr) { ... return ...; }
+  ...
+- scsi_host_put(hostptr);
+  ...
+}
+#+END_EXAMPLE
+
+Identifiers are declared in the header with a syntactic class.  They are matched
+in the target code according to the context where they appear in the body of the
+semantic path.
+
+The dots =...= are an operator to match any sequence of code between two lines.
+There is a mention of the dots matching the /control-flow/ of the code, though
+nothing indicates that =spatch= interprets the target code in any way.
+
+[[cite:JH-07][JH-07]] demystifies the tool by giving a denotational semantics.  Indeed, the dots
+only match the syntax.
+
+The related work section of [[cite:JH-07][JH-07]] has a few surveys on software evolution, and
+in particular the Journal of Software Maintenance and Evolution.
+
+All around a nice idea, though you still have to write the semantic patches from
+scratch for every change.
+
+The (unintended) idea of source transformation based on dynamic control flow is
+interesting.  See [[file:notes.org::*Shapes%20of%20computation][Shapes of computation]].
+
+***** Mechanisms for extension
+It's another approach, transforming code to alleviate the maintenance cost.
+
+However, it's a crutch.  We would prefer not having to have to make those
+changes in the first place, even if the kernel libraries are updated.
+
+The concept of /collateral evolution/ is certainly related.  When interpreters
+evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM-06][PLM-06]] was
+more focused on introducing the collateral evolution problem, with plenty of
+examples from the Linux kernel.
 
 ** UNSTABLE Travaux connexes concernant l'instrumentation
 *** BARE Domain-specific languages
@@ -2644,194 +2851,6 @@ own way.
 
 To extend Lua, bindings from C can be added, and custom data structure as well.
 Changing the interpreter does not seem possible, even from C.
-
-*** BARE Context-Oriented Programming
-Expressive separation of concerns when behavior can change depending on the
-context in which the program is executed.  Composition of programs by layers.
-
-*** BARE Feature-Oriented Programming
-Promise of high-level programming, where features are built standalone, and
-interaction between them are dealt with separately.
-
-*** BARE Model-driven development
-You build meta-models that encompass all variations of the solution space.
-
-[[cite:HT-06][HT-06]] makes some good points about the promises and reality of MDD (in 2006).
-The distinction between the three categories of sketchers, blueprinters and
-model programmers in the modeling community is relevant in order to not
-amalgamate different intentions.
-
-*** TRANSLATE Software product lines
-[[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
-
-An engineering methodology to create and maintain variants of a software
-product, with optional features (analogy with car assembly lines, which allow
-for adding optional features while reusing the same assembly process).
-
-Inspired by the similar evolution in the mass production of consumer goods.
-From handcrafting to mass production, to mass customization: product lines that
-cover a spectrum of variations.  Examples abound: cars, multi-flavored
-detergent, phones, Subway sandwiches ...  Software product lines are the
-realization of mass customization for software products (yeah!).
-
-A product line engineering platform combines all the artifacts, documentation
-and methodologies of a family of products.  The goal of PLE is to manage the
-/commonality/ and /variability/ of a product family.  PLE is not specific to
-software.
-
-Properties of a SPL:
-- binding time (composition can happen at compile-time, load-time or run-time)
-- language solution vs. tool based
-- annotation (think C preprocessor) vs. composition (features in their own unit)
-- preplanning effort (can you add features without designing for it?)
-- feature traceability (mapping between feature model to solution space)
-- separation of concerns
-- information hiding
-- uniformity
-
-Software product lines mechanisms include:
-- global parameters
-- design patterns (observer, strategy, decorator)
-- frameworks
-- components
-
-Using version control branches to manage variability is also discussed.  Each
-branch correspond to a product, and code sharing is provided by the version
-control tool.  However, version control manages /products/ rather than
-/features/.  Features are not apparent independently of the base code, except
-when looking at diffs.
-
-Feature-oriented programming allows the decomposition of a program into features
-first.  Jak is a Java extension that supports FOP [[cite:BSR-04][BSR-04]].  A feature corresponds
-to a layer, and each layer can contain multiple classes that implement the
-feature.  Further layers can /refine/ the classes of previous layer, and refer
-to their implementation via the =original= keyword.
-
-FeatureHouse [[cite:AKL-13][AKL-13]] is akin to [[Semantic patches]], in that it uses a reduced
-syntax tree in order to transform code.  One writes a base program, then another
-program can be superimposed on it by matching their reduced syntax trees.  The
-base program code can be called using the =original= keyword.  Three-way merges
-are also possible, and resolved like in version control systems.  The model of
-reduced syntax trees of FeatureHouse is language independent, as are the
-composition mechanisms.  Language plugins can be written to tell
-FeatureHouse how to generate, compose, and pretty-print reduced syntax trees.
-
-#+BEGIN_EXAMPLE
-public class A {
-  private int foo() { return 0; }
-}
-
-public class A {
-  private int foo() { original(); return 1; }
-}
-#+END_EXAMPLE
-
-FeatureHouse also supports quantification.  Mixins and traits mechanisms are
-essentially instances of superimposition.
-
-FOP is well-suited to implementing /heterogeneous concerns/ (one variation per
-join point), while AOP is better for /homogeneous concerns/ (one variation,
-multiple join points). [[cite:MO-04][MO-04]] illustrates the compromises of each approaches (and
-presents [[Caesar]] as the superior solution).
-
-If you cannot maintain a separation of concerns in the code itself, you can
-emulate it through views.  /Virtual separation of concerns/ is using tools to
-provide coherent views of features that are scattered in the code [[cite:AK-09][AK-09]].
-
-Virtual separation of concerns has few downsides and many benefits: simplicity
-and flexibility being the chief advantages.
-
-Handling feature interactions is an open problem.  Detecting them also.
-
-**** Mechanisms for instrumentation
-FOP implementations presented here are static organization of code into
-features.  Much like design patterns or frameworks, they require the programmer
-to design for extensibility beforehand.  AspectJ allows extending an existing
-code base (unlike the original AOP vision, which emphasized the design decision
-of separating components from aspects).
-
-The notion of superimposition is nice.  Recognizing that inheritance, mixins and
-traits are all instances of superimposition is a powerful insight.
-
-Virtual separation of concerns makes some good points.  If the primary
-decomposition is tyranny, then we have no hope of organizing the physical code
-into features.  However, we can leverage editing tools to re-arrange and view
-the code in any way we like.  One physical representation, many views.  Each
-view can provide different information about the system.
-
-The motivation behind all such mechanisms is a desire to organize snippets of
-code, to structure modules, and avoid repetitions.  The ultimate conclusion of
-that trend is a language-agnostic manipulation syntax based on hypertext.  Each
-snippet has a name, and tags (for marking membership of a feature, but mostly
-for non-hierarchical organization).  Any snippets can be referenced by another
-(for documentation), and can be included for execution.  Snippets can be
-referenced to by name, or by tags.  Tags and wildcards allow quantification.
-
-Tags also allow to view the program through different lenses.  Snippets can have
-parameters, hence are a form a macros.
-
-Links are two way, and kept in sync by the programming system (editor): this
-prevents obliviousness.
-
-*** TRANSLATE Semantic patches
-[[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
-name, or gains an argument, client code must makes the necessary changes.  The
-changes in client code are collateral.
-
-In a semantic patch, one describes the pattern of collateral changes needed to
-adapt client code.
-
-#+BEGIN_EXAMPLE
-@ rule2 @
-identifier proc_info_func;
-identifier hostptr;
-@@
-proc_info_func (
-+ struct Scsi_Host *hostptr,
-- int hostno
-) {
-  ...
-- struct Scsi_Host *hostptr;
-  ...
-- hostptr = scri_host_hn_get(hostno);
-  ...
-- if (!hostptr) { ... return ...; }
-  ...
-- scsi_host_put(hostptr);
-  ...
-}
-#+END_EXAMPLE
-
-Identifiers are declared in the header with a syntactic class.  They are matched
-in the target code according to the context where they appear in the body of the
-semantic path.
-
-The dots =...= are an operator to match any sequence of code between two lines.
-There is a mention of the dots matching the /control-flow/ of the code, though
-nothing indicates that =spatch= interprets the target code in any way.
-
-[[cite:JH-07][JH-07]] demystifies the tool by giving a denotational semantics.  Indeed, the dots
-only match the syntax.
-
-The related work section of [[cite:JH-07][JH-07]] has a few surveys on software evolution, and
-in particular the Journal of Software Maintenance and Evolution.
-
-All around a nice idea, though you still have to write the semantic patches from
-scratch for every change.
-
-The (unintended) idea of source transformation based on dynamic control flow is
-interesting.  See [[file:notes.org::*Shapes%20of%20computation][Shapes of computation]].
-
-**** Mechanisms for extension
-It's another approach, transforming code to alleviate the maintenance cost.
-
-However, it's a crutch.  We would prefer not having to have to make those
-changes in the first place, even if the kernel libraries are updated.
-
-The concept of /collateral evolution/ is certainly related.  When interpreters
-evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM-06][PLM-06]] was
-more focused on introducing the collateral evolution problem, with plenty of
-examples from the Linux kernel.
 
 * UNSTABLE Étude de cas: extension ad-hoc de Narcissus
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla

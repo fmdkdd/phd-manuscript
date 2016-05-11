@@ -10,11 +10,16 @@ SVG_SRC := $(wildcard svg/*.svg)
 SVG_DST := $(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
 PNG_DST := $(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
 
+
+# Copy all svg/*.jpg files to img/ folder.
+JPG_SRC := $(wildcard svg/*.jpg)
+JPG_DST := $(patsubst svg/%.jpg, img/%.jpg, $(JPG_SRC))
+
 # Draft is intended to be the quick option.  Initially, PNG export was much
 # faster than SVG.  Using rsvg-convert made both options equally fast.  But I'm
 # still leaving the two targets for now.
-draft: $(TARGET) $(SVG_DST) html/img html/style.css
-final: $(TARGET) $(SVG_DST) html/img html/style.css
+draft: $(TARGET) $(SVG_DST) $(JPG_DST) html/img html/style.css
+final: $(TARGET) $(SVG_DST) $(JPG_DST) html/img html/style.css
 
 $(TARGET): $(INPUT) refs.bib html-src/export-setup.el
 	@echo 'Exporting to HTML...'
@@ -39,7 +44,13 @@ img/%.multi.svg: svg/%.multi.svg bin/svgsplit
   # html/img: img rule below.
 	@touch img
 
+# Copy normal SVGs
 img/%.svg: svg/%.svg
+	cp $< $@
+	@touch img
+
+# same for JPGs
+img/%.jpg: svg/%.jpg
 	cp $< $@
 	@touch img
 
