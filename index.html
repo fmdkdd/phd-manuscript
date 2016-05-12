@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-12 jeu. 16:23 -->
+<!-- 2016-05-12 jeu. 18:56 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -176,7 +176,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#orgheadline28">2.5. Tisser les facettes d&rsquo;un artefact d&rsquo;innombrable dimensions</a>
 <ul>
-<li><a href="#orgheadline25">2.5.1. <span class="todo TRANSLATE">TRANSLATE</span> Literate programming</a></li>
+<li><a href="#orgheadline25">2.5.1. <span class="todo TRANSLATE">TRANSLATE</span> La programmation littéraire</a></li>
 <li><a href="#orgheadline26">2.5.2. <span class="done STABLE">STABLE</span> Hyper/J</a></li>
 <li><a href="#orgheadline27">2.5.3. <span class="todo BARE">BARE</span> Information transparency</a></li>
 </ul>
@@ -567,7 +567,7 @@ Japan, who cheerfully complained that he was always being eliminated. — [<a h
 
 
 <figure>
-<p><img src="img/goto.jpg" alt="goto.jpg" title="すみません、高橋秀俊さん。">
+<p><img src="img/goto.jpg" alt="goto.jpg" title="すみません、高橋さん。">
 </p>
 <figcaption><span class="figure-number">Figure&nbsp;5&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
 </figure>
@@ -2230,6 +2230,14 @@ système.
 <div id="outline-container-orgheadline28" class="outline-3">
 <h3 id="orgheadline28"><span class="section-number-3">2.5</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrable dimensions</h3>
 <div class="outline-text-3" id="text-2-5">
+<div class="epigraph">
+<p>
+Instead of imagining that our main task is to instruct a <i>computer</i> what to do,
+let us concentrate rather on explaining to <i>human beings</i> what we want to do.
+— [<a href="#Knu-84">Knu84</a>]</p>
+
+</div>
+
 
 <figure>
 <p><img src="img/rug.jpg" alt="rug.jpg">
@@ -2266,38 +2274,99 @@ nombreuses dimensions, irréconciliables sous une seule décomposition.
 </div>
 
 <div id="outline-container-orgheadline25" class="outline-4">
-<h4 id="orgheadline25"><span class="section-number-4">2.5.1</span> <span class="todo TRANSLATE">TRANSLATE</span> Literate programming</h4>
+<h4 id="orgheadline25"><span class="section-number-4">2.5.1</span> <span class="todo TRANSLATE">TRANSLATE</span> La programmation littéraire</h4>
 <div class="outline-text-4" id="text-2-5-1">
+<p>
+La programmation structurée recommandait une discipline de construction du
+programme du haut vers le bas, par raffinements successifs.  On commence par une
+description haut-niveau, qu&rsquo;on enrichit petit à petit jusqu&rsquo;à avoir spécifié le
+programme dans le moindre détail.
+</p>
+
+<p>
+Knuth [<a href="#Knu-84">Knu84</a>] remarque que sa façon de construire les programmes va souvent
+l&rsquo;encontre de ce principe:
+</p>
+
+<blockquote>
+<p>
+I knew that I often created major parts of programs in a &laquo;&nbsp;bottom-up&nbsp;&raquo; fashion,
+starting with the definitions of basic procedures and data structures and
+gradually building more and more powerful subroutines.  I had the feeling that
+top-down and bottom-up were opposing methodologies: one more suitable for
+program exposition and the other more suitable for program creation.
+</p>
+</blockquote>
+
+<p>
+Mais les deux approches ne sont pas nécessairement antagonistes si l&rsquo;on prend du
+recul.  Ces approches supposent une structure hiérarchique, que le programme est
+un arbre.  Knuth considère qu&rsquo;on peut voir un programme aussi bien comme un
+réseau, comme une <i>toile d&rsquo;araignée</i>.  Ce qui importe, c&rsquo;est d&rsquo;exprimer les
+relations qui forment ce réseau:
+</p>
+
+<blockquote>
+<p>
+A complex piece of software consists of simple parts and simple relations
+between those parts; the programmer&rsquo;s task is to state those parts and those
+relationships, in whatever order is best for human comprehension – not in some
+rigidly determined order like top-down or bottom-up.
+</p>
+</blockquote>
+
+<p>
+WEB est le système de programmation littéraire développé par Knuth pour
+permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
+contient du Pascal et du TeX mêlés.  Il ne s&rsquo;agit pas simplement d&rsquo;écrire des
+commentaires autour du code; plutôt l&rsquo;inverse.  Knuth souhaite décrire le
+programme <i>avant tout</i> pour un humain, et en second lieu pour la machine.  La
+machine n&rsquo;a que faire des considérations de style, ou de l&rsquo;ordre de présentation
+du programme; le code source suffit.  Pour l&rsquo;humain en revanche, les
+explications sont très utiles pour comprendre le fonctionnement du programme et
+les intentions de son auteur.
+</p>
+
+<p>
+Knuth écrit un programme WEB comme il écrit un article: il explique les grandes
+lignes, puis fournit les détails dans un second temps.  L&rsquo;exemple qu&rsquo;il donne
+est un programme qui liste les 1000 premiers nombres premiers.
+</p>
+
+<pre class="example">
+@* Printing primes: An example of \WEB.
+
+The following program is essentially the same as
+Edsger Dijkstra's "first example of step-wise
+program composition." ...
+
+@&lt;Program to print...@&gt;=
+program print_primets(output);
+const @!m = 1000;
+@&lt;Other constants of the program@&gt;@;
+var @&lt;Variables of the program@&gt;@;
+begin @&lt;Print the first |m| prime numbers@&gt;;
+end.
+</pre>
+
+<p>
+First part is TeX, second part is Pascal.  Pascal has references to other
+sections, which are described elsewhere.  Code is written as it should be shown
+to the human first.
+</p>
+
+<p>
+Two outputs: TANGLE and WEAVE.
+</p>
+
+
+
+<hr >
+
 <p>
 Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
 mode.
 </p>
-
-<p>
-[<a href="#Knu-84">Knu84</a>] for the original notion:
-</p>
-
-<blockquote>
-<p>
-Instead of imagining that our main task is to instruct a <i>computer</i> what to do,
-let us concentrate rather on explaining to <i>human beings</i> what we want to do.
-</p>
-</blockquote>
-
-<p>
-As usual, Knuth writing is delightfully witty:
-</p>
-
-<blockquote>
-<p>
-I must confess that there may also be a bit of malice in my choice of a title.
-During the 1970s I was coerced like everybody else into adopting the ideas of
-structured programming, because I couldn&rsquo;t bear to be found guilty of writing
-<i>unstructured</i> programs.  Now I have a chance to get even.  By coining the
-phrase &laquo;&nbsp;literate programming,&nbsp;&raquo; I am imposing a moral commitment on everyone who
-hears the term; surely nobody wants to admit writing an <i>illiterate</i> program.
-</p>
-</blockquote>
 
 <p>
 The WEB system allows one to write a TeX + source code document, and then
@@ -2315,24 +2384,7 @@ way in which the program was conceived and elaborated.
 
 <blockquote>
 <p>
-When I first began to work with the ideas that eventually became the WEB system,
-I thought that I would be designing a language for &laquo;&nbsp;top-down&nbsp;&raquo; programming, where
-a top-level description is given first and successively refined.  On the other
-hand I knew that I often created major parts of programs in a &laquo;&nbsp;bottom-up&nbsp;&raquo;
-fashion, starting with the definitions of basic procedures and data structures
-and gradually building more and more powerful routines.  I had the feeling that
-top-down and bottom-up were opposing methodologies: one more suitable for
-program exposition and the other more suitable for program creation.
-</p>
 
-<p>
-[&#x2026;] I have come to realize that there is no need to choose once and for all
-between top-down and bottom-up, because a program is best thought of as a web
-instead of a tree.  [&#x2026;] A complex piece of software consists of simple parts
-and simple relations between those parts; the programmer&rsquo;s task is to state
-those parts and those relationships, in whatever order is best for human
-comprehension – not in some rigidly determined order like top-down or
-bottom-up.
 </p>
 
 <p>
@@ -12144,7 +12196,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-12 jeu. 16:23 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-12 jeu. 18:56 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
