@@ -1737,6 +1737,14 @@ classe ~Plus~, etc.  Chaque classe implémente trois méthodes, qui corresponden
 arithmétique de l'expression, ~display~ affiche l'expression, et ~check~ vérifie
 qui l'expression est bien formée.
 
+#+BEGIN_side-figure
+#+CAPTION: Les trois traitements communs à chaque nœud de l'arbre de syntaxe
+#+CAPTION: sont trois préoccupations différentes, éparpillées dans chaque
+#+CAPTION: classe.  L'unité d'abstraction, la classe, ne correspond pas
+#+CAPTION: à l'unité des traitements.
+[[file:img/hyperj1.svg]]
+#+END_side-figure
+
 Immédiatement, ils constatent que chaque traitement peut être considéré comme
 une préoccupation, et que selon cette décomposition en classes, ces
 préoccupations sont toutes éparpillées dans les méthodes correspondantes des
@@ -1778,6 +1786,14 @@ Continuant l'exemple, on peut regrouper les fonctionnalités d'évaluation,
 d'affichage, de vérification et de synchronisation par des hypercoupes
 différentes.  Le papier illustre à travers des diagrammes UML ce qu'Hyper/J
 permet de faire en Java.
+
+#+ATTR_HTML: :style margin-top:-10rem
+#+BEGIN_side-figure
+#+CAPTION: Recomposition en utilisant des hypercoupes pour chaque traitement.
+#+CAPTION: Les trois traitements sont isolés par chaque hypercoupe, mais les
+#+CAPTION: classes sont communes à toutes.
+[[file:img/hyperj2.svg]]
+#+END_side-figure
 
 Une hypercoupe n'isole pas nécessairement une partie du système.  Les unités
 d'abstraction que sont les classes et méthodes peuvent apparaître dans plusieurs
