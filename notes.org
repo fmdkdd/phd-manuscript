@@ -2668,6 +2668,19 @@ The chronological part can be seen along the following themes:
 
 Damn, now I guess the SVG folder is not aptly named anymore.
 
+** [2016-05-12 jeu.]
+*** Preview inline image in Emacs
+is a nice feature.  But some images are too large.
+
+There's an custom variable to override the width of inlined image:
+[[help:org-image-actual-width][org-image-actual-width]].  But if set to a number of pixels, all inlined images
+have /exactly/ this width, even smaller ones.  And it rasterizes SVG through
+imagemagick, which is slower and messier.
+
+I can change the code to use ~max-width~ instead of ~width~, but the most
+important change is to not use imagemagick for SVGs, which can be done by
+looking up the image-type before hand with [[help:image-type][image-type]].
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
