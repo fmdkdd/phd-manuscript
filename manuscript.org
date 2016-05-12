@@ -40,7 +40,7 @@
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
    - [[#tisser-les-facettes-dun-artefact-dinnombrable-dimensions][Tisser les facettes d'un artefact d'innombrable dimensions]]
-     - [[#translate-literate-programming][TRANSLATE Literate programming]]
+     - [[#translate-la-programmation-littéraire][TRANSLATE La programmation littéraire]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#stable-hyperj][STABLE Hyper/J]]
      - [[#bare-information-transparency][BARE Information transparency]]
@@ -371,7 +371,7 @@ Japan, who cheerfully complained that he was always being eliminated. — [[cit
 #+END_epigraph
 
 #+CAPTION: Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.
-#+ATTR_HTML: :title すみません、高橋秀俊さん。
+#+ATTR_HTML: :title すみません、高橋さん。
 [[file:img/goto.jpg]]
 
 La programmation structurée n'est pas un ensemble de techniques, ni une méthode
@@ -1593,6 +1593,12 @@ inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
 ** Tisser les facettes d'un artefact d'innombrable dimensions
+#+BEGIN_epigraph
+Instead of imagining that our main task is to instruct a /computer/ what to do,
+let us concentrate rather on explaining to /human beings/ what we want to do.
+— [[cite:Knu-84][Knu-84]]
+#+END_epigraph
+
 #+CAPTION: Tapis turc "Holbein", fin du XVe siècle.
 [[file:img/rug.jpg]]
 
@@ -1618,27 +1624,78 @@ celle-ci.  Les thèmes de ce chapitre sont un autre exemple d'objet aux
 nombreuses dimensions, irréconciliables sous une seule décomposition.
 #+END_aside
 
-*** TRANSLATE Literate programming
+*** TRANSLATE La programmation littéraire
+La programmation structurée recommandait une discipline de construction du
+programme du haut vers le bas, par raffinements successifs.  On commence par une
+description haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié le
+programme dans le moindre détail.
+
+Knuth [[cite:Knu-84][Knu-84]] remarque que sa façon de construire les programmes va souvent
+l'encontre de ce principe:
+
+#+BEGIN_QUOTE
+I knew that I often created major parts of programs in a "bottom-up" fashion,
+starting with the definitions of basic procedures and data structures and
+gradually building more and more powerful subroutines.  I had the feeling that
+top-down and bottom-up were opposing methodologies: one more suitable for
+program exposition and the other more suitable for program creation.
+#+END_QUOTE
+
+Mais les deux approches ne sont pas nécessairement antagonistes si l'on prend du
+recul.  Ces approches supposent une structure hiérarchique, que le programme est
+un arbre.  Knuth considère qu'on peut voir un programme aussi bien comme un
+réseau, comme une /toile d'araignée/.  Ce qui importe, c'est d'exprimer les
+relations qui forment ce réseau:
+
+#+BEGIN_QUOTE
+A complex piece of software consists of simple parts and simple relations
+between those parts; the programmer's task is to state those parts and those
+relationships, in whatever order is best for human comprehension – not in some
+rigidly determined order like top-down or bottom-up.
+#+END_QUOTE
+
+WEB est le système de programmation littéraire développé par Knuth pour
+permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
+contient du Pascal et du TeX mêlés.  Il ne s'agit pas simplement d'écrire des
+commentaires autour du code; plutôt l'inverse.  Knuth souhaite décrire le
+programme /avant tout/ pour un humain, et en second lieu pour la machine.  La
+machine n'a que faire des considérations de style, ou de l'ordre de présentation
+du programme; le code source suffit.  Pour l'humain en revanche, les
+explications sont très utiles pour comprendre le fonctionnement du programme et
+les intentions de son auteur.
+
+Knuth écrit un programme WEB comme il écrit un article: il explique les grandes
+lignes, puis fournit les détails dans un second temps.  L'exemple qu'il donne
+est un programme qui liste les 1000 premiers nombres premiers.
+
+#+BEGIN_EXAMPLE
+@* Printing primes: An example of \WEB.
+
+The following program is essentially the same as
+Edsger Dijkstra's "first example of step-wise
+program composition." ...
+
+@<Program to print...@>=
+program print_primets(output);
+const @!m = 1000;
+@<Other constants of the program@>@;
+var @<Variables of the program@>@;
+begin @<Print the first |m| prime numbers@>;
+end.
+#+END_EXAMPLE
+
+First part is TeX, second part is Pascal.  Pascal has references to other
+sections, which are described elsewhere.  Code is written as it should be shown
+to the human first.
+
+Two outputs: TANGLE and WEAVE.
+
+
+
+-----
+
 Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
 mode.
-
-[[cite:Knu-84][Knu-84]] for the original notion:
-
-#+BEGIN_QUOTE
-Instead of imagining that our main task is to instruct a /computer/ what to do,
-let us concentrate rather on explaining to /human beings/ what we want to do.
-#+END_QUOTE
-
-As usual, Knuth writing is delightfully witty:
-
-#+BEGIN_QUOTE
-I must confess that there may also be a bit of malice in my choice of a title.
-During the 1970s I was coerced like everybody else into adopting the ideas of
-structured programming, because I couldn't bear to be found guilty of writing
-/unstructured/ programs.  Now I have a chance to get even.  By coining the
-phrase "literate programming," I am imposing a moral commitment on everyone who
-hears the term; surely nobody wants to admit writing an /illiterate/ program.
-#+END_QUOTE
 
 The WEB system allows one to write a TeX + source code document, and then
 produce documentation (using the WEAVE program) or complete program (using
@@ -1651,22 +1708,6 @@ The WEB way of writing programs is "psychologically correct", as it reflects the
 way in which the program was conceived and elaborated.
 
 #+BEGIN_QUOTE
-When I first began to work with the ideas that eventually became the WEB system,
-I thought that I would be designing a language for "top-down" programming, where
-a top-level description is given first and successively refined.  On the other
-hand I knew that I often created major parts of programs in a "bottom-up"
-fashion, starting with the definitions of basic procedures and data structures
-and gradually building more and more powerful routines.  I had the feeling that
-top-down and bottom-up were opposing methodologies: one more suitable for
-program exposition and the other more suitable for program creation.
-
-[...] I have come to realize that there is no need to choose once and for all
-between top-down and bottom-up, because a program is best thought of as a web
-instead of a tree.  [...] A complex piece of software consists of simple parts
-and simple relations between those parts; the programmer's task is to state
-those parts and those relationships, in whatever order is best for human
-comprehension – not in some rigidly determined order like top-down or
-bottom-up.
 
 [...]
 
