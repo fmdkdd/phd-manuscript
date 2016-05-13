@@ -29,7 +29,7 @@
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
      - [[#translate-self][TRANSLATE Self]]
-       - [[#mechanisms-for-extension-1][Mechanisms for extension]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
      - [[#translate-reflection][TRANSLATE Reflection]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
@@ -41,8 +41,7 @@
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
    - [[#tisser-les-facettes-dun-artefact-dinnombrable-dimensions][Tisser les facettes d'un artefact d'innombrable dimensions]]
-     - [[#translate-la-programmation-littéraire][TRANSLATE La programmation littéraire]]
-       - [[#mechanisms-for-extension-2][Mechanisms for extension]]
+     - [[#stable-la-programmation-littéraire][STABLE La programmation littéraire]]
      - [[#stable-hyperj][STABLE Hyper/J]]
      - [[#stable-linformation-transparente][STABLE L'information transparente]]
    - [[#bare-limiter-les-effets-de-bord-la-programmation-fonctionnelle][BARE Limiter les effets de bord: La programmation fonctionnelle]]
@@ -50,7 +49,7 @@
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
      - [[#stable-la-théorie-de-naur-derrière-le-programme][STABLE La théorie de Naur derrière le programme]]
-       - [[#conclusions-1][Conclusions]]
+       - [[#conclusions][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
@@ -66,13 +65,13 @@
      - [[#bare-domain-specific-languages][BARE Domain-specific languages]]
      - [[#bare-scripting-languages][BARE Scripting languages]]
      - [[#translate-emacs][TRANSLATE Emacs]]
-        - [[#mechanisms-for-extension-3][Mechanisms for extension]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#translate-eclipse-and-other-ides][TRANSLATE Eclipse and other IDEs]]
-       - [[#mechanisms-for-extension-4][Mechanisms for extension]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#bare-web-browsers][BARE Web browsers]]
-       - [[#mechanisms-for-extension-5][Mechanisms for extension]]
+       - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#translate-lua][TRANSLATE Lua]]
-        - [[#mechanisms-for-extension-6][Mechanisms for extension]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
  - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
  - [[#unstable-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNSTABLE Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#translate-construire-un-interpréteur-extensible][TRANSLATE Construire un interpréteur extensible]]
@@ -1595,9 +1594,8 @@ système.
 
 ** Tisser les facettes d'un artefact d'innombrable dimensions
 #+BEGIN_epigraph
-Instead of imagining that our main task is to instruct a /computer/ what to do,
-let us concentrate rather on explaining to /human beings/ what we want to do.
-— [[cite:Knu-84][Knu-84]]
+WEB may be only for the subset of computer scientists who like to write and to
+explain what they are doing. — [[cite:Knu-84][Knu-84]]
 #+END_epigraph
 
 #+CAPTION: Tapis turc "Holbein", fin du XVe siècle.
@@ -1625,7 +1623,7 @@ celle-ci.  Les thèmes de ce chapitre sont un autre exemple d'objet aux
 nombreuses dimensions, irréconciliables sous une seule décomposition.
 #+END_aside
 
-*** TRANSLATE La programmation littéraire
+*** STABLE La programmation littéraire
 La programmation structurée recommandait une discipline de construction du
 programme du haut vers le bas, par raffinements successifs.  On commence par une
 description haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié le
@@ -1659,19 +1657,24 @@ WEB est le système de programmation littéraire développé par Knuth pour
 permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
 contient du Pascal et du TeX mêlés.  Il ne s'agit pas simplement d'écrire des
 commentaires autour du code; plutôt l'inverse.  Knuth souhaite décrire le
-programme /avant tout/ pour un humain, et en second lieu pour la machine.  La
-machine n'a que faire des considérations de style, ou de l'ordre de présentation
-du programme; le code source suffit.  Pour l'humain en revanche, les
-explications sont très utiles pour comprendre le fonctionnement du programme et
-les intentions de son auteur.
+programme /avant tout/ pour un humain, et en second lieu pour la machine:
+
+#+BEGIN_QUOTE
+Instead of imagining that our main task is to instruct a /computer/ what to do,
+let us concentrate rather on explaining to /human beings/ what we want to do.
+#+END_QUOTE
+
+La machine n'a que faire des considérations de style, ou de l'ordre de
+présentation du programme; le code source suffit.  Pour l'humain en revanche,
+les explications sont très utiles pour comprendre le fonctionnement du programme
+et les intentions de son auteur.
 
 Knuth écrit un programme WEB comme il écrit un article: il explique les grandes
 lignes, puis fournit les détails dans un second temps.  L'exemple qu'il donne
-est un programme qui liste les 1000 premiers nombres premiers.
+est un programme qui liste les 1000 premiers nombres premiers:
 
-#+BEGIN_EXAMPLE
+#+BEGIN_EXAMPLE -n -r
 @* Printing primes: An example of \WEB.
-
 The following program is essentially the same as
 Edsger Dijkstra's "first example of step-wise
 program composition." ...
@@ -1679,70 +1682,133 @@ program composition." ...
 @<Program to print...@>=
 program print_primets(output);
 const @!m = 1000;
-@<Other constants of the program@>@;
+@<Other constants of the program@>@;               (ref:lit0)
 var @<Variables of the program@>@;
 begin @<Print the first |m| prime numbers@>;
 end.
 #+END_EXAMPLE
 
-First part is TeX, second part is Pascal.  Pascal has references to other
-sections, which are described elsewhere.  Code is written as it should be shown
-to the human first.
+La première partie est écrite en TeX; le ~@*~ dénote une section.  Toutes les
+commande usuelles de TeX sont disponibles, ce qui permet en particulier d'écrire
+des mathématiques sans être limité par la table des caractères ASCII.
 
-Two outputs: TANGLE and WEAVE.
+La seconde partie est le programme Pascal.  Ces 6 lignes couvrent l'intégralité
+du programme, mais le contenu principal est décrit dans d'autres sections.  Par
+exemple, la ligne [[(lit0)]] fait référence à une section qui contient toutes
+les constantes déclarées par le programme.  La ligne [[(lit0)]] donne au lecteur
+du programme une idée du code qui va être exécuté ici (des affectations de
+constantes), mais le programmeur n'a pas à donner ces détails maintenant.  Tout
+ce que le lecteur voit pour l'instant, c'est la structure du programme.
 
+Plus loin dans le document, les constantes sont définies:
 
+#+BEGIN_SRC pascal
+@<Other constants of the program@>=
+rr = 50;
+cc = 4;
+ww = 10;
+#+END_SRC
 
------
+C'est le code qui va être inséré à la ligne [[(lit0)]] de l'exemple précédent.  Les
+constantes sont décrites, mais dans un second temps.  D'après Knuth, c'est
+l'ordre "psychologiquement correct": l'ordre dans lequel on comprend mieux le
+programme.  Le langage WEB permet d'écrire le programme dans cet ordre.
 
-Programs are constructed as they are explained.  Knuth, LiterateCoffee, Org
-mode.
+D'ailleurs, c'est possible de rajouter du code à une section ultérieurement,
+une sorte d'/addendum/:
 
-The WEB system allows one to write a TeX + source code document, and then
-produce documentation (using the WEAVE program) or complete program (using
-TANGLE).  The focus is on documenting first what the program does, then
-producing a machine version as a second concern.  The source code can be
-presented out-of-order in the document, for expository purposes, using links and
-macros.
+#+BEGIN_SRC pascal
+@<Other constats of the program@>+=
+ord_max = 30;
+#+END_SRC
 
-The WEB way of writing programs is "psychologically correct", as it reflects the
-way in which the program was conceived and elaborated.
+En l'occurrence, cette constante est définie /après/ sa première apparition
+dans du code.  Un peu au dessus, on peut lire:
 
-#+BEGIN_QUOTE
+#+BEGIN_SRC pascal
+@<Variables of the program@>+=
+ord: 2..ord_max;
+#+END_SRC
 
-[...]
+La valeur maximale que peut prendre ~ord~ est d'abord justifiée
+mathématiquement, avant d'être définie en code.  À travers le ~+=~, du code peut
+être rajouté à une section, de n'importe quel point du document source.  C'est
+particulièrement adapté pour les constantes et les variables, qui en Pascal
+doivent être déclarées au début du programme.  Mais toutes les variables ne sont
+pas utilisées par toutes les parties du programme; d'où le mécanisme de
+concaténation de WEB qui permet de regrouper les variables avec le morceau de
+code qui les utilise.  C'est une sorte de regroupement des préoccupations.
 
-Thus the  WEB language allows a person to express programs in a "stream of
-consciousness" order.
-#+END_QUOTE
+Le document source contient donc du TeX et du Pascal.  À partir de ce source,
+deux documents sont générés par deux programmes différents: TANGLE et WEAVE.
+TANGLE reconstruit le programme Pascal monolithique; il parcoure les sections et
+remplace les références par leur contenu, afin d'émettre du code qui pourra être
+accepté par un compilateur Pascal.  WEAVE produit le document lisible par un
+humain et imprimable.  Il numérote les sections et introduit des liens pour
+chaque référence; il indique également quelles sections utilise quel code, pour
+permettre au lecteur de s'y retrouver sur un format papier.  Ce document est le
+programme littéraire: une exposition structurée du programme, qui contient à
+la fois tout le programme et les explications de chaque morceau.
 
-An unexpected benefit of WEB is a better separation of concerns.  Although Knuth
-does not use the term, each part of a program can be described in its own
-section, thus each section can focus on one concern.  He gives the example of
-separating error recovery from a simple data structure update routine.
+Il y a deux différences majeures entre un programme littéraire et un programme
+agrémenté de commentaires classiques.  Dans un programme classique, la structure
+du code est imposée par le langage de programmation, ainsi que l'ordre
+d'apparition des fonctions ou des variables.  Lire le code pour le comprendre
+demande de suivre les appels, et de savoir distinguer les parties essentielles à
+la fonctionnalité des détails annexes (comme le traitement d'erreurs, ou de cas
+particuliers rares).  Dans le programme littéraire, l'ordre est imposé par le
+discours, l'explication du programme.  La structure est donc complètement
+renversée: l'explication domine, et le programme est secondaire; il découle de
+l'explication, et n'est pas nécessaire à la compréhension du programme.
 
-#+BEGIN_QUOTE
-While writing the program for [error recovery], a programmer subconsciously
-tries to get by with the fewest possible lines of code, since the program for
-[updating the structure] is quite short.  If an extensive error recovery is
-actually programmed, the subroutine will appear to have error-messages printing
-as its main purpose.  But the programmer knows that the error is really an
-exceptional case that arises only rarely; therefore a lengthy error recovery
-doesn't look right, and most programmers will minimize it [...] in order to make
-the subroutine's appearance match its intended behavior.  [Programming] with
-WEB, the purpose of =update= can be be shown quite clearly, and the possibility
-of error recovery can be reduce to a mere mention when =update= is defined.
-When another section [related to error recovery] is subsequently written, the
-whole point of that section is to do the best error recovery, and it becomes
-quite natural to write a better program.
-#+END_QUOTE
+Mais le programme littéraire, par le mécanisme des sections, permet également de
+recomposer les éléments du programme.  Les variables peuvent être définies à
+plusieurs endroits du document.  Les traitements des erreurs communes à plusieurs
+fonctions peuvent être relocalisés et décrits dans une même annexe.  Seuls les
+langages de programmation qui ont des macros suffisamment flexibles peuvent
+permettre cette recomposition du code.  Un programme littéraire vient ajouter
+cette fonctionnalité au dessus de n'importe quel langage.
 
-Knuth notes that the target programming language can impact the writing of WEB
-programs.  Having to declare variables at the start of a program leads to
-appending to the same "Local variables" program section.
+#+ATTR_HTML: :style margin-top:-3rem
+#+BEGIN_aside
+WEB est définit pour le langage Pascal.  Mais d'autres implémentations de la
+programmation littéraire peuvent s'appliquer à tous les langages.  Noweb et Org
+mode sont deux exemples.
+#+END_aside
 
-Taking the time to document the code as you write it is not free, but is
-beneficial in the long run.
+La programmation littéraire permet de séparer les préoccupations.  Knuth
+n'utilise pas le terme, mais donne un exemple générique d'une procédure ~update~
+qui met à jour une structure de données:
+
+#+BEGIN_EXAMPLE
+procedure update;
+begin if (input data is invalid) then
+  (Issue an error message and try to recover);
+(Update the data structure);
+end.
+#+END_EXAMPLE
+
+Dans un programme classique, le code pour traiter l'erreur et le code pour
+mettre à jour la structure sont tous deux placés dans la procédure.  Or, si le
+code de la mise à jour est trivial (une ou deux lignes), et que le traitement de
+l'erreur ne l'est pas (10-15 lignes), il y a un déséquilibre.  Traiter le cas
+particulier prend une place disproportionnée par rapport à la fonctionnalité
+essentielle de la procédure.  Knuth pense qu'un programmeur, /inconsciemment/,
+tente de minimiser le code du traitement d'erreur pour rétablir une proportion
+en accord avec l'importance de chaque morceau de code.  En conséquence, le
+traitement de l'erreur sera peut-être incomplet.
+
+Mais dans un programme littéraire, le code du traitement de l'erreur n'est que
+mentionné dans la procédure.  Les détails apparaîtront plus loin, dans une
+section dédiée, où le programmeur a tout le loisir d'écrire le traitement
+d'erreur le plus exhaustif sans entraîner un quelconque déséquilibre.
+
+Il faut certainement fournir plus d'efforts pour écrire un programme littéraire.
+Là où un programme classique peut se contenter du code et de quelques
+commentaires, un programme littéraire encourage de documenter le raisonnement
+derrière le code, ce qui demande de clarifier toutes les décisions faites par
+le programmeur.  Knuth nous rappelle que ce n'est pas forcément un désavantage
+de la méthode:
 
 #+BEGIN_QUOTE
 I had known for a long time that the programs I construct for publication in a
@@ -1755,21 +1821,21 @@ mode" (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
 less debugging time.
 #+END_QUOTE
 
-#+BEGIN_QUOTE
-WEB may be only for the subset of computer scientists who like to write and to
-explain what they are doing.
-#+END_QUOTE
+-----
 
-Noweb is a language-agnostic syntax and implementation of WEB, which is used in
-Org-mode.
+La programmation littéraire change les priorités du programmeur.  Dans un
+programme classique, on construit une suite d'instructions valides pour la
+machine d'abord, et un programme compréhensible par autrui en second lieu.  Dans
+un programme littéraire, la priorité est de communiquer un raisonnement à
+l'humain, et dans un second temps produire un programme pour la machine.
 
-**** Mechanisms for extension
-The idea of documenting as you program is important, as is the focus on writing
-"what the human meant to do".
-
-The mechanisms of including and referencing code snippets allows one to
-structure the program as they see fit.  Especially, it allows to separate
-concerns through quantification.
+WEB est le langage proposé par Knuth qui permet de recomposer les programmes
+Pascal selon le sens "psychologiquement correct"; le sens de l'explication
+naturel d'un article ou livre technique.  WEB permet de définir du code
+partiellement, qui contient des références vers les parties manquantes.  Le
+"code source" mêle prose (en TeX) et code (en Pascal), et deux compilateurs
+traversent la source pour produire soit un document imprimable pour le lecteur,
+soit un programme exécutable par la machine.
 
 *** STABLE Hyper/J
 La programmation par aspects a pour but la séparation des composants et des

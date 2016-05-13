@@ -2683,6 +2683,25 @@ I can change the code to use ~max-width~ instead of ~width~, but the most
 important change is to not use imagemagick for SVGs, which can be done by
 looking up the image-type before hand with [[help:image-type][image-type]].
 
+** [2016-05-13 ven.]
+*** Thematic resonance
+In the mechanisms review of the state of the art, it would be great if color in
+diagrams always had the same meaning.  Blue for concerns, for instance.  That
+way we can see at a glance how the mechanisms differ.
+
+*** Modern compiler construction
+[[https://channel9.msdn.com/Blogs/Seth-Juarez/Anders-Hejlsberg-on-Modern-Compiler-Construction][Good talk]] by Hejlsberg on how modern compilers must interact with IDE first.
+Compilers from the dragon book make optimistic assumptions about the code.  It
+is basically syntactically correct, and there are no types errors.
+
+But if programmers want accurate code completion and quick error feedback, the
+compiler should not waste its work every time a character is changed in the
+source.  Lexing, parsing, type checking is costly.  When a token changes, only
+recompute what is needed, and reuse what did not change.
+
+The C# and TypeScript approach is to provide a language server that can interact
+with any IDE.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
