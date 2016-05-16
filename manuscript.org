@@ -1,4 +1,5 @@
-# -*- org-confirm-babel-evaluate: nil; org-babel-use-quick-and-dirty-noweb-expansion: t; org-image-actual-width: 300 -*-
+# -*- org-confirm-babel-evaluate: nil;
+# org-babel-use-quick-and-dirty-noweb-expansion: t; org-image-actual-width: 300; # ispell-local-dictionary: "french" -*-
 #+STARTUP: nologdone
 #+TITLE: Mécanismes de langages pour étendre des interpréteurs
 #+AUTHOR: fmdkdd
@@ -28,7 +29,7 @@
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
      - [[#translate-self][TRANSLATE Self]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
+       - [[#mechanisms-for-extension-1][Mechanisms for extension]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
      - [[#translate-reflection][TRANSLATE Reflection]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
@@ -41,15 +42,15 @@
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
    - [[#tisser-les-facettes-dun-artefact-dinnombrable-dimensions][Tisser les facettes d'un artefact d'innombrable dimensions]]
      - [[#translate-la-programmation-littéraire][TRANSLATE La programmation littéraire]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
+       - [[#mechanisms-for-extension-2][Mechanisms for extension]]
      - [[#stable-hyperj][STABLE Hyper/J]]
-     - [[#bare-information-transparency][BARE Information transparency]]
+     - [[#stable-linformation-transparente][STABLE L'information transparente]]
    - [[#bare-limiter-les-effets-de-bord-la-programmation-fonctionnelle][BARE Limiter les effets de bord: La programmation fonctionnelle]]
    - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source][La modularité du programme n'est pas la modularité du code source]]
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
      - [[#stable-la-théorie-de-naur-derrière-le-programme][STABLE La théorie de Naur derrière le programme]]
-       - [[#conclusions][Conclusions]]
+       - [[#conclusions-1][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
@@ -65,13 +66,13 @@
      - [[#bare-domain-specific-languages][BARE Domain-specific languages]]
      - [[#bare-scripting-languages][BARE Scripting languages]]
      - [[#translate-emacs][TRANSLATE Emacs]]
-        - [[#mechanisms-for-extension][Mechanisms for extension]]
+        - [[#mechanisms-for-extension-3][Mechanisms for extension]]
      - [[#translate-eclipse-and-other-ides][TRANSLATE Eclipse and other IDEs]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
+       - [[#mechanisms-for-extension-4][Mechanisms for extension]]
      - [[#bare-web-browsers][BARE Web browsers]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
+       - [[#mechanisms-for-extension-5][Mechanisms for extension]]
      - [[#translate-lua][TRANSLATE Lua]]
-        - [[#mechanisms-for-extension][Mechanisms for extension]]
+        - [[#mechanisms-for-extension-6][Mechanisms for extension]]
  - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
  - [[#unstable-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNSTABLE Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#translate-construire-un-interpréteur-extensible][TRANSLATE Construire un interpréteur extensible]]
@@ -1902,23 +1903,28 @@ des hypercoupes, et précise leur composition avant de les passer au compilateur
 qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 /superimposition/.
 
-*** BARE Information transparency
-[[cite:Gri-01][Gri-01]]
+*** STABLE L'information transparente
+Les mécanismes de décomposition sont insuffisants pour anticiper les changements
+d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
+nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
+techniques demande d'adopter un nouveau paradigme, et de nouveaux outils.  Que
+ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
+partie du code source et suivre la discipline prescrite afin de bénéficier de
+ses vertus.  Mais le plus grand risque, au long terme, c'est d'adopter de
+nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
+langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
+pourraient tomber en désuétude faute d'engouement.  L'/information transparente/
+[[cite:Gri-01][Gri-01]] est une alternative pragmatique qui s'applique à n'importe quel langage,
+en utilisant des outils standards.
 
-Tools for capturing the similarity of code across modules.  Tangled code should
-be similar, according to the principle of consistency.  Hence, capturing similar
-code should help gather and organize concerns.  E.g., changing the behavior of
-the parsing of a =while= statement by grepping for ‘while' in the source.
+La motivation de l'auteur est de mieux appréhender des changements de logiciels
+qui dépassent la décomposition modulaire offerte par les langage de
+programmation classiques.  Une décomposition modulaire adéquate doit minimiser
+ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
+convenir à tous les axes d'évolution.
 
-Principle of consistency:
-
-#+BEGIN_QUOTE
-Things that look similar should /be/ similar; things that /are/ different should
-look different.
-#+END_QUOTE
-[[cite:Mac-87][Mac-87]]
-
-First principle of information transparency:
+Le principe de l'information transparente est d'exploiter les similarités du
+code, et en particulier les similarités /cohérentes/:
 
 #+BEGIN_QUOTE
 Code elements likely to be changed together as part of a complete, consistent
@@ -1926,25 +1932,88 @@ change should look similar, and code elements unlikely to be changed together
 should look different.
 #+END_QUOTE
 
-If a code base obeys this principle, it can be easily refactored using standard
-tools like grep.
+L'auteur donne l'exemple d'un outil de planification qui visait des programmes
+écrits en C et qu'il a fallu adapter pour des programmes écrits en Ada.  L'outil
+construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
+de l'arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
+faut capturer les boucles.  En C, il faut par exemple capturer ~while~.  En Ada,
+la construction est ~loop~.  Puisque le code de l'outil est /cohérent/, les
+variables et les fonctions qui manipulent le ~while~ de C s'appellent ~WHILE~,
+ou ~WhileStmt~.  Du coup, il suffit de faire une simple recherche sur tous les
+fichiers du projet, avec ~grep~, pour trouver tous les endroits qu'il faudra
+adapter pour les programmes Ada.
 
-A second principle promotes using variable names to indicate implementation
-choices.  Hungarian notation is given as an example.
+Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
+logiciels qui ne traitent que de l'ASCII.  En Unicode, un octet ne correspond
+pas nécessairement à un caractère, contrairement à l'ASCII. Pour compter le
+nombre de caractères d'une chaîne en ASCII, il suffit de compter les octets.
+Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
+deux cas d'utilisation: est-ce que ce ~int~ compte les caractères, ou les
+octets?  Le type de la variable ne suffit pas pour donner cette information.  En
+revanche, les programmeurs du logiciel discernent les deux cas à travers les
+noms de variable: une variable préfixée par ~cch~ contient un nombre de
+caractères, et un préfixe ~cb~ indique un nombre d'octets.  Puisque cette
+nomenclature est respectée par tout le projet, elle peut être utilisée pour
+distinguer les deux cas d'usage, et faciliter le passage à Unicode.
+
+#+BEGIN_aside
+Une forme de notation hongroise, où le type /logique/ de la variable est indiqué
+plutôt que le type utilisé par le compilateur.
+#+END_aside
+
+Ce principe ne s'applique pas seulement au code.  Dans les commentaires de
+programmes, il est courant de de trouver les mots ~TODO~, ~FIXME~ ou ~REFACTOR~
+pour indiquer un problème que l'auteur, dans le feu de l'action, note pour une
+correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s'appliquent,
+ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
+Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
+en faisant une simple recherche de texte.  L'environnement de développement
+Eclipse [??] affiche une liste de toutes les tâches du projet, construite en
+glanant ces mots-clés.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Ref Eclipse
+#+END_aside
+
+L'information transparente permet de recréer de la localité grâce à la
+similarité des morceaux de code.  Tous les morceaux affectés par le même
+changement sont localisés par leur forme: que ce soit l'emploi de variables de
+même nom, ou ayant un préfixe commun, ou la présence d'un mot-clé, ou même une
+similarité dans l'arbre de syntaxe:
 
 #+BEGIN_QUOTE
-The unmodularized code elements relating to a changeable design decision should
-contain recognizable tags uniquely identifying the design decision.
+When the code relating to a particular change is not localized to a module, an
+information-transparent module design allows a programmer to use available
+software tools to economically identify the related code, easing the
+change. That is, the “signature” of the changing design decision can be used to
+create locality out of similarity, providing a module view of the code that
+crosscuts its explicit textual, procedural, module, and file structures.  This
+signature is one or more shared characteristics of the code to be changed, such
+as the use of particular variables, data structures, language features, or
+system resources.
 #+END_QUOTE
 
-Locality can be managed by tools.  They exhibit tools a bit more powerful than
-grep, with knowledge of the target language AST, or matching on typos.
+L'avantage de cette approche c'est qu'elle peut s'appliquer à n'importe quel
+langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
+sur des conventions et des outils standards.  Elle demande moins de changements
+structurels, ou en tout cas des changements qui n'affectent généralement pas la
+sémantique du code, ce qui la rend plus économique à adopter qu'un nouveau
+paradigme.
 
-#+BEGIN_QUOTE
-Both tools [Aspect Browser and Seesoft] embody the concept that, by leveraging
-the human visual system, identifiable /symbols/ are a viable alternative to
-/locality/ as a way of managing changes to software.
-#+END_QUOTE
+En contrepartie, les conventions sont fragiles.  En utilisant une notation
+hongroise pour guider l'adaptation d'Unicode, il n'y aucune garantie
+d'exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
+caractères et s'appellent simplement ~i~.  Ou pire, peut-être qu'une variable
+préfixée ~cch~ est en réalité utilisée pour compter des octets!  L'information
+transparente facilite la localisation des similarités, mais n'offre aucune
+garantie, juste un compromis pragmatique.
+
+# Not sure that any tool or programming language could guard against "logical"
+# mistakes made by the programmer.  But that is an insight best left to the
+# Synthesis section, along with a well-chosen XKCD strip.
+
+
 
 ** BARE Limiter les effets de bord: La programmation fonctionnelle
 Parallel evolution to OO.
