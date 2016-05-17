@@ -603,6 +603,16 @@ toutes lettres et code machine bas-niveau.
 *** BARE Smalltak
 Design and Implementation [[cite:Ing-78][Ing-78]].
 
+Smalltalk is a language "for children of all ages".  As such, it must be simple
+and powerful.  The classes and instances of Simula provide a good structure
+metaphor.  Message-passing is simple and general enough to describe
+/processing/.
+
+Object-oriented is opposed to function-oriented: ~o + 4~ means send the message
+~+4~ to ~o~.  If ~o~ is the integer 3, we get 7.  If ~o~ is the string ~Three~,
+we get ~Three4~.  The meaning of the expression depends on the objects involved:
+this is dynamic dispatch, a key ingredient to manage complexity.
+
 Opens with a definition of modularity:
 #+BEGIN_QUOTE
 No part of a complex system should depend on the internal details of any other
@@ -626,6 +636,10 @@ instances.
 Smalltalk is designed with modularity, as classes encapsulate object
 descriptions and methods, and can only interact through messages.
 
+Smalltalk is more than a language: it's a system.  A reactive system.  The
+language is only one piece of the computer, designed to be as friendly and
+simple and powerful as possible.
+
 An example of extending the system: adding new objects and a printer for them.
 Similar to the expression problem.
 
@@ -647,7 +661,81 @@ existing system is unmodified, and can continue to provide support.
 #+END_QUOTE
 
 Changing a field inside =Rectangle= does not need to change code external to the
-object, and global recompilation is avoided.
+object, and global recompilation is avoided.  Thus, message-passing allows
+modular recompilation.
+
+Traits are mentionned, but not detailed.  [[cite:CBL+82][CBL+82]] has more on that.
+
+#+BEGIN_QUOTE
+As the class hierarchy grew, we began to notice that the constraint of
+/pure-tree/ class hierarchies was causing code to become contorted, and that
+generalizing the concept of "class hierarchy" to include directed acyclic graphs
+would allow code to be organized more cleanly.
+#+END_QUOTE
+
+SIMULA introduced specialization.  Traits generalize the model:
+
+#+BEGIN_QUOTE
+SIMULA-67 noted that often an object is a /specialization/ of another, being
+able to do the job of the first—and more.  It provided a means of expressing the
+common portion once, in order that the specialized object need only specify the
+way in which it was different from the simpler one.  The specialized object
+/inherited/ the properties of the simpler one.
+
+The Traits model notes that an objet (type) may be a synthesis of several
+component abstractions, being abe to do the job if its components and more.  It
+provides a means of expressing the common, or shared, parts once.
+#+END_QUOTE
+
+Sharing code has many benefits:
+
+#+BEGIN_QUOTE
+clarity of code through factoring or abstraction; uniformity of behavior,
+including correctness; ease of maintenance; reduced swapping.
+#+END_QUOTE
+
+This surprisingly matches my understanding of traits closely.  Traits declare
+method signatures and even state, and provide default implementations.  Compound
+traits fuse multiple traits and can provide alternative implementations.
+Classes can implement multiple traits, to reuse more code than by just subclassing.
+
+The paper has an interesting, very high-level approach to the situation.
+Instances have operations (methods), that have a specification (signature) and
+an implementation (body).  Operations are equivalent if they have the same
+specification.
+
+Instances can be partitioned into equivalence classes based on their operation
+sets.  If they have the same operations, they are the same type.  But there are
+finer differences:
+
+- One type may be strictly larger than another. (extension)
+- Two types may have equivalent operations, but different realizations. (variation)
+- Specialization is extension + variation
+- Type A has operations 1 and 2, B has 2 and 3, and C has 1 and 3. (union)
+
+
+Smalltalk is high-level, so has no explicit memory management.  Though only
+reference counting is done, so cycles can't be detected.  One has to manually
+break cycles in objects that should be collected (the irony is not lost on the
+author).
+
+Speaking of message-passing optimizations for Integers:
+
+#+BEGIN_QUOTE
+It should be obvious that to carry the message sending metaphor down into
+integer arithmetic will result in a slow system on any non message oriented
+computer.  The implementor must cheat, but not get caught.
+#+END_QUOTE
+
+Concluding about Smalltalk:
+
+#+BEGIN_QUOTE
+On the one hand, the act of assembling expressions into statements and then into
+methods is not very different from conventional programming.  On the other hand,
+the experience is totally different, for the objects which populate and traverse
+the code are active entities, and writing expressions feels like organizing
+trained animals rather than pushing boxes around.
+#+END_QUOTE
 
 Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]]; a larger
 perspective is given in [[cite:Mul-15][Mul-15]].
