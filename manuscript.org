@@ -51,10 +51,10 @@ different person then.'
        - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
-   - [[#tisser-les-facettes-dun-artefact-dinnombrable-dimensions][Tisser les facettes d'un artefact d'innombrable dimensions]]
-     - [[#stable-la-programmation-littéraire][STABLE La programmation littéraire]]
-     - [[#stable-hyperj][STABLE Hyper/J]]
-     - [[#stable-linformation-transparente][STABLE L'information transparente]]
+   - [[#stable-tisser-les-facettes-dun-artefact-dinnombrable-dimensions][STABLE Tisser les facettes d'un artefact d'innombrable dimensions]]
+     - [[#la-programmation-littéraire][La programmation littéraire]]
+     - [[#hyperj][Hyper/J]]
+     - [[#linformation-transparente][L'information transparente]]
    - [[#bare-limiter-les-effets-de-bord-la-programmation-fonctionnelle][BARE Limiter les effets de bord: La programmation fonctionnelle]]
    - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source][La modularité du programme n'est pas la modularité du code source]]
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
@@ -1603,7 +1603,7 @@ compréhensible.  Tous ces mécanismes présentent donc des avantages et des
 inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
-** Tisser les facettes d'un artefact d'innombrable dimensions
+** STABLE Tisser les facettes d'un artefact d'innombrable dimensions
 #+BEGIN_epigraph
 WEB may be only for the subset of computer scientists who like to write and to
 explain what they are doing. — [[cite:Knu-84][Knu-84]]
@@ -1634,7 +1634,7 @@ celle-ci.  Les thèmes de ce chapitre sont un autre exemple d'objet aux
 nombreuses dimensions, irréconciliables sous une seule décomposition.
 #+END_aside
 
-*** STABLE La programmation littéraire
+*** La programmation littéraire
 La programmation structurée recommandait une discipline de construction du
 programme du haut vers le bas, par raffinements successifs.  On commence par une
 description haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié le
@@ -1861,7 +1861,7 @@ partiellement, qui contient des références vers les parties manquantes.  Le
 traversent la source pour produire soit un document imprimable pour le lecteur,
 soit un programme exécutable par la machine.
 
-*** STABLE Hyper/J
+*** Hyper/J
 La programmation par aspects a pour but la séparation des composants et des
 aspects.  C'est à dire, la séparation de /certaines/ préoccupations: les
 préoccupations transversales, orthogonales à la fonctionnalité du code.  En
@@ -1993,7 +1993,7 @@ des hypercoupes, et précise leur composition avant de les passer au compilateur
 qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 /superimposition/.
 
-*** STABLE L'information transparente
+*** L'information transparente
 Les mécanismes de décomposition sont insuffisants pour anticiper les changements
 d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
 nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
