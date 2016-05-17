@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-13 ven. 19:05 -->
+<!-- 2016-05-17 mar. 11:38 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -178,7 +178,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgheadline24">2.5.1. <span class="done STABLE">STABLE</span> La programmation littéraire</a></li>
 <li><a href="#orgheadline25">2.5.2. <span class="done STABLE">STABLE</span> Hyper/J</a></li>
-<li><a href="#orgheadline26">2.5.3. <span class="todo BARE">BARE</span> Information transparency</a></li>
+<li><a href="#orgheadline26">2.5.3. <span class="done STABLE">STABLE</span> L&rsquo;information transparente</a></li>
 </ul>
 </li>
 <li><a href="#orgheadline28">2.6. <span class="todo BARE">BARE</span> Limiter les effets de bord: La programmation fonctionnelle</a></li>
@@ -2330,6 +2330,16 @@ rigidly determined order like top-down or bottom-up.
 </p>
 </blockquote>
 
+<div style="margin-top:-7rem" class="side-figure">
+
+<figure>
+<p><img src="img/knuth0.svg" alt="knuth0.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;18&nbsp;:</span> Un programme ressemble davantage à un réseau qu&rsquo;à un arbre.</figcaption>
+</figure>
+
+</div>
+
 <p>
 WEB est le système de programmation littéraire développé par Knuth pour
 permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
@@ -2456,6 +2466,16 @@ permettre au lecteur de s&rsquo;y retrouver sur un format papier.  Ce document e
 programme littéraire: une exposition structurée du programme, qui contient à
 la fois tout le programme et les explications de chaque morceau.
 </p>
+
+<div style="margin-top:-15rem" class="side-figure">
+
+<figure>
+<p><img src="img/knuth1.svg" alt="knuth1.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;19&nbsp;:</span> À partir d&rsquo;un programme littéraire WEB, WEAVE produit un document imprimable, et TANGLE produit l&rsquo;exécutable.</figcaption>
+</figure>
+
+</div>
 
 <p>
 Il y a deux différences majeures entre un programme littéraire et un programme
@@ -2610,7 +2630,7 @@ qui l&rsquo;expression est bien formée.
 <figure>
 <p><img src="img/hyperj1.svg" alt="hyperj1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;18&nbsp;:</span> Les trois traitements communs à chaque nœud de l&rsquo;arbre de syntaxe sont trois préoccupations différentes, éparpillées dans chaque classe.  L&rsquo;unité d&rsquo;abstraction, la classe, ne correspond pas à l&rsquo;unité des traitements.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;20&nbsp;:</span> Les trois traitements communs à chaque nœud de l&rsquo;arbre de syntaxe sont trois préoccupations différentes, éparpillées dans chaque classe.  L&rsquo;unité d&rsquo;abstraction, la classe, ne correspond pas à l&rsquo;unité des traitements.</figcaption>
 </figure>
 
 </div>
@@ -2674,7 +2694,7 @@ permet de faire en Java.
 <figure>
 <p><img src="img/hyperj2.svg" alt="hyperj2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;19&nbsp;:</span> Recomposition en utilisant des hypercoupes pour chaque traitement. Les trois traitements sont isolés par chaque hypercoupe, mais les classes sont communes à toutes.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Recomposition en utilisant des hypercoupes pour chaque traitement. Les trois traitements sont isolés par chaque hypercoupe, mais les classes sont communes à toutes.</figcaption>
 </figure>
 
 </div>
@@ -2737,33 +2757,34 @@ qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 </div>
 
 <div id="outline-container-orgheadline26" class="outline-4">
-<h4 id="orgheadline26"><span class="section-number-4">2.5.3</span> <span class="todo BARE">BARE</span> Information transparency</h4>
+<h4 id="orgheadline26"><span class="section-number-4">2.5.3</span> <span class="done STABLE">STABLE</span> L&rsquo;information transparente</h4>
 <div class="outline-text-4" id="text-2-5-3">
 <p>
-[<a href="#Gri-01">Gri01</a>]</p>
-
-<p>
-Tools for capturing the similarity of code across modules.  Tangled code should
-be similar, according to the principle of consistency.  Hence, capturing similar
-code should help gather and organize concerns.  E.g., changing the behavior of
-the parsing of a <code>while</code> statement by grepping for ‘while&rsquo; in the source.
+Les mécanismes de décomposition sont insuffisants pour anticiper les changements
+d&rsquo;un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
+nouvelles façons d&rsquo;organiser le code source pour y remédier, mais adopter ces
+techniques demande d&rsquo;adopter un nouveau paradigme, et de nouveaux outils.  Que
+ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
+partie du code source et suivre la discipline prescrite afin de bénéficier de
+ses vertus.  Mais le plus grand risque, au long terme, c&rsquo;est d&rsquo;adopter de
+nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
+langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
+pourraient tomber en désuétude faute d&rsquo;engouement.  L&rsquo;<i>information transparente</i>
+[<a href="#Gri-01">Gri01</a>] est une alternative pragmatique qui s&rsquo;applique à n&rsquo;importe quel langage,
+en utilisant des outils standards.
 </p>
 
 <p>
-Principle of consistency:
+La motivation de l&rsquo;auteur est de mieux appréhender des changements de logiciels
+qui dépassent la décomposition modulaire offerte par les langage de
+programmation classiques.  Une décomposition modulaire adéquate doit minimiser
+ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
+convenir à tous les axes d&rsquo;évolution.
 </p>
 
-<blockquote>
 <p>
-Things that look similar should <i>be</i> similar; things that <i>are</i> different should
-look different.
-</p>
-</blockquote>
-<p>
-[<a href="#Mac-87">Mac87</a>]</p>
-
-<p>
-First principle of information transparency:
+Le principe de l&rsquo;information transparente est d&rsquo;exploiter les similarités du
+code, et en particulier les similarités <i>cohérentes</i>:
 </p>
 
 <blockquote>
@@ -2775,34 +2796,108 @@ should look different.
 </blockquote>
 
 <p>
-If a code base obeys this principle, it can be easily refactored using standard
-tools like grep.
+L&rsquo;auteur donne l&rsquo;exemple d&rsquo;un outil de planification qui visait des programmes
+écrits en C et qu&rsquo;il a fallu adapter pour des programmes écrits en Ada.  L&rsquo;outil
+construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
+de l&rsquo;arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
+faut capturer les boucles.  En C, il faut par exemple capturer <code>while</code>.  En Ada,
+la construction est <code>loop</code>.  Puisque le code de l&rsquo;outil est <i>cohérent</i>, les
+variables et les fonctions qui manipulent le <code>while</code> de C s&rsquo;appellent <code>WHILE</code>,
+ou <code>WhileStmt</code>.  Du coup, il suffit de faire une simple recherche sur tous les
+fichiers du projet, avec <code>grep</code>, pour trouver tous les endroits qu&rsquo;il faudra
+adapter pour les programmes Ada.
 </p>
 
 <p>
-A second principle promotes using variable names to indicate implementation
-choices.  Hungarian notation is given as an example.
+Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
+logiciels qui ne traitent que de l&rsquo;ASCII.  En Unicode, un octet ne correspond
+pas nécessairement à un caractère, contrairement à l&rsquo;ASCII. Pour compter le
+nombre de caractères d&rsquo;une chaîne en ASCII, il suffit de compter les octets.
+Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
+deux cas d&rsquo;utilisation: est-ce que ce <code>int</code> compte les caractères, ou les
+octets?  Le type de la variable ne suffit pas pour donner cette information.  En
+revanche, les programmeurs du logiciel discernent les deux cas à travers les
+noms de variable: une variable préfixée par <code>cch</code> contient un nombre de
+caractères, et un préfixe <code>cb</code> indique un nombre d&rsquo;octets.  Puisque cette
+nomenclature est respectée par tout le projet, elle peut être utilisée pour
+distinguer les deux cas d&rsquo;usage, et faciliter le passage à Unicode.
+</p>
+
+<aside style="margin-top:-6rem">
+<p>
+Une forme de notation hongroise, où le type <i>logique</i> de la variable est indiqué
+plutôt que le type utilisé par le compilateur.
+</p>
+</aside>
+
+<p>
+Ce principe ne s&rsquo;applique pas seulement au code.  Dans les commentaires de
+programmes, il est courant de de trouver les mots <code>TODO</code>, <code>FIXME</code> ou <code>REFACTOR</code>
+pour indiquer un problème que l&rsquo;auteur, dans le feu de l&rsquo;action, note pour une
+correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s&rsquo;appliquent,
+ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
+Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
+en faisant une simple recherche de texte.  L&rsquo;environnement de développement
+Eclipse affiche une liste de toutes les tâches du projet, construite en glanant
+ces mots-clés.
+</p>
+
+<aside style="margin-top:-4rem">
+<p>
+TODO: add Eclipse ref
+</p>
+</aside>
+
+<div style="margin-top:2rem" class="side-figure">
+
+<figure>
+<p><img src="img/griswold0.svg" alt="griswold0.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;22&nbsp;:</span> Les similarités d&rsquo;un projet peuvent être récupérées par des outils standard.  Ici, <code>grep</code> permet de créer différentes vues du projet.</figcaption>
+</figure>
+
+</div>
+
+<p>
+L&rsquo;information transparente permet de recréer de la localité grâce à la
+similarité des morceaux de code.  Tous les morceaux affectés par le même
+changement sont localisés par leur forme: que ce soit l&rsquo;emploi de variables de
+même nom, ou ayant un préfixe commun, ou la présence d&rsquo;un mot-clé, ou même une
+similarité dans l&rsquo;arbre de syntaxe:
 </p>
 
 <blockquote>
 <p>
-The unmodularized code elements relating to a changeable design decision should
-contain recognizable tags uniquely identifying the design decision.
+When the code relating to a particular change is not localized to a module, an
+information-transparent module design allows a programmer to use available
+software tools to economically identify the related code, easing the
+change. That is, the “signature” of the changing design decision can be used to
+create locality out of similarity, providing a module view of the code that
+crosscuts its explicit textual, procedural, module, and file structures.  This
+signature is one or more shared characteristics of the code to be changed, such
+as the use of particular variables, data structures, language features, or
+system resources.
 </p>
 </blockquote>
 
 <p>
-Locality can be managed by tools.  They exhibit tools a bit more powerful than
-grep, with knowledge of the target language AST, or matching on typos.
+L&rsquo;avantage de cette approche c&rsquo;est qu&rsquo;elle peut s&rsquo;appliquer à n&rsquo;importe quel
+langage de programmation—même à n&rsquo;importe quel fichier texte—puisqu&rsquo;elle repose
+sur des conventions et des outils standards.  Elle demande moins de changements
+structurels, ou en tout cas des changements qui n&rsquo;affectent généralement pas la
+sémantique du code, ce qui la rend plus économique à adopter qu&rsquo;un nouveau
+paradigme.
 </p>
 
-<blockquote>
 <p>
-Both tools [Aspect Browser and Seesoft] embody the concept that, by leveraging
-the human visual system, identifiable <i>symbols</i> are a viable alternative to
-<i>locality</i> as a way of managing changes to software.
+En contrepartie, les conventions sont fragiles.  En utilisant une notation
+hongroise pour guider l&rsquo;adaptation d&rsquo;Unicode, il n&rsquo;y aucune garantie
+d&rsquo;exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
+caractères et s&rsquo;appellent simplement <code>i</code>.  Ou pire, peut-être qu&rsquo;une variable
+préfixée <code>cch</code> est en réalité utilisée pour compter des octets!  L&rsquo;information
+transparente facilite la localisation des similarités, mais n&rsquo;offre aucune
+garantie, juste un compromis pragmatique.
 </p>
-</blockquote>
 </div>
 </div>
 </div>
@@ -2873,7 +2968,7 @@ concepteur.
 <figure>
 <p><img src="img/parnas-0.svg" alt="parnas-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;20&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;23&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
 </figure>
 
 </div>
@@ -2883,7 +2978,7 @@ concepteur.
 <figure>
 <p><img src="img/flowchart.svg" alt="flowchart.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;24&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
 </figure>
 
 </div>
@@ -2947,7 +3042,7 @@ les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 <figure>
 <p><img src="img/parnas-overhead.svg" alt="parnas-overhead.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;22&nbsp;:</span> L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;25&nbsp;:</span> L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
 </figure>
 
 </div>
@@ -3225,7 +3320,7 @@ partie.
 <figure>
 <p><img src="img/naur-theory.svg" alt="naur-theory.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;23&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l&rsquo;activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;26&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l&rsquo;activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
 </figure>
 
 </div>
@@ -4277,7 +4372,7 @@ de l&rsquo;exécution; cette liste est appelée <i>program counter</i> (PC).
 <figure>
 <p><img src="img/a-facet.svg" alt="a-facet.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;24&nbsp;:</span> Une valeur à deux facettes.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;27&nbsp;:</span> Une valeur à deux facettes.</figcaption>
 </figure>
 
 </div>
@@ -4323,7 +4418,7 @@ les lignes vides.
 Pour réaliser l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l&rsquo;interpréteur Narcissus.
 On peut obtenir l&rsquo;ensemble des changements effectués en extrayant un <i>diff</i> des
-deux versions.  La figure <a href="#orgparagraph1">20</a> donne une vue d&rsquo;ensemble des
+deux versions.  La figure <a href="#orgparagraph1">23</a> donne une vue d&rsquo;ensemble des
 changements.
 </p>
 
@@ -4834,7 +4929,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;26&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -7287,7 +7382,7 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;27&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -8567,7 +8662,7 @@ de changer les définitions internes au module.
 <figure>
 <p><img src="img/dls6.svg" alt="dls6.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;33&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
 </figure>
 
 </div>
@@ -8780,7 +8875,7 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d&rsquo;utili
 <figure>
 <p><img src="img/dls9.svg" alt="dls9.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l&rsquo;objet de liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;39&nbsp;:</span> L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l&rsquo;objet de liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.</figcaption>
 </figure>
 
 </div>
@@ -8991,7 +9086,7 @@ ainsi:
 <figure>
 <p><img src="img/dls12.svg" alt="dls12.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;39&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
 </figure>
 
 </div>
@@ -9479,7 +9574,7 @@ ce motif d&rsquo;extension:
 <figure>
 <p><img src="img/dls13.svg" alt="dls13.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;40&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
 </figure>
 
 </div>
@@ -9720,7 +9815,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;41&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;44&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 </figure>
 
@@ -10175,7 +10270,7 @@ supplémentaires, mais chaque contrainte exclut également des possibilités.
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
 </figure>
 
 </div>
@@ -10282,7 +10377,7 @@ précis du flot d&rsquo;exécution.
 <figure>
 <p><img src="img/dls15.svg" alt="dls15.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;46&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
 </figure>
 
 </div>
@@ -11490,20 +11585,6 @@ Benjamin&nbsp;S. Lerner, Herman Venter, and Dan Grossman.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Mac-87">Mac87</a>]
-</td>
-<td class="bibtexitem">
-Bruce&nbsp;J. MacLennan.
- <em>Principles of programming languages - design, evaluation, and
-  implementation</em>.
- Holt, Rinehart and Winston, 1987.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="McC-60">McC60</a>]
 </td>
 <td class="bibtexitem">
@@ -12299,7 +12380,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-13 ven. 19:05 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-17 mar. 11:38 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
