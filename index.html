@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-17 mar. 18:36 -->
+<!-- 2016-05-18 mer. 16:02 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -4545,7 +4545,7 @@ les lignes vides.
 Pour réaliser l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l&rsquo;interpréteur Narcissus.
 On peut obtenir l&rsquo;ensemble des changements effectués en extrayant un <i>diff</i> des
-deux versions.  La figure <a href="#orgparagraph1">23</a> donne une vue d&rsquo;ensemble des
+deux versions.  La figure <a href="#orgparagraph1">29</a> donne une vue d&rsquo;ensemble des
 changements.
 </p>
 
@@ -4556,9 +4556,12 @@ Le <i>diff</i> est extrait des HEAD de <a href="https://github.com/taustin/narci
 </p>
 </aside>
 
-<p>
-<a href="img/narcissus-diff.svg">narcissus diff</a>
+
+<figure id="orgparagraph1">
+<p><img src="img/narcissus-diff.svg" alt="narcissus-diff.svg">
 </p>
+<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Le diff de &laquo;&nbsp;jsexec&nbsp;&raquo; y est représenté intégralement, coupés en colonnes de même taille. Chaque ligne est colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
+</figure>
 
 <p>
 On constate immédiatement que les changements effectués par l&rsquo;instrumentation
@@ -5056,7 +5059,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -7509,7 +7512,7 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;31&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -8789,7 +8792,7 @@ de changer les définitions internes au module.
 <figure>
 <p><img src="img/dls6.svg" alt="dls6.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;37&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par en bas, et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
 </figure>
 
 </div>
@@ -9002,7 +9005,7 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d&rsquo;utili
 <figure>
 <p><img src="img/dls9.svg" alt="dls9.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;39&nbsp;:</span> L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l&rsquo;objet de liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;40&nbsp;:</span> L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que les deux sont distincts: <code>o</code> pointe vers l&rsquo;objet de liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.</figcaption>
 </figure>
 
 </div>
@@ -9213,7 +9216,7 @@ ainsi:
 <figure>
 <p><img src="img/dls12.svg" alt="dls12.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
 </figure>
 
 </div>
@@ -9701,7 +9704,7 @@ ce motif d&rsquo;extension:
 <figure>
 <p><img src="img/dls13.svg" alt="dls13.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;44&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
 </figure>
 
 </div>
@@ -9942,7 +9945,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;44&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 </figure>
 
@@ -10397,7 +10400,7 @@ supplémentaires, mais chaque contrainte exclut également des possibilités.
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;46&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
 </figure>
 
 </div>
@@ -10504,7 +10507,7 @@ précis du flot d&rsquo;exécution.
 <figure>
 <p><img src="img/dls15.svg" alt="dls15.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;46&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;47&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
 </figure>
 
 </div>
@@ -12521,7 +12524,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-17 mar. 18:36 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-18 mer. 16:02 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
