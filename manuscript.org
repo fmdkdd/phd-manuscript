@@ -55,7 +55,7 @@ different person then.'
      - [[#la-programmation-littéraire][La programmation littéraire]]
      - [[#la-séplution][La séplution]]
      - [[#linformation-transparente][L'information transparente]]
-   - [[#bare-limiter-les-effets-de-bord-la-programmation-fonctionnelle][BARE Limiter les effets de bord: La programmation fonctionnelle]]
+   - [[#bare-limiter-les-effets-de-bord-la-programmation-fonctionnelle][BARE Limiter les effets de bord: la programmation fonctionnelle]]
    - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source][La modularité du programme n'est pas la modularité du code source]]
      - [[#stable-la-modularité-selon-parnas][STABLE La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
@@ -149,7 +149,8 @@ different person then.'
      - [[#inconvénients-de-la-manipulation-de-portée-avec-with][Inconvénients de la manipulation de portée avec ~with~]]
  - [[#bare-synthèse][BARE Synthèse]]
    - [[#bare-séparation-des-préoccupations-pourquoi][BARE Séparation des préoccupations: pourquoi?]]
-   - [[#locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][Locality of concerns and locality of execution are irreconciable in the source text]]
+   - [[#bare-locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][BARE Locality of concerns and locality of execution are irreconciable in the source text]]
+   - [[#bare-late-binding-is-the-common-ingredient-to-all-modular-mechanisms][BARE Late binding is the common ingredient to all modular mechanisms]]
  - [[#références][Références]]
 
 * Acknowledgements                                                 :noexport:
@@ -2356,7 +2357,7 @@ garantie, juste un compromis pragmatique.
 # mistakes made by the programmer.  But that is an insight best left to the
 # Synthesis section, along with a well-chosen XKCD strip.
 
-** BARE Limiter les effets de bord: La programmation fonctionnelle
+** BARE Limiter les effets de bord: la programmation fonctionnelle
 Parallel evolution to OO.
 
 Pure functions, immutability, side-step the complications of side-effects
@@ -8721,7 +8722,7 @@ pouvoir les références, ne peuvent pas être instrumentées non plus.
   - Puis il doit être maintenable -> bonne documentation des choix de structure
   - Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?
 
-** Locality of concerns and locality of execution are irreconciable in the source text
+** BARE Locality of concerns and locality of execution are irreconciable in the source text
 Is AOP useful for the instrumentation problem?  First, the initial use case of
 AOP, like open implementation, is tangential concerns: algorithmic complexity,
 choice of data representation, optimizations, etc.  Post-hoc extension is not
