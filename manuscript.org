@@ -608,6 +608,8 @@ and powerful.  The classes and instances of Simula provide a good structure
 metaphor.  Message-passing is simple and general enough to describe
 /processing/.
 
+Also, personal computing.
+
 Object-oriented is opposed to function-oriented: ~o + 4~ means send the message
 ~+4~ to ~o~.  If ~o~ is the integer 3, we get 7.  If ~o~ is the string ~Three~,
 we get ~Three4~.  The meaning of the expression depends on the objects involved:
@@ -737,8 +739,159 @@ the code are active entities, and writing expressions feels like organizing
 trained animals rather than pushing boxes around.
 #+END_QUOTE
 
-Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]]; a larger
-perspective is given in [[cite:Mul-15][Mul-15]].
+Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-93]].
+
+Kay was inspired by Simula, Sketchpad, and his biology major:
+
+#+BEGIN_QUOTE
+For the first I thought of the whole as the entire computer and wondered why
+anyone would want to divide it up into weaker things called data structures and
+procedures.  Why not divide it up into little computers, as time-sharing was
+starting to?  But not in dozens.  Why not thousands of them, each simulating a
+useful structure?
+#+END_QUOTE
+
+He was taken by Douglas Engelbart's vision of "augmenting the human intellect",
+via an interactive tool to explore "thought vectors in concept space".
+
+Seeing a flat panel for the first time, he envisioned the Dynabook.
+
+He saw an object-based system as "a syntax-directed interpreter of messages sent
+to it".
+
+About mounting the Learning Research Group and heading it:
+
+#+BEGIN_QUOTE
+Bill English took me under his wing and helped me start my group as I had always
+been a lone wolf and had no idea how to do it.  One of his suggestions was that
+I should make a budget.  I am afraid that I really did ask Bill, "What's a
+budget?"  I remembered at Utah, in pre-Mansfield Amendment days, Dave Evens
+saying to me as he went off on a trip to ARPA, "We're almost out of money.  Got
+to go get some more."  That seemed about right to me.  They give you some
+money.  You spend it to find out what to do next.  You run out.  They give you
+some more.  And so on.  PARC never quite made it to that idyllic standard, but
+for the first half-decade it came close.
+
+I needed a group because I had finally realized that I did not have all the
+temperaments required to completely finish an idea.  I called it the Learning
+Research Group (LRG) to be as vague as possible about our charter.  I only hired
+people who got starts in their eyes when they heard about the notebook computer
+idea.  I did not like meetings: did not believe brainstorming could substitute
+for cool sustained thought.  When anyone asked what to do, and I did not have a
+strong idea, I would point at the notebook model and say, "Advance that."
+#+END_QUOTE
+
+Quip on the name "Smalltalk":
+
+#+BEGIN_QUOTE
+The name was also a reaction against the "IndoEuropean god theory" where systems
+were named Zeus, Odin, and Thor, and hardly did anything.  I figured that
+"Smalltalk" was so innocuous a label that if it ever did anything nice people
+would be pleasantly surprised.
+#+END_QUOTE
+
+Simula had good structure, but not everything was an object, it broke the
+beauty.
+
+LISP was an inspiration, as Kay sought an essential beauty, a robust principle
+that could help anyone create programs.
+
+But LISP was symbolic.  And according to Piaget and Bruner, children start
+dealing with symbols at a later stage.  So Kay wanted a system where one could
+manipulate icons.
+
+The principles of Smalltalk:
+
+1. Everything is an /object/
+2. Objects communicate by sending and receiving /messages/ (in terms of objects)
+3. Objects have their own /memory/ (in terms of objects)
+
+Kay feels OOP is more than just ADT:
+
+#+BEGIN_QUOTE
+Even the way we taught children reflected this way of looking at objects.  Not
+too surprisingly, this approach has considerable bearing on the ease of
+programming, the size of the code needed, the integrity of the design, and so
+on.  It is unfortunate that much of what is called "object-oriented programming"
+today is simply old style programming with fancier constructs.  Many programs
+are loaded with "assignment-style" operations now done by more expensive
+attached procedures.
+#+END_QUOTE
+
+OOP techniques are no tied to any language:
+
+#+BEGIN_QUOTE
+Four techniques used together—persistent state, polymorphism, instantiation, and
+methods-as-goals for the object—accoun for much of the power.  None of these
+requires an "object-oriented language" to be employed—ALGOL 68 can almost be
+turned to this style—an OOPL merely focuses the designer's mind in a particular,
+fruitful direction.  However, doing encapsulation right is a commitment not just
+to abstraction of state, but to eliminate state-oriented metaphors from
+programming.
+#+END_QUOTE
+
+The key of OOP though is to avoid explicitly dealing with state.  Assignment
+statements are low-level.  OOP is late-binding.
+
+Kay was surprised by metaclasses, which for him were really just a way to
+simplify instance initialization.  Instead, they gelled into a holly concept:
+
+#+BEGIN_QUOTE
+My guess is that Smalltalk had moved into the final phase I mentioned at the
+beginning of this story, in which a way of doing things finally gets canonized
+into an inflexible belief structure.
+#+END_QUOTE
+
+Hardware hampers progress in software.  Later-binding is always sought after in
+software, but hardware pulls it down:
+
+#+BEGIN_QUOTE
+One way to think about progress in software is that a lot of it has been about
+finding ways to /late-bind/, then waging campaigns to convince manufacturers to
+build the ideas into hardware.  Early hardware had wired programs and
+parameters; random access memory was a scheme to late-bind them.  Looping and
+indexing used to be done by address modification in storage; index registers
+were a way to late-bind.  Over the years software designers have found ways to
+late-bind the locations of computations—this led to base/bounds registers,
+segment relocation, paging MMUs, migratory processes, and so forth.
+Time-sharing was held back for years because it was "inefficient"—but the
+manufacturers would not put MMUs on the machines; universities had to it
+themselves!  Recursion late-binds parameters to procedures, but it took years to
+get even rudimentary stack mechanisms into CPUs.  Most machines still have no
+support for dynamic allocation and garbage collection, and so forth.  In short,
+most hardware designs today are just re-optimizations of moribund architectures.
+#+END_QUOTE
+
+OOP is late-binding:
+
+#+BEGIN_QUOTE
+OOP can be viewed as a comprehensive technique for late-binding as many things
+as possible: the /mix/ of state and process in a set of behaviors, /where/ they
+are locate, /what/ they are called, /when/ and /why/ they are invoked, /which/
+HW is used, and so on, and more subtle, the strategies used in the OOP scheme
+itself.
+#+END_QUOTE
+
+Metaobjects are late-binding.
+
+Inverse vandalism is hampering the advancement of human intellect:
+
+#+BEGIN_QUOTE
+A twentieth century problem is that technology had become too "easy".  When it
+was hard to do /anything/, whether good or bad, enough time was taken so that
+the result was usually good.  Now we can make things almost trivially,
+especially in software, but most of the designs are trivial as well.  This is
+inverse vandalism: the making of things because you can.  Couple this to even
+less sophisticated buyers and you have generated an exploitation marketplace
+similar to that set up for teenagers.  A counter to this is to generate enormous
+dissatisfaction with one's designs, using the entire history of human art as a
+standard and goad.  Then the trick is to decouple the dissatisfaction from
+self-worth—otherwise it is either too depressing or one stops too soon with
+trivial results.
+#+END_QUOTE
+
+Late-binding in Smalltalk is that, when sending a message, everything after the
+receiver is a token.  It is evaluated by the receiver, not the sender.
 
 **** Mechanisms for extension
 Subclassing, and reflection.  Everything as an object, so message dispatch is
