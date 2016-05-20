@@ -2708,6 +2708,53 @@ recompute what is needed, and reuse what did not change.
 The C# and TypeScript approach is to provide a language server that can interact
 with any IDE.
 
+** [2016-05-20 ven.]
+*** A simple overview
+State of the art right now is more a "context" part.
+
+Then should come the detailed description of the problem.  Begin with a study of
+Narcissus to motivate and ground the thing in a real use-case.  Then generalize
+to give an overview of the approach:
+
+Spec -change-> Spec'
+
+A change adds a variation to the Spec of the program.  If we have a formal spec,
+we can apply this change on it and have a changed spec.  Change is the delta
+between the two specs.
+
+The program is implemented.  We have some code that generates a runtime process
+that behaves according to the spec.
+
+Spec -> Code -> Program -> Spec
+
+The change causes a change in Code.  Interestingly, a small change in Spec can
+have a large impact on Code.
+
+One the goal of the programmer is to make sure the program is correct: acts
+according to the spec.  The programmer writes Code, to create Program.  When a
+change of Spec arises, it's best if the change to Code is self-contained.
+
+The question is then: how to minimize the impact of change?  How to construct
+Code to minimize impact?  What patterns to use?  Do languages make a difference?
+
+Spec changes can be anticipated, or not.  Anticipated Spec changes can be
+factored into Code design.  Unanticipated Spec changes cannot; they might have a
+small or large impact, depending.
+
+We are not tacking just any Program or Spec, but interpreters.  And a specific
+kind of change: adding analyses.  How is that more specific?
+
+Some solutions will be specific to that use case.  Some will apply to any
+program.  Lessons learned will be valuable for all.
+
+/Then/ should come a review of the related work.  When the problem is defined.
+That cuts the State of the Art chapter (needed), and makes more sense.
+
+I don't know whether I would merge the "Variations" with Related work though.
+On the one hand, it grounds the discussion of the related work and provides
+concrete arguments to judge a mechanism.  On the other hand, it blurs the line
+between contributions and related works.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.

@@ -32,7 +32,7 @@ different person then.'
    - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
- - [[#État-de-lart][État de l'art]]
+ - [[#contexte][Contexte]]
    - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
    - [[#modéliser-le-monde-la-programmation-objet][Modéliser le monde: la programmation objet]]
@@ -62,6 +62,10 @@ different person then.'
      - [[#stable-la-théorie-de-naur-derrière-le-programme][STABLE La théorie de Naur derrière le programme]]
        - [[#conclusions][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
+ - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
+   - [[#unstable-motivation-extension-ad-hoc-de-narcissus][UNSTABLE Motivation: extension ad-hoc de Narcissus]]
+   - [[#bare-formalisation][BARE Formalisation]]
+ - [[#travaux-connexes][Travaux connexes]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
      - [[#bare-dynamic-binding][BARE Dynamic binding]]
@@ -83,7 +87,6 @@ different person then.'
        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#translate-lua][TRANSLATE Lua]]
         - [[#mechanisms-for-extension][Mechanisms for extension]]
- - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
  - [[#unstable-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNSTABLE Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#translate-construire-un-interpréteur-extensible][TRANSLATE Construire un interpréteur extensible]]
      - [[#finding-a-core-example][Finding a core example]]
@@ -191,7 +194,7 @@ languages and the dynamic processes they describe.  Also, for inspiration.
 
 ** Survol
 
-* État de l'art
+* Contexte
 Une chronologie de la modularité pour construire et faire évoluer des logiciels,
 centrée sur les langages de programmations.
 
@@ -2904,6 +2907,292 @@ development that seem to break information hiding, and even oppose modular
 reasoning, have their virtues.  Those can be thought of using nonclassical
 logics.
 
+* Le problème: étendre des interpréteurs
+** UNSTABLE Motivation: extension ad-hoc de Narcissus
+Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
+[[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
+utilise l'environnement hôte pour son implémentation (p.ex., l'objet ~String~
+exposé au code client n'est pas réimplémenté par Narcissus, mais est une simple
+façade de l'objet ~String~ hôte).  Narcissus est une implémentation relativement
+légère (environ 6000 lignes de code) du standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet
+de rapidement prototyper des fonctionnalités expérimentales pour le langage.
+
+En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
+analyse d'évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
+d'information qui permet à une valeur d'être étiquetée par une autorité qui a
+des droits d'écriture et de lecture pour cette valeur.  Lorsqu'une valeur
+étiquetée est utilisée dans une expression, son étiquette est propagée au
+résultat de l'expression, ce qui préserve les permissions de l'autorité sur le
+résultat.  Dans l'analyse multi-facettes, chaque valeur étiquetée a deux
+facettes: une facette contient la valeur "privée" à destination de l'autorité,
+une autre facettes contient la valeur "publique" destinée à des observateurs
+tiers non autorisés.  Dans une expression, les facettes sont toutes deux
+évaluées en même temps afin de produire les deux facettes du résultat.  Afin de
+suivre les étiquettes même lors de branchements (des flots /indirects/),
+l'évaluation multi-facettes maintient une liste des embranchements suivis lors
+de l'exécution; cette liste est appelée /program counter/ (PC).
+
+#+ATTR_HTML: :style margin-top:-12rem
+#+BEGIN_side-figure
+#+CAPTION: Une valeur à deux facettes.
+[[file:img/a-facet.svg]]
+#+END_side-figure
+
+Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
+fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
+facettes avec une valeur privée ~true~ et une valeur publique ~false~ (qu'on
+écrit ~true:false~), alors le premier ~if~ sera exécuté deux fois: une fois pour
+chaque facette de la condition.  Après le second ~if~, la fonction retourne la
+valeur ~true:false~.  Un observateur non autorisé n'a accès qu'à la valeur
+publique du résultat, et n'est donc pas capable d'inférer la valeur privée de
+~x~, même à travers un flot indirect d'information.
+
+#+ATTR_HTML: :style margin-top:-13rem
+#+BEGIN_side-figure
+[[file:img/fenton-example.svg]]
+#+END_side-figure
+
+Pour donner une idée de l'échelle du projet, Narcissus fait 6000 lignes de code,
+et les deux plus gros fichiers sont le parseur (1600 lignes) et le fichier
+principal de interpréteur, "jsexec" (1300 lignes).  Ce fichier principal
+contient la logique pour interpréter des arbres de syntaxe abstraits, et pour
+mettre en place l'environnement d'exécution des programmes clients.  Les
+changements effectués pour l'implémentation de l'évaluation multi-facettes sont
+restreints à ce fichier principal; 640 lignes sont affectées, soit la moitié.
+
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+On compte les lignes de code physiques, commentaires inclus mais sans compter
+les lignes vides.
+#+END_aside
+
+Pour réaliser l'instrumentation de Narcissus pour l'évaluation multi-facettes,
+les auteurs ont modifié directement le code source de l'interpréteur Narcissus.
+On peut obtenir l'ensemble des changements effectués en extrayant un /diff/ des
+deux versions.  La figure [[visual-narcissus-diff]] donne une vue d'ensemble des
+changements.
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]] et
+[[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
+#+END_aside
+
+#+NAME: visual-narcissus-diff
+#+CAPTION: Visualisation des modifications apportées par l'instrumentation de
+#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Le diff de "jsexec" y
+#+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
+#+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
+#+CAPTION: partie.  Les lignes grises ne sont pas affectées par
+#+CAPTION: l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
+[[file:img/narcissus-diff.svg]]
+
+On constate immédiatement que les changements effectués par l'instrumentation
+touchent de nombreuses parties du code de l'interpréteur, sans être restreints à
+une ou deux régions particulières.  Les changements sont *éparpillés* dans le
+code.  De plus, les changements de même nature—appartenant à la même
+catégorie—ne sont pas regroupés.  Résultat, il devient difficile de comprendre
+les effets de l'instrumentation à l'œil nu, ou de s'assurer de sa justesse par
+rapport à une spécification formelle.  Il devient difficile également, sans
+connaissances avancées de Narcissus et de l'évaluation multi-facettes, de savoir
+si une ligne de code de l'interpréteur instrumenté concerne l'interprétation
+décrite par le standard ECMAScript, ou si elle concerne l'évaluation
+multi-facettes.  Le code de l'interpréteur instrumenté ne comporte aucune
+information qui permet de les distinguer.
+
+Autre point important: l'instrumentation *duplique tout le code* de
+l'interpréteur.  C'est une solution simple pour créer un interpréteur qui
+supporte l'évaluation multi-facettes.  En revanche, la duplication de code a un
+impact important sur la maintenance à long terme: plus de double du code doit
+être maintenu.  Les changements requis dans le code source pour corriger un bug
+dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
+répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
+lorsque /plusieurs/ instrumentations sont envisagées.
+
+En observant le diff de plus près, on peut distinguer quatre catégories de
+changements: les imports/exports, l'ajout du paramètre /program counter/,
+séparer l'évaluation des valeurs à facettes, et les ajouts à l'objet ~global~.
+
+De nouvelles définitions ont besoin d'être importées dans le module de
+l'interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
+ajouts qui sont localisés en début et en fin de fichier respectivement.  Voici
+comment ils se présentent dans le code:
+
+#+BEGIN_SRC diff
++ var FacetedValue = Zaphod.facets.FacetedValue;
++ var ProgramCounter = Zaphod.facets.ProgramCounter;
+...
+
+-      test: test
++      test: test,
++      getPC: getGC
+#+END_SRC
+
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_aside
+Le symbole ~-~ marque une ligne supprimée de l'interpréteur; le symbole ~+~
+marque une ligne ajoutée par l'instrumentation.  L'absence de marque indique une
+ligne commune aux deux versions.
+#+END_aside
+
+Les changements effectués pour accommoder le /program counter/ utilisé par
+l'analyse.  D'abord, le constructeur de l'objet ~ExecutionContext~ est étendu
+pour accepter un argument supplémentaire: la valeur courante du /program
+counter/, ~pc~.  Voici un extrait du diff qui illustre ce
+changement:
+
+#+BEGIN_SRC diff
+- function ExecutionContext(type, version) {
++ function ExecutionContext(type, pc, version {
++   this.pc = pc;
+#+END_SRC
+
+Dans Narcissus, une instance de l'objet ~ExecutionContext~ est créée lorsque le
+contrôle est transféré à du code client exécutable: lors de l'entrée dans une
+fonction, lors d'un appel à ~eval~, ou lors de l'exécution d'un programme
+entier.  L'objet ~ExecutionContext~ contient les variables importantes pour
+l'exécution du code; en particulier l'environnement lexical utilisé pour
+résoudre les noms de variables du code exécuté par ce contexte.  L'objet
+~ExecutionContext~ est une réification du concept éponyme de la spécification
+ECMAScript.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+Voir la section 10.3 de la spécification.
+#+END_aside
+
+Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
+appels doivent être modifiés en conséquence pour fournir une valeur correcte
+pour le paramètre /program counter/.  Il y a plus de 80 instances de ce simple
+changement dans l'instrumentation.  En voici deux exemples:
+
+#+BEGIN_SRC diff
+- x2 = new ExecutionContext(MODULE_CODE);
++ x2 = new ExecutionContext(MODULE_CODE, x.pc);
+
+- getValue(execute(n.children[0], x));
++ getValue(execute(n.children[0], x), pc);
+#+END_SRC
+
+Les changements effectués dans l'exécution de l'arbre de syntaxe abstrait (AST)
+pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
+additionner deux valeurs à facettes devrait produire une nouvelle valeur à
+facettes.  Dans l'implémentation, plutôt que de simplement additionner les deux
+opérandes, l'interpréteur doit maintenant d'abord inspecter l'opérande gauche,
+et si c'est une valeur à facettes, il faudra ajouter la valeur de l'opérande
+droite à chaque facette.  Bien sûr, l'opérande droite peut également être une
+valeur à facettes, et il faut alors séparer l'évaluation à nouveau.
+L'interpréteur Narcissus ne contient aucun code pour gérer l'addition de deux
+valeurs à facettes, donc l'instrumentation doit ajouter la logique nécessaire.
+Pour ce faire, chaque évaluation d'une opération est enrobée dans un appel à la
+fonction ~evaluateEach~ qui teste si une valeur est à facettes, et appelle
+récursivement la fonction d'évaluation sur chaque facette si c'est le cas.  25
+appels à ~evaluateEach~ ont été ainsi ajoutés dans l'instrumentation.  Le code
+suivant donne la forme générale de ces changements:
+
+#+BEGIN_SRC diff
+- var v = getValue(node.a)
++ evaluteEach(getValue(node.a), function(v,x) {
+    ... do something with v ...
++ }
+#+END_SRC
+
+À la première ligne on récupère une valeur d'un nœud de l'AST (p.ex., l'opérande
+gauche d'une assignation, ou la condition d'un ~if~) puis on fait quelque chose
+avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
+fois on /sépare/ l'évaluation en appelant ~evaluateEach~ avec cette valeur comme
+premier argument, et comme second une fonction qui opère sur une valeur simple.
+
+Les changements effectués sur l'environnement d'exécution de code client.  Dans
+un programme JavaScript, l'environnement d'exécution fournit un objet ~global~
+qui contient les définitions de base comme ~Array~, ~Math~, ~String~ et
+~Object~.  Puisque Narcissus est métacirculaire, il réutilise l'objet global de
+son environnement hôte pour construire l'objet global de l'environnement client.
+Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
+~globalBase~ avec les propriétés qui surchargeront celle de l'environnement
+hôte.  Deuxièmement, il crée un objet ~global~ client à partir de l'objet
+~global~ de son environnement hôte, et met toutes les propriétés de ~globalBase~
+dans cet objet ~global~ client.  Troisièmement, il ajoute à cet objet ~global~
+client les versions réfléchies de certains objets de base (~Array~, ~String~,
+~Function~).
+
+L'instrumentation de l'évaluation multi-facettes enrichit l'objet ~global~
+client en ajoutant 50 propriétés à ~globalBase~, comme la suivante:
+
+#+BEGIN_SRC diff
+   var globalBase = {
+   ...
++  isFacetedValue: function(v) {
++    return (v instanceof FacetedValue);
++  },
+#+END_SRC
+
+L'instrumentation change également la propriété ~String~ de ~globalBase~ pour
+suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
+caractères.
+
+Le fait que la plupart des changements appartiennent à une de ces quatre
+catégories indique qu'il y a un potentiel de factorisation.  Si l'on souhaite
+rendre Narcissus extensibles, afin de pouvoir définir l'évaluation
+multi-facettes sans duplication de code, il faut trouver des façons d'exprimer
+les changements de ces quatre catégories.  Mais si nous souhaites exprimer
+d'autres analyses, et étendre d'autres interpréteurs, il faut tenter des trouver
+des mécanismes génériques qui pourront être réemployés pour ces autres cas.
+
+Pour prendre un peu de recul par rapport à l'instrumentation de Narcissus, on
+peut s'intéresser à la définition formelle de l'évaluation multi-facettes.
+Celle-ci est donnée sous forme d'une sémantique opérationnelle d'un langage
+proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d'abord donnée
+sans considérer l'évaluation multi-facettes, et suit une définition usuelle d'un
+lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
+références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
+JavaScript.
+
+Dans un second temps, une sémantique alternative est présentée qui introduit les
+changements nécessaires pour l'évaluation multi-facettes.  Il s'agit d'une copie
+de la première sémantique, avec quelques changements et ajouts.  On y retrouve
+les deux des quatre catégories de changements dégagées du diff.  Le /program
+counter/ accompagne chaque règle d'évaluation, et de nouvelles règles sont
+ajoutées pour séparer l'évaluation de valeurs à facette en deux parties.
+
+Les règles de la sémantique instrumentées tiennent sur une page; un
+interpréteur pour cette sémantique est donc considérablement plus petit qu'un
+interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
+des mécanismes d'extensibilité.
+
+** BARE Formalisation
+Spec -change-> Spec'
+
+A change adds a variation to the Spec of the program.  If we have a formal spec,
+we can apply this change on it and have a changed spec.  Change is the delta
+between the two specs.
+
+The program is implemented.  We have some code that generates a runtime process
+that behaves according to the spec.
+
+Spec -> Code -> Program -> Spec
+
+The change causes a change in Code.  Interestingly, a small change in Spec can
+have a large impact on Code.
+
+One the goal of the programmer is to make sure the program is correct: acts
+according to the spec.  The programmer writes Code, to create Program.  When a
+change of Spec arises, it's best if the change to Code is self-contained.
+
+The question is then: how to minimize the impact of change?  How to construct
+Code to minimize impact?  What patterns to use?  Do languages make a difference?
+
+Spec changes can be anticipated, or not.  Anticipated Spec changes can be
+factored into Code design.  Unanticipated Spec changes cannot; they might have a
+small or large impact, depending.
+
+We are not tacking just any Program or Spec, but interpreters.  And a specific
+kind of change: adding analyses.  How is that more specific?
+
+Some solutions will be specific to that use case.  Some will apply to any
+program.  Lessons learned will be valuable for all.
+
+* Travaux connexes
 ** Les mécanismes de recomposition du programme
 *** BARE Le problème de l'expression
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
@@ -3337,258 +3626,6 @@ own way.
 
 To extend Lua, bindings from C can be added, and custom data structure as well.
 Changing the interpreter does not seem possible, even from C.
-
-* UNSTABLE Étude de cas: extension ad-hoc de Narcissus
-Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
-[[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
-utilise l'environnement hôte pour son implémentation (p.ex., l'objet ~String~
-exposé au code client n'est pas réimplémenté par Narcissus, mais est une simple
-façade de l'objet ~String~ hôte).  Narcissus est une implémentation relativement
-légère (environ 6000 lignes de code) du standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet
-de rapidement prototyper des fonctionnalités expérimentales pour le langage.
-
-En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
-analyse d'évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
-d'information qui permet à une valeur d'être étiquetée par une autorité qui a
-des droits d'écriture et de lecture pour cette valeur.  Lorsqu'une valeur
-étiquetée est utilisée dans une expression, son étiquette est propagée au
-résultat de l'expression, ce qui préserve les permissions de l'autorité sur le
-résultat.  Dans l'analyse multi-facettes, chaque valeur étiquetée a deux
-facettes: une facette contient la valeur "privée" à destination de l'autorité,
-une autre facettes contient la valeur "publique" destinée à des observateurs
-tiers non autorisés.  Dans une expression, les facettes sont toutes deux
-évaluées en même temps afin de produire les deux facettes du résultat.  Afin de
-suivre les étiquettes même lors de branchements (des flots /indirects/),
-l'évaluation multi-facettes maintient une liste des embranchements suivis lors
-de l'exécution; cette liste est appelée /program counter/ (PC).
-
-#+ATTR_HTML: :style margin-top:-12rem
-#+BEGIN_side-figure
-#+CAPTION: Une valeur à deux facettes.
-[[file:img/a-facet.svg]]
-#+END_side-figure
-
-Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
-fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
-facettes avec une valeur privée ~true~ et une valeur publique ~false~ (qu'on
-écrit ~true:false~), alors le premier ~if~ sera exécuté deux fois: une fois pour
-chaque facette de la condition.  Après le second ~if~, la fonction retourne la
-valeur ~true:false~.  Un observateur non autorisé n'a accès qu'à la valeur
-publique du résultat, et n'est donc pas capable d'inférer la valeur privée de
-~x~, même à travers un flot indirect d'information.
-
-#+ATTR_HTML: :style margin-top:-13rem
-#+BEGIN_side-figure
-[[file:img/fenton-example.svg]]
-#+END_side-figure
-
-Pour donner une idée de l'échelle du projet, Narcissus fait 6000 lignes de code,
-et les deux plus gros fichiers sont le parseur (1600 lignes) et le fichier
-principal de interpréteur, "jsexec" (1300 lignes).  Ce fichier principal
-contient la logique pour interpréter des arbres de syntaxe abstraits, et pour
-mettre en place l'environnement d'exécution des programmes clients.  Les
-changements effectués pour l'implémentation de l'évaluation multi-facettes sont
-restreints à ce fichier principal; 640 lignes sont affectées, soit la moitié.
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-On compte les lignes de code physiques, commentaires inclus mais sans compter
-les lignes vides.
-#+END_aside
-
-Pour réaliser l'instrumentation de Narcissus pour l'évaluation multi-facettes,
-les auteurs ont modifié directement le code source de l'interpréteur Narcissus.
-On peut obtenir l'ensemble des changements effectués en extrayant un /diff/ des
-deux versions.  La figure [[visual-narcissus-diff]] donne une vue d'ensemble des
-changements.
-
-#+ATTR_HTML: :style margin-top:-5rem
-#+BEGIN_aside
-Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]] et
-[[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
-#+END_aside
-
-#+NAME: visual-narcissus-diff
-#+CAPTION: Visualisation des modifications apportées par l'instrumentation de
-#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Le diff de "jsexec" y
-#+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
-#+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
-#+CAPTION: partie.  Les lignes grises ne sont pas affectées par
-#+CAPTION: l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
-[[file:img/narcissus-diff.svg]]
-
-On constate immédiatement que les changements effectués par l'instrumentation
-touchent de nombreuses parties du code de l'interpréteur, sans être restreints à
-une ou deux régions particulières.  Les changements sont *éparpillés* dans le
-code.  De plus, les changements de même nature—appartenant à la même
-catégorie—ne sont pas regroupés.  Résultat, il devient difficile de comprendre
-les effets de l'instrumentation à l'œil nu, ou de s'assurer de sa justesse par
-rapport à une spécification formelle.  Il devient difficile également, sans
-connaissances avancées de Narcissus et de l'évaluation multi-facettes, de savoir
-si une ligne de code de l'interpréteur instrumenté concerne l'interprétation
-décrite par le standard ECMAScript, ou si elle concerne l'évaluation
-multi-facettes.  Le code de l'interpréteur instrumenté ne comporte aucune
-information qui permet de les distinguer.
-
-Autre point important: l'instrumentation *duplique tout le code* de
-l'interpréteur.  C'est une solution simple pour créer un interpréteur qui
-supporte l'évaluation multi-facettes.  En revanche, la duplication de code a un
-impact important sur la maintenance à long terme: plus de double du code doit
-être maintenu.  Les changements requis dans le code source pour corriger un bug
-dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
-répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
-lorsque /plusieurs/ instrumentations sont envisagées.
-
-En observant le diff de plus près, on peut distinguer quatre catégories de
-changements: les imports/exports, l'ajout du paramètre /program counter/,
-séparer l'évaluation des valeurs à facettes, et les ajouts à l'objet ~global~.
-
-De nouvelles définitions ont besoin d'être importées dans le module de
-l'interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
-ajouts qui sont localisés en début et en fin de fichier respectivement.  Voici
-comment ils se présentent dans le code:
-
-#+BEGIN_SRC diff
-+ var FacetedValue = Zaphod.facets.FacetedValue;
-+ var ProgramCounter = Zaphod.facets.ProgramCounter;
-...
-
--      test: test
-+      test: test,
-+      getPC: getGC
-#+END_SRC
-
-#+ATTR_HTML: :style margin-top:-11rem
-#+BEGIN_aside
-Le symbole ~-~ marque une ligne supprimée de l'interpréteur; le symbole ~+~
-marque une ligne ajoutée par l'instrumentation.  L'absence de marque indique une
-ligne commune aux deux versions.
-#+END_aside
-
-Les changements effectués pour accommoder le /program counter/ utilisé par
-l'analyse.  D'abord, le constructeur de l'objet ~ExecutionContext~ est étendu
-pour accepter un argument supplémentaire: la valeur courante du /program
-counter/, ~pc~.  Voici un extrait du diff qui illustre ce
-changement:
-
-#+BEGIN_SRC diff
-- function ExecutionContext(type, version) {
-+ function ExecutionContext(type, pc, version {
-+   this.pc = pc;
-#+END_SRC
-
-Dans Narcissus, une instance de l'objet ~ExecutionContext~ est créée lorsque le
-contrôle est transféré à du code client exécutable: lors de l'entrée dans une
-fonction, lors d'un appel à ~eval~, ou lors de l'exécution d'un programme
-entier.  L'objet ~ExecutionContext~ contient les variables importantes pour
-l'exécution du code; en particulier l'environnement lexical utilisé pour
-résoudre les noms de variables du code exécuté par ce contexte.  L'objet
-~ExecutionContext~ est une réification du concept éponyme de la spécification
-ECMAScript.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_aside
-Voir la section 10.3 de la spécification.
-#+END_aside
-
-Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
-appels doivent être modifiés en conséquence pour fournir une valeur correcte
-pour le paramètre /program counter/.  Il y a plus de 80 instances de ce simple
-changement dans l'instrumentation.  En voici deux exemples:
-
-#+BEGIN_SRC diff
-- x2 = new ExecutionContext(MODULE_CODE);
-+ x2 = new ExecutionContext(MODULE_CODE, x.pc);
-
-- getValue(execute(n.children[0], x));
-+ getValue(execute(n.children[0], x), pc);
-#+END_SRC
-
-Les changements effectués dans l'exécution de l'arbre de syntaxe abstrait (AST)
-pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
-additionner deux valeurs à facettes devrait produire une nouvelle valeur à
-facettes.  Dans l'implémentation, plutôt que de simplement additionner les deux
-opérandes, l'interpréteur doit maintenant d'abord inspecter l'opérande gauche,
-et si c'est une valeur à facettes, il faudra ajouter la valeur de l'opérande
-droite à chaque facette.  Bien sûr, l'opérande droite peut également être une
-valeur à facettes, et il faut alors séparer l'évaluation à nouveau.
-L'interpréteur Narcissus ne contient aucun code pour gérer l'addition de deux
-valeurs à facettes, donc l'instrumentation doit ajouter la logique nécessaire.
-Pour ce faire, chaque évaluation d'une opération est enrobée dans un appel à la
-fonction ~evaluateEach~ qui teste si une valeur est à facettes, et appelle
-récursivement la fonction d'évaluation sur chaque facette si c'est le cas.  25
-appels à ~evaluateEach~ ont été ainsi ajoutés dans l'instrumentation.  Le code
-suivant donne la forme générale de ces changements:
-
-#+BEGIN_SRC diff
-- var v = getValue(node.a)
-+ evaluteEach(getValue(node.a), function(v,x) {
-    ... do something with v ...
-+ }
-#+END_SRC
-
-À la première ligne on récupère une valeur d'un nœud de l'AST (p.ex., l'opérande
-gauche d'une assignation, ou la condition d'un ~if~) puis on fait quelque chose
-avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
-fois on /sépare/ l'évaluation en appelant ~evaluateEach~ avec cette valeur comme
-premier argument, et comme second une fonction qui opère sur une valeur simple.
-
-Les changements effectués sur l'environnement d'exécution de code client.  Dans
-un programme JavaScript, l'environnement d'exécution fournit un objet ~global~
-qui contient les définitions de base comme ~Array~, ~Math~, ~String~ et
-~Object~.  Puisque Narcissus est métacirculaire, il réutilise l'objet global de
-son environnement hôte pour construire l'objet global de l'environnement client.
-Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
-~globalBase~ avec les propriétés qui surchargeront celle de l'environnement
-hôte.  Deuxièmement, il crée un objet ~global~ client à partir de l'objet
-~global~ de son environnement hôte, et met toutes les propriétés de ~globalBase~
-dans cet objet ~global~ client.  Troisièmement, il ajoute à cet objet ~global~
-client les versions réfléchies de certains objets de base (~Array~, ~String~,
-~Function~).
-
-L'instrumentation de l'évaluation multi-facettes enrichit l'objet ~global~
-client en ajoutant 50 propriétés à ~globalBase~, comme la suivante:
-
-#+BEGIN_SRC diff
-   var globalBase = {
-   ...
-+  isFacetedValue: function(v) {
-+    return (v instanceof FacetedValue);
-+  },
-#+END_SRC
-
-L'instrumentation change également la propriété ~String~ de ~globalBase~ pour
-suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
-caractères.
-
-Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories indique qu'il y a un potentiel de factorisation.  Si l'on souhaite
-rendre Narcissus extensibles, afin de pouvoir définir l'évaluation
-multi-facettes sans duplication de code, il faut trouver des façons d'exprimer
-les changements de ces quatre catégories.  Mais si nous souhaites exprimer
-d'autres analyses, et étendre d'autres interpréteurs, il faut tenter des trouver
-des mécanismes génériques qui pourront être réemployés pour ces autres cas.
-
-Pour prendre un peu de recul par rapport à l'instrumentation de Narcissus, on
-peut s'intéresser à la définition formelle de l'évaluation multi-facettes.
-Celle-ci est donnée sous forme d'une sémantique opérationnelle d'un langage
-proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d'abord donnée
-sans considérer l'évaluation multi-facettes, et suit une définition usuelle d'un
-lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
-références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
-JavaScript.
-
-Dans un second temps, une sémantique alternative est présentée qui introduit les
-changements nécessaires pour l'évaluation multi-facettes.  Il s'agit d'une copie
-de la première sémantique, avec quelques changements et ajouts.  On y retrouve
-les deux des quatre catégories de changements dégagées du diff.  Le /program
-counter/ accompagne chaque règle d'évaluation, et de nouvelles règles sont
-ajoutées pour séparer l'évaluation de valeurs à facette en deux parties.
-
-Les règles de la sémantique instrumentées tiennent sur une page; un
-interpréteur pour cette sémantique est donc considérablement plus petit qu'un
-interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
-des mécanismes d'extensibilité.
 
 * UNSTABLE Variations sur un interpréteur de lambda-calcul extensible
 Essayons d'abord d'écrire un interpréteur pour chaque sémantique de \lambda^{facet}, sans
