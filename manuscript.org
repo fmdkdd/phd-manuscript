@@ -624,8 +624,35 @@ personnel serait à l'intellect ce que l'exosquelette est au corps humain.
 En 1971, Kay crée le /Learning Research Group/ à PARC dans le but de construire
 cet ordinateur.  Inspiré par les travaux de Piaget et Bruner sur le
 développement intellectuel chez les enfants, il souhaite construire un
-ordinateur simple d'accès, intuitif, et qui peut servir à tout usage.  Le
-système développé par le LRG s'appellera Smalltalk.
+ordinateur intuitif, et qui peut servir pour tout usage.  Programmer ce système
+serait simple comme bonjour, et c'est pourquoi il nomme son langage de
+programmation "Smalltalk".
+
+Smalltalk est inspiré par Sketchpad [[cite:Sut-63][Sut-63]], SIMULA [[cite:DN-66][DN-66]], LISP [[cite:McC-60][McC-60]].  De
+Sketchpad, il retient l'utilisation des contraintes et l'interactivité.  De
+SIMULA, il tire la différence entre les classes de procédures et leurs
+instances, et le mécanisme d'héritage.  De LISP, il emprunte le style de
+construction récursif, l'absence de gestion manuelle de la mémoire, et
+l'homoiconicité.
+
+Pour Kay, les /objets/ de Smalltalk sont comme des cellules: des constituants
+quasi-autonomes, capables de se répliquer:
+
+#+BEGIN_QUOTE
+For the first time I thought of the whole as the entire computer and wondered
+why anyone would want to divide it up into weaker things called data structures
+and procedures.  Why not divide it up into little computers, as time-sharing was
+starting to?  But not in dozens.  Why not thousands of them, each simulating a
+useful structure?
+#+END_QUOTE
+
+La programmation par objets en Smalltalk repose sur six grands principes:
+
+1. Tout est /objet/.
+2. Les objets communiquent par envoi et réception de /messages/ (qui contiennent
+   des objets).
+3. Les objets ont leur propre mémoire (qui contient des objets)
+
 
 
 
@@ -774,9 +801,9 @@ Additional story on the vision of Smalltalk can be found in [[cite:Kay-93][Kay-9
 Kay was inspired by Simula, Sketchpad, and his biology major:
 
 #+BEGIN_QUOTE
-For the first I thought of the whole as the entire computer and wondered why
-anyone would want to divide it up into weaker things called data structures and
-procedures.  Why not divide it up into little computers, as time-sharing was
+For the first time I thought of the whole as the entire computer and wondered
+why anyone would want to divide it up into weaker things called data structures
+and procedures.  Why not divide it up into little computers, as time-sharing was
 starting to?  But not in dozens.  Why not thousands of them, each simulating a
 useful structure?
 #+END_QUOTE
