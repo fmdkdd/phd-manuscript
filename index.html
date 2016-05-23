@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-20 ven. 19:37 -->
+<!-- 2016-05-23 lun. 16:19 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -877,9 +877,46 @@ personnel serait à l&rsquo;intellect ce que l&rsquo;exosquelette est au corps h
 En 1971, Kay crée le <i>Learning Research Group</i> à PARC dans le but de construire
 cet ordinateur.  Inspiré par les travaux de Piaget et Bruner sur le
 développement intellectuel chez les enfants, il souhaite construire un
-ordinateur simple d&rsquo;accès, intuitif, et qui peut servir à tout usage.  Le
-système développé par le LRG s&rsquo;appellera Smalltalk.
+ordinateur intuitif, et qui peut servir pour tout usage.  Programmer ce système
+serait simple comme bonjour, et c&rsquo;est pourquoi il nomme son langage de
+programmation &laquo;&nbsp;Smalltalk&nbsp;&raquo;.
 </p>
+
+<p>
+Smalltalk est inspiré par Sketchpad [<a href="#Sut-63">Sut63</a>], SIMULA [<a href="#DN-66">DN66</a>], LISP [<a href="#McC-60">McC60</a>].  De
+Sketchpad, il retient l&rsquo;utilisation des contraintes et l&rsquo;interactivité.  De
+SIMULA, il tire la différence entre les classes de procédures et leurs
+instances, et le mécanisme d&rsquo;héritage.  De LISP, il emprunte le style de
+construction récursif, l&rsquo;absence de gestion manuelle de la mémoire, et
+l&rsquo;homoiconicité.
+</p>
+
+<p>
+Pour Kay, les <i>objets</i> de Smalltalk sont comme des cellules: des constituants
+quasi-autonomes, capables de se répliquer:
+</p>
+
+<blockquote>
+<p>
+For the first time I thought of the whole as the entire computer and wondered
+why anyone would want to divide it up into weaker things called data structures
+and procedures.  Why not divide it up into little computers, as time-sharing was
+starting to?  But not in dozens.  Why not thousands of them, each simulating a
+useful structure?
+</p>
+</blockquote>
+
+<p>
+La programmation par objets en Smalltalk repose sur six grands principes:
+</p>
+
+<ol class="org-ol">
+<li>Tout est <i>objet</i>.</li>
+<li>Les objets communiquent par envoi et réception de <i>messages</i> (qui contiennent
+des objets).</li>
+<li>Les objets ont leur propre mémoire (qui contient des objets)</li>
+</ol>
+
 
 
 
@@ -1097,9 +1134,9 @@ Kay was inspired by Simula, Sketchpad, and his biology major:
 
 <blockquote>
 <p>
-For the first I thought of the whole as the entire computer and wondered why
-anyone would want to divide it up into weaker things called data structures and
-procedures.  Why not divide it up into little computers, as time-sharing was
+For the first time I thought of the whole as the entire computer and wondered
+why anyone would want to divide it up into weaker things called data structures
+and procedures.  Why not divide it up into little computers, as time-sharing was
 starting to?  But not in dozens.  Why not thousands of them, each simulating a
 useful structure?
 </p>
@@ -11611,6 +11648,20 @@ Christophe Dony, Jacques Malenfant, and Daniel Bardou.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="DN-66">DN66</a>]
+</td>
+<td class="bibtexitem">
+Ole-Johan Dahl and Kristen Nygaard.
+ SIMULA - an algol-based simulation language.
+ <em>Commun. ACM</em>, 9(9):671--678, 1966.
+[&nbsp;<a href="http://dx.doi.org/10.1145/365813.365819">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="DS-01">DS01</a>]
 </td>
 <td class="bibtexitem">
@@ -12612,6 +12663,20 @@ Randall&nbsp;B. Smith and David Ungar.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Sut-63">Sut63</a>]
+</td>
+<td class="bibtexitem">
+I.&nbsp;E. Sutherland.
+ SKETCHPAD: A Man-Machine Graphical Communications
+  System.
+ Technical Report 296, MIT, Lincoln Laboratory, January 1963.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="SW-96">SW96</a>]
 </td>
 <td class="bibtexitem">
@@ -12864,7 +12929,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-20 ven. 19:37 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-23 lun. 16:19 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
