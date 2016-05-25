@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-24 mar. 18:46 -->
+<!-- 2016-05-25 mer. 18:55 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -892,7 +892,7 @@ programmation &laquo;&nbsp;Smalltalk&nbsp;&raquo;.
 Smalltalk est inspiré par Sketchpad [<a href="#Sut-63">Sut63</a>], SIMULA [<a href="#DN-66">DN66</a>], LISP [<a href="#McC-60">McC60</a>].  De
 Sketchpad, il retient l&rsquo;utilisation des contraintes et l&rsquo;interactivité.  De
 SIMULA, il tire la différence entre les classes de procédures et leurs
-instances, et le mécanisme d&rsquo;héritage.  De LISP, il emprunte le style de
+instances, et le mécanisme d&rsquo;héritage.  Et de LISP, il emprunte le style de
 construction récursif, l&rsquo;absence de gestion manuelle de la mémoire, et
 l&rsquo;homoiconicité.
 </p>
@@ -913,18 +913,58 @@ useful structure?
 </blockquote>
 
 <p>
-La programmation par objets en Smalltalk repose sur six grands principes:
+Ce qui se traduit, en Smalltalk, par le principe du &laquo;&nbsp;tout objet&nbsp;&raquo;.  Un nombre
+entier est un objet.  Une chaîne de caractère est un objet.  Une liste chaînée
+est un objet.  Un fichier est un objet.  Une image est un objet.
 </p>
 
-<ol class="org-ol">
-<li>Tout est <i>objet</i>.</li>
-<li>Les objets communiquent par envoi et réception de <i>messages</i> (qui contiennent
-des objets).</li>
-<li>Les objets ont leur propre mémoire (qui contient des objets)</li>
-</ol>
+<p>
+Les objets ont leur propre mémoire: ils sont les seuls maîtres des données
+qu&rsquo;ils manipulent.  L&rsquo;objet liste chaînée contient les références vers ses
+objets cellules; l&rsquo;objet fichier contient la référence vers le descripteur
+fournit par le système d&rsquo;exploitation.  On dit que les objets encapsulent ces
+données: c&rsquo;est une forme de type de donnée abstrait.
+</p>
 
+<p>
+Pour communiquer entre eux, les objets s&rsquo;envoient des <i>messages</i>.  Il n&rsquo;y a pas
+de procédures, seulement des <i>méthodes</i> qui répondent à certains messages.  Pour
+additionner deux entiers par exemple, on écrit <code>2 + 3</code>, qu&rsquo;il faut lire comme
+&laquo;&nbsp;Passer le message <code>+3</code> à l&rsquo;objet <code>2</code>&nbsp;&raquo;.  L&rsquo;objet <code>2</code> contient une méthode qui
+interprète le message <code>+3</code> comme une addition avec l&rsquo;objet <code>3</code>, ce qui retourne
+un nouvel objet: <code>5</code>.  On ne pense plus alors en termes d&rsquo;opérateur (<code>+</code>) et
+d&rsquo;opérandes (<code>2</code> et <code>3</code>), mais d&rsquo;un objet (<code>2</code>) qui reçoit un message (<code>+3</code>).
+C&rsquo;est le changement de paradigme majeur de la programmation par objets.
+</p>
 
+<p>
+Le passage de messages est une métaphore uniforme.  Pour additionner deux points
+<code>p1</code> et <code>p2</code>, on écrira <code>p1 + p2</code>.  Pour concaténer deux chaînes de caractères
+<code>s1</code> et <code>s2</code>, on écrit de même <code>s1 + s2</code>.  Le sens du message <code>+</code> dépend de
+l&rsquo;objet qui le reçoit et l&rsquo;interprète.  C&rsquo;est le mécanisme de <i>liaison
+dynamique</i>.
+</p>
 
+<p>
+Le programmeur ne crée pas des objets directement.  Il crée des <i>classes</i>.  Une
+classe est un moule à partir duquel on peut créer des objets.  Une classe
+contient les données privées manipulées par l&rsquo;objet (ses <i>attributs</i>), et ses
+méthodes, qui sont partagées entre toutes les <i>instances</i> de cette classe.
+</p>
+
+<p>
+Si un objet appartient à une classe, il observe le comportement décrit par cette
+classe.  Mais les classes sont elles-mêmes des objets, et peuvent <i>hériter</i>
+d&rsquo;autres classes.  Lorsqu&rsquo;une classe <code>B</code> hérite d&rsquo;une classes <code>A</code>, tous les
+messages non capturés par la classes <code>B</code> sont traités par la classe <code>A</code>.  La
+classe <code>Integer</code> va par exemple hériter de la classe <code>Number</code>, qui définit les
+opérations de comparaison <code>&lt;</code> <code>&gt;</code> et <code>=</code>.  Ces comparaisons sont définies à
+partir de la soustraction, qui n&rsquo;est pas un message interprété par <code>Number</code>
+directement, seulement par les classes qui en hérite: <code>Integer</code>, mais aussi
+<code>Float</code> ou <code>Natural</code>.  En conséquence, la classe <code>Integer</code> hérite du
+comportement de la classe <code>Number</code>, ce qui permet de réutiliser les
+comportements, et de factoriser le code.
+</p>
 
 <hr >
 
@@ -12968,7 +13008,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-24 mar. 18:46 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-25 mer. 18:55 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
