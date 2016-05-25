@@ -635,7 +635,7 @@ programmation "Smalltalk".
 Smalltalk est inspiré par Sketchpad [[cite:Sut-63][Sut-63]], SIMULA [[cite:DN-66][DN-66]], LISP [[cite:McC-60][McC-60]].  De
 Sketchpad, il retient l'utilisation des contraintes et l'interactivité.  De
 SIMULA, il tire la différence entre les classes de procédures et leurs
-instances, et le mécanisme d'héritage.  De LISP, il emprunte le style de
+instances, et le mécanisme d'héritage.  Et de LISP, il emprunte le style de
 construction récursif, l'absence de gestion manuelle de la mémoire, et
 l'homoiconicité.
 
@@ -650,15 +650,47 @@ starting to?  But not in dozens.  Why not thousands of them, each simulating a
 useful structure?
 #+END_QUOTE
 
-La programmation par objets en Smalltalk repose sur six grands principes:
+Ce qui se traduit, en Smalltalk, par le principe du "tout objet".  Un nombre
+entier est un objet.  Une chaîne de caractère est un objet.  Une liste chaînée
+est un objet.  Un fichier est un objet.  Une image est un objet.
 
-1. Tout est /objet/.
-2. Les objets communiquent par envoi et réception de /messages/ (qui contiennent
-   des objets).
-3. Les objets ont leur propre mémoire (qui contient des objets)
+Les objets ont leur propre mémoire: ils sont les seuls maîtres des données
+qu'ils manipulent.  L'objet liste chaînée contient les références vers ses
+objets cellules; l'objet fichier contient la référence vers le descripteur
+fournit par le système d'exploitation.  On dit que les objets encapsulent ces
+données: c'est une forme de type de donnée abstrait.
 
+Pour communiquer entre eux, les objets s'envoient des /messages/.  Il n'y a pas
+de procédures, seulement des /méthodes/ qui répondent à certains messages.  Pour
+additionner deux entiers par exemple, on écrit ~2 + 3~, qu'il faut lire comme
+"Passer le message ~+3~ à l'objet ~2~".  L'objet ~2~ contient une méthode qui
+interprète le message ~+3~ comme une addition avec l'objet ~3~, ce qui retourne
+un nouvel objet: ~5~.  On ne pense plus alors en termes d'opérateur (~+~) et
+d'opérandes (~2~ et ~3~), mais d'un objet (~2~) qui reçoit un message (~+3~).
+C'est le changement de paradigme majeur de la programmation par objets.
 
+Le passage de messages est une métaphore uniforme.  Pour additionner deux points
+~p1~ et ~p2~, on écrira ~p1 + p2~.  Pour concaténer deux chaînes de caractères
+~s1~ et ~s2~, on écrit de même ~s1 + s2~.  Le sens du message ~+~ dépend de
+l'objet qui le reçoit et l'interprète.  C'est le mécanisme de /liaison
+dynamique/.
 
+Le programmeur ne crée pas des objets directement.  Il crée des /classes/.  Une
+classe est un moule à partir duquel on peut créer des objets.  Une classe
+contient les données privées manipulées par l'objet (ses /attributs/), et ses
+méthodes, qui sont partagées entre toutes les /instances/ de cette classe.
+
+Si un objet appartient à une classe, il observe le comportement décrit par cette
+classe.  Mais les classes sont elles-mêmes des objets, et peuvent /hériter/
+d'autres classes.  Lorsqu'une classe ~B~ hérite d'une classes ~A~, tous les
+messages non capturés par la classes ~B~ sont traités par la classe ~A~.  La
+classe ~Integer~ va par exemple hériter de la classe ~Number~, qui définit les
+opérations de comparaison ~<~ ~>~ et ~=~.  Ces comparaisons sont définies à
+partir de la soustraction, qui n'est pas un message interprété par ~Number~
+directement, seulement par les classes qui en hérite: ~Integer~, mais aussi
+~Float~ ou ~Natural~.  En conséquence, la classe ~Integer~ hérite du
+comportement de la classe ~Number~, ce qui permet de réutiliser les
+comportements, et de factoriser le code.
 
 -----
 
