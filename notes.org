@@ -2762,6 +2762,15 @@ On the one hand, it grounds the discussion of the related work and provides
 concrete arguments to judge a mechanism.  On the other hand, it blurs the line
 between contributions and related works.
 
+** [2016-05-26 jeu.]
+*** Fixing citations in caption not exported
+ox-bibtex was not exporting cite links in CAPTION for source blocks or figures.
+This was caused by the use of [[help:org-element-map][org-element-map]] which, by default, does not map
+over elements in CAPTION.  This was [[http://thread.gmane.org/gmane.emacs.orgmode/94369][raised]] on mailing list, and the solution is
+to use the last optional argument ~WITH-AFFILIATED~.
+
+I had to change the /two/ uses of ~org-element-map~ in ox-bibtex to pass this flag.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
