@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-25 mer. 18:55 -->
+<!-- 2016-05-26 jeu. 17:22 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -945,6 +945,13 @@ l&rsquo;objet qui le reçoit et l&rsquo;interprète.  C&rsquo;est le mécanisme 
 dynamique</i>.
 </p>
 
+<div class="org-src-container">
+<label class="org-src-name">L&rsquo;addition de deux points fait appel à l&rsquo;addition des coordonnées.</label>
+<pre class="src src-smalltalk">+ t1
+  [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
+</pre>
+</div>
+
 <p>
 Le programmeur ne crée pas des objets directement.  Il crée des <i>classes</i>.  Une
 classe est un moule à partir duquel on peut créer des objets.  Une classe
@@ -958,13 +965,24 @@ classe.  Mais les classes sont elles-mêmes des objets, et peuvent <i>hériter</
 d&rsquo;autres classes.  Lorsqu&rsquo;une classe <code>B</code> hérite d&rsquo;une classes <code>A</code>, tous les
 messages non capturés par la classes <code>B</code> sont traités par la classe <code>A</code>.  La
 classe <code>Integer</code> va par exemple hériter de la classe <code>Number</code>, qui définit les
-opérations de comparaison <code>&lt;</code> <code>&gt;</code> et <code>=</code>.  Ces comparaisons sont définies à
+opérations de comparaison <code>&lt;</code>, <code>&gt;</code> et <code>=</code>.  Ces comparaisons sont définies à
 partir de la soustraction, qui n&rsquo;est pas un message interprété par <code>Number</code>
 directement, seulement par les classes qui en hérite: <code>Integer</code>, mais aussi
 <code>Float</code> ou <code>Natural</code>.  En conséquence, la classe <code>Integer</code> hérite du
 comportement de la classe <code>Number</code>, ce qui permet de réutiliser les
 comportements, et de factoriser le code.
 </p>
+
+<div class="org-src-container">
+<label class="org-src-name">Les comparaisons sur les nombres sont définiies dans la classe <code>Number</code> en termes de la soustraction.  Code source tiré de [<a href="#Smalltalk78">IFK</a>].</label>
+<pre class="src src-smalltalk">&lt; t1
+  [⇑ self - t1 &lt; 0]
+&gt; t1
+  [⇑ self - t1 &gt; 0]
+= t1
+  [⇑ self - t1 = 0]
+</pre>
+</div>
 
 <hr >
 
@@ -11183,7 +11201,7 @@ flexibilité à un coût de performance moindre.
 La programmation par aspect est donc un bon candidat pour le scénario
 d&rsquo;instrumentation de Narcissus, mais l&rsquo;implémentation d&rsquo;AspectScript n&rsquo;est pas
 une solution adéquate pour des raisons techniques.  Une autre implémentation
-d&rsquo;aspects pour JavaScript existe dans la littérature [<a href="#LVG-10">LVG</a>], mais elle ne
+d&rsquo;aspects pour JavaScript existe dans la littérature [<a href="#LVG-10">LVG10</a>], mais elle ne
 cible qu&rsquo;une version interne modifiée du navigateur Internet Explorer.
 </p>
 </div>
@@ -11968,6 +11986,19 @@ Roberto Ierusalimschy, Luiz&nbsp;Henrique de&nbsp;Figueiredo, and Waldemar&nbsp;
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Smalltalk78">IFK<sup>+</sup>14</a>]
+</td>
+<td class="bibtexitem">
+Dan Ingalls, Bert Freudenberg, Ted Kaehler, Yoshiki Ohshima, and Alan Kay.
+ Smalltalk-78, 2014.
+[&nbsp;<a href="http://lively-web.org/users/bert/Smalltalk-78.html">.html</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Ing-78">Ing78</a>]
 </td>
 <td class="bibtexitem">
@@ -12198,13 +12229,16 @@ Jeffrey&nbsp;R. Lewis, John Launchbury, Erik Meijer, and Mark Shields.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="LVG-10">LVG</a>]
+[<a name="LVG-10">LVG10</a>]
 </td>
 <td class="bibtexitem">
 Benjamin&nbsp;S. Lerner, Herman Venter, and Dan Grossman.
  Supporting dynamic, third-party code customizations in javascript
   using aspects.
- pages 361--376.
+ In <em>Proceedings of the 25th Annual ACM SIGPLAN Conference on
+  Object-Oriented Programming, Systems, Languages, and Applications, OOPSLA
+  2010, October 17-21, 2010, Reno/Tahoe, Nevada, USA</em>, pages 361--376, 2010.
+[&nbsp;<a href="http://dx.doi.org/10.1145/1869459.1869490">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -13008,7 +13042,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-25 mer. 18:55 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-26 jeu. 17:22 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
