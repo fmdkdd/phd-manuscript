@@ -37,7 +37,7 @@ different person then.'
    - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
    - [[#modéliser-le-monde-la-programmation-objet][Modéliser le monde: la programmation objet]]
-     - [[#bare-smalltak][BARE Smalltak]]
+     - [[#stable-smalltak][STABLE Smalltak]]
      - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
@@ -604,7 +604,7 @@ toutes lettres et code machine bas-niveau.
 [[file:img/scuola.jpg]]
 #+END_full-figure
 
-*** BARE Smalltak
+*** STABLE Smalltak
 #+BEGIN_epigraph
 Classification is the objectification of {{{emph(ness)}}}ness. — [[cite:Ing-81][Ing-81]]
 #+END_epigraph
@@ -706,6 +706,13 @@ directement, seulement par les classes qui en hérite: ~Integer~, mais aussi
 comportement de la classe ~Number~, ce qui permet de réutiliser les
 comportements, et de factoriser le code.
 
+#+ATTR_HTML: :style margin-top:-16rem
+#+BEGIN_side-figure
+#+CAPTION: L'héritage permet aux classes ~Integer~ et ~Float~ de réutiliser
+#+CAPTION: les méthodes de ~Number~.
+[[file:img/smalltalk0.svg]]
+#+END_side-figure
+
 #+CAPTION: Les comparaisons sur les nombres sont définiies dans la classe
 #+CAPTION: ~Number~ en termes de la soustraction.  Code source tiré de
 #+CAPTION: [[cite:Smalltalk78][Smalltalk78]].
@@ -766,12 +773,27 @@ par l'héritage.  L'implémentation de Smalltalk pour l'ordinateur STAR de Xerox
 permet à une classe de réutiliser les méthodes de plusieurs classes à la fois
 par le mécanisme des /traits/ [[cite:CBL+82][CBL+82]].
 
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_side-figure
+#+CAPTION: Ces trois classes ont toutes deux à deux des méthodes en commun, mais
+#+CAPTION: leur intersection est nulle.  Elles ne peuvent pas être factorisées
+#+CAPTION: par l'héritage.
+[[file:img/smalltalk1.svg]]
+#+END_side-figure
+
 Un trait décrit une fonctionnalité qui peut être réemployée par plusieurs
 classes; il contient une ou plusieurs méthodes et leurs implémentations, ainsi
 que les attributs utilisés par ces méthodes.  Une classe peut implémenter
 plusieurs traits, ce qui transforme la hiérarchie en graphe dirigé acyclique.
 Un trait peut en outre implémenter des traits à son tour, ce qui permet de
 regrouper des traits souvent utilisés ensemble.
+
+#+ATTR_HTML: :style margin-top:-9rem
+#+BEGIN_side-figure
+#+CAPTION: Une classe peut récupérer les méthodes de plusieurs traits à la fois,
+#+CAPTION: ce qui permet de factoriser ces trois classes.
+[[file:img/smalltalk2.svg]]
+#+END_side-figure
 
 Pour Kay, un des ingrédients clés de la flexibilité apportée par programmation
 par objets est la /liaison tardive/ (/late-binding/).  Le passage de messages en
@@ -783,19 +805,6 @@ classe ~Number~, on fait référence au message ~-~, qui n'est pas définit sur
 en LISP permet d'exécuter du texte construit dynamiquement; les premières
 versions de Smalltalk permettaient de traiter la syntaxe à l'exécution de la
 même manière.
-
------
-
-Design and Implementation [[cite:Ing-78][Ing-78]].
-
-Smalltalk is more than a language: it's a system.  A reactive system.  The
-language is only one piece of the computer, designed to be as friendly and
-simple and powerful as possible.
-
-- One type may be strictly larger than another. (extension)
-- Two types may have equivalent operations, but different realizations. (variation)
-- Specialization is extension + variation
-- Type A has operations 1 and 2, B has 2 and 3, and C has 1 and 3. (union)
 
 *** BARE Prototype-based programming
 A collection of (at least) the following papers (or revisions of them):
