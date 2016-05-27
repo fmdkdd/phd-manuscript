@@ -37,8 +37,8 @@ different person then.'
    - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
    - [[#modéliser-le-monde-la-programmation-objet][Modéliser le monde: la programmation objet]]
-     - [[#stable-smalltak][STABLE Smalltak]]
-     - [[#bare-prototype-based-programming][BARE Prototype-based programming]]
+     - [[#stable-classes-et-héritage-smalltak][STABLE Classes et héritage: Smalltak]]
+     - [[#bare-objects-et-prototypes-self][BARE Objects et prototypes: Self]]
      - [[#translate-self][TRANSLATE Self]]
        - [[#mechanisms-for-extension][Mechanisms for extension]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
@@ -604,7 +604,7 @@ toutes lettres et code machine bas-niveau.
 [[file:img/scuola.jpg]]
 #+END_full-figure
 
-*** STABLE Smalltak
+*** STABLE Classes et héritage: Smalltak
 #+BEGIN_epigraph
 Classification is the objectification of {{{emph(ness)}}}ness. — [[cite:Ing-81][Ing-81]]
 #+END_epigraph
@@ -806,46 +806,55 @@ en LISP permet d'exécuter du texte construit dynamiquement; les premières
 versions de Smalltalk permettaient de traiter la syntaxe à l'exécution de la
 même manière.
 
-*** BARE Prototype-based programming
-A collection of (at least) the following papers (or revisions of them):
-- [[cite:Tai-97][Tai-97]]
-- [[cite:DMB-98a][DMB-98a]] (mostly a translation of [[cite:DMB-98][DMB-98]])
-- [[cite:GBO+98][GBO+98]]
-- [[cite:Bor-86][Bor-86]]
-- [[cite:SU-95][SU-95]]
-- [[cite:Smi-95][Smi-95]]
-- [[cite:MMM+98][MMM+98]]
-- [[cite:Bla-91][Bla-91]] & [[cite:Bla-94][Bla-94]]
-- [[cite:Wol-96][Wol-96]]
-- [[cite:Moo-96][Moo-96]]
-- [[cite:Nob-01][Nob-01]]
-- [[cite:DeM-98][DeM-98]]
+*** BARE Objects et prototypes: Self
+On peut faire de la programmation par objets sans classes et sans héritage.  Les
+langages /à prototypes/, comme Self, poursuivent l'approche du tout objet et
+la généralise.
 
-[[cite:Tai-97][Tai-97]] is a philosophical take on the basis for class-based and prototype-based
-languages.  Ascribing to classes is following the school of Plato and Aristotle
-[[cite:Pla-98][Pla-98]] [[cite:Ari-35][Ari-35]].  Plato distinguished between /forms/, the ideal description of
-things, and /instances/ of these forms.  He regarded forms as being more real
-than instances.  Aristotle believed in "a single correct taxonomy of all natural
-things", and classified things using the following rule:
-: essence = genus + differential
-which mirrors class creation in class-based languages.
+Taivalsaari [[cite:Tai-97][Tai-97]] voit, entre ces deux approches, une distinction
+philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l'école
+d'Athènes: de Platon [[cite:Pla-98][Pla-98]] et d'Aristote [[cite:Ari-35][Ari-35]].  Platon distingue les
+/formes/, qui sont les descriptions idéales des choses, des /instances/ de ces
+formes, qui sont leur manifestation concrète et imparfaites.  Platon considère
+que les formes sont plus réelles que leurs instances.  En programmation objet,
+c'est le point de vue que les classes sont plus réelles que les objets.
+Aristote croit qu'il est possible d'établir l'unique taxonomie correcte de
+toutes les choses naturelles.  Il classe une chose à partir de ses propriétés
+essentielles (le genre), et des propriétés qui la distingue des autres choses du
+même genre (le différentiel).  On voit le parallèle avec l'héritage en
+programmation par objets: quand une classe hérite, elle déclare son genre, et
+les méthodes additionnelles décrivent son différentiel.
 
-Classification has been criticized, notably by Wittgenstein [[cite:Wit-53][Wit-53]], as being
-subjective.  Some concepts are difficult to define by intension – through a list
-of common properties that all instances must share.  Rather, Wittgenstein
-proposes the notion of /family resemblance/.  Meaning is not determined by a
-definition, but by similarity to representative prototypes.
+Aristote, comme Platon, voyaient la classification comme absolue: la taxonomie
+est la seule vraie hiérarchie des choses.  À l'inverse, Wittgenstein la
+considère subjective [[cite:Wit-53][Wit-53]].  Certains concepts sont difficiles à définir en
+/intension/, par une liste de propriétés communes à toutes ses instances.
+Wittgenstein propose la notion de /ressemblance familière/.  La chose n'est pas
+déterminée par une définition absolue, mais par ses similarités avec des
+prototypes représentatifs.
 
-This philosophical heritage has a few implications for programming:
-- there are no optimal class hierarchies
-- in a class hierarchy, the middle classes are often the best representatives.
-  Higher classes are too abstract; lower classes too specific.
-- prototypes may map better to the usual human process: iterate from examples.
+De cette distinction philosophique, Taivalsaari tire les conclusions suivantes
+sur la programmation par objets:
 
-Designers of class-based or prototype-based languages are seldom aware of the
-philosophical issues of both models, but focus more on technical matters.  Kevo
-[[cite:Tai-93][Tai-93]] is a prototype-based language with a notion of family
-resemblance. [[cite:Tai-93b][Tai-93b]] offer similar insights on the notion of object.
+- Il n'y a pas de hiérarchie de classe optimale.  Le choix est subjectif et
+  dépend non seulement des besoins de l'application, mais surtout de son
+  concepteur.  Les langages à classes /nécessitent/ une hiérarchie, et en
+  conséquence elle est souvent /inflexible/, difficile à modifier sans impacter
+  une grande partie du système.
+
+- Dans une hiérarchie de classes, ce sont les classes du milieu qui sont souvent
+  les plus représentatives des objets de l'application.  Les classes les plus
+  hautes sont trop abstraites, et les classes les plus basses trop spécifiques.
+
+- Les prototypes correspondent davantage au processus de réflexion humain.  En
+  abordant un domaine, on ne commence pas par établir des classes abstraites qui
+  capturent l'essence des objets considérés.  On part plutôt d'exemples, de cas
+  particuliers, que l'on relie entre eux par similarités, et en dernier vient la
+  généralisation.
+
+Le dernier point est appuyé par Lieberman
+
+-----
 
 [[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
 d languages are advantageous for describing exceptional instances, multiple
@@ -867,6 +876,8 @@ Prototype-based languages also introduce new issues:
 
 *** TRANSLATE Self
 The power of simplicity [[cite:US-91][US-91]].
+
+Prototypes can emulate class hierarchies.
 
 Pure object-oriented language.  No variables, but slots containing objects that
 return themselves.
