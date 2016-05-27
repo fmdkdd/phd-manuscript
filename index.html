@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-27 ven. 15:38 -->
+<!-- 2016-05-27 ven. 18:38 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -162,8 +162,8 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline7">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</a></li>
 <li><a href="#orgheadline12">2.3. Modéliser le monde: la programmation objet</a>
 <ul>
-<li><a href="#orgheadline8">2.3.1. <span class="done STABLE">STABLE</span> Smalltak</a></li>
-<li><a href="#orgheadline9">2.3.2. <span class="todo BARE">BARE</span> Prototype-based programming</a></li>
+<li><a href="#orgheadline8">2.3.1. <span class="done STABLE">STABLE</span> Classes et héritage: Smalltak</a></li>
+<li><a href="#orgheadline9">2.3.2. <span class="todo BARE">BARE</span> Objects et prototypes: Self</a></li>
 <li><a href="#orgheadline11">2.3.3. <span class="todo TRANSLATE">TRANSLATE</span> Self</a></li>
 </ul>
 </li>
@@ -852,7 +852,7 @@ toutes lettres et code machine bas-niveau.
 </div>
 
 <div id="outline-container-orgheadline8" class="outline-4">
-<h4 id="orgheadline8"><span class="section-number-4">2.3.1</span> <span class="done STABLE">STABLE</span> Smalltak</h4>
+<h4 id="orgheadline8"><span class="section-number-4">2.3.1</span> <span class="done STABLE">STABLE</span> Classes et héritage: Smalltak</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <div class="epigraph">
 <p>
@@ -1113,68 +1113,71 @@ même manière.
 </div>
 
 <div id="outline-container-orgheadline9" class="outline-4">
-<h4 id="orgheadline9"><span class="section-number-4">2.3.2</span> <span class="todo BARE">BARE</span> Prototype-based programming</h4>
+<h4 id="orgheadline9"><span class="section-number-4">2.3.2</span> <span class="todo BARE">BARE</span> Objects et prototypes: Self</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
-A collection of (at least) the following papers (or revisions of them):
+On peut faire de la programmation par objets sans classes et sans héritage.  Les
+langages <i>à prototypes</i>, comme Self, poursuivent l&rsquo;approche du tout objet et
+la généralise.
 </p>
+
+<p>
+Taivalsaari [<a href="#Tai-97">Tai97</a>] voit, entre ces deux approches, une distinction
+philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l&rsquo;école
+d&rsquo;Athènes: de Platon [<a href="#Pla-98">Pla98</a>] et d&rsquo;Aristote [<a href="#Ari-35">AriBC</a>].  Platon distingue les
+<i>formes</i>, qui sont les descriptions idéales des choses, des <i>instances</i> de ces
+formes, qui sont leur manifestation concrète et imparfaites.  Platon considère
+que les formes sont plus réelles que leurs instances.  En programmation objet,
+c&rsquo;est le point de vue que les classes sont plus réelles que les objets.
+Aristote croit qu&rsquo;il est possible d&rsquo;établir l&rsquo;unique taxonomie correcte de
+toutes les choses naturelles.  Il classe une chose à partir de ses propriétés
+essentielles (le genre), et des propriétés qui la distingue des autres choses du
+même genre (le différentiel).  On voit le parallèle avec l&rsquo;héritage en
+programmation par objets: quand une classe hérite, elle déclare son genre, et
+les méthodes additionnelles décrivent son différentiel.
+</p>
+
+<p>
+Aristote, comme Platon, voyaient la classification comme absolue: la taxonomie
+est la seule vraie hiérarchie des choses.  À l&rsquo;inverse, Wittgenstein la
+considère subjective [<a href="#Wit-53">Wit53</a>].  Certains concepts sont difficiles à définir en
+<i>intension</i>, par une liste de propriétés communes à toutes ses instances.
+Wittgenstein propose la notion de <i>ressemblance familière</i>.  La chose n&rsquo;est pas
+déterminée par une définition absolue, mais par ses similarités avec des
+prototypes représentatifs.
+</p>
+
+<p>
+De cette distinction philosophique, Taivalsaari tire les conclusions suivantes
+sur la programmation par objets:
+</p>
+
 <ul class="org-ul">
-<li>[<a href="#Tai-97">Tai97</a>]</li>
-<li>[<a href="#DMB-98a">DMB98a</a>] (mostly a translation of [<a href="#DMB-98">DMB98b</a>])</li>
-<li>[<a href="#GBO+98">GBO+98</a>]</li>
-<li>[<a href="#Bor-86">Bor86</a>]</li>
-<li>[<a href="#SU-95">SU95</a>]</li>
-<li>[<a href="#Smi-95">Smi95</a>]</li>
-<li>[<a href="#MMM+98">MMM+98</a>]</li>
-<li>[<a href="#Bla-91">Bla91</a>] &amp; [<a href="#Bla-94">Bla94</a>]</li>
-<li>[<a href="#Wol-96">Wol96</a>]</li>
-<li>[<a href="#Moo-96">Moo96</a>]</li>
-<li>[<a href="#Nob-01">Nob01</a>]</li>
-<li>[<a href="#DeM-98">Meu98</a>]</li>
+<li>Il n&rsquo;y a pas de hiérarchie de classe optimale.  Le choix est subjectif et
+dépend non seulement des besoins de l&rsquo;application, mais surtout de son
+concepteur.  Les langages à classes <i>nécessitent</i> une hiérarchie, et en
+conséquence elle est souvent <i>inflexible</i>, difficile à modifier sans impacter
+une grande partie du système.</li>
+
+<li>Dans une hiérarchie de classes, ce sont les classes du milieu qui sont souvent
+les plus représentatives des objets de l&rsquo;application.  Les classes les plus
+hautes sont trop abstraites, et les classes les plus basses trop spécifiques.</li>
+
+<li>Les prototypes correspondent davantage au processus de réflexion humain.  En
+abordant un domaine, on ne commence pas par établir des classes abstraites qui
+capturent l&rsquo;essence des objets considérés.  On part plutôt d&rsquo;exemples, de cas
+particuliers, que l&rsquo;on relie entre eux par similarités, et en dernier vient la
+généralisation.</li>
 </ul>
 
 <p>
-[<a href="#Tai-97">Tai97</a>] is a philosophical take on the basis for class-based and prototype-based
-languages.  Ascribing to classes is following the school of Plato and Aristotle
-[<a href="#Pla-98">Pla98</a>,<a href="#Ari-35">AriBC</a>].  Plato distinguished between <i>forms</i>, the ideal description of
-things, and <i>instances</i> of these forms.  He regarded forms as being more real
-than instances.  Aristotle believed in &laquo;&nbsp;a single correct taxonomy of all natural
-things&nbsp;&raquo;, and classified things using the following rule:
-</p>
-<pre class="example">
-essence = genus + differential
-</pre>
-<p>
-which mirrors class creation in class-based languages.
+Le dernier point est appuyé par Lieberman
 </p>
 
-<p>
-Classification has been criticized, notably by Wittgenstein [<a href="#Wit-53">Wit53</a>], as being
-subjective.  Some concepts are difficult to define by intension – through a list
-of common properties that all instances must share.  Rather, Wittgenstein
-proposes the notion of <i>family resemblance</i>.  Meaning is not determined by a
-definition, but by similarity to representative prototypes.
-</p>
+<hr >
 
 <p>
-This philosophical heritage has a few implications for programming:
-</p>
-<ul class="org-ul">
-<li>there are no optimal class hierarchies</li>
-<li>in a class hierarchy, the middle classes are often the best representatives.
-Higher classes are too abstract; lower classes too specific.</li>
-<li>prototypes may map better to the usual human process: iterate from examples.</li>
-</ul>
-
-<p>
-Designers of class-based or prototype-based languages are seldom aware of the
-philosophical issues of both models, but focus more on technical matters.  Kevo
-[<a href="#Tai-93">Tai93a</a>] is a prototype-based language with a notion of family
-resemblance. [<a href="#Tai-93b">Tai93b</a>] offer similar insights on the notion of object.
-</p>
-
-<p>
-[<a href="#DMB-98">DMB98b</a>] tries to classify prototype-based languages (ironically).  Prototype-base
+[<a href="#DMB-98">DMB98</a>] tries to classify prototype-based languages (ironically).  Prototype-base
 d languages are advantageous for describing exceptional instances, multiple
 points of view of the same entity, and incomplete objects.
 </p>
@@ -1208,6 +1211,10 @@ objects are only conventions, not language primitives).</li>
 <div class="outline-text-4" id="text-2-3-3">
 <p>
 The power of simplicity [<a href="#US-91">US91</a>].
+</p>
+
+<p>
+Prototypes can emulate class hierarchies.
 </p>
 
 <p>
@@ -11210,33 +11217,6 @@ Andrew&nbsp;P. Black.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Bla-91">Bla91</a>]
-</td>
-<td class="bibtexitem">
-Günther Blaschek.
- Type-safe object-oriented programming with prototypes - the concepts
-  of omega.
- <em>Structured Programming</em>, 12(4):217--226, 1991.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Bla-94">Bla94</a>]
-</td>
-<td class="bibtexitem">
-Günther Blaschek.
- <em>Object-oriented programming - with prototypes</em>.
- Springer, 1994.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="Bol-03">Bol03</a>]
 </td>
 <td class="bibtexitem">
@@ -11380,20 +11360,7 @@ Edsger&nbsp;W. Dijkstra.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="DMB-98a">DMB98a</a>]
-</td>
-<td class="bibtexitem">
-Christophe Dony, Jacques Malenfant, and Daniel Bardou.
- <em>Classifying Prototype-based Programming languages</em>.
- 1998.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="DMB-98">DMB98b</a>]
+[<a name="DMB-98">DMB98</a>]
 </td>
 <td class="bibtexitem">
 Christophe Dony, Jacques Malenfant, and Daniel Bardou.
@@ -11522,21 +11489,6 @@ Robert&nbsp;E. Filman and Daniel&nbsp;P. Friedman.
  In Mehmet Akşit, Siobhan Clarke, Tzilla Elrad, and Robert&nbsp;E. Filman,
   editors, <em>Aspect-Oriented Software Development</em>. Addison-Wesley, 2004.
  Revision of [?].
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="GBO+98">GBO<sup>+</sup>98</a>]
-</td>
-<td class="bibtexitem">
-Thomas R.&nbsp;G. Green, Alan Borning, Tim O'Shea, Moina Minoughan, and Randall&nbsp;B.
-  Smith.
- <em>The Stripetalk Papers: Understandability as a Language Design
-  Issue in Object-Oriented Programming Systems</em>.
- 1998.
 
 </td>
 </tr>
@@ -11984,20 +11936,6 @@ Wolfgang&nbsp;De Meuter.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="DeM-98">Meu98</a>]
-</td>
-<td class="bibtexitem">
-Wolfgang&nbsp;De Meuter.
- <em>Agora: The Story of the Simplest MOP in the World -or- The
-  Scheme of Object-Orientation</em>.
- 1998.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="MJD-96">MJD96</a>]
 </td>
 <td class="bibtexitem">
@@ -12041,20 +11979,6 @@ Chris Maeda, Arthur Lee, Gail&nbsp;C. Murphy, and Gregor Kiczales.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="MMM+98">MMM<sup>+</sup>98</a>]
-</td>
-<td class="bibtexitem">
-Brad&nbsp;A. Myers, Rich McDaniel, Rob Miller, Brad&nbsp;Vander Zanden, Dario Giuse,
-  David Kosbie, and Andrew Mickish.
- <em>The Prototype-Instance Object Systems in Amulet and Garnet</em>.
- 1998.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="MO-02">MO02</a>]
 </td>
 <td class="bibtexitem">
@@ -12080,22 +12004,6 @@ Mira Mezini and Klaus Ostermann.
   Symposium on Foundations of Software Engineering, 2004, Newport Beach, CA,
   USA, October 31 - November 6, 2004</em>, pages 127--136, 2004.
 [&nbsp;<a href="http://dx.doi.org/10.1145/1029894.1029915">DOI</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Moo-96">Moo96</a>]
-</td>
-<td class="bibtexitem">
-Ivan Moore.
- Automatic inheritance hierarchy restructuring and method refactoring.
- In <em>Proceedings of the 1996 ACM SIGPLAN Conference on
-  Object-Oriented Programming Systems, Languages &amp; Applications (OOPSLA
-  '96), San Jose, California, October 6-10, 1996.</em>, pages 235--250, 1996.
-[&nbsp;<a href="http://dx.doi.org/10.1145/236337.236361">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -12135,22 +12043,6 @@ The narcissus meta-circular javascript interpreter.
 Peter Naur.
  Programming as theory building.
  <em>Microprocessing and Microprogramming</em>, 15(5):253--261, 1985.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Nob-01">Nob01</a>]
-</td>
-<td class="bibtexitem">
-James Noble.
- Visualising objects: Abstraction, encapsulation, aliasing, and
-  ownership.
- In <em>Software Visualization, International Seminar Dagstuhl
-  Castle, Germany, May 20-25, 2001, Revised Lectures</em>, pages 58--72, 2001.
-[&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45875-1_5">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -12378,20 +12270,6 @@ s3c - online javascript editor with code evaluation.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Smi-95">Smi95</a>]
-</td>
-<td class="bibtexitem">
-Walter&nbsp;R. Smith.
- Using a prototype-based language for user interface: The newton
-  project's experience.
- In <em>OOPSLA</em>, pages 61--72, 1995.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="Sta-81">Sta81</a>]
 </td>
 <td class="bibtexitem">
@@ -12437,22 +12315,6 @@ Friedrich Steimann.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="SU-95">SU95</a>]
-</td>
-<td class="bibtexitem">
-Randall&nbsp;B. Smith and David Ungar.
- Programming as an experience: The inspiration for self.
- In <em>ECOOP'95 - Object-Oriented Programming, 9th European
-  Conference, &Aring;rhus, Denmark, August 7-11, 1995, Proceedings</em>, pages
-  303--330, 1995.
-[&nbsp;<a href="http://dx.doi.org/10.1007/3-540-49538-X_15">DOI</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="Sut-63">Sut63</a>]
 </td>
 <td class="bibtexitem">
@@ -12474,34 +12336,6 @@ Robert&nbsp;J. Stroud and Zhixue Wu.
  <em>Advances in Object-Oriented Architectures and Reflection</em>,
   chapter Using Metaobject Protocols to Satisfy Non-Functional Requirements.
  CRC Press, 1996.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Tai-93">Tai93a</a>]
-</td>
-<td class="bibtexitem">
-Antero Taivalsaari.
- <em>A Critical View of Inheritance and Reusability in
-  Object-Oriented Programming</em>.
- PhD thesis, University of Jyväskylä, Finland, 1993.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Tai-93b">Tai93b</a>]
-</td>
-<td class="bibtexitem">
-Antero Taivalsaari.
- On the notion of object.
- <em>Journal of Systems and Software</em>, 21(1):3--16, 1993.
-[&nbsp;<a href="http://dx.doi.org/10.1016/0164-1212(93)90013-N">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -12660,18 +12494,6 @@ Ludwig Wittgenstein.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Wol-96">Wol96</a>]
-</td>
-<td class="bibtexitem">
-Mario Wolczko.
- self includes: Smalltalk, 1996.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="Tan-09a">�T09a</a>]
 </td>
 <td class="bibtexitem">
@@ -12719,7 +12541,7 @@ Mario Wolczko.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-27 ven. 15:38 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-27 ven. 18:38 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
