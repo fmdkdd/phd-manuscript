@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-27 ven. 18:38 -->
+<!-- 2016-05-30 lun. 15:14 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -9360,23 +9360,23 @@ premier, avant les modifications.
 </p>
 
 <p>
-On peut se demander si l&rsquo;objet parent n&rsquo;apporte que de la redondance de code.
-Principalement oui.  Mais cette redondance nous apporte aussi une flexibilité
-supplémentaire par rapport au modèle.  Seules les propriétés mentionnées dans
-l&rsquo;objet parent seront accessibles de l&rsquo;extérieur du module, ce qui nous permet
-de contrôler quelles propriétés sont exposées.  Mais surtout, les valeurs
-exposées par l&rsquo;objet parent ne sont pas forcément celles de l&rsquo;environnement de
-la FIA, ce qui permet encore une fois de contrôler ce que le code externe au
-module peut voir.
+L&rsquo;objet parent duplique en partie le code de l&rsquo;objet exporté, mais il a
+également un effet positif.  Sur cet exemple, la redondance est mineure: les
+propriétés ajoutées tiennent sur une ligne.  Ce n&rsquo;est que dans un programme qui
+exporte beaucoup de propriétés que cette redondance devient vexante.  Mais
+l&rsquo;objet parent nous apporte une flexibilité supplémentaire par rapport au
+modèle: les propriétés de l&rsquo;objet parent seront les seules propriétés
+accessibles de l&rsquo;extérieur du module.  L&rsquo;objet parent nous permet de contrôler
+la visibilité des propriétés.
 </p>
 
 <p>
-Enfin, puisque la chaîne de prototype d&rsquo;un objet JavaScript peut être vue comme
+Enfin, puisque la chaîne de prototypes d&rsquo;un objet JavaScript peut être vue comme
 une liste chaînée, on peut directement implémenter l&rsquo;idée des couches
 d&rsquo;environnements du modèle de la section précédente.  Dans le code suivant, on
 définit la fonction <code>pushEnv(e, head)</code> qui insère l&rsquo;objet <code>e</code> comme parent de
 <code>head</code>; la fonction <code>removeEnv(e, head)</code> retire l&rsquo;objet <code>e</code> de la chaîne,
-quelque soit sa position.  Si on reprend le module <code>m</code> définit dans l&rsquo;exemple
+quelle que soit sa position.  Si on reprend le module <code>m</code> défini dans l&rsquo;exemple
 précédent, on peut maintenant utiliser des objets JavaScript pour grouper les
 modifications que l&rsquo;on souhaite apporter au module (<code>e1</code> et <code>e2</code>), et utiliser
 <code>pushEnv</code> et <code>removeEnv</code> pour activer ou désactiver ces changements
@@ -9420,8 +9420,8 @@ m.g(0) <span style="font-weight: bold; font-style: italic;">//</span><span style
 
 <p>
 Donc <code>with</code> permet de réaliser l&rsquo;idée de l&rsquo;environnement frontal, et la chaîne
-de prototype de l&rsquo;objet de liaison de <code>with</code> permet de disposer les
-environnements en couches.  Et grâce à ces mécanismes, on parvient à ouvrir le
+de prototypes de l&rsquo;objet de liaison de <code>with</code> permet de disposer les
+environnements en couches.  Grâce à ces mécanismes, on parvient à ouvrir le
 motif module; on peut changer les définitions internes au module par du code
 écrit à l&rsquo;extérieur.
 </p>
@@ -9473,14 +9473,14 @@ l&rsquo;objet <code>parent</code>:
 
 <p>
 Les changements n&rsquo;affectent que le début et la fin du fichier.  Puisque le
-module exporte déjà des propriétés dans le <code>return</code>, on y ajoute juste la
-propriété <code>_env</code>.  Les analyses qui nous intéressent nécessitent également
-d&rsquo;exposer des propriétés internes au module à travers l&rsquo;objet <code>_parent</code> (nous en
-avons utilisé 14 en tout dans notre version instrumentée de Narcissus).  Notons
-au passage que les propriétés <code>_env</code> et <code>_parent</code> sont préfixées d&rsquo;un tiret bas
-pour éviter une collision de nom avec les variables déclarées à la racine par
-Narcissus.  Mais ces lignes sont les seules modifications nécessaires à apporter
-au module pour pouvoir commencer l&rsquo;instrumentation.
+module exporte déjà des propriétés, on y ajoute juste <code>_env</code>.  Les analyses qui
+nous intéressent nécessitent également d&rsquo;exposer des propriétés internes au
+module à travers l&rsquo;objet <code>_parent</code> (nous en avons utilisé 14 en tout dans notre
+version instrumentée de Narcissus).  Notons au passage que les propriétés <code>_env</code>
+et <code>_parent</code> sont préfixées d&rsquo;un tiret bas pour éviter une collision de nom avec
+les variables déclarées à la racine par Narcissus.  Mais ces lignes sont les
+seules modifications nécessaires à apporter au module pour pouvoir commencer
+l&rsquo;instrumentation.
 </p>
 </div>
 
@@ -9532,19 +9532,18 @@ peut maintenant effectuer ce changement de l&rsquo;extérieur du module:
 On commence par définir un nom raccourci ligne <a href="#coderef-ex10-N"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-N');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-N');">1</a> pour l&rsquo;environnement
 exporté par Narcissus.  Puis on modifie le constructeur <code>ExecutionContext</code> après
 avoir sauvegardé l&rsquo;original ligne <a href="#coderef-ex10-EC"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-EC');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-EC');">3</a>, pour pouvoir y faire référence dans
-la nouveau constructeur, mais aussi dans <code>getPC</code>.  Le nouveau constructeur
+le nouveau constructeur, mais aussi dans <code>getPC</code>.  Le nouveau constructeur
 appelle le constructeur original (équivalent à un appel à <code>super</code> en Java) et
 ajoute la valeur courante du <i>program counter</i> comme propriété <code>pc</code>.  Les autres
-propriétés de l&rsquo;objet <code>ExecutionContext</code> sont héritées grâce à l&rsquo;idiome
-JavaScript ligne <a href="#coderef-ex10-ECproto"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-ECproto');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-ECproto');">10</a>.  Ligne <a href="#coderef-ex10-getV"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-getV');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-getV');">18</a>, on définit une nouvelle
-fonction <code>getValue</code> qui va remplacer et appeler l&rsquo;originale, mais qui récupère
-le <i>program counter</i> courant soit donné en argument, soit par un appel à <code>getPC</code>
-si l&rsquo;argument n&rsquo;est pas renseigné.  De cette façon, les appels à <code>getValue</code> dans
-l&rsquo;interpréteur ne nécessitent pas de modification pour l&rsquo;argument
-supplémentaire, mais le code de l&rsquo;instrumentation peut appeler <code>getValue</code> en
-passant une valeur pour <code>pc</code>.  Enfin, on installe ces modifications dans
-l&rsquo;environnement frontal de l&rsquo;interpréteur (lignes <a href="#coderef-ex10-instr1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-instr1');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-instr1');">27</a> et
-<a href="#coderef-ex10-instr2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-instr2');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-instr2');">28</a>).
+propriétés de l&rsquo;objet <code>ExecutionContext</code> sont héritées par la ligne
+<a href="#coderef-ex10-ECproto"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-ECproto');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-ECproto');">10</a>.  Ligne <a href="#coderef-ex10-getV"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-getV');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-getV');">18</a>, on définit une nouvelle fonction <code>getValue</code>
+qui va remplacer et appeler l&rsquo;originale, mais qui récupère le <i>program counter</i>
+courant soit donné en argument, soit par un appel à <code>getPC</code> si l&rsquo;argument n&rsquo;est
+pas renseigné.  De cette façon, les appels à <code>getValue</code> dans l&rsquo;interpréteur ne
+nécessitent pas de modification pour l&rsquo;argument supplémentaire, mais le code de
+l&rsquo;instrumentation peut appeler <code>getValue</code> en passant une valeur pour <code>pc</code>.
+Enfin, on installe ces modifications dans l&rsquo;environnement frontal de
+l&rsquo;interpréteur (lignes <a href="#coderef-ex10-instr1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-instr1');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-instr1');">27</a> et <a href="#coderef-ex10-instr2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex10-instr2');" onmouseout="CodeHighlightOff(this, 'coderef-ex10-instr2');">28</a>).
 </p>
 
 <p>
@@ -9615,25 +9614,24 @@ supplémentaires:
 Mais ce n&rsquo;est pas suffisant.  Dans le module de Narcissus, l&rsquo;objet <code>globalBase</code>
 est utilisé juste après sa création pour peupler l&rsquo;objet global du code client.
 Ce processus prend place dans le module, avant que les propriétés exportées ne
-soient retournées.  Hors, la façon que l&rsquo;on a d&rsquo;étendre le module ne nous permet
-de modifier que des valeurs après l&rsquo;export des propriétés.  Il nous faut donc
-modifier le code du module pour pouvoir effectuer ce changement.  Il suffit de
-fournir une fonction <code>populateEnvironment</code> qui construit l&rsquo;objet global à partir
-de <code>globalBase</code>, et qui devra être appelée après la construction du module.  Ça
-nous laisse maintenant la possibilité d&rsquo;étendre l&rsquo;objet <code>globalBase</code>.  Cette
-modification au module consiste à déplacer les 30 instructions qui peuplaient
-l&rsquo;objet global dans la fonction <code>populateEnvironment</code>, et à rajouter cette
-nouvelle fonction dans les propriétés exportées.
+soient retournées.  Or dans notre façon d&rsquo;étendre le module, on ne peut modifier
+les valeurs qu&rsquo;après l&rsquo;export.  Il nous faut donc modifier le code du module
+pour pouvoir effectuer ce changement.  Il suffit de fournir une fonction
+<code>populateEnvironment</code> qui construit l&rsquo;objet global à partir de <code>globalBase</code>, et
+qui devra être appelée après la construction du module.  Ça nous laisse
+maintenant la possibilité d&rsquo;étendre l&rsquo;objet <code>globalBase</code>.  Cette modification au
+module consiste à déplacer les 30 instructions qui peuplaient l&rsquo;objet global
+dans la fonction <code>populateEnvironment</code>, et à rajouter cette nouvelle fonction
+dans les propriétés exportées.
 </p>
 
 <p>
 Un dernier changement du module a été nécessaire, plus léger cette fois.  Une
-fonction cruciale, la fonction qui est utilisée par le code client pour
-déclencher un appel de fonction, était crée de manière <i>anonyme</i> dans le
-module.  Vu qu&rsquo;elle n&rsquo;avait pas de nom, il n&rsquo;y avait aucun moyen de la redéfinir
-de l&rsquo;extérieur du module; le motif &laquo;&nbsp;module ouvert&nbsp;&raquo; ne peut surcharger que des
-identifiants nommés.  Pour pouvoir redéfinir cette fonction, nous lui avons
-simplement donné un nom.
+fonction cruciale, la fonction utilisée par le code client pour déclencher un
+appel de fonction, était <i>anonyme</i> dans le module.  Sans nom, il n&rsquo;y avait aucun
+moyen de la redéfinir de l&rsquo;extérieur du module; le motif &laquo;&nbsp;module ouvert&nbsp;&raquo; ne peut
+surcharger que des valeurs identifiées.  Pour pouvoir redéfinir cette fonction,
+nous lui avons simplement donné un nom.
 </p>
 </div>
 </div>
@@ -9643,14 +9641,14 @@ simplement donné un nom.
 <div class="outline-text-4" id="text-9-3-2">
 <p>
 En plus de l&rsquo;évaluation multi-facettes, on a défini trois autres analyses sur
-l&rsquo;interpréteur: une analyse de flot d&rsquo;information, FlowR, décrite par Pasquier,
-Bacon et Shand [<a href="#PBS-14">PBS14</a>], une simple analyse de trace, et une analyse qui extrait
-les objets et les environnements alloués par l&rsquo;interpréteur, afin de recolter
+l&rsquo;interpréteur: une simple analyse de trace, une analyse de flot d&rsquo;information,
+FlowR, décrite par Pasquier, Bacon et Shand [<a href="#PBS-14">PBS14</a>], et une analyse qui extrait
+les objets et les environnements alloués par l&rsquo;interpréteur, afin de récolter
 les informations pour dessiner les diagrammes de cette section.
 </p>
 
 <p>
-L&rsquo;analyse de trace est la plus simple: il suffit d&rsquo;intercépter les appels à
+L&rsquo;analyse de trace est la plus simple: il suffit d&rsquo;intercepter les appels à
 <code>execute</code> pour écrire sur la sortie standard quel le type du nœud de l&rsquo;AST passé
 en paramètre, ce qui nous donne l&rsquo;ordre d&rsquo;évaluation du programme.  Puisque
 <code>execute</code> est appelée récursivement, on indente aussi la sortie suivant la
@@ -9691,7 +9689,7 @@ SCRIPT
 </pre>
 
 <p>
-Ce qui donnes suffisamment d&rsquo;information pour suivre le chemin emprunté par
+Ce qui donne suffisamment d&rsquo;information pour suivre le chemin emprunté par
 l&rsquo;interpréteur lorsqu&rsquo;il évalue ce programme.
 </p>
 
@@ -9735,8 +9733,8 @@ appels clients de <code>print</code>:
 <p>
 Il suffit ensuite d&rsquo;insérer ces redéfinitions dans l&rsquo;environnement du module.
 Comme l&rsquo;insertion est systématique pour définir une analyse, on a défini une
-légère interface d&rsquo;instrumentation, qui permet de masquer les détails de
-manipulation d&rsquo;environnements et de donner du code plus déclaratif:
+interface d&rsquo;instrumentation légère, qui permet de masquer les détails de la
+manipulation des environnements, et de donner du code plus déclaratif:
 </p>
 
 <div class="org-src-container">
@@ -9792,9 +9790,9 @@ tous les appels à <code>f</code> dans le module feront appel à <code>g</code>.
 </aside>
 
 <p>
-C&rsquo;est proche de la sémantique du <i>pointcut</i> d&rsquo;AspectJ du même nom.  Notons
-cependant qu&rsquo;ici aucun tissage ne prend place: le code n&rsquo;est pas modifié, et en
-particulier la fonction <code>a</code> n&rsquo;est pas <i>inlinée</i> dans <code>fn</code>.
+Le nom évoque le <i>pointcut</i> d&rsquo;AspectJ éponyme; l&rsquo;effet est proche.  Cependant
+ici aucun tissage ne prend place: le code de <code>fn</code> n&rsquo;est pas modifié.  On
+retourne juste une nouvelle fonction.
 </p>
 
 <p>
@@ -9859,7 +9857,7 @@ peut se plonger dans [<a href="#PBS-14">PBS14</a>].
 </aside>
 
 <p>
-Un exemple, tiré de [<a href="#PBS-14">PBS14</a>], où, après assignation des étiquettes aux objets
+Un exemple, tiré de [<a href="#PBS-14">PBS14</a>], où, après affectation des étiquettes aux objets
 <code>Patient</code> et <code>PublicData</code>, le premier appel de méthode est exécuté, mais le
 second est interrompu pour cause de flot invalide de données:
 </p>
@@ -9873,7 +9871,7 @@ setTag(Patient, 'receive', 'default', 0);
 var p = new Patient();
 var d = new PublicData();
 
-d.add(p.generate_anonymised_record());  // should pass
+d.add(p.generate_anonymized_record());  // should pass
 d.add(p.get_record());                  // should fail
 </pre>
 
@@ -9886,17 +9884,9 @@ Illegal flow: undefined to [object Object]
 Pour réaliser cette analyse, il suffit donc de permettre au code client
 d&rsquo;ajouter des étiquettes aux fonctions (via une fonction qu&rsquo;on appellera
 <code>setTag</code>), et de capturer chaque appel de fonction afin d&rsquo;appliquer
-l&rsquo;algorithme.  Dans Narcissus, l&rsquo;exécution de fonction se fait sur les nœuds de
-l&rsquo;AST de type <code>CALL</code>, traité dans <code>execute</code>.  Mais en réalité le vrai travail
-est délégué à la fonction <code>__call__</code> de l&rsquo;objet <code>FunctionObject</code>.  Pour
-intercepter les appels de fonction, on pourrait donc se greffer à l&rsquo;un ou
-l&rsquo;autre endroit.  Nous allons choisir le second, puisqu&rsquo;il nous permet
-d&rsquo;illustrer un autre motif d&rsquo;instrumentation.
-</p>
-
-<p>
-On souhaite remplacer la fonction <code>__call__</code> par notre propre version, qui
-exécute l&rsquo;algorithme de FlowR.  Voici notre version:
+l&rsquo;algorithme.  Narcissus traite l&rsquo;appel de fonction dans la fonction <code>__call__</code>
+de l&rsquo;objet <code>FunctionObject</code>.  On remplace la fonction <code>__call__</code> par notre
+propre version, qui exécute l&rsquo;algorithme de FlowR.  Voici notre version:
 </p>
 
 <div class="org-src-container">
@@ -9919,12 +9909,12 @@ Il n&rsquo;est pas utile de s&rsquo;attarder sur le code qui applique l&rsquo;al
 de simples appels à des fonctions définies dans le même module.  En revanche, on
 peut voir que l&rsquo;on fait ici appel à la fonction <code>__call__</code> d&rsquo;origine, reçue
 comme premier argument.  Donc notre <code>flowrCall</code> pourra être installé sur
-<code>FunctionObjet</code> en utilisant <code>i13n.around</code> défini plus haut.
+<code>FunctionObjet</code> en utilisant la fonction <code>i13n.around</code> définie plus haut.
 </p>
 
 <p>
 L&rsquo;objet <code>FunctionObject</code> est l&rsquo;objet à partir duquel toutes les fonctions du
-code client sont instanciées—leur objet <i>prototype</i>.  Lorse l&rsquo;interpréteur
+code client sont instanciées—leur objet <i>prototype</i>.  Lorsque l&rsquo;interpréteur
 exécute un appel de fonction, il délègue le travail à la propriété <code>__call__</code> de
 la fonction en question.  Si on installe notre version <code>flowrCall</code> sur cet
 objet, on remplace donc la fonction <code>__call__</code> sur toutes les instances de
@@ -9941,11 +9931,11 @@ comme pour l&rsquo;analyse de trace, on peut utiliser <code>i13n.delegate</code>
 </p>
 
 <p>
-Mais il y a une légère différence ici: <code>FunctionObjet</code>, contrairement
+Mais il y a une légère différence ici: <code>FunctionObjet</code>, contrairement à
 <code>globalBase</code>, est utilisé comme <i>constructeur</i> d&rsquo;objet (pour créer les fonctions
-client).  Donc il faut aussi créer notre propre constructeur.  Toute cette
-machinerie est effectuée par la fonction <code>i13n.override</code>, qui utilise simplement
-<code>around</code> et <code>delegate</code> après avoir créer le constructeur:
+clientes).  Donc il faut aussi créer notre propre constructeur.  Toute cette
+machinerie est mise en place par la fonction <code>i13n.override</code>, qui utilise
+simplement <code>around</code> et <code>delegate</code> après avoir créé le constructeur:
 </p>
 
 <div class="org-src-container">
@@ -9988,13 +9978,13 @@ Et celle-ci nous permet d&rsquo;installer l&rsquo;analyse FlowR en quatre lignes
 Les techniques que l&rsquo;on propose dans ce chapitre sont basées essentiellement sur
 la manipulation d&rsquo;environnements.  Pour mieux comprendre ces manipulations, on a
 utilisé des diagrammes qui représentent les objets et les environnements
-créés par l&rsquo;interpréteur, et leur relations.  Ces diagrammes sont un modèle
+créés par l&rsquo;interpréteur, et leurs relations.  Ces diagrammes sont un modèle
 simplifié du fonctionnement de l&rsquo;interpréteur, mais sont basés sur les
 informations récoltées par l&rsquo;analyse d&rsquo;environnements.
 </p>
 
 <p>
-L&rsquo;analyse d&rsquo;environnements est à la fois le dernier exemple d&rsquo;anayse, mais
+L&rsquo;analyse d&rsquo;environnements est à la fois le dernier exemple d&rsquo;analyse, mais
 aussi un outil qui a servi pour construire les diagrammes de ce chapitre.  On va
 donc s&rsquo;intéresser à son fonctionnement en plus de la façon de l&rsquo;implémenter sur
 l&rsquo;interpréteur.
@@ -10015,18 +10005,18 @@ paramétrer le collecte d&rsquo;objet par:
 </p>
 
 <ul class="org-ul">
-<li>une liste noire indique quels objets il n&rsquo;est pas nécessaire d&rsquo;inspecter.  Si
-l&rsquo;analyse recolte un objet présent dans la liste noire, ses propriétés ne sont
-pas collectées récursivement.  Typiquement, <code>Object.prototype</code> est un bon
-candidat pour la liste noire.</li>
+<li>une liste noire, qui indique quels objets il n&rsquo;est pas nécessaire d&rsquo;inspecter.
+Si l&rsquo;analyse récolte un objet présent dans la liste noire, ses propriétés ne
+sont pas collectées récursivement.  Typiquement, <code>Object.prototype</code> est un bon
+candidat pour la liste noire;</li>
 
-<li>une liste blanche permet d&rsquo;inspecter seulement les propriétés nommées dans un
-objet, et d&rsquo;ignorer les autres.  Quand on sait quel objet nous intéresse,
-cette liste permet de réduire considérablement le bruit dans le graphe créé.
-Dans l&rsquo;exemple ci dessous, seule la propriété <code>m</code> de l&rsquo;objet global est
-inspectée.</li>
+<li>une liste blanche, qui permet d&rsquo;inspecter seulement les propriétés nommées
+dans un objet, et d&rsquo;ignorer les autres.  Quand on sait quel objet nous
+intéresse, cette liste permet de réduire considérablement le bruit dans le
+graphe créé.  Dans l&rsquo;exemple ci dessous, seule la propriété <code>m</code> de l&rsquo;objet
+global est inspectée;</li>
 
-<li>la profondeur de recherche est le nombre d&rsquo;appels récursifs maximum quand
+<li>la profondeur de recherche, qui limite le nombre d&rsquo;appels récursifs quand
 l&rsquo;analyse suit les références d&rsquo;un environnement.  Au delà, les objets sont
 &laquo;&nbsp;opaques&nbsp;&raquo;: leurs propriétés ne sont pas affichées.  La boîte dessinée contient
 juste un identifiant unique.</li>
@@ -10109,7 +10099,7 @@ chaque appel d&rsquo;<code>execute</code>, et récoltera l&rsquo;environnement c
 <p>
 La fonction <code>printScope</code>, que l&rsquo;on rajoute dans l&rsquo;environnement client, va
 d&rsquo;abord construire le graphe en parcourant tous les objets récoltés, puis
-produire le fichier au format au DOT.
+produire le fichier au format DOT.
 </p>
 </div>
 </div>
@@ -10118,15 +10108,14 @@ produire le fichier au format au DOT.
 <h4 id="orgheadline127"><span class="section-number-4">9.3.5</span> Évaluation</h4>
 <div class="outline-text-4" id="text-9-3-5">
 <p>
-L&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes que l&rsquo;on a
-réalisé consiste en 440 lignes de code, dans un seul fichier séparé de
-l&rsquo;interpréteur; l&rsquo;instrumentation faite par Austin et Flanagan comportait 640
-lignes mêlées au code de l&rsquo;interpréteur.  Notre version factorise quelques
-changements, ce qui explique la différence.  L&rsquo;intérêt d&rsquo;avoir tous les
-changements dans un seul fichier à part c&rsquo;est qu&rsquo;on peut les étudier et avoir
-une idée de comment l&rsquo;évaluation multi-facettes vient modifier l&rsquo;interpréteur.
-On peut par exemple comparer le code de l&rsquo;instrumentation avec la sémantique de
-référence de [<a href="#AF-12">AF12</a>].
+Notre instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes consiste en
+440 lignes de code, dans un seul fichier séparé de l&rsquo;interpréteur;
+l&rsquo;instrumentation faite par Austin et Flanagan comportait 640 lignes mêlées au
+code de l&rsquo;interpréteur.  Notre version factorise quelques changements, ce qui
+explique la différence.  L&rsquo;intérêt d&rsquo;avoir tous les changements dans un seul
+fichier à part c&rsquo;est qu&rsquo;on peut les étudier et avoir une idée de comment
+l&rsquo;évaluation multi-facettes vient modifier l&rsquo;interpréteur.  On peut par exemple
+comparer le code de l&rsquo;instrumentation avec la sémantique de référence de [<a href="#AF-12">AF12</a>].
 </p>
 
 <p>
@@ -10155,7 +10144,7 @@ sémantique.
 En plus de l&rsquo;évaluation multi-facettes, on a défini trois autres analyses sur
 l&rsquo;interpréteur: une analyse de flot d&rsquo;information, une simple analyse de trace,
 et une analyse qui extrait les environnements alloués par l&rsquo;interpréteur.  On a
-pu écrire ces trois analyses ont dans des fichiers séparés, sans avoir besoin de
+pu écrire ces trois analyses dans des fichiers séparés, sans avoir besoin de
 modifier le code de l&rsquo;interpréteur.  Qui plus est, on a pu extraire des motifs
 communs d&rsquo;instrumentation de fonctions (<code>around</code>, <code>before</code>), d&rsquo;objets
 (<code>delegate</code>), ou les deux (<code>override</code>).
@@ -10202,7 +10191,7 @@ modification est compatible avec les modifications apportées par FlowR.
 Intuitivement, on voit bien que la trace est orthogonale au contrôle d&rsquo;accès
 effectué par FlowR.  C&rsquo;est pourquoi les deux analyses peuvent être activées en
 même temps sans que l&rsquo;on ait besoin de rajouter du code spécifique à
-l&rsquo;intégration de deux.  Ce n&rsquo;est pas le cas pour l&rsquo;évaluation multi-facettes et
+l&rsquo;intégration des deux.  Ce n&rsquo;est pas le cas pour l&rsquo;évaluation multi-facettes et
 FlowR.  L&rsquo;évaluation multi-facettes modifie les <i>valeurs</i> manipulées par
 l&rsquo;interpréteur, et FlowR rajoute des <i>labels</i> sur ces valeurs.  Du coup, les
 deux analyses touchent à la représentation des valeurs dans l&rsquo;interpréteur.  En
@@ -12541,7 +12530,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-27 ven. 18:38 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-05-30 lun. 15:14 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
