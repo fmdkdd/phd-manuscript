@@ -7373,21 +7373,21 @@ les chercher dans l'environnement de la FIA.  Ainsi, lorsque l'on supprime les
 propriétés ~a~ et ~f~, le dernier appel ~m.g(0)~ retourne la même valeur que le
 premier, avant les modifications.
 
-On peut se demander si l'objet parent n'apporte que de la redondance de code.
-Principalement oui.  Mais cette redondance nous apporte aussi une flexibilité
-supplémentaire par rapport au modèle.  Seules les propriétés mentionnées dans
-l'objet parent seront accessibles de l'extérieur du module, ce qui nous permet
-de contrôler quelles propriétés sont exposées.  Mais surtout, les valeurs
-exposées par l'objet parent ne sont pas forcément celles de l'environnement de
-la FIA, ce qui permet encore une fois de contrôler ce que le code externe au
-module peut voir.
+L'objet parent duplique en partie le code de l'objet exporté, mais il a
+également un effet positif.  Sur cet exemple, la redondance est mineure: les
+propriétés ajoutées tiennent sur une ligne.  Ce n'est que dans un programme qui
+exporte beaucoup de propriétés que cette redondance devient vexante.  Mais
+l'objet parent nous apporte une flexibilité supplémentaire par rapport au
+modèle: les propriétés de l'objet parent seront les seules propriétés
+accessibles de l'extérieur du module.  L'objet parent nous permet de contrôler
+la visibilité des propriétés.
 
-Enfin, puisque la chaîne de prototype d'un objet JavaScript peut être vue comme
+Enfin, puisque la chaîne de prototypes d'un objet JavaScript peut être vue comme
 une liste chaînée, on peut directement implémenter l'idée des couches
 d'environnements du modèle de la section précédente.  Dans le code suivant, on
 définit la fonction ~pushEnv(e, head)~ qui insère l'objet ~e~ comme parent de
 ~head~; la fonction ~removeEnv(e, head)~ retire l'objet ~e~ de la chaîne,
-quelque soit sa position.  Si on reprend le module ~m~ définit dans l'exemple
+quelle que soit sa position.  Si on reprend le module ~m~ défini dans l'exemple
 précédent, on peut maintenant utiliser des objets JavaScript pour grouper les
 modifications que l'on souhaite apporter au module (~e1~ et ~e2~), et utiliser
 ~pushEnv~ et ~removeEnv~ pour activer ou désactiver ces changements
@@ -7427,8 +7427,8 @@ m.g(0) //: -1
 #+END_SRC
 
 Donc ~with~ permet de réaliser l'idée de l'environnement frontal, et la chaîne
-de prototype de l'objet de liaison de ~with~ permet de disposer les
-environnements en couches.  Et grâce à ces mécanismes, on parvient à ouvrir le
+de prototypes de l'objet de liaison de ~with~ permet de disposer les
+environnements en couches.  Grâce à ces mécanismes, on parvient à ouvrir le
 motif module; on peut changer les définitions internes au module par du code
 écrit à l'extérieur.
 
@@ -7468,14 +7468,14 @@ Narcissus.interpreter = (function() {
 #+END_SRC
 
 Les changements n'affectent que le début et la fin du fichier.  Puisque le
-module exporte déjà des propriétés dans le ~return~, on y ajoute juste la
-propriété ~_env~.  Les analyses qui nous intéressent nécessitent également
-d'exposer des propriétés internes au module à travers l'objet ~_parent~ (nous en
-avons utilisé 14 en tout dans notre version instrumentée de Narcissus).  Notons
-au passage que les propriétés ~_env~ et ~_parent~ sont préfixées d'un tiret bas
-pour éviter une collision de nom avec les variables déclarées à la racine par
-Narcissus.  Mais ces lignes sont les seules modifications nécessaires à apporter
-au module pour pouvoir commencer l'instrumentation.
+module exporte déjà des propriétés, on y ajoute juste ~_env~.  Les analyses qui
+nous intéressent nécessitent également d'exposer des propriétés internes au
+module à travers l'objet ~_parent~ (nous en avons utilisé 14 en tout dans notre
+version instrumentée de Narcissus).  Notons au passage que les propriétés ~_env~
+et ~_parent~ sont préfixées d'un tiret bas pour éviter une collision de nom avec
+les variables déclarées à la racine par Narcissus.  Mais ces lignes sont les
+seules modifications nécessaires à apporter au module pour pouvoir commencer
+l'instrumentation.
 
 *** Ajouter l'analyse d'évaluation multi-facettes
 On a vu dans l'étude de cas que l'implémentation de l'évaluation multi-facettes
@@ -7518,19 +7518,18 @@ N.getValue = getValue                                     (ref:ex10-instr2)
 On commence par définir un nom raccourci ligne [[(ex10-N)]] pour l'environnement
 exporté par Narcissus.  Puis on modifie le constructeur ~ExecutionContext~ après
 avoir sauvegardé l'original ligne [[(ex10-EC)]], pour pouvoir y faire référence dans
-la nouveau constructeur, mais aussi dans ~getPC~.  Le nouveau constructeur
+le nouveau constructeur, mais aussi dans ~getPC~.  Le nouveau constructeur
 appelle le constructeur original (équivalent à un appel à ~super~ en Java) et
 ajoute la valeur courante du /program counter/ comme propriété ~pc~.  Les autres
-propriétés de l'objet ~ExecutionContext~ sont héritées grâce à l'idiome
-JavaScript ligne [[(ex10-ECproto)]].  Ligne [[(ex10-getV)]], on définit une nouvelle
-fonction ~getValue~ qui va remplacer et appeler l'originale, mais qui récupère
-le /program counter/ courant soit donné en argument, soit par un appel à ~getPC~
-si l'argument n'est pas renseigné.  De cette façon, les appels à ~getValue~ dans
-l'interpréteur ne nécessitent pas de modification pour l'argument
-supplémentaire, mais le code de l'instrumentation peut appeler ~getValue~ en
-passant une valeur pour ~pc~.  Enfin, on installe ces modifications dans
-l'environnement frontal de l'interpréteur (lignes [[(ex10-instr1)]] et
-[[(ex10-instr2)]]).
+propriétés de l'objet ~ExecutionContext~ sont héritées par la ligne
+[[(ex10-ECproto)]].  Ligne [[(ex10-getV)]], on définit une nouvelle fonction ~getValue~
+qui va remplacer et appeler l'originale, mais qui récupère le /program counter/
+courant soit donné en argument, soit par un appel à ~getPC~ si l'argument n'est
+pas renseigné.  De cette façon, les appels à ~getValue~ dans l'interpréteur ne
+nécessitent pas de modification pour l'argument supplémentaire, mais le code de
+l'instrumentation peut appeler ~getValue~ en passant une valeur pour ~pc~.
+Enfin, on installe ces modifications dans l'environnement frontal de
+l'interpréteur (lignes [[(ex10-instr1)]] et [[(ex10-instr2)]]).
 
 La seconde catégorie de changements concernait l'extension de la fonction
 ~execute~ pour chaque nœud de l'AST, dans le but de scinder l'évaluation des
@@ -7589,32 +7588,31 @@ N.globalBase = globalBase
 Mais ce n'est pas suffisant.  Dans le module de Narcissus, l'objet ~globalBase~
 est utilisé juste après sa création pour peupler l'objet global du code client.
 Ce processus prend place dans le module, avant que les propriétés exportées ne
-soient retournées.  Hors, la façon que l'on a d'étendre le module ne nous permet
-de modifier que des valeurs après l'export des propriétés.  Il nous faut donc
-modifier le code du module pour pouvoir effectuer ce changement.  Il suffit de
-fournir une fonction ~populateEnvironment~ qui construit l'objet global à partir
-de ~globalBase~, et qui devra être appelée après la construction du module.  Ça
-nous laisse maintenant la possibilité d'étendre l'objet ~globalBase~.  Cette
-modification au module consiste à déplacer les 30 instructions qui peuplaient
-l'objet global dans la fonction ~populateEnvironment~, et à rajouter cette
-nouvelle fonction dans les propriétés exportées.
+soient retournées.  Or dans notre façon d'étendre le module, on ne peut modifier
+les valeurs qu'après l'export.  Il nous faut donc modifier le code du module
+pour pouvoir effectuer ce changement.  Il suffit de fournir une fonction
+~populateEnvironment~ qui construit l'objet global à partir de ~globalBase~, et
+qui devra être appelée après la construction du module.  Ça nous laisse
+maintenant la possibilité d'étendre l'objet ~globalBase~.  Cette modification au
+module consiste à déplacer les 30 instructions qui peuplaient l'objet global
+dans la fonction ~populateEnvironment~, et à rajouter cette nouvelle fonction
+dans les propriétés exportées.
 
 Un dernier changement du module a été nécessaire, plus léger cette fois.  Une
-fonction cruciale, la fonction qui est utilisée par le code client pour
-déclencher un appel de fonction, était crée de manière /anonyme/ dans le
-module.  Vu qu'elle n'avait pas de nom, il n'y avait aucun moyen de la redéfinir
-de l'extérieur du module; le motif "module ouvert" ne peut surcharger que des
-identifiants nommés.  Pour pouvoir redéfinir cette fonction, nous lui avons
-simplement donné un nom.
+fonction cruciale, la fonction utilisée par le code client pour déclencher un
+appel de fonction, était /anonyme/ dans le module.  Sans nom, il n'y avait aucun
+moyen de la redéfinir de l'extérieur du module; le motif "module ouvert" ne peut
+surcharger que des valeurs identifiées.  Pour pouvoir redéfinir cette fonction,
+nous lui avons simplement donné un nom.
 
 *** Ajouter l'analyse de trace
 En plus de l'évaluation multi-facettes, on a défini trois autres analyses sur
-l'interpréteur: une analyse de flot d'information, FlowR, décrite par Pasquier,
-Bacon et Shand [[cite:PBS-14][PBS-14]], une simple analyse de trace, et une analyse qui extrait
-les objets et les environnements alloués par l'interpréteur, afin de recolter
+l'interpréteur: une simple analyse de trace, une analyse de flot d'information,
+FlowR, décrite par Pasquier, Bacon et Shand [[cite:PBS-14][PBS-14]], et une analyse qui extrait
+les objets et les environnements alloués par l'interpréteur, afin de récolter
 les informations pour dessiner les diagrammes de cette section.
 
-L'analyse de trace est la plus simple: il suffit d'intercépter les appels à
+L'analyse de trace est la plus simple: il suffit d'intercepter les appels à
 ~execute~ pour écrire sur la sortie standard quel le type du nœud de l'AST passé
 en paramètre, ce qui nous donne l'ordre d'évaluation du programme.  Puisque
 ~execute~ est appelée récursivement, on indente aussi la sortie suivant la
@@ -7649,7 +7647,7 @@ SCRIPT
           IDENTIFIER a
 #+END_EXAMPLE
 
-Ce qui donnes suffisamment d'information pour suivre le chemin emprunté par
+Ce qui donne suffisamment d'information pour suivre le chemin emprunté par
 l'interpréteur lorsqu'il évalue ce programme.
 
 La nouvelle version de la fonction ~execute~ est simple:
@@ -7683,8 +7681,8 @@ function printStdout(...args) {
 
 Il suffit ensuite d'insérer ces redéfinitions dans l'environnement du module.
 Comme l'insertion est systématique pour définir une analyse, on a défini une
-légère interface d'instrumentation, qui permet de masquer les détails de
-manipulation d'environnements et de donner du code plus déclaratif:
+interface d'instrumentation légère, qui permet de masquer les détails de la
+manipulation des environnements, et de donner du code plus déclaratif:
 
 #+BEGIN_SRC js
 i13n.pushLayer(_env, {
@@ -7726,9 +7724,9 @@ f(a, b, ...) => g(f, a, b, ...)
 #+END_SRC
 #+END_aside
 
-C'est proche de la sémantique du /pointcut/ d'AspectJ du même nom.  Notons
-cependant qu'ici aucun tissage ne prend place: le code n'est pas modifié, et en
-particulier la fonction ~a~ n'est pas /inlinée/ dans ~fn~.
+Le nom évoque le /pointcut/ d'AspectJ éponyme; l'effet est proche.  Cependant
+ici aucun tissage ne prend place: le code de ~fn~ n'est pas modifié.  On
+retourne juste une nouvelle fonction.
 
 L'autre motif récurrent est l'extension d'un objet défini par l'interpréteur.
 On pourrait directement ajouter notre nouvelle propriété dans l'objet en
@@ -7775,7 +7773,7 @@ fonctionnement de l'analyse pour la suite.  Le lecteur intéressé par ces déta
 peut se plonger dans [[cite:PBS-14][PBS-14]].
 #+END_aside
 
-Un exemple, tiré de [[cite:PBS-14][PBS-14]], où, après assignation des étiquettes aux objets
+Un exemple, tiré de [[cite:PBS-14][PBS-14]], où, après affectation des étiquettes aux objets
 ~Patient~ et ~PublicData~, le premier appel de méthode est exécuté, mais le
 second est interrompu pour cause de flot invalide de données:
 
@@ -7788,7 +7786,7 @@ setTag(Patient, 'receive', 'default', 0);
 var p = new Patient();
 var d = new PublicData();
 
-d.add(p.generate_anonymised_record());  // should pass
+d.add(p.generate_anonymized_record());  // should pass
 d.add(p.get_record());                  // should fail
 #+END_EXAMPLE
 
@@ -7800,15 +7798,9 @@ Illegal flow: undefined to [object Object]
 Pour réaliser cette analyse, il suffit donc de permettre au code client
 d'ajouter des étiquettes aux fonctions (via une fonction qu'on appellera
 ~setTag~), et de capturer chaque appel de fonction afin d'appliquer
-l'algorithme.  Dans Narcissus, l'exécution de fonction se fait sur les nœuds de
-l'AST de type ~CALL~, traité dans ~execute~.  Mais en réalité le vrai travail
-est délégué à la fonction ~__call__~ de l'objet ~FunctionObject~.  Pour
-intercepter les appels de fonction, on pourrait donc se greffer à l'un ou
-l'autre endroit.  Nous allons choisir le second, puisqu'il nous permet
-d'illustrer un autre motif d'instrumentation.
-
-On souhaite remplacer la fonction ~__call__~ par notre propre version, qui
-exécute l'algorithme de FlowR.  Voici notre version:
+l'algorithme.  Narcissus traite l'appel de fonction dans la fonction ~__call__~
+de l'objet ~FunctionObject~.  On remplace la fonction ~__call__~ par notre
+propre version, qui exécute l'algorithme de FlowR.  Voici notre version:
 
 #+BEGIN_SRC js
 function flowrCall(__call__, receiver, args, caller) {
@@ -7827,10 +7819,10 @@ Il n'est pas utile de s'attarder sur le code qui applique l'algorithme; ce sont
 de simples appels à des fonctions définies dans le même module.  En revanche, on
 peut voir que l'on fait ici appel à la fonction ~__call__~ d'origine, reçue
 comme premier argument.  Donc notre ~flowrCall~ pourra être installé sur
-~FunctionObjet~ en utilisant ~i13n.around~ défini plus haut.
+~FunctionObjet~ en utilisant la fonction ~i13n.around~ définie plus haut.
 
 L'objet ~FunctionObject~ est l'objet à partir duquel toutes les fonctions du
-code client sont instanciées—leur objet /prototype/.  Lorse l'interpréteur
+code client sont instanciées—leur objet /prototype/.  Lorsque l'interpréteur
 exécute un appel de fonction, il délègue le travail à la propriété ~__call__~ de
 la fonction en question.  Si on installe notre version ~flowrCall~ sur cet
 objet, on remplace donc la fonction ~__call__~ sur toutes les instances de
@@ -7843,11 +7835,11 @@ nouvelle version ~flowrCall~, et déléguer le reste des propriétés à l'objet
 avec ~i13n.pushLayer~, ce qui permettra de pouvoir le retirer dynamiquement.  Et
 comme pour l'analyse de trace, on peut utiliser ~i13n.delegate~ pour cela.
 
-Mais il y a une légère différence ici: ~FunctionObjet~, contrairement
+Mais il y a une légère différence ici: ~FunctionObjet~, contrairement à
 ~globalBase~, est utilisé comme /constructeur/ d'objet (pour créer les fonctions
-client).  Donc il faut aussi créer notre propre constructeur.  Toute cette
-machinerie est effectuée par la fonction ~i13n.override~, qui utilise simplement
-~around~ et ~delegate~ après avoir créer le constructeur:
+clientes).  Donc il faut aussi créer notre propre constructeur.  Toute cette
+machinerie est mise en place par la fonction ~i13n.override~, qui utilise
+simplement ~around~ et ~delegate~ après avoir créé le constructeur:
 
 #+BEGIN_SRC js
 function override(base, methods) {
@@ -7878,11 +7870,11 @@ i13n.pushLayer(_env, {
 Les techniques que l'on propose dans ce chapitre sont basées essentiellement sur
 la manipulation d'environnements.  Pour mieux comprendre ces manipulations, on a
 utilisé des diagrammes qui représentent les objets et les environnements
-créés par l'interpréteur, et leur relations.  Ces diagrammes sont un modèle
+créés par l'interpréteur, et leurs relations.  Ces diagrammes sont un modèle
 simplifié du fonctionnement de l'interpréteur, mais sont basés sur les
 informations récoltées par l'analyse d'environnements.
 
-L'analyse d'environnements est à la fois le dernier exemple d'anayse, mais
+L'analyse d'environnements est à la fois le dernier exemple d'analyse, mais
 aussi un outil qui a servi pour construire les diagrammes de ce chapitre.  On va
 donc s'intéresser à son fonctionnement en plus de la façon de l'implémenter sur
 l'interpréteur.
@@ -7897,18 +7889,18 @@ objets font partie de l'API standard offerte par le langage, comme ~Array~ ou
 propriétés, quand on s'intéresse au fonctionnement de ~with~.  On peut donc
 paramétrer le collecte d'objet par:
 
-- une liste noire indique quels objets il n'est pas nécessaire d'inspecter.  Si
-  l'analyse recolte un objet présent dans la liste noire, ses propriétés ne sont
-  pas collectées récursivement.  Typiquement, ~Object.prototype~ est un bon
-  candidat pour la liste noire.
+- une liste noire, qui indique quels objets il n'est pas nécessaire d'inspecter.
+  Si l'analyse récolte un objet présent dans la liste noire, ses propriétés ne
+  sont pas collectées récursivement.  Typiquement, ~Object.prototype~ est un bon
+  candidat pour la liste noire;
 
-- une liste blanche permet d'inspecter seulement les propriétés nommées dans un
-  objet, et d'ignorer les autres.  Quand on sait quel objet nous intéresse,
-  cette liste permet de réduire considérablement le bruit dans le graphe créé.
-  Dans l'exemple ci dessous, seule la propriété ~m~ de l'objet global est
-  inspectée.
+- une liste blanche, qui permet d'inspecter seulement les propriétés nommées
+  dans un objet, et d'ignorer les autres.  Quand on sait quel objet nous
+  intéresse, cette liste permet de réduire considérablement le bruit dans le
+  graphe créé.  Dans l'exemple ci dessous, seule la propriété ~m~ de l'objet
+  global est inspectée;
 
-- la profondeur de recherche est le nombre d'appels récursifs maximum quand
+- la profondeur de recherche, qui limite le nombre d'appels récursifs quand
   l'analyse suit les références d'un environnement.  Au delà, les objets sont
   "opaques": leurs propriétés ne sont pas affichées.  La boîte dessinée contient
   juste un identifiant unique.
@@ -7976,18 +7968,17 @@ chaque appel d'~execute~, et récoltera l'environnement courant.
 
 La fonction ~printScope~, que l'on rajoute dans l'environnement client, va
 d'abord construire le graphe en parcourant tous les objets récoltés, puis
-produire le fichier au format au DOT.
+produire le fichier au format DOT.
 
 *** Évaluation
-L'instrumentation de Narcissus pour l'évaluation multi-facettes que l'on a
-réalisé consiste en 440 lignes de code, dans un seul fichier séparé de
-l'interpréteur; l'instrumentation faite par Austin et Flanagan comportait 640
-lignes mêlées au code de l'interpréteur.  Notre version factorise quelques
-changements, ce qui explique la différence.  L'intérêt d'avoir tous les
-changements dans un seul fichier à part c'est qu'on peut les étudier et avoir
-une idée de comment l'évaluation multi-facettes vient modifier l'interpréteur.
-On peut par exemple comparer le code de l'instrumentation avec la sémantique de
-référence de [[cite:AF-12][AF-12]].
+Notre instrumentation de Narcissus pour l'évaluation multi-facettes consiste en
+440 lignes de code, dans un seul fichier séparé de l'interpréteur;
+l'instrumentation faite par Austin et Flanagan comportait 640 lignes mêlées au
+code de l'interpréteur.  Notre version factorise quelques changements, ce qui
+explique la différence.  L'intérêt d'avoir tous les changements dans un seul
+fichier à part c'est qu'on peut les étudier et avoir une idée de comment
+l'évaluation multi-facettes vient modifier l'interpréteur.  On peut par exemple
+comparer le code de l'instrumentation avec la sémantique de référence de [[cite:AF-12][AF-12]].
 
 Pour ajouter l'évaluation multi-facettes, on a ajouté 19 lignes à Narcissus pour
 ouvrir le module avec ~with~, et changé 32 lignes pour ajouter la fonction
@@ -8011,7 +8002,7 @@ sémantique.
 En plus de l'évaluation multi-facettes, on a défini trois autres analyses sur
 l'interpréteur: une analyse de flot d'information, une simple analyse de trace,
 et une analyse qui extrait les environnements alloués par l'interpréteur.  On a
-pu écrire ces trois analyses ont dans des fichiers séparés, sans avoir besoin de
+pu écrire ces trois analyses dans des fichiers séparés, sans avoir besoin de
 modifier le code de l'interpréteur.  Qui plus est, on a pu extraire des motifs
 communs d'instrumentation de fonctions (~around~, ~before~), d'objets
 (~delegate~), ou les deux (~override~).
@@ -8049,7 +8040,7 @@ modification est compatible avec les modifications apportées par FlowR.
 Intuitivement, on voit bien que la trace est orthogonale au contrôle d'accès
 effectué par FlowR.  C'est pourquoi les deux analyses peuvent être activées en
 même temps sans que l'on ait besoin de rajouter du code spécifique à
-l'intégration de deux.  Ce n'est pas le cas pour l'évaluation multi-facettes et
+l'intégration des deux.  Ce n'est pas le cas pour l'évaluation multi-facettes et
 FlowR.  L'évaluation multi-facettes modifie les /valeurs/ manipulées par
 l'interpréteur, et FlowR rajoute des /labels/ sur ces valeurs.  Du coup, les
 deux analyses touchent à la représentation des valeurs dans l'interpréteur.  En
