@@ -38,9 +38,7 @@ different person then.'
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
    - [[#modéliser-le-monde-la-programmation-objet][Modéliser le monde: la programmation objet]]
      - [[#stable-classes-et-héritage-smalltak][STABLE Classes et héritage: Smalltak]]
-     - [[#bare-objects-et-prototypes-self][BARE Objects et prototypes: Self]]
-     - [[#translate-self][TRANSLATE Self]]
-       - [[#mechanisms-for-extension][Mechanisms for extension]]
+     - [[#stable-prototypes-et-délégation-self][STABLE Prototypes et délégation: Self]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
      - [[#translate-reflection][TRANSLATE Reflection]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
@@ -80,13 +78,13 @@ different person then.'
      - [[#bare-domain-specific-languages][BARE Domain-specific languages]]
      - [[#bare-scripting-languages][BARE Scripting languages]]
      - [[#translate-emacs][TRANSLATE Emacs]]
-        - [[#mechanisms-for-extension-1][Mechanisms for extension]]
+        - [[#mechanisms-for-extension][Mechanisms for extension]]
      - [[#translate-eclipse-and-other-ides][TRANSLATE Eclipse and other IDEs]]
-       - [[#mechanisms-for-extension-2][Mechanisms for extension]]
+       - [[#mechanisms-for-extension-1][Mechanisms for extension]]
      - [[#bare-web-browsers][BARE Web browsers]]
-       - [[#mechanisms-for-extension-3][Mechanisms for extension]]
+       - [[#mechanisms-for-extension-2][Mechanisms for extension]]
      - [[#translate-lua][TRANSLATE Lua]]
-        - [[#mechanisms-for-extension-4][Mechanisms for extension]]
+        - [[#mechanisms-for-extension-3][Mechanisms for extension]]
  - [[#unstable-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNSTABLE Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#translate-construire-un-interpréteur-extensible][TRANSLATE Construire un interpréteur extensible]]
      - [[#finding-a-core-example][Finding a core example]]
@@ -806,10 +804,9 @@ en LISP permet d'exécuter du texte construit dynamiquement; les premières
 versions de Smalltalk permettaient de traiter la syntaxe à l'exécution de la
 même manière.
 
-*** BARE Objects et prototypes: Self
+*** STABLE Prototypes et délégation: Self
 On peut faire de la programmation par objets sans classes et sans héritage.  Les
-langages /à prototypes/, comme Self, poursuivent l'approche du tout objet et
-la généralise.
+langages /à prototypes/ poursuivent l'approche du tout objet et la généralise.
 
 Taivalsaari [[cite:Tai-97][Tai-97]] voit, entre ces deux approches, une distinction
 philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l'école
@@ -833,8 +830,7 @@ Wittgenstein propose la notion de /ressemblance familière/.  La chose n'est pas
 déterminée par une définition absolue, mais par ses similarités avec des
 prototypes représentatifs.
 
-De cette distinction philosophique, Taivalsaari tire les conclusions suivantes
-sur la programmation par objets:
+De cette distinction philosophique, Taivalsaari tire trois conclusions:
 
 - Il n'y a pas de hiérarchie de classe optimale.  Le choix est subjectif et
   dépend non seulement des besoins de l'application, mais surtout de son
@@ -848,114 +844,96 @@ sur la programmation par objets:
 
 - Les prototypes correspondent davantage au processus de réflexion humain.  En
   abordant un domaine, on ne commence pas par établir des classes abstraites qui
-  capturent l'essence des objets considérés.  On part plutôt d'exemples, de cas
-  particuliers, que l'on relie entre eux par similarités, et en dernier vient la
-  généralisation.
+  capturent l'essence des objets considérés.  On part d'exemples, de cas
+  particuliers, que l'on relie entre eux par similarités.  Et ce n'est qu'après
+  avoir accumulé de nombreux exemples que leurs similarités résonnent
+  suffisamment pour qu'émergent des formes abstraites.  La généralisation est
+  la dernière étape de la réflexion.
 
-Le dernier point est appuyé par Lieberman
 
------
+Ces conclusions suggèrent que les langages à prototypes sont plus flexibles pour
+modéliser le monde.  Les classes sont trop rigides, trop abstraites; la
+flexibilité découle des /prototypes/.  Ce point de vue fait écho à Lieberman
+[[cite:Lie-86][Lie-86]], qui illustre la différence entre les deux mécanismes à l'aide d'un
+éléphant nommé Clyde.
 
-[[cite:DMB-98][DMB-98]] tries to classify prototype-based languages (ironically).  Prototype-base
-d languages are advantageous for describing exceptional instances, multiple
-points of view of the same entity, and incomplete objects.
+Si je rencontre Clyde l'éléphant, je vais construire un modèle mental de Clyde
+qui contiendra tout ce que j'ai appris sur lui: sa taille, la couleur de sa
+peau, son nombre de pattes, la forme de ses oreilles, etc.  Ce savoir, je peux
+le réutiliser lorsque je rencontre un autre éléphant, Fred.  Mais comment ce
+partage s'effectue exactement?  De deux façons: on peut utiliser les classes, ou
+les prototypes.
 
-They identify the following mechanisms common to prototype-based languages:
-- message passing
-- 3 ways of creating objects (ex nihilo, cloning, and extension)
-- delegation
-- dynamic dispatch
+En utilisant les classes, on construit le concept abstrait d'/éléphant/, qui
+contient toutes les propriétés que l'on juge essentielles aux éléphants.  Clyde
+et Fred sont des /instances/ de ce concept (cette classe); l'instantiation est
+un premier mécanisme de partage du savoir.  Le second est l'héritage: si Fred et
+Clyde ont des propriétés communes, non essentielles, comme des grandes oreilles,
+alors je peux créer un sous-concept d'éléphant /africain/ qui hérite du
+concept d'éléphant pour les représenter spécifiquement.
 
-Prototype-based languages also introduce new issues:
-- Fragmented entities.  Since objects are described differentially, no single
-  object in the system reify the complete entity.  To clone it completely, we
-  would need to clone all its parts, but they are not reified (e.g., traits
-  objects are only conventions, not language primitives).
-- Sharing between clones of the same object.
-- Sharing between clones of different objects.
+En utilisant les prototypes, je ne crée pas de concepts.  Si Clyde est le
+premier éléphant que je rencontre, il devient mon /prototype/ d'éléphant.  Si on
+me demande la couleur d'un éléphant, je suppose qu'ils sont tous de la même
+couleur que Clyde, et je réponds "gris".  Fred est aussi un éléphant, et il
+ressemble beaucoup à Clyde.  Je lie les deux en disant que Clyde est le
+prototype de Fred; il est /comme/ Clyde, mais avec un nom différent.  Si Fred a
+d'autres particularités, s'il lui manque une dent, je l'inscris seulement dans
+sa représentation.  Si on me demande combien de dents a Fred, je n'ai besoin que
+d'inspecter la représentation de Fred.  Mais si on me demande combien de pattes
+a Fred, il a en a autant que Clyde, son prototype.  L'information non spécifique
+à Fred est sauvegardée par le prototype: c'est le mécanisme de /délégation/.
 
-*** TRANSLATE Self
-The power of simplicity [[cite:US-91][US-91]].
+Dony, Malenfant et Bardou [[cite:DMB-98][DMB-98]] recensent les langages à prototypes pour en
+déterminer les caractéristiques.  Ils identifient notamment trois façons de
+créer des objets.  On en a déjà vu deux: créer un objet /ex nihilo/ (Clyde), et
+par /extension/ d'un autre (Fred à partir de Clyde).  La troisième façon est le
+/clonage/: créer un nouvel objet qui possède des copies profondes des propriétés
+de l'original.  Modifier le clone n'affecte pas l'original, alors que modifier
+un objet créé par extension peut modifier son prototype.
 
-Prototypes can emulate class hierarchies.
+Self [[cite:US-91][US-91]], est un langage à prototypes plutôt représentatif (un prototype de
+cette classe de langages?).  Comme en Smalltalk, tout est objet.  Mais à
+l'inverse de Smalltalk, il n'y a pas de classes.  Le programmeur ne crée pas une
+hiérarchie de concepts, mais des familles d'objets.  Cette absence de structure
+est un avantage dans un processus de développement interactif: on peut raffiner
+les objets à l'exécution.  Mais c'est aussi un inconvénient en pratique:
 
-Pure object-oriented language.  No variables, but slots containing objects that
-return themselves.
-
-No classes.  No control structure.
-
-The absence of distinction may not be a good thing in practice:
 #+BEGIN_QUOTE
-The absence of class-instance distinction may make it too hard to understand
-which objects exist solely to provide shared information for other objects.
-Perhaps SELF programmers will create entirely new organizational structures.  In
-any case, SELF's flexibility poses a challenge to the programming environment;
-it will have to include navigational and descriptive aids.
-
-[later, in the conclusion]
-
 Reducing the number of basic concepts in a language can make the language easier
 to explain, understand, and use.  However, there is a tension between making the
 language simpler and making the organization of a system manifest.  As the
 variety of constructs decreases, so does the variety of linguistic clues to a
 system's structure.
+
+[...]
+
+The absence of class-instance distinction may make it too hard to understand
+which objects exist solely to provide shared information for other objects.
+Perhaps SELF programmers will create entirely new organizational structures.  In
+any case, SELF's flexibility poses a challenge to the programming environment;
+it will have to include navigational and descriptive aids.
 #+END_QUOTE
 
-They cite [[cite:UCC+91][UCC+91]] for pointers on structuring programs in SELF.
+Les langages à prototypes sont particulièrement adaptés pour représenter des
+objets qui ont un comportement unique.  Mais il arrive souvent que l'on doivent
+gérer de nombreux objets similaires.  Les concepteurs de Self décrivent une
+façon de structurer ces objets à l'aide de /traits/ [[cite:UCC+91][UCC+91]].  Un trait est un
+objet qui regroupe les méthodes utilisées par plusieurs objets.  On crée ensuite
+un objet prototype qui étend ce trait, et fournit une implémentation et des
+valeurs d'attributs par défaut.  Tous les objets de la même famille étendent ce
+prototype.  Cette structure permet de séparer les méthodes (le comportement) des
+attributs (l'état).
 
-Classes are abstract description of objects, but prototypes are always
-concrete.  Each object is an example, and can be easily cloned.  Class
-hierarchies are hard, and impose a structure; prototypes less so.
+L'idée est proche des traits en Smalltalk, sauf qu'en Smalltalk le langage fait
+une distinction syntaxique entre classes, traits, et instances, alors qu'en Self
+ce sont tous des objets qui ont juste des rôles différents.
 
-Classes forces you to create a template, even when you deal with several objects
-with unique behavior.
-
-Activation records for methods inherit from the receiver object, so the receiver
-is on the chain for binding lookup.
-
-They note that they could build "class-like" objects that hold code to create
-new clones, and also hold the shared behavior, though they "do not believe this
-is the best way to construct a system".
-
-In [[cite:UCC+91][UCC+91]], the following organization is described:
-- Traits object for methods (shared by all instances of an object).
-- A prototype object with a default implementation.
-- Instances are created from cloning the prototype.
-
-Abstract objects dispense of the prototype, and singleton objects contain
-methods and state without providing a copy method.
-
-They note that OO supports "differential programming", which is to define new
-data types as differences from existing data types.  In Smalltalk, differential
-programming is achieved through subclassing.  In SELF, they call it "refining
-traits objects", but the mechanism is delegation through the parent link.
-
-An oddity: they state that parent links are constant, though the introduce a
-=dataParent= setter in figure 3.  Later they say that parent slot are like other
-data slots, assignable.
-
-Prototypes allow for multiple behavior modes, through dynamic inheritance
-switching.  Behavior modes enhance the clarity of the code, though they do not
-comment on the potential performance costs.
-
-**** Mechanisms for extension
-Prototypes, and message passing.  Prototypes are more general and simpler than
-inheritance.
-
-However prototypes do not originate with SELF [[cite:Bor-86][Bor-86]] [[cite:Lie-86][Lie-86]].
-
-[[cite:Lie-86][Lie-86]] makes a good case for prototypes as being a simpler model to learn, as
-well as being more intuitive.  Humans derive general concepts from examples, not
-the other way around.  Class-based languages require you to commit to the
-concepts first.
-
-Prototype-based and class-based languages provide different mechanisms for
-realizing differential programming,
-
-Is differential programming sufficient to solve the problem of modular
-instrumentation?  In the case of Narcissus, it was not, since the interpreter
-was not OO.  But the open scope pattern might be equivalent, dynamically, to
-inheritance.
+Les concepteurs de Self remarquent que le mécanisme de délégation est plus
+général que l'héritage.  Le premier peut émuler le second, mais l'inverse n'est
+pas possible.  Si le langage permet de modifier le lien de prototype après la
+création d'un objet, on a une solution élégante au patron de conception /State/:
+le /mode-switching/ (voir ??).
 
 ** Réifier le langage pour séparer les préoccupations
 #+CAPTION: Le baron de Münchhausen évite la noyade en se hissant par les
