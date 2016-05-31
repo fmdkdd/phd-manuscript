@@ -36,9 +36,9 @@ different person then.'
  - [[#contexte][Contexte]]
    - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
-   - [[#modéliser-le-monde-la-programmation-objet][Modéliser le monde: la programmation objet]]
-     - [[#stable-classes-et-héritage-smalltak][STABLE Classes et héritage: Smalltak]]
-     - [[#stable-prototypes-et-délégation-self][STABLE Prototypes et délégation: Self]]
+   - [[#stable-modéliser-le-monde-la-programmation-objet][STABLE Modéliser le monde: la programmation objet]]
+     - [[#classes-et-héritage-smalltak][Classes et héritage: Smalltak]]
+     - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
      - [[#translate-reflection][TRANSLATE Reflection]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
@@ -596,13 +596,13 @@ Mais peut-être que Knuth s'en est lui-même rendu compte.  Le langage du futur
 Programming qui permet de mêler une description haut-niveau du programme en
 toutes lettres et code machine bas-niveau.
 
-** Modéliser le monde: la programmation objet
+** STABLE Modéliser le monde: la programmation objet
 #+BEGIN_full-figure
 #+CAPTION: L'École d'Athènes. Raphaël, 1509--1510.
 [[file:img/scuola.jpg]]
 #+END_full-figure
 
-*** STABLE Classes et héritage: Smalltak
+*** Classes et héritage: Smalltak
 #+BEGIN_epigraph
 Classification is the objectification of {{{emph(ness)}}}ness. — [[cite:Ing-81][Ing-81]]
 #+END_epigraph
@@ -804,7 +804,7 @@ en LISP permet d'exécuter du texte construit dynamiquement; les premières
 versions de Smalltalk permettaient de traiter la syntaxe à l'exécution de la
 même manière.
 
-*** STABLE Prototypes et délégation: Self
+*** Prototypes et délégation: Self
 On peut faire de la programmation par objets sans classes et sans héritage.  Les
 langages /à prototypes/ poursuivent l'approche du tout objet et la généralise.
 
@@ -872,17 +872,34 @@ Clyde ont des propriétés communes, non essentielles, comme des grandes oreille
 alors je peux créer un sous-concept d'éléphant /africain/ qui hérite du
 concept d'éléphant pour les représenter spécifiquement.
 
+#+ATTR_HTML: :style margin-top:-14rem
+#+BEGIN_side-figure
+#+CAPTION: Dans des langages à classes, on réifie le concept d'éléphant
+#+CAPTION: (et même des sous-concept) avant de pouvoir manipuler les objets
+#+CAPTION: qui représentent Clyde et Fred.  Les deux mécanismes de partage
+#+CAPTION: sont l'héritage et l'instantiation.
+[[file:img/self0.svg]]
+#+END_side-figure
+
 En utilisant les prototypes, je ne crée pas de concepts.  Si Clyde est le
 premier éléphant que je rencontre, il devient mon /prototype/ d'éléphant.  Si on
 me demande la couleur d'un éléphant, je suppose qu'ils sont tous de la même
 couleur que Clyde, et je réponds "gris".  Fred est aussi un éléphant, et il
 ressemble beaucoup à Clyde.  Je lie les deux en disant que Clyde est le
 prototype de Fred; il est /comme/ Clyde, mais avec un nom différent.  Si Fred a
-d'autres particularités, s'il lui manque une dent, je l'inscris seulement dans
-sa représentation.  Si on me demande combien de dents a Fred, je n'ai besoin que
+d'autres particularités, s'il a la peau bleue, je l'inscris seulement dans sa
+représentation.  Si on me demande la couleur de Fred, je n'ai besoin que
 d'inspecter la représentation de Fred.  Mais si on me demande combien de pattes
 a Fred, il a en a autant que Clyde, son prototype.  L'information non spécifique
 à Fred est sauvegardée par le prototype: c'est le mécanisme de /délégation/.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_side-figure
+#+CAPTION: Dans les langages à prototype, on manipule directement les
+#+CAPTION: objets qui représentent Clyde et Fred.  Le mécanisme essentiel
+#+CAPTION: de partage est la délégation.
+[[file:img/self1.svg]]
+#+END_side-figure
 
 Dony, Malenfant et Bardou [[cite:DMB-98][DMB-98]] recensent les langages à prototypes pour en
 déterminer les caractéristiques.  Ils identifient notamment trois façons de
@@ -924,6 +941,11 @@ un objet prototype qui étend ce trait, et fournit une implémentation et des
 valeurs d'attributs par défaut.  Tous les objets de la même famille étendent ce
 prototype.  Cette structure permet de séparer les méthodes (le comportement) des
 attributs (l'état).
+
+#+ATTR_HTML: :style margin-top:-13rem
+#+BEGIN_side-figure
+[[file:img/self2.svg]]
+#+END_side-figure
 
 L'idée est proche des traits en Smalltalk, sauf qu'en Smalltalk le langage fait
 une distinction syntaxique entre classes, traits, et instances, alors qu'en Self
