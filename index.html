@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-05-31 mar. 15:33 -->
+<!-- 2016-06-01 mer. 19:28 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -162,13 +162,13 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline7">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</a></li>
 <li><a href="#orgheadline10">2.3. <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation objet</a>
 <ul>
-<li><a href="#orgheadline8">2.3.1. Classes et héritage: Smalltak</a></li>
+<li><a href="#Smalltalk">2.3.1. Classes et héritage: Smalltak</a></li>
 <li><a href="#orgheadline9">2.3.2. Prototypes et délégation: Self</a></li>
 </ul>
 </li>
 <li><a href="#orgheadline20">2.4. Réifier le langage pour séparer les préoccupations</a>
 <ul>
-<li><a href="#orgheadline11">2.4.1. <span class="todo TRANSLATE">TRANSLATE</span> Reflection</a></li>
+<li><a href="#orgheadline11">2.4.1. <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</a></li>
 <li><a href="#orgheadline12">2.4.2. <span class="done STABLE">STABLE</span> L&rsquo;implémentation ouverte</a></li>
 <li><a href="#orgheadline19">2.4.3. <span class="done STABLE">STABLE</span> La programmation par aspects</a></li>
 </ul>
@@ -851,8 +851,8 @@ toutes lettres et code machine bas-niveau.
 </div>
 
 <div id="outline-container-orgheadline8" class="outline-4">
-<h4 id="orgheadline8"><span class="section-number-4">2.3.1</span> Classes et héritage: Smalltak</h4>
-<div class="outline-text-4" id="text-2-3-1">
+<h4 id="Smalltalk"><a id="orgheadline8"></a><span class="section-number-4">2.3.1</span> Classes et héritage: Smalltak</h4>
+<div class="outline-text-4" id="text-Smalltalk">
 <div class="epigraph">
 <p>
 Classification is the objectification of  <i>ness</i>ness. — [<a href="#Ing-81">Ing81</a>]</p>
@@ -1322,13 +1322,83 @@ le <i>mode-switching</i> (voir ??).
 </div>
 
 <div id="outline-container-orgheadline11" class="outline-4">
-<h4 id="orgheadline11"><span class="section-number-4">2.4.1</span> <span class="todo TRANSLATE">TRANSLATE</span> Reflection</h4>
+<h4 id="orgheadline11"><span class="section-number-4">2.4.1</span> <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
-[<a href="#Tan-09">�T09b</a>] gives a nice survey of reflection and its uses.  Useful distinctions are
-made between <i>introspection</i>, <i>introcession</i>, <i>structural reflection</i>, and
-<i>behavioral reflection</i>; also between a program (a textual description) and a
-<i>computational system</i> (a running process described by a program).
+La programmation par objets nous permet réifier les acteurs du domaine
+d&rsquo;application.  Dans la simulation d&rsquo;un écosystème qui comprend de l&rsquo;herbe, des
+moutons et des loups, on trouve des objets qui représentent l&rsquo;herbe, des objets
+moutons, et des objets loups.  Mais un programme peut réifier les acteurs de sa
+propre exécution, les objets de la sémantique; on parle alors de <i>réflexion</i>.
+La réflexion permet à un programme d&rsquo;altérer sa structure, ou de modifier la
+sémantique du langage, pendant qu&rsquo;il s&rsquo;exécute.  Cette adaptation dynamique
+offre de nouvelles façons de concevoir des programmes modulaires.
+</p>
+
+<p>
+En Java, un programme peut obtenir les méthodes d&rsquo;un objet via l&rsquo;API de
+réflexion:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java"><span style="font-weight: bold;">import</span> <span style="font-weight: bold; text-decoration: underline;">java</span>.<span style="font-weight: bold; text-decoration: underline;">lang</span>.<span style="font-weight: bold; text-decoration: underline;">reflect</span>.*;
+
+<span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">A</span> {
+  <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">n</span>;
+
+  <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">m1</span>() {}
+  <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold;">m2</span>(<span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">i</span>) { <span style="font-weight: bold;">return</span> i * 2; }
+
+  <span style="font-weight: bold;">public</span> <span style="font-weight: bold;">static</span> <span style="font-weight: bold; text-decoration: underline;">void</span> <span style="font-weight: bold;">main</span>(<span style="font-weight: bold; text-decoration: underline;">String</span>[] <span style="font-weight: bold; font-style: italic;">args</span>) {
+    <span style="font-weight: bold; text-decoration: underline;">Class</span> <span style="font-weight: bold; font-style: italic;">a</span> = A.<span style="font-weight: bold;">class</span>;
+
+    System.out.println(<span style="font-style: italic;">"Fields:"</span>);
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">Field</span> <span style="font-weight: bold; font-style: italic;">f</span>: a.getDeclaredFields())
+      System.out.println(f);
+
+    System.out.println(<span style="font-style: italic;">"\nMethods:"</span>);
+    <span style="font-weight: bold;">for</span> (<span style="font-weight: bold; text-decoration: underline;">Method</span> <span style="font-weight: bold; font-style: italic;">m</span>: a.getDeclaredMethods())
+      System.out.println(m);
+
+    System.out.print(<span style="font-style: italic;">"\nA.m2(3) = "</span>);
+    <span style="font-weight: bold;">try</span> {
+      <span style="font-weight: bold; text-decoration: underline;">Method</span> <span style="font-weight: bold; font-style: italic;">m2</span> = a.getDeclaredMethod(<span style="font-style: italic;">"m2"</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>.<span style="font-weight: bold;">class</span>);
+      <span style="font-weight: bold; text-decoration: underline;">Object</span> <span style="font-weight: bold; font-style: italic;">anA</span> = a.newInstance();
+      <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">result</span> = (<span style="font-weight: bold; text-decoration: underline;">int</span>) m2.invoke(anA, 3);
+      System.out.println(result);
+    } <span style="font-weight: bold;">catch</span> (<span style="font-weight: bold; text-decoration: underline;">Exception</span> <span style="font-weight: bold; font-style: italic;">e</span>) {}
+  }
+}
+</pre>
+</div>
+
+<pre class="example">
+Fields:
+int A.n
+
+Methods:
+void A.m1()
+int A.m2(int)
+public static void A.main(java.lang.String[])
+
+A.m2(3) = 6
+</pre>
+
+<p>
+Ici, on liste à l&rsquo;exécution l&rsquo;attribut <code>n</code> et les deux méthodes <code>m1</code> <code>m2</code> avec
+leurs signatures complètes.  On voit que l&rsquo;API de réflexion réifie les objets de
+la programmation par objets: on a les classes <code>Field</code>, <code>Method</code>, <code>Object</code> et
+<code>Class</code>.  Non seulement on peut récupérer ces
+</p>
+
+<p>
+Le protocole metaobjet de CommonLisp va plus loin: il permet de modifier la
+façon dont le langage interprète le passage de message ou l&rsquo;héritage [<a href="#KRB-91">KdRB91</a>].  [exemple
+</p>
+
+<p>
+La réflexion est un autre exemple de la liaison tardive mentionnée par Kay <a href="#Smalltalk">&sect;</a>.
 </p>
 
 <p>
@@ -1344,7 +1414,31 @@ to the earlier stages.
 </blockquote>
 <p>
 Later binding = more runtime flexibility, but also less guarantees and less
-performance.  The DLS submission is a perfect example.
+performance.
+</p>
+
+<p>
+Appliquée aux interpréteurs,
+</p>
+
+<p>
+Un cas particulier est interpréteur meta-circulaire.
+</p>
+
+
+
+
+
+
+
+
+<hr >
+
+<p>
+[<a href="#Tan-09">�T09b</a>] gives a nice survey of reflection and its uses.  Useful distinctions are
+made between <i>introspection</i>, <i>introcession</i>, <i>structural reflection</i>, and
+<i>behavioral reflection</i>; also between a program (a textual description) and a
+<i>computational system</i> (a running process described by a program).
 </p>
 
 <p>
@@ -11641,6 +11735,19 @@ Alan&nbsp;C. Kay.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="KRB-91">KdRB91</a>]
+</td>
+<td class="bibtexitem">
+Gregor Kiczales, Jim des Rivières, and Daniel&nbsp;G. Bobrow.
+ <em>The Art of the Metaobject Protocol</em>.
+ MIT Press, 1991.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="KHH+01">KHH<sup>+</sup>01</a>]
 </td>
 <td class="bibtexitem">
@@ -12480,7 +12587,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-05-31 mar. 15:33 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-01 mer. 19:28 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
