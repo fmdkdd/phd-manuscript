@@ -40,7 +40,7 @@ different person then.'
      - [[#classes-et-héritage-smalltak][Classes et héritage: Smalltak]]
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
-     - [[#translate-reflection][TRANSLATE Reflection]]
+     - [[#translate-la-réflexion][TRANSLATE La réflexion]]
      - [[#stable-limplémentation-ouverte][STABLE L'implémentation ouverte]]
      - [[#stable-la-programmation-par-aspects][STABLE La programmation par aspects]]
        - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
@@ -603,6 +603,9 @@ toutes lettres et code machine bas-niveau.
 #+END_full-figure
 
 *** Classes et héritage: Smalltak
+:PROPERTIES:
+:CUSTOM_ID: Smalltalk
+:END:
 #+BEGIN_epigraph
 Classification is the objectification of {{{emph(ness)}}}ness. — [[cite:Ing-81][Ing-81]]
 #+END_epigraph
@@ -962,11 +965,70 @@ le /mode-switching/ (voir ??).
 #+CAPTION: cheveux. Gustave Doré, 1862.
 [[file:img/münchhausen.jpg]]
 
-*** TRANSLATE Reflection
-[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
-made between /introspection/, /introcession/, /structural reflection/, and
-/behavioral reflection/; also between a program (a textual description) and a
-/computational system/ (a running process described by a program).
+*** TRANSLATE La réflexion
+La programmation par objets nous permet réifier les acteurs du domaine
+d'application.  Dans la simulation d'un écosystème qui comprend de l'herbe, des
+moutons et des loups, on trouve des objets qui représentent l'herbe, des objets
+moutons, et des objets loups.  Mais un programme peut réifier les acteurs de sa
+propre exécution, les objets de la sémantique; on parle alors de /réflexion/.
+La réflexion permet à un programme d'altérer sa structure, ou de modifier la
+sémantique du langage, pendant qu'il s'exécute.  Cette adaptation dynamique
+offre de nouvelles façons de concevoir des programmes modulaires.
+
+En Java, un programme peut obtenir les méthodes d'un objet via l'API de
+réflexion:
+
+#+BEGIN_SRC java :classname A :results verbatim :exports both :eval no-export
+import java.lang.reflect.*;
+
+class A {
+  int n;
+
+  void m1() {}
+  int m2(int i) { return i * 2; }
+
+  public static void main(String[] args) {
+    Class a = A.class;
+
+    System.out.println("Fields:");
+    for (Field f: a.getDeclaredFields())
+      System.out.println(f);
+
+    System.out.println("\nMethods:");
+    for (Method m: a.getDeclaredMethods())
+      System.out.println(m);
+
+    System.out.print("\nA.m2(3) = ");
+    try {
+      Method m2 = a.getDeclaredMethod("m2", int.class);
+      Object anA = a.newInstance();
+      int result = (int) m2.invoke(anA, 3);
+      System.out.println(result);
+    } catch (Exception e) {}
+  }
+}
+#+END_SRC
+
+#+RESULTS:
+: Fields:
+: int A.n
+:
+: Methods:
+: void A.m1()
+: int A.m2(int)
+: public static void A.main(java.lang.String[])
+:
+: A.m2(3) = 6
+
+Ici, on liste à l'exécution l'attribut ~n~ et les deux méthodes ~m1~ ~m2~ avec
+leurs signatures complètes.  On voit que l'API de réflexion réifie les objets de
+la programmation par objets: on a les classes ~Field~, ~Method~, ~Object~ et
+~Class~.  Non seulement on peut récupérer ces
+
+Le protocole metaobjet de CommonLisp va plus loin: il permet de modifier la
+façon dont le langage interprète le passage de message ou l'héritage [[cite:KRB-91][KRB-91]].  [exemple
+
+La réflexion est un autre exemple de la liaison tardive mentionnée par Kay [[#Smalltalk][\sect]].
 
 A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
 #+BEGIN_QUOTE
@@ -976,7 +1038,25 @@ sophisticated analysis and implementation techniques to bring actual times back
 to the earlier stages.
 #+END_QUOTE
 Later binding = more runtime flexibility, but also less guarantees and less
-performance.  The DLS submission is a perfect example.
+performance.
+
+Appliquée aux interpréteurs,
+
+Un cas particulier est interpréteur meta-circulaire.
+
+
+
+
+
+
+
+
+-----
+
+[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
+made between /introspection/, /introcession/, /structural reflection/, and
+/behavioral reflection/; also between a program (a textual description) and a
+/computational system/ (a running process described by a program).
 
 [[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
 interpreter.
