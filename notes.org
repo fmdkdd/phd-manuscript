@@ -2771,6 +2771,168 @@ to use the last optional argument ~WITH-AFFILIATED~.
 
 I had to change the /two/ uses of ~org-element-map~ in ox-bibtex to pass this flag.
 
+** [2016-06-02 jeu.]
+*** A coherent thesis
+Modularity has always been my concern from the start.  How to write modular
+programs?  Is it a question of language?  Of paradigm?  Of mechanisms?  Of data
+structures?  Of design patterns?  We all want it, but /what/ is it?  Why do we
+need it?
+
+History is replete with people arguing over modularity.  Tanenbaum versus
+Torvalds.  Micro-kernels are more modular.  Enthusiasm for functional
+programming is fueled by the belief this style leads to more modular, simpler
+programs.  The whole context chapter.
+
+First, the why.  The section "From program to binary" shows what a program is,
+defines source code versus program versus function.  Different sources can give
+the same program and function, so there are many ways to write programs that are
+/functionally equivalent/.  If they work the same, why bother?  To a casual
+observer, a programmer just pushes symbols around to make the computer jump
+through the intended hoops.
+
+For some reason, we didn't stop at assembly.  We had it all.  Turing complete.
+Everything that could compute, we could write in assembly.  But, we created
+languages, more and more languages.  Even by 1970 (Landin) we had more languages
+that we could keep track of.  And the trend is still growing.  New languages
+keep popping up.  Why is that?
+
+If you ask any programmer today, pretty much none will program in assembly.
+They use higher-level languages.  And most have personal preferences for select
+languages.  Why that preference?  What difference does they make?
+
+If we look at all of the languages, what is the main claim they have in common?
+They are better than the previous ones.  Better at what?  Better for writing
+programs!  But if they are functionally equivalent, how are they better?  They
+claim to make your programs clearer, simpler, more readable, more modular,
+faster to write, with less defects, and easier to maintain.
+
+Quelques extraits de promesses: [tirées, pêle-mêle, des sites officiels des
+langages Scala, Go, Rust, Ceylon, ...]
+
+Scala frontpage:
+#+BEGIN_QUOTE
+Construct elegant class hierarchies for maximum code reuse and extensibility.
+
+flexible; high-level of abstraction; very enjoyable
+#+END_QUOTE
+
+Haskell frontpage:
+: Declarative, statically typed code.
+: With lazyness, programs can compose well.
+
+Declarative and safe.
+
+Rust:
+: blazingly fast, prevents segfaults, guarantees thread safety.
+
+Fast and safe.
+
+OCaml:
+#+BEGIN_QUOTE
+OCaml is a general purpose programming language with an emphasis on
+expressiveness and safety.
+
+powerful; clean and elegant; fast, unobtrusive; portable; sophisticated;
+expressive; efficient.
+#+END_QUOTE
+
+Go:
+: Go makes it easy to build simple, reliable, and efficient software.
+
+Ceylon:
+#+BEGIN_QUOTE
+Ceylon controls complexity with clarity.
+
+porwerful; readable; predictable; simple, intuitive; regular; elegant; express
+more, more easily.
+#+END_QUOTE
+
+The functionality of the program is not the sole finality of the programmer.
+
+Programmers have to write the program, and they want the process to be as
+enjoyable as possible.  Writing can be a long process, spanning months, even
+years, involving one programmer, to teams of thousands, all working on the same
+program.  So they want to minimize the pain of this process.  In fact, most
+languages claim you will say more by writing less.  Like all things in this
+universe, programmers tend to zero entropy; they aim to work with minimal
+effort.  Programming languages are sold as productivity tools.
+
+But not only programmers have to write, they have to maintain.  They have to
+live with their programs for a long time.  They have to fix bugs, add features,
+optimize performance.  And they want maintenance to be as effortless as
+writing.  Here as well, each programming language promise to be easier to fix
+and refactor than the previous one.
+
+Safety is a good argument for maintenance: the fewer bugs you write, the less
+you have to fix.
+
+Efficient, fast: "you won't miss assembly".
+
+Expressive: "you will say more with less code", "you will deliver faster".
+
+Sophisticated, clean, elegant: "your code will be eligible for the Prix
+Goncourt" (?)
+
+Extensibility, code reuse, says "you will add features easily".
+
+Modularity is kin to the last category.  A modular program is easier to
+maintain, easier to write, easier to understand, easier to fix, and easier to
+extend.  A modular program is the grail that minimizes effort.  It's a cure-all,
+but an elusive quality.
+
+What is modularity?  What is a modular program?
+
+I don't know if I can define that quality.  But I can tell you how /not to/.
+There is no formula for quantifying modularity.  You can't say, "apply this
+criterion to the program, and out comes a measure in Milli-Parnas!".  There is
+no reliable measure.
+
+Some say a modular program has fewer lines of code that a non-modular one.  This
+is not even an appropriate measure for /any/ program.  Any program can be turned
+into an equivalent one with more lines of code: just add no-op statements.  But,
+you say, only measure the lines of "effective" statements.  That's Kolmogorov
+complexity then, not modularity.
+
+Some say that a modular system has fewer /couplings/.  How do you measure that?
+Well, you can count the number of dependencies between modules.  Explicit
+dependencies that are declared in the code.  But there are often /implicit/
+dependencies as well, not written in the code, but assumed by the programmer.
+How do you measure that?  If you don't, you risk saying that a program is more
+modular, when in effect it has more implicit couplings.
+
+------
+
+The context chapter is a tour of some of the usual suspects for modularity.
+Dijkstra was looking for modularity.  So was Knuth.  OOP, AOP.  They all claim
+to write better programs, simpler, more understandable.  Is this substantiated?
+How is it clearer exactly?
+
+The problem chapter establishes the example, in order to bound the research
+area.  If can settle the modularity issue on a non-trivial program, it would be
+a start.  The first step is defining what we mean by modularity and
+extensibility.  The context showed plenty of examples.  Make a definition we
+will use from all that.
+
+The rest of the document is then exploring these questions: what makes a program
+extensible?  Modular?  How do languages intervene?  Mechanisms?  Patterns?
+
+Variations tries out different paradigms and patterns to extend an interpreter.
+
+Building with modules leverages late binding to build a extensible interpreter
+dynamically.
+
+Open scope leverages late binding again to turn Narcissus into an interpreter
+that can switch behaviors dynamically.
+
+Conclusion: late-binding for extensibility?
+
+*** Framing the acknowledgments
+There are few people on Earth that bear the qualities of diligence, generosity,
+curiosity, that are eager to learn, and who not only value ethics and
+intelligent discourse, but have a good sense of humor.  So it was a great
+privilege for me to call a few of those people my friends.
+
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
