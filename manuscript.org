@@ -294,20 +294,20 @@ en langage machine.  Un compilateur permet donc au programmeur d'obtenir un
 programme exécutable par la machine à partir de code écrit dans le langage de
 son choix.
 
-#+CAPTION: Le compilateur lit le programme, en extrait la structure, et produit
-#+CAPTION: du code machine.
-#+BEGIN_SRC dot :file img/compile-pipeline.png
-digraph {
-  rankdir=LR;
-  node [shape=record];
-  source [label = "print(1 + 1)"];
-  lex [label = "_print_ ( _1_ _+_ _1_ )"];
-  ast [label = "body { call { print, add { 1, 1 }}}"];
-  asm [label = "lda 1 - add 1 - psh - call $a0 - ... "];
-  bin [label = "0101011101..."];
-  source -> lex -> ast -> asm -> bin;
-}
-#+END_SRC
+# #+CAPTION: Le compilateur lit le programme, en extrait la structure, et produit
+# #+CAPTION: du code machine.
+# #+BEGIN_SRC dot :file img/compile-pipeline.png
+# digraph {
+#   rankdir=LR;
+#   node [shape=record];
+#   source [label = "print(1 + 1)"];
+#   lex [label = "_print_ ( _1_ _+_ _1_ )"];
+#   ast [label = "body { call { print, add { 1, 1 }}}"];
+#   asm [label = "lda 1 - add 1 - psh - call $a0 - ... "];
+#   bin [label = "0101011101..."];
+#   source -> lex -> ast -> asm -> bin;
+# }
+# #+END_SRC
 
 Notons que la compilation n'attache aucun sens particulier aux noms choisis par
 le programmeur.  Les noms servent juste à vite remplacés par des références.  On
@@ -335,48 +335,48 @@ en unités indépendantes.
 
 # Other structures, classes, modules
 
-#+BEGIN_SRC dot :file img/bg-map.png
-digraph {
-  rankdir=LR;
-  node [shape=record];
-  source [label = "Code source"];
-  box [label = "Magie"];
-  effects [label = "Effets"];
-  source -> box -> effects;
-}
-#+END_SRC
+# #+BEGIN_SRC dot :file img/bg-map.png
+# digraph {
+#   rankdir=LR;
+#   node [shape=record];
+#   source [label = "Code source"];
+#   box [label = "Magie"];
+#   effects [label = "Effets"];
+#   source -> box -> effects;
+# }
+# #+END_SRC
 
-#+RESULTS:
-[[file:img/bg-map.png]]
+# #+RESULTS:
+# [[file:img/bg-map.png]]
 
-#+BEGIN_SRC dot :file img/bg-map2.png
-digraph {
-  rankdir=LR;
-  node [shape=record];
-  source [label = "Code source"];
-  box [label = "Interpréteur"];
-  effects [label = "Effets"];
-  source -> box -> effects;
-}
-#+END_SRC
+# #+BEGIN_SRC dot :file img/bg-map2.png
+# digraph {
+#   rankdir=LR;
+#   node [shape=record];
+#   source [label = "Code source"];
+#   box [label = "Interpréteur"];
+#   effects [label = "Effets"];
+#   source -> box -> effects;
+# }
+# #+END_SRC
 
-#+RESULTS:
-[[file:img/bg-map2.png]]
+# #+RESULTS:
+# [[file:img/bg-map2.png]]
 
-#+BEGIN_SRC dot :file img/bg-map3.png
-digraph {
-  rankdir=LR;
-  node [shape=record];
-  source [label = "Code source"];
-  box [label = "Compilateur"];
-  bin [label = "Binaire"];
-  effects [label = "Effets"];
-  source -> box -> bin -> effects;
-}
-#+END_SRC
+# #+BEGIN_SRC dot :file img/bg-map3.png
+# digraph {
+#   rankdir=LR;
+#   node [shape=record];
+#   source [label = "Code source"];
+#   box [label = "Compilateur"];
+#   bin [label = "Binaire"];
+#   effects [label = "Effets"];
+#   source -> box -> bin -> effects;
+# }
+# #+END_SRC
 
-#+RESULTS:
-[[file:img/bg-map3.png]]
+# #+RESULTS:
+# [[file:img/bg-map3.png]]
 
 ** UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée
 #+BEGIN_epigraph
