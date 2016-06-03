@@ -10,6 +10,9 @@
 (with-eval-after-load 'org
   (org-add-link-type "cite" nil #'fmdkdd/org-export-cite))
 
+(with-eval-after-load 'ox
+  (setq org-export-with-todo-keywords nil))
+
 (with-eval-after-load 'ox-latex
   ;; Use CUSTOM_ID and NAME labels of Org file as labels for \label commands in
   ;; the exported LaTeX.  Needed to refer to source bloks with a NAME.
@@ -24,6 +27,9 @@
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  ;; Use as default class
+  (setq org-latex-default-class "thesis")
 
   ;; Do not insert maketitle, we do that in frontmatter.tex.
   (setq org-latex-title-command "")

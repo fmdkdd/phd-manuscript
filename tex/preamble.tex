@@ -67,19 +67,19 @@
 %% that, but also does plenty of stuff I don’t need (like redefining my layout
 %% with ‘geometry’).  I load a custom version of the tufte-latex package with
 %% most of the useless stuff commented out.
-\usepackage[
-  nobib,                        % Don’t override \cite
-  symmetric,                    % Twosides
-  sidenote=raggedouter,         % Always ragged text for margin stuff
-  marginnote=raggedouter,
-  caption=raggedouter,
-  citation=raggedouter,
-  marginals=raggedouter,
-]{tufte-latex}
+%% \usepackage[
+%%   nobib,                        % Don’t override \cite
+%%   symmetric,                    % Twosides
+%%   sidenote=raggedouter,         % Always ragged text for margin stuff
+%%   marginnote=raggedouter,
+%%   caption=raggedouter,
+%%   citation=raggedouter,
+%%   marginals=raggedouter,
+%% ]{tufte-latex}
 
 %% KOMAscript indents captions.  I don’t want that for margin captions.
 \setcapindent{0pt}
-\setkomafont{caption}{\FloatRaggedOuter\footnotesize}
+%% \setkomafont{caption}{\FloatRaggedOuter\footnotesize}
 
 %% Babel french puts it in small caps.  I don’t want that.
 %% Additionally, override figurename for listings.
@@ -113,6 +113,8 @@
   deletekeywords={double},
 }
 
+\lstdefinelanguage{smalltalk}{}
+
 %% Accept ‘diff’ as language, no special treatment.
 \lstdefinelanguage{diff}{}
 
@@ -132,7 +134,7 @@
   style=alphabetic,
   maxbibnames=10
 ]{biblatex}
-\addbibresource{../refs.bib}
+\addbibresource{refs.bib}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Others
@@ -156,3 +158,10 @@
   citecolor=rubric,             % bibliography link
   urlcolor=azure,               % external link
 }
+
+
+%% Temporary handling of special blocks.
+\newenvironment{epigraph}{}{}
+\newenvironment{aside}{}{}
+\newenvironment{side-figure}{}{}
+\newenvironment{full-figure}{}{}
