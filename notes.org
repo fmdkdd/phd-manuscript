@@ -2932,6 +2932,85 @@ curiosity, that are eager to learn, and who not only value ethics and
 intelligent discourse, but have a good sense of humor.  So it was a great
 privilege for me to call a few of those people my friends.
 
+** [2016-06-03 ven.]
+*** A coherent thesis, continued
+Yesterday's plan expanded into an unfocused mess.  Threads that I want to pick
+up:
+
+- Why do we still have new programming languages?
+- How is modularity linked to extensibility?
+- What's my thesis?
+
+**** Why do we still have new programming languages?
+Even to a casual observer, C is more readable than assembly.  That's an argument
+for the existence of C, but does it still apply to languages that came after?
+The casual observer might not feel a sensible difference between C and Haskell
+for instance.  But a programmer who knows both will have many things to say
+about each of them.  So maybe readability is satisfactory once you go above
+assembly.
+
+Languages nowadays claim /safety/ and /easy concurrency/.  It's easy to convince
+a non-programmer that a safe language is better than an unsafe one.  The choice
+of vocabulary makes this a self-evidence.  Arguably, this is how research into
+type system gets funded.
+
+Concurrency is a real issue.  Programming concurrent system is hard, so any
+language that ease it is welcome.
+
+Modularity, or extensibility, is not often touted.  Too elusive?
+
+**** How is modularity linked to extensibility?
+An extensible program is one that is easier to extend than a non-extensible
+one.  A modular program is one that is built with low-coupled modules.
+Following Parnas, a module corresponds to design decision that are likely to
+change.  Consequently, changes in a modular program are likely to affect only
+one module at a time.
+
+The program is likely easier to extend if changes are localized to a module
+rather than affecting the whole.  Modularity enables extensibility.
+
+**** What's my thesis?
+Yesterday I started with modularity.  But my work has revolved more around
+extensibility.  The two are linked: modularity enables extensibility.  It is
+thus worthwhile to understand how to build modular programs in order to build
+extensible ones.
+
+But "a better understanding" is not quite a thesis.  Though I would be satisfied
+to just say "We wanted to better understand modularity and extensibility.
+Here's what we found".
+
+"We show a few ways to build extensible interpreters" is underwhelming.
+
+"Better understanding how to build extensible interpreters and how to extend
+existing interpreters leads to more code reuse, less maintenance overhead,
+better programs."  A conceptual problem with practical costs.  This could work,
+but the practical value of my results is low, so it should not be the focus.
+
+More worthwhile is to try to understand bigger problems, deemed more important.
+"Understanding how to build extensible interpreters and how to extend existing
+interpreters leads to understanding how to design programs and languages for
+extensibility in general."
+
+The shared context is obvious: programs are hard to write, hard to maintain.
+The practical costs are defects, software that does not work the way we want to,
+or is not delivered in due time.  When a program requires new features, we often
+tack them on the existing code, without regards to the structure.
+
+Problem: How do we write extensible programs?  How do we extend existing ones?
+What are the mechanisms we can use?  The design patterns?  Are some languages
+better for extensibility?  Can extensibility techniques be used on any
+program?
+
+[I don't feel a /So what?/ here.  These are genuinely interesting questions.]
+
+Solution: We analyze extensibility in specific applications: language
+interpreters.  We study different ways to build interpreters, and how they can
+be extended.  We also study mechanisms to extend existing interpreters that were
+not built with a constraint of extensibility.  We apply these techniques to
+extend a JavaScript interpreter at runtime.  We find that late-binding is an
+essential ingredient for extensibility.
+
+[Maybe the "more important problems" should go here, to answer "what's next?".]
 
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
