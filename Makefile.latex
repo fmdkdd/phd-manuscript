@@ -61,10 +61,10 @@ pdf/img/%.pdf: svg/%.svg
 	rsvg-convert --format pdf --output $@ $<
 
 clean:
-	latexmk -output-directory=pdf -C -f pdf/manuscript.tex
-	rm --force pdf/out/manuscript.synctex.gz \
-             pdf/out/manuscript.bbl \
-             pdf/out/manuscript.run.xml
+	latexmk -output-directory=pdf/out -C -f tex/main.tex
+	rm --force pdf/out/main.synctex.gz \
+             pdf/out/main.bbl \
+             pdf/out/main.run.xml
 	rm --force pdf/manuscript.tex
 	rm --force pdf/acks.tex
 	rm --force pdf/img/*.pdf
