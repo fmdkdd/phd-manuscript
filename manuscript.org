@@ -401,10 +401,11 @@ out in text space) and the process (spread out in time) as trivial as possible.
 
 #+ATTR_HTML: :style margin-top:-18rem
 #+BEGIN_side-figure
-#+CAPTION: L'objet du programmeur est le processus effectué par la machine, et
-#+CAPTION: manipulé indirectement via un programme.  Dijkstra tente de
-#+CAPTION: construire des programmes qui reflètent le comportement du processus.
 [[file:img/dijkstra-process-program.svg]]
+
+L'objet du programmeur est le processus effectué par la machine, et manipulé
+indirectement via un programme.  Dijkstra tente de construire des programmes qui
+reflètent le comportement du processus.
 #+END_side-figure
 
 Dijkstra commence par établir une distinction cruciale entre le /programme/ tapé
@@ -420,11 +421,11 @@ construction qui va à l'encontre de cette correspondance.
 
 #+ATTR_HTML: :style margin-top:-8rem
 #+BEGIN_side-figure
-#+CAPTION: Le processus s'exécute dans le temps, et le programme décrit ce
-#+CAPTION: processus dans l'espace.  Comme le programmeur manipule et lit
-#+CAPTION: le programme, celui-ci doit refléter le plus directement possible
-#+CAPTION: le déroulement du processus.
 [[file:img/dijkstra-dimensions.svg]]
+
+Le processus s'exécute dans le temps, et le programme décrit ce processus dans
+l'espace.  Comme le programmeur manipule et lit le programme, celui-ci doit
+refléter le plus directement possible le déroulement du processus.
 #+END_side-figure
 
 Pour Dijkstra, on comprend un programme en suivant les instructions une à une.
@@ -706,9 +707,10 @@ comportements, et de factoriser le code.
 
 #+ATTR_HTML: :style margin-top:-16rem
 #+BEGIN_side-figure
-#+CAPTION: L'héritage permet aux classes ~Integer~ et ~Float~ de réutiliser
-#+CAPTION: les méthodes de ~Number~.
 [[file:img/smalltalk0.svg]]
+
+L'héritage permet aux classes ~Integer~ et ~Float~ de réutiliser les méthodes de
+~Number~.
 #+END_side-figure
 
 #+CAPTION: Les comparaisons sur les nombres sont définiies dans la classe
@@ -773,10 +775,11 @@ par le mécanisme des /traits/ [[cite:CBL+82][CBL+82]].
 
 #+ATTR_HTML: :style margin-top:-11rem
 #+BEGIN_side-figure
-#+CAPTION: Ces trois classes ont toutes deux à deux des méthodes en commun, mais
-#+CAPTION: leur intersection est nulle.  Elles ne peuvent pas être factorisées
-#+CAPTION: par l'héritage.
 [[file:img/smalltalk1.svg]]
+
+Ces trois classes ont toutes deux à deux des méthodes en commun, mais
+leur intersection est nulle.  Elles ne peuvent pas être factorisées
+par l'héritage.
 #+END_side-figure
 
 Un trait décrit une fonctionnalité qui peut être réemployée par plusieurs
@@ -788,9 +791,10 @@ regrouper des traits souvent utilisés ensemble.
 
 #+ATTR_HTML: :style margin-top:-9rem
 #+BEGIN_side-figure
-#+CAPTION: Une classe peut récupérer les méthodes de plusieurs traits à la fois,
-#+CAPTION: ce qui permet de factoriser ces trois classes.
 [[file:img/smalltalk2.svg]]
+
+Une classe peut récupérer les méthodes de plusieurs traits à la fois, ce qui
+permet de factoriser ces trois classes.
 #+END_side-figure
 
 Pour Kay, un des ingrédients clés de la flexibilité apportée par programmation
@@ -874,11 +878,11 @@ concept d'éléphant pour les représenter spécifiquement.
 
 #+ATTR_HTML: :style margin-top:-14rem
 #+BEGIN_side-figure
-#+CAPTION: Dans des langages à classes, on réifie le concept d'éléphant
-#+CAPTION: (et même des sous-concept) avant de pouvoir manipuler les objets
-#+CAPTION: qui représentent Clyde et Fred.  Les deux mécanismes de partage
-#+CAPTION: sont l'héritage et l'instantiation.
 [[file:img/self0.svg]]
+
+Dans des langages à classes, on réifie le concept d'éléphant (et même des
+sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et
+Fred.  Les deux mécanismes de partage sont l'héritage et l'instantiation.
 #+END_side-figure
 
 En utilisant les prototypes, je ne crée pas de concepts.  Si Clyde est le
@@ -895,10 +899,11 @@ a Fred, il a en a autant que Clyde, son prototype.  L'information non spécifiqu
 
 #+ATTR_HTML: :style margin-top:-4rem
 #+BEGIN_side-figure
-#+CAPTION: Dans les langages à prototype, on manipule directement les
-#+CAPTION: objets qui représentent Clyde et Fred.  Le mécanisme essentiel
-#+CAPTION: de partage est la délégation.
 [[file:img/self1.svg]]
+
+Dans les langages à prototype, on manipule directement les objets qui
+représentent Clyde et Fred.  Le mécanisme essentiel de partage est la
+délégation.
 #+END_side-figure
 
 Dony, Malenfant et Bardou [[cite:DMB-98][DMB-98]] recensent les langages à prototypes pour en
@@ -1146,9 +1151,10 @@ meta-niveau, qui révèle en partie l'implémentation de l'interface de base.
 
 #+ATTR_HTML: :style margin-top:-8rem
 #+BEGIN_side-figure
-#+CAPTION: On va préférer ici le terme "interface d'implémentation" pour
-#+CAPTION: l'interface de meta-niveau.
 [[file:img/sota1.svg]]
+
+On va préférer ici le terme "interface d'implémentation" pour l'interface de
+meta-niveau.
 #+END_side-figure
 
 Pour illustrer ces deux interfaces, il prend l'exemple d'un système de gestion
@@ -1184,12 +1190,12 @@ les événements souris, comment gérer les sous-fenêtres, ...).
 
 #+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
-#+CAPTION: Une façon de fournir l'interface d'implémentation est de structurer
-#+CAPTION: le système en deux parties, une de bas-niveau qui gère les détails
-#+CAPTION: d'implémentation et est manipulable via l'interface d'implémentation,
-#+CAPTION: et une de haut-niveau qui utilise la partie inférieure pour présenter
-#+CAPTION: l'interface de base.
 [[file:img/sota2.svg]]
+
+Une façon de fournir l'interface d'implémentation est de structurer le système
+en deux parties, une de bas-niveau qui gère les détails d'implémentation et est
+manipulable via l'interface d'implémentation, et une de haut-niveau qui utilise
+la partie inférieure pour présenter l'interface de base.
 #+END_side-figure
 
 Le client de l'interface de base n'a pas besoin de modifier les contrats par
@@ -1336,11 +1342,11 @@ par le langage, et doit être réalisée manuellement.
 
 #+ATTR_HTML: :style margin-top:-15rem
 #+BEGIN_side-figure
-#+CAPTION: Dans ~Remove~, on ne peut pas fusionner les boucles de ~And~
-#+CAPTION: et de ~Not~ sans outrepasser les frontières imposées par les
-#+CAPTION: fonctions ({{{color(c0)}}}).  Il faut un nouvel axe
-#+CAPTION: ({{{color(c1)}}}) de composition.
 [[file:img/aop2.svg]]
+
+Dans ~Remove~, on ne peut pas fusionner les boucles de ~And~ et de ~Not~ sans
+outrepasser les frontières imposées par les fonctions ({{{color(c0)}}}).  Il
+faut un nouvel axe ({{{color(c1)}}}) de composition.
 #+END_side-figure
 
 C'est la distinction que les auteurs font entre /composants/ et /aspects/.  Si
@@ -1604,10 +1610,10 @@ call(void m()) && !cflow(call(void m()))
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_side-figure
-#+CAPTION: Les appels non récursifs de ~m~ sont capturés ({{{color(c3)}}})
-#+CAPTION: par la coupe, et les appels récursifs échouent le test de
-#+CAPTION: ~cflow~ ({{{color(c2)}}}).
 [[file:img/aop3.svg]]
+
+Les appels non récursifs de ~m~ sont capturés ({{{color(c3)}}}) par la coupe, et
+les appels récursifs échouent le test de ~cflow~ ({{{color(c2)}}}).
 #+END_side-figure
 
 ~cflow(coupe)~ capture toutes les jonctions qui sont dans le flot de contrôle de
@@ -1675,9 +1681,10 @@ pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
 
 #+ATTR_HTML: :style margin-top:-18rem
 #+BEGIN_side-figure
-#+CAPTION: Le programme peut être compilé avec ou sans les aspects, et
-#+CAPTION: engendrer deux exécutables différents.
 [[file:img/aop4.svg]]
+
+Le programme peut être compilé avec ou sans les aspects, et engendrer deux
+exécutables différents.
 #+END_side-figure
 
 **** Le mécanisme essentiel pour la programmation par aspects
@@ -1728,8 +1735,9 @@ le dual du ~GOTO~: un ~GOTO 10~ transfère le contrôle à la ligne 10, alors qu
 
 #+ATTR_HTML: :style margin-top:-3rem
 #+BEGIN_side-figure
-#+CAPTION: ~COMEFROM~ est le dual de ~GOTO~.
 [[file:img/aop5.svg]]
+
+~COMEFROM~ est le dual de ~GOTO~.
 #+END_side-figure
 
 #+BEGIN_EXAMPLE fortran
@@ -1905,8 +1913,9 @@ rigidly determined order like top-down or bottom-up.
 
 #+ATTR_HTML: :style margin-top:-7rem
 #+BEGIN_side-figure
-#+CAPTION: Un programme ressemble davantage à un réseau qu'à un arbre.
 [[file:img/knuth0.svg]]
+
+Un programme ressemble davantage à un réseau qu'à un arbre.
 #+END_side-figure
 
 WEB est le système de programmation littéraire développé par Knuth pour
@@ -2008,9 +2017,10 @@ la fois tout le programme et les explications de chaque morceau.
 
 #+ATTR_HTML: :style margin-top:-15rem
 #+BEGIN_side-figure
-#+CAPTION: À partir d'un programme littéraire WEB, WEAVE produit un document
-#+CAPTION: imprimable, et TANGLE produit l'exécutable.
 [[file:img/knuth1.svg]]
+
+À partir d'un programme littéraire WEB, WEAVE produit un document imprimable, et
+TANGLE produit l'exécutable.
 #+END_side-figure
 
 Il y a deux différences majeures entre un programme littéraire et un programme
@@ -2131,11 +2141,11 @@ arithmétique de l'expression, ~display~ affiche l'expression, et ~check~ vérif
 qui l'expression est bien formée.
 
 #+BEGIN_side-figure
-#+CAPTION: Les trois traitements communs à chaque nœud de l'arbre de syntaxe
-#+CAPTION: sont trois préoccupations différentes, éparpillées dans chaque
-#+CAPTION: classe.  L'unité d'abstraction, la classe, ne correspond pas
-#+CAPTION: à l'unité des traitements.
 [[file:img/hyperj1.svg]]
+
+Les trois traitements communs à chaque nœud de l'arbre de syntaxe sont trois
+préoccupations différentes, éparpillées dans chaque classe.  L'unité
+d'abstraction, la classe, ne correspond pas à l'unité des traitements.
 #+END_side-figure
 
 Immédiatement, ils constatent que chaque traitement peut être considéré comme
@@ -2182,10 +2192,11 @@ permet de faire en Java.
 
 #+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
-#+CAPTION: Recomposition en utilisant des hypercoupes pour chaque traitement.
-#+CAPTION: Les trois traitements sont isolés par chaque hypercoupe, mais les
-#+CAPTION: classes sont communes à toutes.
 [[file:img/hyperj2.svg]]
+
+Recomposition en utilisant des hypercoupes pour chaque traitement.  Les trois
+traitements sont isolés par chaque hypercoupe, mais les classes sont communes à
+toutes.
 #+END_side-figure
 
 Une hypercoupe n'isole pas nécessairement une partie du système.  Les unités
@@ -2308,9 +2319,10 @@ TODO: add Eclipse ref
 
 #+ATTR_HTML: :style margin-top:2rem
 #+BEGIN_side-figure
-#+CAPTION: Les similarités d'un projet peuvent être récupérées par des outils
-#+CAPTION: standard.  Ici, ~grep~ permet de créer différentes vues du projet.
 [[file:img/griswold0.svg]]
+
+Les similarités d'un projet peuvent être récupérées par des outils standard.
+Ici, ~grep~ permet de créer différentes vues du projet.
 #+END_side-figure
 
 L'information transparente permet de recréer de la localité grâce à la
@@ -2389,16 +2401,16 @@ concepteur.
 
 #+ATTR_HTML: :style margin-top:-11rem
 #+BEGIN_side-figure
-#+CAPTION: Dans le second design, les changements sont restreints à un seul
-#+CAPTION: module.
 [[file:img/parnas-0.svg]]
+
+Dans le second design, les changements sont restreints à un seul module.
 #+END_side-figure
 
 #+ATTR_HTML: :style margin-top:5rem
 #+BEGIN_side-figure
-#+CAPTION: Un logigramme.  Une façon courante de concevoir des programmes
-#+CAPTION: de 1950 à 1970.
 [[file:img/flowchart.svg]]
+
+Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.
 #+END_side-figure
 
 Le second design est aussi plus facile à développer et plus facile à comprendre.
@@ -2445,10 +2457,10 @@ les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 /réutiliser/ les modules d'un système à l'autre.
 
 #+BEGIN_side-figure
-#+CAPTION: L'encapsulation cause de l'indirection, ce qui peut réduire
-#+CAPTION: l'efficacité du programme en augmentant les appels de procédures
-#+CAPTION: sur la pile.
 [[file:img/parnas-overhead.svg]]
+
+L'encapsulation cause de l'indirection, ce qui peut réduire l'efficacité du
+programme en augmentant les appels de procédures sur la pile.
 #+END_side-figure
 
 Néanmoins, il y a un obstacle à utiliser une décomposition dont les modules
@@ -2665,11 +2677,11 @@ partie.
 
 #+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
-#+CAPTION: Pour Naur, le code source et la documentation ne sont que des
-#+CAPTION: produits secondaires de la programmation; mais l'activité
-#+CAPTION: principale du programmeur
-#+CAPTION: est de construire une connaissance du problème, une /théorie/.
 [[file:img/naur-theory.svg]]
+
+Pour Naur, le code source et la documentation ne sont que des produits
+secondaires de la programmation; mais l'activité principale du programmeur est
+de construire une connaissance du problème, une /théorie/.
 #+END_side-figure
 
 Ce point de vue, Naur le tire de sa propre expérience à construire de larges
@@ -2928,8 +2940,9 @@ de l'exécution; cette liste est appelée /program counter/ (PC).
 
 #+ATTR_HTML: :style margin-top:-12rem
 #+BEGIN_side-figure
-#+CAPTION: Une valeur à deux facettes.
 [[file:img/a-facet.svg]]
+
+Une valeur à deux facettes.
 #+END_side-figure
 
 Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
@@ -7086,13 +7099,13 @@ de changer les définitions internes au module.
 
 #+ATTR_HTML: :style margin-top:-16rem
 #+BEGIN_side-figure
-#+CAPTION: Exemple de recherche dans une chaîne d'environnements.  La recherche
-#+CAPTION: de la propriété ~a~ commence par l'environnement le plus récent
-#+CAPTION: (en bas), et retourne la valeur de la première cellule qui contient
-#+CAPTION: une propriété "a"; ici c'est le second objet.  La recherche de ~g~
-#+CAPTION: échoue.  Notons que le ~f~ du second objet est caché par le ~f~ de
-#+CAPTION: l'objet en tête de la chaîne.
 [[file:img/dls6.svg]]
+
+Exemple de recherche dans une chaîne d'environnements.  La recherche de la
+propriété ~a~ commence par l'environnement le plus récent (en bas), et retourne
+la valeur de la première cellule qui contient une propriété "a"; ici c'est le
+second objet.  La recherche de ~g~ échoue.  Notons que le ~f~ du second objet
+est caché par le ~f~ de l'objet en tête de la chaîne.
 #+END_side-figure
 
 Nous allons faire une seconde addition à notre variante de JavaScript.  On
@@ -7256,11 +7269,11 @@ f() //: 42                        (ref:ex7-call)
 
 #+ATTR_HTML: :style margin-top:-8rem
 #+BEGIN_side-figure
-#+CAPTION: L'environnement crée par ~with~ entoure l'objet de liaison.  Notons
-#+CAPTION: que l'environnement est distinct du l'objet de liaison: ~o~ pointe
-#+CAPTION: vers l'objet de liaison, tandis que ~f.env~ pointe vers
-$+CAPTION: l'environnement.
 [[file:img/dls9.svg]]
+
+L'environnement crée par ~with~ entoure l'objet de liaison.  Notons que
+l'environnement est distinct du l'objet de liaison: ~o~ pointe vers l'objet de
+liaison, tandis que ~f.env~ pointe vers l'environnement.
 #+END_side-figure
 
 On définit une fonction ~f~ dans le corps de ~with~ à la ligne [[(ex7-f)]].  La
@@ -7432,9 +7445,10 @@ m.g(0) //: 1
 #+END_SRC
 
 #+BEGIN_side-figure
-#+CAPTION: On ajoute un objet parent pour contourner la distinction entre
-#+CAPTION: l'objet de liaison et l'environnement crée par ~with~.
 [[file:img/dls12.svg]]
+
+On ajoute un objet parent pour contourner la distinction entre l'objet de
+liaison et l'environnement crée par ~with~.
 #+END_side-figure
 
 On crée un objet parent ligne [[(ex9-parent)]] qui contient une référence pour
@@ -7823,10 +7837,11 @@ function delegate(o, r) {
 
 #+ATTR_HTML: :style margin-top:-18rem
 #+BEGIN_side-figure
-#+CAPTION: ~delegate(o, r)~ retourne un nouvel objet ({{{color(c1)}}}), qui
-#+CAPTION: contient les propriétés de ~r~, et délègue les autres à ~o~.
-#+CAPTION: C'est ce nouvel objet qu'on insère dans l'environnement du module.
 [[file:img/dls13.svg]]
+
+~delegate(o, r)~ retourne un nouvel objet ({{{color(c1)}}}), qui contient les
+propriétés de ~r~, et délègue les autres à ~o~.  C'est ce nouvel objet qu'on
+insère dans l'environnement du module.
 #+END_side-figure
 
 *** Ajouter l'analyse FlowR
@@ -8341,10 +8356,11 @@ supplémentaires, mais chaque contrainte exclut également des possibilités.
 
 #+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
-#+CAPTION: Imposer une contrainte sur une variable, ce n'est pas
-#+CAPTION: seulement définir l'ensemble de ses valeurs /possibles/, c'est aussi
-#+CAPTION: définir l'ensemble des valeurs /exclues/.
 [[file:img/dls14.svg]]
+
+Imposer une contrainte sur une variable, ce n'est pas seulement définir
+l'ensemble de ses valeurs /possibles/, c'est aussi définir l'ensemble des
+valeurs /exclues/.
 #+END_side-figure
 
 Si on ne peut pas complètement réconcilier la flexibilité dynamique et la
@@ -8421,9 +8437,10 @@ les trois méthodes permettent d'appeler du code extérieur au module à un mome
 précis du flot d'exécution.
 
 #+BEGIN_side-figure
-#+CAPTION: Un /hook/ est juste un appel explicite à une liste de fonctions.
-#+CAPTION: C'est le code extérieur au module qui s'ajoute dans cette liste.
 [[file:img/dls15.svg]]
+
+Un /hook/ est juste un appel explicite à une liste de fonctions.  C'est le code
+extérieur au module qui s'ajoute dans cette liste.
 #+END_side-figure
 
 Avec des /hooks/, ou un Observateur, il faut rajouter du code à l'intérieur du
