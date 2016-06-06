@@ -31,7 +31,7 @@
   ;; Use as default class
   (setq org-latex-default-class "thesis")
 
-  ;; Do not insert maketitle, we do that in frontmatter.tex.
+  ;; Do not insert maketitle, we do that in main.tex
   (setq org-latex-title-command "")
 
   ;; Use the listings package for exporting source blocks.
@@ -43,7 +43,7 @@
   ;; commands of the figure environment rather than passed to the listings package.
   ;; Changes are in done in Case 4, below.
   (require 'cl)                         ; for `case'
-  (defun fmdkdd//org-latex-src-block (orig src-block contents info)
+  (defun org-latex-src-block (src-block contents info)
     "Transcode a SRC-BLOCK element from Org to LaTeX.
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
@@ -212,8 +212,6 @@ contextual information."
              "\n\\end{figure}"
              "\n\\UnsetListingFigureName")))))))
 
-  (advice-add 'org-latex-src-block :around #'fmdkdd//org-latex-src-block)
-
   ;; For \includegraphics[\linewidth] instead of the default 0.9\linewidth
   (setq org-latex-image-default-width "\\linewidth")
 
@@ -224,7 +222,7 @@ contextual information."
   ;; ATTR_LATEX in Org, to trigger the `marginfigure' environment of
   ;; tufte-latex.
   ;; Also adds a `:no-center' option to disable figure centering.
-  (defun fmdkdd//org-latex--inline-image (orig link info)
+  (defun org-latex--inline-image (link info)
     "Return LaTeX code for an inline image.
 LINK is the link pointing to the inline image.  INFO is a plist
 used as a communication channel."
@@ -370,8 +368,6 @@ used as a communication channel."
                  image-code
                  (if caption-above-p "" caption)))
         (otherwise image-code))))
-
-  (advice-add 'org-latex--inline-image :around #'fmdkdd//org-latex--inline-image)
 
   )
 
