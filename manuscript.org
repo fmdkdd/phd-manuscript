@@ -205,7 +205,7 @@ suites de zéros et de uns.
 
 #+CAPTION: Un programme (extrait; point de vue d'une machine x86).
 #+BEGIN_EXAMPLE
-...00101011011100101011010101110101011111010100010110100000000110001011101010010101011...
+...00101011011100101011010101110101011111010100011101010010101011...
 #+END_EXAMPLE
 
 Le programme est alors exécuté instruction par instruction.  La machine lit une
@@ -235,6 +235,15 @@ function fibonacci(n) {
 print(fibonacci(10))
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:-1rem
+#+BEGIN_aside
+Par opposition aux langages /ésotériques/ qui sont conçus davantage pour
+démontrer la créativité de leur auteur que pour simplifier la conception de
+programmes.  [[cite:Esolang][Esolang]] recense des spécimens tels que Brainfuck, Piet ou
+Whitespace, qui ne manquent pas de nous rappeler qu'être Turing-complet n'est
+pas un critère suffisant pour être un langage /utile/.
+#+END_aside
+
 Dans les langages de programmation exotériques, un programme est constitué
 principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
 permutations judicieuses, nous servent à /nommer/ les objets de la computation
@@ -246,16 +255,8 @@ affiche le onzième nombre de la suite de Fibonacci, sans être vraiment certain
 de la sémantique de JavaScript.  Les mots /évoquent/ immédiatement du sens alors
 que les nombres doivent être décodés.
 
-#+ATTR_HTML: :style margin-top:-15rem
-#+BEGIN_aside
-Par opposition aux langages /ésotériques/ qui sont conçus davantage pour
-démontrer la créativité de leur auteur que pour simplifier la conception de
-programmes.  [[cite:Esolang][Esolang]] recense des spécimens tels que Brainfuck, Piet ou
-Whitespace, qui ne manquent pas de nous rappeler qu'être Turing-complet n'est
-pas un critère suffisant pour être un langage /utile/.
-#+END_aside
-
 #+ATTR_HTML: :style margin-top:-5rem
+#+ATTR_LATEX: :options [-5em]
 #+BEGIN_aside
 Les mots peuvent également évoquer un contresens; une définition maladroite–ou
 intentionnelle–peut induire en erreur le lecteur.  Un ami m'a raconté avoir
@@ -276,6 +277,7 @@ façon à éliminer toute ambiguïté d'interprétation, ce qui permet d'effectu
 traduction en langage machine automatiquement.
 
 #+ATTR_HTML: :style margin-top:-7rem
+#+ATTR_LATEX: :options [-7em]
 #+BEGIN_aside
 Une troisième option serait que les non-francophones apprennent le français pour
 lire ce manuscrit.  En suivant l'analogie, cela correspond à une machine qui
@@ -400,6 +402,7 @@ out in text space) and the process (spread out in time) as trivial as possible.
 #+END_QUOTE
 
 #+ATTR_HTML: :style margin-top:-18rem
+#+ATTR_LATEX: :options [-18em]
 #+BEGIN_side-figure
 [[file:img/dijkstra-process-program.svg]]
 
@@ -706,6 +709,7 @@ comportement de la classe ~Number~, ce qui permet de réutiliser les
 comportements, et de factoriser le code.
 
 #+ATTR_HTML: :style margin-top:-16rem
+#+ATTR_LATEX: :options [-26em]
 #+BEGIN_side-figure
 [[file:img/smalltalk0.svg]]
 
@@ -774,6 +778,7 @@ permet à une classe de réutiliser les méthodes de plusieurs classes à la foi
 par le mécanisme des /traits/ [[cite:CBL+82][CBL+82]].
 
 #+ATTR_HTML: :style margin-top:-11rem
+#+ATTR_LATEX: :options [-11em]
 #+BEGIN_side-figure
 [[file:img/smalltalk1.svg]]
 
@@ -877,6 +882,7 @@ alors je peux créer un sous-concept d'éléphant /africain/ qui hérite du
 concept d'éléphant pour les représenter spécifiquement.
 
 #+ATTR_HTML: :style margin-top:-14rem
+#+ATTR_LATEX: :options [-14em]
 #+BEGIN_side-figure
 [[file:img/self0.svg]]
 
@@ -2400,6 +2406,7 @@ design est donc mieux adapté aux changements potentiels anticipés par le
 concepteur.
 
 #+ATTR_HTML: :style margin-top:-11rem
+#+ATTR_LATEX: :options [-11em]
 #+BEGIN_side-figure
 [[file:img/parnas-0.svg]]
 
@@ -6939,6 +6946,7 @@ var m = (function(){
 #+END_SRC
 
 #+ATTR_HTML: :style margin-top:-10rem
+#+ATTR_LATEX: :options [-10em]
 #+BEGIN_side-figure
 [[file:img/dls3.svg]]
 #+END_side-figure
@@ -6989,6 +6997,7 @@ m.g(0) //: 2                             (ref:ex3-test2)
 #+END_SRC
 
 #+ATTR_HTML: :style margin-top:-6rem
+#+ATTR_LATEX: :options [-8em]
 #+BEGIN_side-figure
 [[file:img/dls4.svg]]
 #+END_side-figure
@@ -7098,6 +7107,7 @@ la chaîne d'environnement s'arrête car le lien vers l'environnement parent est
 de changer les définitions internes au module.
 
 #+ATTR_HTML: :style margin-top:-16rem
+#+ATTR_LATEX: :options [-30em]
 #+BEGIN_side-figure
 [[file:img/dls6.svg]]
 
@@ -7117,6 +7127,7 @@ propriété ~m.E~ est modifiée également pour pointer vers cet environnement
 frontal.
 
 #+ATTR_HTML: :style margin-top:12rem
+#+ATTR_LATEX: :options [-12em]
 #+BEGIN_side-figure
 [[file:img/dls7.svg]]
 #+END_side-figure
