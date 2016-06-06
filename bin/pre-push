@@ -1,6 +1,17 @@
 #!/bin/sh
 
-# Push gh-pages as well.
+# On push, sync with gh-pages branch.
 
-cd html
+# Make the html output
+make html
+
+# Get string 'commit 4a1bde412cf...'
+COMMIT=`git log -1 HEAD | head -n 1`
+
+cd build/html
+git add .
+echo "Auto build of ${COMMIT}"
+git commit -m "Auto build of ${COMMIT}"
+
+# Push to origin gh-pages.
 git push origin gh-pages
