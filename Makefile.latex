@@ -12,10 +12,10 @@ SVG_DST=$(patsubst svg/%.svg, pdf/img/%.pdf, $(SVG_SRC))
 
 .PHONY: clean go
 
-pdf/out/main.pdf: tex/main.tex \
-                  pdf/manuscript.tex tex/preamble.tex \
-                  tex/frontmatter.tex pdf/acks.tex \
-                  tex/backmatter.tex \
+pdf/out/main.pdf: pdf/manuscript.tex \
+                  pdf/acks.tex \
+                  tex/main.tex \
+                  tex/preamble.tex \
                   refs.bib \
                   tex/tufte-latex.sty \
                   $(SVG_DST)
