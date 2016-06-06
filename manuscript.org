@@ -7795,10 +7795,7 @@ function around(fn, a) {
 #+BEGIN_aside
 Après un remplacement de la fonction ~f~ par ~i13n.around(f, g)~ dans un module,
 tous les appels à ~f~ dans le module feront appel à ~g~.  L'effet est équivalent
-à la réécriture:
-#+BEGIN_SRC js
-f(a, b, ...) => g(f, a, b, ...)
-#+END_SRC
+à la réécriture: f(a, b, ...) => g(f, a, b, ...)
 #+END_aside
 
 Le nom évoque le /pointcut/ d'AspectJ éponyme; l'effet est proche.  Cependant
