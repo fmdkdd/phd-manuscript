@@ -69,10 +69,10 @@
 \usepackage{environ}
 
 %% Aside is for side commentary.  Like footnotes, but in the margin.
-\NewEnviron{aside}{\marginnote{\BODY}}
+\NewEnviron{aside}[1][0pt]{\marginnote{\BODY}[#1]}
 
 %% Side figures are an image and a caption, both in the margin.
-\NewEnviron{side-figure}{\marginnote{\BODY}}
+\NewEnviron{side-figure}[1][0pt]{\marginnote{\BODY}[#1]}
 
 %% KOMAscript indents captions.  I don’t want that for margin captions.
 \setcapindent{0pt}
