@@ -71,6 +71,9 @@
 %% Aside is for side commentary.  Like footnotes, but in the margin.
 \NewEnviron{aside}{\marginnote{\BODY}}
 
+%% Side figures are an image and a caption, both in the margin.
+\NewEnviron{side-figure}{\marginnote{\BODY}}
+
 %% KOMAscript indents captions.  I don’t want that for margin captions.
 \setcapindent{0pt}
 %% \setkomafont{caption}{\FloatRaggedOuter\footnotesize}
@@ -156,5 +159,4 @@
 
 %% Temporary handling of special blocks.
 \newenvironment{epigraph}{}{}
-\newenvironment{side-figure}{}{}
 \newenvironment{full-figure}{}{}

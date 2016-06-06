@@ -215,6 +215,14 @@ contextual information."
   ;; For \includegraphics[\linewidth] instead of the default 0.9\linewidth
   (setq org-latex-image-default-width "\\linewidth")
 
+  ;; Need to find the parent special block to avoid wrapping inline images in a
+  ;; figure block.
+  (defun fmdkdd/org-find-special-block (elem)
+    (cond
+     ((null elem) nil)
+     ((eq 'special-block (org-element-type elem)) elem)
+     (t (fmdkdd/org-find-special-block (org-export-get-parent-element elem)))))
+
   ;; Redefine this ox-latex function just to add a `\protect' in front of
   ;; \includegraphics, so I can include images in figure captions.  A bit
   ;; heavy-handed, and I'm not entirely sure the `\protect' is benign, but it
@@ -222,11 +230,14 @@ contextual information."
   ;; ATTR_LATEX in Org, to trigger the `marginfigure' environment of
   ;; tufte-latex.
   ;; Also adds a `:no-center' option to disable figure centering.
+  ;; Also, prevent wrapping images inside a side-figure special block.
   (defun org-latex--inline-image (link info)
     "Return LaTeX code for an inline image.
 LINK is the link pointing to the inline image.  INFO is a plist
 used as a communication channel."
     (let* ((parent (org-export-get-parent-element link))
+           (block (fmdkdd/org-find-special-block link))
+           (block-type (org-element-property :type block))
            (path (let ((raw-path (org-element-property :path link)))
                    (if (not (file-name-absolute-p raw-path)) raw-path
                      (expand-file-name raw-path))))
@@ -261,6 +272,7 @@ used as a communication channel."
            ;; ATTR_LATEX line, and also via default variables.
            (width (cond ((plist-get attr :width))
                         ((plist-get attr :height) "")
+                        ((string= "side-figure" block-type) "\\marginparwidth")
                         ((eq float 'wrap) "0.48\\textwidth")
                         (t (plist-get info :latex-image-default-width))))
            (height (cond ((plist-get attr :height))
@@ -319,6 +331,9 @@ used as a communication channel."
                                                      "}"
                                                      image-code
                                                      nil t))))
+      ;; If parent is side-figure, do not wrap
+      (if (string= "side-figure" block-type)
+        (format "%s\n%s" image-code caption)
       ;; Return proper string, depending on FLOAT.
       (case float
         (wrap (format "\\begin{wrapfigure}%s
@@ -367,7 +382,7 @@ used as a communication channel."
                  (if caption-above-p caption "")
                  image-code
                  (if caption-above-p "" caption)))
-        (otherwise image-code))))
+        (otherwise image-code)))))
 
   )
 
