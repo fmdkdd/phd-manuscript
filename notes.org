@@ -3031,6 +3031,27 @@ sources.
 Should probably simplify the handling of IMG folder for HTML as well.  One
 output destination rather than copying things.
 
+** [2016-06-06 lun.]
+*** A nifty trick to debug Org
+Use a source block of elisp inside the org document, and evaluate it there:
+
+#+BEGIN_SRC emacs-lisp :results verbatim
+(org-element-map (org-element-parse-buffer) 'link
+  (lambda (link)
+    (org-element-property :type link)))
+#+END_SRC
+
+*** Cleaning the PDF export
+Handling side notes and side figures for now.
+
+There are figures all over the place.  Section pictures are too large, and
+listings are too far from where they are used.
+
+Also, text is justified...
+
+But, for Wednesday, what I need most is a cover and back-cover to make it look
+legit.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
