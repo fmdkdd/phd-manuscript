@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-06 lun. 15:14 -->
+<!-- 2016-06-06 lun. 18:45 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -425,7 +425,7 @@ suites de zéros et de uns.
 </p>
 
 <pre class="example">
-...00101011011100101011010101110101011111010100010110100000000110001011101010010101011...
+...00101011011100101011010101110101011111010100011101010010101011...
 </pre>
 
 <p>
@@ -458,6 +458,16 @@ print(fibonacci(10))
 </pre>
 </div>
 
+<aside style="margin-top:-1rem">
+<p>
+Par opposition aux langages <i>ésotériques</i> qui sont conçus davantage pour
+démontrer la créativité de leur auteur que pour simplifier la conception de
+programmes.  [<a href="#Esolang">Eso</a>] recense des spécimens tels que Brainfuck, Piet ou
+Whitespace, qui ne manquent pas de nous rappeler qu&rsquo;être Turing-complet n&rsquo;est
+pas un critère suffisant pour être un langage <i>utile</i>.
+</p>
+</aside>
+
 <p>
 Dans les langages de programmation exotériques, un programme est constitué
 principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
@@ -470,16 +480,6 @@ affiche le onzième nombre de la suite de Fibonacci, sans être vraiment certain
 de la sémantique de JavaScript.  Les mots <i>évoquent</i> immédiatement du sens alors
 que les nombres doivent être décodés.
 </p>
-
-<aside style="margin-top:-15rem">
-<p>
-Par opposition aux langages <i>ésotériques</i> qui sont conçus davantage pour
-démontrer la créativité de leur auteur que pour simplifier la conception de
-programmes.  [<a href="#Esolang">Eso</a>] recense des spécimens tels que Brainfuck, Piet ou
-Whitespace, qui ne manquent pas de nous rappeler qu&rsquo;être Turing-complet n&rsquo;est
-pas un critère suffisant pour être un langage <i>utile</i>.
-</p>
-</aside>
 
 <aside style="margin-top:-5rem">
 <p>
@@ -597,8 +597,13 @@ out in text space) and the process (spread out in time) as trivial as possible.
 <figure>
 <p><img src="img/dijkstra-process-program.svg" alt="dijkstra-process-program.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;2&nbsp;:</span> L&rsquo;objet du programmeur est le processus effectué par la machine, et manipulé indirectement via un programme.  Dijkstra tente de construire des programmes qui reflètent le comportement du processus.</figcaption>
 </figure>
+
+<p>
+L&rsquo;objet du programmeur est le processus effectué par la machine, et manipulé
+indirectement via un programme.  Dijkstra tente de construire des programmes qui
+reflètent le comportement du processus.
+</p>
 
 </div>
 
@@ -620,8 +625,13 @@ construction qui va à l&rsquo;encontre de cette correspondance.
 <figure>
 <p><img src="img/dijkstra-dimensions.svg" alt="dijkstra-dimensions.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;3&nbsp;:</span> Le processus s&rsquo;exécute dans le temps, et le programme décrit ce processus dans l&rsquo;espace.  Comme le programmeur manipule et lit le programme, celui-ci doit refléter le plus directement possible le déroulement du processus.</figcaption>
 </figure>
+
+<p>
+Le processus s&rsquo;exécute dans le temps, et le programme décrit ce processus dans
+l&rsquo;espace.  Comme le programmeur manipule et lit le programme, celui-ci doit
+refléter le plus directement possible le déroulement du processus.
+</p>
 
 </div>
 
@@ -963,8 +973,12 @@ comportements, et de factoriser le code.
 <figure>
 <p><img src="img/smalltalk0.svg" alt="smalltalk0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;5&nbsp;:</span> L&rsquo;héritage permet aux classes <code>Integer</code> et <code>Float</code> de réutiliser les méthodes de <code>Number</code>.</figcaption>
 </figure>
+
+<p>
+L&rsquo;héritage permet aux classes <code>Integer</code> et <code>Float</code> de réutiliser les méthodes de
+<code>Number</code>.
+</p>
 
 </div>
 
@@ -1048,8 +1062,13 @@ par le mécanisme des <i>traits</i> [<a href="#CBL+82">CBL+82</a>].
 <figure>
 <p><img src="img/smalltalk1.svg" alt="smalltalk1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;6&nbsp;:</span> Ces trois classes ont toutes deux à deux des méthodes en commun, mais leur intersection est nulle.  Elles ne peuvent pas être factorisées par l&rsquo;héritage.</figcaption>
 </figure>
+
+<p>
+Ces trois classes ont toutes deux à deux des méthodes en commun, mais
+leur intersection est nulle.  Elles ne peuvent pas être factorisées
+par l&rsquo;héritage.
+</p>
 
 </div>
 
@@ -1067,8 +1086,12 @@ regrouper des traits souvent utilisés ensemble.
 <figure>
 <p><img src="img/smalltalk2.svg" alt="smalltalk2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;7&nbsp;:</span> Une classe peut récupérer les méthodes de plusieurs traits à la fois, ce qui permet de factoriser ces trois classes.</figcaption>
 </figure>
+
+<p>
+Une classe peut récupérer les méthodes de plusieurs traits à la fois, ce qui
+permet de factoriser ces trois classes.
+</p>
 
 </div>
 
@@ -1178,8 +1201,13 @@ concept d&rsquo;éléphant pour les représenter spécifiquement.
 <figure>
 <p><img src="img/self0.svg" alt="self0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;8&nbsp;:</span> Dans des langages à classes, on réifie le concept d&rsquo;éléphant (et même des sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et Fred.  Les deux mécanismes de partage sont l&rsquo;héritage et l&rsquo;instantiation.</figcaption>
 </figure>
+
+<p>
+Dans des langages à classes, on réifie le concept d&rsquo;éléphant (et même des
+sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et
+Fred.  Les deux mécanismes de partage sont l&rsquo;héritage et l&rsquo;instantiation.
+</p>
 
 </div>
 
@@ -1202,8 +1230,13 @@ a Fred, il a en a autant que Clyde, son prototype.  L&rsquo;information non spé
 <figure>
 <p><img src="img/self1.svg" alt="self1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;9&nbsp;:</span> Dans les langages à prototype, on manipule directement les objets qui représentent Clyde et Fred.  Le mécanisme essentiel de partage est la délégation.</figcaption>
 </figure>
+
+<p>
+Dans les langages à prototype, on manipule directement les objets qui
+représentent Clyde et Fred.  Le mécanisme essentiel de partage est la
+délégation.
+</p>
 
 </div>
 
@@ -1546,8 +1579,12 @@ meta-niveau, qui révèle en partie l&rsquo;implémentation de l&rsquo;interface
 <figure>
 <p><img src="img/sota1.svg" alt="sota1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;12&nbsp;:</span> On va préférer ici le terme &laquo;&nbsp;interface d&rsquo;implémentation&nbsp;&raquo; pour l&rsquo;interface de meta-niveau.</figcaption>
 </figure>
+
+<p>
+On va préférer ici le terme &laquo;&nbsp;interface d&rsquo;implémentation&nbsp;&raquo; pour l&rsquo;interface de
+meta-niveau.
+</p>
 
 </div>
 
@@ -1593,8 +1630,14 @@ les événements souris, comment gérer les sous-fenêtres, &#x2026;).
 <figure>
 <p><img src="img/sota2.svg" alt="sota2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;13&nbsp;:</span> Une façon de fournir l&rsquo;interface d&rsquo;implémentation est de structurer le système en deux parties, une de bas-niveau qui gère les détails d&rsquo;implémentation et est manipulable via l&rsquo;interface d&rsquo;implémentation, et une de haut-niveau qui utilise la partie inférieure pour présenter l&rsquo;interface de base.</figcaption>
 </figure>
+
+<p>
+Une façon de fournir l&rsquo;interface d&rsquo;implémentation est de structurer le système
+en deux parties, une de bas-niveau qui gère les détails d&rsquo;implémentation et est
+manipulable via l&rsquo;interface d&rsquo;implémentation, et une de haut-niveau qui utilise
+la partie inférieure pour présenter l&rsquo;interface de base.
+</p>
 
 </div>
 
@@ -1794,8 +1837,13 @@ par le langage, et doit être réalisée manuellement.
 <figure>
 <p><img src="img/aop2.svg" alt="aop2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;15&nbsp;:</span> Dans <code>Remove</code>, on ne peut pas fusionner les boucles de <code>And</code> et de <code>Not</code> sans outrepasser les frontières imposées par les fonctions (<span class="color c0">▬</span>).  Il faut un nouvel axe (<span class="color c1">▬</span>) de composition.</figcaption>
 </figure>
+
+<p>
+Dans <code>Remove</code>, on ne peut pas fusionner les boucles de <code>And</code> et de <code>Not</code> sans
+outrepasser les frontières imposées par les fonctions (<span class="color c0">▬</span>).  Il
+faut un nouvel axe (<span class="color c1">▬</span>) de composition.
+</p>
 
 </div>
 
@@ -2147,8 +2195,12 @@ l&rsquo;on souhaite capturer les appels <i>non</i> récursifs à <code>m</code>,
 <figure>
 <p><img src="img/aop3.svg" alt="aop3.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;16&nbsp;:</span> Les appels non récursifs de <code>m</code> sont capturés (<span class="color c3">▬</span>) par la coupe, et les appels récursifs échouent le test de <code>cflow</code> (<span class="color c2">▬</span>).</figcaption>
 </figure>
+
+<p>
+Les appels non récursifs de <code>m</code> sont capturés (<span class="color c3">▬</span>) par la coupe, et
+les appels récursifs échouent le test de <code>cflow</code> (<span class="color c2">▬</span>).
+</p>
 
 </div>
 
@@ -2236,8 +2288,12 @@ pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
 <figure>
 <p><img src="img/aop4.svg" alt="aop4.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Le programme peut être compilé avec ou sans les aspects, et engendrer deux exécutables différents.</figcaption>
 </figure>
+
+<p>
+Le programme peut être compilé avec ou sans les aspects, et engendrer deux
+exécutables différents.
+</p>
 
 </div>
 </div>
@@ -2313,8 +2369,11 @@ le dual du <code>GOTO</code>: un <code>GOTO 10</code> transfère le contrôle à
 <figure>
 <p><img src="img/aop5.svg" alt="aop5.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;18&nbsp;:</span> <code>COMEFROM</code> est le dual de <code>GOTO</code>.</figcaption>
 </figure>
+
+<p>
+<code>COMEFROM</code> est le dual de <code>GOTO</code>.
+</p>
 
 </div>
 
@@ -2556,8 +2615,11 @@ rigidly determined order like top-down or bottom-up.
 <figure>
 <p><img src="img/knuth0.svg" alt="knuth0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;20&nbsp;:</span> Un programme ressemble davantage à un réseau qu&rsquo;à un arbre.</figcaption>
 </figure>
+
+<p>
+Un programme ressemble davantage à un réseau qu&rsquo;à un arbre.
+</p>
 
 </div>
 
@@ -2693,8 +2755,12 @@ la fois tout le programme et les explications de chaque morceau.
 <figure>
 <p><img src="img/knuth1.svg" alt="knuth1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> À partir d&rsquo;un programme littéraire WEB, WEAVE produit un document imprimable, et TANGLE produit l&rsquo;exécutable.</figcaption>
 </figure>
+
+<p>
+À partir d&rsquo;un programme littéraire WEB, WEAVE produit un document imprimable, et
+TANGLE produit l&rsquo;exécutable.
+</p>
 
 </div>
 
@@ -2851,8 +2917,13 @@ qui l&rsquo;expression est bien formée.
 <figure>
 <p><img src="img/hyperj1.svg" alt="hyperj1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;22&nbsp;:</span> Les trois traitements communs à chaque nœud de l&rsquo;arbre de syntaxe sont trois préoccupations différentes, éparpillées dans chaque classe.  L&rsquo;unité d&rsquo;abstraction, la classe, ne correspond pas à l&rsquo;unité des traitements.</figcaption>
 </figure>
+
+<p>
+Les trois traitements communs à chaque nœud de l&rsquo;arbre de syntaxe sont trois
+préoccupations différentes, éparpillées dans chaque classe.  L&rsquo;unité
+d&rsquo;abstraction, la classe, ne correspond pas à l&rsquo;unité des traitements.
+</p>
 
 </div>
 
@@ -2915,8 +2986,13 @@ permet de faire en Java.
 <figure>
 <p><img src="img/hyperj2.svg" alt="hyperj2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;23&nbsp;:</span> Recomposition en utilisant des hypercoupes pour chaque traitement. Les trois traitements sont isolés par chaque hypercoupe, mais les classes sont communes à toutes.</figcaption>
 </figure>
+
+<p>
+Recomposition en utilisant des hypercoupes pour chaque traitement.  Les trois
+traitements sont isolés par chaque hypercoupe, mais les classes sont communes à
+toutes.
+</p>
 
 </div>
 
@@ -3074,8 +3150,12 @@ TODO: add Eclipse ref
 <figure>
 <p><img src="img/griswold0.svg" alt="griswold0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;24&nbsp;:</span> Les similarités d&rsquo;un projet peuvent être récupérées par des outils standard.  Ici, <code>grep</code> permet de créer différentes vues du projet.</figcaption>
 </figure>
+
+<p>
+Les similarités d&rsquo;un projet peuvent être récupérées par des outils standard.
+Ici, <code>grep</code> permet de créer différentes vues du projet.
+</p>
 
 </div>
 
@@ -3189,8 +3269,11 @@ concepteur.
 <figure>
 <p><img src="img/parnas-0.svg" alt="parnas-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;25&nbsp;:</span> Dans le second design, les changements sont restreints à un seul module.</figcaption>
 </figure>
+
+<p>
+Dans le second design, les changements sont restreints à un seul module.
+</p>
 
 </div>
 
@@ -3199,8 +3282,11 @@ concepteur.
 <figure>
 <p><img src="img/flowchart.svg" alt="flowchart.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;26&nbsp;:</span> Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.</figcaption>
 </figure>
+
+<p>
+Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.
+</p>
 
 </div>
 
@@ -3263,8 +3349,12 @@ les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 <figure>
 <p><img src="img/parnas-overhead.svg" alt="parnas-overhead.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;27&nbsp;:</span> L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du programme en augmentant les appels de procédures sur la pile.</figcaption>
 </figure>
+
+<p>
+L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du
+programme en augmentant les appels de procédures sur la pile.
+</p>
 
 </div>
 
@@ -3541,8 +3631,13 @@ partie.
 <figure>
 <p><img src="img/naur-theory.svg" alt="naur-theory.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;28&nbsp;:</span> Pour Naur, le code source et la documentation ne sont que des produits secondaires de la programmation; mais l&rsquo;activité principale du programmeur est de construire une connaissance du problème, une <i>théorie</i>.</figcaption>
 </figure>
+
+<p>
+Pour Naur, le code source et la documentation ne sont que des produits
+secondaires de la programmation; mais l&rsquo;activité principale du programmeur est
+de construire une connaissance du problème, une <i>théorie</i>.
+</p>
 
 </div>
 
@@ -3879,8 +3974,11 @@ de l&rsquo;exécution; cette liste est appelée <i>program counter</i> (PC).
 <figure>
 <p><img src="img/a-facet.svg" alt="a-facet.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Une valeur à deux facettes.</figcaption>
 </figure>
+
+<p>
+Une valeur à deux facettes.
+</p>
 
 </div>
 
@@ -8951,8 +9049,15 @@ de changer les définitions internes au module.
 <figure>
 <p><img src="img/dls6.svg" alt="dls6.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;39&nbsp;:</span> Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la propriété <code>a</code> commence par l&rsquo;environnement le plus récent (en bas), et retourne la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.</figcaption>
 </figure>
+
+<p>
+Exemple de recherche dans une chaîne d&rsquo;environnements.  La recherche de la
+propriété <code>a</code> commence par l&rsquo;environnement le plus récent (en bas), et retourne
+la valeur de la première cellule qui contient une propriété &laquo;&nbsp;a&nbsp;&raquo;; ici c&rsquo;est le
+second objet.  La recherche de <code>g</code> échoue.  Notons que le <code>f</code> du second objet
+est caché par le <code>f</code> de l&rsquo;objet en tête de la chaîne.
+</p>
 
 </div>
 
@@ -9160,9 +9265,16 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d&rsquo;utili
 </div>
 
 <div style="margin-top:-8rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls9.svg" alt="dls9.svg">
+</p>
+</figure>
+
 <p>
-$+CAPTION: l&rsquo;environnement.
-<img src="img/dls9.svg" alt="dls9.svg">
+L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que
+l&rsquo;environnement est distinct du l&rsquo;objet de liaison: <code>o</code> pointe vers l&rsquo;objet de
+liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.
 </p>
 
 </div>
@@ -9373,8 +9485,12 @@ ainsi:
 <figure>
 <p><img src="img/dls12.svg" alt="dls12.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;44&nbsp;:</span> On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de liaison et l&rsquo;environnement crée par <code>with</code>.</figcaption>
 </figure>
+
+<p>
+On ajoute un objet parent pour contourner la distinction entre l&rsquo;objet de
+liaison et l&rsquo;environnement crée par <code>with</code>.
+</p>
 
 </div>
 
@@ -9814,13 +9930,8 @@ argument:
 <p>
 Après un remplacement de la fonction <code>f</code> par <code>i13n.around(f, g)</code> dans un module,
 tous les appels à <code>f</code> dans le module feront appel à <code>g</code>.  L&rsquo;effet est équivalent
-à la réécriture:
+à la réécriture: f(a, b, &#x2026;) =&gt; g(f, a, b, &#x2026;)
 </p>
-<div class="org-src-container">
-
-<pre class="src src-js">f(a, b, ...) =&gt; g(f, a, b, ...)
-</pre>
-</div>
 </aside>
 
 <p>
@@ -9859,8 +9970,13 @@ ce motif d&rsquo;extension:
 <figure>
 <p><img src="img/dls13.svg" alt="dls13.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> <code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les propriétés de <code>r</code>, et délègue les autres à <code>o</code>. C&rsquo;est ce nouvel objet qu&rsquo;on insère dans l&rsquo;environnement du module.</figcaption>
 </figure>
+
+<p>
+<code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les
+propriétés de <code>r</code>, et délègue les autres à <code>o</code>.  C&rsquo;est ce nouvel objet qu&rsquo;on
+insère dans l&rsquo;environnement du module.
+</p>
 
 </div>
 </div>
@@ -10091,7 +10207,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;46&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;47&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -10544,8 +10660,13 @@ supplémentaires, mais chaque contrainte exclut également des possibilités.
 <figure>
 <p><img src="img/dls14.svg" alt="dls14.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;47&nbsp;:</span> Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des valeurs <i>exclues</i>.</figcaption>
 </figure>
+
+<p>
+Imposer une contrainte sur une variable, ce n&rsquo;est pas seulement définir
+l&rsquo;ensemble de ses valeurs <i>possibles</i>, c&rsquo;est aussi définir l&rsquo;ensemble des
+valeurs <i>exclues</i>.
+</p>
 
 </div>
 
@@ -10651,8 +10772,12 @@ précis du flot d&rsquo;exécution.
 <figure>
 <p><img src="img/dls15.svg" alt="dls15.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;48&nbsp;:</span> Un <i>hook</i> est juste un appel explicite à une liste de fonctions. C&rsquo;est le code extérieur au module qui s&rsquo;ajoute dans cette liste.</figcaption>
 </figure>
+
+<p>
+Un <i>hook</i> est juste un appel explicite à une liste de fonctions.  C&rsquo;est le code
+extérieur au module qui s&rsquo;ajoute dans cette liste.
+</p>
 
 </div>
 
@@ -12561,7 +12686,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-06 lun. 15:14 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-06 lun. 18:45 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
