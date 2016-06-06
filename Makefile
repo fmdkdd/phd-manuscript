@@ -1,30 +1,37 @@
-.PHONY: clean draft final
+# HTML output.  Org mode generates a monolithic HTML file for the whole
+# manuscript, and puts all the files for a standalone distribution in OUT.
+# We copy images to IMG_OUT folder to make the OUT folder standalone.
 
+# Directories of input files
 INPUT := manuscript.org
+HTML := html
+IMG := img
+
+# Directories of output files
+OUT := build/html
+IMG_OUT := $(OUT)/img
+
 HTML_OUTPUT := $(patsubst %.org, %.html, $(INPUT))
-TARGET := html/index.html
+TARGET := $(OUT)/index.html
 
-# Extract all multi SVG images from svg/ folder into img/ folder.  Copy plain
-# SVG so that all reside in img/.
-SVG_SRC := $(wildcard svg/*.svg)
-SVG_DST := $(patsubst svg/%.svg, img/%.svg, $(SVG_SRC))
-PNG_DST := $(patsubst svg/%.svg, img/%.png, $(SVG_SRC))
+# Extract all multi SVG images from IMG folder into IMG_OUT folder.  Copy plain
+# SVG so that all reside in IMG_OUT.
+SVG_SRC := $(wildcard $(IMG)/*.svg)
+SVG_DST := $(patsubst $(IMG)/%.svg, $(IMG_OUT)/%.svg, $(SVG_SRC))
+PNG_DST := $(patsubst $(IMG)/%.svg, $(IMG_OUT)/%.png, $(SVG_SRC))
 
+# Copy all IMG/*.jpg files to IMG_OUT folder.
+JPG_SRC := $(wildcard $(IMG)/*.jpg)
+JPG_DST := $(patsubst $(IMG)/%.jpg, $(IMG_OUT)/%.jpg, $(JPG_SRC))
 
-# Copy all svg/*.jpg files to img/ folder.
-JPG_SRC := $(wildcard svg/*.jpg)
-JPG_DST := $(patsubst svg/%.jpg, img/%.jpg, $(JPG_SRC))
+.PHONY: clean draft final dirs html
 
-# Draft is intended to be the quick option.  Initially, PNG export was much
-# faster than SVG.  Using rsvg-convert made both options equally fast.  But I'm
-# still leaving the two targets for now.
-draft: $(TARGET) $(SVG_DST) $(JPG_DST) html/img html/style.css
-final: $(TARGET) $(SVG_DST) $(JPG_DST) html/img html/style.css
+html: dirs $(SVG_DST) $(JPG_DST) $(OUT)/style.css $(TARGET)
 
-$(TARGET): $(INPUT) refs.bib html-src/export-setup.el
+$(TARGET): $(INPUT) refs.bib $(HTML)/export-setup.el
 	@echo 'Exporting to HTML...'
 	@emacs --quick --batch \
-         --load html-src/export-setup.el \
+         --load $(HTML)/export-setup.el \
          --file $(INPUT) \
          --eval '(message (format "Org version %s" (org-version)))' \
          --eval '(org-html-export-to-html)'
@@ -34,55 +41,44 @@ $(TARGET): $(INPUT) refs.bib html-src/export-setup.el
 	mv $(HTML_OUTPUT) $(TARGET)
 
 # Extract individual SVG from SVG containing multiple diagrams with Inkscape.
-img/%.multi.svg: svg/%.multi.svg bin/svgsplit
-	./bin/svgsplit svg $< img
+$(IMG_OUT)/%.multi.svg: $(IMG)/%.multi.svg bin/svgsplit
+	./bin/svgsplit svg $< $(IMG_OUT)
   # We actually create multiple files, and we can't know their names from the
   # Makefile.  So we use a phony file to know when we need to keep track of
   # the last time we ran the command.
 	@touch $@
-  # Need to update timestamp of img whenever we create an image, for the
-  # html/img: img rule below.
-	@touch img
 
 # Copy normal SVGs
-img/%.svg: svg/%.svg
+$(IMG_OUT)/%.svg: $(IMG)/%.svg
 	cp $< $@
-	@touch img
 
 # same for JPGs
-img/%.jpg: svg/%.jpg
+$(IMG_OUT)/%.jpg: $(IMG)/%.jpg
 	cp $< $@
-	@touch img
 
 # Same as above, but for the PNG exports.
-img/%.multi.png: svg/%.multi.svg bin/svgsplit
-	./bin/svgsplit png $< img
+$(IMG_OUT)/%.multi.png: $(IMG)/%.multi.svg bin/svgsplit
+	./bin/svgsplit png $< $(IMG_OUT)
 	@touch $@
-	@touch img
 
-img/%.png: svg/%.svg
+$(IMG_OUT)/%.png: $(IMG)/%.svg
 	rsvg-convert --format png --output $@ $<
-	@touch img
 
-html/style.css: html-src/style.css
+$(OUT)/style.css: $(HTML)/style.css
 	cp $< $@
 
-# img created by Org and rsvg-convert are put into the img/ folder by the
-# `draft` and `final` targets.  To make standalone HTML folder to be pushed onto
-# a web server, we need to copy the img folder as well.  The target is simply
-# the folder, whose timestamp is updated if any image is generated.
-html/img: img
-	cp --recursive img html/
-  # Need to update timestamp of destination folder, as a cp will only update it
-  # if there are new files, not on updates to existing files.
-	@touch html/img
+# Create build directories
+dirs: $(OUT) $(IMG_OUT)
+
+$(OUT):
+	mkdir --parents $(OUT)
+
+$(IMG_OUT):
+	mkdir --parents $(IMG_OUT)
 
 clean:
-	rm --force $(TARGET)
-	rm --force img/*.svg
-	rm --force img/*.png
-	rm --force img/*.pdf
-	rm --force html/style.css
-	rm --force html/img/*.svg
-	rm --force html/img/*.png
-	rmdir html/img
+	rm --force $(TARGET) \
+             $(OUT)/style.css \
+             $(IMG_OUT)/*.svg \
+             $(IMG_OUT)/*.png \
+             $(IMG_OUT)/*.jpg
