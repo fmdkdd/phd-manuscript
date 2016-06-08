@@ -26,6 +26,8 @@ $(PDF_OUT)/main.pdf: refs.bib \
                      $(TEX)/preamble.tex \
 	                   $(SVG_DST) \
                      $(OUT)/acks.tex \
+                     $(OUT)/abstract-en.tex \
+                     $(OUT)/abstract-fr.tex \
                      $(OUT)/manuscript.tex
 	env TEXINPUTS=${TEXINPUTS} latexmk ${LATEXMK_ARGS} $(TEX)/main.tex
 
@@ -53,6 +55,24 @@ $(OUT)/acks.tex: manuscript.org $(TEX)/export-setup.el
          --load $(TEX)/export-setup.el \
          --file manuscript.org \
          --eval '(re-search-forward "\\\* Acknowledgements")' \
+         --eval '(org-set-property "EXPORT_FILE_NAME" "$@")' \
+         --eval '(org-latex-export-to-latex nil t nil t)'
+
+$(OUT)/abstract-en.tex: manuscript.org $(TEX)/export-setup.el
+# Export only the subtree Abstract.
+	@emacs --quick --batch \
+         --load $(TEX)/export-setup.el \
+         --file manuscript.org \
+         --eval '(re-search-forward "\\\* Abstract")' \
+         --eval '(org-set-property "EXPORT_FILE_NAME" "$@")' \
+         --eval '(org-latex-export-to-latex nil t nil t)'
+
+$(OUT)/abstract-fr.tex: manuscript.org $(TEX)/export-setup.el
+# Export only the subtree Résumé.
+	@emacs --quick --batch \
+         --load $(TEX)/export-setup.el \
+         --file manuscript.org \
+         --eval '(re-search-forward "\\\* Résumé")' \
          --eval '(org-set-property "EXPORT_FILE_NAME" "$@")' \
          --eval '(org-latex-export-to-latex nil t nil t)'
 
