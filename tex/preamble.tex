@@ -1,29 +1,36 @@
-\documentclass{scrbook}
+\documentclass[
+  a4paper,
+  11pt,
+  draft,
+]{memoir}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Layout
 
-\KOMAoptions{
-  paper=A4,
-  BCOR=0mm,
-  pagesize,
-  mpinclude=true,               % Treat margin as part of text body
-  fontsize=11pt,
-  captions=nooneline,           % Don’t center one-line captions
-}
+%% Stock size is same as page (A4).
+\settrims{0pt}{0pt}
 
-%% Recompute layout based on the options above.  Without it, the layout is
-%% pretty bad and there are a bunch of warnings in the output.
-\recalctypearea
+%% Line length set in Charter for 65 chars is ~26.5pc.  We go as low as possible
+%% to give room to the margins.  Height is as large as possible (we don't use
+%% the footer).
+\settypeblocksize{627pt}{26pc}{*}
+
+%% 2cm spine is enough (we need space here!).
+\setlrmargins{2cm}{*}{*}
+
+%% Don't have an opinion on header yet.  Just not too near to body text.
+\setheadfoot{\baselineskip}{0pt}
+\setheaderspaces{*}{4pc}{*}
+
+\setmarginnotes{2pc}{16pc}{1pc}
+
+\checkandfixthelayout
 
 %% More space for margin notes.
-\setlength{\marginparwidth}{3\marginparwidth}
+%% \setlength{\marginparwidth}{3\marginparwidth}
 
 %% More space for main text body.
-\addtolength{\textheight}{5em}
-
-%% Small space around and below floats.
-\setlength{\intextsep}{1ex}
+%% \addtolength{\textheight}{5em}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% General typography
@@ -54,45 +61,41 @@
 %% powerful with XeLaTeX, as font information may be missing.
 \usepackage{microtype}
 
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Side notes (in the outer margin)
-
-%% Font to use for side notes.
-\newkomafont{sidenote}{\footnotesize}
 
 %% For hyphenation in ragged text, which gives more even side notes.
 \usepackage{ragged2e}
 
-%% Whole document ragged right.  That's right.
-\RaggedRight
+%% Margin notes using marginpar
+\setmpjustification{\RaggedLeft}{\RaggedRight}
 
-%% Marginnote does non-float notes in the margin with absolute placement.
-%% Kinda like how I handle them in HTML.
-\usepackage{marginnote}
-\renewcommand*{\marginfont}{\usekomafont{sidenote}}
-\renewcommand*{\raggedleftmarginnote}{\RaggedLeft}
-\renewcommand*{\raggedrightmarginnote}{\RaggedRight}
+\marginparmargin{outer}         % for \mpjustification
+\let\oldmarginpar\marginpar
+\renewcommand\marginpar[2][]{%
+  \oldmarginpar{\footnotesize\mpjustification #2}}
 
 %% To refer to the body text of an environment.
 \usepackage{environ}
 
 %% Aside is for side commentary.  Like footnotes, but in the margin.
-\NewEnviron{aside}[1][0pt]{\marginnote{\BODY}[#1]}
+\NewEnviron{aside}[1][0pt]{\marginpar{\BODY}}
 
 %% Side figures are an image and a caption, both in the margin.
-\NewEnviron{side-figure}[1][0pt]{\marginnote{\BODY}[#1]}
+\NewEnviron{side-figure}[1][0pt]{\marginpar{\BODY}}
 
 %% KOMAscript indents captions.  I don’t want that for margin captions.
-\setcapindent{0pt}
+%% \setcapindent{0pt}
 %% \setkomafont{caption}{\FloatRaggedOuter\footnotesize}
 
 %% Babel french puts it in small caps.  I don’t want that.
 %% Additionally, override figurename for listings.
 %% HACK: maybe using a new environment for the listings would be a better
 %% solution.
-\newcommand{\UnsetListingFigureName}{\renewcaptionname{french}{\figurename}{Figure}}
-\UnsetListingFigureName
-\newcommand{\SetListingFigureName}{\renewcaptionname{french}{\figurename}{Code}}
+%% \newcommand{\UnsetListingFigureName}{\renewcaptionname{french}{\figurename}{Figure}}
+%% \UnsetListingFigureName
+%% \newcommand{\SetListingFigureName}{\renewcaptionname{french}{\figurename}{Code}}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Source code listings
@@ -105,8 +108,8 @@
   columns=fullflexible, keepspaces=true,
   breaklines=false, showstringspaces=false,
   escapeinside={//*}{\^^M},     % Escape to LaTeX between //* and line return
-  aboveskip=-4pt,               % No space above and below, symmetric
-  belowskip=0pt,
+  %% aboveskip=-4pt,               % No space above and below, symmetric
+  %% belowskip=0pt,
   %extendedchars=true, inputencoding=utf8,
 }
 
@@ -156,8 +159,6 @@
 \usepackage{hyperref}
 \hypersetup{
   unicode,                      % Always a good idea?
-  hyperfootnotes=false,         % Footnotes are broken
-  xetex,                        % Might as well tell it already
   colorlinks=true,              % Color links rather than put boxes around them
   linkcolor=rubric,             % internal link
   citecolor=rubric,             % bibliography link
@@ -166,5 +167,5 @@
 
 
 %% Temporary handling of special blocks.
-\newenvironment{epigraph}{}{}
+%% \newenvironment{epigraph}{}{}
 \newenvironment{full-figure}{}{}
