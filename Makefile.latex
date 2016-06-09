@@ -11,7 +11,7 @@ IMG_OUT := $(OUT)/img
 PDF_OUT := $(OUT)/pdf
 
 TEXINPUTS := '.:$(TEX):$(OUT):' # Trailing ':' will make pdflatex include system paths
-LATEXMK_ARGS := -pdflatex=xelatex -output-directory=$(PDF_OUT) -pdf -synctex=1 -quiet
+LATEXMK_ARGS := -pdflatex=xelatex -output-directory=$(PDF_OUT) -pdf -quiet
 
 # Convert all SVG images from IMG folder to PDF into IMG_OUT folder.
 SVG_SRC := $(wildcard $(IMG)/*.svg)
