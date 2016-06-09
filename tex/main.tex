@@ -16,10 +16,11 @@
 \frontmatter
 
 \begin{titlingpage}
+\raggedright
+\newgeometry{left=2cm,right=6cm,top=3cm,bottom=2cm}
 \sffamily
-\vspace{6cm}
 
-{\Huge\titlefr}
+{\noindent\Huge\titlefr}
 
 \vspace{1.5cm}
 
@@ -29,9 +30,6 @@ Florent \textsc{Marchand de Kerchove}
 
 \vfill
 
-%% To change the margins on this page (from KOMA):
-%% \begin{addmargin}[0cm]{-4cm}
-%% \end{addmargin}
 \begin{raggedright}
 \rmfamily\normalsize
 \itshape
@@ -53,8 +51,8 @@ M. Ali Barli, professeur, Hamilcar, rapporteur;\\
 M. Po Nan, professeur, Asifond, examinateur;\\
 M. Jacques Noyé, maître-assistant, Mines Nantes, encadrant de thèse;\\
 M. Mario Südholt, professeur, Mines Nantes, directeur de thèse.\\
-\vspace{-2cm}
 \end{raggedright}
+\restoregeometry
 \end{titlingpage}
 
 \tableofcontents
@@ -72,12 +70,14 @@ M. Mario Südholt, professeur, Mines Nantes, directeur de thèse.\\
 %% Back matter for bibliography, eventual index.
 \backmatter
 
-%% \addcontentsline{toc}{part}{Bibliography}
+\newgeometry{left=2cm,right=3cm}
 \printbibliography
+\restoregeometry
 
 %% Back cover
 \newcommand{\heading}[1]{{\sffamily\textbf{#1}\vspace{4pt}}}
 
+\newgeometry{left=1cm,right=1cm,top=2cm}
 \begin{titlingpage}
 \vspace{2cm}
 %% \begin{addmargin}[-1cm]{-4cm}
