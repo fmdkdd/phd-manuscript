@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-06 lun. 18:45 -->
+<!-- 2016-06-09 jeu. 18:53 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -1341,7 +1341,7 @@ moutons, et des objets loups.  Mais un programme peut réifier les acteurs de sa
 propre exécution, les objets de la sémantique; on parle alors de <i>réflexion</i>.
 La réflexion permet à un programme d&rsquo;altérer sa structure, ou de modifier la
 sémantique du langage, pendant qu&rsquo;il s&rsquo;exécute.  Cette adaptation dynamique
-offre de nouvelles façons de concevoir des programmes modulaires.
+offre de nouvelles façons de concevoir des programmes extensibles.
 </p>
 
 <p>
@@ -1373,7 +1373,7 @@ réflexion:
     System.out.print(<span style="font-style: italic;">"\nA.m2(3) = "</span>);
     <span style="font-weight: bold;">try</span> {
       <span style="font-weight: bold; text-decoration: underline;">Method</span> <span style="font-weight: bold; font-style: italic;">m2</span> = a.getDeclaredMethod(<span style="font-style: italic;">"m2"</span>, <span style="font-weight: bold; text-decoration: underline;">int</span>.<span style="font-weight: bold;">class</span>);
-      <span style="font-weight: bold; text-decoration: underline;">Object</span> <span style="font-weight: bold; font-style: italic;">anA</span> = a.newInstance();
+<span id="coderef-synth" class="coderef-off">      <span style="font-weight: bold; text-decoration: underline;">Object</span> <span style="font-weight: bold; font-style: italic;">anA</span> = a.newInstance(); (synth)</span>
       <span style="font-weight: bold; text-decoration: underline;">int</span> <span style="font-weight: bold; font-style: italic;">result</span> = (<span style="font-weight: bold; text-decoration: underline;">int</span>) m2.invoke(anA, 3);
       System.out.println(result);
     } <span style="font-weight: bold;">catch</span> (<span style="font-weight: bold; text-decoration: underline;">Exception</span> <span style="font-weight: bold; font-style: italic;">e</span>) {}
@@ -1395,15 +1395,46 @@ A.m2(3) = 6
 </pre>
 
 <p>
-Ici, on liste à l&rsquo;exécution l&rsquo;attribut <code>n</code> et les deux méthodes <code>m1</code> <code>m2</code> avec
+Ici on liste, à l&rsquo;exécution, l&rsquo;attribut <code>n</code> et les deux méthodes <code>m1</code> <code>m2</code> avec
 leurs signatures complètes.  On voit que l&rsquo;API de réflexion réifie les objets de
-la programmation par objets: on a les classes <code>Field</code>, <code>Method</code>, <code>Object</code> et
-<code>Class</code>.  Non seulement on peut récupérer ces
+la programmation par objets: on a une classe <code>Field</code> pour les attributs, une
+classe <code>Method</code>, une classe <code>Object</code>, et une classe <code>Class</code>.
 </p>
 
 <p>
-Le protocole metaobjet de CommonLisp va plus loin: il permet de modifier la
-façon dont le langage interprète le passage de message ou l&rsquo;héritage [<a href="#KRB-91">KdRB91</a>].  [exemple
+On peut non seulement inspecter ces objets, mais aussi en synthétiser des
+instances, sans connaître leurs noms statiquement.  Ligne <a href="#coderef-synth"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-synth');" onmouseout="CodeHighlightOff(this, 'coderef-synth');">synth</a> on crée
+une instance de <code>A</code>, <code>anA</code>, et on invoque la méthode <code>m2</code> récupérée elle aussi
+par réflexion.  Invoquer une méthode dynamiquement à partir d&rsquo;une chaîne qui
+contient nom rend le programme plus flexible: ça permet d&rsquo;implémenter simplement
+l&rsquo;appel de procédure distante (RPC).  On peut aussi récupérer ou changer la valeur un
+attribut dynamiquement, ce qui est utile pour écrire des objets qui font la
+passerelle avec des bases de données relationnelles (ORM).
+</p>
+
+<aside>
+<p>
+On peut néanmoins synthétiser des classes en Java en utilisant un chargeur de
+classes personnalisé, en utilisant des outils comme Javassist, ou en manipulant
+la JVM directement.
+</p>
+</aside>
+
+<p>
+Mais l&rsquo;API de réflexion de Java ne permet pas de synthétiser de nouveaux
+éléments: on ne peut pas ajouter d&rsquo;attributs ni de méthodes à une classe, ni
+créer de classe dynamiquement.
+</p>
+
+<p>
+Le protocole metaobjet de CommonLisp va plus loin [<a href="#KRB-91">KdRB91</a>].  Le protocole
+metaobjet régit les
+façon dont le langage interprète le passage de message ou l&rsquo;héritage [<a href="#KRB-91">KdRB91</a>].
+</p>
+
+<p>
+[exemple d&rsquo;ajout d&rsquo;une méthode au runtime]
+[exemple de noSuchMethod]
 </p>
 
 <p>
@@ -12686,7 +12717,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-06 lun. 18:45 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-09 jeu. 18:53 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
