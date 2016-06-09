@@ -1040,12 +1040,12 @@ moutons, et des objets loups.  Mais un programme peut réifier les acteurs de sa
 propre exécution, les objets de la sémantique; on parle alors de /réflexion/.
 La réflexion permet à un programme d'altérer sa structure, ou de modifier la
 sémantique du langage, pendant qu'il s'exécute.  Cette adaptation dynamique
-offre de nouvelles façons de concevoir des programmes modulaires.
+offre de nouvelles façons de concevoir des programmes extensibles.
 
 En Java, un programme peut obtenir les méthodes d'un objet via l'API de
 réflexion:
 
-#+BEGIN_SRC java :classname A :results verbatim :exports both :eval no-export
+#+BEGIN_SRC java :classname A :results verbatim :exports both :eval no-export -n -r
 import java.lang.reflect.*;
 
 class A {
@@ -1068,7 +1068,7 @@ class A {
     System.out.print("\nA.m2(3) = ");
     try {
       Method m2 = a.getDeclaredMethod("m2", int.class);
-      Object anA = a.newInstance();
+      Object anA = a.newInstance();                        (ref:synth)
       int result = (int) m2.invoke(anA, 3);
       System.out.println(result);
     } catch (Exception e) {}
@@ -1087,13 +1087,36 @@ class A {
 :
 : A.m2(3) = 6
 
-Ici, on liste à l'exécution l'attribut ~n~ et les deux méthodes ~m1~ ~m2~ avec
+Ici on liste, à l'exécution, l'attribut ~n~ et les deux méthodes ~m1~ ~m2~ avec
 leurs signatures complètes.  On voit que l'API de réflexion réifie les objets de
-la programmation par objets: on a les classes ~Field~, ~Method~, ~Object~ et
-~Class~.  Non seulement on peut récupérer ces
+la programmation par objets: on a une classe ~Field~ pour les attributs, une
+classe ~Method~, une classe ~Object~, et une classe ~Class~.
 
-Le protocole metaobjet de CommonLisp va plus loin: il permet de modifier la
-façon dont le langage interprète le passage de message ou l'héritage [[cite:KRB-91][KRB-91]].  [exemple
+On peut non seulement inspecter ces objets, mais aussi en synthétiser des
+instances, sans connaître leurs noms statiquement.  Ligne [[(synth)]] on crée
+une instance de ~A~, ~anA~, et on invoque la méthode ~m2~ récupérée elle aussi
+par réflexion.  Invoquer une méthode dynamiquement à partir d'une chaîne qui
+contient nom rend le programme plus flexible: ça permet d'implémenter simplement
+l'appel de procédure distante (RPC).  On peut aussi récupérer ou changer la valeur un
+attribut dynamiquement, ce qui est utile pour écrire des objets qui font la
+passerelle avec des bases de données relationnelles (ORM).
+
+#+BEGIN_aside
+On peut néanmoins synthétiser des classes en Java en utilisant un chargeur de
+classes personnalisé, en utilisant des outils comme Javassist, ou en manipulant
+la JVM directement.
+#+END_aside
+
+Mais l'API de réflexion de Java ne permet pas de synthétiser de nouveaux
+éléments: on ne peut pas ajouter d'attributs ni de méthodes à une classe, ni
+créer de classe dynamiquement.
+
+Le protocole metaobjet de CommonLisp va plus loin [[cite:KRB-91][KRB-91]].  Le protocole
+metaobjet régit les
+façon dont le langage interprète le passage de message ou l'héritage [[cite:KRB-91][KRB-91]].
+
+[exemple d'ajout d'une méthode au runtime]
+[exemple de noSuchMethod]
 
 La réflexion est un autre exemple de la liaison tardive mentionnée par Kay [[#Smalltalk][\sect]].
 
