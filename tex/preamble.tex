@@ -1,7 +1,6 @@
 \documentclass[
   a4paper,
   11pt,
-  draft,
 ]{memoir}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,18 +22,13 @@
 \setlrmargins{2cm}{*}{*}
 
 %% Don't have an opinion on header yet.  Just not too near to body text.
-\setheadfoot{\baselineskip}{0pt}
+%% \setheadfoot{\baselineskip}{0pt}
 \setheaderspaces{*}{4pc}{*}
 
+%% Yeah margin notes!
 \setmarginnotes{2pc}{16pc}{1pc}
 
 \checkandfixthelayout
-
-%% More space for margin notes.
-%% \setlength{\marginparwidth}{3\marginparwidth}
-
-%% More space for main text body.
-%% \addtolength{\textheight}{5em}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% General typography
@@ -88,10 +82,6 @@
 
 %% Side figures are an image and a caption, both in the margin.
 \NewEnviron{side-figure}[1][0pt]{\marginpar{\BODY}}
-
-%% KOMAscript indents captions.  I don’t want that for margin captions.
-%% \setcapindent{0pt}
-%% \setkomafont{caption}{\FloatRaggedOuter\footnotesize}
 
 %% Babel french puts it in small caps.  I don’t want that.
 %% Additionally, override figurename for listings.
