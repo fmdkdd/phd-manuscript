@@ -55,7 +55,11 @@ M. Mario Südholt, professeur, Mines Nantes, directeur de thèse.\\
 \restoregeometry
 \end{titlingpage}
 
-\tableofcontents
+\newgeometry{left=3cm,right=4.4cm}
+\pagestyle{empty}
+\tableofcontents*
+\clearpage
+\restoregeometry
 
 %% \chapter*{Remerciements}
 %% %% Fix heading mark showing “Contents”
@@ -64,6 +68,7 @@ M. Mario Südholt, professeur, Mines Nantes, directeur de thèse.\\
 %% \markboth{\MakeUppercase{Remerciements}}{}
 %% \input{acks}
 
+\pagestyle{headings}
 \mainmatter
 \input{manuscript}
 
