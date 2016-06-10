@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-09 jeu. 18:53 -->
+<!-- 2016-06-10 ven. 18:42 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -559,11 +559,11 @@ en unités indépendantes.
 <div id="outline-container-orgheadline7" class="outline-3">
 <h3 id="orgheadline7"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</h3>
 <div class="outline-text-3" id="text-2-2">
-<div class="epigraph">
+<div class="epig">
 <p>
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
-Japan, who cheerfully complained that he was always being eliminated. — [<a href="#Knu-74">Knu74</a>].
-</p>
+Japan, who cheerfully complained that he was always being eliminated.
+— Donald Knuth [<a href="#Knu-74">Knu74</a>]</p>
 
 </div>
 
@@ -839,7 +839,7 @@ toutes lettres et code machine bas-niveau.
 <div id="outline-container-orgheadline8" class="outline-4">
 <h4 id="Smalltalk"><a id="orgheadline8"></a><span class="section-number-4">2.3.1</span> Classes et héritage: Smalltalk</h4>
 <div class="outline-text-4" id="text-Smalltalk">
-<div class="epigraph">
+<div class="epig">
 <p>
 Classification is the objectification of  <i>ness</i>ness. — [<a href="#Ing-81">Ing81</a>]</p>
 
@@ -1872,8 +1872,8 @@ par le langage, et doit être réalisée manuellement.
 
 <p>
 Dans <code>Remove</code>, on ne peut pas fusionner les boucles de <code>And</code> et de <code>Not</code> sans
-outrepasser les frontières imposées par les fonctions (<span class="color c0">▬</span>).  Il
-faut un nouvel axe (<span class="color c1">▬</span>) de composition.
+outrepasser les frontières imposées par les fonctions (<span class="color c0">▬</span> ).  Il
+faut un nouvel axe (<span class="color c1">▬</span> ) de composition.
 </p>
 
 </div>
@@ -2229,8 +2229,8 @@ l&rsquo;on souhaite capturer les appels <i>non</i> récursifs à <code>m</code>,
 </figure>
 
 <p>
-Les appels non récursifs de <code>m</code> sont capturés (<span class="color c3">▬</span>) par la coupe, et
-les appels récursifs échouent le test de <code>cflow</code> (<span class="color c2">▬</span>).
+Les appels non récursifs de <code>m</code> sont capturés (<span class="color c3">▬</span> ) par la coupe, et
+les appels récursifs échouent le test de <code>cflow</code> (<span class="color c2">▬</span> ).
 </p>
 
 </div>
@@ -2557,7 +2557,7 @@ système.
 <div id="outline-container-orgheadline24" class="outline-3">
 <h3 id="orgheadline24"><span class="section-number-3">2.5</span> <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrable dimensions</h3>
 <div class="outline-text-3" id="text-2-5">
-<div class="epigraph">
+<div class="epig">
 <p>
 WEB may be only for the subset of computer scientists who like to write and to
 explain what they are doing. — [<a href="#Knu-84">Knu84</a>]</p>
@@ -8542,7 +8542,7 @@ Combine all the extensions without effort.
 <i>Chapitre principalement tiré d&rsquo;un papier rejeté à DLS&rsquo;15 et à SAC&rsquo;16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
 </p>
 
-<div class="epigraph">
+<div class="epig">
 <p>
 The whole purpose of this work is to be able to modify the original interpreter
 in the less possible intrusive way, and this appears to be the case, so I find
@@ -8758,7 +8758,7 @@ en haut à gauche.
 <p>
 On peut expliquer le motif module en regardant le diagramme qui accompagne le
 code.  Avant d&rsquo;exécuter le code de l&rsquo;exemple, l&rsquo;environnement global est vide.
-Lorsque la FIA est appelée, elle crée l&rsquo;environnement en <span class="color c1">▬</span>.
+Lorsque la FIA est appelée, elle crée l&rsquo;environnement en <span class="color c1">▬</span> .
 Puisque la FIA est définie à la racine, l&rsquo;environnement parent est l&rsquo;objet
 global.  À l&rsquo;intérieur de la FIA, trois noms sont définis: une variable <code>a</code> et
 deux fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).
@@ -8892,7 +8892,7 @@ différence notable: cette fonction <code>g</code> capture l&rsquo;environnement
 <code>mkG</code>.  Le diagramme qui l&rsquo;accompagne illustre cette différence par l&rsquo;apparition
 d&rsquo;un nouvel objet d&rsquo;activation pour <code>mkG</code> qui est référencé comme environnement
 de <code>g</code>.  On a <code>m.g.env</code> qui pointe vers l&rsquo;environnement créé par <code>mkG</code>
-(<span class="color c1">▬</span>), et non l&rsquo;environnement créé par la FIA (<span class="color c2">▬</span>).
+(<span class="color c1">▬</span> ), et non l&rsquo;environnement créé par la FIA (<span class="color c2">▬</span> ).
 On voit alors que la propriété <code>env</code> d&rsquo;une fonction n&rsquo;est pas garantie de
 pointer vers l&rsquo;environnement dont nous avons besoin.
 </p>
@@ -8945,7 +8945,7 @@ propriété <code>m.E</code>.  Si on change la valeur de <code>a</code> dans cet
 <a href="#coderef-ex3-change"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-change');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-change');">9</a>), alors l&rsquo;appel <code>m.g(0)</code> qui suit utilise cette nouvelle valeur, et
 c&rsquo;est pourquoi <i>le même appel</i> donne le résultat différent, <code>2</code>, à la ligne
 <a href="#coderef-ex3-test2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-test2');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-test2');">10</a>.  Le diagramme qui accompagne l&rsquo;exemple donne une autre façon de
-voir ce qui se passe.  On y voit la nouvelle propriété <code>E</code> en <span class="color c1">▬</span>
+voir ce qui se passe.  On y voit la nouvelle propriété <code>E</code> en <span class="color c1">▬</span> 
 sur l&rsquo;objet exporté et référencé par la propriété globale <code>m</code>.  Cette propriété
 <code>m.E</code> donne un accès en lecture et écriture sur l&rsquo;environnement de la FIA.
 Ainsi, l&rsquo;affectation de la ligne <a href="#coderef-ex3-change"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex3-change');" onmouseout="CodeHighlightOff(this, 'coderef-ex3-change');">9</a> modifie la valeur de <code>a</code> dans le
@@ -8993,9 +8993,9 @@ au <code>a</code> à travers elle.
 
 <p>
 Le diagramme illustre clairement le problème: la nouvelle fonction <code>f</code>
-(<span class="color c1">▬</span>) n&rsquo;a pas le même environnement que l&rsquo;ancienne.  Puisqu&rsquo;elle est
+(<span class="color c1">▬</span> ) n&rsquo;a pas le même environnement que l&rsquo;ancienne.  Puisqu&rsquo;elle est
 créée en dehors du module, son environnement est l&rsquo;objet global (lien
-<span class="color c2">▬</span>).  Le diagramme nous indique aussi une autre solution: modifier
+<span class="color c2">▬</span> ).  Le diagramme nous indique aussi une autre solution: modifier
 la propriété <code>env</code> de la fonction qui vient remplacer <code>f</code>.  Si l&rsquo;on modifie
 cette propriété pour pointer vers l&rsquo;environnement de la FIA, la variable <code>a</code> ne
 sera recherchée dans le même environnement que pour la fonction <code>f</code> d&rsquo;origine;
@@ -9115,7 +9115,7 @@ frontal.
 Si l&rsquo;on reprend exactement le code du module, sans modifications, mais qu&rsquo;on
 l&rsquo;exécute avec cette modification sémantique, on obtient la situation de la
 figure suivante.  La redéfinition de <code>a</code> à <code>2</code> est enregistrée par
-l&rsquo;environnement frontal (<span class="color c1">▬</span>), plutôt que par l&rsquo;environnement de la
+l&rsquo;environnement frontal (<span class="color c1">▬</span> ), plutôt que par l&rsquo;environnement de la
 FIA.  Puisque les deux fonctions <code>f</code> et <code>g</code> capturent l&rsquo;environnement frontal,
 elles utilisent bien la valeur redéfinie de <code>a</code> quand elles sont appelées.  Le
 mécanisme de résolution des noms de variable examine les environnements de bas
@@ -9217,10 +9217,10 @@ de <code>a</code> est la valeur initiale du module, <code>1</code>.
 <p>
 Le diagramme illustre la chaîne d&rsquo;environnements quand l&rsquo;exécution atteint la
 ligne <a href="#coderef-ex6-diag"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex6-diag');" onmouseout="CodeHighlightOff(this, 'coderef-ex6-diag');">11</a>.  L&rsquo;environnement frontal (vide) a pour parent l&rsquo;environnement
-<code>e2</code> (<span class="color c3">▬</span>), qui lui a comme parent <code>e1</code> (<span class="color c1">▬</span>), qui
+<code>e2</code> (<span class="color c3">▬</span> ), qui lui a comme parent <code>e1</code> (<span class="color c1">▬</span> ), qui
 délègue à l&rsquo;environnement de la FIA.  Chaque ensemble de changements est isolé
 des autres, ce qui permet de les supprimer sans toucher aux autres, et tous sont
-ordonnés linéairement (le fil <span class="color c2">▬</span>), comme les couches d&rsquo;un gâteau.
+ordonnés linéairement (le fil <span class="color c2">▬</span> ), comme les couches d&rsquo;un gâteau.
 Ainsi, la priorité de redéfinition est toujours déterministe: les définitions
 qui se trouvent le plus en tête (plus proches de l&rsquo;environnement frontal) ont
 toujours priorité sur celles des environnements du bout de la chaîne.
@@ -9532,9 +9532,9 @@ Grâce à cet objet, on peut faire référence à <code>a</code> à travers <cod
 redéfinition de <code>f</code> ligne <a href="#coderef-ex9-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-f');">17</a>.  Puis, lorsqu&rsquo;on redéfinit <code>a</code> à travers
 <code>m.E.a</code>, cette nouvelle valeur a priorité sur la valeur initiale du module, et
 est bien capturée par la nouvelle fonction <code>f</code>.  Tout cela est illustré par le
-diagramme.  La propriété <code>m.E</code> pointe sur l&rsquo;objet de liaison (<span class="color c1">▬</span>),
+diagramme.  La propriété <code>m.E</code> pointe sur l&rsquo;objet de liaison (<span class="color c1">▬</span> ),
 qui contient les redéfinitions de <code>a</code> et <code>f</code>.  Si l&rsquo;objet de liaison est vide,
-alors on recherche les propriétés sur l&rsquo;objet parent (<span class="color c2">▬</span>) avant de
+alors on recherche les propriétés sur l&rsquo;objet parent (<span class="color c2">▬</span> ) avant de
 les chercher dans l&rsquo;environnement de la FIA.  Ainsi, lorsque l&rsquo;on supprime les
 propriétés <code>a</code> et <code>f</code>, le dernier appel <code>m.g(0)</code> retourne la même valeur que le
 premier, avant les modifications.
@@ -10004,7 +10004,7 @@ ce motif d&rsquo;extension:
 </figure>
 
 <p>
-<code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span>), qui contient les
+<code>delegate(o, r)</code> retourne un nouvel objet (<span class="color c1">▬</span> ), qui contient les
 propriétés de <code>r</code>, et délègue les autres à <code>o</code>.  C&rsquo;est ce nouvel objet qu&rsquo;on
 insère dans l&rsquo;environnement du module.
 </p>
@@ -10397,11 +10397,11 @@ utilisé un sous-ensemble de cette suite, utilisé pour tester le moteur
 JavaScript SpiderMonkey de Mozilla.  Sur environ 3300 tests validés par
 SpiderMonkey, Narcissus en passe 2600.  Nous avons donc lancé la version
 originale de Narcissus et la version avec <code>with</code> sur ces 3300 tests.  Pour la
-version avec <code>with</code>, aucune analyse n&rsquo;était activée: l‘objet de liaison restait
-donc vide.  Pour chaque test, notre script comparait la sortie des deux
-versions; si la sortie était identique, le test était passé, sinon, le test
-était échoué et le script enregistrait le test qui avait échoué.  Au final, les
-deux versions ont un comportement strictement identique sur ce jeu de tests.
+version avec <code>with</code>, aucune analyse n&rsquo;était activée: l&rsquo;objet de liaison restait
+donc vide.  Pour chaque test, notre script comparait les sorties des deux
+versions; un test réussissait seulement si les deux sorties étaient identiques.
+Au final, les deux versions ont un comportement strictement identique sur ce jeu
+de tests.
 </p>
 
 <p>
@@ -10409,8 +10409,8 @@ Nous avons aussi pu comparer Narcissus avec et sans l&rsquo;évaluation multi-fa
 sur ce même jeu de tests.  Lorsque le <i>program counter</i> de l&rsquo;évaluation
 multi-facettes est vide, l&rsquo;interpréteur se comporte de façon identique sur les
 tests considérés.  Un résultat démontré par Austin et Flanagan sur la sémantique
-de l&rsquo;évaluation, basée sur un lambda-calcul, mais pas sur l&rsquo;implémentation qui
-concerne le langage JavaScript dans toute sa largeur.
+de l&rsquo;évaluation basée sur un lambda-calcul, mais pas sur l&rsquo;implémentation basée
+sur le langage JavaScript.
 </p>
 
 <p>
@@ -10501,8 +10501,8 @@ possible.
 
 <aside>
 <p>
-Et il faut aussi comprendre que <code>with</code> est un mot-clé du langage qui
-est rarement utilisé, c&rsquo;est donc raisonnable si les développeurs de moteurs
+Et il faut aussi comprendre que <code>with</code> est un mot-clé du langage qui est
+rarement utilisé, il est donc raisonnable que les développeurs de moteurs
 d&rsquo;exécution ne cherchent pas à l&rsquo;optimiser davantage.
 </p>
 </aside>
@@ -10516,12 +10516,12 @@ seulement l&rsquo;utilisation de <code>with</code>.
 </p>
 
 <p>
-De toutes façons, comme l&rsquo;indique le tableau, exécuter n&rsquo;importe quel exemple
-avec Narcissus est d&rsquo;un ordre de grandeur plus lent qu&rsquo;avec SpiderMonkey
-directement.  C&rsquo;est évidemment dû au fait que Narcissus est écrit en JavaScript.
-Mais pour nos besoins, les plus gros exemples qu&rsquo;on a voulu exécuter avec les
-différentes analyses qu&rsquo;on a ajouté à Narcissus n&rsquo;ont pris que quelques
-secondes.  À cette échelle, une différence de 17% est insignifiante.
+De toute façon, comme l&rsquo;indique le tableau, exécuter n&rsquo;importe quel exemple avec
+Narcissus est d&rsquo;un ordre de grandeur plus lent qu&rsquo;avec SpiderMonkey directement.
+C&rsquo;est évidemment dû au fait que Narcissus est écrit en JavaScript.  Mais pour
+nos besoins, les plus gros exemples qu&rsquo;on a voulu exécuter avec les différentes
+analyses ajoutées à Narcissus n&rsquo;ont pris que quelques secondes.  À cette
+échelle, une différence de 17% est insignifiante.
 </p>
 
 <p>
@@ -10569,6 +10569,14 @@ exception.  Pas très utile dans notre cas, mais ça montre qu&rsquo;il est trè
 de rompre la fonctionnalité offerte par le module dès lors que cette interface
 spéciale est offerte.
 </p>
+
+<aside class="todo">
+<p>
+Open scope makes it <i>extensible</i>, which it wasn&rsquo;t before.  The paradox is that
+module decomposition goes against extensibility instead of enabling it.
+Hypothesis modularity =&gt; extensibility should be made clearer in Context.
+</p>
+</aside>
 
 <p>
 On a alors une situation quelque peu paradoxale où le programmeur soucieux de
@@ -10806,22 +10814,26 @@ précis du flot d&rsquo;exécution.
 </figure>
 
 <p>
-Un <i>hook</i> est juste un appel explicite à une liste de fonctions.  C&rsquo;est le code
-extérieur au module qui s&rsquo;ajoute dans cette liste.
+Un <i>hook</i> est une liste de fonctions associée à un moment précis du flot de
+contrôle d&rsquo;un module.  Le code extérieur au module ajoute des fonctions dans
+cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
+fonctions du <i>hook</i>.  C&rsquo;est une façon courante d&rsquo;injecter du code dans la
+configuration d&rsquo;Emacs [ref-emacs-hooks] et de LaTeX [ref-latex-hooks].
 </p>
 
 </div>
 
 <p>
 Avec des <i>hooks</i>, ou un Observateur, il faut rajouter du code à l&rsquo;intérieur du
-module, à tous les endroits où du code externe voudrait s&rsquo;insérer, pour appeler
-<i>explicitement</i> soit une liste de fonctions, soit une liste d&rsquo;observateurs.  Le
-code externe doit à son tour déclarer quelles fonctions ou quel observateur il
-souhaite ajouter dans l&rsquo;interpréteur.  Le transfert de contrôle est explicite:
-il suffit de suivre le code dans l&rsquo;interpréteur pour voir les appels à des
-<i>hooks</i>, ou une levée d&rsquo;événements pour des observateurs.  L&rsquo;inconvénient est
-d&rsquo;avoir à identifier les endroits qui peuvent intéresser du code externe, et
-d&rsquo;ajouter des <i>hooks</i> explicitement dans le code pour chacun d&rsquo;eux.
+module à tous les endroits où le programmeur d&rsquo;un module externe voudrait
+injecter du code, pour appeler <i>explicitement</i> soit une liste de fonctions, soit
+une liste d&rsquo;observateurs.  Le code externe doit à son tour déclarer quelles
+fonctions ou quel observateur il souhaite ajouter dans l&rsquo;interpréteur.  Le
+transfert de contrôle est explicite: il suffit de suivre le code dans
+l&rsquo;interpréteur pour voir les appels à des <i>hooks</i>, ou une levée d&rsquo;événements
+pour des observateurs.  L&rsquo;inconvénient est d&rsquo;avoir à identifier les endroits qui
+peuvent intéresser du code externe, et d&rsquo;ajouter des <i>hooks</i> explicitement dans
+le code pour chacun d&rsquo;eux.
 </p>
 
 <p>
@@ -10838,7 +10850,7 @@ changer le résultat.
 <p>
 Le patron Visiteur permettrait de changer le résultat de l&rsquo;interpréteur.  Si on
 suit ce patron, il faut réécrire l&rsquo;interpréteur pour appeler, pour chaque nœud
-de l&rsquo;AST, la méthode correspondante sur objet <i>visiteur</i>.  Cet objet est passé à
+de l&rsquo;AST, la méthode correspondante de l&rsquo;objet visiteur.  Cet objet est passé à
 l&rsquo;interpréteur avant l&rsquo;évaluation de code, et c&rsquo;est ce visiteur qui contient la
 logique d&rsquo;évaluation.  L&rsquo;évaluation du code JavaScript standard devrait donc
 être mise dans un tel objet, pour obéir à l&rsquo;interface du visiteur.  Et les
@@ -10849,7 +10861,7 @@ code de l&rsquo;évaluation standard par simple délégation.
 <p>
 Ici encore, le flot de contrôle est explicite: toute la logique est déléguée au
 visiteur.  L&rsquo;inconvénient majeur est qu&rsquo;il faut d&rsquo;abord établir une interface de
-visiteur qui convient à tous les besoins des différentes analyses, puis
+visiteur qui convienne à tous les besoins des différentes analyses, puis
 complètement réécrire l&rsquo;interpréteur pour se conformer à cette interface.
 </p>
 
@@ -10864,15 +10876,14 @@ n&rsquo;ajoutant que quelques lignes.
 Une différence majeure néanmoins est que si le module utilise un hook, un
 observateur, ou un visiteur, alors les extensions de ce module (les analyses
 dans le cas de l&rsquo;interpréteur) doivent nécessairement passer par l&rsquo;interface
-d&rsquo;extension définies par l&rsquo;interpréteur.  Avec <code>with</code>, ce sont les extensions
+d&rsquo;extension définie par l&rsquo;interpréteur.  Avec <code>with</code>, ce sont les extensions
 elles-mêmes qui peuvent redéfinir n&rsquo;importe quelle fonction du module; comme si
 l&rsquo;interface d&rsquo;extension était totale, mais sans avoir à le déclarer
 explicitement.  Avec <code>with</code>, le programmeur des extensions a la responsabilité
 de maintenir le lien qui lui permet d&rsquo;inclure son code dans le processus de
 l&rsquo;interpréteur (les appels à <code>around</code>, <code>override</code>, <code>delegate</code>, &#x2026;); le
 programmeur de l&rsquo;interpréteur ne peut pas savoir où les extensions vont se
-greffer, il n&rsquo;a pas à s&rsquo;en soucier, d&rsquo;où moins de code à maintenir.  C&rsquo;est
-l&rsquo;inverse pour les techniques explicites.
+greffer, il n&rsquo;a pas à s&rsquo;en soucier, d&rsquo;où moins de code à maintenir.
 </p>
 </div>
 </div>
@@ -10897,12 +10908,12 @@ propres à JavaScript?
 <p>
 En utilisant une bibliothèque d&rsquo;aspect pour JavaScript, on pourrait définir
 chaque analyse dans son propre fichier, puis l&rsquo;intégrer dynamiquement à
-l&rsquo;exécution de l&rsquo;interpréteur avec des <i>advice</i> qui ciblent les <i>joinpoint</i>
-adéquats (l&rsquo;appel de <code>execute</code>).  On pourrait activer et désactiver les <i>advice</i>
-pour activer ou désactiver dynamiquement les analyses.  On aurait effectivement
-le même résultat, mais exprimé en terme d&rsquo;aspects; une technique qui pourrait
-plus facilement se transporter à tout langage disposant d&rsquo;une bibliothèque de
-programmation par aspects.
+l&rsquo;exécution de l&rsquo;interpréteur avec des méthodes d&rsquo;aspect qui ciblent les
+jonctions adéquates (l&rsquo;appel de <code>execute</code>).  On pourrait activer et désactiver
+les méthodes d&rsquo;aspect pour activer ou désactiver dynamiquement les analyses.  On
+aurait effectivement le même résultat, mais exprimé en terme d&rsquo;aspects; une
+technique qui pourrait plus facilement se transporter à tout langage disposant
+d&rsquo;une bibliothèque de programmation par aspects.
 </p>
 
 <p>
@@ -10917,12 +10928,13 @@ l&rsquo;instrumentation de Narcissus: la compatibilité et la performance.
 </p>
 
 <p>
-AspectScript est une bibliothèque d&rsquo;aspect qui réifie <i>tout le code</i> qui doit
-être instrumenté.  Pour qu&rsquo;un module puisse émettre des <i>joinpoint</i>, il faut
-l&rsquo;envoyer à AspectScript, qui va le parser, et émettre du code qui réifie les
-déclarations, les appels de fonction, les affectations de variable, toutes les
-constructions du langage en appels explicites à AspectScript.  C&rsquo;est comme ça
-qu&rsquo;AspectScript peut capturer n&rsquo;importe quel évènement du module.
+AspectScript est une bibliothèque d&rsquo;aspects qui réifie <i>tout le code</i> qui doit
+être instrumenté.  Pour qu&rsquo;un module puisse émettre des jonctions, il faut
+l&rsquo;envoyer à AspectScript, qui va en faire l&rsquo;analyse syntaxique, et émettre du
+code qui réifie les déclarations, les appels de fonction, les affectations de
+variable, toutes les constructions du langage en appels explicites à
+AspectScript.  C&rsquo;est comme ça qu&rsquo;AspectScript peut capturer n&rsquo;importe quel
+évènement du module.
 </p>
 
 <p>
@@ -11038,28 +11050,29 @@ peut pas instrumenter du code qui contient <code>with</code>.
 </div>
 
 <p>
-Le second inconvénient est que pour parser le code, AspectScript utilise son
-propre parser, ce qui encore une fois peut introduire des déviations par rapport
-au parser du moteur d&rsquo;exécution.  JavaScript est un langage en évolution, et le
-parser d&rsquo;AspectScript ne suit pas cette évolution.  Du code qui utilise des
-extensions de syntaxe des dernières versions de JavaScript s&rsquo;exécutera
-correctement sur le navigateur, mais pas s&rsquo;il est instrumenté par AspectScript.
+Le second inconvénient est que pour faire l&rsquo;analyse syntaxique du code,
+AspectScript utilise son propre analyseur, ce qui encore une fois peut
+introduire des déviations par rapport à l&rsquo;analyseur du moteur d&rsquo;exécution.
+JavaScript est un langage en évolution, et l&rsquo;analyseur d&rsquo;AspectScript ne suit
+pas cette évolution.  Du code qui utilise des extensions de syntaxe des
+dernières versions de JavaScript s&rsquo;exécutera correctement sur le navigateur,
+mais pas s&rsquo;il est instrumenté par AspectScript.
 </p>
 
 <p>
-Parce qu&rsquo;AspectScript re-interprète le code, et utilise son propre parser, il
+Parce qu&rsquo;AspectScript réinterprète le code, et utilise son propre analyseur, il
 pose des problèmes de compatibilité.  Mais ces mécanismes ont également un coût
 important en temps d&rsquo;exécution et espace mémoire.  AspectScript est 5 à 15 fois
 plus lent qu&rsquo;un moteur d&rsquo;exécution de JavaScript.  Sachant qu&rsquo;on cherche ici à
 instrumenter un interpréteur de JavaScript, et qu&rsquo;on perd déjà un ordre de
-grandeur de performance en utilisant un interpréteur meta-circulaire, rajouter
-une la couche d&rsquo;interprétation d&rsquo;AspectScript n&rsquo;est pas idéal, surtout s&rsquo;il y a
+grandeur de performance en utilisant un interpréteur métacirculaire, rajouter
+une couche d&rsquo;interprétation d&rsquo;AspectScript n&rsquo;est pas idéal, surtout s&rsquo;il y a
 une alternative qui nous permet d&rsquo;étendre l&rsquo;interpréteur avec la même
 flexibilité à un coût de performance moindre.
 </p>
 
 <p>
-La programmation par aspect est donc un bon candidat pour le scénario
+La programmation par aspects est donc un bon candidat pour le scénario
 d&rsquo;instrumentation de Narcissus, mais l&rsquo;implémentation d&rsquo;AspectScript n&rsquo;est pas
 une solution adéquate pour des raisons techniques.  Une autre implémentation
 d&rsquo;aspects pour JavaScript existe dans la littérature [<a href="#LVG-10">LVG10</a>], mais elle ne
@@ -11072,7 +11085,7 @@ cible qu&rsquo;une version interne modifiée du navigateur Internet Explorer.
 <h4 id="orgheadline130"><span class="section-number-4">9.4.4</span> Appliquer la manipulation de portée à d&rsquo;autres langages</h4>
 <div class="outline-text-4" id="text-9-4-4">
 <p>
-On n&rsquo;a pas utilisé une bibliothèque d&rsquo;aspect, mais l&rsquo;approche de ce chapitre est
+On n&rsquo;a pas utilisé une bibliothèque d&rsquo;aspects, mais l&rsquo;approche de ce chapitre est
 certainement ancrée dans le paradigme de la programmation par aspects.  Et c&rsquo;est
 justement intéressant de voir que la simple manipulation de la portée des
 variables <i>suffit</i> pour obtenir la flexibilité souhaitée pour ajouter des
@@ -11080,7 +11093,7 @@ analyses à l&rsquo;interpréteur.
 </p>
 
 <p>
-AspectJ fournit des <i>pointcut</i> bien plus riches que ceux qu&rsquo;on a utilisé ici.
+AspectJ fournit des coupes bien plus riches que celles qu&rsquo;on a utilisées ici.
 On n&rsquo;a pas eu besoin d&rsquo;intercepter des appels de fonction en testant les
 paramètres (le pointcut <code>args</code>), ni de connaître l&rsquo;état de la pile d&rsquo;appels
 (<code>cflow</code>).  Les fonctions que l&rsquo;on a emprunté à AspectJ, <code>around</code>, <code>before</code>,
@@ -11110,33 +11123,41 @@ exemple.
 <h4 id="orgheadline131"><span class="section-number-4">9.4.5</span> Inconvénients de la manipulation de portée avec <code>with</code></h4>
 <div class="outline-text-4" id="text-9-4-5">
 <p>
-L&rsquo;utilisation de <code>with</code> vient d&rsquo;ailleurs avec son lot d&rsquo;inconvénients.  On
-utilise <code>with</code> ici juste parce que c&rsquo;est le seul moyen qu&rsquo;on a de manipuler la
-portée des variables du code du module en JavaScript standard.  Ça nous évite
-d&rsquo;avoir à modifier le moteur d&rsquo;exécution pour exposer le mécanisme de résolution
-de portée, ce qui permet à notre solution de fonctionner sur n&rsquo;importe quel
+L&rsquo;utilisation de <code>with</code> comporte néanmoins quelques inconvénients.  On utilise
+<code>with</code> ici juste parce que c&rsquo;est le seul moyen qu&rsquo;on a de manipuler la portée
+des variables du code du module en JavaScript standard.  Ça nous évite d&rsquo;avoir à
+modifier le moteur d&rsquo;exécution pour exposer le mécanisme de résolution de
+portée, ce qui permet à notre solution de fonctionner sur n&rsquo;importe quel
 interpréteur JavaScript.
 </p>
 
 <p>
-Mais <code>with</code> est une construction dépréciée du langage, et notamment interdite
-dans le &laquo;&nbsp;mode strict&nbsp;&raquo; du standard ECMASCript 5.1.  Concrètement, ça veut dire
-qu&rsquo;un module écrit dans ce mode strict ne peut pas être étendu avec <code>with</code>.
-C&rsquo;est une nouvelle manifestation du compromis entre flexibilité et sûreté du
-code; le mode stricte offre davantage de garanties pour le programmeur (en
-particulier, l&rsquo;absence de <code>with</code>), et en échange il perd la possibilité
-d&rsquo;appliquer la technique de ce chapitre.
-</p>
-
-<p>
+Néanmoins, certaines constructions ne peuvent pas être instrumentées.
 L&rsquo;environnement créé par <code>with</code> ne capture pas les déclarations de fonctions qui
 ne sont pas écrites à la racine du module.  Une fonction interne ne peut donc
 pas être instrumentée.  Les alias de fonctions ne sont pas instrumentés
 automatiquement non plus: si <code>m.a</code> et <code>m.b</code> sont deux références au même objet
 dans le module, alors redéfinir <code>m.a</code> ne change pas <code>m.b</code>, puisqu&rsquo;on ne souhaite
 pas modifier les objets du module, seulement changer les références pour pointer
-vers de nouvelles variantes.  Les fonctions anonymes, n&rsquo;ayant de nom pour
-pouvoir les références, ne peuvent pas être instrumentées non plus.
+vers de nouvelles variantes.  Enfin, les fonctions anonymes ne peuvent pas être
+instrumentées, n&rsquo;ayant de nom pour pouvoir les référencer.
+</p>
+
+<aside>
+<p>
+En ECMAScript 6, le mode strict est activé <i>par défaut</i> dans les modules et dans
+les classes.
+</p>
+</aside>
+
+<p>
+Et surtout, <code>with</code> est une construction dépréciée du langage, et notamment
+interdite dans le &laquo;&nbsp;mode strict&nbsp;&raquo; du standard ECMASCript 5.1.  Concrètement, ça
+veut dire qu&rsquo;un module écrit dans ce mode strict ne peut pas être étendu avec
+<code>with</code>.  C&rsquo;est une nouvelle manifestation du compromis entre flexibilité et
+sûreté du code; le mode strict offre davantage de garanties pour le programmeur
+(en particulier, l&rsquo;absence de <code>with</code>), et en échange il perd la possibilité
+d&rsquo;appliquer la technique de ce chapitre.
 </p>
 </div>
 </div>
@@ -12717,7 +12738,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-09 jeu. 18:53 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-10 ven. 18:42 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
