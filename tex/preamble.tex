@@ -71,6 +71,13 @@
 \renewcommand{\chaptitlefont}{\Huge\sffamily}
 \renewcommand{\chapnumfont}{\sffamily\itshape}
 
+%% Headers run into the margin
+\setlength{\headwidth}{\textwidth}
+\addtolength{\headwidth}{\marginparsep}
+\addtolength{\headwidth}{\marginparwidth}
+\makerunningwidth{headings}{\headwidth}
+\makeheadposition{headings}{flushright}{flushleft}{}{}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Side notes (in the outer margin)
 
