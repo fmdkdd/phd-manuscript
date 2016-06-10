@@ -8245,18 +8245,18 @@ utilisé un sous-ensemble de cette suite, utilisé pour tester le moteur
 JavaScript SpiderMonkey de Mozilla.  Sur environ 3300 tests validés par
 SpiderMonkey, Narcissus en passe 2600.  Nous avons donc lancé la version
 originale de Narcissus et la version avec ~with~ sur ces 3300 tests.  Pour la
-version avec ~with~, aucune analyse n'était activée: l‘objet de liaison restait
-donc vide.  Pour chaque test, notre script comparait la sortie des deux
-versions; si la sortie était identique, le test était passé, sinon, le test
-était échoué et le script enregistrait le test qui avait échoué.  Au final, les
-deux versions ont un comportement strictement identique sur ce jeu de tests.
+version avec ~with~, aucune analyse n'était activée: l'objet de liaison restait
+donc vide.  Pour chaque test, notre script comparait les sorties des deux
+versions; un test réussissait seulement si les deux sorties étaient identiques.
+Au final, les deux versions ont un comportement strictement identique sur ce jeu
+de tests.
 
 Nous avons aussi pu comparer Narcissus avec et sans l'évaluation multi-facettes
 sur ce même jeu de tests.  Lorsque le /program counter/ de l'évaluation
 multi-facettes est vide, l'interpréteur se comporte de façon identique sur les
 tests considérés.  Un résultat démontré par Austin et Flanagan sur la sémantique
-de l'évaluation, basée sur un lambda-calcul, mais pas sur l'implémentation qui
-concerne le langage JavaScript dans toute sa largeur.
+de l'évaluation basée sur un lambda-calcul, mais pas sur l'implémentation basée
+sur le langage JavaScript.
 
 En exécutant les tests, nous avons aussi mesuré le temps d'exécution de chaque
 version.  Pour chaque version, le jeu de test a été lancé dix fois, sur un seul
@@ -8304,8 +8304,8 @@ d'exécution doit toujours résoudre le nom dynamiquement; aucun raccourci n'est
 possible.
 
 #+BEGIN_aside
-Et il faut aussi comprendre que ~with~ est un mot-clé du langage qui
-est rarement utilisé, c'est donc raisonnable si les développeurs de moteurs
+Et il faut aussi comprendre que ~with~ est un mot-clé du langage qui est
+rarement utilisé, il est donc raisonnable que les développeurs de moteurs
 d'exécution ne cherchent pas à l'optimiser davantage.
 #+END_aside
 
@@ -8315,12 +8315,12 @@ cependant que notre implémentation de l'évaluation multi-facettes factorise
 quelques changements par rapport à l'implémentation de base, on ne mesure pas
 seulement l'utilisation de ~with~.
 
-De toutes façons, comme l'indique le tableau, exécuter n'importe quel exemple
-avec Narcissus est d'un ordre de grandeur plus lent qu'avec SpiderMonkey
-directement.  C'est évidemment dû au fait que Narcissus est écrit en JavaScript.
-Mais pour nos besoins, les plus gros exemples qu'on a voulu exécuter avec les
-différentes analyses qu'on a ajouté à Narcissus n'ont pris que quelques
-secondes.  À cette échelle, une différence de 17% est insignifiante.
+De toute façon, comme l'indique le tableau, exécuter n'importe quel exemple avec
+Narcissus est d'un ordre de grandeur plus lent qu'avec SpiderMonkey directement.
+C'est évidemment dû au fait que Narcissus est écrit en JavaScript.  Mais pour
+nos besoins, les plus gros exemples qu'on a voulu exécuter avec les différentes
+analyses ajoutées à Narcissus n'ont pris que quelques secondes.  À cette
+échelle, une différence de 17% est insignifiante.
 
 Le gain de temps en écriture de code et en clarté de l'instrumentation est,
 quant à lui, tangible.  Avant de pouvoir exécuter la suite ~test262~ avec
@@ -8353,6 +8353,13 @@ fonctionnalité, on aurait pu tout aussi bien fournir une version qui lance une
 exception.  Pas très utile dans notre cas, mais ça montre qu'il est très facile
 de rompre la fonctionnalité offerte par le module dès lors que cette interface
 spéciale est offerte.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Open scope makes it /extensible/, which it wasn't before.  The paradox is that
+module decomposition goes against extensibility instead of enabling it.
+Hypothesis modularity => extensibility should be made clearer in Context.
+#+END_aside
 
 On a alors une situation quelque peu paradoxale où le programmeur soucieux de
 l'intégrité de son code le ficelle dans un module, mais ce faisant empêche tout
@@ -8533,19 +8540,23 @@ précis du flot d'exécution.
 #+BEGIN_side-figure
 [[file:img/dls15.svg]]
 
-Un /hook/ est juste un appel explicite à une liste de fonctions.  C'est le code
-extérieur au module qui s'ajoute dans cette liste.
+Un /hook/ est une liste de fonctions associée à un moment précis du flot de
+contrôle d'un module.  Le code extérieur au module ajoute des fonctions dans
+cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
+fonctions du /hook/.  C'est une façon courante d'injecter du code dans la
+configuration d'Emacs [ref-emacs-hooks] et de LaTeX [ref-latex-hooks].
 #+END_side-figure
 
 Avec des /hooks/, ou un Observateur, il faut rajouter du code à l'intérieur du
-module, à tous les endroits où du code externe voudrait s'insérer, pour appeler
-/explicitement/ soit une liste de fonctions, soit une liste d'observateurs.  Le
-code externe doit à son tour déclarer quelles fonctions ou quel observateur il
-souhaite ajouter dans l'interpréteur.  Le transfert de contrôle est explicite:
-il suffit de suivre le code dans l'interpréteur pour voir les appels à des
-/hooks/, ou une levée d'événements pour des observateurs.  L'inconvénient est
-d'avoir à identifier les endroits qui peuvent intéresser du code externe, et
-d'ajouter des /hooks/ explicitement dans le code pour chacun d'eux.
+module à tous les endroits où le programmeur d'un module externe voudrait
+injecter du code, pour appeler /explicitement/ soit une liste de fonctions, soit
+une liste d'observateurs.  Le code externe doit à son tour déclarer quelles
+fonctions ou quel observateur il souhaite ajouter dans l'interpréteur.  Le
+transfert de contrôle est explicite: il suffit de suivre le code dans
+l'interpréteur pour voir les appels à des /hooks/, ou une levée d'événements
+pour des observateurs.  L'inconvénient est d'avoir à identifier les endroits qui
+peuvent intéresser du code externe, et d'ajouter des /hooks/ explicitement dans
+le code pour chacun d'eux.
 
 On utilise généralement ces techniques pour appeler du code qui /ne change pas/
 le flot de contrôle du module.  Une fonction appelée par un /hook/ n'effectue
@@ -8558,7 +8569,7 @@ changer le résultat.
 
 Le patron Visiteur permettrait de changer le résultat de l'interpréteur.  Si on
 suit ce patron, il faut réécrire l'interpréteur pour appeler, pour chaque nœud
-de l'AST, la méthode correspondante sur objet /visiteur/.  Cet objet est passé à
+de l'AST, la méthode correspondante de l'objet visiteur.  Cet objet est passé à
 l'interpréteur avant l'évaluation de code, et c'est ce visiteur qui contient la
 logique d'évaluation.  L'évaluation du code JavaScript standard devrait donc
 être mise dans un tel objet, pour obéir à l'interface du visiteur.  Et les
@@ -8567,7 +8578,7 @@ code de l'évaluation standard par simple délégation.
 
 Ici encore, le flot de contrôle est explicite: toute la logique est déléguée au
 visiteur.  L'inconvénient majeur est qu'il faut d'abord établir une interface de
-visiteur qui convient à tous les besoins des différentes analyses, puis
+visiteur qui convienne à tous les besoins des différentes analyses, puis
 complètement réécrire l'interpréteur pour se conformer à cette interface.
 
 Toutes ces techniques demandent donc de modifier l'interpréteur en profondeur,
@@ -8578,15 +8589,14 @@ n'ajoutant que quelques lignes.
 Une différence majeure néanmoins est que si le module utilise un hook, un
 observateur, ou un visiteur, alors les extensions de ce module (les analyses
 dans le cas de l'interpréteur) doivent nécessairement passer par l'interface
-d'extension définies par l'interpréteur.  Avec ~with~, ce sont les extensions
+d'extension définie par l'interpréteur.  Avec ~with~, ce sont les extensions
 elles-mêmes qui peuvent redéfinir n'importe quelle fonction du module; comme si
 l'interface d'extension était totale, mais sans avoir à le déclarer
 explicitement.  Avec ~with~, le programmeur des extensions a la responsabilité
 de maintenir le lien qui lui permet d'inclure son code dans le processus de
 l'interpréteur (les appels à ~around~, ~override~, ~delegate~, ...); le
 programmeur de l'interpréteur ne peut pas savoir où les extensions vont se
-greffer, il n'a pas à s'en soucier, d'où moins de code à maintenir.  C'est
-l'inverse pour les techniques explicites.
+greffer, il n'a pas à s'en soucier, d'où moins de code à maintenir.
 
 # This makes me think of Éric's talk at AOSD'13, with joinpoint interfaces where
 # you can say at the class level which joinpoints are viewed by outside aspects,
@@ -8607,12 +8617,12 @@ propres à JavaScript?
 
 En utilisant une bibliothèque d'aspect pour JavaScript, on pourrait définir
 chaque analyse dans son propre fichier, puis l'intégrer dynamiquement à
-l'exécution de l'interpréteur avec des /advice/ qui ciblent les /joinpoint/
-adéquats (l'appel de ~execute~).  On pourrait activer et désactiver les /advice/
-pour activer ou désactiver dynamiquement les analyses.  On aurait effectivement
-le même résultat, mais exprimé en terme d'aspects; une technique qui pourrait
-plus facilement se transporter à tout langage disposant d'une bibliothèque de
-programmation par aspects.
+l'exécution de l'interpréteur avec des méthodes d'aspect qui ciblent les
+jonctions adéquates (l'appel de ~execute~).  On pourrait activer et désactiver
+les méthodes d'aspect pour activer ou désactiver dynamiquement les analyses.  On
+aurait effectivement le même résultat, mais exprimé en terme d'aspects; une
+technique qui pourrait plus facilement se transporter à tout langage disposant
+d'une bibliothèque de programmation par aspects.
 
 Idéalement.
 
@@ -8621,12 +8631,13 @@ instrumenter Narcissus: AspectScript est la plus complète [[cite:TLT-10][TLT-10
 raisons majeures de préférer l'approche de ce chapitre à AspectScript pour
 l'instrumentation de Narcissus: la compatibilité et la performance.
 
-AspectScript est une bibliothèque d'aspect qui réifie /tout le code/ qui doit
-être instrumenté.  Pour qu'un module puisse émettre des /joinpoint/, il faut
-l'envoyer à AspectScript, qui va le parser, et émettre du code qui réifie les
-déclarations, les appels de fonction, les affectations de variable, toutes les
-constructions du langage en appels explicites à AspectScript.  C'est comme ça
-qu'AspectScript peut capturer n'importe quel évènement du module.
+AspectScript est une bibliothèque d'aspects qui réifie /tout le code/ qui doit
+être instrumenté.  Pour qu'un module puisse émettre des jonctions, il faut
+l'envoyer à AspectScript, qui va en faire l'analyse syntaxique, et émettre du
+code qui réifie les déclarations, les appels de fonction, les affectations de
+variable, toutes les constructions du langage en appels explicites à
+AspectScript.  C'est comme ça qu'AspectScript peut capturer n'importe quel
+évènement du module.
 
 AspectScript transforme ce module:
 
@@ -8726,37 +8737,38 @@ call: function (obj, fun, args, context){
 },
 #+END_SRC
 
-Le second inconvénient est que pour parser le code, AspectScript utilise son
-propre parser, ce qui encore une fois peut introduire des déviations par rapport
-au parser du moteur d'exécution.  JavaScript est un langage en évolution, et le
-parser d'AspectScript ne suit pas cette évolution.  Du code qui utilise des
-extensions de syntaxe des dernières versions de JavaScript s'exécutera
-correctement sur le navigateur, mais pas s'il est instrumenté par AspectScript.
+Le second inconvénient est que pour faire l'analyse syntaxique du code,
+AspectScript utilise son propre analyseur, ce qui encore une fois peut
+introduire des déviations par rapport à l'analyseur du moteur d'exécution.
+JavaScript est un langage en évolution, et l'analyseur d'AspectScript ne suit
+pas cette évolution.  Du code qui utilise des extensions de syntaxe des
+dernières versions de JavaScript s'exécutera correctement sur le navigateur,
+mais pas s'il est instrumenté par AspectScript.
 
-Parce qu'AspectScript re-interprète le code, et utilise son propre parser, il
+Parce qu'AspectScript réinterprète le code, et utilise son propre analyseur, il
 pose des problèmes de compatibilité.  Mais ces mécanismes ont également un coût
 important en temps d'exécution et espace mémoire.  AspectScript est 5 à 15 fois
 plus lent qu'un moteur d'exécution de JavaScript.  Sachant qu'on cherche ici à
 instrumenter un interpréteur de JavaScript, et qu'on perd déjà un ordre de
-grandeur de performance en utilisant un interpréteur meta-circulaire, rajouter
-une la couche d'interprétation d'AspectScript n'est pas idéal, surtout s'il y a
+grandeur de performance en utilisant un interpréteur métacirculaire, rajouter
+une couche d'interprétation d'AspectScript n'est pas idéal, surtout s'il y a
 une alternative qui nous permet d'étendre l'interpréteur avec la même
 flexibilité à un coût de performance moindre.
 
-La programmation par aspect est donc un bon candidat pour le scénario
+La programmation par aspects est donc un bon candidat pour le scénario
 d'instrumentation de Narcissus, mais l'implémentation d'AspectScript n'est pas
 une solution adéquate pour des raisons techniques.  Une autre implémentation
 d'aspects pour JavaScript existe dans la littérature [[cite:LVG-10][LVG-10]], mais elle ne
 cible qu'une version interne modifiée du navigateur Internet Explorer.
 
 *** Appliquer la manipulation de portée à d'autres langages
-On n'a pas utilisé une bibliothèque d'aspect, mais l'approche de ce chapitre est
+On n'a pas utilisé une bibliothèque d'aspects, mais l'approche de ce chapitre est
 certainement ancrée dans le paradigme de la programmation par aspects.  Et c'est
 justement intéressant de voir que la simple manipulation de la portée des
 variables /suffit/ pour obtenir la flexibilité souhaitée pour ajouter des
 analyses à l'interpréteur.
 
-AspectJ fournit des /pointcut/ bien plus riches que ceux qu'on a utilisé ici.
+AspectJ fournit des coupes bien plus riches que celles qu'on a utilisées ici.
 On n'a pas eu besoin d'intercepter des appels de fonction en testant les
 paramètres (le pointcut ~args~), ni de connaître l'état de la pile d'appels
 (~cflow~).  Les fonctions que l'on a emprunté à AspectJ, ~around~, ~before~,
@@ -8776,29 +8788,35 @@ manipuler directement la résolution de portée, par un mécanisme réflexif par
 exemple.
 
 *** Inconvénients de la manipulation de portée avec ~with~
-L'utilisation de ~with~ vient d'ailleurs avec son lot d'inconvénients.  On
-utilise ~with~ ici juste parce que c'est le seul moyen qu'on a de manipuler la
-portée des variables du code du module en JavaScript standard.  Ça nous évite
-d'avoir à modifier le moteur d'exécution pour exposer le mécanisme de résolution
-de portée, ce qui permet à notre solution de fonctionner sur n'importe quel
+L'utilisation de ~with~ comporte néanmoins quelques inconvénients.  On utilise
+~with~ ici juste parce que c'est le seul moyen qu'on a de manipuler la portée
+des variables du code du module en JavaScript standard.  Ça nous évite d'avoir à
+modifier le moteur d'exécution pour exposer le mécanisme de résolution de
+portée, ce qui permet à notre solution de fonctionner sur n'importe quel
 interpréteur JavaScript.
 
-Mais ~with~ est une construction dépréciée du langage, et notamment interdite
-dans le "mode strict" du standard ECMASCript 5.1.  Concrètement, ça veut dire
-qu'un module écrit dans ce mode strict ne peut pas être étendu avec ~with~.
-C'est une nouvelle manifestation du compromis entre flexibilité et sûreté du
-code; le mode stricte offre davantage de garanties pour le programmeur (en
-particulier, l'absence de ~with~), et en échange il perd la possibilité
-d'appliquer la technique de ce chapitre.
-
+Néanmoins, certaines constructions ne peuvent pas être instrumentées.
 L'environnement créé par ~with~ ne capture pas les déclarations de fonctions qui
 ne sont pas écrites à la racine du module.  Une fonction interne ne peut donc
 pas être instrumentée.  Les alias de fonctions ne sont pas instrumentés
 automatiquement non plus: si ~m.a~ et ~m.b~ sont deux références au même objet
 dans le module, alors redéfinir ~m.a~ ne change pas ~m.b~, puisqu'on ne souhaite
 pas modifier les objets du module, seulement changer les références pour pointer
-vers de nouvelles variantes.  Les fonctions anonymes, n'ayant de nom pour
-pouvoir les références, ne peuvent pas être instrumentées non plus.
+vers de nouvelles variantes.  Enfin, les fonctions anonymes ne peuvent pas être
+instrumentées, n'ayant de nom pour pouvoir les référencer.
+
+#+BEGIN_aside
+En ECMAScript 6, le mode strict est activé /par défaut/ dans les modules et dans
+les classes.
+#+END_aside
+
+Et surtout, ~with~ est une construction dépréciée du langage, et notamment
+interdite dans le "mode strict" du standard ECMASCript 5.1.  Concrètement, ça
+veut dire qu'un module écrit dans ce mode strict ne peut pas être étendu avec
+~with~.  C'est une nouvelle manifestation du compromis entre flexibilité et
+sûreté du code; le mode strict offre davantage de garanties pour le programmeur
+(en particulier, l'absence de ~with~), et en échange il perd la possibilité
+d'appliquer la technique de ce chapitre.
 
 * BARE Synthèse
 ** BARE Séparation des préoccupations: pourquoi?
