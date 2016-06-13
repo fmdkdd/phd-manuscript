@@ -8,6 +8,8 @@
 #+MACRO: acr @@latex:\textsc{$1}@@
 #+MACRO: color @@html:<span class="color $1">▬</span>@@ @@latex:\colorrule{$1}@@
 #+MACRO: emph @@latex:\emph{$1}@@ @@html:<i>$1</i>@@
+#+MACRO: ast arbre syntaxique abstrait
+#+MACRO: adt type algébrique de données
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
@@ -65,6 +67,7 @@ different person then.'
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#unstable-motivation-extension-ad-hoc-de-narcissus][UNSTABLE Motivation: extension ad-hoc de Narcissus]]
    - [[#bare-formalisation][BARE Formalisation]]
+   - [[#le-problème-de-lexpression][Le problème de l'expression]]
  - [[#travaux-connexes][Travaux connexes]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
@@ -3004,6 +3007,9 @@ reasoning, have their virtues.  Those can be thought of using nonclassical
 logics.
 
 * Le problème: étendre des interpréteurs
+:PROPERTIES:
+:CUSTOM_ID: problem
+:END:
 ** UNSTABLE Motivation: extension ad-hoc de Narcissus
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
 [[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
@@ -3288,6 +3294,111 @@ kind of change: adding analyses.  How is that more specific?
 
 Some solutions will be specific to that use case.  Some will apply to any
 program.  Lessons learned will be valuable for all.
+
+** Le problème de l'expression
+Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
+nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
+
+#+BEGIN_QUOTE
+The Expression Problem is a new name for an old problem.  The goal is to define
+a datatype by cases, where one can add new cases to the datatype and new
+functions over the datatype, without recompiling existing code, and while
+retaining static type safety (e.g., no casts).
+#+END_QUOTE
+
+Dans un langage fonctionnel, une façon courante d'implémenter un interpréteur
+est en utilisant un /{{{adt}}}/ pour représenter les termes.  En Haskell par
+exemple, on définit un simple langage arithmétique par le type algébrique
+suivant:
+
+#+BEGIN_SRC haskell
+data Term = Constant Int
+          | Plus Term Term
+          | Mult Term Term
+#+END_SRC
+
+~Term~ est un type qui a trois variantes: un terme est soit une constante
+(~Constant~, un entier), une addition (~Plus~), ou une multiplication.
+
+La syntaxe du type algébrique correspond à la façon usuelle de définir des
+grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
+pourrait être:
+
+#+BEGIN_EXAMPLE
+<term> ::= <int> | <term> + <term> | <term> * <term>
+<int>  ::= 0 | 1 | 2 ...
+#+END_EXAMPLE
+
+Ici encore, un terme a trois variantes.  L'addition et la multiplication
+contiennent d'autres termes, et la variante constante ne contient qu'un nombre
+terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
+rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
+de programmation étant souvent définies par une BNF, le type algébrique est la
+solution la plus évidente pour les représenter.
+
+~Constant~, ~Plus~ et ~Mult~ sont les /constructeurs/ du type ~Term~, qui
+permettent de créer des expressions du langage.  L'expression ~2 + 5 * 3~ sera
+construite par:
+
+: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+AST illustration
+#+END_aside
+
+Cette valeur représente l'expression ~2 + 5 * 3~, et nous donne en même temps un
+{{{ast}}} de cette expression.
+
+Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
+produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Dans
+la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
+on parlera plutôt d'/opérations/.
+
+ La principale est l'opération d'évaluation qui donne un sens à chaque terme du
+langage.  Par exemple, on souhaite évaluer les expressions de notre langage
+arithmétique en suivant le sens usuel de l'addition et de la multiplication
+d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
+obtenir des entiers, puis on les additionne.  En Haskell, on écrira l'évaluation
+en traitant les trois variantes séparément, par /pattern matching/:
+
+#+BEGIN_SRC haskell
+eval :: Term -> Int
+eval (Constant n) = n
+eval (Plus t1 t2) = eval t1 + eval t2
+eval (Mult t1 t2) = eval t1 * eval t2
+#+END_SRC
+
+La première ligne donne le type de l'opération: elle consomme un terme pour
+produire un entier.  Chaque variante de terme est traitée explicitement sur
+chaque ligne.  On remarque que l'évaluation est récursive pour ~Plus~ et
+~Mult~.  La définition du type algébrique l'était déjà: ~Term~ est utilisé dans
+sa propre définition.  Les grammaires de langage sont souvent récursives, pour
+permettre la construction de grandes expressions à partir de simples éléments.  Même
+un langage aussi simple que celui-ci exhibe cette récursion.
+
+Un interpréteur peut définir plusieurs opérations.  Wadler donne l'exemple d'un
+/pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
+sortie est plus amicale pour l'œil humain.  Pour afficher les expressions
+arithmétiques, on pourrait transformer le ~Plus~ préfixe en notation ~+~ infixe,
+et faire disparaître le mot ~Constant~ qui n'apporte pas d'information capitale.
+
+#+BEGIN_SRC haskell
+print :: Term -> String
+print (Constant n) = show n
+print (Plus t1 t2) = print t1 ++ "+" ++ print t2
+print (Mult t1 t2) = print t1 ++ "*" ++ print t2
+#+END_SRC
+
+[explain]
+
+[same structure]
+
+[now, what does adding a term entails?]
+
+[what does adding an operation entails?]
+
+[type safety is not necessary for it to be a problem, but it makes it harder]
 
 * Travaux connexes
 ** Les mécanismes de recomposition du programme
@@ -5826,17 +5937,13 @@ a clear advantage of not requiring a parser.
 * TRANSLATE Construire un interpréteur par modules
 /Contenu principalement tiré d'un papier présenté à l'atelier LASSY'15 [[cite:KNS-15][KNS-15]]/.
 
-Étendre un interpréteur peut être vu comme une extension du problème de
-l'expression [[cite:Wad-98][Wad-98]].  Wadler définit le problem de l'expression ainsi:
+Étendre un interpréteur est une instance du problème de l'expression (voir
+[[#problem]]).  Dans le problème de l'expression, on cherche à écrire un
+interpréteur que l'on pourra étendre de deux façons: soit en ajoutant des
+nouveaux termes au langage, soit en ajoutant de nouvelles opérations qui
+s'appliquent aux termes.
 
-#+BEGIN_QUOTE
-The Expression Problem is a new name for an old problem.  The goal is to define
-a datatype by cases, where one can add new cases to the datatype and new
-functions over the datatype, without recompiling existing code, and while
-retaining static type safety (e.g., no casts).
-#+END_QUOTE
-
-Mais là où le problème de l'expression ne s'intéresse qu'à étendre un langage
+Mais le problème de l'expression ne s'intéresse qu'à étendre un langage
 par de /nouveaux/ termes, dans notre cas on cherche également à /modifier/ des
 termes existants.
 
