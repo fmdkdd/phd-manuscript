@@ -24,6 +24,10 @@
   ;; MathJax is not needed.  No need to ping the CDN.
   (setq org-html-mathjax-template "")
 
+  ;; When exporting SRC blocks, put CSS classes for syntax highlighting, but do
+  ;; not set any style inline.  We can do that in style.css if needed.
+  (setq org-html-htmlize-output-type 'css)
+
   ;; Do not embed SVG image in <object> tag.  An <img> works better.
   (defun org-html--format-image (source attributes info)
     "Return \"img\" tag with given SOURCE and ATTRIBUTES.
