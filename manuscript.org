@@ -3337,7 +3337,7 @@ de programmation étant souvent définies par une BNF, le type algébrique est l
 solution la plus évidente pour les représenter.
 
 ~Constant~, ~Plus~ et ~Mult~ sont les /constructeurs/ du type ~Term~, qui
-permettent de créer des expressions du langage.  L'expression ~2 + 5 * 3~ sera
+permettent de créer des expressions du langage.  L'expression 2 + 5 * 3 sera
 construite par:
 
 : Plus (Constant 2) (Mult (Constant 5) (Constant 3))
@@ -3347,7 +3347,7 @@ construite par:
 AST illustration
 #+END_aside
 
-Cette valeur représente l'expression ~2 + 5 * 3~, et nous donne en même temps un
+Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
 {{{ast}}} de cette expression.
 
 Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
@@ -3355,7 +3355,7 @@ produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Da
 la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
 on parlera plutôt d'/opérations/.
 
- La principale est l'opération d'évaluation qui donne un sens à chaque terme du
+La principale est l'opération d'évaluation qui donne un sens à chaque terme du
 langage.  Par exemple, on souhaite évaluer les expressions de notre langage
 arithmétique en suivant le sens usuel de l'addition et de la multiplication
 d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
@@ -3377,28 +3377,137 @@ sa propre définition.  Les grammaires de langage sont souvent récursives, pour
 permettre la construction de grandes expressions à partir de simples éléments.  Même
 un langage aussi simple que celui-ci exhibe cette récursion.
 
-Un interpréteur peut définir plusieurs opérations.  Wadler donne l'exemple d'un
+On peut maintenant évaluer l'expression 2 + 5 * 3:
+
+: > eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: 17
+
+Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
 /pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
-sortie est plus amicale pour l'œil humain.  Pour afficher les expressions
-arithmétiques, on pourrait transformer le ~Plus~ préfixe en notation ~+~ infixe,
-et faire disparaître le mot ~Constant~ qui n'apporte pas d'information capitale.
+sortie est plus amicale pour l'œil humain.  Typiquement, le pretty printer d'un
+langage transforme l'arbre syntaxique en code source que le programmeur a
+l'habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
+le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot ~Constant~
+qui n'apporte pas d'information capitale.
 
 #+BEGIN_SRC haskell
-print :: Term -> String
-print (Constant n) = show n
-print (Plus t1 t2) = print t1 ++ "+" ++ print t2
-print (Mult t1 t2) = print t1 ++ "*" ++ print t2
+pp :: Term -> String
+pp (Constant n) = show n
+pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
+pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
 #+END_SRC
 
-[explain]
+#+BEGIN_aside
+On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
+#+END_aside
 
-[same structure]
+Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
 
-[now, what does adding a term entails?]
+: > pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: 2 + 5 * 3
 
-[what does adding an operation entails?]
+L'implémentation de l'affichage a la même structure que de l'implémentation de
+l'évaluation.  On traite les trois variantes du type algébrique dans trois
+lignes différentes.  Les deux variantes ~Plus~ et ~Mult~ sont définies
+récursivement, mais pas la variante ~Constant~, qui est un terminal dans la
+grammaire.  L'opération traite l'arbre syntaxique en partant de la racine, puis
+s'applique récursivement sur les nœuds de l'arbre jusqu'aux feuilles.  Ce
+processus, commun aux interpréteurs, est parfois appelé une /descente
+récursive/.
 
-[type safety is not necessary for it to be a problem, but it makes it harder]
+Dans le problème de l'expression, on cherche à étendre le langage et son
+interpréteur de deux façons: en rajoutant des nouveaux termes au langage, et en
+rajoutant de nouvelles opérations.
+
+Avec ~pp~, on a déjà vu comment ajouter une nouvelle opération à l'interpréteur:
+il suffit de définir son comportement pour toutes les variantes des termes du
+langage.  ~Term~ a 3 variantes, donc ~pp~ définit 3 cas.  Notons aussi que pour
+ajouter l'opération il suffit d'/ajouter/ du code à l'interpréteur.  Aucune
+modification au code existant n'est requise.  C'est une distinction importante,
+car il est souvent plus facile d'ajouter du code que de modifier du code
+existant.
+
+On peut caractériser la complexité d'un changement de l'interpréteur comme la
+complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
+de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes, une
+opération aura une complexité de l'ordre de /v/ lignes de code (O(v)).  On note
+que ces lignes sont des additions par un '+': +O(v).
+
+#+BEGIN_aside
+On notera les lignes qui modifient une définition existante par '~', et les
+lignes supprimées par un '-'.
+#+END_aside
+
+Étendre le langage demande de modifier le code existant.  Si on veut rajouter un
+terme pour la soustraction, il faut commencer par étendre le type algébrique
+~Term~:
+
+#+BEGIN_SRC haskell
+data Term = Constant Int
+          | Plus Term Term
+          | Mult Term Term
+~         | Minus Term Term
+#+END_SRC
+
+C'est une ligne de code ajoutée.  Mais c'est surtout une /redéfinition/ du type
+algébrique.  Typiquement, ajouter une variante induit une recompilation.  On
+compte donc cette ligne comme une modification, et non un simple ajout.
+
+Mais il faut aussi traiter cette nouvelle variante dans les opérations
+existantes:
+
+#+BEGIN_SRC haskell
+  eval :: Term -> Int
+~ eval (Minus t1 t2) = eval t1 - eval t2
+
+  pp :: Term -> String
+~ pp (Minus t1 t2) = pp t1 ++ " - " ++ pp t2
+#+END_SRC
+
+Au total, si on a ~p~ opérations dans l'interpréteur, le changement a une
+complexité de ~O(p).
+
+Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
+une opération et ajouter un terme ne sont pas des changements similaires pour
+autant.  Ajouter un terme demande de /modifier/ des définitions existantes dans
+l'interpréteur, alors que pour ajouter une opération il suffit d'adjoindre une
+nouvelle fonction.
+
+#+BEGIN_aside
+Dans la formulation du problème par Wadler, il y a deux contraintes: l'extension
+ne doit pas nécessiter de recompilation, et doit préserver le typage statique.
+Pour nous, ces deux contraintes ne sont pas nécessaires pour rendre le problème
+intéressant.  Elle le rendent certes plus difficile, mais l'extension
+d'interpréteur est avant tout un problème d'extensibilité, et s'applique aussi
+bien à des langages interprétés (non compilés), et typés dynamiquement.
+#+END_aside
+
+[
+
+Why is this an interesting problem?
+
+- Asymmetry between FP and OOP that exhibit a different choice of dominant
+  decomposition.
+
+Why is it difficult?  It's only three lines here.
+
+- It's about modularity.  In a larger interpreter, each operation would be its
+  own module.  Adding an operation would impact only one module.  Adding a term
+  impacts the term module, and all the operation modules.
+
+How is it relevant to extensibility?
+
+- It's about extending an interpreter, a program.
+
+What's the takeaway?
+
+- Asymmetry is interesting
+- Spawned many solutions that we'll use as a start to extending Narcissus
+- Mostly trivial in dynamic languages
+- Different from /instrumentation/ which modifies existing terms and operations.
+
+]
+
 
 * Travaux connexes
 ** Les mécanismes de recomposition du programme
