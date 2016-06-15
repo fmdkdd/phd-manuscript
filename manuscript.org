@@ -2203,6 +2203,9 @@ traversent la source pour produire soit un document imprimable pour le lecteur,
 soit un programme exécutable par la machine.
 
 *** La séplution
+:PROPERTIES:
+:CUSTOM_ID: hyperj
+:END:
 La programmation par aspects a pour but la séparation des composants et des
 aspects.  C'est à dire, la séparation de /certaines/ préoccupations: les
 préoccupations transversales, orthogonales à la fonctionnalité du code.  En
@@ -3482,28 +3485,63 @@ d'interpréteur est avant tout un problème d'extensibilité, et s'applique auss
 bien à des langages interprétés (non compilés), et typés dynamiquement.
 #+END_aside
 
+#+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
+#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
+#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
+#+CAPTION: (à droite) nécessite de modifier les opérations.
+[[file:img/expr-pb-1.svg]]
+#+END_side-figure
+
+Le problème de l'expression touche à la fois à la modularité et à
+l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
+l'interpréteur.  Et à la modularité, parce que les termes et les opérations
+peuvent être considérés comme des /unités/ indépendantes, des modules.  Pour
+respecter la modularité, on cherche à ce que chaque extension soit restreinte à
+un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
+un module sans affecter les autres, mais ajouter un terme requiert de modifier
+plusieurs modules.
+
+#+BEGIN_side-figure
+[[file:img/expr-pb-0.svg]]
+#+END_side-figure
+
+Le problème n'est pas exclusif à Haskell.  Dans [[#hyperj]], on a vu exactement la
+situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
+fois chaque terme était représenté par un objet qui encapsulait les définitions
+des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
+ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
+faillait modifier tous les objets des termes existants.  Le choix de l'unité
+principale de décomposition (termes ou opérations), favorise l'un ou l'autre
+type d'extension.
+
+#+BEGIN_side-figure
+#+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
+#+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
+#+CAPTION: revient à définir une arête dans le graphe ({{{color(c0)}}}).
+#+CAPTION: L'implémentation détermine juste comment cette arête est définie dans
+#+CAPTION: le programme.
+[[file:img/expr-pb-2.svg]]
+#+END_side-figure
+
+Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
+l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
+Haskell (et autres langages de la famille de ML), tandis que la décomposition
+par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
+la façon dont l'interpréteur est construit, un langage peut supporter l'une ou
+l'autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
+solutions proposées au problème de l'expression nécessitent rarement un nouveau
+langage, mais exploitent plutôt les mécanismes existants d'une nouvelle façon.
+
+Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
+aident à résoudre le problème de l'expression sont des mécanismes qui /a priori/
+facilitent l'extension de l'interpréteur.  Peut-être que certains de ces
+mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
+Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
+d'extension.
+
 [
 
-Why is this an interesting problem?
-
-- Asymmetry between FP and OOP that exhibit a different choice of dominant
-  decomposition.
-
-Why is it difficult?  It's only three lines here.
-
-- It's about modularity.  In a larger interpreter, each operation would be its
-  own module.  Adding an operation would impact only one module.  Adding a term
-  impacts the term module, and all the operation modules.
-
-How is it relevant to extensibility?
-
-- It's about extending an interpreter, a program.
-
-What's the takeaway?
-
-- Asymmetry is interesting
-- Spawned many solutions that we'll use as a start to extending Narcissus
-- Mostly trivial in dynamic languages
 - Different from /instrumentation/ which modifies existing terms and operations.
 
 ]
