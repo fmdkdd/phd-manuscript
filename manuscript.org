@@ -3986,6 +3986,9 @@ To extend Lua, bindings from C can be added, and custom data structure as well.
 Changing the interpreter does not seem possible, even from C.
 
 * UNSTABLE Variations sur un interpréteur de lambda-calcul extensible
+:PROPERTIES:
+:CUSTOM_ID: variations
+:END:
 Essayons d'abord d'écrire un interpréteur pour chaque sémantique de \lambda^{facet}, sans
 anticiper l'instrumentation; c'est à dire sans se préoccuper de pouvoir étendre
 l'interpréteur facilement.
@@ -6093,13 +6096,19 @@ interpréteur que l'on pourra étendre de deux façons: soit en ajoutant des
 nouveaux termes au langage, soit en ajoutant de nouvelles opérations qui
 s'appliquent aux termes.
 
-Mais le problème de l'expression ne s'intéresse qu'à étendre un langage
-par de /nouveaux/ termes, dans notre cas on cherche également à /modifier/ des
-termes existants.
+On a vu précedemment que résoudre le problème de l'expression dans un langage
+dynamique n'est pas difficile ([[#variations]]).  On peut pousser le problème plus
+loin en ajoutant le critère de pouvoir /modifier/ des termes ou des opérations
+existants.
 
-Suivons l'exemple du langage minimal proposé par Wadler (mais également utilisé
-par Odersky et Zenger [[cite:OZ-05][OZ-05]]), un langage d'expressions arithmétiques qu'on va
-augmenter par morceaux.
+Ce chapitre présente une façon de construire un interpréteur extensible en
+JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
+fonctionnalité de l'interpréteur dynamiquement, sans avoir à changer les arbres
+syntaxiques à exécuter.  Pour ce faire, on utilise principalement la liaison
+tardive à travers la construction ~with~ de JavaScript.
+
+On illustre cette solution sur un interpréteur de langage arithmétique, suivant
+Wadler [??] et Odersky et Zenger [[cite:OZ-05][OZ-05]].
 
 ** Ajouter des termes
 Le premier langage a un terme unique pour représenter des constantes, et une
