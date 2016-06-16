@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-16 jeu. 12:11 -->
+<!-- 2016-06-16 jeu. 18:23 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -221,7 +221,7 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline61">5. <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
+<li><a href="#variations">5. <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
 <li><a href="#orgheadline100">6. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</a>
 <ul>
 <li>
@@ -5416,8 +5416,8 @@ Changing the interpreter does not seem possible, even from C.
 </div>
 
 <div id="outline-container-orgheadline61" class="outline-2">
-<h2 id="orgheadline61"><span class="section-number-2">5</span> <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
-<div class="outline-text-2" id="text-5">
+<h2 id="variations"><a id="orgheadline61"></a><span class="section-number-2">5</span> <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
+<div class="outline-text-2" id="text-variations">
 <p>
 Essayons d&rsquo;abord d&rsquo;écrire un interpréteur pour chaque sémantique de &lambda;<sup>facet</sup>, sans
 anticiper l&rsquo;instrumentation; c&rsquo;est à dire sans se préoccuper de pouvoir étendre
@@ -8094,15 +8094,23 @@ s&rsquo;appliquent aux termes.
 </p>
 
 <p>
-Mais le problème de l&rsquo;expression ne s&rsquo;intéresse qu&rsquo;à étendre un langage
-par de <i>nouveaux</i> termes, dans notre cas on cherche également à <i>modifier</i> des
-termes existants.
+On a vu précedemment que résoudre le problème de l&rsquo;expression dans un langage
+dynamique n&rsquo;est pas difficile (<a href="#variations">5</a>).  On peut pousser le problème plus
+loin en ajoutant le critère de pouvoir <i>modifier</i> des termes ou des opérations
+existants.
 </p>
 
 <p>
-Suivons l&rsquo;exemple du langage minimal proposé par Wadler (mais également utilisé
-par Odersky et Zenger [<a href="#OZ-05">OZ05</a>]), un langage d&rsquo;expressions arithmétiques qu&rsquo;on va
-augmenter par morceaux.
+Ce chapitre présente une façon de construire un interpréteur extensible en
+JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
+fonctionnalité de l&rsquo;interpréteur dynamiquement, sans avoir à changer les arbres
+syntaxiques à exécuter.  Pour ce faire, on utilise principalement la liaison
+tardive à travers la construction <code>with</code> de JavaScript.
+</p>
+
+<p>
+On illustre cette solution sur un interpréteur de langage arithmétique, suivant
+Wadler [??] et Odersky et Zenger [<a href="#OZ-05">OZ05</a>].
 </p>
 </div>
 
@@ -13078,7 +13086,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-16 jeu. 12:11 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-16 jeu. 18:23 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
