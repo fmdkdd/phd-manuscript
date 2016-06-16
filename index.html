@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-14 mar. 18:17 -->
+<!-- 2016-06-16 jeu. 12:11 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -176,7 +176,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline24">2.5. <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrable dimensions</a>
 <ul>
 <li><a href="#orgheadline21">2.5.1. La programmation littéraire</a></li>
-<li><a href="#orgheadline22">2.5.2. La séplution</a></li>
+<li><a href="#hyperj">2.5.2. La séplution</a></li>
 <li><a href="#orgheadline23">2.5.3. L&rsquo;information transparente</a></li>
 </ul>
 </li>
@@ -2905,8 +2905,8 @@ soit un programme exécutable par la machine.
 </div>
 
 <div id="outline-container-orgheadline22" class="outline-4">
-<h4 id="orgheadline22"><span class="section-number-4">2.5.2</span> La séplution</h4>
-<div class="outline-text-4" id="text-2-5-2">
+<h4 id="hyperj"><a id="orgheadline22"></a><span class="section-number-4">2.5.2</span> La séplution</h4>
+<div class="outline-text-4" id="text-hyperj">
 <p>
 La programmation par aspects a pour but la séparation des composants et des
 aspects.  C&rsquo;est à dire, la séparation de <i>certaines</i> préoccupations: les
@@ -4357,6 +4357,16 @@ Comment étendre un interpréteur n&rsquo;est pas un nouveau problème.  Wadler 
 nomme un cas spécifique d&rsquo;extension qui s&rsquo;applique aux langages fonctionnels:
 </p>
 
+<aside>
+<p>
+Les deux contraintes de recompilation et de typage statique ne sont pas
+nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
+difficile, mais l&rsquo;extension d&rsquo;interpréteur est avant tout un problème
+d&rsquo;extensibilité, et s&rsquo;applique aussi bien à des langages interprétés (non
+compilés), et typés dynamiquement.
+</p>
+</aside>
+
 <blockquote>
 <p>
 The Expression Problem is a new name for an old problem.  The goal is to define
@@ -4573,6 +4583,16 @@ Mais il faut aussi traiter cette nouvelle variante dans les opérations
 existantes:
 </p>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/expr-pb-1.svg" alt="expr-pb-1.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;32&nbsp;:</span> Dans cette décomposition, les opérations implémentent du code pour chaque variante du langage (sens des flêches).  Ajouter une opération (à gauche) n&rsquo;affecte pas les unités existantes, mais ajouter un terme (à droite) nécessite de modifier toutes les opérations.</figcaption>
+</figure>
+
+</div>
+
 <div class="org-src-container">
 
 <pre class="src src-haskell">  eval <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
@@ -4596,56 +4616,73 @@ l&rsquo;interpréteur, alors que pour ajouter une opération il suffit d&rsquo;a
 nouvelle fonction.
 </p>
 
-<aside>
 <p>
-Dans la formulation du problème par Wadler, il y a deux contraintes: l&rsquo;extension
-ne doit pas nécessiter de recompilation, et doit préserver le typage statique.
-Pour nous, ces deux contraintes ne sont pas nécessaires pour rendre le problème
-intéressant.  Elle le rendent certes plus difficile, mais l&rsquo;extension
-d&rsquo;interpréteur est avant tout un problème d&rsquo;extensibilité, et s&rsquo;applique aussi
-bien à des langages interprétés (non compilés), et typés dynamiquement.
+Le problème de l&rsquo;expression touche à la fois à la modularité et à
+l&rsquo;extensibilité.  À l&rsquo;extensibilité, parce qu&rsquo;on cherche à étendre
+l&rsquo;interpréteur.  Et à la modularité, parce que les termes et les opérations
+peuvent être considérés comme des <i>unités</i> indépendantes, des modules.  Pour
+respecter la modularité, on cherche à ce que chaque extension soit restreinte à
+un module.  Dans l&rsquo;exemple en Haskell, ajouter une opération revient à ajouter
+un module sans affecter les autres, mais ajouter un terme requiert de modifier
+plusieurs modules.
 </p>
-</aside>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/expr-pb-0.svg" alt="expr-pb-0.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;33&nbsp;:</span> Dans cette décomposition, les termes contiennent le code des opérations.  Ajouter un terme n&rsquo;affecte pas les unités existantes, mais ajouter une opération nécessite de modifier tous les termes.</figcaption>
+</figure>
+
+</div>
+
+<p>
+Le problème n&rsquo;est pas exclusif à Haskell.  Dans <a href="#hyperj">2.5.2</a>, on a vu exactement la
+situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
+fois chaque terme était représenté par un objet qui encapsulait les définitions
+des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
+ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
+faillait modifier tous les objets des termes existants.  Le choix de l&rsquo;unité
+principale de décomposition (termes ou opérations), favorise l&rsquo;un ou l&rsquo;autre
+type d&rsquo;extension.
+</p>
+
+<div style="margin-top:4rem" class="side-figure">
+
+<figure>
+<p><img src="img/expr-pb-2.svg" alt="expr-pb-2.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;34&nbsp;:</span> La décomposition est un choix d&rsquo;implémentation; elle n&rsquo;est pas imposée par le langage.  Ajouter une opération ou ajouter un terme revient à définir une arête dans le graphe (<span class="color c0">▬</span> ). L&rsquo;implémentation détermine juste comment cette arête est définie dans le programme.</figcaption>
+</figure>
+
+</div>
+
+<p>
+Le langage de programmation <i>favorise</i> une décomposition, mais il n&rsquo;empêche pas
+l&rsquo;autre.  Canoniquement, la décomposition par opérations est plus évidente en
+Haskell (et autres langages de la famille de ML), tandis que la décomposition
+par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
+la façon dont l&rsquo;interpréteur est construit, un langage peut supporter l&rsquo;une ou
+l&rsquo;autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
+solutions proposées au problème de l&rsquo;expression nécessitent rarement un nouveau
+langage, mais exploitent plutôt les mécanismes existants d&rsquo;une nouvelle façon.
+</p>
+
+<p>
+Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
+aident à résoudre le problème de l&rsquo;expression sont des mécanismes qui <i>a priori</i>
+facilitent l&rsquo;extension de l&rsquo;interpréteur.  Peut-être que certains de ces
+mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
+Mais dans l&rsquo;ensemble, quelques-uns seront applicables à d&rsquo;autres scénarios
+d&rsquo;extension.
+</p>
 
 <p>
 [
 </p>
 
-<p>
-Why is this an interesting problem?
-</p>
-
 <ul class="org-ul">
-<li>Asymmetry between FP and OOP that exhibit a different choice of dominant
-decomposition.</li>
-</ul>
-
-<p>
-Why is it difficult?  It&rsquo;s only three lines here.
-</p>
-
-<ul class="org-ul">
-<li>It&rsquo;s about modularity.  In a larger interpreter, each operation would be its
-own module.  Adding an operation would impact only one module.  Adding a term
-impacts the term module, and all the operation modules.</li>
-</ul>
-
-<p>
-How is it relevant to extensibility?
-</p>
-
-<ul class="org-ul">
-<li>It&rsquo;s about extending an interpreter, a program.</li>
-</ul>
-
-<p>
-What&rsquo;s the takeaway?
-</p>
-
-<ul class="org-ul">
-<li>Asymmetry is interesting</li>
-<li>Spawned many solutions that we&rsquo;ll use as a start to extending Narcissus</li>
-<li>Mostly trivial in dynamic languages</li>
 <li>Different from <i>instrumentation</i> which modifies existing terms and operations.</li>
 </ul>
 
@@ -5655,7 +5692,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;32&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;35&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -8102,7 +8139,7 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;33&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -10541,7 +10578,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;47&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;50&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -13041,7 +13078,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-14 mar. 18:17 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-16 jeu. 12:11 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
