@@ -3085,6 +3085,16 @@ custom TOC...
 
 Will take a look when the times come.
 
+** [2016-06-16 jeu.]
+*** More rsvg shenanigans
+librsvg updated to 2.40.16.  Had to adapt my patch (just moved the dimensions
+fix a few lines).
+
+Strange thing is, I /still/ had bounding box miscalculations after applying the
+patch on some diagrams.  This was caused by arrows that had a fill color set.
+But the fill color was useless, since arrows were straight lines.  Removing the
+fill color in Inkscape solved the issue.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
