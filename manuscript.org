@@ -3302,6 +3302,14 @@ program.  Lessons learned will be valuable for all.
 Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
 nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
 
+#+BEGIN_aside
+Les deux contraintes de recompilation et de typage statique ne sont pas
+nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
+difficile, mais l'extension d'interpréteur est avant tout un problème
+d'extensibilité, et s'applique aussi bien à des langages interprétés (non
+compilés), et typés dynamiquement.
+#+END_aside
+
 #+BEGIN_QUOTE
 The Expression Problem is a new name for an old problem.  The goal is to define
 a datatype by cases, where one can add new cases to the datatype and new
@@ -3459,6 +3467,14 @@ compte donc cette ligne comme une modification, et non un simple ajout.
 Mais il faut aussi traiter cette nouvelle variante dans les opérations
 existantes:
 
+#+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
+#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
+#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
+#+CAPTION: (à droite) nécessite de modifier toutes les opérations.
+[[file:img/expr-pb-1.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC haskell
   eval :: Term -> Int
 ~ eval (Minus t1 t2) = eval t1 - eval t2
@@ -3476,23 +3492,6 @@ autant.  Ajouter un terme demande de /modifier/ des définitions existantes dans
 l'interpréteur, alors que pour ajouter une opération il suffit d'adjoindre une
 nouvelle fonction.
 
-#+BEGIN_aside
-Dans la formulation du problème par Wadler, il y a deux contraintes: l'extension
-ne doit pas nécessiter de recompilation, et doit préserver le typage statique.
-Pour nous, ces deux contraintes ne sont pas nécessaires pour rendre le problème
-intéressant.  Elle le rendent certes plus difficile, mais l'extension
-d'interpréteur est avant tout un problème d'extensibilité, et s'applique aussi
-bien à des langages interprétés (non compilés), et typés dynamiquement.
-#+END_aside
-
-#+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
-#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
-#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
-#+CAPTION: (à droite) nécessite de modifier les opérations.
-[[file:img/expr-pb-1.svg]]
-#+END_side-figure
-
 Le problème de l'expression touche à la fois à la modularité et à
 l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
 l'interpréteur.  Et à la modularité, parce que les termes et les opérations
@@ -3503,6 +3502,9 @@ un module sans affecter les autres, mais ajouter un terme requiert de modifier
 plusieurs modules.
 
 #+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les termes contiennent le code des
+#+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
+#+CAPTION: mais ajouter une opération nécessite de modifier tous les termes.
 [[file:img/expr-pb-0.svg]]
 #+END_side-figure
 
@@ -3515,6 +3517,7 @@ faillait modifier tous les objets des termes existants.  Le choix de l'unité
 principale de décomposition (termes ou opérations), favorise l'un ou l'autre
 type d'extension.
 
+#+ATTR_HTML: :style margin-top:4rem
 #+BEGIN_side-figure
 #+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
 #+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
