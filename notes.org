@@ -78,6 +78,31 @@ code/process would work.
 Or, I can explicitly state that “program” refers to the program text.  But then
 I lose the ability to express both meaning at once.
 
+** TODO Explicit distinction between late binding and dynamic binding
+For me, dynamic binding is what happens for ~B.m~ to be called here:
+
+: A a = new B()
+: a.m()
+
+Or is that dynamic dispatch?
+
+I take late binding as encompassing any mechanisms that delays the evaluation of
+names (methods, but also identifiers, or even control flow operators).
+
+Dynamic binding \in late binding.
+
+Dynamic scoping is late binding, because the meaning of a dynamically-scoped
+identifier cannot be known until the code is run (and can change multiple times
+in the same execution).
+
+A meta-object protocol is late binding in the sense that how an "Object" behaves
+is not statically fixed, but can change at runtime.
+
+There is a real difference in dealing with languages that have late binding
+features.  Calling ~eval~, or having late-bound closures.
+
+But maybe it's not the right term.
+
 ** TODO Epigraphs
 At least two quotes, one from a proponent, one from an opponent?
 
