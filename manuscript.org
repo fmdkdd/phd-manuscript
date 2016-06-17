@@ -40,7 +40,7 @@ different person then.'
  - [[#contexte][Contexte]]
    - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
-   - [[#stable-modéliser-le-monde-la-programmation-objet][STABLE Modéliser le monde: la programmation objet]]
+   - [[#stable-modéliser-le-monde-la-programmation-par-objets][STABLE Modéliser le monde: la programmation par objets]]
      - [[#classes-et-héritage-smalltalk][Classes et héritage: Smalltalk]]
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
@@ -260,12 +260,15 @@ centrée sur les langages de programmations.
 Pour modifier l'exécution d'un programme, il est bon de savoir /comment/ le
 programme est exécuté par la machine.  Du point de vue de la machine, un
 programme est une simple liste d'instructions.  Une séquence d'additions, de
-soustractions, de chargement et stockage de valeurs en mémoire, et de sauts
-conditionnels.  Ces instructions sont présentées à la machine sous la seule
-forme que son processeur est capable de manipuler: des nombres, codés par des
-suites de zéros et de uns.
+soustractions, d'écritures et lectures mémoire, et de sauts conditionnels.  Ces
+instructions sont présentées à la machine sous la seule forme que son processeur
+est capable de manipuler: le binaire, une suite de zéros et de uns.
 
-#+CAPTION: Un programme (extrait; point de vue d'une machine x86).
+#+BEGIN_aside
+Un programme (extrait; point de vue d'une machine x86).  Un /bit/ correspond à
+une seule valeur binaire: 0 ou 1.
+#+END_aside
+
 #+BEGIN_EXAMPLE
 ...00101011011100101011010101110101011111010100011101010010101011...
 #+END_EXAMPLE
@@ -306,7 +309,7 @@ Whitespace, qui ne manquent pas de nous rappeler qu'être Turing-complet n'est
 pas un critère suffisant pour être un langage /utile/.
 #+END_aside
 
-Dans les langages de programmation exotériques, un programme est constitué
+Dans les langages de programmation /exotériques/, un programme est constitué
 principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
 permutations judicieuses, nous servent à /nommer/ les objets de la computation
 tels que les variables et constantes, les fonctions, les classes et autres
@@ -349,11 +352,10 @@ exécuterait directement un programme JavaScript.  Les deux situations sont
 
 C'est le /compilateur/ qui traduit des programmes d'un langage de programmation
 vers le langage machine.  Le compilateur lit le texte brut décrivant le
-programme, vérifie que ce texte est conforme aux règles syntaxiques et
-grammaticales du langage qu'il traduit, puis applique les règles de traduction
-en langage machine.  Un compilateur permet donc au programmeur d'obtenir un
-programme exécutable par la machine à partir de code écrit dans le langage de
-son choix.
+programme, vérifie que ce texte est conforme aux règles syntaxiques du langage
+qu'il traduit, puis applique les règles de traduction en langage machine.  Un
+compilateur permet donc au programmeur d'obtenir un programme exécutable par la
+machine à partir de code écrit dans le langage de son choix.
 
 # #+CAPTION: Le compilateur lit le programme, en extrait la structure, et produit
 # #+CAPTION: du code machine.
@@ -371,8 +373,8 @@ son choix.
 # #+END_SRC
 
 Notons que la compilation n'attache aucun sens particulier aux noms choisis par
-le programmeur.  Les noms servent juste à vite remplacés par des références.  On
-pourrait écrire le programme de [[fib]], de manière totalement équivalente:
+le programmeur.  On pourrait écrire le programme de [[fib]], de manière totalement
+équivalente:
 
 #+BEGIN_SRC js
 function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
@@ -387,12 +389,11 @@ recèlent d'exemples à suivre pour mystifier tout collaborateur.
 # Structures do not count (modules, classes, files).  Structure is for humans.
 
 Le programme, n'a donc pas comme seule vocation à ordonner la machine, il doit
-aussi être lisible par d'autres programmeurs
-vocations parallèles:
+aussi être lisible par d'autres programmeurs.
 
-Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes
-Lorsqu'un texte devient trop long, il devient plus pratique de le découper
-en unités indépendantes.
+Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes.  Lorsqu'un
+texte devient trop long, il devient plus pratique de le découper en unités
+indépendantes.
 
 # Other structures, classes, modules
 
@@ -533,7 +534,7 @@ milieu d'une procédure, ou d'une boucle.  Le système de coordonnée n'est plus
 suffisant pour connaître avec certitude l'état du processus, les valeurs des
 variables.  Il faudrait également savoir à tout moment le chemin exact emprunté
 par le processus.  Mais ce n'est plus un système de coordonnées: on ne peut plus
-raisonner localement dans une boucle ou une procédure, il faut considérer
+raisonner /localement/ dans une boucle ou une procédure, il faut considérer
 l'intégralité du programme.
 
 Pour Dijkstra, ~goto~ est une construction qui permet trop facilement de
@@ -653,14 +654,14 @@ je peux constater que 40 ans plus tard la situation n'est pas celle prédite.
 Bien qu'il existe de nombreux langages de programmation, et beaucoup qui sont
 qualifiés de "haut-niveau", aucun ne permet de manipuler différents niveaux
 d'abstraction comme le décrit Knuth.  Aucun ne réconcilie la perte de contrôle
-d'efficacité impliquée avec la montée en abstraction.
+et d'efficacité avec la montée en abstraction.
 
 Mais peut-être que Knuth s'en est lui-même rendu compte.  Le langage du futur
 était annoncé pour 1984, l'année où il publie son système de Literate
 Programming qui permet de mêler une description haut-niveau du programme en
-toutes lettres et code machine bas-niveau.
+toutes lettres, et le code machine bas-niveau.
 
-** STABLE Modéliser le monde: la programmation objet
+** STABLE Modéliser le monde: la programmation par objets
 #+BEGIN_full-figure
 #+CAPTION: L'École d'Athènes. Raphaël, 1509--1510.
 [[file:img/scuola.jpg]]
@@ -693,7 +694,7 @@ personnel serait à l'intellect ce que l'exosquelette est au corps humain.
 En 1971, Kay crée le /Learning Research Group/ à PARC dans le but de construire
 cet ordinateur.  Inspiré par les travaux de Piaget et Bruner sur le
 développement intellectuel chez les enfants, il souhaite construire un
-ordinateur intuitif, qui pourra servir aux enfants "de tout age".  Programmer ce
+ordinateur intuitif, qui pourra servir aux enfants "de tout âge".  Programmer ce
 système serait simple comme bonjour, et c'est pourquoi il nomme son langage de
 programmation "Smalltalk".
 
@@ -816,8 +817,8 @@ methods for computing responses to messages and representation of data in the
 instances.
 #+END_QUOTE
 
-Que le langage soit centré sur les objets a un avantage pour l'étendre.  Ingalls
-donne l'exemple d'ajouter un nouvel objet au système, et de faire les
+Que le langage soit centré sur les objets a un avantage pour l'extensibilité.
+Ingalls donne l'exemple d'ajouter un nouvel objet au système, et de faire les
 modifications nécessaires pour représenter cet objet sur la sortie standard.
 Dans un système qui contiendrait une fonction ~print~ centrale, c'est cette
 fonction qu'il faudrait modifier.  Elle pourrait être large et compliquée, et il
@@ -827,10 +828,10 @@ s~.  Du coup, il suffit d'ajouter cette méthode dans le nouvel objet, ce qui
 garantit de ne pas affecter le reste du système.  La nouvelle fonctionnalité est
 localisée dans l'objet.
 
-Un autre avantage que les objets ont de ne pas dépendre de la représentation
-interne d'autres objets, c'est la recompilation séparée.  Modifier ou ajouter un
-champ à la classe ~Rectangle~ n'impacte que le code de l'objet, jamais le code
-extérieur.  Les objets peuvent être compilés indépendamment.
+Et puisque les objets ne dépendent pas de la représentation interne d'autres
+objets, on peut les recompiler séparémment.  Modifier ou ajouter un champ à la
+classe ~Rectangle~ n'impacte que le code de l'objet, jamais le code extérieur.
+Les objets peuvent être compilés indépendamment.
 
 L'héritage de classes permet la réutilisation de code.  Mais une classe ne peut
 avoir qu'un seul parent, ce qui force une hiérarchie des objets du système sous
@@ -866,11 +867,11 @@ permet de factoriser ces trois classes.
 #+END_side-figure
 
 Pour Kay, un des ingrédients clés de la flexibilité apportée par programmation
-par objets est la /liaison tardive/ (/late-binding/).  Le passage de messages en
+par objets est la /liaison tardive/ (/late binding/).  Le passage de messages en
 est un exemple: l'opération effectuée dépend de l'objet qui reçoit le message,
 et cet objet peut ne pas être déterminé avant l'exécution du programme, donc
 l'opération devra être choisie dynamiquement.  De même, dans l'exemple de la
-classe ~Number~, on fait référence au message ~-~, qui n'est pas définit sur
+classe ~Number~, on fait référence au message ~-~, qui n'est pas défini sur
 ~Number~: c'est une forme de liaison tardive.  Autre exemple: la fonction ~eval~
 en LISP permet d'exécuter du texte construit dynamiquement; les premières
 versions de Smalltalk permettaient de traiter la syntaxe à l'exécution de la
@@ -884,15 +885,14 @@ Taivalsaari [[cite:Tai-97][Tai-97]] voit, entre ces deux approches, une distinct
 philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l'école
 d'Athènes: de Platon [[cite:Pla-98][Pla-98]] et d'Aristote [[cite:Ari-35][Ari-35]].  Platon distingue les
 /formes/, qui sont les descriptions idéales des choses, des /instances/ de ces
-formes, qui sont leur manifestation concrète et imparfaites.  Platon considère
-que les formes sont plus réelles que leurs instances.  En programmation objet,
-c'est le point de vue que les classes sont plus réelles que les objets.
-Aristote croit qu'il est possible d'établir l'unique taxonomie correcte de
-toutes les choses naturelles.  Il classe une chose à partir de ses propriétés
-essentielles (le genre), et des propriétés qui la distingue des autres choses du
-même genre (le différentiel).  On voit le parallèle avec l'héritage en
-programmation par objets: quand une classe hérite, elle déclare son genre, et
-les méthodes additionnelles décrivent son différentiel.
+formes, qui sont leur manifestation concrète et imparfaite.  Platon considère
+que les formes sont plus réelles que leurs instances.  Aristote croit qu'il est
+possible d'établir l'unique taxonomie correcte de toutes les choses naturelles.
+Il classe une chose à partir de ses propriétés essentielles (le genre), et des
+propriétés qui la distingue des autres choses du même genre (le différentiel).
+On voit le parallèle avec l'héritage en programmation par objets: quand une
+classe hérite, elle déclare son genre, et les méthodes additionnelles décrivent
+son différentiel.
 
 Aristote, comme Platon, voyaient la classification comme absolue: la taxonomie
 est la seule vraie hiérarchie des choses.  À l'inverse, Wittgenstein la
@@ -954,7 +954,7 @@ sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et
 Fred.  Les deux mécanismes de partage sont l'héritage et l'instantiation.
 #+END_side-figure
 
-En utilisant les prototypes, je ne crée pas de concepts.  Si Clyde est le
+En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le
 premier éléphant que je rencontre, il devient mon /prototype/ d'éléphant.  Si on
 me demande la couleur d'un éléphant, je suppose qu'ils sont tous de la même
 couleur que Clyde, et je réponds "gris".  Fred est aussi un éléphant, et il
@@ -963,7 +963,7 @@ prototype de Fred; il est /comme/ Clyde, mais avec un nom différent.  Si Fred a
 d'autres particularités, s'il a la peau bleue, je l'inscris seulement dans sa
 représentation.  Si on me demande la couleur de Fred, je n'ai besoin que
 d'inspecter la représentation de Fred.  Mais si on me demande combien de pattes
-a Fred, il a en a autant que Clyde, son prototype.  L'information non spécifique
+a Fred, il en a autant que Clyde, son prototype.  L'information non spécifique
 à Fred est sauvegardée par le prototype: c'est le mécanisme de /délégation/.
 
 #+ATTR_HTML: :style margin-top:-4rem
@@ -1007,23 +1007,30 @@ it will have to include navigational and descriptive aids.
 #+END_QUOTE
 
 Les langages à prototypes sont particulièrement adaptés pour représenter des
-objets qui ont un comportement unique.  Mais il arrive souvent que l'on doivent
+objets qui ont un comportement unique.  Mais il arrive souvent que l'on doive
 gérer de nombreux objets similaires.  Les concepteurs de Self décrivent une
-façon de structurer ces objets à l'aide de /traits/ [[cite:UCC+91][UCC+91]].  Un trait est un
-objet qui regroupe les méthodes utilisées par plusieurs objets.  On crée ensuite
-un objet prototype qui étend ce trait, et fournit une implémentation et des
-valeurs d'attributs par défaut.  Tous les objets de la même famille étendent ce
-prototype.  Cette structure permet de séparer les méthodes (le comportement) des
-attributs (l'état).
+façon de structurer ces objets à l'aide de traits [[cite:UCC+91][UCC+91]].  Comme en Smalltalk,
+un trait est un objet qui regroupe les méthodes utilisées par plusieurs objets.
+On crée ensuite un objet prototype qui étend ce trait, et fournit une
+implémentation et des valeurs d'attributs par défaut.  Tous les objets de la
+même famille étendent ce prototype.  Cette structure permet de séparer les
+méthodes (le comportement) des attributs (l'état).
 
 #+ATTR_HTML: :style margin-top:-13rem
 #+BEGIN_side-figure
 [[file:img/self2.svg]]
 #+END_side-figure
 
-L'idée est proche des traits en Smalltalk, sauf qu'en Smalltalk le langage fait
-une distinction syntaxique entre classes, traits, et instances, alors qu'en Self
-ce sont tous des objets qui ont juste des rôles différents.
+Les traits de Self sont proches des traits de Smalltalk, a une distinction près.
+En Smalltalk, le langage fait une distinction syntaxique entre classes, traits,
+et instances, alors qu'en Self ce sont tous des objets qui ont juste des rôles
+différents.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Mode-switching better explained as mechanism later on.  Paragraph should
+elaborate on the object/class distinctions.
+#+END_aside
 
 Les concepteurs de Self remarquent que le mécanisme de délégation est plus
 général que l'héritage.  Le premier peut émuler le second, mais l'inverse n'est
@@ -1032,19 +1039,22 @@ création d'un objet, on a une solution élégante au patron de conception /Stat
 le /mode-switching/ (voir ??).
 
 ** Réifier le langage pour séparer les préoccupations
-#+CAPTION: Le baron de Münchhausen évite la noyade en se hissant par les
-#+CAPTION: cheveux. Gustave Doré, 1862.
+#+CAPTION: Le baron de Münchhausen évite la noyade par capillotraction.
+#+CAPTION: Gustave Doré, 1862.
 [[file:img/münchhausen.jpg]]
 
 *** TRANSLATE La réflexion
-La programmation par objets nous permet réifier les acteurs du domaine
-d'application.  Dans la simulation d'un écosystème qui comprend de l'herbe, des
-moutons et des loups, on trouve des objets qui représentent l'herbe, des objets
-moutons, et des objets loups.  Mais un programme peut réifier les acteurs de sa
-propre exécution, les objets de la sémantique; on parle alors de /réflexion/.
-La réflexion permet à un programme d'altérer sa structure, ou de modifier la
-sémantique du langage, pendant qu'il s'exécute.  Cette adaptation dynamique
-offre de nouvelles façons de concevoir des programmes extensibles.
+En programmation par objets, on cherche une correspondance entre les acteurs du
+domaine d'application et les objets manipulés par le programme.  Dans la
+simulation d'un écosystème qui comprend de l'herbe, des moutons et des loups, on
+trouve des objets qui représentent l'herbe, des objets moutons, et des objets
+loups.  Un objet du programme est une /réification/ de l'objet de l'écosystème.
+
+Mais un programme peut aussi réifier les acteurs de sa propre exécution, les
+objets de la sémantique; on parle alors de /réflexion/.  La réflexion permet à
+un programme d'altérer sa structure, ou de modifier la sémantique du langage,
+pendant qu'il s'exécute.  Cette adaptation dynamique offre de nouvelles façons
+de concevoir des programmes extensibles.
 
 En Java, un programme peut obtenir les méthodes d'un objet via l'API de
 réflexion:
@@ -1097,18 +1107,19 @@ la programmation par objets: on a une classe ~Field~ pour les attributs, une
 classe ~Method~, une classe ~Object~, et une classe ~Class~.
 
 On peut non seulement inspecter ces objets, mais aussi en synthétiser des
-instances, sans connaître leurs noms statiquement.  Ligne [[(synth)]] on crée
-une instance de ~A~, ~anA~, et on invoque la méthode ~m2~ récupérée elle aussi
-par réflexion.  Invoquer une méthode dynamiquement à partir d'une chaîne qui
-contient nom rend le programme plus flexible: ça permet d'implémenter simplement
-l'appel de procédure distante (RPC).  On peut aussi récupérer ou changer la valeur un
-attribut dynamiquement, ce qui est utile pour écrire des objets qui font la
-passerelle avec des bases de données relationnelles (ORM).
+instances, sans connaître leurs noms statiquement.  Ligne [[(synth)]] on crée une
+instance de ~A~, ~anA~, et on invoque la méthode ~m2~ récupérée elle aussi par
+réflexion.  Invoquer une méthode dynamiquement à partir d'une chaîne qui
+contient son nom rend le programme plus flexible: ça permet par exemple
+d'implémenter simplement l'appel de procédure distante (RPC).  On peut aussi
+récupérer ou changer la valeur un attribut dynamiquement, ce qui est utile pour
+écrire des objets qui font la passerelle avec des bases de données
+relationnelles (ORM).
 
 #+BEGIN_aside
 On peut néanmoins synthétiser des classes en Java en utilisant un chargeur de
 classes personnalisé, en utilisant des outils comme Javassist, ou en manipulant
-la JVM directement.
+la JVM directement [??].
 #+END_aside
 
 Mais l'API de réflexion de Java ne permet pas de synthétiser de nouveaux
