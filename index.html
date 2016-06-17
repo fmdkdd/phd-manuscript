@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-16 jeu. 18:23 -->
+<!-- 2016-06-17 ven. 18:12 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -160,7 +160,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgheadline6">2.1. <span class="todo UNSTABLE">UNSTABLE</span> De l&rsquo;exécution du programme au code source</a></li>
 <li><a href="#orgheadline7">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</a></li>
-<li><a href="#orgheadline10">2.3. <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation objet</a>
+<li><a href="#orgheadline10">2.3. <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation par objets</a>
 <ul>
 <li><a href="#Smalltalk">2.3.1. Classes et héritage: Smalltalk</a></li>
 <li><a href="#orgheadline9">2.3.2. Prototypes et délégation: Self</a></li>
@@ -419,11 +419,17 @@ centrée sur les langages de programmations.
 Pour modifier l&rsquo;exécution d&rsquo;un programme, il est bon de savoir <i>comment</i> le
 programme est exécuté par la machine.  Du point de vue de la machine, un
 programme est une simple liste d&rsquo;instructions.  Une séquence d&rsquo;additions, de
-soustractions, de chargement et stockage de valeurs en mémoire, et de sauts
-conditionnels.  Ces instructions sont présentées à la machine sous la seule
-forme que son processeur est capable de manipuler: des nombres, codés par des
-suites de zéros et de uns.
+soustractions, d&rsquo;écritures et lectures mémoire, et de sauts conditionnels.  Ces
+instructions sont présentées à la machine sous la seule forme que son processeur
+est capable de manipuler: le binaire, une suite de zéros et de uns.
 </p>
+
+<aside>
+<p>
+Un programme (extrait; point de vue d&rsquo;une machine x86).  Un <i>bit</i> correspond à
+une seule valeur binaire: 0 ou 1.
+</p>
+</aside>
 
 <pre class="example">
 ...00101011011100101011010101110101011111010100011101010010101011...
@@ -470,7 +476,7 @@ pas un critère suffisant pour être un langage <i>utile</i>.
 </aside>
 
 <p>
-Dans les langages de programmation exotériques, un programme est constitué
+Dans les langages de programmation <i>exotériques</i>, un programme est constitué
 principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
 permutations judicieuses, nous servent à <i>nommer</i> les objets de la computation
 tels que les variables et constantes, les fonctions, les classes et autres
@@ -517,17 +523,16 @@ exécuterait directement un programme JavaScript.  Les deux situations sont
 <p>
 C&rsquo;est le <i>compilateur</i> qui traduit des programmes d&rsquo;un langage de programmation
 vers le langage machine.  Le compilateur lit le texte brut décrivant le
-programme, vérifie que ce texte est conforme aux règles syntaxiques et
-grammaticales du langage qu&rsquo;il traduit, puis applique les règles de traduction
-en langage machine.  Un compilateur permet donc au programmeur d&rsquo;obtenir un
-programme exécutable par la machine à partir de code écrit dans le langage de
-son choix.
+programme, vérifie que ce texte est conforme aux règles syntaxiques du langage
+qu&rsquo;il traduit, puis applique les règles de traduction en langage machine.  Un
+compilateur permet donc au programmeur d&rsquo;obtenir un programme exécutable par la
+machine à partir de code écrit dans le langage de son choix.
 </p>
 
 <p>
 Notons que la compilation n&rsquo;attache aucun sens particulier aux noms choisis par
-le programmeur.  Les noms servent juste à vite remplacés par des références.  On
-pourrait écrire le programme de <a href="#orgsrcblock1">1</a>, de manière totalement équivalente:
+le programmeur.  On pourrait écrire le programme de <a href="#orgsrcblock1">1</a>, de manière totalement
+équivalente:
 </p>
 
 <div class="org-src-container">
@@ -545,14 +550,13 @@ recèlent d&rsquo;exemples à suivre pour mystifier tout collaborateur.
 
 <p>
 Le programme, n&rsquo;a donc pas comme seule vocation à ordonner la machine, il doit
-aussi être lisible par d&rsquo;autres programmeurs
-vocations parallèles:
+aussi être lisible par d&rsquo;autres programmeurs.
 </p>
 
 <p>
-Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes
-Lorsqu&rsquo;un texte devient trop long, il devient plus pratique de le découper
-en unités indépendantes.
+Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes.  Lorsqu&rsquo;un
+texte devient trop long, il devient plus pratique de le découper en unités
+indépendantes.
 </p>
 </div>
 </div>
@@ -678,7 +682,7 @@ milieu d&rsquo;une procédure, ou d&rsquo;une boucle.  Le système de coordonné
 suffisant pour connaître avec certitude l&rsquo;état du processus, les valeurs des
 variables.  Il faudrait également savoir à tout moment le chemin exact emprunté
 par le processus.  Mais ce n&rsquo;est plus un système de coordonnées: on ne peut plus
-raisonner localement dans une boucle ou une procédure, il faut considérer
+raisonner <i>localement</i> dans une boucle ou une procédure, il faut considérer
 l&rsquo;intégralité du programme.
 </p>
 
@@ -811,20 +815,20 @@ je peux constater que 40 ans plus tard la situation n&rsquo;est pas celle prédi
 Bien qu&rsquo;il existe de nombreux langages de programmation, et beaucoup qui sont
 qualifiés de &laquo;&nbsp;haut-niveau&nbsp;&raquo;, aucun ne permet de manipuler différents niveaux
 d&rsquo;abstraction comme le décrit Knuth.  Aucun ne réconcilie la perte de contrôle
-d&rsquo;efficacité impliquée avec la montée en abstraction.
+et d&rsquo;efficacité avec la montée en abstraction.
 </p>
 
 <p>
 Mais peut-être que Knuth s&rsquo;en est lui-même rendu compte.  Le langage du futur
 était annoncé pour 1984, l&rsquo;année où il publie son système de Literate
 Programming qui permet de mêler une description haut-niveau du programme en
-toutes lettres et code machine bas-niveau.
+toutes lettres, et le code machine bas-niveau.
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline10" class="outline-3">
-<h3 id="orgheadline10"><span class="section-number-3">2.3</span> <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation objet</h3>
+<h3 id="orgheadline10"><span class="section-number-3">2.3</span> <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation par objets</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="full-figure">
 
@@ -869,7 +873,7 @@ personnel serait à l&rsquo;intellect ce que l&rsquo;exosquelette est au corps h
 En 1971, Kay crée le <i>Learning Research Group</i> à PARC dans le but de construire
 cet ordinateur.  Inspiré par les travaux de Piaget et Bruner sur le
 développement intellectuel chez les enfants, il souhaite construire un
-ordinateur intuitif, qui pourra servir aux enfants &laquo;&nbsp;de tout age&nbsp;&raquo;.  Programmer ce
+ordinateur intuitif, qui pourra servir aux enfants &laquo;&nbsp;de tout âge&nbsp;&raquo;.  Programmer ce
 système serait simple comme bonjour, et c&rsquo;est pourquoi il nomme son langage de
 programmation &laquo;&nbsp;Smalltalk&nbsp;&raquo;.
 </p>
@@ -1029,8 +1033,8 @@ instances.
 </blockquote>
 
 <p>
-Que le langage soit centré sur les objets a un avantage pour l&rsquo;étendre.  Ingalls
-donne l&rsquo;exemple d&rsquo;ajouter un nouvel objet au système, et de faire les
+Que le langage soit centré sur les objets a un avantage pour l&rsquo;extensibilité.
+Ingalls donne l&rsquo;exemple d&rsquo;ajouter un nouvel objet au système, et de faire les
 modifications nécessaires pour représenter cet objet sur la sortie standard.
 Dans un système qui contiendrait une fonction <code>print</code> centrale, c&rsquo;est cette
 fonction qu&rsquo;il faudrait modifier.  Elle pourrait être large et compliquée, et il
@@ -1042,10 +1046,10 @@ localisée dans l&rsquo;objet.
 </p>
 
 <p>
-Un autre avantage que les objets ont de ne pas dépendre de la représentation
-interne d&rsquo;autres objets, c&rsquo;est la recompilation séparée.  Modifier ou ajouter un
-champ à la classe <code>Rectangle</code> n&rsquo;impacte que le code de l&rsquo;objet, jamais le code
-extérieur.  Les objets peuvent être compilés indépendamment.
+Et puisque les objets ne dépendent pas de la représentation interne d&rsquo;autres
+objets, on peut les recompiler séparémment.  Modifier ou ajouter un champ à la
+classe <code>Rectangle</code> n&rsquo;impacte que le code de l&rsquo;objet, jamais le code extérieur.
+Les objets peuvent être compilés indépendamment.
 </p>
 
 <p>
@@ -1098,11 +1102,11 @@ permet de factoriser ces trois classes.
 
 <p>
 Pour Kay, un des ingrédients clés de la flexibilité apportée par programmation
-par objets est la <i>liaison tardive</i> (<i>late-binding</i>).  Le passage de messages en
+par objets est la <i>liaison tardive</i> (<i>late binding</i>).  Le passage de messages en
 est un exemple: l&rsquo;opération effectuée dépend de l&rsquo;objet qui reçoit le message,
 et cet objet peut ne pas être déterminé avant l&rsquo;exécution du programme, donc
 l&rsquo;opération devra être choisie dynamiquement.  De même, dans l&rsquo;exemple de la
-classe <code>Number</code>, on fait référence au message <code>-</code>, qui n&rsquo;est pas définit sur
+classe <code>Number</code>, on fait référence au message <code>-</code>, qui n&rsquo;est pas défini sur
 <code>Number</code>: c&rsquo;est une forme de liaison tardive.  Autre exemple: la fonction <code>eval</code>
 en LISP permet d&rsquo;exécuter du texte construit dynamiquement; les premières
 versions de Smalltalk permettaient de traiter la syntaxe à l&rsquo;exécution de la
@@ -1124,15 +1128,14 @@ Taivalsaari [<a href="#Tai-97">Tai97</a>] voit, entre ces deux approches, une di
 philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l&rsquo;école
 d&rsquo;Athènes: de Platon [<a href="#Pla-98">Pla98</a>] et d&rsquo;Aristote [<a href="#Ari-35">AriBC</a>].  Platon distingue les
 <i>formes</i>, qui sont les descriptions idéales des choses, des <i>instances</i> de ces
-formes, qui sont leur manifestation concrète et imparfaites.  Platon considère
-que les formes sont plus réelles que leurs instances.  En programmation objet,
-c&rsquo;est le point de vue que les classes sont plus réelles que les objets.
-Aristote croit qu&rsquo;il est possible d&rsquo;établir l&rsquo;unique taxonomie correcte de
-toutes les choses naturelles.  Il classe une chose à partir de ses propriétés
-essentielles (le genre), et des propriétés qui la distingue des autres choses du
-même genre (le différentiel).  On voit le parallèle avec l&rsquo;héritage en
-programmation par objets: quand une classe hérite, elle déclare son genre, et
-les méthodes additionnelles décrivent son différentiel.
+formes, qui sont leur manifestation concrète et imparfaite.  Platon considère
+que les formes sont plus réelles que leurs instances.  Aristote croit qu&rsquo;il est
+possible d&rsquo;établir l&rsquo;unique taxonomie correcte de toutes les choses naturelles.
+Il classe une chose à partir de ses propriétés essentielles (le genre), et des
+propriétés qui la distingue des autres choses du même genre (le différentiel).
+On voit le parallèle avec l&rsquo;héritage en programmation par objets: quand une
+classe hérite, elle déclare son genre, et les méthodes additionnelles décrivent
+son différentiel.
 </p>
 
 <p>
@@ -1213,7 +1216,7 @@ Fred.  Les deux mécanismes de partage sont l&rsquo;héritage et l&rsquo;instant
 </div>
 
 <p>
-En utilisant les prototypes, je ne crée pas de concepts.  Si Clyde est le
+En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le
 premier éléphant que je rencontre, il devient mon <i>prototype</i> d&rsquo;éléphant.  Si on
 me demande la couleur d&rsquo;un éléphant, je suppose qu&rsquo;ils sont tous de la même
 couleur que Clyde, et je réponds &laquo;&nbsp;gris&nbsp;&raquo;.  Fred est aussi un éléphant, et il
@@ -1222,7 +1225,7 @@ prototype de Fred; il est <i>comme</i> Clyde, mais avec un nom différent.  Si F
 d&rsquo;autres particularités, s&rsquo;il a la peau bleue, je l&rsquo;inscris seulement dans sa
 représentation.  Si on me demande la couleur de Fred, je n&rsquo;ai besoin que
 d&rsquo;inspecter la représentation de Fred.  Mais si on me demande combien de pattes
-a Fred, il a en a autant que Clyde, son prototype.  L&rsquo;information non spécifique
+a Fred, il en a autant que Clyde, son prototype.  L&rsquo;information non spécifique
 à Fred est sauvegardée par le prototype: c&rsquo;est le mécanisme de <i>délégation</i>.
 </p>
 
@@ -1284,14 +1287,14 @@ it will have to include navigational and descriptive aids.
 
 <p>
 Les langages à prototypes sont particulièrement adaptés pour représenter des
-objets qui ont un comportement unique.  Mais il arrive souvent que l&rsquo;on doivent
+objets qui ont un comportement unique.  Mais il arrive souvent que l&rsquo;on doive
 gérer de nombreux objets similaires.  Les concepteurs de Self décrivent une
-façon de structurer ces objets à l&rsquo;aide de <i>traits</i> [<a href="#UCC+91">UCC+91</a>].  Un trait est un
-objet qui regroupe les méthodes utilisées par plusieurs objets.  On crée ensuite
-un objet prototype qui étend ce trait, et fournit une implémentation et des
-valeurs d&rsquo;attributs par défaut.  Tous les objets de la même famille étendent ce
-prototype.  Cette structure permet de séparer les méthodes (le comportement) des
-attributs (l&rsquo;état).
+façon de structurer ces objets à l&rsquo;aide de traits [<a href="#UCC+91">UCC+91</a>].  Comme en Smalltalk,
+un trait est un objet qui regroupe les méthodes utilisées par plusieurs objets.
+On crée ensuite un objet prototype qui étend ce trait, et fournit une
+implémentation et des valeurs d&rsquo;attributs par défaut.  Tous les objets de la
+même famille étendent ce prototype.  Cette structure permet de séparer les
+méthodes (le comportement) des attributs (l&rsquo;état).
 </p>
 
 <div style="margin-top:-13rem" class="side-figure">
@@ -1304,10 +1307,18 @@ attributs (l&rsquo;état).
 </div>
 
 <p>
-L&rsquo;idée est proche des traits en Smalltalk, sauf qu&rsquo;en Smalltalk le langage fait
-une distinction syntaxique entre classes, traits, et instances, alors qu&rsquo;en Self
-ce sont tous des objets qui ont juste des rôles différents.
+Les traits de Self sont proches des traits de Smalltalk, a une distinction près.
+En Smalltalk, le langage fait une distinction syntaxique entre classes, traits,
+et instances, alors qu&rsquo;en Self ce sont tous des objets qui ont juste des rôles
+différents.
 </p>
+
+<aside class="todo">
+<p>
+Mode-switching better explained as mechanism later on.  Paragraph should
+elaborate on the object/class distinctions.
+</p>
+</aside>
 
 <p>
 Les concepteurs de Self remarquent que le mécanisme de délégation est plus
@@ -1327,7 +1338,7 @@ le <i>mode-switching</i> (voir ??).
 <figure>
 <p><img src="img/münchhausen.jpg" alt="münchhausen.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;11&nbsp;:</span> Le baron de Münchhausen évite la noyade en se hissant par les cheveux. Gustave Doré, 1862.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;11&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
 </div>
 
@@ -1335,14 +1346,19 @@ le <i>mode-switching</i> (voir ??).
 <h4 id="orgheadline11"><span class="section-number-4">2.4.1</span> <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</h4>
 <div class="outline-text-4" id="text-2-4-1">
 <p>
-La programmation par objets nous permet réifier les acteurs du domaine
-d&rsquo;application.  Dans la simulation d&rsquo;un écosystème qui comprend de l&rsquo;herbe, des
-moutons et des loups, on trouve des objets qui représentent l&rsquo;herbe, des objets
-moutons, et des objets loups.  Mais un programme peut réifier les acteurs de sa
-propre exécution, les objets de la sémantique; on parle alors de <i>réflexion</i>.
-La réflexion permet à un programme d&rsquo;altérer sa structure, ou de modifier la
-sémantique du langage, pendant qu&rsquo;il s&rsquo;exécute.  Cette adaptation dynamique
-offre de nouvelles façons de concevoir des programmes extensibles.
+En programmation par objets, on cherche une correspondance entre les acteurs du
+domaine d&rsquo;application et les objets manipulés par le programme.  Dans la
+simulation d&rsquo;un écosystème qui comprend de l&rsquo;herbe, des moutons et des loups, on
+trouve des objets qui représentent l&rsquo;herbe, des objets moutons, et des objets
+loups.  Un objet du programme est une <i>réification</i> de l&rsquo;objet de l&rsquo;écosystème.
+</p>
+
+<p>
+Mais un programme peut aussi réifier les acteurs de sa propre exécution, les
+objets de la sémantique; on parle alors de <i>réflexion</i>.  La réflexion permet à
+un programme d&rsquo;altérer sa structure, ou de modifier la sémantique du langage,
+pendant qu&rsquo;il s&rsquo;exécute.  Cette adaptation dynamique offre de nouvelles façons
+de concevoir des programmes extensibles.
 </p>
 
 <p>
@@ -1404,20 +1420,21 @@ classe <code>Method</code>, une classe <code>Object</code>, et une classe <code>
 
 <p>
 On peut non seulement inspecter ces objets, mais aussi en synthétiser des
-instances, sans connaître leurs noms statiquement.  Ligne <a href="#coderef-synth"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-synth');" onmouseout="CodeHighlightOff(this, 'coderef-synth');">synth</a> on crée
-une instance de <code>A</code>, <code>anA</code>, et on invoque la méthode <code>m2</code> récupérée elle aussi
-par réflexion.  Invoquer une méthode dynamiquement à partir d&rsquo;une chaîne qui
-contient nom rend le programme plus flexible: ça permet d&rsquo;implémenter simplement
-l&rsquo;appel de procédure distante (RPC).  On peut aussi récupérer ou changer la valeur un
-attribut dynamiquement, ce qui est utile pour écrire des objets qui font la
-passerelle avec des bases de données relationnelles (ORM).
+instances, sans connaître leurs noms statiquement.  Ligne <a href="#coderef-synth"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-synth');" onmouseout="CodeHighlightOff(this, 'coderef-synth');">synth</a> on crée une
+instance de <code>A</code>, <code>anA</code>, et on invoque la méthode <code>m2</code> récupérée elle aussi par
+réflexion.  Invoquer une méthode dynamiquement à partir d&rsquo;une chaîne qui
+contient son nom rend le programme plus flexible: ça permet par exemple
+d&rsquo;implémenter simplement l&rsquo;appel de procédure distante (RPC).  On peut aussi
+récupérer ou changer la valeur un attribut dynamiquement, ce qui est utile pour
+écrire des objets qui font la passerelle avec des bases de données
+relationnelles (ORM).
 </p>
 
 <aside>
 <p>
 On peut néanmoins synthétiser des classes en Java en utilisant un chargeur de
 classes personnalisé, en utilisant des outils comme Javassist, ou en manipulant
-la JVM directement.
+la JVM directement [??].
 </p>
 </aside>
 
@@ -8082,7 +8099,7 @@ a clear advantage of not requiring a parser.
 <h2 id="orgheadline105"><span class="section-number-2">7</span> <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</h2>
 <div class="outline-text-2" id="text-7">
 <p>
-<i>Contenu principalement tiré d&rsquo;un papier présenté à l&rsquo;atelier LASSY&rsquo;15 [<a href="#KNS-15">MdKNS15b</a>]</i>.
+<i>Contenu principalement tiré d&rsquo;un papier présenté à l&rsquo;atelier FOAL&rsquo;15 [<a href="#KNS-15">MdKNS15b</a>]</i>.
 </p>
 
 <p>
@@ -8107,32 +8124,37 @@ fonctionnalité de l&rsquo;interpréteur dynamiquement, sans avoir à changer le
 syntaxiques à exécuter.  Pour ce faire, on utilise principalement la liaison
 tardive à travers la construction <code>with</code> de JavaScript.
 </p>
-
-<p>
-On illustre cette solution sur un interpréteur de langage arithmétique, suivant
-Wadler [??] et Odersky et Zenger [<a href="#OZ-05">OZ05</a>].
-</p>
 </div>
 
 <div id="outline-container-orgheadline101" class="outline-3">
 <h3 id="orgheadline101"><span class="section-number-3">7.1</span> Ajouter des termes</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
-Le premier langage a un terme unique pour représenter des constantes, et une
-opération pour évaluer cette constante vers sa valeur.  Pour implémenter ce
-terme, on utilise une décomposition objet en JavaScript, qui rappelle le patron
-<i>Interpreter</i> de [<a href="#GHJ+94">GHJ+94</a>].
+On construit un interpréteur pour un simple langage arithmétique, suivant
+l&rsquo;exemple de Wadler [??] et d&rsquo;Odersky et Zenger [<a href="#OZ-05">OZ05</a>].  Pour commencer, on veut
+juste représenter des nombres entiers:
+</p>
+
+<pre class="example">
+&lt;term&gt; ::= &lt;num&gt;
+&lt;num&gt;  ::= 0 | 1 | 2 | ...
+</pre>
+
+<p>
+L&rsquo;interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
+implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
+rappelle le patron <i>Interpreter</i> [<a href="#GHJ+94">GHJ+94</a>].
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">num</span> = {
-  <span class="org-keyword">new</span>(n) { <span class="org-keyword">return</span> {__proto__: <span class="org-constant">this</span>, n} },
-  eval() { <span class="org-keyword">return</span> <span class="org-constant">this</span>.n }
-}
-
-<span class="org-keyword">var</span> <span class="org-variable-name">e1</span> = num.<span class="org-keyword">new</span>(3)
-e1.eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
+<pre class="src src-js"><span class="linenr">1: </span><span class="org-keyword">var</span> <span class="org-variable-name">num</span> = {
+<span class="linenr">2: </span>  <span class="org-keyword">new</span>(n) { <span class="org-keyword">return</span> {__proto__: <span class="org-constant">this</span>, n} },
+<span class="linenr">3: </span>  eval() { <span class="org-keyword">return</span> <span class="org-constant">this</span>.n }
+<span class="linenr">4: </span>}
+<span class="linenr">5: </span>
+<span id="coderef-foal-ex0" class="coderef-off"><span class="linenr">6: </span><span class="org-keyword">var</span> <span class="org-variable-name">e1</span> = num.<span class="org-keyword">new</span>(3)</span>
+<span class="linenr">7: </span>e1.eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
 </pre>
 </div>
 
@@ -8151,18 +8173,17 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 </figure>
 
 <p>
-L&rsquo;objet <code>num</code> comporte deux fonctions: <code>new</code> pour retourner un objet qui pour
-prototype <code>this</code> et contient la valeur <code>n</code> de la constante; et <code>eval</code> pour
-retourner cette constante ultérieurement.  À la dernière ligne, on appelle
-<code>eval</code> sur l&rsquo;instance <code>e1</code> de la constante 3, et c&rsquo;est bien le résultat
-obtenu.
+L&rsquo;objet <code>num</code> comporte deux fonctions: <code>new</code>, le constructeur qui capture la
+constante; et <code>eval</code> pour retourner cette constante ultérieurement.  Ligne
+<a href="#coderef-foal-ex0"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex0');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex0');">6</a>, on voit comment créer la première expression du langage pour
+représenter le nombre 3.  Ligne suivante, on peut évaluer cette expression pour
+retourner le nombre passé au constructeur.
 </p>
 
 <p>
-Le second terme représente l&rsquo;addition entre deux constantes.  Dans notre
-implémentation par objets, un nouveau terme est simplement ajouté en créant un
-objet <code>plus</code> avec une fonction <code>eval</code>.  L&rsquo;évaluation de <code>plus</code> appelle
-récursivement la fonction <code>eval</code> sur les opérandes de l&rsquo;addition.
+Le second terme du langage représente l&rsquo;addition entre deux constantes.  Dans
+notre implémentation par objets, on ajoute le terme est en créant un objet
+<code>plus</code> qui comporte un constructeur et une fonction d&rsquo;évaluation:
 </p>
 
 <div class="org-src-container">
@@ -8176,6 +8197,11 @@ récursivement la fonction <code>eval</code> sur les opérandes de l&rsquo;addit
 e2.eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
 </pre>
 </div>
+
+<p>
+Pour évaluer <code>plus</code>, on appelle récursivement la fonction <code>eval</code> sur ses
+opérandes <code>l</code> et <code>r</code>.
+</p>
 </div>
 </div>
 
@@ -13086,7 +13112,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-16 jeu. 18:23 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-17 ven. 18:12 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
