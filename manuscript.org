@@ -6099,7 +6099,7 @@ code to data gives you the greatest modularity, then homoiconic languages have
 a clear advantage of not requiring a parser.
 
 * TRANSLATE Construire un interpréteur par modules
-/Contenu principalement tiré d'un papier présenté à l'atelier LASSY'15 [[cite:KNS-15][KNS-15]]/.
+/Contenu principalement tiré d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
 
 Étendre un interpréteur est une instance du problème de l'expression (voir
 [[#problem]]).  Dans le problème de l'expression, on cherche à écrire un
@@ -6118,22 +6118,25 @@ fonctionnalité de l'interpréteur dynamiquement, sans avoir à changer les arbr
 syntaxiques à exécuter.  Pour ce faire, on utilise principalement la liaison
 tardive à travers la construction ~with~ de JavaScript.
 
-On illustre cette solution sur un interpréteur de langage arithmétique, suivant
-Wadler [??] et Odersky et Zenger [[cite:OZ-05][OZ-05]].
-
 ** Ajouter des termes
-Le premier langage a un terme unique pour représenter des constantes, et une
-opération pour évaluer cette constante vers sa valeur.  Pour implémenter ce
-terme, on utilise une décomposition objet en JavaScript, qui rappelle le patron
-/Interpreter/ de [[cite:GHJ+94][GHJ+94]].
+On construit un interpréteur pour un simple langage arithmétique, suivant
+l'exemple de Wadler [??] et d'Odersky et Zenger [[cite:OZ-05][OZ-05]].  Pour commencer, on veut
+juste représenter des nombres entiers:
 
-#+BEGIN_SRC js
+: <term> ::= <num>
+: <num>  ::= 0 | 1 | 2 | ...
+
+L'interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
+implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
+rappelle le patron /Interpreter/ [[cite:GHJ+94][GHJ+94]].
+
+#+BEGIN_SRC js -n -r
 var num = {
   new(n) { return {__proto__: this, n} },
   eval() { return this.n }
 }
 
-var e1 = num.new(3)
+var e1 = num.new(3)                        (ref:foal-ex0)
 e1.eval() //: 3
 #+END_SRC
 
@@ -6146,16 +6149,15 @@ l'expression qui précède.  C'est la syntaxe de l'éditeur interactif [[cite:s3
 #+CAPTION: ~num~, mais avant la création de ~e1~.
 [[file:img/lassy-0.svg]]
 
-L'objet ~num~ comporte deux fonctions: ~new~ pour retourner un objet qui pour
-prototype ~this~ et contient la valeur ~n~ de la constante; et ~eval~ pour
-retourner cette constante ultérieurement.  À la dernière ligne, on appelle
-~eval~ sur l'instance ~e1~ de la constante 3, et c'est bien le résultat
-obtenu.
+L'objet ~num~ comporte deux fonctions: ~new~, le constructeur qui capture la
+constante; et ~eval~ pour retourner cette constante ultérieurement.  Ligne
+[[(foal-ex0)]], on voit comment créer la première expression du langage pour
+représenter le nombre 3.  Ligne suivante, on peut évaluer cette expression pour
+retourner le nombre passé au constructeur.
 
-Le second terme représente l'addition entre deux constantes.  Dans notre
-implémentation par objets, un nouveau terme est simplement ajouté en créant un
-objet ~plus~ avec une fonction ~eval~.  L'évaluation de ~plus~ appelle
-récursivement la fonction ~eval~ sur les opérandes de l'addition.
+Le second terme du langage représente l'addition entre deux constantes.  Dans
+notre implémentation par objets, on ajoute le terme est en créant un objet
+~plus~ qui comporte un constructeur et une fonction d'évaluation:
 
 #+BEGIN_SRC js
 var plus = {
@@ -6166,6 +6168,9 @@ var plus = {
 var e2 = plus.new(num.new(1), num.new(2))
 e2.eval() //: 3
 #+END_SRC
+
+Pour évaluer ~plus~, on appelle récursivement la fonction ~eval~ sur ses
+opérandes ~l~ et ~r~.
 
 ** Ajouter des opérations
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
