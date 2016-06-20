@@ -3120,6 +3120,77 @@ patch on some diagrams.  This was caused by arrows that had a fill color set.
 But the fill color was useless, since arrows were straight lines.  Removing the
 fill color in Inkscape solved the issue.
 
+* Odds and ends
+Bits that will go in the document at some point.
+
+** The stakes of targeting modularity and extensibility
+Modularity and extensibility are mostly concerns for the programmer.  The
+machine doesn't care.
+
+Two programs may have the same results (same mathematical function), but
+differ in modularity and extensibility.  They are orthogonal concerns.
+But modularity and extensibility may affect performance.
+
+Modularity and extensibility do not have an agreed-upon definition.  They can be
+subjective.  Hence, it is difficult to assert that a program is /more modular/
+or /more extensible/ than another program.  These are not hard truths.  This
+may make this document less convincing.
+
+The guiding principle is sticking to the progammer's point of view.  We measure
+/effort/.  How time-consuming is it to extend this program?  And that one?  How
+many lines of code must be changed?
+
+Lines of code can be automatically written.  The refactoring that was once
+manual is now two clicks away.  Any well-defined program transformation can be
+automatized.
+
+Automatization can either generate lower-level code that you don't have to deal
+with (lex/yacc), or generate parts of your code (getter/setter generation in
+Eclipse).  First one, more generally, is what a language does for you.  Second
+one may signal the need for a higher-level language.
+
+That's an impetus for new languages, or even new paradigms.  AOP: organize your
+programs better!
+
+The costs of modularity and extensibility is code complexity.  Paving the way
+for endless extensibility makes the code more general, more abstract, harder to
+follow.  Using fancy constructs makes it harder to understand by outsiders.
+Code complexity may also have an impact on program performance.  Fancy
+constructs and indirection may defeat compiler optimizations, leading to slower
+code and larger binaries.
+
+** GOTO is indirection; indirection is GOTO?
+Observer pattern defeats Dijkstra's compass.  How do you know what code is
+executed when you arrive at the line: ~observers.forEach(call)~?  "The code of
+each subscribed observer."  But how do you know what the subscribed observers
+are?  "You don't, they subscribe at runtime."
+
+Same story with ~eval~, ~with~, or even ~obj[p.toString()]~.  Mechanisms that
+allow the control flow to be determined dynamically.  Late binding of function
+and variable identifiers, even of /code/.
+
+Dijkstra's argument for structured programming was that you could easily keep
+track of the control flow.  Think flowchart: the control flows from one box to
+the next; there are no arbitrary jumps.  GOTO destroyed that.
+
+#+BEGIN_aside
+One could also argue that GOTO destroys the membrane of procedures.  Procedures
+are /units/ of functionality, black-boxes. Membranes are there to manage
+all interactions with the outside world.  Without the membrane, the procedure
+constituents might as well float from one to the other; no guarantees.
+
+GOTO can jump in and out of procedures, disregarding their membranes.  That's
+treating the code like assembly: no boundaries, just memory offsets.  On the one
+hand, it's flexible and true to the machine.  But on the other hand, it destroys
+one of the benefits of having a procedure in the first place.
+
+That's also true of AOP languages that allow you to break the class or method
+boundaries.  And of Open Scope, that breaks the module.
+#+END_aside
+
+/Any/ late binding mechanism has the same property.  If parts of the control
+flow are decided dynamically, Dijsktra's compass is defeated.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
