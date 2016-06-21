@@ -6126,9 +6126,15 @@ juste représenter des nombres entiers:
 : <term> ::= <num>
 : <num>  ::= 0 | 1 | 2 | ...
 
+Et pouvoir les évaluer:
+
+: eval : Term -> Integer
+
 L'interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
 implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
-rappelle le patron /Interpreter/ [[cite:GHJ+94][GHJ+94]].
+rappelle le patron /Interpreter/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage sera
+représenté par un objet qui compertera une fonction pour chaque opération sur le
+langage.
 
 #+BEGIN_SRC js -n -r
 var num = {
@@ -6155,8 +6161,14 @@ constante; et ~eval~ pour retourner cette constante ultérieurement.  Ligne
 représenter le nombre 3.  Ligne suivante, on peut évaluer cette expression pour
 retourner le nombre passé au constructeur.
 
-Le second terme du langage représente l'addition entre deux constantes.  Dans
-notre implémentation par objets, on ajoute le terme est en créant un objet
+Le second terme du langage représente l'addition entre deux constantes.
+
+: <term> ::= <num> | <num> + <num>
+: <num>  ::= 0 | 1 | 2 | ...
+:
+: eval : Term -> Integer
+
+Suivant notre implémentation par objets, on ajoute le terme en créant un objet
 ~plus~ qui comporte un constructeur et une fonction d'évaluation:
 
 #+BEGIN_SRC js
@@ -6172,76 +6184,137 @@ e2.eval() //: 3
 Pour évaluer ~plus~, on appelle récursivement la fonction ~eval~ sur ses
 opérandes ~l~ et ~r~.
 
+On voit donc que pour ajouter un terme à l'interpréteur, il suffit de créer un
+nouvel objet qui répond à la fonction ~eval~.
+
 ** Ajouter des opérations
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
-expression plutôt que l'évaluer.  Dans certains langages objets, ajouter une
-opération ne serait pas aussi simple que d'ajouter un terme.  La tension entre
-ces deux axes d'extension (ajouter des termes / ajouter des opérations) est au
-cœur du problème de l'expression.  En JavaScript, ajouter une opération se fait
+expression (pretty-printing).
+
+: show : Term -> String
+
+Suivant la décomposition par objets, il faut ajouter l'opération sur chaque
+objet qui représente le terme.  Dans des langages objets qui ne permettent pas
+l'extension, ajouter une opération ne serait pas aussi simple que d'ajouter un
+terme.  C'est la tension qui est au cœur du problème de l'expression.  En
+JavaScript, les objets sont extensibles, donc ajouter une opération se fait
 simplement:
 
-#+BEGIN_SRC js
-num.show = function() { return this.n.toString() }
-plus.show = function() {
-  return this.l.show() + '+' + this.r.show() }
+#+BEGIN_SRC js -n -r
+num.show = function() {                      (ref:foal-ex1)
+ return this.n.toString()
+}
 
-plus.new(num.new(1), num.new(2)).show() //: "1+2"
+plus.show = function() {                     (ref:foal-ex2)
+  return this.l.show() + '+' + this.r.show()
+}
+
+plus.new(num.new(1), num.new(2)).show() //: "1+2"  (ref:foal-ex3)
 e1.show() //: "3"
 e2.show() //: "1+2"
 #+END_SRC
 
-Les deux premières lignes étendent les objets ~num~ et ~plus~ avec l'opération
-~show~.  Comme l'attestent les lignes suivantes, cette nouvelle opération est
-disponible sur de nouvelles instances de termes, mais également sur des
-instances créées /avant/ l'ajout de l'opération.  Cette flexibilité du langage
-est pratique pour étendre un interpréteur sans avoir à le relancer, ni
-reconstruire l'AST d'un programme.  On peut ainsi étendre un système pendant
-qu'il s'exécute, et évaluer un même programme avec différentes version de
-l'interpréteur.
+Ligne [[(foal-ex1)]], on ajoute l'opération ~show~ au terme ~num~; même chose pour
+~plus~ ligne [[(ref:foal-ex2)]].  On voit qu'on peut appliquer la nouvelle opération
+~show~ sur un terme de la même façon que ~eval~ (ligne [[(foal-ex3)]]).
 
-En revanche, dans certains cas on peut vouloir préserver les versions
-antérieures de ~num~ et ~plus~, et créer des dérivés qui possèdent l'opération
-~show~.  On ne peut pas donner à ces dérivés les même noms que les objets
-originaux, donc on utilise un nouvel objet en tant qu'espace de nom.  On ne
-souhaite pas non plus coupler prématurément les dérivés de ~num~ et ~plus~ aux
-objets dont ils dérivent; on abstrait donc ces objets parents à l'aide d'une
-fonction.
+Mais les lignes qui suivent montrent que cette nouvelle opération est aussi
+disponible sur les termes créés /avant/ l'ajout de l'opération.  Les variables
+~e1~ et ~e2~ sont les termes créés dans les exemples précédents.  Au moment de
+leur création l'opération ~show~ n'était pas définie, et pourtant elle
+s'applique correctement à ces instances.
 
-#+BEGIN_SRC js
-var show = function(base) {
-  var num = {__proto__: base.num,
+Affecter les instances existantes de termes est rendu possible par le mécanisme
+de délégation.  La délégation est illustrée dans la représentation ci-contre.
+On y voit l'objet ~e2~ qui a pour /prototype/ l'objet ~plus~; le prototype
+permet d'établir un lien de délégation en JavaScript.  Quand on appelle
+l'opération ~show~ sur ~e2~, elle n'est pas présente sur l'objet lui-même, mais
+sur son prototype.  L'opération est donc trouvée et appliquée à l'objet.  De
+même pour les sous-termes ~e2.l~ et ~e2.r~ qui vont chercher l'opération ~show~
+de l'objet ~num~.
+
+Les deux mécanismes qui permettent l'extension des opérations sont donc: la
+délégation, et la possibilité d'ajouter des fonctions aux objets après leur
+création.  Sans la délégation, l'objet ~e1~ contiendrait une copie de chaque
+opération après sa création; il n'y aurait plus de lien entre ~num~ et ses
+instances sur toute la durée de vie du programme.  En conséquence, ajouter une
+opération à ~num~ n'affecterait pas les instances déjà créées.  Si on souhaitait
+ajouter ~show~ à ces instances, il faudrait les cataloguer pour pouvoir toutes
+les modifier.  De même, si les objets JavaScript étaient fixes après leur
+création, on ne pourrait pas leur ajouter de fonction.  Pour étendre le langage,
+il faudrait créer un nouvel objet ~num2~ qui contiendrait l'opération ~show~, et
+aurait ~num~ comme prototype.
+
+Pouvoir ajouter une opération rétroactivement peut être pratique dans un système
+évolutif.  On peut étendre un interpréteur sans avoir à le relancer, ni même
+reconstruire l'arbre syntaxique d'un programme.  On peut enrichir la sémantique
+du langage à l'exécution, et évaluer un même programme pour obtenir différents
+résultats.
+
+D'un autre côté, on peut aussi vouloir préserver la transparence référentielle
+et ne pas affecter les termes existants.  C'est possible par simple délégation:
+on crée des dérivés de ~num~ et ~plus~ qui possèdent l'opération ~show~.  On ne
+peut pas donner à ces dérivés les même noms que les objets originaux, donc on
+utilise un nouvel objet en tant qu'espace de noms.  On ne souhaite pas non
+plus coupler prématurément les dérivés de ~num~ et ~plus~ aux objets dont ils
+dérivent; on abstrait donc ces objets parents à l'aide d'une fonction.
+
+#+BEGIN_SRC js -n -r
+var show = function(base) {                       (ref:foal-ex4)
+  var num = {__proto__: base.num,                 (ref:foal-ex5)
     show() { return this.n.toString() }}
 
-  var plus = {__proto__: base.plus,
-    show() { return.this.l.show() + '+' + this.r.show() }}
+  var plus = {__proto__: base.plus,               (ref:foal-ex6)
+    show() { return this.l.show() + '+' + this.r.show() }}
 
-  return {num, plus} }
+  return {num, plus} }                            (ref:foal-ex7)
 
-var s = show({num, plus})
-e2.show //: undefined
-s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
-s.plus.new(num.new(1), s.num.new(2)).eval() //: 3
+var s = show({num, plus})                         (ref:foal-ex8)
+e2.show //: undefined                             (ref:foal-ex9)
+s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"  (ref:foal-ex10)
+s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3      (ref:foal-ex11)
 #+END_SRC
 
-Le code émule un système de module: la fonction ~show~ prend un objet qui
-contient les noms importés en argument et retourne les noms exportés dans un
-autre objet.  Après la définition de ~show~, une expression déjà construite,
-comme ~e2~, ne fait pas référence à l'opération ~show~.  Mais une opération
-construire à partir des nouveaux termes ~s.plus~ et ~s.num~ peut être évaluée
-avec ~eval~ ou affichée avec ~show~.
+Le code émule un système de module: ~show~ ligne [[(foal-ex4)]] est une fonction qui
+prend un module de base et retourne un module enrichit avec l'opération ~show~.
+Les modules ici sont de simples objets JavaScript.  L'objet ~base~ passé en
+argument doit contenir les termes du langage: ~base.num~ et ~base.plus~, qui
+sont utilisés comme prototypes des nouveaux objets ~show.num~ et ~show.plus~
+(lignes [[(foal-ex4)]] et [[(foal-ex5)]]).  Ces nouveaux objets contiennent juste
+l'opération ~show~ définies comme précédemment.  Enfin, la fonction ~show~
+retourne un nouveau module (objet) qui contient les versions enrichies de ~num~
+et ~plus~ (ligne [[(foal-ex7)]]).
 
-À la dernière ligne on voit qu'il est même possible de mixer des termes qui
-supportent l'opération ~show~ et ceux qui ne la supportent pas: le premier
-argument de ~s.plus.new~ est ~num.new~ et le second ~s.num.new~.  Puisqu'on
-appelle ~eval~ sur l'expression retournée, et que tous les termes supportent
-cette opération, ça ne pose aucun problème.  Mais puisque JavaScript n'est pas
-typé statiquement, rien ne nous empêche d'appeler l'opération ~show~ sur une
-expression de termes mixés, ce qui déclencherait une erreur à l'exécution.
+Une fois cette fonction définie, on peut instancier le module ~show~ dans la
+variable ~s~ par l'appel ligne [[(foal-ex8)]].  Si on ne considère pas les
+modifications de l'exemple précédent, le terme ~e2~ ne peut pas répondre à
+l'opération ~show~ (ligne [[(foal-ex9)]]).  En revanche, une expression construite à
+partir des nouveaux termes ~s.plus~ et ~s.num~ supporte l'opération ~show~
+(ligne [[(foal-ex10)]].  Et par délégation, ce nouveau terme supporte aussi
+l'opération ~eval~ (ligne [[(foal-ex11)]]).  Les termes existants ne sont donc pas
+affectés par l'ajout de l'opération ~show~.
 
-C'est possible d'empêcher l'écriture de telles expressions en rendant les
-références vers les ~num~ et ~plus~ originaux inaccessibles.  En utilisant la
-construction ~with~ de JavaScript sur un objet, toutes les propriétés de cet
-objet sont mises dans l'environnement du code délimité par ~with~.
+Mais il y a maintenant un problème d'interopérabilité entre les deux variantes
+du langage.  On peut construire des expressions qui mixent les termes de base
+les termes du module 'show':
+
+: s.plus.new(num.new(1), s.num.new(2)).show()
+
+Le premier argument de ~s.plus.new~ est un ~num~ et le second un ~s.num~.
+Si on appelle l'opération ~show~ sur cette expression, le programme lève une
+erreur car l'opération ~show~ n'est pas définie sur ~num~.  C'est une erreur
+qu'un langage typé statiquement pourrait capturer: la définition de ~plus.show~
+requiert que ~this.l~ supporte également ~show~.  Donc, le constructeur de
+termes ~s.plus~ ne devrait accepter que des termes du langage enrichi: des
+~s.plus~ ou des ~s.num~.  Or, on ne modifie pas ici la définition du
+constructeur pour restreindre les objets acceptés.
+
+: s.plus.new : Term with Show -> Term with Show -> String
+
+Pour y remédier, on peut empêcher la création d'expressions mixtes par
+construction.  Il suffit de n'autoriser qu'un seul module de termes à la fois,
+en masquant les références vers les ~num~ et ~plus~ originaux.  C'est possible
+avec la construction ~with~ de JavaScript.
 
 #+BEGIN_SRC js
 with (show({num,plus})) {
@@ -6253,29 +6326,38 @@ L'expression construite à l'intérieur du bloc délimité par ~with~ fait réf�
 simplement à ~num~ et ~plus~.  Mais ici, comme nous somme dans le corps du
 ~with~, ~num~ et ~plus~ font référence aux objets retournés par l'appel de
 ~show~.  Les objets ~num~ et ~plus~ originaux sont en revanche inaccessibles car
-les noms des dérivés cachent les définitions initiales dans l'environnement.  Un
-autre aspect de cette construction est que les dérivés de ~num~ et ~plus~
-existent uniquement dans le corps du ~with~, on peut donc restreindre
-l'activation de l'opération ~show~.
+les noms des dérivés cachent les définitions initiales dans l'environnement.
+Par construction, les expressions créées à l'intérieur du ~with~ ne permettent
+pas de mixer les variantes du langage.
 
-Utiliser ~with~ ne nous permet de choisir quels noms importer du module ~show~:
-toutes les propriétés de l'objet passé en argument à ~with~ sont mises dans la
-portée du code délimité par ~with~.  Si on doit plutôt importer un sous-ensemble
-de ces propriétés, alors on peut utiliser une fonction invoquée immédiatement
-pour sélectionner les noms qui nous intéressent.  Par exemple, pour importer
-juste le nouveau terme ~num~:
+Un autre aspect de cette construction est que les dérivés de ~num~ et ~plus~
+existent uniquement dans le corps du ~with~; ils ne peuvent pas être référencés
+en dehors.  Le ~with(show)~ correspond donc à une activation locale du module
+~show~, locale dans la syntaxe et dans le temps.
 
-#+BEGIN_SRC js
+La construction ~with~ n'est pas strictement nécessaire ici.  On peut très bien
+utiliser une fonction à la place:
+
+#+BEGIN_SRC js -n -r
 (function({num}) {
   num.new(1).show() //: "1"
-}(show({num,plus}))
+}(show({num,plus}))            (ref:foal-ex12)
 #+END_SRC
 
-Cet exemple montre que le ~with~ n'est pas strictement nécessaire, car une
-fonction peut le remplacer.  Néanmoins, c'est une des rares situations où il est
-légitime d'utiliser cette construction controversée.  Puisque les exemples sont
-plus lisibles avec ~with~ qu'avec une fonction, on continuera de l'utiliser dans
-les extraits de code qui suivent.
+Cette fonction attend un module qui contient ~num~ pour pouvoir créer et
+afficher l'experssion ~num(1)~.  On boucle ce module en lui passant ~show()~
+comme argument à la ligne [[(foal-ex12)]].
+
+La construction ~with~ et une fonction ont en commun de créer un environnement
+lexical pour le code de leur bloc.  Pour empêcher la création d'expressions
+mixtes, il suffit donc de contrôler les noms qui sont accessibles dans le bloc.
+Ici, on restreint les expressions au seul terme ~num~ du module ~show~.
+
+# Cet exemple montre que le ~with~ n'est pas strictement nécessaire, car une
+# fonction peut le remplacer.  Néanmoins, c'est une des rares situations où il est
+# légitime d'utiliser cette construction controversée.  Puisque les exemples sont
+# plus lisibles avec ~with~ qu'avec une fonction, on continuera de l'utiliser dans
+# les extraits de code qui suivent.
 
 Jusqu'ici, on a vu comment:
 - ajouter de nouveaux termes au langage en définissant un objet,
