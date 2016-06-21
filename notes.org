@@ -3120,6 +3120,38 @@ patch on some diagrams.  This was caused by arrows that had a fill color set.
 But the fill color was useless, since arrows were straight lines.  Removing the
 fill color in Inkscape solved the issue.
 
+** [2016-06-21 mar.]
+*** Extensibility related work... again?
+The trouble of tackling modularity and extensibility is that you are /never
+done/ with related work.  There is a seemingly endless supply of papers,
+languages, mechanisms and authors that have tackled the problem.
+
+Looking for jury members, I stumbled upon Alexandre Bergel's PhD thesis [[cite:Ber-05][Ber-05]]
+about class extensions.  A class extension is a method that extends a class from
+another module.  Classboxes allow class extensions with /local rebinding/, that
+is changes made by the extension may only affect the extending class.  He also
+talks about unanticipated changes as a motivation for class extensions.
+
+So basically, what I've been trying to do, but in 2005.  And in
+Smalltalk/Squeak/Java instead of JavaScript.
+
+The good news is, he's definitely a good candidate for the jury.  The bad news
+is he's living on the other side of the world, so he most likely will never be
+able to attend.
+
+The worst news is that in my PhD I've attacked modularity and extensibility
+because the landscape was foggy, but I only made it foggier.  I wanted to paint
+a clear picture of each language's strengths and weaknesses.  All the papers I
+read, they all kept creating new ways of doing things that all seemed similar
+under the surface.  I wanted to /avoid/ contributing to the noise.  But in
+writing a manuscript about idiosyncratic ways of extending JavaScript modules, I
+may have just done that.  [[https://xkcd.com/927/][Relevant XKCD]].
+
+Oh well.  I've learned to let go of my inner taxonomist.  Simplifying the
+picture was the impulse from an earlier me who preferred to deal with
+simplifications rather than the full complexity of reality.  I now embrace it,
+but my jury might not.
+
 * Odds and ends
 Bits that will go in the document at some point.
 
