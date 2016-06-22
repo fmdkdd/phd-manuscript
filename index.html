@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-20 lun. 17:11 -->
+<!-- 2016-06-22 mer. 18:33 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -8141,9 +8141,19 @@ juste représenter des nombres entiers:
 </pre>
 
 <p>
+Et pouvoir les évaluer:
+</p>
+
+<pre class="example">
+eval : Term -&gt; Integer
+</pre>
+
+<p>
 L&rsquo;interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
 implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
-rappelle le patron <i>Interpreter</i> [<a href="#GHJ+94">GHJ+94</a>].
+rappelle le patron <i>Interpreter</i> [<a href="#GHJ+94">GHJ+94</a>].  Chaque terme du langage sera
+représenté par un objet qui compertera une fonction pour chaque opération sur le
+langage.
 </p>
 
 <div class="org-src-container">
@@ -8181,8 +8191,18 @@ retourner le nombre passé au constructeur.
 </p>
 
 <p>
-Le second terme du langage représente l&rsquo;addition entre deux constantes.  Dans
-notre implémentation par objets, on ajoute le terme est en créant un objet
+Le second terme du langage représente l&rsquo;addition entre deux constantes.
+</p>
+
+<pre class="example">
+&lt;term&gt; ::= &lt;num&gt; | &lt;num&gt; + &lt;num&gt;
+&lt;num&gt;  ::= 0 | 1 | 2 | ...
+
+eval : Term -&gt; Integer
+</pre>
+
+<p>
+Suivant notre implémentation par objets, on ajoute le terme en créant un objet
 <code>plus</code> qui comporte un constructeur et une fonction d&rsquo;évaluation:
 </p>
 
@@ -8202,6 +8222,11 @@ e2.eval() <span class="org-comment-delimiter">//</span><span class="org-comment"
 Pour évaluer <code>plus</code>, on appelle récursivement la fonction <code>eval</code> sur ses
 opérandes <code>l</code> et <code>r</code>.
 </p>
+
+<p>
+On voit donc que pour ajouter un terme à l&rsquo;interpréteur, il suffit de créer un
+nouvel objet qui répond à la fonction <code>eval</code>.
+</p>
 </div>
 </div>
 
@@ -8210,88 +8235,184 @@ opérandes <code>l</code> et <code>r</code>.
 <div class="outline-text-3" id="text-7-2">
 <p>
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
-expression plutôt que l&rsquo;évaluer.  Dans certains langages objets, ajouter une
-opération ne serait pas aussi simple que d&rsquo;ajouter un terme.  La tension entre
-ces deux axes d&rsquo;extension (ajouter des termes / ajouter des opérations) est au
-cœur du problème de l&rsquo;expression.  En JavaScript, ajouter une opération se fait
+expression (pretty-printing).
+</p>
+
+<pre class="example">
+show : Term -&gt; String
+</pre>
+
+<p>
+Suivant la décomposition par objets, il faut ajouter l&rsquo;opération sur chaque
+objet qui représente le terme.  Dans des langages objets qui ne permettent pas
+l&rsquo;extension, ajouter une opération ne serait pas aussi simple que d&rsquo;ajouter un
+terme.  C&rsquo;est la tension qui est au cœur du problème de l&rsquo;expression.  En
+JavaScript, les objets sont extensibles, donc ajouter une opération se fait
 simplement:
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-js">num.show = <span class="org-keyword">function</span>() { <span class="org-keyword">return</span> <span class="org-constant">this</span>.n.toString() }
-plus.show = <span class="org-keyword">function</span>() {
-  <span class="org-keyword">return</span> <span class="org-constant">this</span>.l.show() + <span class="org-string">'+'</span> + <span class="org-constant">this</span>.r.show() }
-
-plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2)).show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1+2"</span>
-e1.show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "3"</span>
-e2.show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1+2"</span>
+<pre class="src src-js"><span id="coderef-foal-ex1" class="coderef-off"><span class="linenr"> 1: </span>num.show = <span class="org-keyword">function</span>() {</span>
+<span class="linenr"> 2: </span> <span class="org-keyword">return</span> <span class="org-constant">this</span>.n.toString()
+<span class="linenr"> 3: </span>}
+<span class="linenr"> 4: </span>
+<span id="coderef-foal-ex2" class="coderef-off"><span class="linenr"> 5: </span>plus.show = <span class="org-keyword">function</span>() {</span>
+<span class="linenr"> 6: </span>  <span class="org-keyword">return</span> <span class="org-constant">this</span>.l.show() + <span class="org-string">'+'</span> + <span class="org-constant">this</span>.r.show()
+<span class="linenr"> 7: </span>}
+<span class="linenr"> 8: </span>
+<span id="coderef-foal-ex3" class="coderef-off"><span class="linenr"> 9: </span>plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2)).show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1+2"</span></span>
+<span class="linenr">10: </span>e1.show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "3"</span>
+<span class="linenr">11: </span>e2.show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1+2"</span>
 </pre>
 </div>
 
 <p>
-Les deux premières lignes étendent les objets <code>num</code> et <code>plus</code> avec l&rsquo;opération
-<code>show</code>.  Comme l&rsquo;attestent les lignes suivantes, cette nouvelle opération est
-disponible sur de nouvelles instances de termes, mais également sur des
-instances créées <i>avant</i> l&rsquo;ajout de l&rsquo;opération.  Cette flexibilité du langage
-est pratique pour étendre un interpréteur sans avoir à le relancer, ni
-reconstruire l&rsquo;AST d&rsquo;un programme.  On peut ainsi étendre un système pendant
-qu&rsquo;il s&rsquo;exécute, et évaluer un même programme avec différentes version de
-l&rsquo;interpréteur.
+Ligne <a href="#coderef-foal-ex1"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex1');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex1');">1</a>, on ajoute l&rsquo;opération <code>show</code> au terme <code>num</code>; même chose pour
+<code>plus</code> ligne <a href="#coderef-foal-ex2"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex2');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex2');">5</a>.  On voit qu&rsquo;on peut appliquer la nouvelle opération
+<code>show</code> sur un terme de la même façon que <code>eval</code> (ligne <a href="#coderef-foal-ex3"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex3');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex3');">9</a>).
 </p>
 
 <p>
-En revanche, dans certains cas on peut vouloir préserver les versions
-antérieures de <code>num</code> et <code>plus</code>, et créer des dérivés qui possèdent l&rsquo;opération
-<code>show</code>.  On ne peut pas donner à ces dérivés les même noms que les objets
-originaux, donc on utilise un nouvel objet en tant qu&rsquo;espace de nom.  On ne
-souhaite pas non plus coupler prématurément les dérivés de <code>num</code> et <code>plus</code> aux
-objets dont ils dérivent; on abstrait donc ces objets parents à l&rsquo;aide d&rsquo;une
-fonction.
+Mais les lignes qui suivent montrent que cette nouvelle opération est aussi
+disponible sur les termes créés <i>avant</i> l&rsquo;ajout de l&rsquo;opération.  Les variables
+<code>e1</code> et <code>e2</code> sont les termes créés dans les exemples précédents.  Au moment de
+leur création l&rsquo;opération <code>show</code> n&rsquo;était pas définie, et pourtant elle
+s&rsquo;applique correctement à ces instances.
+</p>
+
+<p>
+Affecter les instances existantes de termes est rendu possible par le mécanisme
+de délégation.  La délégation est illustrée dans la représentation ci-contre.
+On y voit l&rsquo;objet <code>e2</code> qui a pour <i>prototype</i> l&rsquo;objet <code>plus</code>; le prototype
+permet d&rsquo;établir un lien de délégation en JavaScript.  Quand on appelle
+l&rsquo;opération <code>show</code> sur <code>e2</code>, elle n&rsquo;est pas présente sur l&rsquo;objet lui-même, mais
+sur son prototype.  L&rsquo;opération est donc trouvée et appliquée à l&rsquo;objet.  De
+même pour les sous-termes <code>e2.l</code> et <code>e2.r</code> qui vont chercher l&rsquo;opération <code>show</code>
+de l&rsquo;objet <code>num</code>.
+</p>
+
+<p>
+Les deux mécanismes qui permettent l&rsquo;extension des opérations sont donc: la
+délégation, et la possibilité d&rsquo;ajouter des fonctions aux objets après leur
+création.  Sans la délégation, l&rsquo;objet <code>e1</code> contiendrait une copie de chaque
+opération après sa création; il n&rsquo;y aurait plus de lien entre <code>num</code> et ses
+instances sur toute la durée de vie du programme.  En conséquence, ajouter une
+opération à <code>num</code> n&rsquo;affecterait pas les instances déjà créées.  Si on souhaitait
+ajouter <code>show</code> à ces instances, il faudrait les cataloguer pour pouvoir toutes
+les modifier.  De même, si les objets JavaScript étaient fixes après leur
+création, on ne pourrait pas leur ajouter de fonction.  Pour étendre le langage,
+il faudrait créer un nouvel objet <code>num2</code> qui contiendrait l&rsquo;opération <code>show</code>, et
+aurait <code>num</code> comme prototype.
+</p>
+
+<p>
+Pouvoir ajouter une opération rétroactivement peut être pratique dans un système
+évolutif.  On peut étendre un interpréteur sans avoir à le relancer, ni même
+reconstruire l&rsquo;arbre syntaxique d&rsquo;un programme.  On peut enrichir la sémantique
+du langage à l&rsquo;exécution, et évaluer un même programme pour obtenir différents
+résultats.
+</p>
+
+<p>
+D&rsquo;un autre côté, on peut aussi vouloir préserver la transparence référentielle
+et ne pas affecter les termes existants.  C&rsquo;est possible par simple délégation:
+on crée des dérivés de <code>num</code> et <code>plus</code> qui possèdent l&rsquo;opération <code>show</code>.  On ne
+peut pas donner à ces dérivés les même noms que les objets originaux, donc on
+utilise un nouvel objet en tant qu&rsquo;espace de noms.  On ne souhaite pas non
+plus coupler prématurément les dérivés de <code>num</code> et <code>plus</code> aux objets dont ils
+dérivent; on abstrait donc ces objets parents à l&rsquo;aide d&rsquo;une fonction.
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">show</span> = <span class="org-keyword">function</span>(<span class="org-variable-name">base</span>) {
-  <span class="org-keyword">var</span> <span class="org-variable-name">num</span> = {__proto__: base.num,
-    show() { <span class="org-keyword">return</span> <span class="org-constant">this</span>.n.toString() }}
-
-  <span class="org-keyword">var</span> <span class="org-variable-name">plus</span> = {__proto__: base.plus,
-    show() { <span class="org-keyword">return</span>.<span class="org-constant">this</span>.l.show() + <span class="org-string">'+'</span> + <span class="org-constant">this</span>.r.show() }}
-
-  <span class="org-keyword">return</span> {num, plus} }
-
-<span class="org-keyword">var</span> <span class="org-variable-name">s</span> = show({num, plus})
-e2.show <span class="org-comment-delimiter">//</span><span class="org-comment">: undefined</span>
-s.plus.<span class="org-keyword">new</span>(s.num.<span class="org-keyword">new</span>(1), s.num.<span class="org-keyword">new</span>(2)).show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1+2"</span>
-s.plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), s.num.<span class="org-keyword">new</span>(2)).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
+<pre class="src src-js"><span id="coderef-foal-ex4" class="coderef-off"><span class="linenr"> 1: </span><span class="org-keyword">var</span> <span class="org-variable-name">show</span> = <span class="org-keyword">function</span>(<span class="org-variable-name">base</span>) {</span>
+<span id="coderef-foal-ex5" class="coderef-off"><span class="linenr"> 2: </span>  <span class="org-keyword">var</span> <span class="org-variable-name">num</span> = {__proto__: base.num,</span>
+<span class="linenr"> 3: </span>    show() { <span class="org-keyword">return</span> <span class="org-constant">this</span>.n.toString() }}
+<span class="linenr"> 4: </span>
+<span id="coderef-foal-ex6" class="coderef-off"><span class="linenr"> 5: </span>  <span class="org-keyword">var</span> <span class="org-variable-name">plus</span> = {__proto__: base.plus,</span>
+<span class="linenr"> 6: </span>    show() { <span class="org-keyword">return</span> <span class="org-constant">this</span>.l.show() + <span class="org-string">'+'</span> + <span class="org-constant">this</span>.r.show() }}
+<span class="linenr"> 7: </span>
+<span id="coderef-foal-ex7" class="coderef-off"><span class="linenr"> 8: </span>  <span class="org-keyword">return</span> {num, plus} }</span>
+<span class="linenr"> 9: </span>
+<span id="coderef-foal-ex8" class="coderef-off"><span class="linenr">10: </span><span class="org-keyword">var</span> <span class="org-variable-name">s</span> = show({num, plus})</span>
+<span id="coderef-foal-ex9" class="coderef-off"><span class="linenr">11: </span>e2.show <span class="org-comment-delimiter">//</span><span class="org-comment">: undefined</span></span>
+<span id="coderef-foal-ex10" class="coderef-off"><span class="linenr">12: </span>s.plus.<span class="org-keyword">new</span>(s.num.<span class="org-keyword">new</span>(1), s.num.<span class="org-keyword">new</span>(2)).show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1+2"</span></span>
+<span id="coderef-foal-ex11" class="coderef-off"><span class="linenr">13: </span>s.plus.<span class="org-keyword">new</span>(s.num.<span class="org-keyword">new</span>(1), s.num.<span class="org-keyword">new</span>(2)).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span></span>
 </pre>
 </div>
 
 <p>
-Le code émule un système de module: la fonction <code>show</code> prend un objet qui
-contient les noms importés en argument et retourne les noms exportés dans un
-autre objet.  Après la définition de <code>show</code>, une expression déjà construite,
-comme <code>e2</code>, ne fait pas référence à l&rsquo;opération <code>show</code>.  Mais une opération
-construire à partir des nouveaux termes <code>s.plus</code> et <code>s.num</code> peut être évaluée
-avec <code>eval</code> ou affichée avec <code>show</code>.
+Le code émule un système de module: <code>show</code> ligne <a href="#coderef-foal-ex4"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex4');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex4');">1</a> est une fonction qui
+prend un module de base et retourne un module enrichi avec l&rsquo;opération <code>show</code>.
+Les modules sont ici de simples objets JavaScript.  L&rsquo;objet <code>base</code> passé en
+argument doit contenir les termes du langage: <code>base.num</code> et <code>base.plus</code>, qui
+sont utilisés comme prototypes des nouveaux objets <code>show.num</code> et <code>show.plus</code>
+(lignes <a href="#coderef-foal-ex4"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex4');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex4');">1</a> et <a href="#coderef-foal-ex5"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex5');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex5');">2</a>).  Ces nouveaux objets contiennent juste
+l&rsquo;opération <code>show</code> définies comme précédemment.  Enfin, la fonction <code>show</code>
+retourne un nouveau module (un objet) qui contient les versions enrichies de
+<code>num</code> et <code>plus</code> (ligne <a href="#coderef-foal-ex7"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex7');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex7');">8</a>).
 </p>
 
 <p>
-À la dernière ligne on voit qu&rsquo;il est même possible de mixer des termes qui
-supportent l&rsquo;opération <code>show</code> et ceux qui ne la supportent pas: le premier
-argument de <code>s.plus.new</code> est <code>num.new</code> et le second <code>s.num.new</code>.  Puisqu&rsquo;on
-appelle <code>eval</code> sur l&rsquo;expression retournée, et que tous les termes supportent
-cette opération, ça ne pose aucun problème.  Mais puisque JavaScript n&rsquo;est pas
-typé statiquement, rien ne nous empêche d&rsquo;appeler l&rsquo;opération <code>show</code> sur une
-expression de termes mixés, ce qui déclencherait une erreur à l&rsquo;exécution.
+Une fois cette fonction définie, on peut instancier le module <code>show</code> dans la
+variable <code>s</code> par l&rsquo;appel ligne <a href="#coderef-foal-ex8"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex8');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex8');">10</a>.  Si on ne considère pas les
+modifications de l&rsquo;exemple précédent, le terme <code>e2</code> ne peut pas répondre à
+l&rsquo;opération <code>show</code> (ligne <a href="#coderef-foal-ex9"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex9');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex9');">11</a>).  En revanche, une expression construite à
+partir des nouveaux termes <code>s.plus</code> et <code>s.num</code> supporte l&rsquo;opération <code>show</code>
+(ligne <a href="#coderef-foal-ex10"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex10');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex10');">12</a>).  Et par délégation, ce nouveau terme supporte aussi
+l&rsquo;opération <code>eval</code> (ligne <a href="#coderef-foal-ex11"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex11');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex11');">13</a>).  Les termes existants ne sont donc pas
+affectés par l&rsquo;ajout de l&rsquo;opération <code>show</code>, et les nouveaux termes supportent
+les deux opérations.
 </p>
 
 <p>
-C&rsquo;est possible d&rsquo;empêcher l&rsquo;écriture de telles expressions en rendant les
-références vers les <code>num</code> et <code>plus</code> originaux inaccessibles.  En utilisant la
-construction <code>with</code> de JavaScript sur un objet, toutes les propriétés de cet
-objet sont mises dans l&rsquo;environnement du code délimité par <code>with</code>.
+Mais il y a maintenant un problème d&rsquo;interopérabilité entre les deux variantes
+du langage.  On peut construire des expressions qui mixent les termes de base
+les termes du module &rsquo;show&rsquo;:
+</p>
+
+<pre class="example">
+s.plus.new(num.new(1), s.num.new(2)).show()
+</pre>
+
+<p>
+Le premier argument de <code>s.plus.new</code> est un <code>num</code> et le second un <code>s.num</code>.  Si on
+appelle l&rsquo;opération <code>show</code> sur cette expression, le programme lève une erreur
+car l&rsquo;opération <code>show</code> n&rsquo;est pas définie sur <code>num</code>.  La définition de
+<code>plus.show</code> requiert que <code>this.l</code> supporte également l&rsquo;opération <code>show</code>.  Donc,
+le constructeur de termes <code>s.plus</code> ne devrait accepter que des termes du langage
+enrichi: des <code>s.plus</code> ou des <code>s.num</code>.  Or, on ne modifie pas la définition du
+constructeur pour restreindre les objets acceptés.
+</p>
+
+<p>
+Le constructeur <code>s.plus.new</code> est le même que <code>plus.new</code>, le constructeur de
+base:
+</p>
+
+<pre class="example">
+plus.new : Term -&gt; Term -&gt; Term
+s.plus.new : Term -&gt; Term -&gt; Term
+</pre>
+
+<p>
+mais la définition de <code>s.plus.show</code> implique en réalité le type:
+</p>
+
+<pre class="example">
+s.plus.new : Term with Show -&gt; Term with Show -&gt; Term with Show
+</pre>
+
+<p>
+où <code>with Show</code> indique qu&rsquo;il s&rsquo;agit d&rsquo;un terme qui supporte l&rsquo;opération <code>show</code>.
+</p>
+
+<p>
+On peut empêcher la création d&rsquo;expressions mixtes par construction.  Il suffit
+de n&rsquo;autoriser qu&rsquo;un seul module de termes à la fois, en masquant les références
+vers les <code>num</code> et <code>plus</code> originaux.  C&rsquo;est possible avec la construction <code>with</code>
+de JavaScript.
 </p>
 
 <div class="org-src-container">
@@ -8306,61 +8427,72 @@ objet sont mises dans l&rsquo;environnement du code délimité par <code>with</c
 L&rsquo;expression construite à l&rsquo;intérieur du bloc délimité par <code>with</code> fait référence
 simplement à <code>num</code> et <code>plus</code>.  Mais ici, comme nous somme dans le corps du
 <code>with</code>, <code>num</code> et <code>plus</code> font référence aux objets retournés par l&rsquo;appel de
-<code>show</code>.  Les objets <code>num</code> et <code>plus</code> originaux sont en revanche inaccessibles car
-les noms des dérivés cachent les définitions initiales dans l&rsquo;environnement.  Un
-autre aspect de cette construction est que les dérivés de <code>num</code> et <code>plus</code>
-existent uniquement dans le corps du <code>with</code>, on peut donc restreindre
-l&rsquo;activation de l&rsquo;opération <code>show</code>.
+<code>show</code>, pas aux objets originaux.  Les originaux sont inaccessibles car masqués
+par les noms des dérivés dans l&rsquo;environnement du bloc.  Par construction, les
+expressions créées à l&rsquo;intérieur du <code>with</code> ne peuvent pas mixer plusieurs
+variantes du langage.
 </p>
 
 <p>
-Utiliser <code>with</code> ne nous permet de choisir quels noms importer du module <code>show</code>:
-toutes les propriétés de l&rsquo;objet passé en argument à <code>with</code> sont mises dans la
-portée du code délimité par <code>with</code>.  Si on doit plutôt importer un sous-ensemble
-de ces propriétés, alors on peut utiliser une fonction invoquée immédiatement
-pour sélectionner les noms qui nous intéressent.  Par exemple, pour importer
-juste le nouveau terme <code>num</code>:
+Un autre aspect de cette construction est que les dérivés de <code>num</code> et <code>plus</code>
+existent uniquement dans le corps du <code>with</code>; ils ne peuvent pas être référencés
+en dehors.  Le <code>with(show)</code> correspond donc à une activation locale du module
+<code>show</code>, locale dans la syntaxe et dans le temps.
+</p>
+
+<p>
+La construction <code>with</code> n&rsquo;est pas strictement nécessaire ici.  On peut très bien
+utiliser une fonction à la place:
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-js">(<span class="org-keyword">function</span>({num}) {
-  num.<span class="org-keyword">new</span>(1).show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1"</span>
-}(show({num,plus}))
+<pre class="src src-js"><span class="linenr">1: </span>(<span class="org-keyword">function</span>({num}) {
+<span class="linenr">2: </span>  num.<span class="org-keyword">new</span>(1).show() <span class="org-comment-delimiter">//</span><span class="org-comment">: "1"</span>
+<span id="coderef-foal-ex12" class="coderef-off"><span class="linenr">3: </span>}(show({num,plus}))</span>
 </pre>
 </div>
 
 <p>
-Cet exemple montre que le <code>with</code> n&rsquo;est pas strictement nécessaire, car une
-fonction peut le remplacer.  Néanmoins, c&rsquo;est une des rares situations où il est
-légitime d&rsquo;utiliser cette construction controversée.  Puisque les exemples sont
-plus lisibles avec <code>with</code> qu&rsquo;avec une fonction, on continuera de l&rsquo;utiliser dans
-les extraits de code qui suivent.
+Cette fonction attend un module qui contient <code>num</code> pour pouvoir créer et
+afficher l&rsquo;expression <code>num(1)</code>.  On boucle ce module en lui passant <code>show()</code>
+comme argument à la ligne <a href="#coderef-foal-ex12"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex12');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex12');">3</a>, ce qui a le même effet que <code>with</code>: le
+code à l&rsquo;intérieur de la fonction est exécuté.
+</p>
+
+<aside>
+<p>
+La syntaxe étant plus lourde avec une fonction qu&rsquo;avec <code>with</code> , on utilisera
+<code>with</code> dans les exemples qui suivent.
+</p>
+</aside>
+
+<p>
+Cette fonction et <code>with</code> ont en commun de créer un environnement lexical pour le
+code de leur bloc.  Pour empêcher la création d&rsquo;expressions mixtes, il suffit
+donc de contrôler les noms qui sont accessibles au code à l&rsquo;intérieur du bloc.
+Ici, on restreint les expressions au seul terme <code>num</code> du module <code>show</code>.  Au-dessus,
+on a restreint les expressions aux deux termes du module <code>show</code>.
 </p>
 
 <p>
 Jusqu&rsquo;ici, on a vu comment:
 </p>
 <ul class="org-ul">
-<li>ajouter de nouveaux termes au langage en définissant un objet,</li>
-<li>ajouter de nouvelles opérations,</li>
+<li>ajouter de nouveaux termes au langage, en ajoutant un module;</li>
+<li>ajouter de nouvelles opérations, soit globalement en modifiant les prototypes
+des termes, soit localement avec <code>with</code>.</li>
 </ul>
 
 <p>
-et cela sans modifier du code écrit au préalable.  Essentiellement, on a montré
-comment résoudre le problème de l&rsquo;expression comme il s&rsquo;applique à JavaScript;
-c&rsquo;est à dire sans garantie de typage statique.
+Dans les deux cas, les ajouts au code de l&rsquo;interpréteur se font par
+<i>incréments</i>, et sans modifier le code écrit au préalable.  Essentiellement, on
+a une solution au problème de l&rsquo;expression en JavaScript.
 </p>
 
 <p>
-En passant, on a vu comment ajouter des opérations de deux façons différentes:
-soit en modifiant directement le prototype des objets représentants les termes
-pour y ajouter les opérations, soit en dérivant les prototypes.  Dans la
-première solution, tous les objets obéissent aux mêmes opérations.  Dans la
-seconde solution, on peut mixer des termes qui ne supportent pas toutes les
-opérations, ce qui peut causer une erreur à l&rsquo;exécution.  C&rsquo;est alors qu&rsquo;on peut
-restreindre les termes utilisables dans un bloc de code en utilisant <code>with</code>, ou
-une fonction.
+Mais on peut aller plus loin.  En plus d&rsquo;ajouter des termes et des opérations,
+on peut modifier des opérations existantes, et combiner
 </p>
 </div>
 </div>
@@ -13112,7 +13244,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-20 lun. 17:11 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-22 mer. 18:33 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
