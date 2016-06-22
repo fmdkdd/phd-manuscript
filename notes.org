@@ -3152,6 +3152,73 @@ picture was the impulse from an earlier me who preferred to deal with
 simplifications rather than the full complexity of reality.  I now embrace it,
 but my jury might not.
 
+** [2016-06-22 mer.]
+*** From the right perspective, complex can be trivial
+Trying to expand the FOAL chapter, I now realize it is misguided.
+
+There's a focus on making it work in JavaScript.  But really, the subset that is
+in use here is a very simple language of functions and environments.
+Environments are sets of bindings and can be extended by delegation.
+
+Modifying operations is trivial when you realize you are defining a new
+(mathematical) operation, and just give it the same name as another one.  So
+it's exactly the same as adding an operation, just that delegation lets you
+override existing names.
+
+The trick of using multiple ~with~ to change the behavior of the interpreter is
+completely backwards when you realize that it only works on expressions that are
+declared inside the block.  That's not a realistic use-case for any interpreter
+other than a toy one.
+
+In a realistic setting, you would have built an expression object beforehand,
+~e~, and you want to interpret it with semantic variations.
+
+Then you could write:
+
+: with (double) { with (double) { e.eval() }}
+
+with the intent that ~with~ alters the semantics of ~eval~.
+
+That reminds of Rust's traits system.  A traits is like a Java interface, a
+collection of signatures.  But traits have to be explicitly imported in the
+scope.  So you can do something like:
+
+#+BEGIN_SRC rust
+trait Eval { fn eval(self) -> u64 }
+mod eval1 { impl Eval for Term { fn eval(..) { /* first eval variant */ }
+mod eval2 { impl Eval for Term { fn eval(..) { /* second eval variant */ }
+
+fn main() {
+  let e = Term(..)
+  { use eval1::Eval; e.eval() }
+  { use eval2::Eval; e.eval() }
+}
+#+END_SRC
+
+The trick is to recognize that a method call is just syntactic sugar in Rust for
+a function call:
+
+: e.eval() -> eval(e)
+
+And then the ~eval~ function is chosen depending on what is in scope.  We would
+have the same result by explicitly writing:
+
+#+BEGIN_SRC rust
+fn main() {
+  let e = Term(..)
+  eval1::Eval::eval(e);
+  eval2::Eval::eval(e);
+}
+#+END_SRC
+
+So, calling two different functions.  Because that's what we are actually doing
+here, and in the FOAL paper as well.  It's just a trick to call two different
+functions without changing the syntax of the method call.
+
+The motivation really needs to be stated: we don't want to change the client
+code, not even one line.  So we find mechanisms that allow to change how it
+behaves without actually changing it.
+
 * Odds and ends
 Bits that will go in the document at some point.
 
