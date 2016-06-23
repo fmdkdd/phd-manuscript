@@ -3219,6 +3219,67 @@ The motivation really needs to be stated: we don't want to change the client
 code, not even one line.  So we find mechanisms that allow to change how it
 behaves without actually changing it.
 
+** [2016-06-23 jeu.]
+*** FOAL paper was about building incrementally
+The FOAL paper then conflates two issues: solving the expression problem, and
+changing the behavior of a program without touching its code.
+
+Solving the expression problem is not difficult in a dynamic language, so why
+would it be interesting?
+
+Changing the behavior of a program by only altering its environment is more
+interesting, and aligns with the goals of the DLS chapter.
+
+On the other hand, there is also the aspect of extending the program
+incrementally.  Each module object adds to the interpreter.  Then the client
+code can combine all of these extensions.
+
+But the motivation for building incrementally is to avoid touching the existing
+code.  The idea is that new functionalities should translate to new code, and
+not changes to existing code.
+
+Then, modification of existing functionalities can be seen simply as new
+functionalities.  Mathematically, the fact that they resemble an existing one is
+irrelevant.  Redundancy is a concern for the programmer, because redundant
+behavior is likely to cause redundant code, and redundant code is accidental
+complexity.
+
+Missing an "ingredients" section.  Why does it take to make it work in another
+language?  What are the mechanisms at hand?  Because the point of the chapter is
+not just to show we can do it in JS, but to give some insight of what is
+necessary to apply it in other situations.  And the pros and cons of the
+/specific way/ we do it here.
+
+The pros and cons of pure extension in general are kept for the synthesis
+chapter.
+
+*** Is there a better term than extension?
+Modularity, unanticipated extension, extension, building incrementally.  I've
+used all of these interchangeably.  But I really need a good term to encompass
+what I'm doing here, instead of different sentences.
+
+Extending can be stretching.  We don't so much stretch a program as we add
+functionality on it.  But importantly, we aim to add functionality without
+touching the existing program.
+
+It's like taking a mathematical function f, that does a certain thing, and then
+changing what it does by composition: f' = g . f.  The new f' function is based
+on f, but the result has been altered by g.  The function f itself has not
+changed.
+
+So we want our extensions to compose like functions do.
+
+One obstacle to composing program extensions is that programs are not pure
+functions.  Programs have side effects, reading and writing to the screen, to
+the memory.  These side effects can be targeted by an extension as well.
+
+Add is more appropriate than extend: we take something existing, and we /add/ to
+it.  Add implies there is no change to the first thing, but the result is
+larger.
+
+Now, is there a word to say "To add functionality to a program without touching
+the code of that program"?
+
 * Odds and ends
 Bits that will go in the document at some point.
 
