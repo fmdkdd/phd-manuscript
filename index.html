@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-23 jeu. 16:14 -->
+<!-- 2016-06-24 ven. 18:19 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -173,7 +173,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline19">2.4.3. <span class="done STABLE">STABLE</span> La programmation par aspects</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline24">2.5. <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrable dimensions</a>
+<li><a href="#orgheadline24">2.5. <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</a>
 <ul>
 <li><a href="#orgheadline21">2.5.1. La programmation littéraire</a></li>
 <li><a href="#hyperj">2.5.2. La séplution</a></li>
@@ -1606,21 +1606,20 @@ plus généralement &laquo;&nbsp;implémentation ouverte&nbsp;&raquo; [<a href="
 </p>
 
 <p>
-[<a href="#Rao-91">Rao91</a>] commence par remarquer que l&rsquo;interprète d&rsquo;un langage de programmation
-engendre un processus à partir d&rsquo;un programme, et que, parallèlement, tout
-système définit une <i>interface</i> qui peut être vue comme un langage; tout système
-est donc un interprète.  Alors, la réflexion dans les langages de programmation
-n&rsquo;est qu&rsquo;un cas particulier, et on peut l&rsquo;appliquer à tout système qui expose
-une interface.  Et comme un interprète réflexif permet au programme d&rsquo;inspecter
-et de modifier le processus engendré par l&rsquo;interprète, il en va de même pour un
-système plus général.
+[<a href="#Rao-91">Rao91</a>] commence par remarquer que tout système définit une <i>interface</i> qui peut
+être vue comme un langage.  Tout système est donc aussi un interprète de son
+interface.  Alors, la réflexion dans les langages de programmation n&rsquo;est qu&rsquo;un
+cas particulier, et on peut l&rsquo;appliquer à tout système qui expose une interface.
+Et comme un interprète réflexif permet au programme d&rsquo;inspecter et de modifier
+le processus engendré par l&rsquo;interprète, il en va de même pour un système plus
+général.
 </p>
 
 <p>
 Mais à quoi ressemble un système réflexif, en général?  Rao définit un système
 <i>à implémentation ouverte</i> comme un système ayant deux interfaces: l&rsquo;interface
 de base, qui est l&rsquo;interface classique associée au système, et l&rsquo;interface de
-meta-niveau, qui révèle en partie l&rsquo;implémentation de l&rsquo;interface de base.
+métaniveau, qui révèle en partie l&rsquo;implémentation de l&rsquo;interface de base.
 </p>
 
 <div style="margin-top:-8rem" class="side-figure">
@@ -1632,38 +1631,39 @@ meta-niveau, qui révèle en partie l&rsquo;implémentation de l&rsquo;interface
 
 <p>
 On va préférer ici le terme &laquo;&nbsp;interface d&rsquo;implémentation&nbsp;&raquo; pour l&rsquo;interface de
-meta-niveau.
+méta-niveau.
 </p>
 
 </div>
 
 <p>
 Pour illustrer ces deux interfaces, il prend l&rsquo;exemple d&rsquo;un système de gestion
-de fenêtre pour CLOS, appelé Silica.  Dans un système de gestion de fenêtre,
+de fenêtres pour CLOS, appelé Silica.  Dans un système de gestion de fenêtres,
 l&rsquo;interface de base permet de construire des arbres de fenêtres, d&rsquo;interroger et
 de modifier ces arbres (pour accéder aux fenêtres, en ajouter, les retirer&#x2026;),
 et de lire et écrire dans les fenêtres.
 </p>
 
 <p>
-Comment les fenêtres, et la structure d&rsquo;arbre sont implémentés peut impacter
-l&rsquo;utilisateur du système de fenêtre.  En particulier, Rao prend l&rsquo;exemple d&rsquo;un
-tableur qui créé une fenêtre pour chaque cellule de la feuille de calcul.  Ce
-choix peut paraître curieux, mais est justifié par la réutilisation des
-fonctionnalités du système de fenêtre (capture de la souris, peindre les
+Comment les fenêtres et la structure d&rsquo;arbre sont implémentés peut impacter
+l&rsquo;utilisateur du gestionnaire de fenêtres.  En particulier, Rao prend l&rsquo;exemple
+d&rsquo;un tableur qui crée une fenêtre pour chaque cellule de la feuille de calcul.
+Ce choix peut paraître curieux, mais est justifié par la réutilisation des
+fonctionnalités du gestionnaire de fenêtres (capture de la souris, peindre les
 cellules en fonction de leur visibilité, &#x2026;) pour simplifier l&rsquo;implémentation
-du tableur.  Dans un système de fenêtre naïf, il faut allouer de la mémoire pour
-chaque fenêtre, alors que dans le cas du tableur on pourrait partager bon nombre
-de propriétés entre les fenêtres utilisées comme cellules.  De même, lorsque
-qu&rsquo;un clic de souris est détecté par le système de fenêtre, il faut parcourir
-les arbres de fenêtres pour déterminer la fenêtre qui est actuellement au dessus
-des autres, car les fenêtres peuvent se superposer.  Mais dans un tableur, les
-cellules ne peuvent pas se superposer, donc on peut déterminer le clic de souris
-directement grâce à ses coordonnées.  Ces optimisations ne sont possibles que si
-le système de fenêtre laisse au programme client la possibilité de modifier son
-implémentation.  En l&rsquo;occurrence, Silica est un système à implémentation
-ouverte, et Rao montre qu&rsquo;il peut supporter ces optimisations en utilisant
-l&rsquo;interface d&rsquo;implémentation.
+du tableur.  Dans un gestionnaire de fenêtres naïf, il faut allouer de la
+mémoire pour chaque fenêtre, alors que dans le cas du tableur on pourrait
+partager bon nombre de propriétés entre les fenêtres utilisées comme cellules.
+De même, lorsque qu&rsquo;un clic de souris est détecté par le gestionnaire de
+fenêtres, il faut parcourir les arbres de fenêtres pour déterminer la fenêtre
+qui est actuellement au dessus des autres, car les fenêtres peuvent se
+superposer.  Mais dans un tableur, les cellules ne peuvent pas se superposer,
+donc on peut déterminer le clic de souris directement grâce à ses coordonnées.
+Ces optimisations ne sont possibles que si le gestionnaire de fenêtres laisse au
+programme client la possibilité de modifier son implémentation.  En
+l&rsquo;occurrence, Silica est un système à implémentation ouverte, et Rao montre
+qu&rsquo;il peut supporter ces optimisations en utilisant l&rsquo;interface
+d&rsquo;implémentation.
 </p>
 
 <p>
@@ -1801,23 +1801,20 @@ coûteux à calculer.
 <p>
 Pour faciliter le développement, il suffit de créer des filtres composables.
 D&rsquo;abord des filtres basiques, comme <code>Or</code>, <code>And</code>, <code>Not</code>, analogues des opérateurs
-communs sur les bits, mais appliqués aux images, pixel par pixel:
+communs sur les bits, mais appliqués aux images, pixel par pixel.  Voici le code
+du filtre <code>Or</code> [<a href="#KLM+97">KLM+97</a>]:
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">Or</span>(<span class="org-variable-name">a</span>, <span class="org-variable-name">b</span>) {
-  <span class="org-keyword">var</span> <span class="org-variable-name">result</span> = Image.<span class="org-keyword">new</span>(a.width, a.height)
-
-  <span class="org-keyword">for</span> (<span class="org-keyword">var</span> <span class="org-variable-name">x</span>=0; x &lt; a.width; ++x) {
-    <span class="org-keyword">for</span> (<span class="org-keyword">var</span> <span class="org-variable-name">y</span>=0; y &lt; a.height; ++y) {
-      result.pixel(x, y,
-                   a.pixel(x, y) || b.pixel(x, y))
-    }
-  }
-
-  <span class="org-keyword">return</span> result
-}
+<pre class="src src-js">(defun or! (a b)
+  (<span class="org-keyword">let</span> ((result (<span class="org-keyword">new</span>-image)))
+    (loop <span class="org-keyword">for</span> i from 1 to width <span class="org-keyword">do</span>
+      (loop <span class="org-keyword">for</span> j from 1 to height <span class="org-keyword">do</span>
+        (set-pixel result i j
+          (or (get-pixel a i j)
+              (get-pixel b i j)))))
+     result))
 </pre>
 </div>
 
@@ -1828,10 +1825,15 @@ complexes:
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">Remove</span> = (a, b) =&gt; And(a, Not(b))
-<span class="org-keyword">var</span> <span class="org-variable-name">TopEdge</span> = (a) =&gt; Remove(a, Down(a))
-<span class="org-keyword">var</span> <span class="org-variable-name">HorizontalEdge</span> = (a) =&gt; Or(TopEdge(a),
-                               BottomEdge(a))
+<pre class="src src-js">(defun remove! (a b)
+  (and! a (not! b)))
+
+(defun top-edge! (a)
+  (remove! a (down! a)))
+
+(defun horizontal-edge! (a)
+  (or! (top-edge! a)
+       (bottom-edge! a)))
 ...
 </pre>
 </div>
@@ -1858,8 +1860,8 @@ créerait qu&rsquo;une seule image, le résultat.  Mais si on écrit cette versi
 optimisée directement, on perd alors la composition des filtres élémentaires.
 Cherchant l&rsquo;efficacité, les auteurs ont réécrit tous les filtres complexes
 directement.  Le système efficace comporte trois optimisations majeures: la
-fusion de boucle, l&rsquo;utilisation d&rsquo;un bassin d&rsquo;objet pour éviter l&rsquo;allocation
-d&rsquo;images intermédiaires, et la mémoisation des résultats.  Le système efficace
+fusion de boucle, l&rsquo;utilisation d&rsquo;un bassin d&rsquo;objets pour éviter l&rsquo;allocation
+d&rsquo;images intermédiaires, et la mémoïsation des résultats.  Le système efficace
 comporte 35213 lignes de code, alors que la version simple, mais non efficace,
 en comporte 768; 5 fois moins de code à écrire, et à maintenir.  C&rsquo;est d&rsquo;autant
 plus dommage que les versions optimisées suivent toujours le même motif:
@@ -1969,7 +1971,7 @@ composition, la composition que le langage procédural ne pouvait pas exprimer.
 Dans un second temps, le tisseur passe cette information aux programmes
 d&rsquo;aspects, qui vont pouvoir réaliser les trois optimisations; la fusion de
 boucle, la mémoisation, et le bassin d&rsquo;objets.  Chaque optimisation est un
-programme d&rsquo;aspect différent.  La fusion de boucle par exemple teste si les
+programme d&rsquo;aspects différent.  La fusion de boucle par exemple teste si les
 arguments d&rsquo;un filtre ont une itération compatible avec l&rsquo;itération faite par le
 filtre; si c&rsquo;est le cas, on peut générer une seule boucle qui applique les
 opérations des arguments et du filtre:
@@ -2018,8 +2020,8 @@ application?  Y a-t-il d&rsquo;autres façons de faire?
 <div class="outline-text-5" id="text-orgheadline15">
 <p>
 La caractéristique principale de la programmation par aspects est la distinction
-entre composants et aspects.  Cette distinction, si elle apparaît au moment du
-design du programme doit être maintenue dans son implémentation.  Tout
+entre composants et aspects.  Cette distinction, si elle apparaît au moment de
+la conception du programme doit être maintenue dans son implémentation.  Tout
 mécanisme, toute façon de réaliser cette distinction dans le programme est donc
 compatible avec la programmation par aspects.  Un langage spécifique pour
 l&rsquo;application, qui permet de distinguer composants et aspects, est une façon de
@@ -2033,7 +2035,7 @@ observer la pile d&rsquo;appels, ou tous les messages reçus par une classe, ou 
 tous les objets du programme.  La réflexion permet de composer un programme
 selon un axe complémentaire à celui des procédures; c&rsquo;est donc un mécanisme de
 programmation par aspects.  Les auteurs, certainement familiers avec le concept,
-le note:
+le notent:
 </p>
 
 <blockquote>
@@ -2044,6 +2046,12 @@ AOP terms, meta-languages are lower-level aspect languages whose join points are
 the &laquo;&nbsp;hooks&nbsp;&raquo; that the reflective system provides.  AOP is a goal, for which
 reflection is one powerful tool. — [<a href="#KLM+97">KLM+97</a>]</p>
 </blockquote>
+
+<aside class="todo">
+<p>
+Citer Dony?
+</p>
+</aside>
 
 <p>
 Et il y a d&rsquo;autres mécanismes connus.  Le <code>try/catch</code>, ou le mécanisme
@@ -2060,10 +2068,10 @@ Les auteurs de la programmation par aspects justifient la présence de ces
 mécanismes par le besoin des programmeurs d&rsquo;exprimer les aspects dans des
 langages qui proposent de n&rsquo;assembler que des composants.  Mais bien qu&rsquo;ils
 permettent d&rsquo;exprimer des aspects, ces mécanismes sont considérés de bas-niveau,
-au même titre que la réflexion.  Un langage dédié d&rsquo;aspects, comme celui utilisé
+au même titre que la réflexion.  Un langage d&rsquo;aspects dédié, comme celui utilisé
 pour optimiser les filtres d&rsquo;image, est déclaratif, et correspond plus
 directement à l&rsquo;intention du programmeur.  Fournir les outils qui permettent au
-programmeur d&rsquo;exprimer cette intention est un des but de la programmation par
+programmeur d&rsquo;exprimer cette intention est un des buts de la programmation par
 aspects:
 </p>
 
@@ -2082,14 +2090,14 @@ credited with this idea [<a href="#Par-72">Par72</a>,<a href="#Par-74">Par74</a>
 <p>
 On retrouve ce souci dans l&rsquo;implémentation ouverte; les auteurs préfèrent une
 interface d&rsquo;implémentation où le programmeur déclare l&rsquo;optimisation souhaitée
-plutôt qu&rsquo;une qui fournit les mécanismes pour la réaliser directement.
+plutôt qu&rsquo;une interface qui fournit les mécanismes pour la réaliser directement.
 </p>
 </aside>
 
 <p>
-Néanmoins, créer un langage dédié pour chaque application est un coût qui peut
-être trop élevé pour adopter la programmation par aspects.  Et tous les langages
-ne supportent pas les mécanismes bas-niveau qui pourraient servir à exprimer des
+Néanmoins, créer un langage dédié pour chaque application peut avoir un coût
+trop élevé pour adopter la programmation par aspects.  Et tous les langages ne
+supportent pas les mécanismes de bas-niveau qui pourraient servir à exprimer des
 aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
 d&rsquo;AspectJ [<a href="#KHH+01">KHH+01</a>].
 </p>
@@ -2107,7 +2115,7 @@ compatible package, a solid and well-worked-out set of AOP features.
 </blockquote>
 
 <p>
-AspectJ est un langage d&rsquo;aspect pour Java.  Dans un système par aspects, il y a
+AspectJ est un langage d&rsquo;aspects pour Java.  Dans un système par aspects, il y a
 un langage d&rsquo;aspects, ici AspectJ, et un langage de composants, ici ce sera
 Java.  AspectJ est un langage d&rsquo;aspect <i>général</i>, qui fournit des mécanismes de
 recomposition applicables à tout programme Java.  Et pour ce faire, AspectJ
@@ -2118,18 +2126,18 @@ propose deux types de recomposition.
 En premier, les déclarations inter-types permettent de définir, au sein d&rsquo;un
 même aspect, des attributs et des méthodes pour une ou plusieurs classes [<a href="#Asp-03">Asp03</a>].
 Ces attributs augmentent les classes au moment de la compilation.  La classe
-est, en Java, et comme dans d&rsquo;autres langages à classe pour la programmation
-objet, l&rsquo;unité de composition des composants.  Elle décrit les attributs et les
-méthodes partagées par toutes ses instances; c&rsquo;est la structure statique du
-programme.  Comme c&rsquo;est une unité de composition, une classe n&rsquo;a pas vocation à
-pouvoir affecter les attributs et méthodes d&rsquo;une autre classe.  Mais un aspect
+est, en Java, et comme dans d&rsquo;autres langages à classes pour la programmation
+objet, l&rsquo;unité de composition.  Elle décrit les attributs et les méthodes
+partagées par toutes ses instances; c&rsquo;est l&rsquo;élément clé de la structure statique
+du programme.  Comme c&rsquo;est une unité de composition, une classe n&rsquo;a pas vocation
+à pouvoir affecter les attributs et méthodes d&rsquo;une autre classe.  Mais un aspect
 est une unité de composition qui <i>traverse</i> la composition des composants, et
 c&rsquo;est donc naturel de permettre, dans un aspect, d&rsquo;ajouter attributs et méthodes
 à plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name">Une déclaration inter-type qui ajoute un attribut et une méthode sur la classe <code>Point</code>.</label>
+<label class="org-src-name">Une déclaration inter-type qui ajoute un attribut et une méthode à la classe <code>Point</code>.</label>
 <pre class="src src-java"><span class="org-keyword">public</span> <span class="org-type">int</span> Point.<span class="org-variable-name">x</span> = 0;
 <span class="org-keyword">public</span> <span class="org-type">int</span> Point.<span class="org-function-name">getX</span>() { <span class="org-keyword">return</span> <span class="org-keyword">this</span>.x; }
 </pre>
@@ -2142,13 +2150,13 @@ l&rsquo;exécution.  C&rsquo;est rendu possible par trois constructions:
 </p>
 
 <ul class="org-ul">
-<li>les jonctions (<i>joinpoints</i>) sont des points d&rsquo;exécution du programme bien
+<li>les <i>jonctions</i> (<i>joinpoints</i>) sont des points d&rsquo;exécution du programme bien
 définis: l&rsquo;appel d&rsquo;une méthode, l&rsquo;affectation d&rsquo;un attribut, la création d&rsquo;une
 instance de classe, etc.</li>
-<li>les coupes (<i>pointcuts</i>) permettent de cibler un ensemble de jonctions, et
-d&rsquo;en extraire de l&rsquo;information comme le nom de la méthode appelée, et ses
-arguments.</li>
-<li>les méthodes d&rsquo;aspect (<i>advice</i>) contiennent le code à exécuter lorsque le
+<li>les <i>coupes</i> (<i>pointcuts</i>) permettent de sélectionner un ensemble de
+jonctions, et d&rsquo;en extraire de l&rsquo;information comme le nom de la méthode
+appelée, et ses arguments.</li>
+<li>les <i>méthodes d&rsquo;aspect</i> (<i>advice</i>) contiennent le code à exécuter lorsque le
 programme atteint les jonctions décrites par la coupe de la méthode.  Une
 méthode d&rsquo;aspect décrit également <i>comment</i> le code doit s&rsquo;insérer dans le
 processus d&rsquo;exécution: avant, après, ou autour de la jonction.</li>
@@ -2156,12 +2164,12 @@ processus d&rsquo;exécution: avant, après, ou autour de la jonction.</li>
 
 <p>
 Le programmeur ne manipule pas les jonctions directement, mais utilise les
-coupes pour les cibler dans des méthodes d&rsquo;aspect.  On pourra ainsi écrire:
+coupes pour les sélectionner dans des méthodes d&rsquo;aspect.  On pourra ainsi écrire:
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-java"><span class="org-constant">after</span>(): <span class="org-function-name">calls</span>(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>)) {
+<pre class="src src-java"><span class="org-constant">after</span>(): <span class="org-function-name">call</span>(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>)) {
   System.out.println(<span class="org-string">"setX was called"</span>)
 }
 </pre>
@@ -2169,7 +2177,7 @@ coupes pour les cibler dans des méthodes d&rsquo;aspect.  On pourra ainsi écri
 
 <p>
 pour déclencher l&rsquo;affichage sur la sortie standard après (<code>after</code>) tout appel
-(<code>calls</code>) de la méthode <code>Point.setX(int)</code> dans le programme.
+(<code>call</code>) de la méthode <code>Point.setX(int)</code> dans le programme.
 </p>
 
 <p>
@@ -2179,10 +2187,10 @@ booléens <code>&amp;&amp;</code>, <code>||</code>, et <code>!</code>:
 
 <div class="org-src-container">
 
-<pre class="src src-java">receptions(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>))
-|| receptions(<span class="org-type">void</span> Point.<span class="org-variable-name">setY</span>(<span class="org-type">int</span>))
+<pre class="src src-java">execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>))
+|| execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setY</span>(<span class="org-type">int</span>))
 
-calls(<span class="org-type">void</span> FigureElement.<span class="org-variable-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
+call(<span class="org-type">void</span> FigureElement.<span class="org-variable-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
 &amp;&amp; <span class="org-negation-char">!</span><span class="org-keyword">instanceof</span>(FigureElement)
 </pre>
 </div>
@@ -2190,15 +2198,15 @@ calls(<span class="org-type">void</span> FigureElement.<span class="org-variable
 <p>
 Ce qui permet de capturer des ensembles de jonctions pertinents pour cibler une
 préoccupation particulière.  AspectJ permet d&rsquo;ailleurs de nommer les coupes pour
-plus de clarté:
+plus de clarté, et pour pouvoir les partager:
 </p>
 
 <div class="org-src-container">
 
 <pre class="src src-java"><span class="org-type">pointcut</span> <span class="org-function-name">moves</span>():
-  receptions(<span class="org-type">void</span> FigureElement.<span class="org-variable-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
-  || receptions(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>))
-  || receptions(<span class="org-type">void</span> Point.<span class="org-variable-name">setY</span>(<span class="org-type">int</span>));
+  execution(<span class="org-type">void</span> FigureElement.<span class="org-variable-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
+  || execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>))
+  || execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setY</span>(<span class="org-type">int</span>));
 
 <span class="org-constant">after</span>(): <span class="org-function-name">moves</span>() {
   ...
@@ -2214,7 +2222,7 @@ duplication de code.
 
 <p>
 Les jonctions exposées par AspectJ évoquent fortement les réifications d&rsquo;un
-protocole méta-objet: appel et exécution de méthode, création d&rsquo;une instance.
+protocole métaobjet: appel et exécution de méthode, création d&rsquo;une instance.
 Mais il y a d&rsquo;autres coupes intéressantes qui sont applicables à n&rsquo;importe quel
 langage à procédures: <code>withincode(method)</code> permet de cibler n&rsquo;importe quelle
 jonction qui émane de la méthode donnée.  C&rsquo;est particulièrement utile associé à
@@ -2263,13 +2271,13 @@ indirects).
 </p>
 
 <p>
-À travers les différents types de jonctions observées, le langage d&rsquo;aspect
+À travers les différents types de jonctions observées, le langage d&rsquo;aspects
 d&rsquo;AspectJ permet de capturer de nombreux points d&rsquo;exécution du programme, et
 d&rsquo;exécuter du code au delà des frontières délimitées par les classes et les
-méthodes de Java.  On voit bien comment le langage permet de séparer les
-composants des aspects, et ce pour n&rsquo;importe quelle application.  Puisqu&rsquo;ici,
-contrairement au langage spécifique d&rsquo;aspects du premier papier, le mécanisme
-est général; il s&rsquo;applique à n&rsquo;importe quel programme Java.
+méthodes de Java.  Contrairement au langage spécifique d&rsquo;aspects du premier
+papier, le mécanisme est ici général; il s&rsquo;applique à n&rsquo;importe quel programme
+Java. Le langage permet donc de séparer les composants des aspects, et ce pour
+n&rsquo;importe quelle application.
 </p>
 
 <p>
@@ -2283,7 +2291,7 @@ levées par toutes les méthodes publiques d&rsquo;un package:
   <span class="org-type">Log</span> <span class="org-variable-name">log</span> = <span class="org-keyword">new</span> <span class="org-type">Log</span>();
 
   <span class="org-type">pointcut</span> <span class="org-variable-name">publicEntries</span>():
-    receptions(<span class="org-keyword">public</span> * <span class="org-constant">com</span>.<span class="org-constant">xerox</span>.<span class="org-constant">printers</span>.*.*(..));
+    execution(<span class="org-keyword">public</span> * <span class="org-constant">com</span>.<span class="org-constant">xerox</span>.<span class="org-constant">printers</span>.*.*(..));
 
   after() throwing(<span class="org-type">Error</span> <span class="org-variable-name">e</span>): publicEntries() {
     log.write(e)
@@ -2293,28 +2301,29 @@ levées par toutes les méthodes publiques d&rsquo;un package:
 </div>
 
 <p>
-Cet aspect est équivalent à rajouter enrober chaque appel dans un <code>try/catch</code> et
-appeler <code>log.write</code> sur l&rsquo;erreur levée.  Mais ici c&rsquo;est fait en 8 lignes, pour
-toutes les classes du package, même les classes futures.
+Cet aspect est équivalent à enrober chaque appel dans un <code>try/catch</code> et appeler
+<code>log.write</code> sur l&rsquo;erreur levée.  Mais ici c&rsquo;est fait en 8 lignes, pour toutes
+les classes du package, même les classes futures.
 </p>
 
 <p>
-Un désavantage du langage spécifique c&rsquo;est qu&rsquo;il faut réécrire le programme des
+Un désavantage du langage spécifique est qu&rsquo;il faut réécrire le programme des
 composants dans le nouveau langage à composants.  Ici, le langage d&rsquo;aspects
-manipule directement le langage à composant déjà existant: Java.  Un programmeur
-peut donc directement appliquer la programmation par aspects à un programme Java
-existant, simplement en ajoutant des programmes d&rsquo;aspect, et en invoquant le
-tisseur à la compilation.  Aucune modification du programme des composants n&rsquo;est
-nécessaire, mais pourtant ce programme va être modifié par des aspects.  Les
-déclarations inter-types peuvent étendre des classes sans modifier le code de
-celles-ci.  Et les méthodes d&rsquo;aspect vont modifier le comportement à l&rsquo;exécution
-de plusieurs classes, ici encore sans en altérer le code.
+manipule directement le langage à composants déjà existant: Java.  Un
+programmeur peut donc directement appliquer la programmation par aspects à un
+programme Java existant, simplement en ajoutant des programmes d&rsquo;aspects, et en
+invoquant le tisseur à la compilation.  Aucune modification du programme des
+composants n&rsquo;est nécessaire, mais pourtant ce programme va être modifié par des
+aspects.  Les déclarations inter-types peuvent étendre des classes sans modifier
+le code source de celles-ci.  Et les méthodes d&rsquo;aspect vont modifier le
+comportement à l&rsquo;exécution de plusieurs classes, ici encore sans en altérer le
+code source.
 </p>
 
 <p>
-La programmation par aspect nous donne donc deux façons de modifier un
+La programmation par aspects nous donne donc deux façons de modifier un
 programme: dans les filtres d&rsquo;images, la modification est <i>explicite</i>, car il
-faut réécrire les filtres pour expliciter quel type de boucle est utilisée; mais
+faut réécrire les filtres pour expliciter quel type de boucle est utilisé; mais
 dans AspectJ, le programme est modifié <i>implicitement</i> par les aspects.
 </p>
 
@@ -2352,15 +2361,14 @@ exécutables différents.
 <h5 id="orgheadline17">Le mécanisme essentiel pour la programmation par aspects</h5>
 <div class="outline-text-5" id="text-orgheadline17">
 <p>
-D&rsquo;être oubliable est une propriété qui peut être considérée comme
-caractéristique de la programmation par aspects [<a href="#FF-04">FF04</a>].  Filman et Friedman
-cherchent à identifier les systèmes qui suivent la programmation par aspects.
-Il semble clair que lorsqu&rsquo;on utilise AspectJ, on fait de la programmation par
-aspect.  Mais si on construit un système similaire à celui des filtres d&rsquo;images,
-avec un langage dédié pour les filtres, est-ce que c&rsquo;est un système d&rsquo;aspects?
-À l&rsquo;inverse, il ne s&rsquo;agit pas de rajouter une construction à un langage qui
-permet de créer des &laquo;&nbsp;aspects&nbsp;&raquo;, qui regroupent des méthodes, pour en faire un
-langage de programmation par aspects.
+Être oubliable est une propriété qui peut être considérée comme caractéristique
+de la programmation par aspects [<a href="#FF-04">FF04</a>].  Filman et Friedman cherchent à
+identifier les systèmes qui suivent la programmation par aspects.  Il semble
+clair que lorsqu&rsquo;on utilise AspectJ, on fait de la programmation par aspects.
+Mais si on construit un système similaire à celui des filtres d&rsquo;images, avec un
+langage dédié pour les filtres, est-ce un système d&rsquo;aspects?  À l&rsquo;inverse, si on
+rajoute à un langage une construction qui regroupent des méthodes, a-t-on un
+langage de programmation par aspects?
 </p>
 
 <p>
@@ -2507,14 +2515,20 @@ connaître tous les aspects qui peuvent s&rsquo;y appliquer, et en prenant en co
 les aspects qui pourraient être activés dynamiquement.
 </p>
 
+<aside class="todo">
 <p>
-Une façon de mitiger ce problème est de faire apparaître, dans l&rsquo;environnement
+[<a href="#KM-05">KM05</a>] ?
+</p>
+</aside>
+
+<p>
+Une façon d&rsquo;atténuer ce problème est de faire apparaître, dans l&rsquo;environnement
 de développement du programmeur, les endroits du code où des aspects pourraient
-s&rsquo;exécuter; l&rsquo;article qui introduit AspectJ montre une telle fonctionnalité dans
-Emacs.  Les aspects deviennent explicites, mais l&rsquo;intégrité du module demeure
-compromise.  Le système nécessite toujours une analyse globale pour être
-compris, et les aspects traversent encore la barrière du module, ce qui empêche
-de développer le module indépendamment des aspects.
+s&rsquo;exécuter; l&rsquo;article qui introduit AspectJ [<a href="#KHH+01">KHH+01</a>] montre une telle
+fonctionnalité dans Emacs.  Les aspects deviennent explicites, mais l&rsquo;intégrité
+du module demeure compromise.  Le système nécessite toujours une analyse globale
+pour être compris, et les aspects traversent encore la barrière du module, ce
+qui empêche de développer le module indépendamment des aspects.
 </p>
 
 <p>
@@ -2573,7 +2587,7 @@ système.
 </div>
 
 <div id="outline-container-orgheadline24" class="outline-3">
-<h3 id="orgheadline24"><span class="section-number-3">2.5</span> <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrable dimensions</h3>
+<h3 id="orgheadline24"><span class="section-number-3">2.5</span> <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</h3>
 <div class="outline-text-3" id="text-2-5">
 <div class="epig">
 <p>
@@ -3020,7 +3034,7 @@ décomposition dominante&nbsp;&raquo;.
 Pour remédier à cette tyranie, ils proposent l&rsquo;<i>hypercoupe</i>: une façon de
 regrouper tous les artefacts du système qui touchent à une même préoccupation.
 Une hypercoupe contient le code source, la description informelle de la
-fonctionnalité, sa spécification, son design, sa documentation, etc.
+fonctionnalité, sa spécification, sa conception, sa documentation, etc.
 </p>
 
 <p>
@@ -3079,9 +3093,9 @@ reconnaître qu&rsquo;une préoccupation a plusieurs dimensions dans le programm
 n&rsquo;apparaît pas seulement dans le code source.  Les hypercoupes sont des
 projections de cet objet pluridimensionnel qui regroupent tous les artefacts
 relatifs à une préoccupation: le code source, mais aussi les documents de
-conception.  La séplution est donc une méthodologie de développement, du design
-à l&rsquo;implémentation, dont les unités d&rsquo;abstraction sont les fonctionnalités du
-système.
+conception.  La séplution est donc une méthodologie de développement, de la
+conception à l&rsquo;implémentation, dont les unités d&rsquo;abstraction sont les
+fonctionnalités du système.
 </p>
 
 <aside style="margin-top:-6rem">
@@ -12468,6 +12482,21 @@ Gregor Kiczales, John Lamping, Anurag Mendhekar, Chris Maeda, Cristina&nbsp;Vide
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="KM-05">KM05</a>]
+</td>
+<td class="bibtexitem">
+Gregor Kiczales and Mira Mezini.
+ Aspect-oriented programming and modular reasoning.
+ In <em>27th International Conference on Software Engineering (ICSE
+  2005), 15-21 May 2005, St. Louis, Missouri, USA</em>, pages 49--58, 2005.
+[&nbsp;<a href="http://dx.doi.org/10.1145/1062455.1062482">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Knu-74">Knu74</a>]
 </td>
 <td class="bibtexitem">
@@ -13244,7 +13273,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-23 jeu. 16:14 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-06-24 ven. 18:19 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
