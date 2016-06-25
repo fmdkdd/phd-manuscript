@@ -3296,7 +3296,52 @@ the code of that program"?
 I've used explicit/implicit modification to mean "with/without touching the
 code".
 
-factorization.
+** [2016-06-25 sam.]
+*** This term...
+Explicit/implicit.  Direct/indirect modification.  I've got this image of a
+puppeteer that manipulates puppets through their strings.  Indirect manipulation
+is adding strings to make the puppets walk differently.
+
+Maybe "extend" is a decent term for "adding functionality".  But the main point
+is to extend /implicitly/, indirectly, not in the usual way.  And I need a word
+for that.
+
+"Détournement" I like.  It carries the meaning of distant action on something to
+change its course.  So we have the two important pieces: changing the program,
+but at a distance.  And it's not an overloaded term in the field.
+
+My thesis is then: we can divert programs to add functionality.  We modify their
+behavior but without touching their code.  To divert programs, we act on the
+context of execution through late binding and reflection.  Diverting programs is
+a lightweight alternative to refactoring: we can add functionality without
+the heavy costs of rewriting.
+
+*** Refactoring is related work
+Factorization is related to the problem, but not what we are doing.  If
+implementing a new functionality requires adding several lines of code inside a
+module it should not affect, then there's a problem of module division, and an
+opportunity for refactoring.  Refactoring is re-organizing the program structure
+so that implementing the new functionality could be done in a separate module.
+Refactoring would offer an interface for this new functionality and other
+similar additions.  With refactoring, we can integrate a visitor pattern, add
+hooks, etc.
+
+Refactoring is just the opportunity to redesign the program structure in the
+face of new requirements.  The mechanisms we would use when refactoring are the
+same we would use in the first design phase.
+
+Refactoring has a cost in critical resources: time and effort.  But the primary
+argument against refactoring is the risk of altering the program behavior
+unknowingly.  Refactoring /should/ preserve the behavior, but there are no known
+ways of ensuring that the programs before and after the refactoring are
+equivalent under all observable executions.
+
+So, rather than changing all the code, we aim to find mechanisms that allow
+adding more code without touching the existing one.  We aim to define additional
+functionality in layers that can be disabled, so we can always dynamically fall
+back to a previous behavior that was known to work.  That way, the costs of
+of adding the new functionality are proportional to the complexity of the
+functionality itself, not of the whole program.
 
 * Odds and ends
 Bits that will go in the document at some point.
