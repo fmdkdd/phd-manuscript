@@ -3531,6 +3531,123 @@ Ah!  Well, a compiler, is just an interpreter, but instead of executing a
 process, it generates a program in another language.  So a compiler actually
 provides us with yet another way to divert the program: we can modify the
 generated code itself.
+
+*** Diverting the program by changing its interpreter
+We can certainly divert a program by changing its interpreter.  But the
+difficulty is that the interpreter might be at too low a level to be able to
+capture the semantics of the program.
+
+Let's take an example.  If your language is one of arithmetic operations:
+
+: <term> ::= <term> + <term> | <int>
+: <int>  ::= 0 | 1 | 2 | ...
+
+Then you can easily change the meaning of ~+~ to something else, like
+subtraction.
+
+Now your language is a lambda-calculus.  You want to write the same program, so
+you encode numbers and addition following Church.  But now, if you want to
+change addition to subtraction by changing the rules of the lambda-calculus, you
+are in a drag.  The calculus "sees" only lambdas and their application.  It does
+not distinguish between lambda terms that represent addition and lambda terms
+that represent numerals.
+
+To target precisely the addition term, we would need to recognize it.  That
+means pattern matching the AST for custom case handling.
+
+: lambda term of addition -> evaluate this term (subtraction) instead
+: _ -> standard lambda calculus
+
+That's quite brittle, since there are infinitely many ways to encode addition.
+You cannot capture them all in this fashion.
+
+What you need is a more direct way to tell the compiler you want addition here.
+What about the keyword 'addition' ?
+
+: addition -> do subtraction instead
+: _ -> standard lambda calculus
+
+So now you "teach" the interpreter about addition directly, and it handles it
+for you.  You "push" the functionality down, and it can be changed once it's out
+of your hands.
+
+That step of interpretation can even be done by a simple rewriting step,
+separate from the interpreter itself.
+
+: program (lambda + add) -> rewriting add to sub -> standard lambda calculus
+
+**** By preprocessing
+That's not very different from how macros work in C.  Macros are expanded before
+the compilation actually takes place.  You can actually use the macro
+preprocessor of the C compiler on any language.  There is nothing that tie it to
+C (save the cumbersome syntax).
+
+So you could use a ~#define add~ in your lambda program, use the C preprocessor,
+to expand the uses of ~add~, and use your standard lambda calculus interpreter.
+No difference to the first situation.  Except now, the preprocessor step /can/
+easily change the definition of ~add~ to something else.  It gives this step a
+hook it can catch on.
+
+This is of course not limited to the C preprocessor.  We can use any system of
+macros, or template generator.  Ruby, Rastache...  In fact, the C syntax for
+macro calls is not applicable to any language (see [[https://stackoverflow.com/a/18473606][this SO answer]]).  A proper
+templating engine is best.
+
+: function plus() { ... }
+: plus(1, 2)
+
+becomes
+
+: #define plusdef function plus() { ... }
+: plusdef
+: plus(1, 2)
+
+One issue with this technique is that you still have to /tell/ the template
+system of the parts of you program that can be changed that way.  You have to
+/declare/ them explicitly as macros.  You don't want to do that pre-emptively.
+
+But it is lightweight.  When you need the flexibility to change the definition
+at a later time, outside the source code, just declare the function as a macro
+with a default value of its current definition.  Then you can use the template
+engine to override the default value of this macro, and replace it with
+something else.
+
+You can also use templates for adding hooks into the source code.
+
+: function plus() { ..{{{HOOK}}} }
+
+Then, add a preprocessing step that expands ~HOOK~ to whatever you want it to
+be.  You added code and diverted the program, but without changing its semantics
+(leaving ~HOOK~ empty does not modify the program).
+
+**** Pushing down
+When I say "push down", I really see the code as a flat surface in space.  The
+surface is ready to be fed to an interpreter, like a fax machine.  But now we
+push some parts of this surface down, so they lie parallel to the surface, but
+deeper in the third dimension.
+
+#+BEGIN_EXAMPLE
+----- ------------ ------
+     -            -
+#+END_EXAMPLE
+
+This object cannot be faxed any more.  It must be preprocessed and flattened.
+The preprocessor flattens every bump in the surface, expands every macro use.
+
+With this metaphor, we see that we need to differentiate the macro use from the
+regular code so that the preprocessor catches them.
+
+We can also see pushing down as late binding.  The meaning of the pushed down
+values is "up in the air", still not settled.  The rest of the program will not
+change after preprocessing: it is fixed.
+
+**** By reifying the program
+With preprocessing, we pushed down the definitions we wanted to be able to
+change at a later point.
+
+There is another point of view, which is to "push up" the program we are
+writing.  This is the monadic interpreter approach.
+
 * Odds and ends
 Bits that will go in the document at some point.
 
