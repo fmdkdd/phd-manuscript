@@ -3343,6 +3343,194 @@ back to a previous behavior that was known to work.  That way, the costs of
 of adding the new functionality are proportional to the complexity of the
 functionality itself, not of the whole program.
 
+** [2016-06-27 lun.]
+*** Sketching the defense
+Case study: Narcissus instrumentation.
+
+The goal was to add faceted evaluation to Narcissus.  They went with modifying
+the interpreter all other the place.  You end up with this diagram.
+
+Modifying a program like that does not scale.  It's quick, and it works for this
+case.  But now imagine you want to try another evaluation strategy.  You fork
+the original interpreter and modify it, again.  Now you have 3 variants of the
+interpreter.  And you have a bug that affects all three.  You must now patch the
+bug in all three places.  Doesn't scale.
+
+And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
+You have to create yet another fourth variant.
+
+There's yet another issue: how do you know what part of the code pertains to the
+new evaluation strategy and what part pertains to the original semantics?
+Version control tools can help, but they don't work on the /semantic/ of
+changes, just on lines of code.  A clear distinction in the code helps.
+
+Let me get one thing clear: that's totally fine, especially considering this is
+a research prototype.  Their goal was to apply their evaluation strategy to
+JavaScript, and they succeeded.
+
+But, it got us thinking: how would we do it differently?  Given enough time, how
+would we add faceted evaluation on Narcissus?
+
+Any software engineer would tell you: refactoring.  We have a typical case of a
+program that is being used in ways it what not designed for.  The module pattern
+of JavaScript prevents extension.  This calls for taking into account the new
+use cases and refactor the program.
+
+But refactoring is difficult to get right and time consuming.  We would have to
+think of a new API for extension that would cover all our new use cases.  That
+means gathering these use cases, sketching, etc.  We have to review solutions:
+e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
+is tricky, because we have to make sure we don't alter the functionality of the
+interpreter in doing so.  Maybe this is trivial because we only add code that
+visibly does not change the control flow or breaks any (implicit) assumptions.
+Or maybe this is hard, because we restructure the whole thing to be completely
+extendable.  We can use tests, or rely on types (we have neither here).  We have
+people here in ASCOLA trying to prove refactorings that preserve semantics.
+It's not quite there yet.
+
+And then, maybe down the road you find out that you missed an important use
+case.  And you need to refactor, and do this whole process again.
+
+There is a lightweight alternative to refactoring.  This is what I call
+/diverting/ the program.
+
+This is all based on one phenomenon we are all familiar with: context.  Let's
+forget programming for a moment.  Take the sentence: "I'm defending".  Today,
+you understand perfectly that it means that I am actually defending my PhD
+before you.  But, said by a soldier in a war it could actually mean something
+else.  There is no ambiguity as long as the context is made clear.
+
+We could even go so far as saying that the sentence is a bundle of meaningless
+symbols without the context of an English speaker during a PhD defense.
+
+Back to programming.  Programs have context too.  Like a sentence, the meaning
+of programs is determined by their context.  *Changing the context changes the
+meaning of the program*.
+
+What does that entails for our case?  We want to change how the interpreter
+behaves, and we can do so by changing its context.
+
+Now, what is the context for a program?  Based on our answer to this
+question, it yields different ways to carry out a diversion.
+
+One answer is to say that the context is the interpreter of the program.  The
+interpreter is what gives meaning to the program, and the program is written
+with a given interpreter (semantics) in mind.
+
+So, that means that a first approach is to modify the program is to write a
+different interpreter for it.
+
+There are many ways to do that, but I'm just going to show an interesting one
+from functional programming: the Reader monad.
+
+This is pattern where the program you write has no meaning until it is
+interpreted.  It is a reification of the program, and the interpretation can
+easily be changed.
+
+[missing piece of the puzzle here]
+
+We can also see that as creating a DSL with multiple custom interpreters.
+
+Ok, that's interesting.  But it still doesn't scale.  We cannot write an
+interpreter for each variant of the language.  We would have the same issues.
+We have just shifted the problem.
+
+There's another interpretation of 'context' in a program: whatever the names
+of the program refer to, the set of bindings, the /environment/.  This
+interpretation leads to looking at dynamic scoping.
+
+Lisp example.
+
+See: dynamic scoping let us manipulate the bindings of the names used by the
+function.  In one context, 'plus' is addition, in the next context, 'plus' is
+subtraction.
+
+Now, JavaScript does not have dynamically-scoped variables.  But it has an
+interesting construct: ~with~.
+
+~with~ example (canvas context object).
+
+~with~ was intended to make writing this kind of code shorter.  By using ~with~,
+you don't have to repeat the ~context~ object anymore.
+
+But what ~with~ /does/ is really to push a binding environment on the stack, an
+environment that we can control.  We can then give different results to the
+same body, just by changing the object passed to ~with~.
+
+~with~ example (from FOAL paper)
+
+Basically, ~with~ takes a context, and the code inside it can change its meaning
+based on the context.  If we control the context, we can divert the code.
+
+We can apply this insight to Narcissus.  Just wrap the code inside a ~with~, and
+expose the context.
+
+Now, we can add the faceted evaluation strategy without modifying the code of
+the interpreter.  Modifications are outside.  We can immediately see what the
+changes are. And we can toggle the evaluation strategy dynamically.
+
+We write multiple evaluation strategies and combine them.  That's very
+lightweight.  No need for refactoring the interpreter.
+
+There are practical downsides to this approach: performance overhead of 20% in
+execution time, and ~with~ is deprecated in the "strict" mode of the language
+(that was opt-in in ECMAScript 5.1, but now enforced by default by most new
+constructs of ECMAScript 2015).  Also, the exact behavior of using ~with~ that
+way is left undefined by the standard.  YMMV (Your Mozilla might vary).
+
+But that's not critical.  ~with~ is just /a way/ to replicate a form a dynamic
+scoping in JavaScript.  The point is that dynamic scoping is a lightweight way
+to change the meaning of the program.
+
+Recap: so what have we done?  Diverting programs by manipulating their context,
+not their source text.
+
+There should be a table recapitulating "Ours" vs. "Theirs" cons and pros of
+extending a program.  I think these are always dishonest, because often you are
+measuring them to the standard that fits you.  They did not have your goals in
+mind, and you consider that their approaches cannot be modified to take your
+goals into account.  I can always add silly goals like "Written by me".  So
+there won't be such table.
+
+What you want to know is: is diverting programs better?  That would be a great
+to know that you can ditch refactoring and always use dynamic scoping for
+extending programs.  The answer is, as always, it depends.
+
+In these matters what is important is to /think/.  Thinking allowed us to see a
+different way to extend programs.  We questioned the viability of refactoring
+and of AOP for diverting.  There was a simpler solution, and here it is.
+
+Diverting may not always be the right solution.  It is /a/ solution that could
+be taken into account.  It has the benefit of being lightweight in languages
+that support dynamic scoping mechanisms, but it may not be suited to statically
+typed programs, and you could argue that it obscures reasoning about what the
+program does.  There are situations where diverting may be useful, and I've
+illustrated one of them.
+
+But what is more important question is: what insight can be gained by this?  The
+takeaway is that modifying a program can be achieved by modifying the way it is
+interpreted as well.  Programs, like sentences in a natural language, have
+meaning only with respect to a context.  Manipulate the context, manipulate the
+program.  Always keep both sides in mind.
+
+**** How is this related to X?
+I understand that, when a claim to a new approach is made, the claimant must
+provide proof that it is indeed novel.
+
+Now here's the rub: I don't claim it is novel.  The Reader monad is not new.
+Dynamic scoping is not new.  I only claim I have not seen these mechanisms
+applied in this way.  It may just reflect my poor knowledge of the domain.  I
+have tried to look for competing approaches.  The fact is, there are simply too
+many papers and too many programming languages.  Proof of novelty must be by
+exhaustion.
+
+So, it was novel to me.  Maybe it is novel to you too.  Isn't that enough?
+
+**** You talked about interpreted languages, but what about compiled ones?
+Ah!  Well, a compiler, is just an interpreter, but instead of executing a
+process, it generates a program in another language.  So a compiler actually
+provides us with yet another way to divert the program: we can modify the
+generated code itself.
 * Odds and ends
 Bits that will go in the document at some point.
 
