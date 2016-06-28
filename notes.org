@@ -3648,6 +3648,101 @@ change at a later point.
 There is another point of view, which is to "push up" the program we are
 writing.  This is the monadic interpreter approach.
 
+** [2016-06-28 mar.]
+*** Chasing the monadic interpreter
+One [[https://gist.githubusercontent.com/avieth/334201aa341d9a00c7fc/raw/56e137ca76f04062bb7b89a9fe87280fd6b61ee0/gistfile1.lhs][boilerplate-heavy approach]] is the Free monad.  The gist goes further than
+Swierstra by showing how to combine interpreters as monad transformers.  Most of
+the code actually goes over my head.
+
+This [[https://lexi-lambda.github.io/blog/2016/06/12/four-months-with-haskell/][post]] gives a less hairy example of using newtypes to simulate an effect
+system.  The upshot is that side effects made the function are visible in its
+signature.  And different effect runners can be used (they give the example of a
+mock runner for unit testing for instance).
+
+Ah!  But the Free monad is actually just a way to get an AST out of a
+do-notation program for free.  It's used for imperative DSL inside Haskell.  But
+it's just syntactic sugar that hides the fact that one can build the AST
+manually.
+
+This [[https://programmers.stackexchange.com/questions/242795/what-is-the-free-monad-interpreter-pattern][SO answer]] gives the example of a get/set keystore DSL:
+
+#+BEGIN_SRC haskell
+p4 :: Free DSL a
+p4 = do foo <- get "foo"
+        set "bar" foo
+        end
+#+END_SRC
+
+The Free monad here just threads everything (but we have to define ~get~, ~set~
+and ~end~ accordingly) so that the program ~p4~ is just an expression of value:
+
+: Free (Get "foo" $ \foo -> Free (Set "bar" foo (Free end)))
+
+So we have a sequence of instruction in AST form.
+
+The point is, it just builds an AST.  Going into this direction to the extreme,
+to "push up" the interpreter we can just quote our program and provide an
+interpreter for it.  Given the Lisp interpreter:
+
+#+BEGIN_SRC lisp
+(defun eval (...)
+   (cond ...
+     ))
+#+END_SRC
+
+Instead of taking action, we can just return its code:
+
+#+BEGIN_SRC lisp
+
+(defun eval (...)
+   '(cond ...
+      ))
+#+END_SRC
+
+AST for free!  The code is a description of its action, a reification of the
+process taken.
+
+Then we can rewrite that code and evaluate it: we've got an interpreter
+variant.  Going to the metalevel allows us to treat the code as first class
+data.  We don't manipulate the running process of the interpreter, but the code
+itself, the code that the programmer works with.
+
+This is more easily done in Lisps, because the structure of the code is very
+simple.  Template Haskell would work if we wanted type safety, but we would have
+to deal with a more complex AST.
+
+The main takeaway is that, to be able to divert the program, that parts that
+must change must first be made /first-class values/.  Quoting makes the code
+first-class, then we can change the code.  Using macros makes them first-class
+values for the preprocessor.  And dynamic scoping makes the environments
+first-class as well.  Kind of obvious in retrospect.  The design space is
+defined by what you chose to reify, and what mechanisms you use to reify it.
+
+*** A pure interpreter is easy to divert
+Just substitute the ~eval~ function.
+
+When we interpret a program, we are interested in its side effects (putting
+things on the screen, writing on the disk, reading from the network...) and
+eventual output value.
+
+Abstractly, we can see any interpreter as a mathematical function that takes an
+AST and produces a computation:
+
+: interp :: AST -> m a
+
+This suggests that, to /change/ the outcome of the interpreter, we can just
+substitute a new ~interp~ function:
+
+: interp' :: AST -> m' a'
+
+For the same program (AST), we can now have two outcomes.
+
+This suggests that whenever our interpreter is actually written as a function,
+we can just substitute that function for another.  Of course, the interpreter
+function is realized by code.  The mathematics are not as helpful to understand
+the issue there.  The crux of the issue is to avoid duplicating the code for the
+function, but change only the relevant parts.  Avoid duplication is not easily
+
 * Odds and ends
 Bits that will go in the document at some point.
 
