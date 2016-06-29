@@ -3743,6 +3743,56 @@ function is realized by code.  The mathematics are not as helpful to understand
 the issue there.  The crux of the issue is to avoid duplicating the code for the
 function, but change only the relevant parts.  Avoid duplication is not easily
 
+** [2016-06-29 mer.]
+*** Breaking news: computers steal programming jobs
+In the perspectives: programming automation will probably not care about any of
+this.  If in the future, computers are able to generate programs based on an
+informal specification, or by having a discussion with humans, then modularity
+consideration will change.  Modularity is rarely a concern for generated code.
+But as long as there are humans who read programs, they will appreciate
+clarification.
+
+*** The motivation is writing programs for humans first
+In the synthesis: this is tied to writing.  Writing clearly eases communication
+between humans.  A program is written by a human to the machine, but also to
+other humans (himself included).
+
+*** Strengthening the narrative
+Diverting programs is about changing their behavior without directly changing
+their code.  But there are a couple of hidden assumptions.  The goal is not to
+divert programs because we can, the goal is to divert programs in order to build
+programs incrementally.  We don't go back to the code we want to modify: we add
+modification instead.  Add-only way of programming.
+
+The benefit of add-only is that you have multiple variants of the program on
+hand.  You can toggle variants dynamically.  And you can easily add new ones
+without impacting the others.
+
+The goal is, ultimately, to make programs clearer, to convey their intent as
+directly as possible.  The instrumentation of Narcissus is best defined as a
+/delta/ from the base interpreter.  It follows that the code should also be
+expressed as a delta.
+
+*** Building incrementally with version control
+Now, this 'delta' idea evokes version control and /patches/.  Indeed, patches
+are a unit of modification of the source code.  We can even see the whole
+version control history as the program itself, and we can use branches to manage
+variants of the program.  Since we can revert earlier changes, and branch to
+test changes, break up modifications to keep the good stuff... we can see
+that version control allows us to build a program incrementally.
+
+But patches alter the static structure of the code, and are devoid of any
+semantic meaning.  What we do to Narcissus in the last chapter can be seen as
+dynamic patching, because the activation actually happens at runtime.
+
+*** AOP is diverting, so is open implementation
+AOP is diverting.  AOP is basically COMEFROM, and COMEFROM is the epitome of
+diversion.  But AOP is a known means of diverting programs, so not as
+interesting to pursue.
+
+Open implementation creates a backdoor for changing stuff inside the program.
+Same idea.
+
 * Odds and ends
 Bits that will go in the document at some point.
 
