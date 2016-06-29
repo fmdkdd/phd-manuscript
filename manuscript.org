@@ -68,6 +68,7 @@ different person then.'
    - [[#unstable-motivation-extension-ad-hoc-de-narcissus][UNSTABLE Motivation: extension ad-hoc de Narcissus]]
    - [[#bare-formalisation][BARE Formalisation]]
    - [[#le-problème-de-lexpression][Le problème de l'expression]]
+   - [[#lidée-le-détournement-de-programme][L'idée: le détournement de programme]]
  - [[#travaux-connexes][Travaux connexes]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
@@ -3583,6 +3584,85 @@ d'extension.
 
 ]
 
+
+** L'idée: le détournement de programme
+
+Case study: Narcissus instrumentation.
+
+The goal was to add faceted evaluation to Narcissus.  They went with modifying
+the interpreter all other the place.  You end up with this diagram.
+
+Modifying a program like that does not scale.  It's quick, and it works for this
+case.  But now imagine you want to try another evaluation strategy.  You fork
+the original interpreter and modify it, again.  Now you have 3 variants of the
+interpreter.  And you have a bug that affects all three.  You must now patch the
+bug in all three places.  Doesn't scale.
+
+And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
+You have to create yet another fourth variant.
+
+There's yet another issue: how do you know what part of the code pertains to the
+new evaluation strategy and what part pertains to the original semantics?
+Version control tools can help, but they don't work on the /semantic/ of
+changes, just on lines of code.  A clear distinction in the code helps.
+
+Let me get one thing clear: that's totally fine, especially considering this is
+a research prototype.  Their goal was to apply their evaluation strategy to
+JavaScript, and they succeeded.
+
+But, it got us thinking: how would we do it differently?  Given enough time, how
+would we add faceted evaluation on Narcissus?
+
+Any software engineer would tell you: refactoring.  We have a typical case of a
+program that is being used in ways it what not designed for.  The module pattern
+of JavaScript prevents extension.  This calls for taking into account the new
+use cases and refactor the program.
+
+But refactoring is difficult to get right and time consuming.  We would have to
+think of a new API for extension that would cover all our new use cases.  That
+means gathering these use cases, sketching, etc.  We have to review solutions:
+e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
+is tricky, because we have to make sure we don't alter the functionality of the
+interpreter in doing so.  Maybe this is trivial because we only add code that
+visibly does not change the control flow or breaks any (implicit) assumptions.
+Or maybe this is hard, because we restructure the whole thing to be completely
+extendable.  We can use tests, or rely on types (we have neither here).  We have
+people here in ASCOLA trying to prove refactorings that preserve semantics.
+It's not quite there yet.
+
+And then, maybe down the road you find out that you missed an important use
+case.  And you need to refactor, and do this whole process again.
+
+There is a lightweight alternative to refactoring.  This is what I call
+/diverting/ the program.
+
+This is all based on one phenomenon we are all familiar with: context.  Let's
+forget programming for a moment.  Take the sentence: "I'm defending".  Today,
+you understand perfectly that it means that I am actually defending my PhD
+before you.  But, said by a soldier in a war it could actually mean something
+else.  There is no ambiguity as long as the context is made clear.
+
+We could even go so far as saying that the sentence is a bundle of meaningless
+symbols without the context of an English speaker during a PhD defense.
+
+Back to programming.  Programs have context too.  Like a sentence, the meaning
+of programs is determined by their context.  *Changing the context changes the
+meaning of the program*.
+
+Diverting programs is about changing their behavior without directly changing
+their code.  But there are a couple of hidden assumptions.  The goal is not to
+divert programs because we can, the goal is to divert programs in order to build
+programs incrementally.  We don't go back to the code we want to modify: we add
+modification instead.  Add-only way of programming.
+
+The benefit of add-only is that you have multiple variants of the program on
+hand.  You can toggle variants dynamically.  And you can easily add new ones
+without impacting the others.
+
+The goal is, ultimately, to make programs clearer, to convey their intent as
+directly as possible.  The instrumentation of Narcissus is best defined as a
+/delta/ from the base interpreter.  It follows that the code should also be
+expressed as a delta.
 
 * Travaux connexes
 ** Les mécanismes de recomposition du programme
