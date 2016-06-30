@@ -37,8 +37,13 @@ different person then.'
    - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
+ - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
+   - [[#unstable-préliminaires-code-source-processus-et-spécification][UNSTABLE Préliminaires: code source, processus, et spécification]]
+   - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
+   - [[#bare-modifier-un-programme-sans-modifier-son-code-source][BARE Modifier un programme sans modifier son code source]]
+   - [[#le-problème-de-lexpression][Le problème de l'expression]]
+   - [[#lidée-le-détournement-de-programme][L'idée: le détournement de programme]]
  - [[#contexte][Contexte]]
-   - [[#unstable-de-lexécution-du-programme-au-code-source][UNSTABLE De l'exécution du programme au code source]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
    - [[#stable-modéliser-le-monde-la-programmation-par-objets][STABLE Modéliser le monde: la programmation par objets]]
      - [[#classes-et-héritage-smalltalk][Classes et héritage: Smalltalk]]
@@ -64,11 +69,6 @@ different person then.'
      - [[#stable-la-théorie-de-naur-derrière-le-programme][STABLE La théorie de Naur derrière le programme]]
        - [[#conclusions-1][Conclusions]]
      - [[#notion-of-modularity][Notion of modularity]]
- - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
-   - [[#unstable-motivation-extension-ad-hoc-de-narcissus][UNSTABLE Motivation: extension ad-hoc de Narcissus]]
-   - [[#bare-formalisation][BARE Formalisation]]
-   - [[#le-problème-de-lexpression][Le problème de l'expression]]
-   - [[#lidée-le-détournement-de-programme][L'idée: le détournement de programme]]
  - [[#travaux-connexes][Travaux connexes]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#bare-le-problème-de-lexpression][BARE Le problème de l'expression]]
@@ -253,18 +253,23 @@ mais que c'est en désaccord avec une autre propriété importante: la sûreté.
   - Travail sur le code source, l'éditeur de programmes, les outils du programmeur
 
 ** Survol
+* Le problème: étendre des interpréteurs
+:PROPERTIES:
+:CUSTOM_ID: problem
+:END:
+** UNSTABLE Préliminaires: code source, processus, et spécification
+Il faut distinguer le code source d'un programme et le processus que le code
+source engendre.  Le /code source/ est l'ensemble des fichiers de texte écrit
+par le programmeur.  Le /processus/ est l'action entreprise par la machine
+lorsqu'elle exécute le code source.  On peut considérer que le code décrit un
+ordre, et la machine exécute cet ordre.  Quand on parle de /programme/, on
+désigne à la fois le code source et le processus.
 
-* Contexte
-Une chronologie de la modularité pour construire et faire évoluer des logiciels,
-centrée sur les langages de programmations.
-
-** UNSTABLE De l'exécution du programme au code source
-Pour modifier l'exécution d'un programme, il est bon de savoir /comment/ le
-programme est exécuté par la machine.  Du point de vue de la machine, un
-programme est une simple liste d'instructions.  Une séquence d'additions, de
-soustractions, d'écritures et lectures mémoire, et de sauts conditionnels.  Ces
-instructions sont présentées à la machine sous la seule forme que son processeur
-est capable de manipuler: le binaire, une suite de zéros et de uns.
+Du point de vue de la machine, un programme est une simple liste d'instructions.
+Une séquence d'additions, de soustractions, d'écritures et lectures mémoire, et
+de sauts conditionnels.  Ces instructions sont présentées à la machine sous la
+seule forme que son processeur est capable de manipuler: le binaire, une suite
+de zéros et de uns.
 
 #+BEGIN_aside
 Un programme (extrait; point de vue d'une machine x86).  Un /bit/ correspond à
@@ -276,20 +281,19 @@ une seule valeur binaire: 0 ou 1.
 #+END_EXAMPLE
 
 Le programme est alors exécuté instruction par instruction.  La machine lit une
-instruction, puis effectue l'opération correspondante ; elle charge
-l'instruction suivante, la lit, effectue l'opération, charge, lit, effectue,
-etc.  Cette monomanie contribue à l'utilité que nous trouvons à la machine, car
-son processeur agit certes simplement, mais il agit /vite/.  N'importe quel
+instruction, puis effectue l'opération correspondante; elle charge l'instruction
+suivante, la lit, effectue l'opération, charge, lit, effectue, etc.  Cette
+monomanie contribue à l'utilité que nous trouvons à la machine, car son
+processeur agit certes simplement, mais il agit /vite/.  N'importe quel
 processeur actuel est capable d'effectuer plusieurs milliards d'opérations par
 seconde.  La machine ne différencie donc pas un programme d'un autre; tous se
 mêlent en une immense suite binaire.
 
 Le programmeur en revanche cherche à structurer cette suite de nombres.  Une
 suite infinie de zéros et de uns est difficile à appréhender pour un cerveau
-humain; il lui faut des repères, découper le programme en unités plus
-digestibles par nos facultés organiques.  Un programmeur manipule donc rarement
-des bits afin de déclarer ses intentions à la machine; il utilise plutôt un
-langage de programmation.
+humain; il lui faut des repères, des unités plus digestibles par nos facultés
+organiques.  Un programmeur manipule donc rarement des bits afin de déclarer ses
+intentions à la machine; il utilise plutôt un langage de programmation.
 
 #+CAPTION: Un programme (point de vue d'un programmeur connaissant le langage
 #+CAPTION: JavaScript, vers 2015).
@@ -314,13 +318,13 @@ pas un critère suffisant pour être un langage /utile/.
 Dans les langages de programmation /exotériques/, un programme est constitué
 principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
 permutations judicieuses, nous servent à /nommer/ les objets de la computation
-tels que les variables et constantes, les fonctions, les classes et autres
+tels que les variables, les constantes, les fonctions, les classes et autres
 structures.  Les mots sont plus facilement prononçables, davantage mnémoniques,
 et peuvent surtout communiquer l'intention du programmeur par homonymie.  On
 peut ainsi, simplement en suivant les mots, supposer que le code [[fib]] calcule et
-affiche le onzième nombre de la suite de Fibonacci, sans être vraiment certain
-de la sémantique de JavaScript.  Les mots /évoquent/ immédiatement du sens alors
-que les nombres doivent être décodés.
+affiche le onzième nombre de la suite de Fibonacci, sans être familier avec le
+langage de programmation utilisé.  Les mots /évoquent/ immédiatement du sens
+alors que les nombres doivent être décodés.
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+ATTR_LATEX: :options [-5em]
@@ -335,58 +339,115 @@ Mais, si le programme ainsi décrit est plus confortable pour le programmeur, il
 est incompréhensible par la machine en tant que tel.  Il faut au préalable
 /traduire/ ce programme en code machine avant de pouvoir l'exécuter.  L'analogie
 avec les langues naturelles est pertinente; si je souhaite communiquer le
-contenu de ce manuscrit de thèse à des non-francophones, soit je rédige une
+contenu de ce document de thèse à des non-francophones, soit je rédige une
 nouvelle version dans une langue qu'ils parlent (écrire le programme en langage
 machine), soit j'emploie les services d'un traducteur.  Heureusement, la
 traduction d'un programme est une tâche moins hasardeuse que la traduction d'un
 document en langue naturelle.  Les langages de programmation sont définis de
-façon à éliminer toute ambiguïté d'interprétation, ce qui permet d'effectuer la
-traduction en langage machine automatiquement.
+façon à éliminer toute ambiguïté, ce qui permet d'effectuer la traduction en
+langage machine automatiquement.
 
 #+ATTR_HTML: :style margin-top:-7rem
 #+ATTR_LATEX: :options [-7em]
 #+BEGIN_aside
 Une troisième option serait que les non-francophones apprennent le français pour
 lire ce manuscrit.  En suivant l'analogie, cela correspond à une machine qui
-exécuterait directement un programme JavaScript.  Les deux situations sont
-également improbables.
+exécuterait directement un programme JavaScript.  Bien que techniquement
+possibles, les deux situations sont également improbables.
 #+END_aside
 
-C'est le /compilateur/ qui traduit des programmes d'un langage de programmation
-vers le langage machine.  Le compilateur lit le texte brut décrivant le
-programme, vérifie que ce texte est conforme aux règles syntaxiques du langage
-qu'il traduit, puis applique les règles de traduction en langage machine.  Un
-compilateur permet donc au programmeur d'obtenir un programme exécutable par la
-machine à partir de code écrit dans le langage de son choix.
-
-# #+CAPTION: Le compilateur lit le programme, en extrait la structure, et produit
-# #+CAPTION: du code machine.
-# #+BEGIN_SRC dot :file img/compile-pipeline.png
-# digraph {
-#   rankdir=LR;
-#   node [shape=record];
-#   source [label = "print(1 + 1)"];
-#   lex [label = "_print_ ( _1_ _+_ _1_ )"];
-#   ast [label = "body { call { print, add { 1, 1 }}}"];
-#   asm [label = "lda 1 - add 1 - psh - call $a0 - ... "];
-#   bin [label = "0101011101..."];
-#   source -> lex -> ast -> asm -> bin;
-# }
-# #+END_SRC
+Le /compilateur/ traduit les programmes d'un langage de programmation vers le
+langage de la machine.  Le compilateur lit le texte du code source, vérifie que
+ce texte est conforme aux règles syntaxiques du langage qu'il traduit, puis
+applique les règles de traduction en langage machine.  Un compilateur permet
+donc au programmeur d'obtenir un programme exécutable par la machine à partir de
+code écrit dans le langage de son choix.  Le programmeur peut manipuler des
+mots, et la machine du binaire.
 
 Notons que la compilation n'attache aucun sens particulier aux noms choisis par
-le programmeur.  On pourrait écrire le programme de [[fib]], de manière totalement
-équivalente:
+le programmeur.  On aurait pu écrire le programme de [[fib]] ainsi:
 
 #+BEGIN_SRC js
 function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
 #+END_SRC
 
+#+RESULTS:
+
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
 À ce titre, les archives du concours international d'obfuscation de code C [[cite:IOCCC][IOCCC]]
-recèlent d'exemples à suivre pour mystifier tout collaborateur.
+recèlent d'exemples à suivre pour mystifier tout collaborateur.  Le standard
+Unicode offre également de nouvelles opportunités (voir, par exemple, Mimic
+[[cite:Mimic][Mimic]]).
 #+END_aside
+
+Ou, à l'extrême:
+
+#+BEGIN_aside
+Cet extrait vous est offert par JSFuck [[cite:jsfuck][jsfuck]].
+#+END_aside
+
+#+BEGIN_EXAMPLE
+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]
+...28379 caractères plus loin...
+[+!+[]]])[!+[]+!+[]+[+[]]])()
+#+END_EXAMPLE
+
+Ces trois programmes ont trois codes sources différents, et chaque code source
+engendre un processus légèrement différent (le dernier sera légèrement plus long
+à l'exécution).  Pourtant, on considère qu'ils sont équivalents, car tous les
+trois calculent bien le onzième nombre de la suite de Fibonacci.  Dans ce cas,
+le processus effectué par la machine ne nous intéresse pas dans son intégralité,
+seul son résultat importe.  On ne souhaite pas savoir le nombre d'instructions
+supplémentaires le troisième programme requiert, ni le nombre de registres qu'il
+utilise, ni le nombre de défauts de cache qu'il cause.  On cherche à comparer le
+/résultat/ du programme observable par l'utilisateur.  Ici, quand on exécute
+chacun des trois programmes, l'interpréteur JavaScript affiche 89; les
+programmes ont donc le même résultat.
+
+Le résultat est la partie du processus qui nous intéresse à un moment donné.
+Parfois on s'intéresse à ce que le programme affiche à l'écran, ou aux sons
+qu'il émet à travers les enceintes.  Et parfois on cherche à comparer deux
+programmes qui ont le même résultat mais qui n'ont pas la même durée
+d'exécution, ou la même consommation mémoire.  On distingue alors le résultat du
+programme de son /efficacité/.  Le résultat est sa fonction principale, ce qu'il
+fait; le résultat ne dépend en général pas des spécificités de la machine
+utilisée.  L'efficacité du programme c'est /comment/ le programme calcule son
+résultat; la machine peut avoir une grande influence sur l'efficacité.
+
+#+BEGIN_aside
+On improvise plus difficilement un programme qu'un morceau de guitare.
+Il existe cependant des environnements de programmation qui facilitent
+l'improvisation [[cite:sonicpi][sonicpi]] [[cite:BFd+13][BFd+13]].
+#+END_aside
+
+Enfin, il y a le résultat obtenu, et il y a le résultat attendu.  Le programmeur
+élabore le programme avec une idée en tête de son résultat, une intention.
+
+C'est qu'il y
+a une autre facette à un programme: sa /spécification/.  Ici, la
+spécification est: "afficher le onzième nombre de la suite de Fibonacci".  Les
+trois programmes sont équivalents car ils obéissent Les trois programmes
+obéissent donc à cette spécification.  processus pour calculer une /fonction
+mathématique/.
+
+specification is not complete (otherwise it would be the program)
+
+source code is deterministic: code -> processus -> result
+
+but the task of the programmer is not:
+
+result <- multiple processes <- multiple programs
+
+there's a whole design space for achieving the goal
+
+tool chain, programming languages, paradigms, algorithms, names, ...
+
+the programmer is satisfîmes multiple goals: correctness first, but also
+efficiency, and readability, maintainability...
+
+that's where we come in: we explore the design space, and report on the
+strengths and weaknesses of techniques for given applications.
 
 # Structures do not count (modules, classes, files).  Structure is for humans.
 
@@ -399,48 +460,642 @@ indépendantes.
 
 # Other structures, classes, modules
 
-# #+BEGIN_SRC dot :file img/bg-map.png
-# digraph {
-#   rankdir=LR;
-#   node [shape=record];
-#   source [label = "Code source"];
-#   box [label = "Magie"];
-#   effects [label = "Effets"];
-#   source -> box -> effects;
-# }
-# #+END_SRC
+interpreter is like a compiler, but executes the code immediately instead of
+producing a binary.
 
-# #+RESULTS:
-# [[file:img/bg-map.png]]
+** UNSTABLE Étude de cas: extension ad-hoc de Narcissus
+Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
+[[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
+utilise l'environnement hôte pour son implémentation (p.ex., l'objet ~String~
+exposé au code client n'est pas réimplémenté par Narcissus, mais est une simple
+façade de l'objet ~String~ hôte).  Narcissus est une implémentation relativement
+légère (environ 6000 lignes de code) du standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet
+de rapidement prototyper des fonctionnalités expérimentales pour le langage.
 
-# #+BEGIN_SRC dot :file img/bg-map2.png
-# digraph {
-#   rankdir=LR;
-#   node [shape=record];
-#   source [label = "Code source"];
-#   box [label = "Interpréteur"];
-#   effects [label = "Effets"];
-#   source -> box -> effects;
-# }
-# #+END_SRC
+En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
+analyse d'évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
+d'information qui permet à une valeur d'être étiquetée par une autorité qui a
+des droits d'écriture et de lecture pour cette valeur.  Lorsqu'une valeur
+étiquetée est utilisée dans une expression, son étiquette est propagée au
+résultat de l'expression, ce qui préserve les permissions de l'autorité sur le
+résultat.  Dans l'analyse multi-facettes, chaque valeur étiquetée a deux
+facettes: une facette contient la valeur "privée" à destination de l'autorité,
+une autre facettes contient la valeur "publique" destinée à des observateurs
+tiers non autorisés.  Dans une expression, les facettes sont toutes deux
+évaluées en même temps afin de produire les deux facettes du résultat.  Afin de
+suivre les étiquettes même lors de branchements (des flots /indirects/),
+l'évaluation multi-facettes maintient une liste des embranchements suivis lors
+de l'exécution; cette liste est appelée /program counter/ (PC).
 
-# #+RESULTS:
-# [[file:img/bg-map2.png]]
+#+ATTR_HTML: :style margin-top:-12rem
+#+BEGIN_side-figure
+[[file:img/a-facet.svg]]
 
-# #+BEGIN_SRC dot :file img/bg-map3.png
-# digraph {
-#   rankdir=LR;
-#   node [shape=record];
-#   source [label = "Code source"];
-#   box [label = "Compilateur"];
-#   bin [label = "Binaire"];
-#   effects [label = "Effets"];
-#   source -> box -> bin -> effects;
-# }
-# #+END_SRC
+Une valeur à deux facettes.
+#+END_side-figure
 
-# #+RESULTS:
-# [[file:img/bg-map3.png]]
+Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
+fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
+facettes avec une valeur privée ~true~ et une valeur publique ~false~ (qu'on
+écrit ~true:false~), alors le premier ~if~ sera exécuté deux fois: une fois pour
+chaque facette de la condition.  Après le second ~if~, la fonction retourne la
+valeur ~true:false~.  Un observateur non autorisé n'a accès qu'à la valeur
+publique du résultat, et n'est donc pas capable d'inférer la valeur privée de
+~x~, même à travers un flot indirect d'information.
+
+#+ATTR_HTML: :style margin-top:-13rem
+#+BEGIN_side-figure
+[[file:img/fenton-example.svg]]
+#+END_side-figure
+
+Pour donner une idée de l'échelle du projet, Narcissus fait 6000 lignes de code,
+et les deux plus gros fichiers sont le parseur (1600 lignes) et le fichier
+principal de interpréteur, "jsexec" (1300 lignes).  Ce fichier principal
+contient la logique pour interpréter des arbres de syntaxe abstraits, et pour
+mettre en place l'environnement d'exécution des programmes clients.  Les
+changements effectués pour l'implémentation de l'évaluation multi-facettes sont
+restreints à ce fichier principal; 640 lignes sont affectées, soit la moitié.
+
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+On compte les lignes de code physiques, commentaires inclus mais sans compter
+les lignes vides.
+#+END_aside
+
+Pour réaliser l'instrumentation de Narcissus pour l'évaluation multi-facettes,
+les auteurs ont modifié directement le code source de l'interpréteur Narcissus.
+On peut obtenir l'ensemble des changements effectués en extrayant un /diff/ des
+deux versions.  La figure [[visual-narcissus-diff]] donne une vue d'ensemble des
+changements.
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]] et
+[[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
+#+END_aside
+
+#+NAME: visual-narcissus-diff
+#+CAPTION: Visualisation des modifications apportées par l'instrumentation de
+#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Le diff de "jsexec" y
+#+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
+#+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
+#+CAPTION: partie.  Les lignes grises ne sont pas affectées par
+#+CAPTION: l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
+[[file:img/narcissus-diff.svg]]
+
+On constate immédiatement que les changements effectués par l'instrumentation
+touchent de nombreuses parties du code de l'interpréteur, sans être restreints à
+une ou deux régions particulières.  Les changements sont *éparpillés* dans le
+code.  De plus, les changements de même nature—appartenant à la même
+catégorie—ne sont pas regroupés.  Résultat, il devient difficile de comprendre
+les effets de l'instrumentation à l'œil nu, ou de s'assurer de sa justesse par
+rapport à une spécification formelle.  Il devient difficile également, sans
+connaissances avancées de Narcissus et de l'évaluation multi-facettes, de savoir
+si une ligne de code de l'interpréteur instrumenté concerne l'interprétation
+décrite par le standard ECMAScript, ou si elle concerne l'évaluation
+multi-facettes.  Le code de l'interpréteur instrumenté ne comporte aucune
+information qui permet de les distinguer.
+
+Autre point important: l'instrumentation *duplique tout le code* de
+l'interpréteur.  C'est une solution simple pour créer un interpréteur qui
+supporte l'évaluation multi-facettes.  En revanche, la duplication de code a un
+impact important sur la maintenance à long terme: plus de double du code doit
+être maintenu.  Les changements requis dans le code source pour corriger un bug
+dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
+répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
+lorsque /plusieurs/ instrumentations sont envisagées.
+
+En observant le diff de plus près, on peut distinguer quatre catégories de
+changements: les imports/exports, l'ajout du paramètre /program counter/,
+séparer l'évaluation des valeurs à facettes, et les ajouts à l'objet ~global~.
+
+De nouvelles définitions ont besoin d'être importées dans le module de
+l'interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
+ajouts qui sont localisés en début et en fin de fichier respectivement.  Voici
+comment ils se présentent dans le code:
+
+#+BEGIN_SRC diff
++ var FacetedValue = Zaphod.facets.FacetedValue;
++ var ProgramCounter = Zaphod.facets.ProgramCounter;
+...
+
+-      test: test
++      test: test,
++      getPC: getGC
+#+END_SRC
+
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_aside
+Le symbole ~-~ marque une ligne supprimée de l'interpréteur; le symbole ~+~
+marque une ligne ajoutée par l'instrumentation.  L'absence de marque indique une
+ligne commune aux deux versions.
+#+END_aside
+
+Les changements effectués pour accommoder le /program counter/ utilisé par
+l'analyse.  D'abord, le constructeur de l'objet ~ExecutionContext~ est étendu
+pour accepter un argument supplémentaire: la valeur courante du /program
+counter/, ~pc~.  Voici un extrait du diff qui illustre ce
+changement:
+
+#+BEGIN_SRC diff
+- function ExecutionContext(type, version) {
++ function ExecutionContext(type, pc, version {
++   this.pc = pc;
+#+END_SRC
+
+Dans Narcissus, une instance de l'objet ~ExecutionContext~ est créée lorsque le
+contrôle est transféré à du code client exécutable: lors de l'entrée dans une
+fonction, lors d'un appel à ~eval~, ou lors de l'exécution d'un programme
+entier.  L'objet ~ExecutionContext~ contient les variables importantes pour
+l'exécution du code; en particulier l'environnement lexical utilisé pour
+résoudre les noms de variables du code exécuté par ce contexte.  L'objet
+~ExecutionContext~ est une réification du concept éponyme de la spécification
+ECMAScript.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+Voir la section 10.3 de la spécification.
+#+END_aside
+
+Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
+appels doivent être modifiés en conséquence pour fournir une valeur correcte
+pour le paramètre /program counter/.  Il y a plus de 80 instances de ce simple
+changement dans l'instrumentation.  En voici deux exemples:
+
+#+BEGIN_SRC diff
+- x2 = new ExecutionContext(MODULE_CODE);
++ x2 = new ExecutionContext(MODULE_CODE, x.pc);
+
+- getValue(execute(n.children[0], x));
++ getValue(execute(n.children[0], x), pc);
+#+END_SRC
+
+Les changements effectués dans l'exécution de l'arbre de syntaxe abstrait (AST)
+pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
+additionner deux valeurs à facettes devrait produire une nouvelle valeur à
+facettes.  Dans l'implémentation, plutôt que de simplement additionner les deux
+opérandes, l'interpréteur doit maintenant d'abord inspecter l'opérande gauche,
+et si c'est une valeur à facettes, il faudra ajouter la valeur de l'opérande
+droite à chaque facette.  Bien sûr, l'opérande droite peut également être une
+valeur à facettes, et il faut alors séparer l'évaluation à nouveau.
+L'interpréteur Narcissus ne contient aucun code pour gérer l'addition de deux
+valeurs à facettes, donc l'instrumentation doit ajouter la logique nécessaire.
+Pour ce faire, chaque évaluation d'une opération est enrobée dans un appel à la
+fonction ~evaluateEach~ qui teste si une valeur est à facettes, et appelle
+récursivement la fonction d'évaluation sur chaque facette si c'est le cas.  25
+appels à ~evaluateEach~ ont été ainsi ajoutés dans l'instrumentation.  Le code
+suivant donne la forme générale de ces changements:
+
+#+BEGIN_SRC diff
+- var v = getValue(node.a)
++ evaluteEach(getValue(node.a), function(v,x) {
+    ... do something with v ...
++ }
+#+END_SRC
+
+À la première ligne on récupère une valeur d'un nœud de l'AST (p.ex., l'opérande
+gauche d'une assignation, ou la condition d'un ~if~) puis on fait quelque chose
+avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
+fois on /sépare/ l'évaluation en appelant ~evaluateEach~ avec cette valeur comme
+premier argument, et comme second une fonction qui opère sur une valeur simple.
+
+Les changements effectués sur l'environnement d'exécution de code client.  Dans
+un programme JavaScript, l'environnement d'exécution fournit un objet ~global~
+qui contient les définitions de base comme ~Array~, ~Math~, ~String~ et
+~Object~.  Puisque Narcissus est métacirculaire, il réutilise l'objet global de
+son environnement hôte pour construire l'objet global de l'environnement client.
+Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
+~globalBase~ avec les propriétés qui surchargeront celle de l'environnement
+hôte.  Deuxièmement, il crée un objet ~global~ client à partir de l'objet
+~global~ de son environnement hôte, et met toutes les propriétés de ~globalBase~
+dans cet objet ~global~ client.  Troisièmement, il ajoute à cet objet ~global~
+client les versions réfléchies de certains objets de base (~Array~, ~String~,
+~Function~).
+
+L'instrumentation de l'évaluation multi-facettes enrichit l'objet ~global~
+client en ajoutant 50 propriétés à ~globalBase~, comme la suivante:
+
+#+BEGIN_SRC diff
+   var globalBase = {
+   ...
++  isFacetedValue: function(v) {
++    return (v instanceof FacetedValue);
++  },
+#+END_SRC
+
+L'instrumentation change également la propriété ~String~ de ~globalBase~ pour
+suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
+caractères.
+
+Le fait que la plupart des changements appartiennent à une de ces quatre
+catégories indique qu'il y a un potentiel de factorisation.  Si l'on souhaite
+rendre Narcissus extensibles, afin de pouvoir définir l'évaluation
+multi-facettes sans duplication de code, il faut trouver des façons d'exprimer
+les changements de ces quatre catégories.  Mais si nous souhaites exprimer
+d'autres analyses, et étendre d'autres interpréteurs, il faut tenter des trouver
+des mécanismes génériques qui pourront être réemployés pour ces autres cas.
+
+Pour prendre un peu de recul par rapport à l'instrumentation de Narcissus, on
+peut s'intéresser à la définition formelle de l'évaluation multi-facettes.
+Celle-ci est donnée sous forme d'une sémantique opérationnelle d'un langage
+proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d'abord donnée
+sans considérer l'évaluation multi-facettes, et suit une définition usuelle d'un
+lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
+références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
+JavaScript.
+
+Dans un second temps, une sémantique alternative est présentée qui introduit les
+changements nécessaires pour l'évaluation multi-facettes.  Il s'agit d'une copie
+de la première sémantique, avec quelques changements et ajouts.  On y retrouve
+les deux des quatre catégories de changements dégagées du diff.  Le /program
+counter/ accompagne chaque règle d'évaluation, et de nouvelles règles sont
+ajoutées pour séparer l'évaluation de valeurs à facette en deux parties.
+
+Les règles de la sémantique instrumentées tiennent sur une page; un
+interpréteur pour cette sémantique est donc considérablement plus petit qu'un
+interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
+des mécanismes d'extensibilité.
+
+** BARE Modifier un programme sans modifier son code source
+Pour ajouter l'évaluation multi-facettes à l'interpréteur, modifier directement
+son code source est l'approche la plus simple.  L'inconvénient majeur de cette
+approche est qu'elle ne passe pas à l'échelle.  Il y-a-t'il d'autres façons
+d'étendre l'interpréteur qui n'ont pas ces inconvénients?
+
+Conceptuellement,
+
+Spec -change-> Spec'
+
+A change adds a variation to the Spec of the program.  If we have a formal spec,
+we can apply this change on it and have a changed spec.  Change is the delta
+between the two specs.
+
+The program is implemented.  We have some code that generates a runtime process
+that behaves according to the spec.
+
+Spec -> Code -> Program -> Spec
+
+The change causes a change in Code.  Interestingly, a small change in Spec can
+have a large impact on Code.
+
+One the goal of the programmer is to make sure the program is correct: acts
+according to the spec.  The programmer writes Code, to create Program.  When a
+change of Spec arises, it's best if the change to Code is self-contained.
+
+The question is then: how to minimize the impact of change?  How to construct
+Code to minimize impact?  What patterns to use?  Do languages make a difference?
+
+Spec changes can be anticipated, or not.  Anticipated Spec changes can be
+factored into Code design.  Unanticipated Spec changes cannot; they might have a
+small or large impact, depending.
+
+We are not tacking just any Program or Spec, but interpreters.  And a specific
+kind of change: adding analyses.  How is that more specific?
+
+Some solutions will be specific to that use case.  Some will apply to any
+program.  Lessons learned will be valuable for all.
+
+** Le problème de l'expression
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Slightly incomplete without the OO solution, but this was already described in
+the Hyper/J section.  Might merge, might cut altogether.
+#+END_aside
+
+Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
+nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
+
+#+BEGIN_aside
+Les deux contraintes de recompilation et de typage statique ne sont pas
+nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
+difficile, mais l'extension d'interpréteur est avant tout un problème
+d'extensibilité, et s'applique aussi bien à des langages interprétés (non
+compilés), et typés dynamiquement.
+#+END_aside
+
+#+BEGIN_QUOTE
+The Expression Problem is a new name for an old problem.  The goal is to define
+a datatype by cases, where one can add new cases to the datatype and new
+functions over the datatype, without recompiling existing code, and while
+retaining static type safety (e.g., no casts).
+#+END_QUOTE
+
+Dans un langage fonctionnel, une façon courante d'implémenter un interpréteur
+est en utilisant un /{{{adt}}}/ pour représenter les termes.  En Haskell par
+exemple, on définit un simple langage arithmétique par le type algébrique
+suivant:
+
+#+BEGIN_SRC haskell
+data Term = Constant Int
+          | Plus Term Term
+          | Mult Term Term
+#+END_SRC
+
+~Term~ est un type qui a trois variantes: un terme est soit une constante
+(~Constant~, un entier), une addition (~Plus~), ou une multiplication.
+
+La syntaxe du type algébrique correspond à la façon usuelle de définir des
+grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
+pourrait être:
+
+#+BEGIN_EXAMPLE
+<term> ::= <int> | <term> + <term> | <term> * <term>
+<int>  ::= 0 | 1 | 2 ...
+#+END_EXAMPLE
+
+Ici encore, un terme a trois variantes.  L'addition et la multiplication
+contiennent d'autres termes, et la variante constante ne contient qu'un nombre
+terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
+rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
+de programmation étant souvent définies par une BNF, le type algébrique est la
+solution la plus évidente pour les représenter.
+
+~Constant~, ~Plus~ et ~Mult~ sont les /constructeurs/ du type ~Term~, qui
+permettent de créer des expressions du langage.  L'expression 2 + 5 * 3 sera
+construite par:
+
+: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+AST illustration
+#+END_aside
+
+Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
+{{{ast}}} de cette expression.
+
+Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
+produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Dans
+la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
+on parlera plutôt d'/opérations/.
+
+La principale est l'opération d'évaluation qui donne un sens à chaque terme du
+langage.  Par exemple, on souhaite évaluer les expressions de notre langage
+arithmétique en suivant le sens usuel de l'addition et de la multiplication
+d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
+obtenir des entiers, puis on les additionne.  En Haskell, on écrira l'évaluation
+en traitant les trois variantes séparément, par /pattern matching/:
+
+#+BEGIN_SRC haskell
+eval :: Term -> Int
+eval (Constant n) = n
+eval (Plus t1 t2) = eval t1 + eval t2
+eval (Mult t1 t2) = eval t1 * eval t2
+#+END_SRC
+
+La première ligne donne le type de l'opération: elle consomme un terme pour
+produire un entier.  Chaque variante de terme est traitée explicitement sur
+chaque ligne.  On remarque que l'évaluation est récursive pour ~Plus~ et
+~Mult~.  La définition du type algébrique l'était déjà: ~Term~ est utilisé dans
+sa propre définition.  Les grammaires de langage sont souvent récursives, pour
+permettre la construction de grandes expressions à partir de simples éléments.  Même
+un langage aussi simple que celui-ci exhibe cette récursion.
+
+On peut maintenant évaluer l'expression 2 + 5 * 3:
+
+: > eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: 17
+
+Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
+/pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
+sortie est plus amicale pour l'œil humain.  Typiquement, le pretty printer d'un
+langage transforme l'arbre syntaxique en code source que le programmeur a
+l'habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
+le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot ~Constant~
+qui n'apporte pas d'information capitale.
+
+#+BEGIN_SRC haskell
+pp :: Term -> String
+pp (Constant n) = show n
+pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
+pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
+#+END_SRC
+
+#+BEGIN_aside
+On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
+#+END_aside
+
+Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
+
+: > pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: 2 + 5 * 3
+
+L'implémentation de l'affichage a la même structure que de l'implémentation de
+l'évaluation.  On traite les trois variantes du type algébrique dans trois
+lignes différentes.  Les deux variantes ~Plus~ et ~Mult~ sont définies
+récursivement, mais pas la variante ~Constant~, qui est un terminal dans la
+grammaire.  L'opération traite l'arbre syntaxique en partant de la racine, puis
+s'applique récursivement sur les nœuds de l'arbre jusqu'aux feuilles.  Ce
+processus, commun aux interpréteurs, est parfois appelé une /descente
+récursive/.
+
+Dans le problème de l'expression, on cherche à étendre le langage et son
+interpréteur de deux façons: en rajoutant des nouveaux termes au langage, et en
+rajoutant de nouvelles opérations.
+
+Avec ~pp~, on a déjà vu comment ajouter une nouvelle opération à l'interpréteur:
+il suffit de définir son comportement pour toutes les variantes des termes du
+langage.  ~Term~ a 3 variantes, donc ~pp~ définit 3 cas.  Notons aussi que pour
+ajouter l'opération il suffit d'/ajouter/ du code à l'interpréteur.  Aucune
+modification au code existant n'est requise.  C'est une distinction importante,
+car il est souvent plus facile d'ajouter du code que de modifier du code
+existant.
+
+On peut caractériser la complexité d'un changement de l'interpréteur comme la
+complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
+de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes, une
+opération aura une complexité de l'ordre de /v/ lignes de code (O(v)).  On note
+que ces lignes sont des additions par un '+': +O(v).
+
+#+BEGIN_aside
+On notera les lignes qui modifient une définition existante par '~', et les
+lignes supprimées par un '-'.
+#+END_aside
+
+Étendre le langage demande de modifier le code existant.  Si on veut rajouter un
+terme pour la soustraction, il faut commencer par étendre le type algébrique
+~Term~:
+
+#+BEGIN_SRC haskell
+data Term = Constant Int
+          | Plus Term Term
+          | Mult Term Term
+~         | Minus Term Term
+#+END_SRC
+
+C'est une ligne de code ajoutée.  Mais c'est surtout une /redéfinition/ du type
+algébrique.  Typiquement, ajouter une variante induit une recompilation.  On
+compte donc cette ligne comme une modification, et non un simple ajout.
+
+Mais il faut aussi traiter cette nouvelle variante dans les opérations
+existantes:
+
+#+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
+#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
+#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
+#+CAPTION: (à droite) nécessite de modifier toutes les opérations.
+[[file:img/expr-pb-1.svg]]
+#+END_side-figure
+
+#+BEGIN_SRC haskell
+  eval :: Term -> Int
+~ eval (Minus t1 t2) = eval t1 - eval t2
+
+  pp :: Term -> String
+~ pp (Minus t1 t2) = pp t1 ++ " - " ++ pp t2
+#+END_SRC
+
+Au total, si on a ~p~ opérations dans l'interpréteur, le changement a une
+complexité de ~O(p).
+
+Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
+une opération et ajouter un terme ne sont pas des changements similaires pour
+autant.  Ajouter un terme demande de /modifier/ des définitions existantes dans
+l'interpréteur, alors que pour ajouter une opération il suffit d'adjoindre une
+nouvelle fonction.
+
+Le problème de l'expression touche à la fois à la modularité et à
+l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
+l'interpréteur.  Et à la modularité, parce que les termes et les opérations
+peuvent être considérés comme des /unités/ indépendantes, des modules.  Pour
+respecter la modularité, on cherche à ce que chaque extension soit restreinte à
+un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
+un module sans affecter les autres, mais ajouter un terme requiert de modifier
+plusieurs modules.
+
+#+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les termes contiennent le code des
+#+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
+#+CAPTION: mais ajouter une opération nécessite de modifier tous les termes.
+[[file:img/expr-pb-0.svg]]
+#+END_side-figure
+
+Le problème n'est pas exclusif à Haskell.  Dans [[#hyperj]], on a vu exactement la
+situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
+fois chaque terme était représenté par un objet qui encapsulait les définitions
+des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
+ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
+faillait modifier tous les objets des termes existants.  Le choix de l'unité
+principale de décomposition (termes ou opérations), favorise l'un ou l'autre
+type d'extension.
+
+#+ATTR_HTML: :style margin-top:4rem
+#+BEGIN_side-figure
+#+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
+#+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
+#+CAPTION: revient à définir une arête dans le graphe ({{{color(c0)}}}).
+#+CAPTION: L'implémentation détermine juste comment cette arête est définie dans
+#+CAPTION: le programme.
+[[file:img/expr-pb-2.svg]]
+#+END_side-figure
+
+Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
+l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
+Haskell (et autres langages de la famille de ML), tandis que la décomposition
+par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
+la façon dont l'interpréteur est construit, un langage peut supporter l'une ou
+l'autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
+solutions proposées au problème de l'expression nécessitent rarement un nouveau
+langage, mais exploitent plutôt les mécanismes existants d'une nouvelle façon.
+
+Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
+aident à résoudre le problème de l'expression sont des mécanismes qui /a priori/
+facilitent l'extension de l'interpréteur.  Peut-être que certains de ces
+mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
+Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
+d'extension.
+
+[
+
+- Different from /instrumentation/ which modifies existing terms and operations.
+
+]
+
+** L'idée: le détournement de programme
+Le but de l'extension de Narcissus était d'ajouter l'évaluation à facettes.  Les
+auteurs ont choisi de modifier directement le code source de l'interpréteur
+
+Case study: Narcissus instrumentation.
+
+The goal was to add faceted evaluation to Narcissus.  They went with modifying
+the interpreter all other the place.  You end up with this diagram.
+
+Modifying a program like that does not scale.  It's quick, and it works for this
+case.  But now imagine you want to try another evaluation strategy.  You fork
+the original interpreter and modify it, again.  Now you have 3 variants of the
+interpreter.  And you have a bug that affects all three.  You must now patch the
+bug in all three places.  Doesn't scale.
+
+And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
+You have to create yet another fourth variant.
+
+There's yet another issue: how do you know what part of the code pertains to the
+new evaluation strategy and what part pertains to the original semantics?
+Version control tools can help, but they don't work on the /semantic/ of
+changes, just on lines of code.  A clear distinction in the code helps.
+
+Let me get one thing clear: that's totally fine, especially considering this is
+a research prototype.  Their goal was to apply their evaluation strategy to
+JavaScript, and they succeeded.
+
+But, it got us thinking: how would we do it differently?  Given enough time, how
+would we add faceted evaluation on Narcissus?
+
+Any software engineer would tell you: refactoring.  We have a typical case of a
+program that is being used in ways it what not designed for.  The module pattern
+of JavaScript prevents extension.  This calls for taking into account the new
+use cases and refactor the program.
+
+But refactoring is difficult to get right and time consuming.  We would have to
+think of a new API for extension that would cover all our new use cases.  That
+means gathering these use cases, sketching, etc.  We have to review solutions:
+e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
+is tricky, because we have to make sure we don't alter the functionality of the
+interpreter in doing so.  Maybe this is trivial because we only add code that
+visibly does not change the control flow or breaks any (implicit) assumptions.
+Or maybe this is hard, because we restructure the whole thing to be completely
+extendable.  We can use tests, or rely on types (we have neither here).  We have
+people here in ASCOLA trying to prove refactorings that preserve semantics.
+It's not quite there yet.
+
+And then, maybe down the road you find out that you missed an important use
+case.  And you need to refactor, and do this whole process again.
+
+There is a lightweight alternative to refactoring.  This is what I call
+/diverting/ the program.
+
+This is all based on one phenomenon we are all familiar with: context.  Let's
+forget programming for a moment.  Take the sentence: "I'm defending".  Today,
+you understand perfectly that it means that I am actually defending my PhD
+before you.  But, said by a soldier in a war it could actually mean something
+else.  There is no ambiguity as long as the context is made clear.
+
+We could even go so far as saying that the sentence is a bundle of meaningless
+symbols without the context of an English speaker during a PhD defense.
+
+Back to programming.  Programs have context too.  Like a sentence, the meaning
+of programs is determined by their context.  *Changing the context changes the
+meaning of the program*.
+
+Diverting programs is about changing their behavior without directly changing
+their code.  But there are a couple of hidden assumptions.  The goal is not to
+divert programs because we can, the goal is to divert programs in order to build
+programs incrementally.  We don't go back to the code we want to modify: we add
+modification instead.  Add-only way of programming.
+
+The benefit of add-only is that you have multiple variants of the program on
+hand.  You can toggle variants dynamically.  And you can easily add new ones
+without impacting the others.
+
+The goal is, ultimately, to make programs clearer, to convey their intent as
+directly as possible.  The instrumentation of Narcissus is best defined as a
+/delta/ from the base interpreter.  It follows that the code should also be
+expressed as a delta.
+
+* Contexte
+Une chronologie de la modularité pour construire et faire évoluer des logiciels,
+centrée sur les langages de programmations.
 
 ** UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée
 #+BEGIN_epig
@@ -3037,632 +3692,6 @@ Especially, information hiding is not the silver bullet.  Approaches to software
 development that seem to break information hiding, and even oppose modular
 reasoning, have their virtues.  Those can be thought of using nonclassical
 logics.
-
-* Le problème: étendre des interpréteurs
-:PROPERTIES:
-:CUSTOM_ID: problem
-:END:
-** UNSTABLE Motivation: extension ad-hoc de Narcissus
-Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
-[[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
-utilise l'environnement hôte pour son implémentation (p.ex., l'objet ~String~
-exposé au code client n'est pas réimplémenté par Narcissus, mais est une simple
-façade de l'objet ~String~ hôte).  Narcissus est une implémentation relativement
-légère (environ 6000 lignes de code) du standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet
-de rapidement prototyper des fonctionnalités expérimentales pour le langage.
-
-En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
-analyse d'évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
-d'information qui permet à une valeur d'être étiquetée par une autorité qui a
-des droits d'écriture et de lecture pour cette valeur.  Lorsqu'une valeur
-étiquetée est utilisée dans une expression, son étiquette est propagée au
-résultat de l'expression, ce qui préserve les permissions de l'autorité sur le
-résultat.  Dans l'analyse multi-facettes, chaque valeur étiquetée a deux
-facettes: une facette contient la valeur "privée" à destination de l'autorité,
-une autre facettes contient la valeur "publique" destinée à des observateurs
-tiers non autorisés.  Dans une expression, les facettes sont toutes deux
-évaluées en même temps afin de produire les deux facettes du résultat.  Afin de
-suivre les étiquettes même lors de branchements (des flots /indirects/),
-l'évaluation multi-facettes maintient une liste des embranchements suivis lors
-de l'exécution; cette liste est appelée /program counter/ (PC).
-
-#+ATTR_HTML: :style margin-top:-12rem
-#+BEGIN_side-figure
-[[file:img/a-facet.svg]]
-
-Une valeur à deux facettes.
-#+END_side-figure
-
-Par exemple, dans le code suivant, si le paramètre ~x~ est ~true~, alors la
-fonction ~f~ retourne ~true~.  En revanche, si on fait de ~x~ une valeur à
-facettes avec une valeur privée ~true~ et une valeur publique ~false~ (qu'on
-écrit ~true:false~), alors le premier ~if~ sera exécuté deux fois: une fois pour
-chaque facette de la condition.  Après le second ~if~, la fonction retourne la
-valeur ~true:false~.  Un observateur non autorisé n'a accès qu'à la valeur
-publique du résultat, et n'est donc pas capable d'inférer la valeur privée de
-~x~, même à travers un flot indirect d'information.
-
-#+ATTR_HTML: :style margin-top:-13rem
-#+BEGIN_side-figure
-[[file:img/fenton-example.svg]]
-#+END_side-figure
-
-Pour donner une idée de l'échelle du projet, Narcissus fait 6000 lignes de code,
-et les deux plus gros fichiers sont le parseur (1600 lignes) et le fichier
-principal de interpréteur, "jsexec" (1300 lignes).  Ce fichier principal
-contient la logique pour interpréter des arbres de syntaxe abstraits, et pour
-mettre en place l'environnement d'exécution des programmes clients.  Les
-changements effectués pour l'implémentation de l'évaluation multi-facettes sont
-restreints à ce fichier principal; 640 lignes sont affectées, soit la moitié.
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-On compte les lignes de code physiques, commentaires inclus mais sans compter
-les lignes vides.
-#+END_aside
-
-Pour réaliser l'instrumentation de Narcissus pour l'évaluation multi-facettes,
-les auteurs ont modifié directement le code source de l'interpréteur Narcissus.
-On peut obtenir l'ensemble des changements effectués en extrayant un /diff/ des
-deux versions.  La figure [[visual-narcissus-diff]] donne une vue d'ensemble des
-changements.
-
-#+ATTR_HTML: :style margin-top:-5rem
-#+BEGIN_aside
-Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]] et
-[[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
-#+END_aside
-
-#+NAME: visual-narcissus-diff
-#+CAPTION: Visualisation des modifications apportées par l'instrumentation de
-#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Le diff de "jsexec" y
-#+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
-#+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
-#+CAPTION: partie.  Les lignes grises ne sont pas affectées par
-#+CAPTION: l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
-[[file:img/narcissus-diff.svg]]
-
-On constate immédiatement que les changements effectués par l'instrumentation
-touchent de nombreuses parties du code de l'interpréteur, sans être restreints à
-une ou deux régions particulières.  Les changements sont *éparpillés* dans le
-code.  De plus, les changements de même nature—appartenant à la même
-catégorie—ne sont pas regroupés.  Résultat, il devient difficile de comprendre
-les effets de l'instrumentation à l'œil nu, ou de s'assurer de sa justesse par
-rapport à une spécification formelle.  Il devient difficile également, sans
-connaissances avancées de Narcissus et de l'évaluation multi-facettes, de savoir
-si une ligne de code de l'interpréteur instrumenté concerne l'interprétation
-décrite par le standard ECMAScript, ou si elle concerne l'évaluation
-multi-facettes.  Le code de l'interpréteur instrumenté ne comporte aucune
-information qui permet de les distinguer.
-
-Autre point important: l'instrumentation *duplique tout le code* de
-l'interpréteur.  C'est une solution simple pour créer un interpréteur qui
-supporte l'évaluation multi-facettes.  En revanche, la duplication de code a un
-impact important sur la maintenance à long terme: plus de double du code doit
-être maintenu.  Les changements requis dans le code source pour corriger un bug
-dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
-répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
-lorsque /plusieurs/ instrumentations sont envisagées.
-
-En observant le diff de plus près, on peut distinguer quatre catégories de
-changements: les imports/exports, l'ajout du paramètre /program counter/,
-séparer l'évaluation des valeurs à facettes, et les ajouts à l'objet ~global~.
-
-De nouvelles définitions ont besoin d'être importées dans le module de
-l'interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
-ajouts qui sont localisés en début et en fin de fichier respectivement.  Voici
-comment ils se présentent dans le code:
-
-#+BEGIN_SRC diff
-+ var FacetedValue = Zaphod.facets.FacetedValue;
-+ var ProgramCounter = Zaphod.facets.ProgramCounter;
-...
-
--      test: test
-+      test: test,
-+      getPC: getGC
-#+END_SRC
-
-#+ATTR_HTML: :style margin-top:-11rem
-#+BEGIN_aside
-Le symbole ~-~ marque une ligne supprimée de l'interpréteur; le symbole ~+~
-marque une ligne ajoutée par l'instrumentation.  L'absence de marque indique une
-ligne commune aux deux versions.
-#+END_aside
-
-Les changements effectués pour accommoder le /program counter/ utilisé par
-l'analyse.  D'abord, le constructeur de l'objet ~ExecutionContext~ est étendu
-pour accepter un argument supplémentaire: la valeur courante du /program
-counter/, ~pc~.  Voici un extrait du diff qui illustre ce
-changement:
-
-#+BEGIN_SRC diff
-- function ExecutionContext(type, version) {
-+ function ExecutionContext(type, pc, version {
-+   this.pc = pc;
-#+END_SRC
-
-Dans Narcissus, une instance de l'objet ~ExecutionContext~ est créée lorsque le
-contrôle est transféré à du code client exécutable: lors de l'entrée dans une
-fonction, lors d'un appel à ~eval~, ou lors de l'exécution d'un programme
-entier.  L'objet ~ExecutionContext~ contient les variables importantes pour
-l'exécution du code; en particulier l'environnement lexical utilisé pour
-résoudre les noms de variables du code exécuté par ce contexte.  L'objet
-~ExecutionContext~ est une réification du concept éponyme de la spécification
-ECMAScript.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_aside
-Voir la section 10.3 de la spécification.
-#+END_aside
-
-Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
-appels doivent être modifiés en conséquence pour fournir une valeur correcte
-pour le paramètre /program counter/.  Il y a plus de 80 instances de ce simple
-changement dans l'instrumentation.  En voici deux exemples:
-
-#+BEGIN_SRC diff
-- x2 = new ExecutionContext(MODULE_CODE);
-+ x2 = new ExecutionContext(MODULE_CODE, x.pc);
-
-- getValue(execute(n.children[0], x));
-+ getValue(execute(n.children[0], x), pc);
-#+END_SRC
-
-Les changements effectués dans l'exécution de l'arbre de syntaxe abstrait (AST)
-pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
-additionner deux valeurs à facettes devrait produire une nouvelle valeur à
-facettes.  Dans l'implémentation, plutôt que de simplement additionner les deux
-opérandes, l'interpréteur doit maintenant d'abord inspecter l'opérande gauche,
-et si c'est une valeur à facettes, il faudra ajouter la valeur de l'opérande
-droite à chaque facette.  Bien sûr, l'opérande droite peut également être une
-valeur à facettes, et il faut alors séparer l'évaluation à nouveau.
-L'interpréteur Narcissus ne contient aucun code pour gérer l'addition de deux
-valeurs à facettes, donc l'instrumentation doit ajouter la logique nécessaire.
-Pour ce faire, chaque évaluation d'une opération est enrobée dans un appel à la
-fonction ~evaluateEach~ qui teste si une valeur est à facettes, et appelle
-récursivement la fonction d'évaluation sur chaque facette si c'est le cas.  25
-appels à ~evaluateEach~ ont été ainsi ajoutés dans l'instrumentation.  Le code
-suivant donne la forme générale de ces changements:
-
-#+BEGIN_SRC diff
-- var v = getValue(node.a)
-+ evaluteEach(getValue(node.a), function(v,x) {
-    ... do something with v ...
-+ }
-#+END_SRC
-
-À la première ligne on récupère une valeur d'un nœud de l'AST (p.ex., l'opérande
-gauche d'une assignation, ou la condition d'un ~if~) puis on fait quelque chose
-avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
-fois on /sépare/ l'évaluation en appelant ~evaluateEach~ avec cette valeur comme
-premier argument, et comme second une fonction qui opère sur une valeur simple.
-
-Les changements effectués sur l'environnement d'exécution de code client.  Dans
-un programme JavaScript, l'environnement d'exécution fournit un objet ~global~
-qui contient les définitions de base comme ~Array~, ~Math~, ~String~ et
-~Object~.  Puisque Narcissus est métacirculaire, il réutilise l'objet global de
-son environnement hôte pour construire l'objet global de l'environnement client.
-Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
-~globalBase~ avec les propriétés qui surchargeront celle de l'environnement
-hôte.  Deuxièmement, il crée un objet ~global~ client à partir de l'objet
-~global~ de son environnement hôte, et met toutes les propriétés de ~globalBase~
-dans cet objet ~global~ client.  Troisièmement, il ajoute à cet objet ~global~
-client les versions réfléchies de certains objets de base (~Array~, ~String~,
-~Function~).
-
-L'instrumentation de l'évaluation multi-facettes enrichit l'objet ~global~
-client en ajoutant 50 propriétés à ~globalBase~, comme la suivante:
-
-#+BEGIN_SRC diff
-   var globalBase = {
-   ...
-+  isFacetedValue: function(v) {
-+    return (v instanceof FacetedValue);
-+  },
-#+END_SRC
-
-L'instrumentation change également la propriété ~String~ de ~globalBase~ pour
-suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
-caractères.
-
-Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories indique qu'il y a un potentiel de factorisation.  Si l'on souhaite
-rendre Narcissus extensibles, afin de pouvoir définir l'évaluation
-multi-facettes sans duplication de code, il faut trouver des façons d'exprimer
-les changements de ces quatre catégories.  Mais si nous souhaites exprimer
-d'autres analyses, et étendre d'autres interpréteurs, il faut tenter des trouver
-des mécanismes génériques qui pourront être réemployés pour ces autres cas.
-
-Pour prendre un peu de recul par rapport à l'instrumentation de Narcissus, on
-peut s'intéresser à la définition formelle de l'évaluation multi-facettes.
-Celle-ci est donnée sous forme d'une sémantique opérationnelle d'un langage
-proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d'abord donnée
-sans considérer l'évaluation multi-facettes, et suit une définition usuelle d'un
-lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
-références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
-JavaScript.
-
-Dans un second temps, une sémantique alternative est présentée qui introduit les
-changements nécessaires pour l'évaluation multi-facettes.  Il s'agit d'une copie
-de la première sémantique, avec quelques changements et ajouts.  On y retrouve
-les deux des quatre catégories de changements dégagées du diff.  Le /program
-counter/ accompagne chaque règle d'évaluation, et de nouvelles règles sont
-ajoutées pour séparer l'évaluation de valeurs à facette en deux parties.
-
-Les règles de la sémantique instrumentées tiennent sur une page; un
-interpréteur pour cette sémantique est donc considérablement plus petit qu'un
-interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
-des mécanismes d'extensibilité.
-
-** BARE Formalisation
-Spec -change-> Spec'
-
-A change adds a variation to the Spec of the program.  If we have a formal spec,
-we can apply this change on it and have a changed spec.  Change is the delta
-between the two specs.
-
-The program is implemented.  We have some code that generates a runtime process
-that behaves according to the spec.
-
-Spec -> Code -> Program -> Spec
-
-The change causes a change in Code.  Interestingly, a small change in Spec can
-have a large impact on Code.
-
-One the goal of the programmer is to make sure the program is correct: acts
-according to the spec.  The programmer writes Code, to create Program.  When a
-change of Spec arises, it's best if the change to Code is self-contained.
-
-The question is then: how to minimize the impact of change?  How to construct
-Code to minimize impact?  What patterns to use?  Do languages make a difference?
-
-Spec changes can be anticipated, or not.  Anticipated Spec changes can be
-factored into Code design.  Unanticipated Spec changes cannot; they might have a
-small or large impact, depending.
-
-We are not tacking just any Program or Spec, but interpreters.  And a specific
-kind of change: adding analyses.  How is that more specific?
-
-Some solutions will be specific to that use case.  Some will apply to any
-program.  Lessons learned will be valuable for all.
-
-** Le problème de l'expression
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Slightly incomplete without the OO solution, but this was already described in
-the Hyper/J section.  Might merge, might cut altogether.
-#+END_aside
-
-Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
-nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
-
-#+BEGIN_aside
-Les deux contraintes de recompilation et de typage statique ne sont pas
-nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
-difficile, mais l'extension d'interpréteur est avant tout un problème
-d'extensibilité, et s'applique aussi bien à des langages interprétés (non
-compilés), et typés dynamiquement.
-#+END_aside
-
-#+BEGIN_QUOTE
-The Expression Problem is a new name for an old problem.  The goal is to define
-a datatype by cases, where one can add new cases to the datatype and new
-functions over the datatype, without recompiling existing code, and while
-retaining static type safety (e.g., no casts).
-#+END_QUOTE
-
-Dans un langage fonctionnel, une façon courante d'implémenter un interpréteur
-est en utilisant un /{{{adt}}}/ pour représenter les termes.  En Haskell par
-exemple, on définit un simple langage arithmétique par le type algébrique
-suivant:
-
-#+BEGIN_SRC haskell
-data Term = Constant Int
-          | Plus Term Term
-          | Mult Term Term
-#+END_SRC
-
-~Term~ est un type qui a trois variantes: un terme est soit une constante
-(~Constant~, un entier), une addition (~Plus~), ou une multiplication.
-
-La syntaxe du type algébrique correspond à la façon usuelle de définir des
-grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
-pourrait être:
-
-#+BEGIN_EXAMPLE
-<term> ::= <int> | <term> + <term> | <term> * <term>
-<int>  ::= 0 | 1 | 2 ...
-#+END_EXAMPLE
-
-Ici encore, un terme a trois variantes.  L'addition et la multiplication
-contiennent d'autres termes, et la variante constante ne contient qu'un nombre
-terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
-rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
-de programmation étant souvent définies par une BNF, le type algébrique est la
-solution la plus évidente pour les représenter.
-
-~Constant~, ~Plus~ et ~Mult~ sont les /constructeurs/ du type ~Term~, qui
-permettent de créer des expressions du langage.  L'expression 2 + 5 * 3 sera
-construite par:
-
-: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-AST illustration
-#+END_aside
-
-Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
-{{{ast}}} de cette expression.
-
-Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
-produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Dans
-la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
-on parlera plutôt d'/opérations/.
-
-La principale est l'opération d'évaluation qui donne un sens à chaque terme du
-langage.  Par exemple, on souhaite évaluer les expressions de notre langage
-arithmétique en suivant le sens usuel de l'addition et de la multiplication
-d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
-obtenir des entiers, puis on les additionne.  En Haskell, on écrira l'évaluation
-en traitant les trois variantes séparément, par /pattern matching/:
-
-#+BEGIN_SRC haskell
-eval :: Term -> Int
-eval (Constant n) = n
-eval (Plus t1 t2) = eval t1 + eval t2
-eval (Mult t1 t2) = eval t1 * eval t2
-#+END_SRC
-
-La première ligne donne le type de l'opération: elle consomme un terme pour
-produire un entier.  Chaque variante de terme est traitée explicitement sur
-chaque ligne.  On remarque que l'évaluation est récursive pour ~Plus~ et
-~Mult~.  La définition du type algébrique l'était déjà: ~Term~ est utilisé dans
-sa propre définition.  Les grammaires de langage sont souvent récursives, pour
-permettre la construction de grandes expressions à partir de simples éléments.  Même
-un langage aussi simple que celui-ci exhibe cette récursion.
-
-On peut maintenant évaluer l'expression 2 + 5 * 3:
-
-: > eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
-: 17
-
-Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
-/pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
-sortie est plus amicale pour l'œil humain.  Typiquement, le pretty printer d'un
-langage transforme l'arbre syntaxique en code source que le programmeur a
-l'habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
-le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot ~Constant~
-qui n'apporte pas d'information capitale.
-
-#+BEGIN_SRC haskell
-pp :: Term -> String
-pp (Constant n) = show n
-pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
-pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
-#+END_SRC
-
-#+BEGIN_aside
-On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
-#+END_aside
-
-Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
-
-: > pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
-: 2 + 5 * 3
-
-L'implémentation de l'affichage a la même structure que de l'implémentation de
-l'évaluation.  On traite les trois variantes du type algébrique dans trois
-lignes différentes.  Les deux variantes ~Plus~ et ~Mult~ sont définies
-récursivement, mais pas la variante ~Constant~, qui est un terminal dans la
-grammaire.  L'opération traite l'arbre syntaxique en partant de la racine, puis
-s'applique récursivement sur les nœuds de l'arbre jusqu'aux feuilles.  Ce
-processus, commun aux interpréteurs, est parfois appelé une /descente
-récursive/.
-
-Dans le problème de l'expression, on cherche à étendre le langage et son
-interpréteur de deux façons: en rajoutant des nouveaux termes au langage, et en
-rajoutant de nouvelles opérations.
-
-Avec ~pp~, on a déjà vu comment ajouter une nouvelle opération à l'interpréteur:
-il suffit de définir son comportement pour toutes les variantes des termes du
-langage.  ~Term~ a 3 variantes, donc ~pp~ définit 3 cas.  Notons aussi que pour
-ajouter l'opération il suffit d'/ajouter/ du code à l'interpréteur.  Aucune
-modification au code existant n'est requise.  C'est une distinction importante,
-car il est souvent plus facile d'ajouter du code que de modifier du code
-existant.
-
-On peut caractériser la complexité d'un changement de l'interpréteur comme la
-complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
-de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes, une
-opération aura une complexité de l'ordre de /v/ lignes de code (O(v)).  On note
-que ces lignes sont des additions par un '+': +O(v).
-
-#+BEGIN_aside
-On notera les lignes qui modifient une définition existante par '~', et les
-lignes supprimées par un '-'.
-#+END_aside
-
-Étendre le langage demande de modifier le code existant.  Si on veut rajouter un
-terme pour la soustraction, il faut commencer par étendre le type algébrique
-~Term~:
-
-#+BEGIN_SRC haskell
-data Term = Constant Int
-          | Plus Term Term
-          | Mult Term Term
-~         | Minus Term Term
-#+END_SRC
-
-C'est une ligne de code ajoutée.  Mais c'est surtout une /redéfinition/ du type
-algébrique.  Typiquement, ajouter une variante induit une recompilation.  On
-compte donc cette ligne comme une modification, et non un simple ajout.
-
-Mais il faut aussi traiter cette nouvelle variante dans les opérations
-existantes:
-
-#+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
-#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
-#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
-#+CAPTION: (à droite) nécessite de modifier toutes les opérations.
-[[file:img/expr-pb-1.svg]]
-#+END_side-figure
-
-#+BEGIN_SRC haskell
-  eval :: Term -> Int
-~ eval (Minus t1 t2) = eval t1 - eval t2
-
-  pp :: Term -> String
-~ pp (Minus t1 t2) = pp t1 ++ " - " ++ pp t2
-#+END_SRC
-
-Au total, si on a ~p~ opérations dans l'interpréteur, le changement a une
-complexité de ~O(p).
-
-Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
-une opération et ajouter un terme ne sont pas des changements similaires pour
-autant.  Ajouter un terme demande de /modifier/ des définitions existantes dans
-l'interpréteur, alors que pour ajouter une opération il suffit d'adjoindre une
-nouvelle fonction.
-
-Le problème de l'expression touche à la fois à la modularité et à
-l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
-l'interpréteur.  Et à la modularité, parce que les termes et les opérations
-peuvent être considérés comme des /unités/ indépendantes, des modules.  Pour
-respecter la modularité, on cherche à ce que chaque extension soit restreinte à
-un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
-un module sans affecter les autres, mais ajouter un terme requiert de modifier
-plusieurs modules.
-
-#+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les termes contiennent le code des
-#+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
-#+CAPTION: mais ajouter une opération nécessite de modifier tous les termes.
-[[file:img/expr-pb-0.svg]]
-#+END_side-figure
-
-Le problème n'est pas exclusif à Haskell.  Dans [[#hyperj]], on a vu exactement la
-situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
-fois chaque terme était représenté par un objet qui encapsulait les définitions
-des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
-ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
-faillait modifier tous les objets des termes existants.  Le choix de l'unité
-principale de décomposition (termes ou opérations), favorise l'un ou l'autre
-type d'extension.
-
-#+ATTR_HTML: :style margin-top:4rem
-#+BEGIN_side-figure
-#+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
-#+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
-#+CAPTION: revient à définir une arête dans le graphe ({{{color(c0)}}}).
-#+CAPTION: L'implémentation détermine juste comment cette arête est définie dans
-#+CAPTION: le programme.
-[[file:img/expr-pb-2.svg]]
-#+END_side-figure
-
-Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
-l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
-Haskell (et autres langages de la famille de ML), tandis que la décomposition
-par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
-la façon dont l'interpréteur est construit, un langage peut supporter l'une ou
-l'autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
-solutions proposées au problème de l'expression nécessitent rarement un nouveau
-langage, mais exploitent plutôt les mécanismes existants d'une nouvelle façon.
-
-Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
-aident à résoudre le problème de l'expression sont des mécanismes qui /a priori/
-facilitent l'extension de l'interpréteur.  Peut-être que certains de ces
-mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
-Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
-d'extension.
-
-[
-
-- Different from /instrumentation/ which modifies existing terms and operations.
-
-]
-
-
-** L'idée: le détournement de programme
-
-Case study: Narcissus instrumentation.
-
-The goal was to add faceted evaluation to Narcissus.  They went with modifying
-the interpreter all other the place.  You end up with this diagram.
-
-Modifying a program like that does not scale.  It's quick, and it works for this
-case.  But now imagine you want to try another evaluation strategy.  You fork
-the original interpreter and modify it, again.  Now you have 3 variants of the
-interpreter.  And you have a bug that affects all three.  You must now patch the
-bug in all three places.  Doesn't scale.
-
-And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
-You have to create yet another fourth variant.
-
-There's yet another issue: how do you know what part of the code pertains to the
-new evaluation strategy and what part pertains to the original semantics?
-Version control tools can help, but they don't work on the /semantic/ of
-changes, just on lines of code.  A clear distinction in the code helps.
-
-Let me get one thing clear: that's totally fine, especially considering this is
-a research prototype.  Their goal was to apply their evaluation strategy to
-JavaScript, and they succeeded.
-
-But, it got us thinking: how would we do it differently?  Given enough time, how
-would we add faceted evaluation on Narcissus?
-
-Any software engineer would tell you: refactoring.  We have a typical case of a
-program that is being used in ways it what not designed for.  The module pattern
-of JavaScript prevents extension.  This calls for taking into account the new
-use cases and refactor the program.
-
-But refactoring is difficult to get right and time consuming.  We would have to
-think of a new API for extension that would cover all our new use cases.  That
-means gathering these use cases, sketching, etc.  We have to review solutions:
-e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
-is tricky, because we have to make sure we don't alter the functionality of the
-interpreter in doing so.  Maybe this is trivial because we only add code that
-visibly does not change the control flow or breaks any (implicit) assumptions.
-Or maybe this is hard, because we restructure the whole thing to be completely
-extendable.  We can use tests, or rely on types (we have neither here).  We have
-people here in ASCOLA trying to prove refactorings that preserve semantics.
-It's not quite there yet.
-
-And then, maybe down the road you find out that you missed an important use
-case.  And you need to refactor, and do this whole process again.
-
-There is a lightweight alternative to refactoring.  This is what I call
-/diverting/ the program.
-
-This is all based on one phenomenon we are all familiar with: context.  Let's
-forget programming for a moment.  Take the sentence: "I'm defending".  Today,
-you understand perfectly that it means that I am actually defending my PhD
-before you.  But, said by a soldier in a war it could actually mean something
-else.  There is no ambiguity as long as the context is made clear.
-
-We could even go so far as saying that the sentence is a bundle of meaningless
-symbols without the context of an English speaker during a PhD defense.
-
-Back to programming.  Programs have context too.  Like a sentence, the meaning
-of programs is determined by their context.  *Changing the context changes the
-meaning of the program*.
-
-Diverting programs is about changing their behavior without directly changing
-their code.  But there are a couple of hidden assumptions.  The goal is not to
-divert programs because we can, the goal is to divert programs in order to build
-programs incrementally.  We don't go back to the code we want to modify: we add
-modification instead.  Add-only way of programming.
-
-The benefit of add-only is that you have multiple variants of the program on
-hand.  You can toggle variants dynamically.  And you can easily add new ones
-without impacting the others.
-
-The goal is, ultimately, to make programs clearer, to convey their intent as
-directly as possible.  The instrumentation of Narcissus is best defined as a
-/delta/ from the base interpreter.  It follows that the code should also be
-expressed as a delta.
 
 * Travaux connexes
 ** Les mécanismes de recomposition du programme
