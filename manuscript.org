@@ -368,6 +368,20 @@ donc au programmeur d'obtenir un programme exécutable par la machine à partir 
 code écrit dans le langage de son choix.  Le programmeur peut manipuler des
 mots, et la machine du binaire.
 
+Comme le compilateur, l'/interpréteur/ traduit le code source, mais plutôt que
+de produire un fichier exécutable, l'interpréteur exécute directement le
+programme.  La distinction n'est pas toujours pertinente, car la compilation
+peut aussi avoir lieu à l'exécution du programme sans pour autant produire de
+binaire: la compilation /just-in-time/ (JIT) traduit le code source vers des
+instructions machines qui sont directement exécutées.  Ce qui importe, c'est que
+ce sont toutes des façons d'exécuter le code source.  Et si l'on exécute [[fib]], on
+obtient:
+
+#+BEGIN_EXAMPLE
+> node fib.js
+89
+#+END_EXAMPLE
+
 Notons que la compilation n'attache aucun sens particulier aux noms choisis par
 le programmeur.  On aurait pu écrire le programme de [[fib]] ainsi:
 
@@ -379,10 +393,9 @@ function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
-À ce titre, les archives du concours international d'obfuscation de code C [[cite:IOCCC][IOCCC]]
-recèlent d'exemples à suivre pour mystifier tout collaborateur.  Le standard
-Unicode offre également de nouvelles opportunités (voir, par exemple, Mimic
-[[cite:Mimic][Mimic]]).
+Les archives du concours international d'obfuscation de code C [[cite:IOCCC][IOCCC]] recèlent
+d'exemples à suivre pour mystifier tout collaborateur.  Le standard Unicode
+offre également de nouvelles opportunités (voir, par exemple, Mimic [[cite:Mimic][Mimic]]).
 #+END_aside
 
 Ou, à l'extrême:
@@ -409,6 +422,13 @@ utilise, ni le nombre de défauts de cache qu'il cause.  On cherche à comparer 
 chacun des trois programmes, l'interpréteur JavaScript affiche 89; les
 programmes ont donc le même résultat.
 
+#+BEGIN_aside
+Si deux personnes partent de Nantes à Cherbourg et arrivent toutes les deux
+avant dimanche, peu importe si la première a fait le trajet à pieds, et la
+seconde en voiture.  En revanche, leur mode de transport nous intéresse quand il
+s'agit de comparer leurs émissions carbones.
+#+END_aside
+
 Le résultat est la partie du processus qui nous intéresse à un moment donné.
 Parfois on s'intéresse à ce que le programme affiche à l'écran, ou aux sons
 qu'il émet à travers les enceintes.  Et parfois on cherche à comparer deux
@@ -420,52 +440,74 @@ utilisée.  L'efficacité du programme c'est /comment/ le programme calcule son
 résultat; la machine peut avoir une grande influence sur l'efficacité.
 
 #+BEGIN_aside
-On improvise plus difficilement un programme qu'un morceau de guitare.
-Il existe cependant des environnements de programmation qui facilitent
+On improvise plus difficilement un programme qu'un morceau de guitare, bien
+qu'il existe aujourd'hui des environnements de programmation qui facilitent
 l'improvisation [[cite:sonicpi][sonicpi]] [[cite:BFd+13][BFd+13]].
 #+END_aside
 
 Enfin, il y a le résultat obtenu, et il y a le résultat attendu.  Le programmeur
 élabore le programme avec une idée en tête de son résultat, une intention.
+C'est cette idée qui guide le programmeur dans l'élaboration du programme: il
+construit le code source afin d'engendrer un processus qui produira le résultat
+attendu.  Ce résultat attendu est appelé la /spécification/ du programme.  Cette
+spécification peut être plus ou moins détaillée; en voici trois:
 
-C'est qu'il y
-a une autre facette à un programme: sa /spécification/.  Ici, la
-spécification est: "afficher le onzième nombre de la suite de Fibonacci".  Les
-trois programmes sont équivalents car ils obéissent Les trois programmes
-obéissent donc à cette spécification.  processus pour calculer une /fonction
-mathématique/.
+1. Le programme affiche 89.
+2. Le programme affiche le onzième nombre de la suite de Fibonacci.
+3. Le programme calcule le onzième nombre de la suite de Fibonacci à l'aide
+   d'une fonction récursive, et affiche le résultat sur la sortie standard avant
+   de se terminer.
 
-specification is not complete (otherwise it would be the program)
 
-source code is deterministic: code -> processus -> result
+La deuxième spécification est plus précise que la première, et la troisième
+plus précise que la deuxième.  Un programme qui obéit à la troisième
+spécification obéira donc aussi à la deuxième et à la première.  Notons que les
+deux premières spécifications s'intéressent strictement au résultat du
+programme, alors que la troisième stipule aussi sa structure: le programme doit
+utiliser une fonction récursive.  On pourrait tout aussi bien spécifier
+l'efficacité du programme: il doit s'exécuter en moins d'une seconde sur telle
+machine, etc.  La spécification décrit la fonctionnalité principale du programme.
 
-but the task of the programmer is not:
+La spécification est nécessairement /incomplète/.  Qu'elle soit exprimée dans
+une langue naturelle ou dans un formalisme quelconque, la spécification ne peut
+pas détailler le processus de manière exhaustive, car si c'était le cas, ce
+serait le programme.  Et c'est précisément en dehors de la spécification
+qu'opère la créativité du programmeur.
 
-result <- multiple processes <- multiple programs
+En effet, l'élaboration du programme à partir d'une spécification a de nombreux
+degrés de liberté.  Il suffit de voir qu'il y une infinité de programmes qui
+peuvent satisfaire une spécification.  Tout comme il y a une infinité de façons
+d'obtenir le nombre 1: 1, 2 - 1, 1 + 0, 56/56, ...  Tout ce que la spécification
+ne précise pas est laissé au choix du programmeur.  Il y a donc une infinité de
+processus qui obéissent à une spécification donnée, et une infinité de
+programmes qui engendrent ces processus.
 
-there's a whole design space for achieving the goal
+L'expertise du programmeur est de savoir exactement quels processus choisir, et
+quels programmes écrire, parmi ces infinités.  Pour chaque programme, il faut
+choisir le langage de programmation, le compilateur, les bibliothèques, les
+algorithmes, les structures de données, etc.  Tous ces éléments doivent
+s'accorder pour engendrer le résultat attendu.
 
-tool chain, programming languages, paradigms, algorithms, names, ...
+Mais le programme n'a pas seule vocation a être exécuté.  Un programme est
+d'abord écrit, puis lu, puis corrigé, puis étendu.  Lors de son développement,
+de nombreuses paires d'yeux vont le scruter et le modifier.  Le programmeur doit
+communiquer son intention non plus seulement à la machine, mais aussi à ses
+collègues.
 
-the programmer is satisfîmes multiple goals: correctness first, but also
-efficiency, and readability, maintainability...
+Et chaque humain a ses préférences particulières.  Le choix des noms de
+variables et de fonctions est important pour communiquer leur fonction dans le
+programme.  La documentation est cruciale, car le code source ne peut exprimer à
+lui seul tous les choix faits par le programmeur.
 
-that's where we come in: we explore the design space, and report on the
-strengths and weaknesses of techniques for given applications.
+Le programmeur doit satisfaire plusieurs buts.  Avant tout, la correction du
+programme par rapport à la spécification.  Ensuite, les priorités dépendent de
+l'application.  L'efficacité du programme est toujours pertinente.  Mais on peut
+aussi souhaiter que le programme soit lisible, maintenable, ou modulaire.
 
-# Structures do not count (modules, classes, files).  Structure is for humans.
+C'est là que nous intervenons: nous explorons l'espace des programmes possibles,
+et rapportons les avantages et inconvénients de chaque techniquse pour une
+application donnée.
 
-Le programme, n'a donc pas comme seule vocation à ordonner la machine, il doit
-aussi être lisible par d'autres programmeurs.
-
-Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes.  Lorsqu'un
-texte devient trop long, il devient plus pratique de le découper en unités
-indépendantes.
-
-# Other structures, classes, modules
-
-interpreter is like a compiler, but executes the code immediately instead of
-producing a binary.
 
 ** UNSTABLE Étude de cas: extension ad-hoc de Narcissus
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
