@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-01 ven. 16:44 -->
+<!-- 2016-07-01 ven. 19:08 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -579,6 +579,22 @@ mots, et la machine du binaire.
 </p>
 
 <p>
+Comme le compilateur, l&rsquo;<i>interpréteur</i> traduit le code source, mais plutôt que
+de produire un fichier exécutable, l&rsquo;interpréteur exécute directement le
+programme.  La distinction n&rsquo;est pas toujours pertinente, car la compilation
+peut aussi avoir lieu à l&rsquo;exécution du programme sans pour autant produire de
+binaire: la compilation <i>just-in-time</i> (JIT) traduit le code source vers des
+instructions machines qui sont directement exécutées.  Ce qui importe, c&rsquo;est que
+ce sont toutes des façons d&rsquo;exécuter le code source.  Et si l&rsquo;on exécute <a href="#orgsrcblock1">1</a>, on
+obtient:
+</p>
+
+<pre class="example">
+&gt; node fib.js
+89
+</pre>
+
+<p>
 Notons que la compilation n&rsquo;attache aucun sens particulier aux noms choisis par
 le programmeur.  On aurait pu écrire le programme de <a href="#orgsrcblock1">1</a> ainsi:
 </p>
@@ -591,10 +607,9 @@ le programmeur.  On aurait pu écrire le programme de <a href="#orgsrcblock1">1<
 
 <aside style="margin-top:-5rem">
 <p>
-À ce titre, les archives du concours international d&rsquo;obfuscation de code C [<a href="#IOCCC">IOC</a>]
-recèlent d&rsquo;exemples à suivre pour mystifier tout collaborateur.  Le standard
-Unicode offre également de nouvelles opportunités (voir, par exemple, Mimic
-[<a href="#Mimic">Too</a>]).
+Les archives du concours international d&rsquo;obfuscation de code C [<a href="#IOCCC">IOC</a>] recèlent
+d&rsquo;exemples à suivre pour mystifier tout collaborateur.  Le standard Unicode
+offre également de nouvelles opportunités (voir, par exemple, Mimic [<a href="#Mimic">Too</a>]).
 </p>
 </aside>
 
@@ -683,68 +698,65 @@ deux premières spécifications s&rsquo;intéressent strictement au résultat du
 programme, alors que la troisième stipule aussi sa structure: le programme doit
 utiliser une fonction récursive.  On pourrait tout aussi bien spécifier
 l&rsquo;efficacité du programme: il doit s&rsquo;exécuter en moins d&rsquo;une seconde sur telle
-machine, etc.  La spécification fixe la fonctionnalité principale du programme.
+machine, etc.  La spécification décrit la fonctionnalité principale du programme.
 </p>
 
 <p>
 La spécification est nécessairement <i>incomplète</i>.  Qu&rsquo;elle soit exprimée dans
 une langue naturelle ou dans un formalisme quelconque, la spécification ne peut
 pas détailler le processus de manière exhaustive, car si c&rsquo;était le cas, ce
-serait un programme.  La spécification est utilisée pour communiquer, idéalement
-sans ambiguïté, le fonctionnement attendu du programme à ceux qui souhaiteraient
-le réaliser.
-</p>
-
-
-
-
-<p>
-source code is deterministic: code -&gt; processus -&gt; result
+serait le programme.  Et c&rsquo;est précisément en dehors de la spécification
+qu&rsquo;opère la créativité du programmeur.
 </p>
 
 <p>
-but the task of the programmer is not:
+En effet, l&rsquo;élaboration du programme à partir d&rsquo;une spécification a de nombreux
+degrés de liberté.  Il suffit de voir qu&rsquo;il y une infinité de programmes qui
+peuvent satisfaire une spécification.  Tout comme il y a une infinité de façons
+d&rsquo;obtenir le nombre 1: 1, 2 - 1, 1 + 0, 56/56, &#x2026;  Tout ce que la spécification
+ne précise pas est laissé au choix du programmeur.  Il y a donc une infinité de
+processus qui obéissent à une spécification donnée, et une infinité de
+programmes qui engendrent ces processus.
 </p>
 
 <p>
-result &lt;- multiple processes &lt;- multiple programs
+L&rsquo;expertise du programmeur est de savoir exactement quels processus choisir, et
+quels programmes écrire, parmi ces infinités.  Pour chaque programme, il faut
+choisir le langage de programmation, le compilateur, les bibliothèques, les
+algorithmes, les structures de données, etc.  Tous ces éléments doivent
+s&rsquo;accorder pour engendrer le résultat attendu.
 </p>
 
 <p>
-there&rsquo;s a whole design space for achieving the goal
+Mais le programme n&rsquo;a pas seule vocation a être exécuté.  Un programme est
+d&rsquo;abord écrit, puis lu, puis corrigé, puis étendu.  Lors de son développement,
+de nombreuses paires d&rsquo;yeux vont le scruter et le modifier.  Le programmeur doit
+communiquer son intention non plus seulement à la machine, mais aussi à ses
+collègues.
 </p>
 
 <p>
-tool chain, programming languages, paradigms, algorithms, names, &#x2026;
+Et chaque humain a ses préférences particulières.  Le choix des noms de
+variables et de fonctions est important pour communiquer leur fonction dans le
+programme.  La documentation est cruciale, car le code source ne peut exprimer à
+lui seul tous les choix faits par le programmeur.
 </p>
 
 <p>
-the programmer is satisfîmes multiple goals: correctness first, but also
-efficiency, and readability, maintainability&#x2026;
+Le programmeur doit satisfaire plusieurs buts.  Avant tout, la correction du
+programme par rapport à la spécification.  Ensuite, les priorités dépendent de
+l&rsquo;application.  L&rsquo;efficacité du programme est toujours pertinente.  Mais on peut
+aussi souhaiter que le programme soit lisible, maintenable, ou modulaire.
 </p>
 
 <p>
-that&rsquo;s where we come in: we explore the design space, and report on the
-strengths and weaknesses of techniques for given applications.
-</p>
-
-<p>
-Le programme, n&rsquo;a donc pas comme seule vocation à ordonner la machine, il doit
-aussi être lisible par d&rsquo;autres programmeurs.
-</p>
-
-<p>
-Pour organiser un manuscrit, on recourt aux phrases, aux paragraphes.  Lorsqu&rsquo;un
-texte devient trop long, il devient plus pratique de le découper en unités
-indépendantes.
-</p>
-
-<p>
-interpreter is like a compiler, but executes the code immediately instead of
-producing a binary.
+C&rsquo;est là que nous intervenons: nous explorons l&rsquo;espace des programmes possibles,
+et rapportons les avantages et inconvénients de chaque techniquse pour une
+application donnée.
 </p>
 </div>
 </div>
+
 
 <div id="outline-container-orgheadline8" class="outline-3">
 <h3 id="orgheadline8"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</h3>
@@ -13690,7 +13702,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-01 ven. 16:44 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-01 ven. 19:08 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
