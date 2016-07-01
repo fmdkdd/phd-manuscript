@@ -3839,6 +3839,35 @@ the document makes sense to the reader (especially to the informed reader).  The
 only downside is that I will probably have to introduce a few concepts to ease
 the presentation of the problem.
 
+** [2016-07-01 ven.]
+*** New abstract about diverting
+Programs are hard to write, and harder to maintain.  Programs often are part of
+an /ongoing/ development process: they evolve as requirements change, as new
+features are added, and as defects are uncovered and fixed.   The main way to
+deal with these constant changes is by /refactoring/.
+
+But refactoring can be difficult and time-consuming.  Refactoring entails to
+rewrite parts of the source code, but may also require to reorganize the
+program's whole architecture.
+
+We propose a lightweight alternative to refactoring: /diverting/.  Diverting a
+program is to change its results without directly modifying its source code.
+To divert a program, we leverage late-binding mechanisms such as dynamic scoping
+and metaprogramming.
+
+To illustrate diverting, we take a simple, non-trivial example of program: an
+interpreter.  We start with an interpreter for arithmetic expressions, and
+review the techniques used to divert the interpreter to support new terms and
+operations; a setting reminiscent of the Expression Problem.  We show how
+diverting can help build interpreters incrementally in layers, allowing dynamic
+activation of alternative behavior.
+
+Finally, we apply those techniques to divert a full-blown JavaScript interpreter
+with multiple dynamic analyses.  There, we find that diverting is a legitimate
+alternative to refactoring for this realistic use-case.  Diverting is both
+faster and more flexible than rewriting the program, but bears potential costs
+in efficiency and program safety.
+
 * Odds and ends
 Bits that will go in the document at some point.
 

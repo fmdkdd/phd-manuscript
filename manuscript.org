@@ -168,59 +168,60 @@ languages and the dynamic processes they describe.  Also, for inspiration.
 * Abstract                                                         :noexport:
 Programs are hard to write, and harder to maintain.  Programs often are part of
 an /ongoing/ development process: they evolve as requirements change, as new
-features are added, and as defects are uncovered and fixed.  To ease
-maintenance, programmers need tools.  New programming languages are created
-every day to enhance the productivity of programmers, to simplify the conception
-of programs.  Object-Oriented Programming, Metaprogramming, Aspect-Oriented
-Programming, Feature-Oriented Programming, Functional Programming: all promise a
-better way to write safer programs.
+features are added, and as defects are uncovered and fixed.   The main way to
+deal with these constant changes is by /refactoring/.
 
-But how do these paradigms help /maintain/ programs?  And how do we write
-extensible programs?  How do we extend existing ones?  What mechanisms can we
-use?  What are the patterns of extensibility?  How do languages help or hinder
-extensibility?  Answering these questions would lead us to design more
-extensible programs, and to a better understanding extensibility itself.
+But refactoring can be tricky and time-consuming.  Refactoring entails to
+rewrite parts of the source code, but may also require to reorganize the
+program's whole architecture.
 
-To try to answer these questions, we take a simple, non-trivial example of
-program to extend: an interpreter.  We start with an interpreter for a
-lambda-calculus, and review the techniques used to extend the language with new
-terms and operations; a setting similar to the Expression Problem.  We show how
-to build interpreters incrementally using layers, and then we apply those
-techniques to extend a full-blown JavaScript interpreter with dynamic analyses.
+We propose a lightweight alternative to refactoring: /diverting/.  Diverting a
+program is to change its results without directly modifying its source code.
+To divert a program, we leverage late-binding mechanisms such as dynamic scoping
+and metaprogramming.
 
-We find that /late-binding/ is a key ingredient to extensibility, but it is also
-at odds with another important concern: safety.
+To illustrate diverting, we take a simple, non-trivial example of program: an
+interpreter.  We start with an interpreter for arithmetic expressions, and
+review the techniques used to divert the interpreter to support new terms and
+operations; a setting reminiscent of the Expression Problem.  We show how
+diverting can help build interpreters incrementally in layers, allowing dynamic
+activation of alternative behavior.
+
+Finally, we apply those techniques to divert a full-blown JavaScript interpreter
+with multiple dynamic analyses.  We find that diverting is a legitimate
+alternative to refactoring for this realistic use-case.  Diverting is both
+faster and more flexible than rewriting the program, but bears potential costs
+in efficiency and program safety.
 
 * Résumé                                                           :noexport:
 Il est difficile d'écrire un programme, mais il l'est encore plus de le
 maintenir.  Les programmes sont souvent en développement /continu/: ils évoluent
 quand les besoins changent, quand de nouvelles fonctionnalités sont ajoutées, et
-quand leurs malfaçons sont découvertes et corrigées.  Pour faciliter cette
-maintenance, les programmeurs ont besoin d'outils.  Tous le jours, de nouveaux
-langages de programmation sont créés pour augmenter la productivité des
-programmeurs, pour simplifier la conception des programmes.  La programmation
-par objets, la meta-programmation, la programmation par aspects, la
-programmation par fonctionnalité, la programmation fonctionnelle: tous
-promettent une meilleure façon d'écrire des programmes plus sûrs.
+quand leurs malfaçons sont découvertes et corrigées.  Le moyen principal de
+gérer ces changements récurrents est la /refactorisation/.
 
-Mais comment ces paradigmes aident à /maintenir/ les programmes?  Et comment
-peut-on écrire des programmes extensibles?  Comment étendre des programmes
-existants?  Quels mécanismes doit-on utiliser?  Quels sont les motifs de
-l'extensibilité?  Comment les langages encouragent ou entravent l'extensibilité?
-Répondre à ces questions nous permettrait de concevoir des programmes plus
-extensibles, et d'obtenir une meilleure compréhension de l'extensibilité
-en soi.
+Mais la refactorisation peut être délicate et chronophage.  Refactoriser
+implique de réécrire des parties du code source, mais peut aussi requérir de
+réorganiser toute l'architecture du programme.
 
-Pour tenter de répondre à ces questions, on prend un exemple de programme simple
-et non-trivial: un interpréteur.  On commence par un interpréteur de
-lambda-calcul, et l'on passe en revue les techniques utilisées pour étendre le
-langage par de nouveaux termes et opérations; un cas similaire au problème de
-l'Expression.  On montre comment construire des interpréteurs par couches
-successives, et on applique ces techniques pour étendre un véritable
-interpréteur JavaScript par des analyses dynamiques.
+Nous proposons une alternative économe à la refactorisation: le /détournement/.
+Détourner un programme c'est changer ses résultats sans directement modifier son
+code source.  Pour détourner un programme, on exploite des mécanismes de
+résolution tardive, tels que la portée dynamique et la métaprogrammation.
 
-On observe que la /liaison tardive/ est un ingrédient clé de l'extensibilité,
-mais que c'est en désaccord avec une autre propriété importante: la sûreté.
+Pour illustrer le détournement, on prend un exemple de programme simple et
+non-trivial: un interpréteur.  On commence par un interpréteur d'expressions
+arithmétiques, et l'on passe en revue les techniques utilisables pour détourner
+l'interpréteur afin qu'il supporte de nouveaux termes et opérations; un scénario
+similaire au problème de l'Expression.  On montre comment le détournement peut
+aider à construire des interpréteurs par incréments, en couches successives, ce
+qui permet de dynamiquement activer des comportements alternatifs.
+
+Enfin, on applique ces techniques pour détourner un véritable interpréteur
+JavaScript par de multiples analyses dynamiques.  Ce scénario réaliste
+légitimise le détournement comme alternative à la refactorisation.  Détourner
+l'interpréteur est à la fois plus rapide et plus flexible que de le réécrire,
+mais a un impact potentiel sur son efficacité et sa sûreté.
 
 * BARE Introduction
 ** Problème: étendre un interprèteur par de multiple analyses
