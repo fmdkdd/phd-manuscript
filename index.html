@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-06-30 jeu. 18:54 -->
+<!-- 2016-07-01 ven. 16:44 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Mécanismes de langages pour étendre des interpréteurs</title>
@@ -148,178 +148,179 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline5">1. <span class="todo BARE">BARE</span> Introduction</a>
+<li><a href="#orgheadline1">Résumé</a></li>
+<li><a href="#orgheadline6">1. <span class="todo BARE">BARE</span> Introduction</a>
 <ul>
-<li><a href="#orgheadline1">1.1. Problème: étendre un interprèteur par de multiple analyses</a></li>
-<li><a href="#orgheadline2">1.2. But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations</a></li>
-<li><a href="#orgheadline3">1.3. Portée: interpréteurs en JavaScript</a></li>
-<li><a href="#orgheadline4">1.4. Survol</a></li>
+<li><a href="#orgheadline2">1.1. Problème: étendre un interprèteur par de multiple analyses</a></li>
+<li><a href="#orgheadline3">1.2. But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations</a></li>
+<li><a href="#orgheadline4">1.3. Portée: interpréteurs en JavaScript</a></li>
+<li><a href="#orgheadline5">1.4. Survol</a></li>
 </ul>
 </li>
 <li><a href="#problem">2. Le problème: étendre des interpréteurs</a>
 <ul>
-<li><a href="#orgheadline6">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
-<li><a href="#orgheadline7">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
-<li><a href="#orgheadline8">2.3. <span class="todo BARE">BARE</span> Modifier un programme sans modifier son code source</a></li>
-<li><a href="#orgheadline9">2.4. Le problème de l&rsquo;expression</a></li>
-<li><a href="#orgheadline10">2.5. L&rsquo;idée: le détournement de programme</a></li>
+<li><a href="#orgheadline7">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
+<li><a href="#orgheadline8">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
+<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Modifier un programme sans modifier son code source</a></li>
+<li><a href="#orgheadline10">2.4. Le problème de l&rsquo;expression</a></li>
+<li><a href="#orgheadline11">2.5. L&rsquo;idée: le détournement de programme</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline37">3. Contexte</a>
+<li><a href="#orgheadline38">3. Contexte</a>
 <ul>
-<li><a href="#orgheadline12">3.1. <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</a></li>
-<li><a href="#orgheadline15">3.2. <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation par objets</a>
+<li><a href="#orgheadline13">3.1. <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</a></li>
+<li><a href="#orgheadline16">3.2. <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation par objets</a>
 <ul>
 <li><a href="#Smalltalk">3.2.1. Classes et héritage: Smalltalk</a></li>
-<li><a href="#orgheadline14">3.2.2. Prototypes et délégation: Self</a></li>
+<li><a href="#orgheadline15">3.2.2. Prototypes et délégation: Self</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline25">3.3. Réifier le langage pour séparer les préoccupations</a>
+<li><a href="#orgheadline26">3.3. Réifier le langage pour séparer les préoccupations</a>
 <ul>
-<li><a href="#orgheadline16">3.3.1. <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</a></li>
-<li><a href="#orgheadline17">3.3.2. <span class="done STABLE">STABLE</span> L&rsquo;implémentation ouverte</a></li>
-<li><a href="#orgheadline24">3.3.3. <span class="done STABLE">STABLE</span> La programmation par aspects</a></li>
+<li><a href="#orgheadline17">3.3.1. <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</a></li>
+<li><a href="#orgheadline18">3.3.2. <span class="done STABLE">STABLE</span> L&rsquo;implémentation ouverte</a></li>
+<li><a href="#orgheadline25">3.3.3. <span class="done STABLE">STABLE</span> La programmation par aspects</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline29">3.4. <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</a>
+<li><a href="#orgheadline30">3.4. <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</a>
 <ul>
-<li><a href="#orgheadline26">3.4.1. La programmation littéraire</a></li>
+<li><a href="#orgheadline27">3.4.1. La programmation littéraire</a></li>
 <li><a href="#hyperj">3.4.2. La séplution</a></li>
-<li><a href="#orgheadline28">3.4.3. L&rsquo;information transparente</a></li>
+<li><a href="#orgheadline29">3.4.3. L&rsquo;information transparente</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline30">3.5. <span class="todo BARE">BARE</span> Limiter les effets de bord: la programmation fonctionnelle</a></li>
-<li><a href="#orgheadline36">3.6. La modularité du programme n&rsquo;est pas la modularité du code source</a>
+<li><a href="#orgheadline31">3.5. <span class="todo BARE">BARE</span> Limiter les effets de bord: la programmation fonctionnelle</a></li>
+<li><a href="#orgheadline37">3.6. La modularité du programme n&rsquo;est pas la modularité du code source</a>
 <ul>
-<li><a href="#orgheadline32">3.6.1. <span class="done STABLE">STABLE</span> La modularité selon Parnas</a></li>
-<li><a href="#orgheadline34">3.6.2. <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</a></li>
-<li><a href="#orgheadline35">3.6.3. Notion of modularity</a></li>
+<li><a href="#orgheadline33">3.6.1. <span class="done STABLE">STABLE</span> La modularité selon Parnas</a></li>
+<li><a href="#orgheadline35">3.6.2. <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</a></li>
+<li><a href="#orgheadline36">3.6.3. Notion of modularity</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline61">4. Travaux connexes</a>
+<li><a href="#orgheadline62">4. Travaux connexes</a>
 <ul>
-<li><a href="#orgheadline49">4.1. Les mécanismes de recomposition du programme</a>
+<li><a href="#orgheadline50">4.1. Les mécanismes de recomposition du programme</a>
 <ul>
-<li><a href="#orgheadline38">4.1.1. <span class="todo BARE">BARE</span> Le problème de l&rsquo;expression</a></li>
-<li><a href="#orgheadline39">4.1.2. <span class="todo BARE">BARE</span> Dynamic binding</a></li>
-<li><a href="#orgheadline40">4.1.3. <span class="todo BARE">BARE</span> Building from modules</a></li>
-<li><a href="#orgheadline41">4.1.4. <span class="todo BARE">BARE</span> Building with monads</a></li>
-<li><a href="#orgheadline42">4.1.5. <span class="todo BARE">BARE</span> Bytecode instrumentation</a></li>
-<li><a href="#orgheadline48">4.1.6. Superimposition</a></li>
+<li><a href="#orgheadline39">4.1.1. <span class="todo BARE">BARE</span> Le problème de l&rsquo;expression</a></li>
+<li><a href="#orgheadline40">4.1.2. <span class="todo BARE">BARE</span> Dynamic binding</a></li>
+<li><a href="#orgheadline41">4.1.3. <span class="todo BARE">BARE</span> Building from modules</a></li>
+<li><a href="#orgheadline42">4.1.4. <span class="todo BARE">BARE</span> Building with monads</a></li>
+<li><a href="#orgheadline43">4.1.5. <span class="todo BARE">BARE</span> Bytecode instrumentation</a></li>
+<li><a href="#orgheadline49">4.1.6. Superimposition</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline60">4.2. <span class="todo UNSTABLE">UNSTABLE</span> Travaux connexes concernant l&rsquo;instrumentation</a>
+<li><a href="#orgheadline61">4.2. <span class="todo UNSTABLE">UNSTABLE</span> Travaux connexes concernant l&rsquo;instrumentation</a>
 <ul>
-<li><a href="#orgheadline50">4.2.1. <span class="todo BARE">BARE</span> Domain-specific languages</a></li>
-<li><a href="#orgheadline51">4.2.2. <span class="todo BARE">BARE</span> Scripting languages</a></li>
-<li><a href="#orgheadline53">4.2.3. <span class="todo TRANSLATE">TRANSLATE</span> Emacs</a></li>
-<li><a href="#orgheadline55">4.2.4. <span class="todo TRANSLATE">TRANSLATE</span> Eclipse and other IDEs</a></li>
-<li><a href="#orgheadline57">4.2.5. <span class="todo BARE">BARE</span> Web browsers</a></li>
-<li><a href="#orgheadline59">4.2.6. <span class="todo TRANSLATE">TRANSLATE</span> Lua</a></li>
+<li><a href="#orgheadline51">4.2.1. <span class="todo BARE">BARE</span> Domain-specific languages</a></li>
+<li><a href="#orgheadline52">4.2.2. <span class="todo BARE">BARE</span> Scripting languages</a></li>
+<li><a href="#orgheadline54">4.2.3. <span class="todo TRANSLATE">TRANSLATE</span> Emacs</a></li>
+<li><a href="#orgheadline56">4.2.4. <span class="todo TRANSLATE">TRANSLATE</span> Eclipse and other IDEs</a></li>
+<li><a href="#orgheadline58">4.2.5. <span class="todo BARE">BARE</span> Web browsers</a></li>
+<li><a href="#orgheadline60">4.2.6. <span class="todo TRANSLATE">TRANSLATE</span> Lua</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a href="#variations">5. <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
-<li><a href="#orgheadline101">6. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</a>
+<li><a href="#orgheadline102">6. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgheadline63">6.0.1. Finding a core example</a></li>
-<li><a href="#orgheadline64">6.0.2. The expression problem</a></li>
-<li><a href="#orgheadline65">6.0.3. The expression problem, with a twist</a></li>
-<li><a href="#orgheadline66">6.0.4. The modular instrumentation problem</a></li>
+<li><a href="#orgheadline64">6.0.1. Finding a core example</a></li>
+<li><a href="#orgheadline65">6.0.2. The expression problem</a></li>
+<li><a href="#orgheadline66">6.0.3. The expression problem, with a twist</a></li>
+<li><a href="#orgheadline67">6.0.4. The modular instrumentation problem</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline80">6.1. Variations</a>
+<li><a href="#orgheadline81">6.1. Variations</a>
 <ul>
-<li><a href="#orgheadline79">6.1.1. JavaScript</a></li>
+<li><a href="#orgheadline80">6.1.1. JavaScript</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline77">6.2. Lisp</a></li>
-<li><a href="#orgheadline81">6.3. Haskell</a>
+<li><a href="#orgheadline78">6.2. Lisp</a></li>
+<li><a href="#orgheadline82">6.3. Haskell</a>
 <ul>
-<li><a href="#orgheadline95">6.3.1. Building scaffolding with language features</a></li>
-<li><a href="#orgheadline96">6.3.2. Extending the syntax</a></li>
+<li><a href="#orgheadline96">6.3.1. Building scaffolding with language features</a></li>
+<li><a href="#orgheadline97">6.3.2. Extending the syntax</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline100">6.4. Modular monadic interpreters</a>
+<li><a href="#orgheadline101">6.4. Modular monadic interpreters</a>
 <ul>
-<li><a href="#orgheadline98">6.4.1. The giants</a></li>
-<li><a href="#orgheadline99">6.4.2. The bigger picture</a></li>
+<li><a href="#orgheadline99">6.4.1. The giants</a></li>
+<li><a href="#orgheadline100">6.4.2. The bigger picture</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline106">7. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</a>
+<li><a href="#orgheadline107">7. <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</a>
 <ul>
-<li><a href="#orgheadline102">7.1. Ajouter des termes</a></li>
-<li><a href="#orgheadline103">7.2. Ajouter des opérations</a></li>
-<li><a href="#orgheadline104">7.3. Modifier des opérations</a></li>
-<li><a href="#orgheadline105">7.4. Passer de l&rsquo;état aux opérations</a></li>
+<li><a href="#orgheadline103">7.1. Ajouter des termes</a></li>
+<li><a href="#orgheadline104">7.2. Ajouter des opérations</a></li>
+<li><a href="#orgheadline105">7.3. Modifier des opérations</a></li>
+<li><a href="#orgheadline106">7.4. Passer de l&rsquo;état aux opérations</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline117">8. Dynamic scoping to build interpreters</a>
+<li><a href="#orgheadline118">8. Dynamic scoping to build interpreters</a>
 <ul>
-<li><a href="#orgheadline107">8.1. The base datatype</a></li>
-<li><a href="#orgheadline108">8.2. Adding a data variant</a></li>
-<li><a href="#orgheadline109">8.3. Adding an operation</a></li>
-<li><a href="#orgheadline112">8.4. Adding an operation as a module</a>
+<li><a href="#orgheadline108">8.1. The base datatype</a></li>
+<li><a href="#orgheadline109">8.2. Adding a data variant</a></li>
+<li><a href="#orgheadline110">8.3. Adding an operation</a></li>
+<li><a href="#orgheadline113">8.4. Adding an operation as a module</a>
 <ul>
-<li><a href="#orgheadline110">8.4.1. A use-case for <code>with</code></a></li>
-<li><a href="#orgheadline111">8.4.2. Selective imports with an IIFE</a></li>
+<li><a href="#orgheadline111">8.4.1. A use-case for <code>with</code></a></li>
+<li><a href="#orgheadline112">8.4.2. Selective imports with an IIFE</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline114">8.5. Modifying an operation</a>
+<li><a href="#orgheadline115">8.5. Modifying an operation</a>
 <ul>
-<li><a href="#orgheadline113">8.5.1. Non-destructive modification</a></li>
+<li><a href="#orgheadline114">8.5.1. Non-destructive modification</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline115">8.6. Passing state</a></li>
-<li><a href="#orgheadline116">8.7. All in one</a></li>
+<li><a href="#orgheadline116">8.6. Passing state</a></li>
+<li><a href="#orgheadline117">8.7. All in one</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline135">9. <span class="done STABLE">STABLE</span> Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#orgheadline136">9. <span class="done STABLE">STABLE</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
-<li><a href="#orgheadline121">9.1. Manipuler la portée des variables pour l&rsquo;instrumentation</a>
+<li><a href="#orgheadline122">9.1. Manipuler la portée des variables pour l&rsquo;instrumentation</a>
 <ul>
-<li><a href="#orgheadline118">9.1.1. La portée dans le motif module</a></li>
-<li><a href="#orgheadline119">9.1.2. Ouvrir le motif module</a></li>
-<li><a href="#orgheadline120">9.1.3. Disposer les environnements en couches</a></li>
+<li><a href="#orgheadline119">9.1.1. La portée dans le motif module</a></li>
+<li><a href="#orgheadline120">9.1.2. Ouvrir le motif module</a></li>
+<li><a href="#orgheadline121">9.1.3. Disposer les environnements en couches</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline122">9.2. Ouvrir le motif module en JavaScript</a></li>
-<li><a href="#orgheadline128">9.3. Étendre Narcissus par manipulation de portée</a>
+<li><a href="#orgheadline123">9.2. Ouvrir le motif module en JavaScript</a></li>
+<li><a href="#orgheadline129">9.3. Étendre Narcissus par manipulation de portée</a>
 <ul>
-<li><a href="#orgheadline123">9.3.1. Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</a></li>
-<li><a href="#orgheadline124">9.3.2. Ajouter l&rsquo;analyse de trace</a></li>
-<li><a href="#orgheadline125">9.3.3. Ajouter l&rsquo;analyse FlowR</a></li>
-<li><a href="#orgheadline126">9.3.4. Ajouter l&rsquo;analyse d&rsquo;environnements</a></li>
-<li><a href="#orgheadline127">9.3.5. Évaluation</a></li>
+<li><a href="#orgheadline124">9.3.1. Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</a></li>
+<li><a href="#orgheadline125">9.3.2. Ajouter l&rsquo;analyse de trace</a></li>
+<li><a href="#orgheadline126">9.3.3. Ajouter l&rsquo;analyse FlowR</a></li>
+<li><a href="#orgheadline127">9.3.4. Ajouter l&rsquo;analyse d&rsquo;environnements</a></li>
+<li><a href="#orgheadline128">9.3.5. Évaluation</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline134">9.4. Discussion</a>
+<li><a href="#orgheadline135">9.4. Discussion</a>
 <ul>
-<li><a href="#orgheadline129">9.4.1. La tension entre flexibilité et sûreté</a></li>
-<li><a href="#orgheadline130">9.4.2. D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</a></li>
-<li><a href="#orgheadline131">9.4.3. Pourquoi ne pas utiliser la programmation par aspects?</a></li>
-<li><a href="#orgheadline132">9.4.4. Appliquer la manipulation de portée à d&rsquo;autres langages</a></li>
-<li><a href="#orgheadline133">9.4.5. Inconvénients de la manipulation de portée avec <code>with</code></a></li>
+<li><a href="#orgheadline130">9.4.1. La tension entre flexibilité et sûreté</a></li>
+<li><a href="#orgheadline131">9.4.2. D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</a></li>
+<li><a href="#orgheadline132">9.4.3. Pourquoi ne pas utiliser la programmation par aspects?</a></li>
+<li><a href="#orgheadline133">9.4.4. Appliquer la manipulation de portée à d&rsquo;autres langages</a></li>
+<li><a href="#orgheadline134">9.4.5. Inconvénients de la manipulation de portée avec <code>with</code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline140">10. <span class="todo BARE">BARE</span> Synthèse</a>
+<li><a href="#orgheadline141">10. <span class="todo BARE">BARE</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline136">10.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
-<li><a href="#orgheadline137">10.2. <span class="todo BARE">BARE</span> Locality of concerns and locality of execution are irreconciable in the source text</a></li>
-<li><a href="#orgheadline138">10.3. <span class="todo BARE">BARE</span> Late binding is the common ingredient to all modular mechanisms</a></li>
-<li><a href="#orgheadline139">10.4. <span class="todo BARE">BARE</span> Perspectives: if automated programming is the future, this is mostly usesless</a></li>
+<li><a href="#orgheadline137">10.1. <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline138">10.2. <span class="todo BARE">BARE</span> Locality of concerns and locality of execution are irreconciable in the source text</a></li>
+<li><a href="#orgheadline139">10.3. <span class="todo BARE">BARE</span> Late binding is the common ingredient to all modular mechanisms</a></li>
+<li><a href="#orgheadline140">10.4. <span class="todo BARE">BARE</span> Perspectives: if automated programming is the future, this is mostly usesless</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline141">Références</a></li>
+<li><a href="#orgheadline142">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -340,11 +341,55 @@ different person then.&nbsp;&raquo;
 — [<a href="#Car-66">Car66</a>]</p>
 </blockquote>
 
-<div id="outline-container-orgheadline5" class="outline-2">
-<h2 id="orgheadline5"><span class="section-number-2">1</span> <span class="todo BARE">BARE</span> Introduction</h2>
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">Résumé</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+Il est difficile d&rsquo;écrire un programme, mais il l&rsquo;est encore plus de le
+maintenir.  Les programmes sont souvent en développement <i>continu</i>: ils évoluent
+quand les besoins changent, quand de nouvelles fonctionnalités sont ajoutées, et
+quand leurs malfaçons sont découvertes et corrigées.  Le moyen principal de
+gérer ces changements récurrents est la <i>refactorisation</i>.
+</p>
+
+<p>
+Mais la refactorisation peut être délicate et chronophage.  Refactoriser
+implique de réécrire des parties du code source, mais peut aussi requérir de
+réorganiser toute l&rsquo;architecture du programme.
+</p>
+
+<p>
+Nous proposons une alternative économe à la refactorisation: le <i>détournement</i>.
+Détourner un programme c&rsquo;est changer ses résultats sans directement modifier son
+code source.  Pour détourner un programme, on exploite des mécanismes de
+résolution tardive, tels que la portée dynamique et la métaprogrammation.
+</p>
+
+<p>
+Pour illustrer le détournement, on prend un exemple de programme simple et
+non-trivial: un interpréteur.  On commence par un interpréteur d&rsquo;expressions
+arithmétiques, et l&rsquo;on passe en revue les techniques utilisables pour détourner
+l&rsquo;interpréteur afin qu&rsquo;il supporte de nouveaux termes et opérations; un scénario
+similaire au problème de l&rsquo;Expression.  On montre comment le détournement peut
+aider à construire des interpréteurs par incréments, en couches successives, ce
+qui permet de dynamiquement activer des comportements alternatifs.
+</p>
+
+<p>
+Enfin, on applique ces techniques pour détourner un véritable interpréteur
+JavaScript par de multiples analyses dynamiques.  Ce scénario réaliste
+légitimise le détournement comme alternative à la refactorisation.  Détourner
+l&rsquo;interpréteur est à la fois plus rapide et plus flexible que de le réécrire,
+mais a un impact potentiel sur son efficacité et sa sûreté.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6"><span class="section-number-2">1</span> <span class="todo BARE">BARE</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
-</div><div id="outline-container-orgheadline1" class="outline-3">
-<h3 id="orgheadline1"><span class="section-number-3">1.1</span> Problème: étendre un interprèteur par de multiple analyses</h3>
+</div><div id="outline-container-orgheadline2" class="outline-3">
+<h3 id="orgheadline2"><span class="section-number-3">1.1</span> Problème: étendre un interprèteur par de multiple analyses</h3>
 <div class="outline-text-3" id="text-1-1">
 <ul class="org-ul">
 <li>Contexte de sécurité web.</li>
@@ -375,8 +420,8 @@ n&rsquo;interfèrent pas entre elles)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline2" class="outline-3">
-<h3 id="orgheadline2"><span class="section-number-3">1.2</span> But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations</h3>
+<div id="outline-container-orgheadline3" class="outline-3">
+<h3 id="orgheadline3"><span class="section-number-3">1.2</span> But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations</h3>
 <div class="outline-text-3" id="text-1-2">
 <ul class="org-ul">
 <li>Trouver des mécanismes, des constructions (patterns) pour étendre des interpréteurs</li>
@@ -385,8 +430,8 @@ n&rsquo;interfèrent pas entre elles)</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline3" class="outline-3">
-<h3 id="orgheadline3"><span class="section-number-3">1.3</span> Portée: interpréteurs en JavaScript</h3>
+<div id="outline-container-orgheadline4" class="outline-3">
+<h3 id="orgheadline4"><span class="section-number-3">1.3</span> Portée: interpréteurs en JavaScript</h3>
 <div class="outline-text-3" id="text-1-3">
 <ul class="org-ul">
 <li>Mécanismes et patterns génériques, pas nécessairement liés à un langage
@@ -400,16 +445,16 @@ particulier.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline4" class="outline-3">
-<h3 id="orgheadline4"><span class="section-number-3">1.4</span> Survol</h3>
+<div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5"><span class="section-number-3">1.4</span> Survol</h3>
 </div>
 </div>
-<div id="outline-container-orgheadline11" class="outline-2">
-<h2 id="problem"><a id="orgheadline11"></a><span class="section-number-2">2</span> Le problème: étendre des interpréteurs</h2>
+<div id="outline-container-orgheadline12" class="outline-2">
+<h2 id="problem"><a id="orgheadline12"></a><span class="section-number-2">2</span> Le problème: étendre des interpréteurs</h2>
 <div class="outline-text-2" id="text-problem">
 </div>
-<div id="outline-container-orgheadline6" class="outline-3">
-<h3 id="orgheadline6"><span class="section-number-3">2.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</h3>
+<div id="outline-container-orgheadline7" class="outline-3">
+<h3 id="orgheadline7"><span class="section-number-3">2.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Il faut distinguer le code source d&rsquo;un programme et le processus que le code
@@ -583,6 +628,15 @@ chacun des trois programmes, l&rsquo;interpréteur JavaScript affiche 89; les
 programmes ont donc le même résultat.
 </p>
 
+<aside>
+<p>
+Si deux personnes partent de Nantes à Cherbourg et arrivent toutes les deux
+avant dimanche, peu importe si la première a fait le trajet à pieds, et la
+seconde en voiture.  En revanche, leur mode de transport nous intéresse quand il
+s&rsquo;agit de comparer leurs émissions carbones.
+</p>
+</aside>
+
 <p>
 Le résultat est la partie du processus qui nous intéresse à un moment donné.
 Parfois on s&rsquo;intéresse à ce que le programme affiche à l&rsquo;écran, ou aux sons
@@ -597,8 +651,8 @@ résultat; la machine peut avoir une grande influence sur l&rsquo;efficacité.
 
 <aside>
 <p>
-On improvise plus difficilement un programme qu&rsquo;un morceau de guitare.
-Il existe cependant des environnements de programmation qui facilitent
+On improvise plus difficilement un programme qu&rsquo;un morceau de guitare, bien
+qu&rsquo;il existe aujourd&rsquo;hui des environnements de programmation qui facilitent
 l&rsquo;improvisation [<a href="#sonicpi">Aar</a>,<a href="#BFd+13">BFd+13</a>].
 </p>
 </aside>
@@ -606,20 +660,43 @@ l&rsquo;improvisation [<a href="#sonicpi">Aar</a>,<a href="#BFd+13">BFd+13</a>].
 <p>
 Enfin, il y a le résultat obtenu, et il y a le résultat attendu.  Le programmeur
 élabore le programme avec une idée en tête de son résultat, une intention.
+C&rsquo;est cette idée qui guide le programmeur dans l&rsquo;élaboration du programme: il
+construit le code source afin d&rsquo;engendrer un processus qui produira le résultat
+attendu.  Ce résultat attendu est appelé la <i>spécification</i> du programme.  Cette
+spécification peut être plus ou moins détaillée; en voici trois:
+</p>
+
+<ol class="org-ol">
+<li>Le programme affiche 89.</li>
+<li>Le programme affiche le onzième nombre de la suite de Fibonacci.</li>
+<li>Le programme calcule le onzième nombre de la suite de Fibonacci à l&rsquo;aide
+d&rsquo;une fonction récursive, et affiche le résultat sur la sortie standard avant
+de se terminer.</li>
+</ol>
+
+
+<p>
+La deuxième spécification est plus précise que la première, et la troisième
+plus précise que la deuxième.  Un programme qui obéit à la troisième
+spécification obéira donc aussi à la deuxième et à la première.  Notons que les
+deux premières spécifications s&rsquo;intéressent strictement au résultat du
+programme, alors que la troisième stipule aussi sa structure: le programme doit
+utiliser une fonction récursive.  On pourrait tout aussi bien spécifier
+l&rsquo;efficacité du programme: il doit s&rsquo;exécuter en moins d&rsquo;une seconde sur telle
+machine, etc.  La spécification fixe la fonctionnalité principale du programme.
 </p>
 
 <p>
-C&rsquo;est qu&rsquo;il y
-a une autre facette à un programme: sa <i>spécification</i>.  Ici, la
-spécification est: &laquo;&nbsp;afficher le onzième nombre de la suite de Fibonacci&nbsp;&raquo;.  Les
-trois programmes sont équivalents car ils obéissent Les trois programmes
-obéissent donc à cette spécification.  processus pour calculer une <i>fonction
-mathématique</i>.
+La spécification est nécessairement <i>incomplète</i>.  Qu&rsquo;elle soit exprimée dans
+une langue naturelle ou dans un formalisme quelconque, la spécification ne peut
+pas détailler le processus de manière exhaustive, car si c&rsquo;était le cas, ce
+serait un programme.  La spécification est utilisée pour communiquer, idéalement
+sans ambiguïté, le fonctionnement attendu du programme à ceux qui souhaiteraient
+le réaliser.
 </p>
 
-<p>
-specification is not complete (otherwise it would be the program)
-</p>
+
+
 
 <p>
 source code is deterministic: code -&gt; processus -&gt; result
@@ -669,8 +746,8 @@ producing a binary.
 </div>
 </div>
 
-<div id="outline-container-orgheadline7" class="outline-3">
-<h3 id="orgheadline7"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</h3>
+<div id="outline-container-orgheadline8" class="outline-3">
+<h3 id="orgheadline8"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
@@ -990,8 +1067,8 @@ des mécanismes d&rsquo;extensibilité.
 </div>
 </div>
 
-<div id="outline-container-orgheadline8" class="outline-3">
-<h3 id="orgheadline8"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Modifier un programme sans modifier son code source</h3>
+<div id="outline-container-orgheadline9" class="outline-3">
+<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Modifier un programme sans modifier son code source</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Pour ajouter l&rsquo;évaluation multi-facettes à l&rsquo;interpréteur, modifier directement
@@ -1057,8 +1134,8 @@ program.  Lessons learned will be valuable for all.
 </div>
 </div>
 
-<div id="outline-container-orgheadline9" class="outline-3">
-<h3 id="orgheadline9"><span class="section-number-3">2.4</span> Le problème de l&rsquo;expression</h3>
+<div id="outline-container-orgheadline10" class="outline-3">
+<h3 id="orgheadline10"><span class="section-number-3">2.4</span> Le problème de l&rsquo;expression</h3>
 <div class="outline-text-3" id="text-2-4">
 <aside class="todo">
 <p>
@@ -1407,8 +1484,8 @@ d&rsquo;extension.
 </div>
 </div>
 
-<div id="outline-container-orgheadline10" class="outline-3">
-<h3 id="orgheadline10"><span class="section-number-3">2.5</span> L&rsquo;idée: le détournement de programme</h3>
+<div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11"><span class="section-number-3">2.5</span> L&rsquo;idée: le détournement de programme</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 Le but de l&rsquo;extension de Narcissus était d&rsquo;ajouter l&rsquo;évaluation à facettes.  Les
@@ -1529,8 +1606,8 @@ expressed as a delta.
 </div>
 </div>
 
-<div id="outline-container-orgheadline37" class="outline-2">
-<h2 id="orgheadline37"><span class="section-number-2">3</span> Contexte</h2>
+<div id="outline-container-orgheadline38" class="outline-2">
+<h2 id="orgheadline38"><span class="section-number-2">3</span> Contexte</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Une chronologie de la modularité pour construire et faire évoluer des logiciels,
@@ -1538,8 +1615,8 @@ centrée sur les langages de programmations.
 </p>
 </div>
 
-<div id="outline-container-orgheadline12" class="outline-3">
-<h3 id="orgheadline12"><span class="section-number-3">3.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</h3>
+<div id="outline-container-orgheadline13" class="outline-3">
+<h3 id="orgheadline13"><span class="section-number-3">3.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Apprivoiser le flot de contrôle: la programmation structurée</h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="epig">
 <p>
@@ -1804,8 +1881,8 @@ toutes lettres, et le code machine bas-niveau.
 </div>
 </div>
 
-<div id="outline-container-orgheadline15" class="outline-3">
-<h3 id="orgheadline15"><span class="section-number-3">3.2</span> <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation par objets</h3>
+<div id="outline-container-orgheadline16" class="outline-3">
+<h3 id="orgheadline16"><span class="section-number-3">3.2</span> <span class="done STABLE">STABLE</span> Modéliser le monde: la programmation par objets</h3>
 <div class="outline-text-3" id="text-3-2">
 <div class="full-figure">
 
@@ -1818,8 +1895,8 @@ toutes lettres, et le code machine bas-niveau.
 </div>
 </div>
 
-<div id="outline-container-orgheadline13" class="outline-4">
-<h4 id="Smalltalk"><a id="orgheadline13"></a><span class="section-number-4">3.2.1</span> Classes et héritage: Smalltalk</h4>
+<div id="outline-container-orgheadline14" class="outline-4">
+<h4 id="Smalltalk"><a id="orgheadline14"></a><span class="section-number-4">3.2.1</span> Classes et héritage: Smalltalk</h4>
 <div class="outline-text-4" id="text-Smalltalk">
 <div class="epig">
 <p>
@@ -2098,8 +2175,8 @@ même manière.
 </div>
 </div>
 
-<div id="outline-container-orgheadline14" class="outline-4">
-<h4 id="orgheadline14"><span class="section-number-4">3.2.2</span> Prototypes et délégation: Self</h4>
+<div id="outline-container-orgheadline15" class="outline-4">
+<h4 id="orgheadline15"><span class="section-number-4">3.2.2</span> Prototypes et délégation: Self</h4>
 <div class="outline-text-4" id="text-3-2-2">
 <p>
 On peut faire de la programmation par objets sans classes et sans héritage.  Les
@@ -2314,8 +2391,8 @@ le <i>mode-switching</i> (voir ??).
 </div>
 </div>
 
-<div id="outline-container-orgheadline25" class="outline-3">
-<h3 id="orgheadline25"><span class="section-number-3">3.3</span> Réifier le langage pour séparer les préoccupations</h3>
+<div id="outline-container-orgheadline26" class="outline-3">
+<h3 id="orgheadline26"><span class="section-number-3">3.3</span> Réifier le langage pour séparer les préoccupations</h3>
 <div class="outline-text-3" id="text-3-3">
 
 <figure>
@@ -2325,8 +2402,8 @@ le <i>mode-switching</i> (voir ??).
 </figure>
 </div>
 
-<div id="outline-container-orgheadline16" class="outline-4">
-<h4 id="orgheadline16"><span class="section-number-4">3.3.1</span> <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</h4>
+<div id="outline-container-orgheadline17" class="outline-4">
+<h4 id="orgheadline17"><span class="section-number-4">3.3.1</span> <span class="todo TRANSLATE">TRANSLATE</span> La réflexion</h4>
 <div class="outline-text-4" id="text-3-3-1">
 <p>
 En programmation par objets, on cherche une correspondance entre les acteurs du
@@ -2559,8 +2636,8 @@ maintenance.
 </div>
 </div>
 
-<div id="outline-container-orgheadline17" class="outline-4">
-<h4 id="orgheadline17"><span class="section-number-4">3.3.2</span> <span class="done STABLE">STABLE</span> L&rsquo;implémentation ouverte</h4>
+<div id="outline-container-orgheadline18" class="outline-4">
+<h4 id="orgheadline18"><span class="section-number-4">3.3.2</span> <span class="done STABLE">STABLE</span> L&rsquo;implémentation ouverte</h4>
 <div class="outline-text-4" id="text-3-3-2">
 <p>
 La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
@@ -2729,8 +2806,8 @@ la responsabilité du module.
 </div>
 </div>
 
-<div id="outline-container-orgheadline24" class="outline-4">
-<h4 id="orgheadline24"><span class="section-number-4">3.3.3</span> <span class="done STABLE">STABLE</span> La programmation par aspects</h4>
+<div id="outline-container-orgheadline25" class="outline-4">
+<h4 id="orgheadline25"><span class="section-number-4">3.3.3</span> <span class="done STABLE">STABLE</span> La programmation par aspects</h4>
 <div class="outline-text-4" id="text-3-3-3">
 <p>
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
@@ -2752,9 +2829,9 @@ les aspects y remédient en introduisant une nouvelle dimension de composition.
 </p>
 </div>
 
-<div id="outline-container-orgheadline18" class="outline-5">
-<h5 id="orgheadline18">La distinction entre les composants et les aspects</h5>
-<div class="outline-text-5" id="text-orgheadline18">
+<div id="outline-container-orgheadline19" class="outline-5">
+<h5 id="orgheadline19">La distinction entre les composants et les aspects</h5>
+<div class="outline-text-5" id="text-orgheadline19">
 <blockquote>
 <p>
 A design process and a programming language work well together when the
@@ -2911,9 +2988,9 @@ compose them to produce the overall system.
 </div>
 </div>
 
-<div id="outline-container-orgheadline19" class="outline-5">
-<h5 id="orgheadline19">Exprimer les aspects par un langage dédié</h5>
-<div class="outline-text-5" id="text-orgheadline19">
+<div id="outline-container-orgheadline20" class="outline-5">
+<h5 id="orgheadline20">Exprimer les aspects par un langage dédié</h5>
+<div class="outline-text-5" id="text-orgheadline20">
 <p>
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
@@ -2998,9 +3075,9 @@ application?  Y a-t-il d&rsquo;autres façons de faire?
 </div>
 </div>
 
-<div id="outline-container-orgheadline20" class="outline-5">
-<h5 id="orgheadline20">D&rsquo;autres mécanismes pour la programmation par aspects</h5>
-<div class="outline-text-5" id="text-orgheadline20">
+<div id="outline-container-orgheadline21" class="outline-5">
+<h5 id="orgheadline21">D&rsquo;autres mécanismes pour la programmation par aspects</h5>
+<div class="outline-text-5" id="text-orgheadline21">
 <p>
 La caractéristique principale de la programmation par aspects est la distinction
 entre composants et aspects.  Cette distinction, si elle apparaît au moment de
@@ -3087,9 +3164,9 @@ d&rsquo;AspectJ [<a href="#KHH+01">KHH+01</a>].
 </div>
 </div>
 
-<div id="outline-container-orgheadline21" class="outline-5">
-<h5 id="orgheadline21">AspectJ: jonctions, coupes, et méthodes d&rsquo;aspect</h5>
-<div class="outline-text-5" id="text-orgheadline21">
+<div id="outline-container-orgheadline22" class="outline-5">
+<h5 id="orgheadline22">AspectJ: jonctions, coupes, et méthodes d&rsquo;aspect</h5>
+<div class="outline-text-5" id="text-orgheadline22">
 <blockquote>
 <p>
 AspectJ is intended to be a practical AOP language that provides, in a Java
@@ -3340,9 +3417,9 @@ exécutables différents.
 </div>
 </div>
 
-<div id="outline-container-orgheadline22" class="outline-5">
-<h5 id="orgheadline22">Le mécanisme essentiel pour la programmation par aspects</h5>
-<div class="outline-text-5" id="text-orgheadline22">
+<div id="outline-container-orgheadline23" class="outline-5">
+<h5 id="orgheadline23">Le mécanisme essentiel pour la programmation par aspects</h5>
+<div class="outline-text-5" id="text-orgheadline23">
 <p>
 Être oubliable est une propriété qui peut être considérée comme caractéristique
 de la programmation par aspects [<a href="#FF-04">FF04</a>].  Filman et Friedman cherchent à
@@ -3476,9 +3553,9 @@ utilisé pour faire de la programmation par aspects.
 </div>
 </div>
 
-<div id="outline-container-orgheadline23" class="outline-5">
-<h5 id="orgheadline23">Les limites de la programmation par aspects</h5>
-<div class="outline-text-5" id="text-orgheadline23">
+<div id="outline-container-orgheadline24" class="outline-5">
+<h5 id="orgheadline24">Les limites de la programmation par aspects</h5>
+<div class="outline-text-5" id="text-orgheadline24">
 <p>
 Le but de la programmation par aspects est louable: distinguer les composants
 des aspects dans le programme, c&rsquo;est mettre de l&rsquo;ordre, c&rsquo;est séparer les choses
@@ -3569,8 +3646,8 @@ système.
 </div>
 </div>
 
-<div id="outline-container-orgheadline29" class="outline-3">
-<h3 id="orgheadline29"><span class="section-number-3">3.4</span> <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</h3>
+<div id="outline-container-orgheadline30" class="outline-3">
+<h3 id="orgheadline30"><span class="section-number-3">3.4</span> <span class="done STABLE">STABLE</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</h3>
 <div class="outline-text-3" id="text-3-4">
 <div class="epig">
 <p>
@@ -3614,8 +3691,8 @@ nombreuses dimensions, irréconciliables sous une seule décomposition.
 </aside>
 </div>
 
-<div id="outline-container-orgheadline26" class="outline-4">
-<h4 id="orgheadline26"><span class="section-number-4">3.4.1</span> La programmation littéraire</h4>
+<div id="outline-container-orgheadline27" class="outline-4">
+<h4 id="orgheadline27"><span class="section-number-4">3.4.1</span> La programmation littéraire</h4>
 <div class="outline-text-4" id="text-3-4-1">
 <p>
 La programmation structurée recommandait une discipline de construction du
@@ -3918,8 +3995,8 @@ soit un programme exécutable par la machine.
 </div>
 </div>
 
-<div id="outline-container-orgheadline27" class="outline-4">
-<h4 id="hyperj"><a id="orgheadline27"></a><span class="section-number-4">3.4.2</span> La séplution</h4>
+<div id="outline-container-orgheadline28" class="outline-4">
+<h4 id="hyperj"><a id="orgheadline28"></a><span class="section-number-4">3.4.2</span> La séplution</h4>
 <div class="outline-text-4" id="text-hyperj">
 <p>
 La programmation par aspects a pour but la séparation des composants et des
@@ -4099,8 +4176,8 @@ qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 </div>
 </div>
 
-<div id="outline-container-orgheadline28" class="outline-4">
-<h4 id="orgheadline28"><span class="section-number-4">3.4.3</span> L&rsquo;information transparente</h4>
+<div id="outline-container-orgheadline29" class="outline-4">
+<h4 id="orgheadline29"><span class="section-number-4">3.4.3</span> L&rsquo;information transparente</h4>
 <div class="outline-text-4" id="text-3-4-3">
 <p>
 Les mécanismes de décomposition sont insuffisants pour anticiper les changements
@@ -4249,8 +4326,8 @@ garantie, juste un compromis pragmatique.
 </div>
 </div>
 
-<div id="outline-container-orgheadline30" class="outline-3">
-<h3 id="orgheadline30"><span class="section-number-3">3.5</span> <span class="todo BARE">BARE</span> Limiter les effets de bord: la programmation fonctionnelle</h3>
+<div id="outline-container-orgheadline31" class="outline-3">
+<h3 id="orgheadline31"><span class="section-number-3">3.5</span> <span class="todo BARE">BARE</span> Limiter les effets de bord: la programmation fonctionnelle</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 Parallel evolution to OO.
@@ -4276,11 +4353,11 @@ static guarantes, but less runtime flexibility.
 </div>
 </div>
 
-<div id="outline-container-orgheadline36" class="outline-3">
-<h3 id="orgheadline36"><span class="section-number-3">3.6</span> La modularité du programme n&rsquo;est pas la modularité du code source</h3>
+<div id="outline-container-orgheadline37" class="outline-3">
+<h3 id="orgheadline37"><span class="section-number-3">3.6</span> La modularité du programme n&rsquo;est pas la modularité du code source</h3>
 <div class="outline-text-3" id="text-3-6">
-</div><div id="outline-container-orgheadline32" class="outline-4">
-<h4 id="orgheadline32"><span class="section-number-4">3.6.1</span> <span class="done STABLE">STABLE</span> La modularité selon Parnas</h4>
+</div><div id="outline-container-orgheadline33" class="outline-4">
+<h4 id="orgheadline33"><span class="section-number-4">3.6.1</span> <span class="done STABLE">STABLE</span> La modularité selon Parnas</h4>
 <div class="outline-text-4" id="text-3-6-1">
 <p>
 David Parnas est fréquemment cité comme référence pour la notion de modularité
@@ -4603,9 +4680,9 @@ machines.
 </blockquote>
 </div>
 
-<div id="outline-container-orgheadline31" class="outline-5">
-<h5 id="orgheadline31">Conclusions</h5>
-<div class="outline-text-5" id="text-orgheadline31">
+<div id="outline-container-orgheadline32" class="outline-5">
+<h5 id="orgheadline32">Conclusions</h5>
+<div class="outline-text-5" id="text-orgheadline32">
 <p>
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n&rsquo;est pas toujours bien entendu.  On trouve dans l&rsquo;article
@@ -4650,8 +4727,8 @@ modularité/efficacité me semblent inévitables.
 </div>
 </div>
 
-<div id="outline-container-orgheadline34" class="outline-4">
-<h4 id="orgheadline34"><span class="section-number-4">3.6.2</span> <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</h4>
+<div id="outline-container-orgheadline35" class="outline-4">
+<h4 id="orgheadline35"><span class="section-number-4">3.6.2</span> <span class="done STABLE">STABLE</span> La théorie de Naur derrière le programme</h4>
 <div class="outline-text-4" id="text-3-6-2">
 <p>
 Un point de vue qui complémente celui de Parnas est celui de Peter Naur.  Dans
@@ -4913,9 +4990,9 @@ guidance, in an active and constructive environment.
 </blockquote>
 </div>
 
-<div id="outline-container-orgheadline33" class="outline-5">
-<h5 id="orgheadline33">Conclusions</h5>
-<div class="outline-text-5" id="text-orgheadline33">
+<div id="outline-container-orgheadline34" class="outline-5">
+<h5 id="orgheadline34">Conclusions</h5>
+<div class="outline-text-5" id="text-orgheadline34">
 <p>
 Naur établit une distinction importante entre le source code d&rsquo;un programme, et
 la connaissance que le programmeur a de son fonctionnement.  C&rsquo;est une
@@ -4966,8 +5043,8 @@ real world matters dealt with by the program.
 </div>
 </div>
 
-<div id="outline-container-orgheadline35" class="outline-4">
-<h4 id="orgheadline35"><span class="section-number-4">3.6.3</span> Notion of modularity</h4>
+<div id="outline-container-orgheadline36" class="outline-4">
+<h4 id="orgheadline36"><span class="section-number-4">3.6.3</span> Notion of modularity</h4>
 <div class="outline-text-4" id="text-3-6-3">
 <p>
 Notion of modularity [<a href="#OGK+11">OGK+11</a>].  Modularity is rooted in classical logic thinking.
@@ -4982,14 +5059,14 @@ logics.
 </div>
 </div>
 
-<div id="outline-container-orgheadline61" class="outline-2">
-<h2 id="orgheadline61"><span class="section-number-2">4</span> Travaux connexes</h2>
+<div id="outline-container-orgheadline62" class="outline-2">
+<h2 id="orgheadline62"><span class="section-number-2">4</span> Travaux connexes</h2>
 <div class="outline-text-2" id="text-4">
-</div><div id="outline-container-orgheadline49" class="outline-3">
-<h3 id="orgheadline49"><span class="section-number-3">4.1</span> Les mécanismes de recomposition du programme</h3>
+</div><div id="outline-container-orgheadline50" class="outline-3">
+<h3 id="orgheadline50"><span class="section-number-3">4.1</span> Les mécanismes de recomposition du programme</h3>
 <div class="outline-text-3" id="text-4-1">
-</div><div id="outline-container-orgheadline38" class="outline-4">
-<h4 id="orgheadline38"><span class="section-number-4">4.1.1</span> <span class="todo BARE">BARE</span> Le problème de l&rsquo;expression</h4>
+</div><div id="outline-container-orgheadline39" class="outline-4">
+<h4 id="orgheadline39"><span class="section-number-4">4.1.1</span> <span class="todo BARE">BARE</span> Le problème de l&rsquo;expression</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <p>
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) &#x2026;
@@ -4997,8 +5074,8 @@ Wadler, Odersky, Krishnamurthi, Oliveira (expression families) &#x2026;
 </div>
 </div>
 
-<div id="outline-container-orgheadline39" class="outline-4">
-<h4 id="orgheadline39"><span class="section-number-4">4.1.2</span> <span class="todo BARE">BARE</span> Dynamic binding</h4>
+<div id="outline-container-orgheadline40" class="outline-4">
+<h4 id="orgheadline40"><span class="section-number-4">4.1.2</span> <span class="todo BARE">BARE</span> Dynamic binding</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <p>
 Introduced by McCarthy&rsquo;s LISP [<a href="#McC-60">McC60</a>] as a bug.  Can be emulated by passing a
@@ -5031,8 +5108,8 @@ on the binding semantics of Scheme, which reduce its applicability.
 </div>
 </div>
 
-<div id="outline-container-orgheadline40" class="outline-4">
-<h4 id="orgheadline40"><span class="section-number-4">4.1.3</span> <span class="todo BARE">BARE</span> Building from modules</h4>
+<div id="outline-container-orgheadline41" class="outline-4">
+<h4 id="orgheadline41"><span class="section-number-4">4.1.3</span> <span class="todo BARE">BARE</span> Building from modules</h4>
 <div class="outline-text-4" id="text-4-1-3">
 <p>
 Findler &amp; Flatt, Newspeak
@@ -5040,8 +5117,8 @@ Findler &amp; Flatt, Newspeak
 </div>
 </div>
 
-<div id="outline-container-orgheadline41" class="outline-4">
-<h4 id="orgheadline41"><span class="section-number-4">4.1.4</span> <span class="todo BARE">BARE</span> Building with monads</h4>
+<div id="outline-container-orgheadline42" class="outline-4">
+<h4 id="orgheadline42"><span class="section-number-4">4.1.4</span> <span class="todo BARE">BARE</span> Building with monads</h4>
 <div class="outline-text-4" id="text-4-1-4">
 <p>
 Wadler, Steele, Spinoza, Swierstra, Rúnar, &#x2026;
@@ -5098,8 +5175,8 @@ sign of equivalence between the mecanisms.
 </div>
 </div>
 
-<div id="outline-container-orgheadline42" class="outline-4">
-<h4 id="orgheadline42"><span class="section-number-4">4.1.5</span> <span class="todo BARE">BARE</span> Bytecode instrumentation</h4>
+<div id="outline-container-orgheadline43" class="outline-4">
+<h4 id="orgheadline43"><span class="section-number-4">4.1.5</span> <span class="todo BARE">BARE</span> Bytecode instrumentation</h4>
 <div class="outline-text-4" id="text-4-1-5">
 <p>
 Ansaloni.  Targets bytecode, which is low-level code.
@@ -5122,12 +5199,12 @@ bytecode compiler of WebKit (there is no standard, unlike Java).
 </div>
 </div>
 
-<div id="outline-container-orgheadline48" class="outline-4">
-<h4 id="orgheadline48"><span class="section-number-4">4.1.6</span> Superimposition</h4>
+<div id="outline-container-orgheadline49" class="outline-4">
+<h4 id="orgheadline49"><span class="section-number-4">4.1.6</span> Superimposition</h4>
 <div class="outline-text-4" id="text-4-1-6">
-</div><div id="outline-container-orgheadline43" class="outline-5">
-<h5 id="orgheadline43"><span class="todo BARE">BARE</span> Caesar</h5>
-<div class="outline-text-5" id="text-orgheadline43">
+</div><div id="outline-container-orgheadline44" class="outline-5">
+<h5 id="orgheadline44"><span class="todo BARE">BARE</span> Caesar</h5>
+<div class="outline-text-5" id="text-orgheadline44">
 <p>
 Caesar has everything and the kitchen sink.
 [<a href="#AGM+06">AGM+06</a>]</p>
@@ -5144,9 +5221,9 @@ the benefit brought by the new mechanisms.
 </div>
 </div>
 
-<div id="outline-container-orgheadline45" class="outline-5">
-<h5 id="orgheadline45"><span class="todo TRANSLATE">TRANSLATE</span> Software product lines</h5>
-<div class="outline-text-5" id="text-orgheadline45">
+<div id="outline-container-orgheadline46" class="outline-5">
+<h5 id="orgheadline46"><span class="todo TRANSLATE">TRANSLATE</span> Software product lines</h5>
+<div class="outline-text-5" id="text-orgheadline46">
 <p>
 [<a href="#ABK+13">ABK+13</a>] provides a well-rounded survey of the field.
 </p>
@@ -5213,7 +5290,7 @@ to their implementation via the <code>original</code> keyword.
 </p>
 
 <p>
-FeatureHouse [<a href="#AKL-13">AKL13</a>] is akin to <a href="#orgheadline44">Semantic patches</a>, in that it uses a reduced
+FeatureHouse [<a href="#AKL-13">AKL13</a>] is akin to <a href="#orgheadline45">Semantic patches</a>, in that it uses a reduced
 syntax tree in order to transform code.  One writes a base program, then another
 program can be superimposed on it by matching their reduced syntax trees.  The
 base program code can be called using the <code>original</code> keyword.  Three-way merges
@@ -5242,7 +5319,7 @@ essentially instances of superimposition.
 FOP is well-suited to implementing <i>heterogeneous concerns</i> (one variation per
 join point), while AOP is better for <i>homogeneous concerns</i> (one variation,
 multiple join points). [<a href="#MO-04">MO04</a>] illustrates the compromises of each approaches (and
-presents <a href="#orgheadline43">Caesar</a> as the superior solution).
+presents <a href="#orgheadline44">Caesar</a> as the superior solution).
 </p>
 
 <p>
@@ -5261,7 +5338,7 @@ Handling feature interactions is an open problem.  Detecting them also.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline46"></a>Mechanisms for instrumentation<br ><div class="outline-text-6" id="text-orgheadline46">
+<ul class="org-ul"><li><a id="orgheadline47"></a>Mechanisms for instrumentation<br ><div class="outline-text-6" id="text-orgheadline47">
 <p>
 FOP implementations presented here are static organization of code into
 features.  Much like design patterns or frameworks, they require the programmer
@@ -5305,9 +5382,9 @@ prevents obliviousness.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline44" class="outline-5">
-<h5 id="orgheadline44"><span class="todo TRANSLATE">TRANSLATE</span> Semantic patches</h5>
-<div class="outline-text-5" id="text-orgheadline44">
+<div id="outline-container-orgheadline45" class="outline-5">
+<h5 id="orgheadline45"><span class="todo TRANSLATE">TRANSLATE</span> Semantic patches</h5>
+<div class="outline-text-5" id="text-orgheadline45">
 <p>
 [<a href="#PLM-07">PLM07</a>].  A solution to <i>collateral evolution</i>.  When a library function changes
 name, or gains an argument, client code must makes the necessary changes.  The
@@ -5373,7 +5450,7 @@ interesting.  See <a href="notes.html#MissingReference">Shapes of computation</a
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline47"></a>Mechanisms for extension<br ><div class="outline-text-6" id="text-orgheadline47">
+<ul class="org-ul"><li><a id="orgheadline48"></a>Mechanisms for extension<br ><div class="outline-text-6" id="text-orgheadline48">
 <p>
 It&rsquo;s another approach, transforming code to alleviate the maintenance cost.
 </p>
@@ -5394,11 +5471,11 @@ examples from the Linux kernel.
 </div>
 </div>
 
-<div id="outline-container-orgheadline60" class="outline-3">
-<h3 id="orgheadline60"><span class="section-number-3">4.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Travaux connexes concernant l&rsquo;instrumentation</h3>
+<div id="outline-container-orgheadline61" class="outline-3">
+<h3 id="orgheadline61"><span class="section-number-3">4.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Travaux connexes concernant l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-4-2">
-</div><div id="outline-container-orgheadline50" class="outline-4">
-<h4 id="orgheadline50"><span class="section-number-4">4.2.1</span> <span class="todo BARE">BARE</span> Domain-specific languages</h4>
+</div><div id="outline-container-orgheadline51" class="outline-4">
+<h4 id="orgheadline51"><span class="section-number-4">4.2.1</span> <span class="todo BARE">BARE</span> Domain-specific languages</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 Greater control for language designer.  Gives a constrained playground for
@@ -5416,8 +5493,8 @@ Monads can be seen as DSLs (but this is an insight better saved for later).
 </div>
 </div>
 
-<div id="outline-container-orgheadline51" class="outline-4">
-<h4 id="orgheadline51"><span class="section-number-4">4.2.2</span> <span class="todo BARE">BARE</span> Scripting languages</h4>
+<div id="outline-container-orgheadline52" class="outline-4">
+<h4 id="orgheadline52"><span class="section-number-4">4.2.2</span> <span class="todo BARE">BARE</span> Scripting languages</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <p>
 Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
@@ -5438,8 +5515,8 @@ in the Core, it might be adequate to have a dedicated background section to it.
 </div>
 </div>
 
-<div id="outline-container-orgheadline53" class="outline-4">
-<h4 id="orgheadline53"><span class="section-number-4">4.2.3</span> <span class="todo TRANSLATE">TRANSLATE</span> Emacs</h4>
+<div id="outline-container-orgheadline54" class="outline-4">
+<h4 id="orgheadline54"><span class="section-number-4">4.2.3</span> <span class="todo TRANSLATE">TRANSLATE</span> Emacs</h4>
 <div class="outline-text-4" id="text-4-2-3">
 <p>
 See Emacs Manual, [<a href="#Sta-81">Sta81</a>], [<a href="#Hal-88">Hal88</a>].  Emacs is an example of an extensible system.
@@ -5467,7 +5544,7 @@ Especially they list &laquo;&nbsp;Language features for extensibility&nbsp;&raqu
 </p>
 <ol class="org-ol">
 <li>Global variables.  They can be queried, referred to, and redefined.</li>
-<li><a href="#orgheadline39">4.1.2</a>.  Useful for redefining binding on the fly.</li>
+<li><a href="#orgheadline40">4.1.2</a>.  Useful for redefining binding on the fly.</li>
 <li>File-local variables.  Good for customization, but really they give a
 file-local value for a global variable.</li>
 <li>Hooks.  They give points in the control flow to insert extension code.
@@ -5496,9 +5573,9 @@ dynamic binding to lexical binding.
 </p>
 </div>
 
-<div id="outline-container-orgheadline52" class="outline-5">
-<h5 id="orgheadline52">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline52">
+<div id="outline-container-orgheadline53" class="outline-5">
+<h5 id="orgheadline53">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline53">
 <p>
 Global variables, dynamic binding, hooks.
 </p>
@@ -5510,8 +5587,8 @@ Though hooks are more a convention than a first-class mechanism.
 </div>
 </div>
 
-<div id="outline-container-orgheadline55" class="outline-4">
-<h4 id="orgheadline55"><span class="section-number-4">4.2.4</span> <span class="todo TRANSLATE">TRANSLATE</span> Eclipse and other IDEs</h4>
+<div id="outline-container-orgheadline56" class="outline-4">
+<h4 id="orgheadline56"><span class="section-number-4">4.2.4</span> <span class="todo TRANSLATE">TRANSLATE</span> Eclipse and other IDEs</h4>
 <div class="outline-text-4" id="text-4-2-4">
 <p>
 As noted by [<a href="#Ler-11">Ler11</a>], the Eclipse platform is extensible, and built using
@@ -5526,9 +5603,9 @@ boilerplate code and XML (which Eclipse can generate for you, I understand).
 </p>
 </div>
 
-<div id="outline-container-orgheadline54" class="outline-5">
-<h5 id="orgheadline54">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline54">
+<div id="outline-container-orgheadline55" class="outline-5">
+<h5 id="orgheadline55">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline55">
 <p>
 The mechanisms for extension seems to revolve around the observer pattern: a
 host plugin raises events which can be intercepted by extensions [<a href="#Bol-03">Bol03</a>].
@@ -5541,8 +5618,8 @@ So, a lot of convention.
 </div>
 </div>
 
-<div id="outline-container-orgheadline57" class="outline-4">
-<h4 id="orgheadline57"><span class="section-number-4">4.2.5</span> <span class="todo BARE">BARE</span> Web browsers</h4>
+<div id="outline-container-orgheadline58" class="outline-4">
+<h4 id="orgheadline58"><span class="section-number-4">4.2.5</span> <span class="todo BARE">BARE</span> Web browsers</h4>
 <div class="outline-text-4" id="text-4-2-5">
 <p>
 Many extensions are written for web browsers.  The mechanisms are heavy,
@@ -5555,9 +5632,9 @@ by the browser.
 </p>
 </div>
 
-<div id="outline-container-orgheadline56" class="outline-5">
-<h5 id="orgheadline56">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline56">
+<div id="outline-container-orgheadline57" class="outline-5">
+<h5 id="orgheadline57">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline57">
 <p>
 Convention.  Write manifest, and define the agreed-upon functions (install,
 startup).
@@ -5566,8 +5643,8 @@ startup).
 </div>
 </div>
 
-<div id="outline-container-orgheadline59" class="outline-4">
-<h4 id="orgheadline59"><span class="section-number-4">4.2.6</span> <span class="todo TRANSLATE">TRANSLATE</span> Lua</h4>
+<div id="outline-container-orgheadline60" class="outline-4">
+<h4 id="orgheadline60"><span class="section-number-4">4.2.6</span> <span class="todo TRANSLATE">TRANSLATE</span> Lua</h4>
 <div class="outline-text-4" id="text-4-2-6">
 <p>
 An extensible extension language [<a href="#IFF-96">IdFF96</a>].
@@ -5684,9 +5761,9 @@ is doing its thing, without agreeing on a common protocol.
 </p>
 </div>
 
-<div id="outline-container-orgheadline58" class="outline-5">
-<h5 id="orgheadline58">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline58">
+<div id="outline-container-orgheadline59" class="outline-5">
+<h5 id="orgheadline59">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline59">
 <p>
 The kernel+configuration, as seen in EMACS.  Mechanisms over policy shares our
 philosophy and provides programmers with tools to solve their problems in their
@@ -5703,8 +5780,8 @@ Changing the interpreter does not seem possible, even from C.
 </div>
 </div>
 
-<div id="outline-container-orgheadline62" class="outline-2">
-<h2 id="variations"><a id="orgheadline62"></a><span class="section-number-2">5</span> <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
+<div id="outline-container-orgheadline63" class="outline-2">
+<h2 id="variations"><a id="orgheadline63"></a><span class="section-number-2">5</span> <span class="todo UNSTABLE">UNSTABLE</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
 <div class="outline-text-2" id="text-variations">
 <p>
 Essayons d&rsquo;abord d&rsquo;écrire un interpréteur pour chaque sémantique de &lambda;<sup>facet</sup>, sans
@@ -5837,8 +5914,8 @@ que nous explorons par la suite.
 </div>
 </div>
 
-<div id="outline-container-orgheadline101" class="outline-2">
-<h2 id="orgheadline101"><span class="section-number-2">6</span> <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</h2>
+<div id="outline-container-orgheadline102" class="outline-2">
+<h2 id="orgheadline102"><span class="section-number-2">6</span> <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur extensible</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Le style de l&rsquo;interpréteur du chapitre précédent n&rsquo;est pas extensible.
@@ -5991,8 +6068,8 @@ l&rsquo;une ou l&rsquo;autre interprétation pour un même programme.
 </p>
 </div>
 
-<div id="outline-container-orgheadline63" class="outline-4">
-<h4 id="orgheadline63"><span class="section-number-4">6.0.1</span> Finding a core example</h4>
+<div id="outline-container-orgheadline64" class="outline-4">
+<h4 id="orgheadline64"><span class="section-number-4">6.0.1</span> Finding a core example</h4>
 <div class="outline-text-4" id="text-6-0-1">
 <p>
 Looking at the operational semantics for faceted evaluation, we can
@@ -6955,8 +7032,8 @@ a separate module with minimal code duplication.
 </div>
 </div>
 
-<div id="outline-container-orgheadline64" class="outline-4">
-<h4 id="orgheadline64"><span class="section-number-4">6.0.2</span> The expression problem</h4>
+<div id="outline-container-orgheadline65" class="outline-4">
+<h4 id="orgheadline65"><span class="section-number-4">6.0.2</span> The expression problem</h4>
 <div class="outline-text-4" id="text-6-0-2">
 <p>
 First, let&rsquo;s list the additions brought by our extension to the
@@ -7008,8 +7085,8 @@ extended and original codes to include keywords.)
 </div>
 </div>
 
-<div id="outline-container-orgheadline65" class="outline-4">
-<h4 id="orgheadline65"><span class="section-number-4">6.0.3</span> The expression problem, with a twist</h4>
+<div id="outline-container-orgheadline66" class="outline-4">
+<h4 id="orgheadline66"><span class="section-number-4">6.0.3</span> The expression problem, with a twist</h4>
 <div class="outline-text-4" id="text-6-0-3">
 <p>
 The expression problem is only concerned with <i>adding</i> data types and
@@ -7088,8 +7165,8 @@ applications.]
 </div>
 </div>
 
-<div id="outline-container-orgheadline66" class="outline-4">
-<h4 id="orgheadline66"><span class="section-number-4">6.0.4</span> The modular instrumentation problem</h4>
+<div id="outline-container-orgheadline67" class="outline-4">
+<h4 id="orgheadline67"><span class="section-number-4">6.0.4</span> The modular instrumentation problem</h4>
 <div class="outline-text-4" id="text-6-0-4">
 <p>
 We have an interpreter I for a language L, and the source code for I.
@@ -7147,11 +7224,11 @@ monads, if you have a monadic interpreter.]
 </div>
 </div>
 
-<div id="outline-container-orgheadline80" class="outline-3">
-<h3 id="orgheadline80"><span class="section-number-3">6.1</span> Variations</h3>
+<div id="outline-container-orgheadline81" class="outline-3">
+<h3 id="orgheadline81"><span class="section-number-3">6.1</span> Variations</h3>
 <div class="outline-text-3" id="text-6-1">
-</div><div id="outline-container-orgheadline79" class="outline-4">
-<h4 id="orgheadline79"><span class="section-number-4">6.1.1</span> JavaScript</h4>
+</div><div id="outline-container-orgheadline80" class="outline-4">
+<h4 id="orgheadline80"><span class="section-number-4">6.1.1</span> JavaScript</h4>
 <div class="outline-text-4" id="text-6-1-1">
 <p>
 See <a href="js/aoping.html">js/aoping.html</a>.
@@ -7162,9 +7239,9 @@ See also <a href="lassy15.html">lassy15.html</a> for a way to build interpreters
 </p>
 </div>
 
-<div id="outline-container-orgheadline67" class="outline-5">
-<h5 id="orgheadline67">Split OO-style instrumented interpreter into modules</h5>
-<div class="outline-text-5" id="text-orgheadline67">
+<div id="outline-container-orgheadline68" class="outline-5">
+<h5 id="orgheadline68">Split OO-style instrumented interpreter into modules</h5>
+<div class="outline-text-5" id="text-orgheadline68">
 <p>
 Let&rsquo;s try to separate the object-oriented instrumented interpreter in
 two modules: one for the base interpreter, ‘base.js&rsquo;, and one for the
@@ -7179,7 +7256,7 @@ to <code>Set.prototype</code> in a separate file right away.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline68"></a>Handling the extra PC parameter<br ><div class="outline-text-6" id="text-orgheadline68">
+<ul class="org-ul"><li><a id="orgheadline69"></a>Handling the extra PC parameter<br ><div class="outline-text-6" id="text-orgheadline69">
 <p>
 The second, more pervasive change is the addition of the program
 counter context in every call.  There are at least two solutions to
@@ -7191,7 +7268,7 @@ this problem:
 </ol>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline69"></a>Using a global variable<br ><div class="outline-text-7" id="text-orgheadline69">
+<ul class="org-ul"><li><a id="orgheadline70"></a>Using a global variable<br ><div class="outline-text-7" id="text-orgheadline70">
 <p>
 <a href="js/lab/oo-split-global/base.js">js/lab/oo-split-global/base.js</a>
 <a href="js/lab/oo-split-global/facets.js">js/lab/oo-split-global/facets.js</a>
@@ -7269,7 +7346,7 @@ dynamic scoping [Art of Interp].
 </p>
 </div></li>
 
-<li><a id="orgheadline70"></a>Using a context object<br ><div class="outline-text-7" id="text-orgheadline70">
+<li><a id="orgheadline71"></a>Using a context object<br ><div class="outline-text-7" id="text-orgheadline71">
 <p>
 <a href="js/lab/oo-split-context/base.js">js/lab/oo-split-context/base.js</a>
 <a href="js/lab/oo-split-context/facets.js">js/lab/oo-split-context/facets.js</a>
@@ -7349,7 +7426,7 @@ that case, both mutability and dynamic typing are leveraged.
 </p>
 </div></li></ul></li>
 
-<li><a id="orgheadline71"></a>Handling the change in the reference rule<br ><div class="outline-text-6" id="text-orgheadline71">
+<li><a id="orgheadline72"></a>Handling the change in the reference rule<br ><div class="outline-text-6" id="text-orgheadline72">
 <p>
 <a href="js/lab/oo-split-global/base.js">js/lab/oo-split-global/base.js</a>
 <a href="js/lab/oo-split-global/facets.js">js/lab/oo-split-global/facets.js</a>
@@ -7476,7 +7553,7 @@ base object-oriented interpreter.
 </p>
 </div></li>
 
-<li><a id="orgheadline72"></a>Summary<br ><div class="outline-text-6" id="text-orgheadline72">
+<li><a id="orgheadline73"></a>Summary<br ><div class="outline-text-6" id="text-orgheadline73">
 <p>
 We split the object-oriented interpreter into two modules:
 </p>
@@ -7511,9 +7588,9 @@ prototype chain.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline73" class="outline-5">
-<h5 id="orgheadline73">Split pattern-matching instrumented interpreter into modules</h5>
-<div class="outline-text-5" id="text-orgheadline73">
+<div id="outline-container-orgheadline74" class="outline-5">
+<h5 id="orgheadline74">Split pattern-matching instrumented interpreter into modules</h5>
+<div class="outline-text-5" id="text-orgheadline74">
 <p>
 <a href="js/lab/es6-split-global/base.js">js/lab/es6-split-global/base.js</a>
 <a href="js/lab/es6-split-global/facets.js">js/lab/es6-split-global/facets.js</a>
@@ -7530,7 +7607,7 @@ different.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline74"></a>The facet-specific rules are scattered<br ><div class="outline-text-6" id="text-orgheadline74">
+<ul class="org-ul"><li><a id="orgheadline75"></a>The facet-specific rules are scattered<br ><div class="outline-text-6" id="text-orgheadline75">
 <p>
 The <code>eval_apply</code>, <code>eval_deref</code> and <code>eval_assign</code> code for facet values
 is split across the three <code>application_rules</code>, <code>deref_rules</code> and
@@ -7626,7 +7703,7 @@ it.
 </p>
 </div></li>
 
-<li><a id="orgheadline75"></a>Extending the ref function<br ><div class="outline-text-6" id="text-orgheadline75">
+<li><a id="orgheadline76"></a>Extending the ref function<br ><div class="outline-text-6" id="text-orgheadline76">
 <p>
 In the object-oriented approach, we redefined the <code>ref</code> function in
 the facets module and delegated the other rules to the base
@@ -7761,7 +7838,7 @@ namespace, as we did in the object-oriented approach.
 </p>
 </div></li>
 
-<li><a id="orgheadline76"></a>Summary<br ><div class="outline-text-6" id="text-orgheadline76">
+<li><a id="orgheadline77"></a>Summary<br ><div class="outline-text-6" id="text-orgheadline77">
 <p>
 The two solutions (global variable and context object) for dealing
 with the extra ‘pc&rsquo; parameter can be applied here as well.  The same
@@ -7778,9 +7855,9 @@ using dynamic scoping achieves the same effects.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline78" class="outline-5">
-<h5 id="orgheadline78">Summary of JavaScript variations</h5>
-<div class="outline-text-5" id="text-orgheadline78">
+<div id="outline-container-orgheadline79" class="outline-5">
+<h5 id="orgheadline79">Summary of JavaScript variations</h5>
+<div class="outline-text-5" id="text-orgheadline79">
 <p>
 It appears that, the more the interpreter rely on dynamic features,
 the easier it is to instrument.  The <i>dynamic dispatching</i> of the
@@ -7804,15 +7881,15 @@ context at runtime.
 
 <p>
 In a language with dynamic scoping the interpreter should be a breeze
-to instrument.  That is the focus of the <a href="#orgheadline77">Lisp variations</a>.
+to instrument.  That is the focus of the <a href="#orgheadline78">Lisp variations</a>.
 </p>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline77" class="outline-3">
-<h3 id="orgheadline77"><span class="section-number-3">6.2</span> Lisp</h3>
+<div id="outline-container-orgheadline78" class="outline-3">
+<h3 id="orgheadline78"><span class="section-number-3">6.2</span> Lisp</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 <a href="lisp/pm.lisp">lisp/pm.lisp</a>
@@ -7907,13 +7984,13 @@ Furthermore, we also saw that dynamic typing was useful in the
 ‘context&rsquo; object case.  What if we want to benefit from the guarantees
 provided by static types?  Is the modular instrumentation still
 feasible?  Is it cumbersome to write?  That is the focus of the
-<a href="#orgheadline81">Haskell variations</a>.
+<a href="#orgheadline82">Haskell variations</a>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline81" class="outline-3">
-<h3 id="orgheadline81"><span class="section-number-3">6.3</span> Haskell</h3>
+<div id="outline-container-orgheadline82" class="outline-3">
+<h3 id="orgheadline82"><span class="section-number-3">6.3</span> Haskell</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 Building scaffolding with languages features has the following
@@ -7951,12 +8028,12 @@ Advantages:
 </ul>
 </div>
 
-<div id="outline-container-orgheadline95" class="outline-4">
-<h4 id="orgheadline95"><span class="section-number-4">6.3.1</span> Building scaffolding with language features</h4>
+<div id="outline-container-orgheadline96" class="outline-4">
+<h4 id="orgheadline96"><span class="section-number-4">6.3.1</span> Building scaffolding with language features</h4>
 <div class="outline-text-4" id="text-6-3-1">
-</div><div id="outline-container-orgheadline82" class="outline-5">
-<h5 id="orgheadline82">Monadic interpreters</h5>
-<div class="outline-text-5" id="text-orgheadline82">
+</div><div id="outline-container-orgheadline83" class="outline-5">
+<h5 id="orgheadline83">Monadic interpreters</h5>
+<div class="outline-text-5" id="text-orgheadline83">
 <p>
 The monadic interpreter is mostly taken from <a href="http://homepages.inf.ed.ac.uk/wadler/papers/essence/essence.ps">Wadler</a>.
 </p>
@@ -7970,9 +8047,9 @@ The monadic interpreter is mostly taken from <a href="http://homepages.inf.ed.ac
 </div>
 </div>
 
-<div id="outline-container-orgheadline83" class="outline-5">
-<h5 id="orgheadline83">Either data type</h5>
-<div class="outline-text-5" id="text-orgheadline83">
+<div id="outline-container-orgheadline84" class="outline-5">
+<h5 id="orgheadline84">Either data type</h5>
+<div class="outline-text-5" id="text-orgheadline84">
 <p>
 See <a href="hs/extend-types/Extension.fail.1.hs">hs/extend-types/Extension.fail.1.hs</a>.  Types are extended like
 so:
@@ -7983,14 +8060,14 @@ data FacetTerm  = Facet Principal FacetTerm FacetTerm | BaseTerm Term
 </pre>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline84"></a>What does work<br ><div class="outline-text-6" id="text-orgheadline84">
+<ul class="org-ul"><li><a id="orgheadline85"></a>What does work<br ><div class="outline-text-6" id="text-orgheadline85">
 <ul class="org-ul">
 <li>Maximum reuse from the file ‘Base.hs&rsquo;</li>
 <li>Able to execute `term0` and `term1`</li>
 </ul>
 </div></li>
 
-<li><a id="orgheadline85"></a>What fails<br ><div class="outline-text-6" id="text-orgheadline85">
+<li><a id="orgheadline86"></a>What fails<br ><div class="outline-text-6" id="text-orgheadline86">
 <ul class="org-ul">
 <li>`term2` gives a type error:
 &laquo;&nbsp;Couldn&rsquo;t match expected type `Term&nbsp;&raquo; with actual type `FacetTerm&nbsp;&raquo;&nbsp;&raquo;</li>
@@ -8005,7 +8082,7 @@ term2 = (Lam "y" (Facet 0 (BaseTerm (Lam "x" Bot)) (BaseTerm Bot)))
 </ul>
 </div></li>
 
-<li><a id="orgheadline86"></a>What I wanted<br ><div class="outline-text-6" id="text-orgheadline86">
+<li><a id="orgheadline87"></a>What I wanted<br ><div class="outline-text-6" id="text-orgheadline87">
 <ul class="org-ul">
 <li>`eval term2` gives the same result as when using Extended.eval.</li>
 
@@ -8013,7 +8090,7 @@ term2 = (Lam "y" (Facet 0 (BaseTerm (Lam "x" Bot)) (BaseTerm Bot)))
 </ul>
 </div></li>
 
-<li><a id="orgheadline87"></a>Why it doesn&rsquo;t work<br ><div class="outline-text-6" id="text-orgheadline87">
+<li><a id="orgheadline88"></a>Why it doesn&rsquo;t work<br ><div class="outline-text-6" id="text-orgheadline88">
 <p>
 A FacetTerm is either a Facet or a BaseTerm.  A Facet can contain
 FacetTerms (and hence BaseTerms), but since BaseTerms are just Terms,
@@ -8021,7 +8098,7 @@ they cannot contain Facets.
 </p>
 </div></li>
 
-<li><a id="orgheadline88"></a>Conclusion<br ><div class="outline-text-6" id="text-orgheadline88">
+<li><a id="orgheadline89"></a>Conclusion<br ><div class="outline-text-6" id="text-orgheadline89">
 <p>
 What we really want is to insert the constructor `Facet` into the
 existing data type `Term`.
@@ -8029,9 +8106,9 @@ existing data type `Term`.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline89" class="outline-5">
-<h5 id="orgheadline89">Type classes</h5>
-<div class="outline-text-5" id="text-orgheadline89">
+<div id="outline-container-orgheadline90" class="outline-5">
+<h5 id="orgheadline90">Type classes</h5>
+<div class="outline-text-5" id="text-orgheadline90">
 <p>
 Another suggestion by Rémi.
 </p>
@@ -8064,7 +8141,7 @@ Open Data Types paper, in Section 6.4.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline90"></a>Multi-param types classes<br ><div class="outline-text-6" id="text-orgheadline90">
+<ul class="org-ul"><li><a id="orgheadline91"></a>Multi-param types classes<br ><div class="outline-text-6" id="text-orgheadline91">
 <div class="org-src-container">
 
 <pre class="src src-haskell"><span class="org-haskell-keyword">class</span> <span class="org-haskell-type">Eval</span> term value <span class="org-haskell-keyword">where</span>
@@ -8080,9 +8157,9 @@ offered by this strategy.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline92" class="outline-5">
-<h5 id="orgheadline92">Data types à la carte</h5>
-<div class="outline-text-5" id="text-orgheadline92">
+<div id="outline-container-orgheadline93" class="outline-5">
+<h5 id="orgheadline93">Data types à la carte</h5>
+<div class="outline-text-5" id="text-orgheadline93">
 <p>
 From Swierstra, 2008.
 </p>
@@ -8128,14 +8205,14 @@ the value type, which would be even <i>hairier</i>.</li>
 </ul>
 
 <p>
-See also my <a href="#orgheadline91">my second attempt</a> at Swierstra, in 2015.
+See also my <a href="#orgheadline92">my second attempt</a> at Swierstra, in 2015.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline93" class="outline-5">
-<h5 id="orgheadline93">Implicit arguments</h5>
-<div class="outline-text-5" id="text-orgheadline93">
+<div id="outline-container-orgheadline94" class="outline-5">
+<h5 id="orgheadline94">Implicit arguments</h5>
+<div class="outline-text-5" id="text-orgheadline94">
 <p>
 A simple idea: implicit arguments can replace global variables.
 </p>
@@ -8151,9 +8228,9 @@ See <a href="hs/implicit">implicit</a>.
 </div>
 </div>
 
-<div id="outline-container-orgheadline94" class="outline-5">
-<h5 id="orgheadline94">Facets as a monad</h5>
-<div class="outline-text-5" id="text-orgheadline94">
+<div id="outline-container-orgheadline95" class="outline-5">
+<h5 id="orgheadline95">Facets as a monad</h5>
+<div class="outline-text-5" id="text-orgheadline95">
 <p>
 The faceted evaluation strategy requires a new state global: the program
 counter.  It makes sense to add this state in a state monad to a monadic
@@ -8173,8 +8250,8 @@ See <a href="hs/list-monad/">list-monad</a>.
 </div>
 </div>
 
-<div id="outline-container-orgheadline96" class="outline-4">
-<h4 id="orgheadline96"><span class="section-number-4">6.3.2</span> Extending the syntax</h4>
+<div id="outline-container-orgheadline97" class="outline-4">
+<h4 id="orgheadline97"><span class="section-number-4">6.3.2</span> Extending the syntax</h4>
 <div class="outline-text-4" id="text-6-3-2">
 <p>
 See <a href="hs/transform/notes.html">hs/transform/notes.html</a>
@@ -8193,11 +8270,11 @@ obliviousness is lost</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline100" class="outline-3">
-<h3 id="orgheadline100"><span class="section-number-3">6.4</span> Modular monadic interpreters</h3>
+<div id="outline-container-orgheadline101" class="outline-3">
+<h3 id="orgheadline101"><span class="section-number-3">6.4</span> Modular monadic interpreters</h3>
 <div class="outline-text-3" id="text-6-4">
-</div><div id="outline-container-orgheadline98" class="outline-4">
-<h4 id="orgheadline98"><span class="section-number-4">6.4.1</span> The giants</h4>
+</div><div id="outline-container-orgheadline99" class="outline-4">
+<h4 id="orgheadline99"><span class="section-number-4">6.4.1</span> The giants</h4>
 <div class="outline-text-4" id="text-6-4-1">
 <p>
 There&rsquo;s a body of work on monadic interpreters in functional programming
@@ -8251,9 +8328,9 @@ Practical Extensibility with Object Algebras.  2012</li>
 </ul>
 </div>
 
-<div id="outline-container-orgheadline91" class="outline-5">
-<h5 id="orgheadline91">Data types  à la carte (2015)</h5>
-<div class="outline-text-5" id="text-orgheadline91">
+<div id="outline-container-orgheadline92" class="outline-5">
+<h5 id="orgheadline92">Data types  à la carte (2015)</h5>
+<div class="outline-text-5" id="text-orgheadline92">
 <p>
 Re-reading Swiestra in 2015, my brain parses it much better.
 </p>
@@ -8289,9 +8366,9 @@ related work on type systems for effects.</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline97" class="outline-5">
-<h5 id="orgheadline97">Wadler — The essence of functional programming</h5>
-<div class="outline-text-5" id="text-orgheadline97">
+<div id="outline-container-orgheadline98" class="outline-5">
+<h5 id="orgheadline98">Wadler — The essence of functional programming</h5>
+<div class="outline-text-5" id="text-orgheadline98">
 <p>
 How to build a monadic interpreter.  Also serves as a tutorial on monads.
 </p>
@@ -8332,8 +8409,8 @@ interpreter in an oblivious fashion.
 </div>
 </div>
 
-<div id="outline-container-orgheadline99" class="outline-4">
-<h4 id="orgheadline99"><span class="section-number-4">6.4.2</span> The bigger picture</h4>
+<div id="outline-container-orgheadline100" class="outline-4">
+<h4 id="orgheadline100"><span class="section-number-4">6.4.2</span> The bigger picture</h4>
 <div class="outline-text-4" id="text-6-4-2">
 <p>
 In the solutions from the functional programming world, the idea seems to
@@ -8366,8 +8443,8 @@ a clear advantage of not requiring a parser.
 </div>
 </div>
 
-<div id="outline-container-orgheadline106" class="outline-2">
-<h2 id="orgheadline106"><span class="section-number-2">7</span> <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</h2>
+<div id="outline-container-orgheadline107" class="outline-2">
+<h2 id="orgheadline107"><span class="section-number-2">7</span> <span class="todo TRANSLATE">TRANSLATE</span> Construire un interpréteur par modules</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 <i>Contenu principalement tiré d&rsquo;un papier présenté à l&rsquo;atelier FOAL&rsquo;15 [<a href="#KNS-15">MdKNS15b</a>]</i>.
@@ -8397,8 +8474,8 @@ tardive à travers la construction <code>with</code> de JavaScript.
 </p>
 </div>
 
-<div id="outline-container-orgheadline102" class="outline-3">
-<h3 id="orgheadline102"><span class="section-number-3">7.1</span> Ajouter des termes</h3>
+<div id="outline-container-orgheadline103" class="outline-3">
+<h3 id="orgheadline103"><span class="section-number-3">7.1</span> Ajouter des termes</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 On construit un interpréteur pour un simple langage arithmétique, suivant
@@ -8501,8 +8578,8 @@ nouvel objet qui répond à la fonction <code>eval</code>.
 </div>
 </div>
 
-<div id="outline-container-orgheadline103" class="outline-3">
-<h3 id="orgheadline103"><span class="section-number-3">7.2</span> Ajouter des opérations</h3>
+<div id="outline-container-orgheadline104" class="outline-3">
+<h3 id="orgheadline104"><span class="section-number-3">7.2</span> Ajouter des opérations</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
@@ -8768,8 +8845,8 @@ on peut modifier des opérations existantes, et combiner
 </div>
 </div>
 
-<div id="outline-container-orgheadline104" class="outline-3">
-<h3 id="orgheadline104"><span class="section-number-3">7.3</span> Modifier des opérations</h3>
+<div id="outline-container-orgheadline105" class="outline-3">
+<h3 id="orgheadline105"><span class="section-number-3">7.3</span> Modifier des opérations</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 On va maintenant s&rsquo;intéresser à modifier des opérations.  Par exemple, en
@@ -8868,8 +8945,8 @@ cascade:
 </div>
 </div>
 
-<div id="outline-container-orgheadline105" class="outline-3">
-<h3 id="orgheadline105"><span class="section-number-3">7.4</span> Passer de l&rsquo;état aux opérations</h3>
+<div id="outline-container-orgheadline106" class="outline-3">
+<h3 id="orgheadline106"><span class="section-number-3">7.4</span> Passer de l&rsquo;état aux opérations</h3>
 <div class="outline-text-3" id="text-7-4">
 <p>
 Dans l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation à facettes, on a vu que de
@@ -8972,8 +9049,8 @@ d&rsquo;incidence sur le résultat:
 </div>
 </div>
 
-<div id="outline-container-orgheadline117" class="outline-2">
-<h2 id="orgheadline117"><span class="section-number-2">8</span> Dynamic scoping to build interpreters</h2>
+<div id="outline-container-orgheadline118" class="outline-2">
+<h2 id="orgheadline118"><span class="section-number-2">8</span> Dynamic scoping to build interpreters</h2>
 <div class="outline-text-2" id="text-8">
 <p>
 From the LASSY&rsquo;15 paper.
@@ -8985,8 +9062,8 @@ Odersky as a base to propose solutions to the expression problem.
 </p>
 </div>
 
-<div id="outline-container-orgheadline107" class="outline-3">
-<h3 id="orgheadline107"><span class="section-number-3">8.1</span> The base datatype</h3>
+<div id="outline-container-orgheadline108" class="outline-3">
+<h3 id="orgheadline108"><span class="section-number-3">8.1</span> The base datatype</h3>
 <div class="outline-text-3" id="text-8-1">
 <div class="org-src-container">
 
@@ -9020,8 +9097,8 @@ svg(ref(name(<span class="org-string">'e1'</span>),
 </div>
 </div>
 
-<div id="outline-container-orgheadline108" class="outline-3">
-<h3 id="orgheadline108"><span class="section-number-3">8.2</span> Adding a data variant</h3>
+<div id="outline-container-orgheadline109" class="outline-3">
+<h3 id="orgheadline109"><span class="section-number-3">8.2</span> Adding a data variant</h3>
 <div class="outline-text-3" id="text-8-2">
 <div class="org-src-container">
 
@@ -9043,8 +9120,8 @@ print(e2.eval());
 </div>
 </div>
 
-<div id="outline-container-orgheadline109" class="outline-3">
-<h3 id="orgheadline109"><span class="section-number-3">8.3</span> Adding an operation</h3>
+<div id="outline-container-orgheadline110" class="outline-3">
+<h3 id="orgheadline110"><span class="section-number-3">8.3</span> Adding an operation</h3>
 <div class="outline-text-3" id="text-8-3">
 <div class="org-src-container">
 
@@ -9074,8 +9151,8 @@ This extension is invasive: it modifies the prototypes of <code>num</code> and
 </div>
 </div>
 
-<div id="outline-container-orgheadline112" class="outline-3">
-<h3 id="orgheadline112"><span class="section-number-3">8.4</span> Adding an operation as a module</h3>
+<div id="outline-container-orgheadline113" class="outline-3">
+<h3 id="orgheadline113"><span class="section-number-3">8.4</span> Adding an operation as a module</h3>
 <div class="outline-text-3" id="text-8-4">
 <div class="org-src-container">
 
@@ -9120,8 +9197,8 @@ Works, but can mix languages in unsafe ways:
 </div>
 </div>
 
-<div id="outline-container-orgheadline110" class="outline-4">
-<h4 id="orgheadline110"><span class="section-number-4">8.4.1</span> A use-case for <code>with</code></h4>
+<div id="outline-container-orgheadline111" class="outline-4">
+<h4 id="orgheadline111"><span class="section-number-4">8.4.1</span> A use-case for <code>with</code></h4>
 <div class="outline-text-4" id="text-8-4-1">
 <div class="org-src-container">
 
@@ -9151,8 +9228,8 @@ Outside <code>with</code>, the <code>show</code> module is out of scope:
 </div>
 </div>
 
-<div id="outline-container-orgheadline111" class="outline-4">
-<h4 id="orgheadline111"><span class="section-number-4">8.4.2</span> Selective imports with an IIFE</h4>
+<div id="outline-container-orgheadline112" class="outline-4">
+<h4 id="orgheadline112"><span class="section-number-4">8.4.2</span> Selective imports with an IIFE</h4>
 <div class="outline-text-4" id="text-8-4-2">
 <div class="org-src-container">
 
@@ -9181,8 +9258,8 @@ two examples, we always pass a fresh module so there is no issue.
 </div>
 </div>
 
-<div id="outline-container-orgheadline114" class="outline-3">
-<h3 id="orgheadline114"><span class="section-number-3">8.5</span> Modifying an operation</h3>
+<div id="outline-container-orgheadline115" class="outline-3">
+<h3 id="orgheadline115"><span class="section-number-3">8.5</span> Modifying an operation</h3>
 <div class="outline-text-3" id="text-8-5">
 <div class="org-src-container">
 
@@ -9202,8 +9279,8 @@ anymore.
 </p>
 </div>
 
-<div id="outline-container-orgheadline113" class="outline-4">
-<h4 id="orgheadline113"><span class="section-number-4">8.5.1</span> Non-destructive modification</h4>
+<div id="outline-container-orgheadline114" class="outline-4">
+<h4 id="orgheadline114"><span class="section-number-4">8.5.1</span> Non-destructive modification</h4>
 <div class="outline-text-4" id="text-8-5-1">
 <div class="org-src-container">
 
@@ -9242,8 +9319,8 @@ While after the <code>with</code>, <code>num</code> refers to the original, unmo
 </div>
 </div>
 
-<div id="outline-container-orgheadline115" class="outline-3">
-<h3 id="orgheadline115"><span class="section-number-3">8.6</span> Passing state</h3>
+<div id="outline-container-orgheadline116" class="outline-3">
+<h3 id="orgheadline116"><span class="section-number-3">8.6</span> Passing state</h3>
 <div class="outline-text-3" id="text-8-6">
 <p>
 Add a program counter incremented each time a data variant calls
@@ -9282,8 +9359,8 @@ Add a program counter incremented each time a data variant calls
 </div>
 </div>
 
-<div id="outline-container-orgheadline116" class="outline-3">
-<h3 id="orgheadline116"><span class="section-number-3">8.7</span> All in one</h3>
+<div id="outline-container-orgheadline117" class="outline-3">
+<h3 id="orgheadline117"><span class="section-number-3">8.7</span> All in one</h3>
 <div class="outline-text-3" id="text-8-7">
 <p>
 Combine all the extensions without effort.
@@ -9312,8 +9389,8 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-2">
-<h2 id="orgheadline135"><span class="section-number-2">9</span> <span class="done STABLE">STABLE</span> Étendre un interpréteur par manipulation de portée</h2>
+<div id="outline-container-orgheadline136" class="outline-2">
+<h2 id="orgheadline136"><span class="section-number-2">9</span> <span class="done STABLE">STABLE</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-9">
 <p>
 <i>Chapitre principalement tiré d&rsquo;un papier rejeté à DLS&rsquo;15 et à SAC&rsquo;16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -9357,8 +9434,8 @@ langage JavaScript.
 </p>
 </div>
 
-<div id="outline-container-orgheadline121" class="outline-3">
-<h3 id="orgheadline121"><span class="section-number-3">9.1</span> Manipuler la portée des variables pour l&rsquo;instrumentation</h3>
+<div id="outline-container-orgheadline122" class="outline-3">
+<h3 id="orgheadline122"><span class="section-number-3">9.1</span> Manipuler la portée des variables pour l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 L&rsquo;ingrédient clé de cette section est la notion de <i>portée de variable</i>, et
@@ -9397,8 +9474,8 @@ modèle en JavaScript.
 </p>
 </div>
 
-<div id="outline-container-orgheadline118" class="outline-4">
-<h4 id="orgheadline118"><span class="section-number-4">9.1.1</span> La portée dans le motif module</h4>
+<div id="outline-container-orgheadline119" class="outline-4">
+<h4 id="orgheadline119"><span class="section-number-4">9.1.1</span> La portée dans le motif module</h4>
 <div class="outline-text-4" id="text-9-1-1">
 <p>
 L&rsquo;interpréteur Narcissus est construit à partir du <i>motif module</i>.  Il n&rsquo;y a pas
@@ -9617,8 +9694,8 @@ module.  C&rsquo;est son rôle, mais ça s&rsquo;oppose à notre but d&rsquo;ext
 </div>
 </div>
 
-<div id="outline-container-orgheadline119" class="outline-4">
-<h4 id="orgheadline119"><span class="section-number-4">9.1.2</span> Ouvrir le motif module</h4>
+<div id="outline-container-orgheadline120" class="outline-4">
+<h4 id="orgheadline120"><span class="section-number-4">9.1.2</span> Ouvrir le motif module</h4>
 <div class="outline-text-4" id="text-9-1-2">
 <p>
 On cherche maintenant à accéder à l&rsquo;environnement de la FIA de l&rsquo;extérieur du
@@ -9840,8 +9917,8 @@ dans une chaîne d&rsquo;environnements.
 </div>
 </div>
 
-<div id="outline-container-orgheadline120" class="outline-4">
-<h4 id="orgheadline120"><span class="section-number-4">9.1.3</span> Disposer les environnements en couches</h4>
+<div id="outline-container-orgheadline121" class="outline-4">
+<h4 id="orgheadline121"><span class="section-number-4">9.1.3</span> Disposer les environnements en couches</h4>
 <div class="outline-text-4" id="text-9-1-3">
 <p>
 On a vu que tout environnement a un environnement parent.  Si un nom n&rsquo;est pas
@@ -10037,8 +10114,8 @@ C&rsquo;est l&rsquo;objet de la section suivante.
 </div>
 </div>
 
-<div id="outline-container-orgheadline122" class="outline-3">
-<h3 id="orgheadline122"><span class="section-number-3">9.2</span> Ouvrir le motif module en JavaScript</h3>
+<div id="outline-container-orgheadline123" class="outline-3">
+<h3 id="orgheadline123"><span class="section-number-3">9.2</span> Ouvrir le motif module en JavaScript</h3>
 <div class="outline-text-3" id="text-9-2">
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
@@ -10393,8 +10470,8 @@ applique ces mécanismes à Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline128" class="outline-3">
-<h3 id="orgheadline128"><span class="section-number-3">9.3</span> Étendre Narcissus par manipulation de portée</h3>
+<div id="outline-container-orgheadline129" class="outline-3">
+<h3 id="orgheadline129"><span class="section-number-3">9.3</span> Étendre Narcissus par manipulation de portée</h3>
 <div class="outline-text-3" id="text-9-3">
 <p>
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -10442,8 +10519,8 @@ l&rsquo;instrumentation.
 </p>
 </div>
 
-<div id="outline-container-orgheadline123" class="outline-4">
-<h4 id="orgheadline123"><span class="section-number-4">9.3.1</span> Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</h4>
+<div id="outline-container-orgheadline124" class="outline-4">
+<h4 id="orgheadline124"><span class="section-number-4">9.3.1</span> Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</h4>
 <div class="outline-text-4" id="text-9-3-1">
 <p>
 On a vu dans l&rsquo;étude de cas que l&rsquo;implémentation de l&rsquo;évaluation multi-facettes
@@ -10594,8 +10671,8 @@ nous lui avons simplement donné un nom.
 </div>
 </div>
 
-<div id="outline-container-orgheadline124" class="outline-4">
-<h4 id="orgheadline124"><span class="section-number-4">9.3.2</span> Ajouter l&rsquo;analyse de trace</h4>
+<div id="outline-container-orgheadline125" class="outline-4">
+<h4 id="orgheadline125"><span class="section-number-4">9.3.2</span> Ajouter l&rsquo;analyse de trace</h4>
 <div class="outline-text-4" id="text-9-3-2">
 <p>
 En plus de l&rsquo;évaluation multi-facettes, on a défini trois autres analyses sur
@@ -10715,7 +10792,7 @@ AspectScript.
 
 <p>
 La fonction <code>i13n.pushLayer</code> est un alias de la fonction <code>pushEnv</code> définie dans
-la section <a href="#orgheadline120">9.1.3</a>.
+la section <a href="#orgheadline121">9.1.3</a>.
 </p>
 
 <p>
@@ -10790,8 +10867,8 @@ insère dans l&rsquo;environnement du module.
 </div>
 </div>
 
-<div id="outline-container-orgheadline125" class="outline-4">
-<h4 id="orgheadline125"><span class="section-number-4">9.3.3</span> Ajouter l&rsquo;analyse FlowR</h4>
+<div id="outline-container-orgheadline126" class="outline-4">
+<h4 id="orgheadline126"><span class="section-number-4">9.3.3</span> Ajouter l&rsquo;analyse FlowR</h4>
 <div class="outline-text-4" id="text-9-3-3">
 <p>
 Le principe de l&rsquo;analyse FlowR est d&rsquo;empêcher des flots de données illicites
@@ -10929,8 +11006,8 @@ Et celle-ci nous permet d&rsquo;installer l&rsquo;analyse FlowR en quatre lignes
 </div>
 </div>
 
-<div id="outline-container-orgheadline126" class="outline-4">
-<h4 id="orgheadline126"><span class="section-number-4">9.3.4</span> Ajouter l&rsquo;analyse d&rsquo;environnements</h4>
+<div id="outline-container-orgheadline127" class="outline-4">
+<h4 id="orgheadline127"><span class="section-number-4">9.3.4</span> Ajouter l&rsquo;analyse d&rsquo;environnements</h4>
 <div class="outline-text-4" id="text-9-3-4">
 <p>
 Les techniques que l&rsquo;on propose dans ce chapitre sont basées essentiellement sur
@@ -11060,8 +11137,8 @@ produire le fichier au format DOT.
 </div>
 </div>
 
-<div id="outline-container-orgheadline127" class="outline-4">
-<h4 id="orgheadline127"><span class="section-number-4">9.3.5</span> Évaluation</h4>
+<div id="outline-container-orgheadline128" class="outline-4">
+<h4 id="orgheadline128"><span class="section-number-4">9.3.5</span> Évaluation</h4>
 <div class="outline-text-4" id="text-9-3-5">
 <p>
 Notre instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes consiste en
@@ -11107,7 +11184,7 @@ communs d&rsquo;instrumentation de fonctions (<code>around</code>, <code>before<
 </p>
 
 <p>
-En utilisant la technique de disposition en couches de la section <a href="#orgheadline120">9.1.3</a>, on peut activer plusieurs analyses à
+En utilisant la technique de disposition en couches de la section <a href="#orgheadline121">9.1.3</a>, on peut activer plusieurs analyses à
 l&rsquo;exécution avec des options de lancement.  Par exemple:
 </p>
 
@@ -11318,8 +11395,8 @@ duplication de code.
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-3">
-<h3 id="orgheadline134"><span class="section-number-3">9.4</span> Discussion</h3>
+<div id="outline-container-orgheadline135" class="outline-3">
+<h3 id="orgheadline135"><span class="section-number-3">9.4</span> Discussion</h3>
 <div class="outline-text-3" id="text-9-4">
 <p>
 L&rsquo;idée principale de ce chapitre est que la manipulation de la portée des
@@ -11330,8 +11407,8 @@ modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 </p>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-4">
-<h4 id="orgheadline129"><span class="section-number-4">9.4.1</span> La tension entre flexibilité et sûreté</h4>
+<div id="outline-container-orgheadline130" class="outline-4">
+<h4 id="orgheadline130"><span class="section-number-4">9.4.1</span> La tension entre flexibilité et sûreté</h4>
 <div class="outline-text-4" id="text-9-4-1">
 <p>
 On peut voir la propriété <code>E</code> qui expose l&rsquo;environnement manipulable du module
@@ -11496,8 +11573,8 @@ programmeur de choisir le compromis le mieux adapté au problème.
 </div>
 </div>
 
-<div id="outline-container-orgheadline130" class="outline-4">
-<h4 id="orgheadline130"><span class="section-number-4">9.4.2</span> D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</h4>
+<div id="outline-container-orgheadline131" class="outline-4">
+<h4 id="orgheadline131"><span class="section-number-4">9.4.2</span> D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</h4>
 <div class="outline-text-4" id="text-9-4-2">
 <p>
 Il y a d&rsquo;autres façons, plus évidentes, d&rsquo;ouvrir le module.  Pour commencer,
@@ -11665,8 +11742,8 @@ greffer, il n&rsquo;a pas à s&rsquo;en soucier, d&rsquo;où moins de code à ma
 </div>
 </div>
 
-<div id="outline-container-orgheadline131" class="outline-4">
-<h4 id="orgheadline131"><span class="section-number-4">9.4.3</span> Pourquoi ne pas utiliser la programmation par aspects?</h4>
+<div id="outline-container-orgheadline132" class="outline-4">
+<h4 id="orgheadline132"><span class="section-number-4">9.4.3</span> Pourquoi ne pas utiliser la programmation par aspects?</h4>
 <div class="outline-text-4" id="text-9-4-3">
 <p>
 Étendre un module par du code extérieur sans que le code du module n&rsquo;expose
@@ -11858,8 +11935,8 @@ cible qu&rsquo;une version interne modifiée du navigateur Internet Explorer.
 </div>
 </div>
 
-<div id="outline-container-orgheadline132" class="outline-4">
-<h4 id="orgheadline132"><span class="section-number-4">9.4.4</span> Appliquer la manipulation de portée à d&rsquo;autres langages</h4>
+<div id="outline-container-orgheadline133" class="outline-4">
+<h4 id="orgheadline133"><span class="section-number-4">9.4.4</span> Appliquer la manipulation de portée à d&rsquo;autres langages</h4>
 <div class="outline-text-4" id="text-9-4-4">
 <p>
 On n&rsquo;a pas utilisé une bibliothèque d&rsquo;aspects, mais l&rsquo;approche de ce chapitre est
@@ -11896,8 +11973,8 @@ exemple.
 </div>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-4">
-<h4 id="orgheadline133"><span class="section-number-4">9.4.5</span> Inconvénients de la manipulation de portée avec <code>with</code></h4>
+<div id="outline-container-orgheadline134" class="outline-4">
+<h4 id="orgheadline134"><span class="section-number-4">9.4.5</span> Inconvénients de la manipulation de portée avec <code>with</code></h4>
 <div class="outline-text-4" id="text-9-4-5">
 <p>
 L&rsquo;utilisation de <code>with</code> comporte néanmoins quelques inconvénients.  On utilise
@@ -11941,11 +12018,11 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-2">
-<h2 id="orgheadline140"><span class="section-number-2">10</span> <span class="todo BARE">BARE</span> Synthèse</h2>
+<div id="outline-container-orgheadline141" class="outline-2">
+<h2 id="orgheadline141"><span class="section-number-2">10</span> <span class="todo BARE">BARE</span> Synthèse</h2>
 <div class="outline-text-2" id="text-10">
-</div><div id="outline-container-orgheadline136" class="outline-3">
-<h3 id="orgheadline136"><span class="section-number-3">10.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline137" class="outline-3">
+<h3 id="orgheadline137"><span class="section-number-3">10.1</span> <span class="todo BARE">BARE</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-10-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -11972,8 +12049,8 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-3">
-<h3 id="orgheadline137"><span class="section-number-3">10.2</span> <span class="todo BARE">BARE</span> Locality of concerns and locality of execution are irreconciable in the source text</h3>
+<div id="outline-container-orgheadline138" class="outline-3">
+<h3 id="orgheadline138"><span class="section-number-3">10.2</span> <span class="todo BARE">BARE</span> Locality of concerns and locality of execution are irreconciable in the source text</h3>
 <div class="outline-text-3" id="text-10-2">
 <p>
 Is AOP useful for the instrumentation problem?  First, the initial use case of
@@ -12031,8 +12108,8 @@ support, using AOP mechanisms will only satisfy one notion of locality.
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-3">
-<h3 id="orgheadline138"><span class="section-number-3">10.3</span> <span class="todo BARE">BARE</span> Late binding is the common ingredient to all modular mechanisms</h3>
+<div id="outline-container-orgheadline139" class="outline-3">
+<h3 id="orgheadline139"><span class="section-number-3">10.3</span> <span class="todo BARE">BARE</span> Late binding is the common ingredient to all modular mechanisms</h3>
 <div class="outline-text-3" id="text-10-3">
 <blockquote>
 <p>
@@ -12051,8 +12128,8 @@ different things.&rsquo;
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-3">
-<h3 id="orgheadline139"><span class="section-number-3">10.4</span> <span class="todo BARE">BARE</span> Perspectives: if automated programming is the future, this is mostly usesless</h3>
+<div id="outline-container-orgheadline140" class="outline-3">
+<h3 id="orgheadline140"><span class="section-number-3">10.4</span> <span class="todo BARE">BARE</span> Perspectives: if automated programming is the future, this is mostly usesless</h3>
 <div class="outline-text-3" id="text-10-4">
 <p>
 programming automation will probably not care about any of this.  If in the
@@ -12066,9 +12143,9 @@ clarification.
 </div>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-2">
-<h2 id="orgheadline141">Références</h2>
-<div class="outline-text-2" id="text-orgheadline141">
+<div id="outline-container-orgheadline142" class="outline-2">
+<h2 id="orgheadline142">Références</h2>
+<div class="outline-text-2" id="text-orgheadline142">
 <div id="bibliography">
 
 <table>
@@ -13613,7 +13690,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-06-30 jeu. 18:54 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-01 ven. 16:44 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
