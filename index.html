@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-04 lun. 15:58 -->
+<!-- 2016-07-04 lun. 17:24 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
-<title>Mécanismes de langages pour étendre des interpréteurs</title>
+<title>Étendre des interpréteurs par détournement</title>
 <meta  name="generator" content="Org-mode">
 <meta  name="author" content="fmdkdd">
 <style type="text/css">
@@ -143,7 +143,8 @@ for the JavaScript code in this tag.
 <body>
 <div id="content">
 <header>
-<h1 class="title">Mécanismes de langages pour étendre des interpréteurs</h1>
+<h1 class="title">Étendre des interpréteurs par détournement</h1>
+<p class="subtitle">Application à des analyses dynamiques de sécurité en JavaScript</p>
 </header><nav id="table-of-contents">
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
@@ -161,7 +162,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgheadline7">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
 <li><a href="#orgheadline8">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
-<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Modifier un programme sans modifier son code source</a></li>
+<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Le but: modifier un programme sans modifier son code source</a></li>
 <li><a href="#orgheadline10">2.4. Le problème de l&rsquo;expression</a></li>
 <li><a href="#orgheadline11">2.5. L&rsquo;idée: le détournement de programme</a></li>
 </ul>
@@ -377,10 +378,10 @@ qui permet de dynamiquement activer des comportements alternatifs.
 
 <p>
 Enfin, on applique ces techniques pour détourner un véritable interpréteur
-JavaScript par de multiples analyses dynamiques.  Détourner l&rsquo;interpréteur est à
-la fois plus rapide et plus flexible que de le réécrire, mais a un impact
-potentiel sur son efficacité et sa sûreté.  Le détournement est donc une
-alternative légitime à la refactorisation dans ce scénario réaliste.
+JavaScript par de multiples analyses dynamiques de sécurité.  Détourner
+l&rsquo;interpréteur est à la fois plus rapide et plus flexible que de le réécrire,
+mais a un impact potentiel sur son efficacité et sa sûreté.  Le détournement est
+donc une alternative légitime à la refactorisation dans ce scénario réaliste.
 </p>
 </div>
 </div>
@@ -757,7 +758,6 @@ application donnée.
 </div>
 </div>
 
-
 <div id="outline-container-orgheadline8" class="outline-3">
 <h3 id="orgheadline8"><span class="section-number-3">2.2</span> <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</h3>
 <div class="outline-text-3" id="text-2-2">
@@ -842,8 +842,7 @@ les lignes vides.
 Pour réaliser l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l&rsquo;interpréteur Narcissus.
 On peut obtenir l&rsquo;ensemble des changements effectués en extrayant un <i>diff</i> des
-deux versions.  La figure <a href="#orgparagraph1">3</a> donne une vue d&rsquo;ensemble des
-changements.
+deux versions.  La figure suivante donne une vue d&rsquo;ensemble de ces changements:
 </p>
 
 <aside style="margin-top:-5rem">
@@ -857,7 +856,7 @@ Le <i>diff</i> est extrait des HEAD de <a href="https://github.com/taustin/narci
 <figure id="orgparagraph1">
 <p><img src="img/narcissus-diff.svg" alt="narcissus-diff.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;3&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Le diff de &laquo;&nbsp;jsexec&nbsp;&raquo; y est représenté intégralement, coupés en colonnes de même taille. Chaque ligne est colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;3&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Chaque ligne du diff correspond à une ligne colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
 </figure>
 
 <p>
@@ -1042,45 +1041,31 @@ caractères.
 
 <p>
 Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories indique qu&rsquo;il y a un potentiel de factorisation.  Si l&rsquo;on souhaite
-rendre Narcissus extensibles, afin de pouvoir définir l&rsquo;évaluation
-multi-facettes sans duplication de code, il faut trouver des façons d&rsquo;exprimer
-les changements de ces quatre catégories.  Mais si nous souhaites exprimer
-d&rsquo;autres analyses, et étendre d&rsquo;autres interpréteurs, il faut tenter des trouver
-des mécanismes génériques qui pourront être réemployés pour ces autres cas.
+catégories suggère des axes potentiels de <i>factorisation</i>.  Factoriser
+permettrait de réduire la duplication de code, et surtout de regrouper les
+changements de même nature en un seul endroit.  Par exemple, si l&rsquo;interpréteur
+disposait d&rsquo;une fonction pour ajouter une valeur à l&rsquo;objet global,
+tous les ajouts à cet objets requis par l&rsquo;intsrumentation pourraient être
+effectués au même endroit:
 </p>
 
-<p>
-Pour prendre un peu de recul par rapport à l&rsquo;instrumentation de Narcissus, on
-peut s&rsquo;intéresser à la définition formelle de l&rsquo;évaluation multi-facettes.
-Celle-ci est donnée sous forme d&rsquo;une sémantique opérationnelle d&rsquo;un langage
-proche du lambda-calcul: &lambda;<sup>facet</sup>.  La sémantique de ce langage est d&rsquo;abord donnée
-sans considérer l&rsquo;évaluation multi-facettes, et suit une définition usuelle d&rsquo;un
-lambda-calcul en <i>call-by-value</i>; &lambda;<sup>facet</sup> contient en plus des constantes, des
-références mutables, et une valeur absorbante pour faire écho au <code>undefined</code> de
-JavaScript.
-</p>
+<div class="org-src-container">
+
+<pre class="src src-js">addToGlobal({
+  <span class="org-function-name">facetedValue</span>: <span class="org-keyword">function</span>(<span class="org-variable-name">v</span>) { ... },
+  ...
+})
+</pre>
+</div>
 
 <p>
-Dans un second temps, une sémantique alternative est présentée qui introduit les
-changements nécessaires pour l&rsquo;évaluation multi-facettes.  Il s&rsquo;agit d&rsquo;une copie
-de la première sémantique, avec quelques changements et ajouts.  On y retrouve
-les deux des quatre catégories de changements dégagées du diff.  Le <i>program
-counter</i> accompagne chaque règle d&rsquo;évaluation, et de nouvelles règles sont
-ajoutées pour séparer l&rsquo;évaluation de valeurs à facette en deux parties.
-</p>
-
-<p>
-Les règles de la sémantique instrumentées tiennent sur une page; un
-interpréteur pour cette sémantique est donc considérablement plus petit qu&rsquo;un
-interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
-des mécanismes d&rsquo;extensibilité.
+Mais avant tout
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline9" class="outline-3">
-<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Modifier un programme sans modifier son code source</h3>
+<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Le but: modifier un programme sans modifier son code source</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Pour ajouter l&rsquo;évaluation multi-facettes à l&rsquo;interpréteur, modifier directement
@@ -13708,7 +13693,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-04 lun. 15:58 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-04 lun. 17:24 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
