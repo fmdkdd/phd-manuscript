@@ -2049,6 +2049,9 @@ d'exécuter le code du client pour modifier le processus considéré comme étan
 la responsabilité du module.
 
 *** STABLE La programmation par aspects
+:PROPERTIES:
+:CUSTOM_ID: aop
+:END:
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
 d'implémentation d'un système [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].
@@ -2704,13 +2707,16 @@ nombreuses dimensions, irréconciliables sous une seule décomposition.
 #+END_aside
 
 *** La programmation littéraire
+:PROPERTIES:
+:CUSTOM_ID: proglit
+:END:
 La programmation structurée recommandait une discipline de construction du
 programme du haut vers le bas, par raffinements successifs.  On commence par une
-description haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié le
-programme dans le moindre détail.
+description de haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié
+le programme dans le moindre détail.
 
 Knuth [[cite:Knu-84][Knu-84]] remarque que sa façon de construire les programmes va souvent
-l'encontre de ce principe:
+à l'encontre de ce principe:
 
 #+BEGIN_QUOTE
 I knew that I often created major parts of programs in a "bottom-up" fashion,
@@ -2740,7 +2746,7 @@ rigidly determined order like top-down or bottom-up.
 Un programme ressemble davantage à un réseau qu'à un arbre.
 #+END_side-figure
 
-WEB est le système de programmation littéraire développé par Knuth pour
+WEB est le système de /programmation littéraire/ développé par Knuth pour
 permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
 contient du Pascal et du TeX mêlés.  Il ne s'agit pas simplement d'écrire des
 commentaires autour du code; plutôt l'inverse.  Knuth souhaite décrire le
@@ -2787,7 +2793,7 @@ du programme une idée du code qui va être exécuté ici (des affectations de
 constantes), mais le programmeur n'a pas à donner ces détails maintenant.  Tout
 ce que le lecteur voit pour l'instant, c'est la structure du programme.
 
-Plus loin dans le document, les constantes sont définies:
+Plus loin dans le document, les constantes sont définies avec l'opérateur ~=~:
 
 #+BEGIN_SRC pascal
 @<Other constants of the program@>=
@@ -2801,11 +2807,11 @@ constantes sont décrites, mais dans un second temps.  D'après Knuth, c'est
 l'ordre "psychologiquement correct": l'ordre dans lequel on comprend mieux le
 programme.  Le langage WEB permet d'écrire le programme dans cet ordre.
 
-D'ailleurs, c'est possible de rajouter du code à une section ultérieurement,
+D'ailleurs, il est possible de rajouter du code à une section ultérieurement,
 une sorte d'/addendum/:
 
 #+BEGIN_SRC pascal
-@<Other constats of the program@>+=
+@<Other constants of the program@>+=
 ord_max = 30;
 #+END_SRC
 
@@ -2818,24 +2824,24 @@ ord: 2..ord_max;
 #+END_SRC
 
 La valeur maximale que peut prendre ~ord~ est d'abord justifiée
-mathématiquement, avant d'être définie en code.  À travers le ~+=~, du code peut
-être rajouté à une section, de n'importe quel point du document source.  C'est
-particulièrement adapté pour les constantes et les variables, qui en Pascal
-doivent être déclarées au début du programme.  Mais toutes les variables ne sont
-pas utilisées par toutes les parties du programme; d'où le mécanisme de
+mathématiquement, avant d'être définie en code.  L'opérateur ~+=~, permet de
+rajouter du code à une section, de n'importe quel point du document source.
+C'est particulièrement adapté pour les constantes et les variables, qui en
+Pascal doivent être déclarées au début du programme.  Mais toutes les variables
+ne sont pas utilisées par toutes les parties du programme; d'où le mécanisme de
 concaténation de WEB qui permet de regrouper les variables avec le morceau de
 code qui les utilise.  C'est une sorte de regroupement des préoccupations.
 
 Le document source contient donc du TeX et du Pascal.  À partir de ce source,
 deux documents sont générés par deux programmes différents: TANGLE et WEAVE.
-TANGLE reconstruit le programme Pascal monolithique; il parcoure les sections et
+TANGLE reconstruit le programme Pascal monolithique; il parcourt les sections et
 remplace les références par leur contenu, afin d'émettre du code qui pourra être
 accepté par un compilateur Pascal.  WEAVE produit le document lisible par un
 humain et imprimable.  Il numérote les sections et introduit des liens pour
-chaque référence; il indique également quelles sections utilise quel code, pour
-permettre au lecteur de s'y retrouver sur un format papier.  Ce document est le
-programme littéraire: une exposition structurée du programme, qui contient à
-la fois tout le programme et les explications de chaque morceau.
+chaque référence; il indique également quelles sections utilisent quel code,
+pour permettre au lecteur de s'y retrouver sur un format papier.  Le document
+est le /programme littéraire/: une exposition structurée du programme, qui
+contient à la fois tout le programme et les explications de chaque morceau.
 
 #+ATTR_HTML: :style margin-top:-15rem
 #+BEGIN_side-figure
@@ -2851,18 +2857,18 @@ du code est imposée par le langage de programmation, ainsi que l'ordre
 d'apparition des fonctions ou des variables.  Lire le code pour le comprendre
 demande de suivre les appels, et de savoir distinguer les parties essentielles à
 la fonctionnalité des détails annexes (comme le traitement d'erreurs, ou de cas
-particuliers rares).  Dans le programme littéraire, l'ordre est imposé par le
+particuliers rares).  Dans un programme littéraire, l'ordre est imposé par le
 discours, l'explication du programme.  La structure est donc complètement
 renversée: l'explication domine, et le programme est secondaire; il découle de
-l'explication, et n'est pas nécessaire à la compréhension du programme.
+l'explication.
 
-Mais le programme littéraire, par le mécanisme des sections, permet également de
-recomposer les éléments du programme.  Les variables peuvent être définies à
-plusieurs endroits du document.  Les traitements des erreurs communes à plusieurs
-fonctions peuvent être relocalisés et décrits dans une même annexe.  Seuls les
-langages de programmation qui ont des macros suffisamment flexibles peuvent
-permettre cette recomposition du code.  Un programme littéraire vient ajouter
-cette fonctionnalité au dessus de n'importe quel langage.
+Mais la programmation littéraire, par le mécanisme des sections, permet
+également de recomposer les éléments du programme.  Les variables peuvent être
+définies à plusieurs endroits du document.  Les traitements des erreurs communes
+à plusieurs fonctions peuvent être relocalisés et décrits dans une même annexe.
+Seuls les langages de programmation qui ont des macros suffisamment flexibles
+peuvent permettre cette recomposition du code.  Un programme littéraire vient
+ajouter cette fonctionnalité au dessus de n'importe quel langage.
 
 #+ATTR_HTML: :style margin-top:-3rem
 #+BEGIN_aside
@@ -2900,7 +2906,7 @@ d'erreur le plus exhaustif sans entraîner un quelconque déséquilibre.
 
 Il faut certainement fournir plus d'efforts pour écrire un programme littéraire.
 Là où un programme classique peut se contenter du code et de quelques
-commentaires, un programme littéraire encourage de documenter le raisonnement
+commentaires, un programme littéraire encourage la documentation du raisonnement
 derrière le code, ce qui demande de clarifier toutes les décisions faites par
 le programmeur.  Knuth nous rappelle que ce n'est pas forcément un désavantage
 de la méthode:
@@ -2939,18 +2945,18 @@ soit un programme exécutable par la machine.
 La programmation par aspects a pour but la séparation des composants et des
 aspects.  C'est à dire, la séparation de /certaines/ préoccupations: les
 préoccupations transversales, orthogonales à la fonctionnalité du code.  En
-programmation par aspects, on a deux axes de composition du programme: l'axe
-des composants, pour la fonctionnalité principale, et l'axe des aspects, pour
-les fonctionnalités transversales.  L'axe des aspects est toujours inférieur à
-l'axe des composants: ce dernier est l'axe dominant, qui impose la structure du
-programme, ce qui peut limiter les choix de composition du programme.  D'autres
+programmation par aspects, on a deux axes de composition du programme: l'axe des
+composants, pour la fonctionnalité principale, et l'axe des aspects, pour les
+fonctionnalités transversales.  L'axe des aspects reste dépendant de l'axe des
+composants: ce dernier est l'axe dominant, qui impose la structure du programme,
+ce qui peut limiter les choix de composition du programme.  D'autres
 recompositions sont possibles, comme celle proposée par Hyper/J [[cite:TOH+99][TOH+99]] [[cite:TO-00][TO-00]].
 
 Hyper/J est une implémentation de la séparation pluridimensionnelle des
-préoccupations (/séplution/) pour Java, tout comme AspectJ est une
-implémentation de la programmation par aspects pour Java.  La séplution est un
-paradigme qui permet la recomposition des préoccupations selon plusieurs axes,
-et de façon symétrique, contrairement à la programmation par aspects.
+préoccupations (qu'on appellera /séplution/) pour Java, tout comme AspectJ est
+une implémentation de la programmation par aspects pour Java.  La séplution est
+un paradigme qui permet la recomposition des préoccupations selon plusieurs
+axes, et de façon symétrique, contrairement à la programmation par aspects.
 
 Dans [[cite:TOH+99][TOH+99]], les auteurs motivent la séplution avec l'exemple d'un système qui
 permet de construire des programmes dans un langage simple, une instance du
@@ -2963,7 +2969,7 @@ syntaxique par une classe: une classe ~Expression~, une classe ~Number~, une
 classe ~Plus~, etc.  Chaque classe implémente trois méthodes, qui correspondent
 à trois traitements différents de l'arbre syntaxique: ~eval~ évalue la valeur
 arithmétique de l'expression, ~display~ affiche l'expression, et ~check~ vérifie
-qui l'expression est bien formée.
+que l'expression est bien formée.
 
 #+BEGIN_side-figure
 [[file:img/hyperj1.svg]]
@@ -3005,9 +3011,9 @@ composition, comme la programmation par aspects, il y a toujours une dimension
 qui prime sur l'autre.  C'est un constat qu'ils nomment la "tyrannie de la
 décomposition dominante".
 
-Pour remédier à cette tyranie, ils proposent l'/hypercoupe/: une façon de
-regrouper tous les artefacts du système qui touchent à une même préoccupation.
-Une hypercoupe contient le code source, la description informelle de la
+Pour abolir cette tyrannie, ils proposent l'/hypercoupe/: une façon de regrouper
+tous les artefacts du système qui touchent à une même préoccupation.  Une
+hypercoupe contient le code source, la description informelle de la
 fonctionnalité, sa spécification, sa conception, sa documentation, etc.
 
 Continuant l'exemple, on peut regrouper les fonctionnalités d'évaluation,
@@ -3036,7 +3042,7 @@ composent pour former le système final: comment composer la documentation pour
 produire un document unique, et comment composer le code pour produire un
 exécutable.  Cette composition dépend évidemment des artefacts considérés.
 
-En Hyper/J, la composition du code source se fait sur le nom de classe ou de
+En Hyper/J, la composition du code source se fait sur le nom des classes ou des
 méthodes: deux classes ayant le même nom dans deux hypercoupes différentes
 combineront leur contenu, et récursivement pour leurs méthodes.  Pour les
 méthodes, on peut aussi spécifier qu'il faut surcharger la méthode de même nom
@@ -3049,18 +3055,22 @@ lorsqu'une nouvelle fonctionnalité est implémentée, et d'abolir l'asymétrie 
 la décomposition dominante.  L'idée importante de la séplution est de
 reconnaître qu'une préoccupation a plusieurs dimensions dans le programme, et
 n'apparaît pas seulement dans le code source.  Les hypercoupes sont des
-projections de cet objet pluridimensionnel qui regroupent tous les artefacts
-relatifs à une préoccupation: le code source, mais aussi les documents de
-conception.  La séplution est donc une méthodologie de développement, de la
-conception à l'implémentation, dont les unités d'abstraction sont les
-fonctionnalités du système.
+projections qui regroupent tous les artefacts relatifs à une préoccupation: le
+code source, mais aussi les documents de conception.  La séplution est donc une
+méthodologie de développement, de la conception à l'implémentation, dont les
+unités d'abstraction sont les fonctionnalités du système.
 
 #+ATTR_HTML: :style margin-top:-6rem
 #+BEGIN_aside
 Une méthodologie qui est proche des domaines de la programmation par
 fonctionnalité (/Feature-Oriented Programming/) et de l'ingénierie des modèles
-(/Model-Driven Engineering/).  Domaines qui sont ne sont pas les objets de ce
+(/Model-Driven Engineering/).  Mais ces domaines dépassent la portée de ce
 document.
+#+END_aside
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Superimposition referenced here, but not described anywhere.
 #+END_aside
 
 Hyper/J est une implémentation de la séplution pour Java.  Un programmeur écrit
@@ -3168,7 +3178,7 @@ as the use of particular variables, data structures, language features, or
 system resources.
 #+END_QUOTE
 
-L'avantage de cette approche c'est qu'elle peut s'appliquer à n'importe quel
+L'avantage de cette approche est qu'elle peut s'appliquer à n'importe quel
 langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
 sur des conventions et des outils standards.  Elle demande moins de changements
 structurels, ou en tout cas des changements qui n'affectent généralement pas la
@@ -3218,11 +3228,11 @@ d'implémentation qui ont été laissés en suspens.
 
 Suivant le format d'entrée des données, ou l'emplacement mémoire de sauvegarde
 des données, il faudra modifier certaines parties du programme en conséquence.
-Et c'est là que les deux designs ne sont plus équivalents: le second changement
-touche tous les modules de la première décomposition, alors que les changements
-sont restreints à un seul module dans la seconde décomposition.  Le second
-design est donc mieux adapté aux changements potentiels anticipés par le
-concepteur.
+Et c'est là que les deux décompositions ne sont plus équivalentes: le second
+changement touche tous les modules de la première décomposition, alors que les
+changements sont restreints à un seul module dans la seconde décomposition.  La
+seconde décomposition est donc mieux adaptée aux changements potentiels
+anticipés par le concepteur.
 
 #+ATTR_HTML: :style margin-top:-11rem
 #+ATTR_LATEX: :options [-11em]
@@ -3236,7 +3246,7 @@ Dans le second design, les changements sont restreints à un seul module.
 #+BEGIN_side-figure
 [[file:img/flowchart.svg]]
 
-Un logigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.
+Un organigramme.  Une façon courante de concevoir des programmes de 1950 à 1970.
 #+END_side-figure
 
 Le second design est aussi plus facile à développer et plus facile à comprendre.
@@ -3276,7 +3286,7 @@ the system one module at a time.
 
 Le premier design a beau comporter des modules, il n'a pas ces avantages.  Il
 n'est donc pas modulaire.  Sur un second exemple de système, un compilateur et
-interpréteur pour le même langage, il conclut là encore qu'une décomposition
+un interpréteur pour le même langage, il conclut là encore qu'une décomposition
 suivant le critère d'encapsulation est supérieure à une décomposition qui suit
 les étapes de traitement.  Un interpréteur et un compilateur résolvent en partie
 les mêmes problèmes, et la décomposition préconisée par Parnas permet de
@@ -3313,8 +3323,8 @@ et de développer des outils pour passer d'une forme à l'autre.
 #+ATTR_HTML: :style margin-top:-8rem
 #+BEGIN_aside
 Ce ne sont que des suggestions, et l'article ne dit pas comment réaliser ces
-transformations.  On trouve des mises en œuvre de ces idées dans le Literate
-Programming de Knuth, et dans l'AOP de Xerox.
+transformations.  On trouve des mises en œuvre de ces idées dans la
+programmation littéraire ([[#proglit]]) et dans la programmation par aspects ([[#aop]]).
 #+END_aside
 
 Parnas met donc en avant le critère d'encapsulation pour concevoir un système
@@ -3323,7 +3333,7 @@ du système, indépendamment de son implémentation en code.  Parnas ne croit
 d'ailleurs pas que le choix du langage de programmation puisse rendre un système
 modulaire.  Un point qu'il développe dans "Why Software Jewels are Rare" [[cite:Par-96][Par-96]].
 
-Un "logiciel joyau" est un programme "bien structuré écrit dans un style
+Un "joyau logiciel" est un programme "bien structuré écrit dans un style
 homogène, sans bidouilles, développé tel que chaque composant est simple et
 organisé, et conçu pour que le produit soit facile à changer".  Parnas donne
 plusieurs raisons qui explique, selon lui, la rareté de ces joyaux: le logiciel
@@ -3402,8 +3412,9 @@ la structure du système.  En 2003, Parnas déplore cette tendance [[cite:DBB+03
 
 #+ATTR_HTML: :style margin-top:18rem
 #+BEGIN_aside
-Cette dernière phrase est cible directement les trois autres panélistes qui lui
-font face, qui sont les instigateurs respectifs de l'AOP, du FOP, et d'Hyper/J.
+Cette dernière phrase est cible directement les trois autres intervenants qui
+lui font face, qui sont les instigateurs respectifs de la programmation par
+aspects, de la programmation par fonctionnalités, et d'Hyper/J.
 #+END_aside
 
 #+BEGIN_QUOTE
@@ -3425,14 +3436,14 @@ languages and tools.
 #+END_QUOTE
 
 Parnas réitère: le langage de programmation seul ne rend pas le programme
-modulaire.  C'est aussi facile de créer un programme non-modulaire dans un
+modulaire.  Il est aussi facile de créer un programme non-modulaire dans un
 langage de haut niveau qu'en assembleur.  On ne pourra donc pas rendre les
 programmes modulaires simplement en fournissant de meilleurs languages ou
 outils.
 
 Alors, quelle est la bonne direction à suivre?  D'après Parnas, il faut insister
 sur la phase de conception du système; c'est là où les limites entre modules
-apparaissent, et là où les décisions de design doivent être prises:
+apparaissent, et là où les décisions d'architecture doivent être prises:
 
 #+BEGIN_QUOTE
 My engineering teacher laid down some basic rules:
@@ -3452,7 +3463,7 @@ machines.
 **** Conclusions
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n'est pas toujours bien entendu.  On trouve dans l'article
-séminal de 1972 les avantages d'un système modulaire, et un critère pour les
+déterminant de 1972 les avantages d'un système modulaire, et un critère pour les
 concevoir: le critère d'encapsulation.  Quelles parties du système ont besoin de
 pouvoir être changées?  D'une machine à l'autre, ou en réponse à des besoins
 futurs?  Ces parties déterminent les modules du système selon le critère
@@ -3472,18 +3483,18 @@ système.  Le système est modulaire /par rapport/ à un ensemble de choix qui
 peuvent être altérés ultérieurement.
 
 On peut donc voir la modularité comme une des fonctionnalités du système; une
-fonctionnalité à destination des programmeurs chargés de la maintenance du
-système, plutôt qu'une fonctionnalité destinée aux utilisateurs.  Et comme toute
-fonctionnalité, la modularité impose un coût de complexité au système.  Si le
-programme est flexible, s'il permet de changer la base de donnée utilisée, alors
-il faut que le reste du système soit capable de fonctionner non plus avec une
-seule base de donnée, mais avec plusieurs bases différentes.  Gérer cette
-compatibilité impose de traiter plus de cas, ce qui inévitablement se traduit en
-code.  De plus, pour implémenter un système modulaire, on fera souvent appel à
-des interfaces, des indirections, des appels de procédures qui encapsulent les
-décisions de conception.  Et ces interfaces ont souvent un impact négatif sur
-l'efficacité du programme.  Ces compromis modularité/complexité et
-modularité/efficacité me semblent inévitables.
+fonctionnalité à destination des programmeurs chargés de la maintenance et de
+l'évolution du système, plutôt qu'une fonctionnalité destinée aux utilisateurs.
+Et comme toute fonctionnalité, la modularité impose un coût de complexité au
+système.  Si le programme est flexible, s'il permet de changer la base de donnée
+utilisée, alors il faut que le reste du système soit capable de fonctionner non
+plus avec une seule base de donnée, mais avec plusieurs bases différentes.
+Gérer cette compatibilité impose de traiter plus de cas, ce qui inévitablement
+se traduit en code.  De plus, pour implémenter un système modulaire, on fera
+souvent appel à des interfaces, des indirections, des appels de procédures qui
+encapsulent les décisions de conception.  Et ces interfaces ont souvent un
+impact négatif sur l'efficacité du programme.  Ces compromis
+modularité/complexité et modularité/efficacité semblent difficiles à éviter.
 
 *** STABLE La théorie de Naur derrière le programme
 Un point de vue qui complémente celui de Parnas est celui de Peter Naur.  Dans
@@ -3493,7 +3504,7 @@ Et il s'intéresse également à la modification de programmes, aux difficultés
 apparaissent quand on essaye d'ajouter des fonctionnalités non prévues
 initialement.
 
-Pour Naur, la tâche principal du programmeur n'est pas de produire du code
+Pour Naur, la tâche principale du programmeur n'est pas de produire du code
 source.  Un programmeur avant tout construit une /théorie/ du problème que le
 programme doit résoudre.  Lors de la conception et de l'implémentation, le
 programmeur construit sa connaissance du problème, du domaine d'application, et
