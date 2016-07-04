@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-04 lun. 17:24 -->
+<!-- 2016-07-04 lun. 18:41 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -162,8 +162,8 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgheadline7">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
 <li><a href="#orgheadline8">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
-<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Le but: modifier un programme sans modifier son code source</a></li>
-<li><a href="#orgheadline10">2.4. Le problème de l&rsquo;expression</a></li>
+<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Le but: factoriser les changements en minimisant les changements du code source</a></li>
+<li><a href="#orgheadline10">2.4. <span class="todo MISPLACED">MISPLACED</span> Le problème de l&rsquo;expression</a></li>
 <li><a href="#orgheadline11">2.5. L&rsquo;idée: le détournement de programme</a></li>
 </ul>
 </li>
@@ -1044,9 +1044,9 @@ Le fait que la plupart des changements appartiennent à une de ces quatre
 catégories suggère des axes potentiels de <i>factorisation</i>.  Factoriser
 permettrait de réduire la duplication de code, et surtout de regrouper les
 changements de même nature en un seul endroit.  Par exemple, si l&rsquo;interpréteur
-disposait d&rsquo;une fonction pour ajouter une valeur à l&rsquo;objet global,
-tous les ajouts à cet objets requis par l&rsquo;intsrumentation pourraient être
-effectués au même endroit:
+disposait d&rsquo;une fonction pour ajouter une valeur à l&rsquo;objet global, tous les
+ajouts à cet objets requis par l&rsquo;instrumentation pourraient être effectués au
+même endroit:
 </p>
 
 <div class="org-src-container">
@@ -1057,15 +1057,11 @@ effectués au même endroit:
 })
 </pre>
 </div>
-
-<p>
-Mais avant tout
-</p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline9" class="outline-3">
-<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Le but: modifier un programme sans modifier son code source</h3>
+<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Le but: factoriser les changements en minimisant les changements du code source</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Pour ajouter l&rsquo;évaluation multi-facettes à l&rsquo;interpréteur, modifier directement
@@ -1128,11 +1124,84 @@ kind of change: adding analyses.  How is that more specific?
 Some solutions will be specific to that use case.  Some will apply to any
 program.  Lessons learned will be valuable for all.
 </p>
+
+<hr >
+
+<p>
+Le but de l&rsquo;extension de Narcissus était d&rsquo;ajouter l&rsquo;évaluation à facettes.  Les
+auteurs ont choisi de modifier directement le code source de l&rsquo;interpréteur
+</p>
+
+<p>
+Case study: Narcissus instrumentation.
+</p>
+
+<p>
+The goal was to add faceted evaluation to Narcissus.  They went with modifying
+the interpreter all other the place.  You end up with this diagram.
+</p>
+
+<p>
+Modifying a program like that does not scale.  It&rsquo;s quick, and it works for this
+case.  But now imagine you want to try another evaluation strategy.  You fork
+the original interpreter and modify it, again.  Now you have 3 variants of the
+interpreter.  And you have a bug that affects all three.  You must now patch the
+bug in all three places.  Doesn&rsquo;t scale.
+</p>
+
+<p>
+And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
+You have to create yet another fourth variant.
+</p>
+
+<p>
+There&rsquo;s yet another issue: how do you know what part of the code pertains to the
+new evaluation strategy and what part pertains to the original semantics?
+Version control tools can help, but they don&rsquo;t work on the <i>semantic</i> of
+changes, just on lines of code.  A clear distinction in the code helps.
+</p>
+
+<p>
+Let me get one thing clear: that&rsquo;s totally fine, especially considering this is
+a research prototype.  Their goal was to apply their evaluation strategy to
+JavaScript, and they succeeded.
+</p>
+
+<p>
+But, it got us thinking: how would we do it differently?  Given enough time, how
+would we add faceted evaluation on Narcissus?
+</p>
+
+<p>
+Any software engineer would tell you: refactoring.  We have a typical case of a
+program that is being used in ways it what not designed for.  The module pattern
+of JavaScript prevents extension.  This calls for taking into account the new
+use cases and refactor the program.
+</p>
+
+<p>
+But refactoring is difficult to get right and time consuming.  We would have to
+think of a new API for extension that would cover all our new use cases.  That
+means gathering these use cases, sketching, etc.  We have to review solutions:
+e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
+is tricky, because we have to make sure we don&rsquo;t alter the functionality of the
+interpreter in doing so.  Maybe this is trivial because we only add code that
+visibly does not change the control flow or breaks any (implicit) assumptions.
+Or maybe this is hard, because we restructure the whole thing to be completely
+extendable.  We can use tests, or rely on types (we have neither here).  We have
+people here in ASCOLA trying to prove refactorings that preserve semantics.
+It&rsquo;s not quite there yet.
+</p>
+
+<p>
+And then, maybe down the road you find out that you missed an important use
+case.  And you need to refactor, and do this whole process again.
+</p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline10" class="outline-3">
-<h3 id="orgheadline10"><span class="section-number-3">2.4</span> Le problème de l&rsquo;expression</h3>
+<h3 id="orgheadline10"><span class="section-number-3">2.4</span> <span class="todo MISPLACED">MISPLACED</span> Le problème de l&rsquo;expression</h3>
 <div class="outline-text-3" id="text-2-4">
 <aside class="todo">
 <p>
@@ -1484,77 +1553,6 @@ d&rsquo;extension.
 <div id="outline-container-orgheadline11" class="outline-3">
 <h3 id="orgheadline11"><span class="section-number-3">2.5</span> L&rsquo;idée: le détournement de programme</h3>
 <div class="outline-text-3" id="text-2-5">
-<p>
-Le but de l&rsquo;extension de Narcissus était d&rsquo;ajouter l&rsquo;évaluation à facettes.  Les
-auteurs ont choisi de modifier directement le code source de l&rsquo;interpréteur
-</p>
-
-<p>
-Case study: Narcissus instrumentation.
-</p>
-
-<p>
-The goal was to add faceted evaluation to Narcissus.  They went with modifying
-the interpreter all other the place.  You end up with this diagram.
-</p>
-
-<p>
-Modifying a program like that does not scale.  It&rsquo;s quick, and it works for this
-case.  But now imagine you want to try another evaluation strategy.  You fork
-the original interpreter and modify it, again.  Now you have 3 variants of the
-interpreter.  And you have a bug that affects all three.  You must now patch the
-bug in all three places.  Doesn&rsquo;t scale.
-</p>
-
-<p>
-And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
-You have to create yet another fourth variant.
-</p>
-
-<p>
-There&rsquo;s yet another issue: how do you know what part of the code pertains to the
-new evaluation strategy and what part pertains to the original semantics?
-Version control tools can help, but they don&rsquo;t work on the <i>semantic</i> of
-changes, just on lines of code.  A clear distinction in the code helps.
-</p>
-
-<p>
-Let me get one thing clear: that&rsquo;s totally fine, especially considering this is
-a research prototype.  Their goal was to apply their evaluation strategy to
-JavaScript, and they succeeded.
-</p>
-
-<p>
-But, it got us thinking: how would we do it differently?  Given enough time, how
-would we add faceted evaluation on Narcissus?
-</p>
-
-<p>
-Any software engineer would tell you: refactoring.  We have a typical case of a
-program that is being used in ways it what not designed for.  The module pattern
-of JavaScript prevents extension.  This calls for taking into account the new
-use cases and refactor the program.
-</p>
-
-<p>
-But refactoring is difficult to get right and time consuming.  We would have to
-think of a new API for extension that would cover all our new use cases.  That
-means gathering these use cases, sketching, etc.  We have to review solutions:
-e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
-is tricky, because we have to make sure we don&rsquo;t alter the functionality of the
-interpreter in doing so.  Maybe this is trivial because we only add code that
-visibly does not change the control flow or breaks any (implicit) assumptions.
-Or maybe this is hard, because we restructure the whole thing to be completely
-extendable.  We can use tests, or rely on types (we have neither here).  We have
-people here in ASCOLA trying to prove refactorings that preserve semantics.
-It&rsquo;s not quite there yet.
-</p>
-
-<p>
-And then, maybe down the road you find out that you missed an important use
-case.  And you need to refactor, and do this whole process again.
-</p>
-
 <p>
 There is a lightweight alternative to refactoring.  This is what I call
 <i>diverting</i> the program.
@@ -13693,7 +13691,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-04 lun. 17:24 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-04 lun. 18:41 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
