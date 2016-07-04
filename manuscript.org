@@ -15,7 +15,7 @@
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
 
-#+TODO: BARE(b) UNSTABLE(u) TRANSLATE(t) | STABLE(d)
+#+TODO: BARE(b) UNSTABLE(u) TRANSLATE(t) MISPLACED(m) | STABLE(d)
 
 #+BEGIN_QUOTE
 "I could tell you my adventures--beginning from this morning," said Alice a
@@ -41,8 +41,8 @@ different person then.'
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#unstable-préliminaires-code-source-processus-et-spécification][UNSTABLE Préliminaires: code source, processus, et spécification]]
    - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
-   - [[#bare-modifier-un-programme-sans-modifier-son-code-source][BARE Modifier un programme sans modifier son code source]]
-   - [[#le-problème-de-lexpression][Le problème de l'expression]]
+   - [[#bare-le-but-factoriser-les-changements-en-minimisant-les-changements-du-code-source][BARE Le but: factoriser les changements en minimisant les changements du code source]]
+   - [[#misplaced-le-problème-de-lexpression][MISPLACED Le problème de l'expression]]
    - [[#lidée-le-détournement-de-programme][L'idée: le détournement de programme]]
  - [[#contexte][Contexte]]
    - [[#unstable-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNSTABLE Apprivoiser le flot de contrôle: la programmation structurée]]
@@ -509,7 +509,6 @@ C'est là que nous intervenons: nous explorons l'espace des programmes possibles
 et rapportons les avantages et inconvénients de chaque techniquse pour une
 application donnée.
 
-
 ** UNSTABLE Étude de cas: extension ad-hoc de Narcissus
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
 [[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
@@ -572,8 +571,7 @@ les lignes vides.
 Pour réaliser l'instrumentation de Narcissus pour l'évaluation multi-facettes,
 les auteurs ont modifié directement le code source de l'interpréteur Narcissus.
 On peut obtenir l'ensemble des changements effectués en extrayant un /diff/ des
-deux versions.  La figure [[visual-narcissus-diff]] donne une vue d'ensemble des
-changements.
+deux versions.  La figure suivante donne une vue d'ensemble de ces changements:
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
@@ -583,10 +581,9 @@ Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github
 
 #+NAME: visual-narcissus-diff
 #+CAPTION: Visualisation des modifications apportées par l'instrumentation de
-#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Le diff de "jsexec" y
-#+CAPTION: est représenté intégralement, coupés en colonnes de même taille.
-#+CAPTION: Chaque ligne est colorée suivant le type de changement dont elle fait
-#+CAPTION: partie.  Les lignes grises ne sont pas affectées par
+#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Chaque ligne du diff
+#+CAPTION: correspond à une ligne colorée suivant le type de changement dont
+#+CAPTION: elle fait partie.  Les lignes grises ne sont pas affectées par
 #+CAPTION: l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
 [[file:img/narcissus-diff.svg]]
 
@@ -735,35 +732,45 @@ suivre les valeurs étiquetées passées en argument du constructeur de chaînes
 caractères.
 
 Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories indique qu'il y a un potentiel de factorisation.  Si l'on souhaite
-rendre Narcissus extensibles, afin de pouvoir définir l'évaluation
-multi-facettes sans duplication de code, il faut trouver des façons d'exprimer
-les changements de ces quatre catégories.  Mais si nous souhaites exprimer
-d'autres analyses, et étendre d'autres interpréteurs, il faut tenter des trouver
-des mécanismes génériques qui pourront être réemployés pour ces autres cas.
+catégories suggère des axes potentiels de /factorisation/.  Factoriser
+permettrait de réduire la duplication de code, et surtout de regrouper les
+changements de même nature en un seul endroit.  Par exemple, si l'interpréteur
+disposait d'une fonction pour ajouter une valeur à l'objet global, tous les
+ajouts à cet objets requis par l'instrumentation pourraient être effectués au
+même endroit:
 
-Pour prendre un peu de recul par rapport à l'instrumentation de Narcissus, on
-peut s'intéresser à la définition formelle de l'évaluation multi-facettes.
-Celle-ci est donnée sous forme d'une sémantique opérationnelle d'un langage
-proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d'abord donnée
-sans considérer l'évaluation multi-facettes, et suit une définition usuelle d'un
-lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
-références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
-JavaScript.
+#+BEGIN_SRC js
+addToGlobal({
+  facetedValue: function(v) { ... },
+  ...
+})
+#+END_SRC
 
-Dans un second temps, une sémantique alternative est présentée qui introduit les
-changements nécessaires pour l'évaluation multi-facettes.  Il s'agit d'une copie
-de la première sémantique, avec quelques changements et ajouts.  On y retrouve
-les deux des quatre catégories de changements dégagées du diff.  Le /program
-counter/ accompagne chaque règle d'évaluation, et de nouvelles règles sont
-ajoutées pour séparer l'évaluation de valeurs à facette en deux parties.
+# # La sémantique est plus claire parce que plus petite, mais il y a les mêmes
+# # problèmes de duplication.  Pas sûr de garder.
 
-Les règles de la sémantique instrumentées tiennent sur une page; un
-interpréteur pour cette sémantique est donc considérablement plus petit qu'un
-interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
-des mécanismes d'extensibilité.
+# Pour prendre un peu de recul par rapport à l'instrumentation de Narcissus, on
+# peut s'intéresser à la définition formelle de l'évaluation multi-facettes.
+# Celle-ci est donnée sous forme d'une sémantique opérationnelle d'un langage
+# proche du lambda-calcul: \lambda^{facet}.  La sémantique de ce langage est d'abord donnée
+# sans considérer l'évaluation multi-facettes, et suit une définition usuelle d'un
+# lambda-calcul en /call-by-value/; \lambda^{facet} contient en plus des constantes, des
+# références mutables, et une valeur absorbante pour faire écho au ~undefined~ de
+# JavaScript.
 
-** BARE Modifier un programme sans modifier son code source
+# Dans un second temps, une sémantique alternative est présentée qui introduit les
+# changements nécessaires pour l'évaluation multi-facettes.  Il s'agit d'une copie
+# de la première sémantique, avec quelques changements et ajouts.  On y retrouve
+# les deux des quatre catégories de changements dégagées du diff.  Le /program
+# counter/ accompagne chaque règle d'évaluation, et de nouvelles règles sont
+# ajoutées pour séparer l'évaluation de valeurs à facette en deux parties.
+
+# Les règles de la sémantique instrumentées tiennent sur une page; un
+# interpréteur pour cette sémantique est donc considérablement plus petit qu'un
+# interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
+# des mécanismes d'extensibilité.
+
+** BARE Le but: factoriser les changements en minimisant les changements du code source
 Pour ajouter l'évaluation multi-facettes à l'interpréteur, modifier directement
 son code source est l'approche la plus simple.  L'inconvénient majeur de cette
 approche est qu'elle ne passe pas à l'échelle.  Il y-a-t'il d'autres façons
@@ -802,7 +809,58 @@ kind of change: adding analyses.  How is that more specific?
 Some solutions will be specific to that use case.  Some will apply to any
 program.  Lessons learned will be valuable for all.
 
-** Le problème de l'expression
+-----
+
+Le but de l'extension de Narcissus était d'ajouter l'évaluation à facettes.  Les
+auteurs ont choisi de modifier directement le code source de l'interpréteur
+
+Case study: Narcissus instrumentation.
+
+The goal was to add faceted evaluation to Narcissus.  They went with modifying
+the interpreter all other the place.  You end up with this diagram.
+
+Modifying a program like that does not scale.  It's quick, and it works for this
+case.  But now imagine you want to try another evaluation strategy.  You fork
+the original interpreter and modify it, again.  Now you have 3 variants of the
+interpreter.  And you have a bug that affects all three.  You must now patch the
+bug in all three places.  Doesn't scale.
+
+And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
+You have to create yet another fourth variant.
+
+There's yet another issue: how do you know what part of the code pertains to the
+new evaluation strategy and what part pertains to the original semantics?
+Version control tools can help, but they don't work on the /semantic/ of
+changes, just on lines of code.  A clear distinction in the code helps.
+
+Let me get one thing clear: that's totally fine, especially considering this is
+a research prototype.  Their goal was to apply their evaluation strategy to
+JavaScript, and they succeeded.
+
+But, it got us thinking: how would we do it differently?  Given enough time, how
+would we add faceted evaluation on Narcissus?
+
+Any software engineer would tell you: refactoring.  We have a typical case of a
+program that is being used in ways it what not designed for.  The module pattern
+of JavaScript prevents extension.  This calls for taking into account the new
+use cases and refactor the program.
+
+But refactoring is difficult to get right and time consuming.  We would have to
+think of a new API for extension that would cover all our new use cases.  That
+means gathering these use cases, sketching, etc.  We have to review solutions:
+e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
+is tricky, because we have to make sure we don't alter the functionality of the
+interpreter in doing so.  Maybe this is trivial because we only add code that
+visibly does not change the control flow or breaks any (implicit) assumptions.
+Or maybe this is hard, because we restructure the whole thing to be completely
+extendable.  We can use tests, or rely on types (we have neither here).  We have
+people here in ASCOLA trying to prove refactorings that preserve semantics.
+It's not quite there yet.
+
+And then, maybe down the road you find out that you missed an important use
+case.  And you need to refactor, and do this whole process again.
+
+** MISPLACED Le problème de l'expression
 #+ATTR_HTML: :class todo
 #+BEGIN_aside
 Slightly incomplete without the OO solution, but this was already described in
@@ -1060,55 +1118,6 @@ d'extension.
 ]
 
 ** L'idée: le détournement de programme
-Le but de l'extension de Narcissus était d'ajouter l'évaluation à facettes.  Les
-auteurs ont choisi de modifier directement le code source de l'interpréteur
-
-Case study: Narcissus instrumentation.
-
-The goal was to add faceted evaluation to Narcissus.  They went with modifying
-the interpreter all other the place.  You end up with this diagram.
-
-Modifying a program like that does not scale.  It's quick, and it works for this
-case.  But now imagine you want to try another evaluation strategy.  You fork
-the original interpreter and modify it, again.  Now you have 3 variants of the
-interpreter.  And you have a bug that affects all three.  You must now patch the
-bug in all three places.  Doesn't scale.
-
-And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
-You have to create yet another fourth variant.
-
-There's yet another issue: how do you know what part of the code pertains to the
-new evaluation strategy and what part pertains to the original semantics?
-Version control tools can help, but they don't work on the /semantic/ of
-changes, just on lines of code.  A clear distinction in the code helps.
-
-Let me get one thing clear: that's totally fine, especially considering this is
-a research prototype.  Their goal was to apply their evaluation strategy to
-JavaScript, and they succeeded.
-
-But, it got us thinking: how would we do it differently?  Given enough time, how
-would we add faceted evaluation on Narcissus?
-
-Any software engineer would tell you: refactoring.  We have a typical case of a
-program that is being used in ways it what not designed for.  The module pattern
-of JavaScript prevents extension.  This calls for taking into account the new
-use cases and refactor the program.
-
-But refactoring is difficult to get right and time consuming.  We would have to
-think of a new API for extension that would cover all our new use cases.  That
-means gathering these use cases, sketching, etc.  We have to review solutions:
-e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
-is tricky, because we have to make sure we don't alter the functionality of the
-interpreter in doing so.  Maybe this is trivial because we only add code that
-visibly does not change the control flow or breaks any (implicit) assumptions.
-Or maybe this is hard, because we restructure the whole thing to be completely
-extendable.  We can use tests, or rely on types (we have neither here).  We have
-people here in ASCOLA trying to prove refactorings that preserve semantics.
-It's not quite there yet.
-
-And then, maybe down the road you find out that you missed an important use
-case.  And you need to refactor, and do this whole process again.
-
 There is a lightweight alternative to refactoring.  This is what I call
 /diverting/ the program.
 
@@ -9455,6 +9464,7 @@ different things.'
 #+END_QUOTE
 
 ** BARE Perspectives: if automated programming is the future, this is mostly usesless
+
 programming automation will probably not care about any of this.  If in the
 future, computers are able to generate programs based on an informal
 specification, or by having a discussion with humans, then modularity
