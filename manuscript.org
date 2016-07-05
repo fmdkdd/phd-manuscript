@@ -169,24 +169,29 @@ languages and the dynamic processes they describe.  Also, for inspiration.
 * Abstract                                                         :noexport:
 Programs are hard to write, and harder to maintain.  Programs often are part of
 an /ongoing/ development process: they evolve as requirements change, as new
-features are added, and as defects are uncovered and fixed.   The main way to
+features are added, and as defects are uncovered and fixed.  The main way to
 deal with these constant changes is by /refactoring/.
 
 But refactoring can be tricky and time-consuming.  Refactoring entails to
 rewrite parts of the source code, but may also require to reorganize the
-program's whole architecture.
+program's whole architecture.  Refactoring may just be too costly in a context
+where rapid iteration is required.
 
-We propose a lightweight alternative to refactoring: /diverting/.  Diverting a
-program is to change its results without directly modifying its source code.
-To divert a program, we leverage late-binding mechanisms such as dynamic scoping
-and metaprogramming.
+For the purposes of securing web applications, we were interested in applying
+dynamic security analyses to JavaScript programs.  In this context, the ability
+to quickly modify the interpreter and to compose analyses at runtime is
+paramount.
 
-To illustrate diverting, we take a simple, non-trivial example of program: an
-interpreter.  We start with an interpreter for arithmetic expressions, and
-review the techniques used to divert the interpreter to support new terms and
-operations; a setting reminiscent of the Expression Problem.  We show how
-diverting can help build interpreters incrementally in layers, allowing dynamic
-activation of alternative behavior.
+For this scenario, we found a lightweight alternative to refactoring:
+/diverting/.  Diverting a program is to change its results without directly
+modifying its source code.  To divert a program, we leverage late-binding
+mechanisms such as dynamic scoping and metaprogramming.
+
+To illustrate diverting, we start with an interpreter for arithmetic
+expressions, and review the techniques used to divert the interpreter to support
+new terms and operations; a setting reminiscent of the Expression Problem.  We
+show how diverting can help build interpreters incrementally in layers, allowing
+dynamic activation of alternative behavior.
 
 Finally, we apply those techniques to divert a full-blown JavaScript interpreter
 with multiple dynamic security analyses.  We find that diverting is both faster
@@ -206,15 +211,21 @@ gérer ces changements récurrents est la /refactorisation/.
 
 Mais la refactorisation peut être délicate et chronophage.  Refactoriser
 implique de réécrire des parties du code source, mais peut aussi requérir de
-réorganiser toute l'architecture du programme.
+réorganiser toute l'architecture du programme.  La refactorisation est peut-être
+bien trop coûteuse dans un contexte où prime la vitesse d'itération.
 
-Nous proposons une alternative économe à la refactorisation: le /détournement/.
-Détourner un programme c'est changer ses résultats sans directement modifier son
-code source.  Pour détourner un programme, on exploite des mécanismes de
-résolution tardive, tels que la portée dynamique et la métaprogrammation.
+Dans un but de sécuriser les applications web, nous nous sommes intéressés à
+appliquer des analyses dynamiques de sécurité à des programmes JavaScript.  Dans
+ce contexte, pouvoir rapidement modifier l'interpréteur, et pouvoir composer des
+analyses à l'exécution est primordial.
 
-Pour illustrer le détournement, on prend un exemple de programme simple et
-non-trivial: un interpréteur.  On commence par un interpréteur d'expressions
+Pour ce scénario, nous avons trouvé une alternative économe à la
+refactorisation: le /détournement/.  Détourner un programme c'est changer ses
+résultats sans directement modifier son code source.  Pour détourner un
+programme, on exploite des mécanismes de résolution tardive, tels que la portée
+dynamique et la métaprogrammation.
+
+Pour illustrer le détournement, on commence par un interpréteur d'expressions
 arithmétiques, et l'on passe en revue les techniques utilisables pour détourner
 l'interpréteur afin qu'il supporte de nouveaux termes et opérations; un scénario
 similaire au problème de l'Expression.  On montre comment le détournement peut
