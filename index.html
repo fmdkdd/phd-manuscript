@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-04 lun. 18:41 -->
+<!-- 2016-07-05 mar. 16:59 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -356,19 +356,27 @@ gérer ces changements récurrents est la <i>refactorisation</i>.
 <p>
 Mais la refactorisation peut être délicate et chronophage.  Refactoriser
 implique de réécrire des parties du code source, mais peut aussi requérir de
-réorganiser toute l&rsquo;architecture du programme.
+réorganiser toute l&rsquo;architecture du programme.  La refactorisation est peut-être
+bien trop coûteuse dans un contexte où prime la vitesse d&rsquo;itération.
 </p>
 
 <p>
-Nous proposons une alternative économe à la refactorisation: le <i>détournement</i>.
-Détourner un programme c&rsquo;est changer ses résultats sans directement modifier son
-code source.  Pour détourner un programme, on exploite des mécanismes de
-résolution tardive, tels que la portée dynamique et la métaprogrammation.
+Dans un but de sécuriser les applications web, nous nous sommes intéressés à
+appliquer des analyses dynamiques de sécurité à des programmes JavaScript.  Dans
+ce contexte, pouvoir rapidement modifier l&rsquo;interpréteur, et pouvoir composer des
+analyses à l&rsquo;exécution est primordial.
 </p>
 
 <p>
-Pour illustrer le détournement, on prend un exemple de programme simple et
-non-trivial: un interpréteur.  On commence par un interpréteur d&rsquo;expressions
+Pour ce scénario, nous avons trouvé une alternative économe à la
+refactorisation: le <i>détournement</i>.  Détourner un programme c&rsquo;est changer ses
+résultats sans directement modifier son code source.  Pour détourner un
+programme, on exploite des mécanismes de résolution tardive, tels que la portée
+dynamique et la métaprogrammation.
+</p>
+
+<p>
+Pour illustrer le détournement, on commence par un interpréteur d&rsquo;expressions
 arithmétiques, et l&rsquo;on passe en revue les techniques utilisables pour détourner
 l&rsquo;interpréteur afin qu&rsquo;il supporte de nouveaux termes et opérations; un scénario
 similaire au problème de l&rsquo;Expression.  On montre comment le détournement peut
@@ -1057,6 +1065,26 @@ même endroit:
 })
 </pre>
 </div>
+
+<p>
+De cette étude, on retient essentiellement trois questions:
+</p>
+
+<ol class="org-ol">
+<li>Modifier directement le code source mélange la fonctionnalité de
+l&rsquo;interpréteur de base et celle de l&rsquo;évaluation multi-facettes.  Comment
+peut-on modifier l&rsquo;interpréteur tout en distinguant ces deux fonctionnalités
+dans le code source?</li>
+
+<li>Modifier directement le code source n&rsquo;est pas une solution viable lorsque
+l&rsquo;on souhaite ajouter <i>plusieurs</i> analyses à l&rsquo;interpréteur.  Comment peut-on
+modifier l&rsquo;interpréteur pour permettre plusieurs analyses concurrentes?</li>
+
+<li>Les changements de l&rsquo;instrumentation appartiennent à quatre motifs
+récurrents.  Comment factoriser ces motifs pour minimiser la duplication de
+code, et est-ce que cette factorisation suffirait pour satisfaire les
+questions 1 et 2?</li>
+</ol>
 </div>
 </div>
 
@@ -13691,7 +13719,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-04 lun. 18:41 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-05 mar. 16:59 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
