@@ -757,6 +757,22 @@ addToGlobal({
 })
 #+END_SRC
 
+De cette étude, on retient essentiellement trois questions:
+
+1. Modifier directement le code source mélange la fonctionnalité de
+   l'interpréteur de base et celle de l'évaluation multi-facettes.  Comment
+   peut-on modifier l'interpréteur tout en distinguant ces deux fonctionnalités
+   dans le code source?
+
+2. Modifier directement le code source n'est pas une solution viable lorsque
+   l'on souhaite ajouter /plusieurs/ analyses à l'interpréteur.  Comment peut-on
+   modifier l'interpréteur pour permettre plusieurs analyses concurrentes?
+
+3. Les changements de l'instrumentation appartiennent à quatre motifs
+   récurrents.  Comment factoriser ces motifs pour minimiser la duplication de
+   code, et est-ce que cette factorisation suffirait pour satisfaire les
+   questions 1 et 2?
+
 # # La sémantique est plus claire parce que plus petite, mais il y a les mêmes
 # # problèmes de duplication.  Pas sûr de garder.
 
@@ -824,29 +840,6 @@ program.  Lessons learned will be valuable for all.
 
 Le but de l'extension de Narcissus était d'ajouter l'évaluation à facettes.  Les
 auteurs ont choisi de modifier directement le code source de l'interpréteur
-
-Case study: Narcissus instrumentation.
-
-The goal was to add faceted evaluation to Narcissus.  They went with modifying
-the interpreter all other the place.  You end up with this diagram.
-
-Modifying a program like that does not scale.  It's quick, and it works for this
-case.  But now imagine you want to try another evaluation strategy.  You fork
-the original interpreter and modify it, again.  Now you have 3 variants of the
-interpreter.  And you have a bug that affects all three.  You must now patch the
-bug in all three places.  Doesn't scale.
-
-And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
-You have to create yet another fourth variant.
-
-There's yet another issue: how do you know what part of the code pertains to the
-new evaluation strategy and what part pertains to the original semantics?
-Version control tools can help, but they don't work on the /semantic/ of
-changes, just on lines of code.  A clear distinction in the code helps.
-
-Let me get one thing clear: that's totally fine, especially considering this is
-a research prototype.  Their goal was to apply their evaluation strategy to
-JavaScript, and they succeeded.
 
 But, it got us thinking: how would we do it differently?  Given enough time, how
 would we add faceted evaluation on Narcissus?
