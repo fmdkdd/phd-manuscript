@@ -274,6 +274,9 @@ donc une alternative légitime à la refactorisation dans ce scénario réaliste
 :CUSTOM_ID: problem
 :END:
 ** UNSTABLE Préliminaires: code source, processus, et spécification
+:PROPERTIES:
+:CUSTOM_ID: defs
+:END:
 Il faut distinguer le code source d'un programme et le processus que le code
 source engendre.  Le /code source/ est l'ensemble des fichiers de texte écrit
 par le programmeur.  Le /processus/ est l'action entreprise par la machine
@@ -773,6 +776,10 @@ De cette étude, on retient essentiellement trois questions:
    code, et est-ce que cette factorisation suffirait pour satisfaire les
    questions 1 et 2?
 
+Essentiellement, quelles alternatives existent à la modification directe du code
+source pour instrumenter un interpréteur comme Narcissus?  Et quels compromis
+ces alternatives engagent-elles?
+
 # # La sémantique est plus claire parce que plus petite, mais il y a les mêmes
 # # problèmes de duplication.  Pas sûr de garder.
 
@@ -798,14 +805,56 @@ De cette étude, on retient essentiellement trois questions:
 # des mécanismes d'extensibilité.
 
 ** BARE Le but: factoriser les changements en minimisant les changements du code source
-Pour ajouter l'évaluation multi-facettes à l'interpréteur, modifier directement
-son code source est l'approche la plus simple.  L'inconvénient majeur de cette
-approche est qu'elle ne passe pas à l'échelle.  Il y-a-t'il d'autres façons
-d'étendre l'interpréteur qui n'ont pas ces inconvénients?
+D'un point de vue abstrait, on peut voir l'interpréteur comme une fonction
+mathématique qui associe un processus à un code source:
 
-Conceptuellement,
+: spec_1: source -interpréteur-> processus
 
-Spec -change-> Spec'
+La définition exacte de cette fonction correspond à la spécification de
+l'interpréteur (voir [[#defs]]).
+
+Lorsque l'on parle de modifier l'interpréteur, comme dans la section précédente,
+c'est que l'on modifie cette spécification.  Cette spécification modifiée
+correspond à une nouvelle fonction:
+
+: spec_2: source -interpréteur modifié-> processus
+
+Mais généralement, la modification est relativement mineure.  On ne cherche pas
+à totalement changer le sens de l'interprétation, sinon on pourrait tout aussi
+bien écrire un nouvel interpréteur.  Si l'on choisit de modifier un interpréteur
+existant, c'est parce qu'en grande partie sa spécification est réutilisable.  La
+spécification modifiée est donc dérivée de la spécification d'origine.  On peut
+le noter ainsi:
+
+: spec_1 -modification-> spec_2
+
+La modification décrit uniquement les changements, le /delta/, entre les deux
+spécifications.  C'est ce delta qui nous intéresse quand on veut implémenter
+cette modification.
+
+Il y a plusieurs façons d'implémenter cette modification.  Rappelons nous que le
+processus de développement est le suivant:
+
+: Spécification -programmeur-> Code source -compilateur-> Programme -machine-> Résultats
+
+#+BEGIN_aside
+Le véritable objet du programmeur est l'exécution du programme.  Mais il ne
+manipule pas directement l'exécution de la machine, il décrit les instructions à
+l'avance.
+#+END_aside
+
+Le programmeur élabore le code source en fonction de la spécification.  Le but
+est de concevoir un programme qui aura les résultats attendus.  Pour s'en
+assurer, le programmeur observe le résultat de l'exécution du programme.  Si ces
+résultats sont en accord avec la spécification, le programme est fini.  Sinon,
+il faut modifier le code source pour modifier le processus engendré, jusqu'à ce
+que les résultats concordent.
+
+Dans la section précédente, ce delta est perdu dans les modifications du code
+source de l'interpréteur.  Il n'y a pas de marques apparentes dans le code
+source qui indiquent que cette partie est modifiée ou non.
+
+
 
 A change adds a variation to the Spec of the program.  If we have a formal spec,
 we can apply this change on it and have a changed spec.  Change is the delta
@@ -839,7 +888,9 @@ program.  Lessons learned will be valuable for all.
 -----
 
 Le but de l'extension de Narcissus était d'ajouter l'évaluation à facettes.  Les
-auteurs ont choisi de modifier directement le code source de l'interpréteur
+auteurs ont choisi de modifier directement le code source de l'interpréteur.
+C'est une solution simple et directe, mais qui a les inconvénients listés
+précédemment.  Comment
 
 But, it got us thinking: how would we do it differently?  Given enough time, how
 would we add faceted evaluation on Narcissus?
