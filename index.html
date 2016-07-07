@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-05 mar. 16:59 -->
+<!-- 2016-07-07 jeu. 19:10 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -160,7 +160,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#problem">2. Le problème: étendre des interpréteurs</a>
 <ul>
-<li><a href="#orgheadline7">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
+<li><a href="#defs">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
 <li><a href="#orgheadline8">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
 <li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Le but: factoriser les changements en minimisant les changements du code source</a></li>
 <li><a href="#orgheadline10">2.4. <span class="todo MISPLACED">MISPLACED</span> Le problème de l&rsquo;expression</a></li>
@@ -463,8 +463,8 @@ particulier.</li>
 <div class="outline-text-2" id="text-problem">
 </div>
 <div id="outline-container-orgheadline7" class="outline-3">
-<h3 id="orgheadline7"><span class="section-number-3">2.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</h3>
-<div class="outline-text-3" id="text-2-1">
+<h3 id="defs"><a id="orgheadline7"></a><span class="section-number-3">2.1</span> <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</h3>
+<div class="outline-text-3" id="text-defs">
 <p>
 Il faut distinguer le code source d&rsquo;un programme et le processus que le code
 source engendre.  Le <i>code source</i> est l&rsquo;ensemble des fichiers de texte écrit
@@ -1085,6 +1085,12 @@ récurrents.  Comment factoriser ces motifs pour minimiser la duplication de
 code, et est-ce que cette factorisation suffirait pour satisfaire les
 questions 1 et 2?</li>
 </ol>
+
+<p>
+Essentiellement, quelles alternatives existent à la modification directe du code
+source pour instrumenter un interpréteur comme Narcissus?  Et quels compromis
+ces alternatives engagent-elles?
+</p>
 </div>
 </div>
 
@@ -1092,18 +1098,134 @@ questions 1 et 2?</li>
 <h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Le but: factoriser les changements en minimisant les changements du code source</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
-Pour ajouter l&rsquo;évaluation multi-facettes à l&rsquo;interpréteur, modifier directement
-son code source est l&rsquo;approche la plus simple.  L&rsquo;inconvénient majeur de cette
-approche est qu&rsquo;elle ne passe pas à l&rsquo;échelle.  Il y-a-t&rsquo;il d&rsquo;autres façons
-d&rsquo;étendre l&rsquo;interpréteur qui n&rsquo;ont pas ces inconvénients?
+D&rsquo;un point de vue abstrait, on peut voir l&rsquo;interpréteur comme une fonction
+mathématique qui associe un code source à un processus:
+</p>
+
+<pre class="example">
+spec_1: source -interpréteur-&gt; processus
+</pre>
+
+<p>
+La définition exacte de cette fonction correspond à la spécification de
+l&rsquo;interpréteur (voir <a href="#defs">2.1</a>).
 </p>
 
 <p>
-Conceptuellement,
+Lorsque l&rsquo;on parle de modifier l&rsquo;interpréteur, comme dans la section précédente,
+c&rsquo;est que l&rsquo;on modifie cette spécification.  Cette spécification modifiée
+correspond à une nouvelle fonction:
+</p>
+
+<pre class="example">
+spec_2: source -interpréteur modifié-&gt; processus
+</pre>
+
+<p>
+C&rsquo;est un premier point de vue: l&rsquo;interpréteur modifié est vu comme un nouvel
+interpréteur, sans aucune relation avec le premier interpréteur.  En suivant ce
+point de vue, il est naturel d&rsquo;implémenter l&rsquo;interpréteur modifié comme un
+nouveau programme.  Le nouveau programme est basé sur le premier, donc on peut
+réutiliser une bonne partie du code source du premier.  Mais une fois les
+modifications effectuées, les deux programmes sont bel et bien indépendants.
 </p>
 
 <p>
-Spec -change-&gt; Spec&rsquo;
+Mais on peut aussi adopter un point de vue complémentaire et s&rsquo;intéresser à la
+<i>modification</i> elle-même:
+</p>
+
+<pre class="example">
+interpréteur -modification-&gt; interpréteur modifié
+</pre>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/problem3.svg" alt="problem3.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;4&nbsp;:</span> Un rectangle peut être décrit par quatre points, ou par une origine et un vecteur.  La seconde représentation est plus compacte que la première, sans perte d&rsquo;information.</figcaption>
+</figure>
+
+</div>
+
+<p>
+La modification décrit uniquement les changements, le <i>delta</i>, entre les deux
+interpréteurs.  L&rsquo;interpréteur modifié est alors dérivé de l&rsquo;interpréteur
+d&rsquo;origine.  C&rsquo;est un peu la même distinction que l&rsquo;on peut faire entre
+représenter un rectangle par quatre sommets, ou bien par une origine et un
+vecteur.
+</p>
+
+<p>
+Lorsque la modification est relativement mineure par rapport à la taille de
+l&rsquo;interpréteur, la représentation du couple origine + delta sera plus compacte.
+On qualifiera une telle représentation de <i>différentielle</i>.
+</p>
+
+<p>
+Mais comment cette représentation différentielle se traduirait dans le code
+source?  Rappelons nous que le processus de développement est le suivant:
+</p>
+
+
+<figure>
+<p><img src="img/problem0.svg" alt="problem0.svg">
+</p>
+</figure>
+
+<aside>
+<p>
+Bien que le véritable objet du programmeur est de faire concorder le processus
+avec les résultats attendus, le programmeur ne manipule pas directement le
+processus, mais seulement le code qui le décrit.  La boucle
+correction/observation permet de rectifier les imprécisions causées par cette
+indirection.
+</p>
+</aside>
+
+<p>
+Le programmeur élabore le code source en fonction de la spécification.  À partir
+du code source, le compilateur produit un programme exécutable, et le
+programmeur observe les résultats de son exécution sur la machine.  Le but du
+programmeur est de concevoir un programme qui aura les résultats attendus par la
+spécification.  Si les résultats sont en accord avec la spécification, le
+programme est fini.  Le plus souvent, il faut corriger le code source pour
+corriger le processus engendré, jusqu&rsquo;à ce que les résultats concordent, ou que
+le programme ne présente plus d&rsquo;intérêt, ce qui offre une porte de sortie à ce
+cycle.
+</p>
+
+<p>
+Le changement décrit dans la section précédente correspond à une modification de
+la spécification: le fonctionnement attendu de l&rsquo;interpréteur est modifié.
+Cette modification entraîne une modification du code source, afin de modifier à
+son tour l&rsquo;exécution du programme.  Lorsque l&rsquo;on considère que cette
+spécification est nouvelle, le cycle de développement est le suivant:
+</p>
+
+
+<figure>
+<p><img src="img/problem1.svg" alt="problem1.svg">
+</p>
+</figure>
+
+<p>
+[describe tangled]
+</p>
+
+<p>
+Avec une représentation différentielle:
+</p>
+
+
+<figure>
+<p><img src="img/problem2.svg" alt="problem2.svg">
+</p>
+</figure>
+
+<p>
+[spec + add, code + add]
 </p>
 
 <p>
@@ -1157,42 +1279,9 @@ program.  Lessons learned will be valuable for all.
 
 <p>
 Le but de l&rsquo;extension de Narcissus était d&rsquo;ajouter l&rsquo;évaluation à facettes.  Les
-auteurs ont choisi de modifier directement le code source de l&rsquo;interpréteur
-</p>
-
-<p>
-Case study: Narcissus instrumentation.
-</p>
-
-<p>
-The goal was to add faceted evaluation to Narcissus.  They went with modifying
-the interpreter all other the place.  You end up with this diagram.
-</p>
-
-<p>
-Modifying a program like that does not scale.  It&rsquo;s quick, and it works for this
-case.  But now imagine you want to try another evaluation strategy.  You fork
-the original interpreter and modify it, again.  Now you have 3 variants of the
-interpreter.  And you have a bug that affects all three.  You must now patch the
-bug in all three places.  Doesn&rsquo;t scale.
-</p>
-
-<p>
-And what happens if you want to merge evaluation strategies?  Combine 1 and 2?
-You have to create yet another fourth variant.
-</p>
-
-<p>
-There&rsquo;s yet another issue: how do you know what part of the code pertains to the
-new evaluation strategy and what part pertains to the original semantics?
-Version control tools can help, but they don&rsquo;t work on the <i>semantic</i> of
-changes, just on lines of code.  A clear distinction in the code helps.
-</p>
-
-<p>
-Let me get one thing clear: that&rsquo;s totally fine, especially considering this is
-a research prototype.  Their goal was to apply their evaluation strategy to
-JavaScript, and they succeeded.
+auteurs ont choisi de modifier directement le code source de l&rsquo;interpréteur.
+C&rsquo;est une solution simple et directe, mais qui a les inconvénients listés
+précédemment.  Comment
 </p>
 
 <p>
@@ -1474,7 +1563,7 @@ existantes:
 <figure>
 <p><img src="img/expr-pb-1.svg" alt="expr-pb-1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;4&nbsp;:</span> Dans cette décomposition, les opérations implémentent du code pour chaque variante du langage (sens des flêches).  Ajouter une opération (à gauche) n&rsquo;affecte pas les unités existantes, mais ajouter un terme (à droite) nécessite de modifier toutes les opérations.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;8&nbsp;:</span> Dans cette décomposition, les opérations implémentent du code pour chaque variante du langage (sens des flêches).  Ajouter une opération (à gauche) n&rsquo;affecte pas les unités existantes, mais ajouter un terme (à droite) nécessite de modifier toutes les opérations.</figcaption>
 </figure>
 
 </div>
@@ -1518,7 +1607,7 @@ plusieurs modules.
 <figure>
 <p><img src="img/expr-pb-0.svg" alt="expr-pb-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;5&nbsp;:</span> Dans cette décomposition, les termes contiennent le code des opérations.  Ajouter un terme n&rsquo;affecte pas les unités existantes, mais ajouter une opération nécessite de modifier tous les termes.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;9&nbsp;:</span> Dans cette décomposition, les termes contiennent le code des opérations.  Ajouter un terme n&rsquo;affecte pas les unités existantes, mais ajouter une opération nécessite de modifier tous les termes.</figcaption>
 </figure>
 
 </div>
@@ -1539,7 +1628,7 @@ type d&rsquo;extension.
 <figure>
 <p><img src="img/expr-pb-2.svg" alt="expr-pb-2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;6&nbsp;:</span> La décomposition est un choix d&rsquo;implémentation; elle n&rsquo;est pas imposée par le langage.  Ajouter une opération ou ajouter un terme revient à définir une arête dans le graphe (<span class="color c0">▬</span> ). L&rsquo;implémentation détermine juste comment cette arête est définie dans le programme.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;10&nbsp;:</span> La décomposition est un choix d&rsquo;implémentation; elle n&rsquo;est pas imposée par le langage.  Ajouter une opération ou ajouter un terme revient à définir une arête dans le graphe (<span class="color c0">▬</span> ). L&rsquo;implémentation détermine juste comment cette arête est définie dans le programme.</figcaption>
 </figure>
 
 </div>
@@ -1653,7 +1742,7 @@ Japan, who cheerfully complained that he was always being eliminated.
 <figure>
 <p><img src="img/goto.jpg" alt="goto.jpg" title="すみません、高橋さん。">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;7&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;11&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
 </figure>
 
 <p>
@@ -1912,7 +2001,7 @@ toutes lettres, et le code machine bas-niveau.
 <figure>
 <p><img src="img/scuola.jpg" alt="scuola.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;10&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;14&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
 </figure>
 
 </div>
@@ -2421,7 +2510,7 @@ le <i>mode-switching</i> (voir ??).
 <figure>
 <p><img src="img/münchhausen.jpg" alt="münchhausen.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;21&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
 </div>
 
@@ -3683,7 +3772,7 @@ explain what they are doing. — [<a href="#Knu-84">Knu84</a>]</p>
 <figure>
 <p><img src="img/rug.jpg" alt="rug.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;25&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
 </figure>
 
 <p>
@@ -6086,7 +6175,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;35&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;39&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -8556,7 +8645,7 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;40&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -11121,7 +11210,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;50&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;54&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -13719,7 +13808,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-05 mar. 16:59 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-07 jeu. 19:10 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
