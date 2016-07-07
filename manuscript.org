@@ -806,7 +806,7 @@ ces alternatives engagent-elles?
 
 ** BARE Le but: factoriser les changements en minimisant les changements du code source
 D'un point de vue abstrait, on peut voir l'interpréteur comme une fonction
-mathématique qui associe un processus à un code source:
+mathématique qui associe un code source à un processus:
 
 : spec_1: source -interpréteur-> processus
 
@@ -819,42 +819,73 @@ correspond à une nouvelle fonction:
 
 : spec_2: source -interpréteur modifié-> processus
 
-Mais généralement, la modification est relativement mineure.  On ne cherche pas
-à totalement changer le sens de l'interprétation, sinon on pourrait tout aussi
-bien écrire un nouvel interpréteur.  Si l'on choisit de modifier un interpréteur
-existant, c'est parce qu'en grande partie sa spécification est réutilisable.  La
-spécification modifiée est donc dérivée de la spécification d'origine.  On peut
-le noter ainsi:
+C'est un premier point de vue: l'interpréteur modifié est vu comme un nouvel
+interpréteur, sans aucune relation avec le premier interpréteur.  En suivant ce
+point de vue, il est naturel d'implémenter l'interpréteur modifié comme un
+nouveau programme.  Le nouveau programme est basé sur le premier, donc on peut
+réutiliser une bonne partie du code source du premier.  Mais une fois les
+modifications effectuées, les deux programmes sont bel et bien indépendants.
 
-: spec_1 -modification-> spec_2
+Mais on peut aussi adopter un point de vue complémentaire et s'intéresser à la
+/modification/ elle-même:
+
+: interpréteur -modification-> interpréteur modifié
+
+#+BEGIN_side-figure
+#+CAPTION: Un rectangle peut être décrit par quatre points, ou par une
+#+CAPTION: origine et un vecteur.  La seconde représentation est plus
+#+CAPTION: compacte que la première, sans perte d'information.
+[[file:img/problem3.svg]]
+#+END_side-figure
 
 La modification décrit uniquement les changements, le /delta/, entre les deux
-spécifications.  C'est ce delta qui nous intéresse quand on veut implémenter
-cette modification.
+interpréteurs.  L'interpréteur modifié est alors dérivé de l'interpréteur
+d'origine.  C'est un peu la même distinction que l'on peut faire entre
+représenter un rectangle par quatre sommets, ou bien par une origine et un
+vecteur.
 
-Il y a plusieurs façons d'implémenter cette modification.  Rappelons nous que le
-processus de développement est le suivant:
+Lorsque la modification est relativement mineure par rapport à la taille de
+l'interpréteur, la représentation du couple origine + delta sera plus compacte.
+On qualifiera une telle représentation de /différentielle/.
 
-: Spécification -programmeur-> Code source -compilateur-> Programme -machine-> Résultats
+Mais comment cette représentation différentielle se traduirait dans le code
+source?  Rappelons nous que le processus de développement est le suivant:
+
+[[file:img/problem0.svg]]
 
 #+BEGIN_aside
-Le véritable objet du programmeur est l'exécution du programme.  Mais il ne
-manipule pas directement l'exécution de la machine, il décrit les instructions à
-l'avance.
+Bien que le véritable objet du programmeur est de faire concorder le processus
+avec les résultats attendus, le programmeur ne manipule pas directement le
+processus, mais seulement le code qui le décrit.  La boucle
+correction/observation permet de rectifier les imprécisions causées par cette
+indirection.
 #+END_aside
 
-Le programmeur élabore le code source en fonction de la spécification.  Le but
-est de concevoir un programme qui aura les résultats attendus.  Pour s'en
-assurer, le programmeur observe le résultat de l'exécution du programme.  Si ces
-résultats sont en accord avec la spécification, le programme est fini.  Sinon,
-il faut modifier le code source pour modifier le processus engendré, jusqu'à ce
-que les résultats concordent.
+Le programmeur élabore le code source en fonction de la spécification.  À partir
+du code source, le compilateur produit un programme exécutable, et le
+programmeur observe les résultats de son exécution sur la machine.  Le but du
+programmeur est de concevoir un programme qui aura les résultats attendus par la
+spécification.  Si les résultats sont en accord avec la spécification, le
+programme est fini.  Le plus souvent, il faut corriger le code source pour
+corriger le processus engendré, jusqu'à ce que les résultats concordent, ou que
+le programme ne présente plus d'intérêt, ce qui offre une porte de sortie à ce
+cycle.
 
-Dans la section précédente, ce delta est perdu dans les modifications du code
-source de l'interpréteur.  Il n'y a pas de marques apparentes dans le code
-source qui indiquent que cette partie est modifiée ou non.
+Le changement décrit dans la section précédente correspond à une modification de
+la spécification: le fonctionnement attendu de l'interpréteur est modifié.
+Cette modification entraîne une modification du code source, afin de modifier à
+son tour l'exécution du programme.  Lorsque l'on considère que cette
+spécification est nouvelle, le cycle de développement est le suivant:
 
+[[file:img/problem1.svg]]
 
+[describe tangled]
+
+Avec une représentation différentielle:
+
+[[file:img/problem2.svg]]
+
+[spec + add, code + add]
 
 A change adds a variation to the Spec of the program.  If we have a formal spec,
 we can apply this change on it and have a changed spec.  Change is the delta
