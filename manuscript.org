@@ -41,7 +41,7 @@ different person then.'
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#unstable-préliminaires-code-source-processus-et-spécification][UNSTABLE Préliminaires: code source, processus, et spécification]]
    - [[#unstable-Étude-de-cas-extension-ad-hoc-de-narcissus][UNSTABLE Étude de cas: extension ad-hoc de Narcissus]]
-   - [[#bare-le-but-factoriser-les-changements-en-minimisant-les-changements-du-code-source][BARE Le but: factoriser les changements en minimisant les changements du code source]]
+   - [[#bare-le-but-factoriser-les-changements][BARE Le but: factoriser les changements]]
    - [[#misplaced-le-problème-de-lexpression][MISPLACED Le problème de l'expression]]
    - [[#lidée-le-détournement-de-programme][L'idée: le détournement de programme]]
  - [[#contexte][Contexte]]
@@ -804,7 +804,7 @@ ces alternatives engagent-elles?
 # interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
 # des mécanismes d'extensibilité.
 
-** BARE Le but: factoriser les changements en minimisant les changements du code source
+** BARE Le but: factoriser les changements
 D'un point de vue abstrait, on peut voir l'interpréteur comme une fonction
 mathématique qui associe un code source à un processus:
 
@@ -872,60 +872,68 @@ le programme ne présente plus d'intérêt, ce qui offre une porte de sortie à 
 cycle.
 
 Le changement décrit dans la section précédente correspond à une modification de
-la spécification: le fonctionnement attendu de l'interpréteur est modifié.
-Cette modification entraîne une modification du code source, afin de modifier à
-son tour l'exécution du programme.  Lorsque l'on considère que cette
-spécification est nouvelle, le cycle de développement est le suivant:
+la spécification: le fonctionnement attendu de l'interpréteur est modifié.  Le
+cycle de développement est le suivant:
 
 [[file:img/problem1.svg]]
 
-[describe tangled]
+La spécification est modifiée: il y a des parties nouvelles ({{{color(c1)}}}),
+qui correspondent aux ajouts de l'évaluation multi-facettes, qui viennent se
+greffer sur la spécification de l'interprétation d'origine.  Puisque les
+spécifications sont proches, on peut réutiliser le code source de l'interpréteur
+d'origine, et y apporter des modifications.  Au final, on a un interpréteur qui
+se comporte différemment, mais dont la fonctionnalité principale reste
+inchangée: il interprète toujours du code JavaScript.  Mais même si cette
+similarité entre les deux interpréteurs existe bien, elle n'est pas exploitée:
+on a deux spécifications, deux codes sources, deux programmes.
 
-Avec une représentation différentielle:
+Dans une représentation différentielle, le but est de /factoriser/ cette
+similarité.
 
 [[file:img/problem2.svg]]
 
-[spec + add, code + add]
+On a une spécification et un addendum, un ajout qui décrit une variante de
+comportement de la spécification.  C'est le /delta/ mentionné plus haut.  Pareil
+pour le code source: il n'y a plus deux codes, mais un code d'origine, et un
+autre code qui vient modifier le premier.  Ce code peut engendrer deux
+programmes différents: le programme d'origine, ou le programme qui contient les
+modifications.  On retrouve alors les deux processus attendus, mais les
+similarités de la spécification et du code source sont factorisées.
 
-A change adds a variation to the Spec of the program.  If we have a formal spec,
-we can apply this change on it and have a changed spec.  Change is the delta
-between the two specs.
+L'intérêt de cette seconde représentation factorisée, c'est qu'elle préserve la
+séparation des préoccupations: l'interpréteur d'origine est conservé, et
+toujours présent dans le code source.  La modification est séparée, et non plus
+mêlée dans le code de l'interpréteur.
 
-The program is implemented.  We have some code that generates a runtime process
-that behaves according to the spec.
+Et cette factorisation passe plus facilement à l'échelle.  Si l'on veut
+appliquer non plus une mais quatre analyses sur Narcissus, on n'a pas à
+dupliquer le code de l'interpréteur quatre fois, mais juste à décrire les
+quatre modifications requises par les analyses.
 
-Spec -> Code -> Program -> Spec
+Cette factorisation correspond directement à une factorisation algébrique.  Si
+I_1 est l'interpréteur d'origine et I_2 l'interpréteur modifié, on note M_2 la
+modification qui transforme I_1 en I_2 (M_2 est une fonction).  On a I_2 = M_2 I_1.
+Soient deux autres interpréteurs: I_3 et I_4, et leurs modification respectives M_3
+et M_4.  On a:
 
-The change causes a change in Code.  Interestingly, a small change in Spec can
-have a large impact on Code.
+I_2 = M_2 I_1
+I_3 = M_3 I_1
+I_4 = M_4 I_1
 
-One the goal of the programmer is to make sure the program is correct: acts
-according to the spec.  The programmer writes Code, to create Program.  When a
-change of Spec arises, it's best if the change to Code is self-contained.
+#+BEGIN_aside
+où Id est la fonction identité.
+#+END_aside
+
+(I_1, I_2, I_3, I_4) = (Id I_1, M_2 I_2, M_3 I_3, M_4 I_4) = (Id, M_2, M_3, M_4) I_1
+
+Au lieu d'avoir les quatre interpréteurs différents, on peut juste conserver les
+modifications et l'interpréteur de base.  C'est une factorisation qui élimine la
+redondance de code.
 
 The question is then: how to minimize the impact of change?  How to construct
 Code to minimize impact?  What patterns to use?  Do languages make a difference?
 
-Spec changes can be anticipated, or not.  Anticipated Spec changes can be
-factored into Code design.  Unanticipated Spec changes cannot; they might have a
-small or large impact, depending.
-
-We are not tacking just any Program or Spec, but interpreters.  And a specific
-kind of change: adding analyses.  How is that more specific?
-
-Some solutions will be specific to that use case.  Some will apply to any
-program.  Lessons learned will be valuable for all.
-
 -----
-
-Le but de l'extension de Narcissus était d'ajouter l'évaluation à facettes.  Les
-auteurs ont choisi de modifier directement le code source de l'interpréteur.
-C'est une solution simple et directe, mais qui a les inconvénients listés
-précédemment.  Comment
-
-But, it got us thinking: how would we do it differently?  Given enough time, how
-would we add faceted evaluation on Narcissus?
-
 Any software engineer would tell you: refactoring.  We have a typical case of a
 program that is being used in ways it what not designed for.  The module pattern
 of JavaScript prevents extension.  This calls for taking into account the new
