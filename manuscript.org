@@ -40,9 +40,11 @@ different person then.'
    - [[#survol][Survol]]
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#unread-préliminaires-code-source-processus-et-spécification][UNREAD Préliminaires: code source, processus, et spécification]]
-   - [[#unread-Étude-de-cas-extension-ad-hoc-de-narcissus][UNREAD Étude de cas: extension ad-hoc de Narcissus]]
+   - [[#unread-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][UNREAD Étude de cas: instrumentation ad-hoc de Narcissus]]
    - [[#unread-le-but-factoriser-les-changements][UNREAD Le but: factoriser les changements]]
-   - [[#unwritten-lidée-le-détournement-de-programme][UNWRITTEN L'idée: le détournement de programme]]
+   - [[#unread-quatre-axes-de-factorisation-pour-linstrumentation][UNREAD Quatre axes de factorisation pour l'instrumentation]]
+   - [[#unread-refactoriser-narcissus-une-solution-coûteuse][UNREAD Refactoriser Narcissus: une solution coûteuse]]
+   - [[#unread-lidée-le-détournement-de-programme][UNREAD L'idée: le détournement de programme]]
  - [[#contexte][Contexte]]
    - [[#unwritten-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNWRITTEN Apprivoiser le flot de contrôle: la programmation structurée]]
    - [[#read-modéliser-le-monde-la-programmation-par-objets][READ Modéliser le monde: la programmation par objets]]
@@ -513,7 +515,10 @@ C'est là que nous intervenons: nous explorons l'espace des programmes possibles
 et rapportons les avantages et inconvénients de chaque techniquse pour une
 application donnée.
 
-** UNREAD Étude de cas: extension ad-hoc de Narcissus
+** UNREAD Étude de cas: instrumentation ad-hoc de Narcissus
+:PROPERTIES:
+:CUSTOM_ID: narc
+:END:
 Narcissus est un interpréteur JavaScript écrit et maintenu par Mozilla
 [[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est meta-circulaire: il
 utilise l'environnement hôte pour son implémentation (p.ex., l'objet ~String~
@@ -612,163 +617,6 @@ impact important sur la maintenance à long terme: plus de double du code doit
 dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
 répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
 lorsque /plusieurs/ instrumentations sont envisagées.
-
-En observant le diff de plus près, on peut distinguer quatre catégories de
-changements: les imports/exports, l'ajout du paramètre /program counter/,
-séparer l'évaluation des valeurs à facettes, et les ajouts à l'objet ~global~.
-
-De nouvelles définitions ont besoin d'être importées dans le module de
-l'interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
-ajouts qui sont localisés en début et en fin de fichier respectivement.  Voici
-comment ils se présentent dans le code:
-
-#+BEGIN_SRC diff
-+ var FacetedValue = Zaphod.facets.FacetedValue;
-+ var ProgramCounter = Zaphod.facets.ProgramCounter;
-...
-
--      test: test
-+      test: test,
-+      getPC: getGC
-#+END_SRC
-
-#+ATTR_HTML: :style margin-top:-11rem
-#+BEGIN_aside
-Le symbole ~-~ marque une ligne supprimée de l'interpréteur; le symbole ~+~
-marque une ligne ajoutée par l'instrumentation.  L'absence de marque indique une
-ligne commune aux deux versions.
-#+END_aside
-
-Les changements effectués pour accommoder le /program counter/ utilisé par
-l'analyse.  D'abord, le constructeur de l'objet ~ExecutionContext~ est étendu
-pour accepter un argument supplémentaire: la valeur courante du /program
-counter/, ~pc~.  Voici un extrait du diff qui illustre ce
-changement:
-
-#+BEGIN_SRC diff
-- function ExecutionContext(type, version) {
-+ function ExecutionContext(type, pc, version {
-+   this.pc = pc;
-#+END_SRC
-
-Dans Narcissus, une instance de l'objet ~ExecutionContext~ est créée lorsque le
-contrôle est transféré à du code client exécutable: lors de l'entrée dans une
-fonction, lors d'un appel à ~eval~, ou lors de l'exécution d'un programme
-entier.  L'objet ~ExecutionContext~ contient les variables importantes pour
-l'exécution du code; en particulier l'environnement lexical utilisé pour
-résoudre les noms de variables du code exécuté par ce contexte.  L'objet
-~ExecutionContext~ est une réification du concept éponyme de la spécification
-ECMAScript.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_aside
-Voir la section 10.3 de la spécification.
-#+END_aside
-
-Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
-appels doivent être modifiés en conséquence pour fournir une valeur correcte
-pour le paramètre /program counter/.  Il y a plus de 80 instances de ce simple
-changement dans l'instrumentation.  En voici deux exemples:
-
-#+BEGIN_SRC diff
-- x2 = new ExecutionContext(MODULE_CODE);
-+ x2 = new ExecutionContext(MODULE_CODE, x.pc);
-
-- getValue(execute(n.children[0], x));
-+ getValue(execute(n.children[0], x), pc);
-#+END_SRC
-
-Les changements effectués dans l'exécution de l'arbre de syntaxe abstrait (AST)
-pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
-additionner deux valeurs à facettes devrait produire une nouvelle valeur à
-facettes.  Dans l'implémentation, plutôt que de simplement additionner les deux
-opérandes, l'interpréteur doit maintenant d'abord inspecter l'opérande gauche,
-et si c'est une valeur à facettes, il faudra ajouter la valeur de l'opérande
-droite à chaque facette.  Bien sûr, l'opérande droite peut également être une
-valeur à facettes, et il faut alors séparer l'évaluation à nouveau.
-L'interpréteur Narcissus ne contient aucun code pour gérer l'addition de deux
-valeurs à facettes, donc l'instrumentation doit ajouter la logique nécessaire.
-Pour ce faire, chaque évaluation d'une opération est enrobée dans un appel à la
-fonction ~evaluateEach~ qui teste si une valeur est à facettes, et appelle
-récursivement la fonction d'évaluation sur chaque facette si c'est le cas.  25
-appels à ~evaluateEach~ ont été ainsi ajoutés dans l'instrumentation.  Le code
-suivant donne la forme générale de ces changements:
-
-#+BEGIN_SRC diff
-- var v = getValue(node.a)
-+ evaluteEach(getValue(node.a), function(v,x) {
-    ... do something with v ...
-+ }
-#+END_SRC
-
-À la première ligne on récupère une valeur d'un nœud de l'AST (p.ex., l'opérande
-gauche d'une assignation, ou la condition d'un ~if~) puis on fait quelque chose
-avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
-fois on /sépare/ l'évaluation en appelant ~evaluateEach~ avec cette valeur comme
-premier argument, et comme second une fonction qui opère sur une valeur simple.
-
-Les changements effectués sur l'environnement d'exécution de code client.  Dans
-un programme JavaScript, l'environnement d'exécution fournit un objet ~global~
-qui contient les définitions de base comme ~Array~, ~Math~, ~String~ et
-~Object~.  Puisque Narcissus est métacirculaire, il réutilise l'objet global de
-son environnement hôte pour construire l'objet global de l'environnement client.
-Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
-~globalBase~ avec les propriétés qui surchargeront celle de l'environnement
-hôte.  Deuxièmement, il crée un objet ~global~ client à partir de l'objet
-~global~ de son environnement hôte, et met toutes les propriétés de ~globalBase~
-dans cet objet ~global~ client.  Troisièmement, il ajoute à cet objet ~global~
-client les versions réfléchies de certains objets de base (~Array~, ~String~,
-~Function~).
-
-L'instrumentation de l'évaluation multi-facettes enrichit l'objet ~global~
-client en ajoutant 50 propriétés à ~globalBase~, comme la suivante:
-
-#+BEGIN_SRC diff
-   var globalBase = {
-   ...
-+  isFacetedValue: function(v) {
-+    return (v instanceof FacetedValue);
-+  },
-#+END_SRC
-
-L'instrumentation change également la propriété ~String~ de ~globalBase~ pour
-suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
-caractères.
-
-Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories suggère des axes potentiels de /factorisation/.  Factoriser
-permettrait de réduire la duplication de code, et surtout de regrouper les
-changements de même nature en un seul endroit.  Par exemple, si l'interpréteur
-disposait d'une fonction pour ajouter une valeur à l'objet global, tous les
-ajouts à cet objets requis par l'instrumentation pourraient être effectués au
-même endroit:
-
-#+BEGIN_SRC js
-addToGlobal({
-  facetedValue: function(v) { ... },
-  ...
-})
-#+END_SRC
-
-De cette étude, on retient essentiellement trois questions:
-
-1. Modifier directement le code source mélange la fonctionnalité de
-   l'interpréteur de base et celle de l'évaluation multi-facettes.  Comment
-   peut-on modifier l'interpréteur tout en distinguant ces deux fonctionnalités
-   dans le code source?
-
-2. Modifier directement le code source n'est pas une solution viable lorsque
-   l'on souhaite ajouter /plusieurs/ analyses à l'interpréteur.  Comment peut-on
-   modifier l'interpréteur pour permettre plusieurs analyses concurrentes?
-
-3. Les changements de l'instrumentation appartiennent à quatre motifs
-   récurrents.  Comment factoriser ces motifs pour minimiser la duplication de
-   code, et est-ce que cette factorisation suffirait pour satisfaire les
-   questions 1 et 2?
-
-Essentiellement, quelles alternatives existent à la modification directe du code
-source pour instrumenter un interpréteur comme Narcissus?  Et quels compromis
-ces alternatives engagent-elles?
 
 # # La sémantique est plus claire parce que plus petite, mais il y a les mêmes
 # # problèmes de duplication.  Pas sûr de garder.
@@ -920,61 +768,253 @@ Au lieu d'avoir les quatre interpréteurs différents, on peut juste conserver l
 modifications et l'interpréteur de base.  C'est une factorisation qui élimine la
 redondance de I_1.
 
-La question naturelle qui suit est: comment réaliser cette factorisation dans le
-code source, par quels moyens?
+Mais si intuitivement une telle factorisation semble possible, la question
+naturelle qui suit est: comment réaliser cette factorisation dans le code
+source?  Par quels moyens?  À quoi ressemble un interpréteur factorisé?  Et
+ultimement, comment factoriser Narcissus?
 
------
-Any software engineer would tell you: refactoring.  We have a typical case of a
-program that is being used in ways it what not designed for.  The module pattern
-of JavaScript prevents extension.  This calls for taking into account the new
-use cases and refactor the program.
+** UNREAD Quatre axes de factorisation pour l'instrumentation
+En observant le diff de l'instrumentation plus près, on peut distinguer quatre
+catégories de changements: les imports/exports, l'ajout du paramètre /program
+counter/, séparer l'évaluation des valeurs à facettes, et les ajouts à l'objet
+~global~.
 
-But refactoring is difficult to get right and time consuming.  We would have to
-think of a new API for extension that would cover all our new use cases.  That
-means gathering these use cases, sketching, etc.  We have to review solutions:
-e.g., hooks, a visitor pattern.  Then we have to do the actual rewriting.  That
-is tricky, because we have to make sure we don't alter the functionality of the
-interpreter in doing so.  Maybe this is trivial because we only add code that
-visibly does not change the control flow or breaks any (implicit) assumptions.
-Or maybe this is hard, because we restructure the whole thing to be completely
-extendable.  We can use tests, or rely on types (we have neither here).  We have
-people here in ASCOLA trying to prove refactorings that preserve semantics.
-It's not quite there yet.
+De nouvelles définitions ont besoin d'être importées dans le module de
+l'interpréteur, et une nouvelle fonction est exportée.  Ce sont de simples
+ajouts qui sont localisés en début et en fin de fichier respectivement.  Voici
+comment ils se présentent dans le code:
 
-And then, maybe down the road you find out that you missed an important use
-case.  And you need to refactor, and do this whole process again.
+#+BEGIN_SRC diff
++ var FacetedValue = Zaphod.facets.FacetedValue;
++ var ProgramCounter = Zaphod.facets.ProgramCounter;
+...
 
-** UNWRITTEN L'idée: le détournement de programme
-There is a lightweight alternative to refactoring.  This is what I call
-/diverting/ the program.
+-      test: test
++      test: test,
++      getPC: getGC
+#+END_SRC
 
-This is all based on one phenomenon we are all familiar with: context.  Let's
-forget programming for a moment.  Take the sentence: "I'm defending".  Today,
-you understand perfectly that it means that I am actually defending my PhD
-before you.  But, said by a soldier in a war it could actually mean something
-else.  There is no ambiguity as long as the context is made clear.
+#+ATTR_HTML: :style margin-top:-11rem
+#+BEGIN_aside
+Le symbole ~-~ marque une ligne supprimée de l'interpréteur; le symbole ~+~
+marque une ligne ajoutée par l'instrumentation.  L'absence de marque indique une
+ligne commune aux deux versions.
+#+END_aside
 
-We could even go so far as saying that the sentence is a bundle of meaningless
-symbols without the context of an English speaker during a PhD defense.
+Les changements effectués pour accommoder le /program counter/ utilisé par
+l'analyse.  D'abord, le constructeur de l'objet ~ExecutionContext~ est étendu
+pour accepter un argument supplémentaire: la valeur courante du /program
+counter/, ~pc~.  Voici un extrait du diff qui illustre ce
+changement:
 
-Back to programming.  Programs have context too.  Like a sentence, the meaning
-of programs is determined by their context.  *Changing the context changes the
-meaning of the program*.
+#+BEGIN_SRC diff
+- function ExecutionContext(type, version) {
++ function ExecutionContext(type, pc, version {
++   this.pc = pc;
+#+END_SRC
 
-Diverting programs is about changing their behavior without directly changing
-their code.  But there are a couple of hidden assumptions.  The goal is not to
-divert programs because we can, the goal is to divert programs in order to build
-programs incrementally.  We don't go back to the code we want to modify: we add
-modification instead.  Add-only way of programming.
+Dans Narcissus, une instance de l'objet ~ExecutionContext~ est créée lorsque le
+contrôle est transféré à du code client exécutable: lors de l'entrée dans une
+fonction, lors d'un appel à ~eval~, ou lors de l'exécution d'un programme
+entier.  L'objet ~ExecutionContext~ contient les variables importantes pour
+l'exécution du code; en particulier l'environnement lexical utilisé pour
+résoudre les noms de variables du code exécuté par ce contexte.  L'objet
+~ExecutionContext~ est une réification du concept éponyme de la spécification
+ECMAScript.
 
-The benefit of add-only is that you have multiple variants of the program on
-hand.  You can toggle variants dynamically.  And you can easily add new ones
-without impacting the others.
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+Voir la section 10.3 de la spécification.
+#+END_aside
 
-The goal is, ultimately, to make programs clearer, to convey their intent as
-directly as possible.  The instrumentation of Narcissus is best defined as a
-/delta/ from the base interpreter.  It follows that the code should also be
-expressed as a delta.
+Puisque la signature du constructeur d'~ExecutionContext~ est étendue, tous ses
+appels doivent être modifiés en conséquence pour fournir une valeur correcte
+pour le paramètre /program counter/.  Il y a plus de 80 instances de ce simple
+changement dans l'instrumentation.  En voici deux exemples:
+
+#+BEGIN_SRC diff
+- x2 = new ExecutionContext(MODULE_CODE);
++ x2 = new ExecutionContext(MODULE_CODE, x.pc);
+
+- getValue(execute(n.children[0], x));
++ getValue(execute(n.children[0], x), pc);
+#+END_SRC
+
+Les changements effectués dans l'exécution de l'arbre de syntaxe abstrait (AST)
+pour propager les étiquettes sur les valeurs à facettes.  Par exemple,
+additionner deux valeurs à facettes devrait produire une nouvelle valeur à
+facettes.  Dans l'implémentation, plutôt que de simplement additionner les deux
+opérandes, l'interpréteur doit maintenant d'abord inspecter l'opérande gauche,
+et si c'est une valeur à facettes, il faudra ajouter la valeur de l'opérande
+droite à chaque facette.  Bien sûr, l'opérande droite peut également être une
+valeur à facettes, et il faut alors séparer l'évaluation à nouveau.
+L'interpréteur Narcissus ne contient aucun code pour gérer l'addition de deux
+valeurs à facettes, donc l'instrumentation doit ajouter la logique nécessaire.
+Pour ce faire, chaque évaluation d'une opération est enrobée dans un appel à la
+fonction ~evaluateEach~ qui teste si une valeur est à facettes, et appelle
+récursivement la fonction d'évaluation sur chaque facette si c'est le cas.  25
+appels à ~evaluateEach~ ont été ainsi ajoutés dans l'instrumentation.  Le code
+suivant donne la forme générale de ces changements:
+
+#+BEGIN_SRC diff
+- var v = getValue(node.a)
++ evaluteEach(getValue(node.a), function(v,x) {
+    ... do something with v ...
++ }
+#+END_SRC
+
+À la première ligne on récupère une valeur d'un nœud de l'AST (p.ex., l'opérande
+gauche d'une assignation, ou la condition d'un ~if~) puis on fait quelque chose
+avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
+fois on /sépare/ l'évaluation en appelant ~evaluateEach~ avec cette valeur comme
+premier argument, et comme second une fonction qui opère sur une valeur simple.
+
+Les changements effectués sur l'environnement d'exécution de code client.  Dans
+un programme JavaScript, l'environnement d'exécution fournit un objet ~global~
+qui contient les définitions de base comme ~Array~, ~Math~, ~String~ et
+~Object~.  Puisque Narcissus est métacirculaire, il réutilise l'objet global de
+son environnement hôte pour construire l'objet global de l'environnement client.
+Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
+~globalBase~ avec les propriétés qui surchargeront celle de l'environnement
+hôte.  Deuxièmement, il crée un objet ~global~ client à partir de l'objet
+~global~ de son environnement hôte, et met toutes les propriétés de ~globalBase~
+dans cet objet ~global~ client.  Troisièmement, il ajoute à cet objet ~global~
+client les versions réfléchies de certains objets de base (~Array~, ~String~,
+~Function~).
+
+L'instrumentation de l'évaluation multi-facettes enrichit l'objet ~global~
+client en ajoutant 50 propriétés à ~globalBase~, comme la suivante:
+
+#+BEGIN_SRC diff
+   var globalBase = {
+   ...
++  isFacetedValue: function(v) {
++    return (v instanceof FacetedValue);
++  },
+#+END_SRC
+
+L'instrumentation change également la propriété ~String~ de ~globalBase~ pour
+suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
+caractères.
+
+Le fait que la plupart des changements appartiennent à une de ces quatre
+catégories suggère des axes potentiels de factorisation.  Factoriser permettrait
+de réduire la duplication de code, et surtout de regrouper les changements de
+même nature en un seul endroit.  Par exemple, si l'interpréteur disposait d'une
+fonction pour ajouter une valeur à l'objet global, tous les ajouts à cet objets
+requis par l'instrumentation pourraient être effectués au même endroit:
+
+#+BEGIN_SRC js
+addToGlobal({
+  facetedValue: function(v) { ... },
+  ...
+})
+#+END_SRC
+
+# De cette étude, on retient essentiellement trois questions:
+
+# 1. Modifier directement le code source mélange la fonctionnalité de
+#    l'interpréteur de base et celle de l'évaluation multi-facettes.  Comment
+#    peut-on modifier l'interpréteur tout en distinguant ces deux fonctionnalités
+#    dans le code source?
+
+# 2. Modifier directement le code source n'est pas une solution viable lorsque
+#    l'on souhaite ajouter /plusieurs/ analyses à l'interpréteur.  Comment peut-on
+#    modifier l'interpréteur pour permettre plusieurs analyses concurrentes?
+
+# 3. Les changements de l'instrumentation appartiennent à quatre motifs
+#    récurrents.  Comment factoriser ces motifs pour minimiser la duplication de
+#    code, et est-ce que cette factorisation suffirait pour satisfaire les
+#    questions 1 et 2?
+
+# Essentiellement, quelles alternatives existent à la modification directe du code
+# source pour instrumenter un interpréteur comme Narcissus?  Et quels compromis
+# ces alternatives engagent-elles?
+
+On dispose maintenant de quatre axes de factorisation, mais une question
+demeure: comment utiliser ces axes pour effectivement factoriser Narcissus?
+
+** UNREAD Refactoriser Narcissus: une solution coûteuse
+La factorisation évoque immédiatement une solution: la /refactorisation/.  En
+programmation, refactoriser c'est "changer la structure interne d'un programme
+pour le rendre plus simple et plus facile à modifier sans changer son résultat"
+[[cite:Fow-99][Fow-99]].  Par changements successifs de code, le programme est restructuré pour
+être plus clair et plus extensible, sans que son comportement observable n'en
+soit affecté.
+
+La refactorisation est justifiable, car comme on l'a vu, s'il y a une infinité
+de programmes différents qui ont le même résultat, ils ne sont pas tous
+identiques quand il s'agit de les modifier.  Heureusement, le programme est
+modifiable.  La refactorisation a pour but de guider la restructuration du
+programme par de petits changements successifs.  Ces changements, pris un à un,
+sont simples à effectuer (presque mécaniques), et il est facile de se convaincre
+(ou d'observer) qu'ils ne changent pas le comportement du programme.  À
+l'inverse, si on restructure le programme entier ou de grandes parties d'un seul
+tenant, on fait plutôt de la /réécriture/.
+
+#+BEGIN_aside
+La section [[#variations]] explore différentes pistes de refactorisation à travers
+un exemple simplifié d'interpréteur.
+#+END_aside
+
+Alors, si l'on souhaite factoriser l'interpréteur en suivant les quatre axes de
+la section précédente, la refactorisation est une solution légitime.  On pourra
+utiliser différentes techniques (patron visiteur, /hooks/...), qui nous
+conduiront à bien séparer l'interpréteur d'origine de l'évaluation
+multi-facettes.
+
+Mais refactoriser, par définition, c'est restructurer le programme.
+Restructurer implique de changer le code source.  Donc refactoriser
+l'interpréteur demandera un investissement non négligeable, quelles que soient
+les techniques employées.  De plus, rien ne nous garantit que les axes de
+factorisations qui sont indiqués par l'évaluation multi-facettes seront aussi
+des axes de factorisation pour d'autres analyses.  Si l'on souhaite appliquer
+d'autres analyses à Narcissus, on risque de dupliquer l'effort de
+refactorisation.  La coût de la refactorisation deviendrait plus important que
+le coût de simplement dupliquer les interpréteurs pour chaque analyse.
+
+** UNREAD L'idée: le détournement de programme
+Pour pallier aux coûts de la refactorisation, nous proposons une alternative: le
+/détournement/.
+
+Le détournement est basé sur un principe simple: plutôt que de modifier le code
+source du programme, on va manipuler son contexte d'exécution.  Le contexte d'un
+programme est aussi important que contexte d'une phrase en français: suivant le
+contexte, le sens de la phrase peut avoir des sens bien différents.
+
+[super exemple]
+
+J'irais même jusqu'à dire que sans aucun contexte, la phrase n'est qu'un
+ensemble de traits vide de sens.  Il suffit d'imaginer ce que signifie la phrase
+pour un non-francophone et non familier avec l'alphabet latin.  Ou encore, de
+constater que le sens de cette phrase en sumérien est perdu à jamais:
+
+[sumérien ?]
+
+Comme les phrases, les programmes ont un contexte.  Comme les phrases, ce
+contexte est généralement implicite, et il détermine entièrement le résultat du
+programme.  Un code source n'a de sens que lorsque l'on donne le langage de
+programmation dans lequel il est écrit.  Et encore, le nom du langage est
+insuffisant: on doit se référer à sa sémantique, ou au modèle mental que l'on
+s'en fait.  Différents compilateurs peuvent donner différentes sémantiques aux
+programmes.  Et la machine qui exécute le programme peut encore en altérer le
+comportement.  Le contexte du programme est donc définit par toutes les couches
+d'interprétation qui séparent le code source du processus engendré par la
+machine.
+
+Détourner un programme, c'est changer son comportement en changeant son
+contexte.  L'intérêt c'est qu'on peut modifier le comportement du programme sans
+changer son code source, de la même façon qu'on peut changer le sens d'une
+phrase en la plongeant dans un contexte différent, et sans en changer une
+lettre.
+
+On pourrait détourner de la sorte n'importe quel programme.  Mais le but ici,
+c'est de détourner des programmes pour mieux les factoriser.  Le détournement
+nous permet d'exprimer exactement la modification, le /delta/ d'un changement,
+sans avoir à toucher le code source du programme.  Le détournement permet la
+séparation des préoccupations.
+
+[transition]
 
 * Contexte
 Une chronologie de la modularité pour construire et faire évoluer des logiciels,
