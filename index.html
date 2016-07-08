@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-07 jeu. 19:10 -->
+<!-- 2016-07-08 ven. 15:59 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -162,7 +162,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#defs">2.1. <span class="todo UNSTABLE">UNSTABLE</span> Préliminaires: code source, processus, et spécification</a></li>
 <li><a href="#orgheadline8">2.2. <span class="todo UNSTABLE">UNSTABLE</span> Étude de cas: extension ad-hoc de Narcissus</a></li>
-<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Le but: factoriser les changements en minimisant les changements du code source</a></li>
+<li><a href="#orgheadline9">2.3. <span class="todo BARE">BARE</span> Le but: factoriser les changements</a></li>
 <li><a href="#orgheadline10">2.4. <span class="todo MISPLACED">MISPLACED</span> Le problème de l&rsquo;expression</a></li>
 <li><a href="#orgheadline11">2.5. L&rsquo;idée: le détournement de programme</a></li>
 </ul>
@@ -1095,7 +1095,7 @@ ces alternatives engagent-elles?
 </div>
 
 <div id="outline-container-orgheadline9" class="outline-3">
-<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Le but: factoriser les changements en minimisant les changements du code source</h3>
+<h3 id="orgheadline9"><span class="section-number-3">2.3</span> <span class="todo BARE">BARE</span> Le but: factoriser les changements</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 D&rsquo;un point de vue abstrait, on peut voir l&rsquo;interpréteur comme une fonction
@@ -1198,10 +1198,8 @@ cycle.
 
 <p>
 Le changement décrit dans la section précédente correspond à une modification de
-la spécification: le fonctionnement attendu de l&rsquo;interpréteur est modifié.
-Cette modification entraîne une modification du code source, afin de modifier à
-son tour l&rsquo;exécution du programme.  Lorsque l&rsquo;on considère que cette
-spécification est nouvelle, le cycle de développement est le suivant:
+la spécification: le fonctionnement attendu de l&rsquo;interpréteur est modifié.  Le
+cycle de développement est le suivant:
 </p>
 
 
@@ -1211,11 +1209,20 @@ spécification est nouvelle, le cycle de développement est le suivant:
 </figure>
 
 <p>
-[describe tangled]
+La spécification est modifiée: il y a des parties nouvelles (<span class="color c1">▬</span> ),
+qui correspondent aux ajouts de l&rsquo;évaluation multi-facettes, qui viennent se
+greffer sur la spécification de l&rsquo;interprétation d&rsquo;origine.  Puisque les
+spécifications sont proches, on peut réutiliser le code source de l&rsquo;interpréteur
+d&rsquo;origine, et y apporter des modifications.  Au final, on a un interpréteur qui
+se comporte différemment, mais dont la fonctionnalité principale reste
+inchangée: il interprète toujours du code JavaScript.  Mais même si cette
+similarité entre les deux interpréteurs existe bien, elle n&rsquo;est pas exploitée:
+on a deux spécifications, deux codes sources, deux programmes.
 </p>
 
 <p>
-Avec une représentation différentielle:
+Dans une représentation différentielle, le but est de <i>factoriser</i> cette
+similarité.
 </p>
 
 
@@ -1225,33 +1232,57 @@ Avec une représentation différentielle:
 </figure>
 
 <p>
-[spec + add, code + add]
+On a une spécification et un addendum, un ajout qui décrit une variante de
+comportement de la spécification.  C&rsquo;est le <i>delta</i> mentionné plus haut.  Pareil
+pour le code source: il n&rsquo;y a plus deux codes, mais un code d&rsquo;origine, et un
+autre code qui vient modifier le premier.  Ce code peut engendrer deux
+programmes différents: le programme d&rsquo;origine, ou le programme qui contient les
+modifications.  On retrouve alors les deux processus attendus, mais les
+similarités de la spécification et du code source sont factorisées.
 </p>
 
 <p>
-A change adds a variation to the Spec of the program.  If we have a formal spec,
-we can apply this change on it and have a changed spec.  Change is the delta
-between the two specs.
+L&rsquo;intérêt de cette seconde représentation factorisée, c&rsquo;est qu&rsquo;elle préserve la
+séparation des préoccupations: l&rsquo;interpréteur d&rsquo;origine est conservé, et
+toujours présent dans le code source.  La modification est séparée, et non plus
+mêlée dans le code de l&rsquo;interpréteur.
 </p>
 
 <p>
-The program is implemented.  We have some code that generates a runtime process
-that behaves according to the spec.
+Et cette factorisation passe plus facilement à l&rsquo;échelle.  Si l&rsquo;on veut
+appliquer non plus une mais quatre analyses sur Narcissus, on n&rsquo;a pas à
+dupliquer le code de l&rsquo;interpréteur quatre fois, mais juste à décrire les
+quatre modifications requises par les analyses.
 </p>
 
 <p>
-Spec -&gt; Code -&gt; Program -&gt; Spec
+Cette factorisation correspond directement à une factorisation algébrique.  Si
+I<sub>1</sub> est l&rsquo;interpréteur d&rsquo;origine et I<sub>2</sub> l&rsquo;interpréteur modifié, on note M<sub>2</sub> la
+modification qui transforme I<sub>1</sub> en I<sub>2</sub> (M<sub>2</sub> est une fonction).  On a I<sub>2</sub> = M<sub>2</sub> I<sub>1</sub>.
+Soient deux autres interpréteurs: I<sub>3</sub> et I<sub>4</sub>, et leurs modification respectives M<sub>3</sub>
+et M<sub>4</sub>.  On a:
 </p>
 
 <p>
-The change causes a change in Code.  Interestingly, a small change in Spec can
-have a large impact on Code.
+I<sub>2</sub> = M<sub>2</sub> I<sub>1</sub>
+I<sub>3</sub> = M<sub>3</sub> I<sub>1</sub>
+I<sub>4</sub> = M<sub>4</sub> I<sub>1</sub>
+</p>
+
+<aside>
+<p>
+où Id est la fonction identité.
+</p>
+</aside>
+
+<p>
+(I<sub>1</sub>, I<sub>2</sub>, I<sub>3</sub>, I<sub>4</sub>) = (Id I<sub>1</sub>, M<sub>2</sub> I<sub>2</sub>, M<sub>3</sub> I<sub>3</sub>, M<sub>4</sub> I<sub>4</sub>) = (Id, M<sub>2</sub>, M<sub>3</sub>, M<sub>4</sub>) I<sub>1</sub>
 </p>
 
 <p>
-One the goal of the programmer is to make sure the program is correct: acts
-according to the spec.  The programmer writes Code, to create Program.  When a
-change of Spec arises, it&rsquo;s best if the change to Code is self-contained.
+Au lieu d&rsquo;avoir les quatre interpréteurs différents, on peut juste conserver les
+modifications et l&rsquo;interpréteur de base.  C&rsquo;est une factorisation qui élimine la
+redondance de code.
 </p>
 
 <p>
@@ -1259,36 +1290,7 @@ The question is then: how to minimize the impact of change?  How to construct
 Code to minimize impact?  What patterns to use?  Do languages make a difference?
 </p>
 
-<p>
-Spec changes can be anticipated, or not.  Anticipated Spec changes can be
-factored into Code design.  Unanticipated Spec changes cannot; they might have a
-small or large impact, depending.
-</p>
-
-<p>
-We are not tacking just any Program or Spec, but interpreters.  And a specific
-kind of change: adding analyses.  How is that more specific?
-</p>
-
-<p>
-Some solutions will be specific to that use case.  Some will apply to any
-program.  Lessons learned will be valuable for all.
-</p>
-
 <hr >
-
-<p>
-Le but de l&rsquo;extension de Narcissus était d&rsquo;ajouter l&rsquo;évaluation à facettes.  Les
-auteurs ont choisi de modifier directement le code source de l&rsquo;interpréteur.
-C&rsquo;est une solution simple et directe, mais qui a les inconvénients listés
-précédemment.  Comment
-</p>
-
-<p>
-But, it got us thinking: how would we do it differently?  Given enough time, how
-would we add faceted evaluation on Narcissus?
-</p>
-
 <p>
 Any software engineer would tell you: refactoring.  We have a typical case of a
 program that is being used in ways it what not designed for.  The module pattern
@@ -13808,7 +13810,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-07 jeu. 19:10 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-08 ven. 15:59 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
