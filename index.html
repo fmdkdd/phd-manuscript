@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-08 ven. 20:17 -->
+<!-- 2016-07-12 mar. 19:06 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -440,13 +440,22 @@ particulier.</li>
 <div id="outline-container-orgheadline7" class="outline-3">
 <h3 id="defs"><a id="orgheadline7"></a><span class="section-number-3">2.1</span> <span class="todo UNREAD">UNREAD</span> Préliminaires: code source, processus, et spécification</h3>
 <div class="outline-text-3" id="text-defs">
+<aside>
+<p>
+Par anthropomorphisme, on parle aussi de <i>comportement</i> du programme pour
+désigner le processus.
+</p>
+</aside>
+
 <p>
 Il faut distinguer le code source d&rsquo;un programme et le processus que le code
 source engendre.  Le <i>code source</i> est l&rsquo;ensemble des fichiers de texte écrit
 par le programmeur.  Le <i>processus</i> est l&rsquo;action entreprise par la machine
-lorsqu&rsquo;elle exécute le code source.  On peut considérer que le code décrit un
-ordre, et la machine exécute cet ordre.  Quand on parle de <i>programme</i>, on
-désigne à la fois le code source et le processus.
+lorsqu&rsquo;elle exécute le code source.  Si on considère que le code source est un
+ordre, le processus est le résultat de l&rsquo;exécution de cet ordre par la machine.
+Le code source engendre le processus, mais ce sont deux aspects du même
+<i>programme</i>.  On emploiera donc le terme programme pour désigner le code source,
+le processus, ou les deux, suivant le contexte.
 </p>
 
 <p>
@@ -475,15 +484,15 @@ suivante, la lit, effectue l&rsquo;opération, charge, lit, effectue, etc.  Cett
 monomanie contribue à l&rsquo;utilité que nous trouvons à la machine, car son
 processeur agit certes simplement, mais il agit <i>vite</i>.  N&rsquo;importe quel
 processeur actuel est capable d&rsquo;effectuer plusieurs milliards d&rsquo;opérations par
-seconde.  La machine ne différencie donc pas un programme d&rsquo;un autre; tous se
-mêlent en une immense suite binaire.
+seconde.  Pour la machine, le but du programme importe peu; tous se mêlent en
+une immense suite binaire exécutée à une vitesse nanoscopique.
 </p>
 
 <p>
-Le programmeur en revanche cherche à structurer cette suite de nombres.  Une
-suite infinie de zéros et de uns est difficile à appréhender pour un cerveau
-humain; il lui faut des repères, des unités plus digestibles par nos facultés
-organiques.  Un programmeur manipule donc rarement des bits afin de déclarer ses
+Le programmeur en revanche cherche à structurer cette suite binaire.  Une suite
+infinie de zéros et de uns est difficile à appréhender pour un cerveau humain;
+il lui faut des repères, des unités plus digestibles par nos facultés
+organiques.  Un programmeur manipule rarement des bits afin de déclarer ses
 intentions à la machine; il utilise plutôt un langage de programmation.
 </p>
 
@@ -513,11 +522,11 @@ principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
 permutations judicieuses, nous servent à <i>nommer</i> les objets de la computation
 tels que les variables, les constantes, les fonctions, les classes et autres
 structures.  Les mots sont plus facilement prononçables, davantage mnémoniques,
-et peuvent surtout communiquer l&rsquo;intention du programmeur par homonymie.  On
-peut ainsi, simplement en suivant les mots, supposer que le code <a href="#orgsrcblock1">1</a> calcule et
-affiche le onzième nombre de la suite de Fibonacci, sans être familier avec le
-langage de programmation utilisé.  Les mots <i>évoquent</i> immédiatement du sens
-alors que les nombres doivent être décodés.
+et peuvent surtout communiquer, par homonymie, l&rsquo;intention du programmeur.  On
+peut ainsi, simplement en suivant les mots, supposer que le programme <a href="#orgsrcblock1">1</a>
+calcule et affiche le onzième nombre de la suite de Fibonacci, sans être
+familier avec le langage de programmation utilisé.  Les mots <i>évoquent</i>
+immédiatement du sens alors que le binaire en est dénué.
 </p>
 
 <aside style="margin-top:-5rem">
@@ -532,11 +541,10 @@ finalement découvrir dans un fichier inclus la ligne: <code>#define true false<
 <p>
 Mais, si le programme ainsi décrit est plus confortable pour le programmeur, il
 est incompréhensible par la machine en tant que tel.  Il faut au préalable
-<i>traduire</i> ce programme en code machine avant de pouvoir l&rsquo;exécuter.  L&rsquo;analogie
-avec les langues naturelles est pertinente; si je souhaite communiquer le
-contenu de ce document de thèse à des non-francophones, soit je rédige une
-nouvelle version dans une langue qu&rsquo;ils parlent (écrire le programme en langage
-machine), soit j&rsquo;emploie les services d&rsquo;un traducteur.  Heureusement, la
+<i>traduire</i> ce programme en binaire avant de pouvoir l&rsquo;exécuter.  L&rsquo;analogie avec
+les langues naturelles est pertinente: si je souhaite communiquer le contenu de
+ce document de thèse à des non-francophones, je dois le traduire dans une langue
+qu&rsquo;ils parlent (écrire le programme en langage machine).  Heureusement, la
 traduction d&rsquo;un programme est une tâche moins hasardeuse que la traduction d&rsquo;un
 document en langue naturelle.  Les langages de programmation sont définis de
 façon à éliminer toute ambiguïté, ce qui permet d&rsquo;effectuer la traduction en
@@ -545,32 +553,42 @@ langage machine automatiquement.
 
 <aside style="margin-top:-7rem">
 <p>
-Une troisième option serait que les non-francophones apprennent le français pour
+Une seconde option serait que les non-francophones apprennent le français pour
 lire ce manuscrit.  En suivant l&rsquo;analogie, cela correspond à une machine qui
 exécuterait directement un programme JavaScript.  Bien que techniquement
-possibles, les deux situations sont également improbables.
+possibles, les deux situations sont tout aussi improbables.
 </p>
 </aside>
 
 <p>
-Le <i>compilateur</i> traduit les programmes d&rsquo;un langage de programmation vers le
-langage de la machine.  Le compilateur lit le texte du code source, vérifie que
-ce texte est conforme aux règles syntaxiques du langage qu&rsquo;il traduit, puis
-applique les règles de traduction en langage machine.  Un compilateur permet
-donc au programmeur d&rsquo;obtenir un programme exécutable par la machine à partir de
-code écrit dans le langage de son choix.  Le programmeur peut manipuler des
-mots, et la machine du binaire.
+La traduction d&rsquo;un langage de programmation vers le langage machine est
+effectuée par le <i>compilateur</i>.  Le compilateur lit le texte du code source,
+vérifie que ce texte est conforme aux règles syntaxiques du langage qu&rsquo;il
+traduit, puis applique les règles de traduction en langage machine.  Un
+compilateur permet donc au programmeur d&rsquo;obtenir un programme exécutable par la
+machine à partir de code écrit dans le langage de son choix.  Le programmeur
+peut manipuler des mots, la machine du binaire, et tous s&rsquo;en trouvent
+contentés.
 </p>
 
+<aside style="margin-top:-5rem">
+
+<figure>
+<p><img src="img/problem5.svg" alt="problem5.svg">
+</p>
+</figure>
+</aside>
+
 <p>
-Comme le compilateur, l&rsquo;<i>interpréteur</i> traduit le code source, mais plutôt que
-de produire un fichier exécutable, l&rsquo;interpréteur exécute directement le
+Comme le compilateur, l&rsquo;<i>interpréteur</i> traduit le code source.  Mais plutôt que
+de produire un fichier exécutable, un interpréteur exécute directement le
 programme.  La distinction n&rsquo;est pas toujours pertinente, car la compilation
 peut aussi avoir lieu à l&rsquo;exécution du programme sans pour autant produire de
 binaire: la compilation <i>just-in-time</i> (JIT) traduit le code source vers des
 instructions machines qui sont directement exécutées.  Ce qui importe, c&rsquo;est que
-ce sont toutes des façons d&rsquo;exécuter le code source.  Et si l&rsquo;on exécute <a href="#orgsrcblock1">1</a>, on
-obtient:
+l&rsquo;on dispose de différentes façons d&rsquo;exécuter le code source écrit dans un
+langage de programmation.  Et si l&rsquo;on exécute le programme <a href="#orgsrcblock1">1</a> avec l&rsquo;un de ces
+traducteurs, on obtient:
 </p>
 
 <pre class="example">
@@ -579,8 +597,8 @@ obtient:
 </pre>
 
 <p>
-Notons que la compilation n&rsquo;attache aucun sens particulier aux noms choisis par
-le programmeur.  On aurait pu écrire le programme de <a href="#orgsrcblock1">1</a> ainsi:
+Notons que la compilation n&rsquo;attache aucun sens particulier aux noms qui
+importent au programmeur.  On aurait pu écrire le programme <a href="#orgsrcblock1">1</a> ainsi:
 </p>
 
 <div class="org-src-container">
@@ -593,7 +611,7 @@ le programmeur.  On aurait pu écrire le programme de <a href="#orgsrcblock1">1<
 <p>
 Les archives du concours international d&rsquo;obfuscation de code C [<a href="#IOCCC">IOC</a>] recèlent
 d&rsquo;exemples à suivre pour mystifier tout collaborateur.  Le standard Unicode
-offre également de nouvelles opportunités (voir, par exemple, Mimic [<a href="#Mimic">Too</a>]).
+offre également de nouvelles opportunités (cf. Mimic [<a href="#Mimic">Too</a>]).
 </p>
 </aside>
 
@@ -620,19 +638,20 @@ engendre un processus légèrement différent (le dernier sera légèrement plus
 trois calculent bien le onzième nombre de la suite de Fibonacci.  Dans ce cas,
 le processus effectué par la machine ne nous intéresse pas dans son intégralité,
 seul son résultat importe.  On ne souhaite pas savoir le nombre d&rsquo;instructions
-supplémentaires le troisième programme requiert, ni le nombre de registres qu&rsquo;il
-utilise, ni le nombre de défauts de cache qu&rsquo;il cause.  On cherche à comparer le
-<i>résultat</i> du programme observable par l&rsquo;utilisateur.  Ici, quand on exécute
-chacun des trois programmes, l&rsquo;interpréteur JavaScript affiche 89; les
-programmes ont donc le même résultat.
+supplémentaires que le troisième programme requiert, ni le nombre de registres
+qu&rsquo;il utilise, ni le nombre de défauts de cache qu&rsquo;il cause.  On cherche à
+comparer le <i>résultat observable</i> par l&rsquo;utilisateur.  Du point de vue de
+l&rsquo;utilisateur, quand on exécute chacun des trois programmes, l&rsquo;interpréteur
+JavaScript affiche 89; les programmes sont donc équivalents quand on considère
+le résultat.
 </p>
 
 <aside>
 <p>
 Si deux personnes partent de Nantes à Cherbourg et arrivent toutes les deux
 avant dimanche, peu importe si la première a fait le trajet à pieds, et la
-seconde en voiture.  En revanche, leur mode de transport nous intéresse quand il
-s&rsquo;agit de comparer leurs émissions carbones.
+seconde en voiture.  En revanche, quand il s&rsquo;agit de comparer leurs émissions
+carbones, c&rsquo;est bien leur mode de transport nous intéresse.
 </p>
 </aside>
 
@@ -644,25 +663,27 @@ programmes qui ont le même résultat mais qui n&rsquo;ont pas la même durée
 d&rsquo;exécution, ou la même consommation mémoire.  On distingue alors le résultat du
 programme de son <i>efficacité</i>.  Le résultat est sa fonction principale, ce qu&rsquo;il
 fait; le résultat ne dépend en général pas des spécificités de la machine
-utilisée.  L&rsquo;efficacité du programme c&rsquo;est <i>comment</i> le programme calcule son
-résultat; la machine peut avoir une grande influence sur l&rsquo;efficacité.
+utilisée.  L&rsquo;efficacité du programme, c&rsquo;est <i>comment</i> le programme calcule son
+résultat; la machine peut avoir une grande influence sur l&rsquo;efficacité.  Du point
+de vue de l&rsquo;efficacité, les trois programmes ne sont pas équivalents.
 </p>
 
 <aside>
 <p>
-On improvise plus difficilement un programme qu&rsquo;un morceau de guitare, bien
-qu&rsquo;il existe aujourd&rsquo;hui des environnements de programmation qui facilitent
-l&rsquo;improvisation [<a href="#sonicpi">Aar</a>,<a href="#BFd+13">BFd+13</a>].
+Sans intention, c&rsquo;est de l&rsquo;improvisation.  Mais on improvise plus difficilement
+un programme qu&rsquo;un morceau de guitare, bien qu&rsquo;il existe aujourd&rsquo;hui des
+environnements de programmation qui facilitent l&rsquo;improvisation [<a href="#sonicpi">Aar</a>,<a href="#BFd+13">BFd+13</a>].
 </p>
 </aside>
 
 <p>
-Enfin, il y a le résultat obtenu, et il y a le résultat attendu.  Le programmeur
-élabore le programme avec une idée en tête de son résultat, une intention.
-C&rsquo;est cette idée qui guide le programmeur dans l&rsquo;élaboration du programme: il
-construit le code source afin d&rsquo;engendrer un processus qui produira le résultat
-attendu.  Ce résultat attendu est appelé la <i>spécification</i> du programme.  Cette
-spécification peut être plus ou moins détaillée; en voici trois:
+D&rsquo;autre part, il y a le résultat obtenu, et il y a le résultat attendu.  Le
+programmeur élabore le programme avec une idée en tête de son résultat, une
+intention.  C&rsquo;est cette idée qui guide le programmeur dans l&rsquo;élaboration du
+programme: il construit le code source afin d&rsquo;engendrer un processus qui
+produira le résultat attendu.  Ce résultat attendu est appelé la <i>spécification</i>
+du programme.  Cette spécification peut être plus ou moins détaillée; en voici
+trois:
 </p>
 
 <ol class="org-ol">
@@ -675,68 +696,91 @@ de se terminer.</li>
 
 
 <p>
-La deuxième spécification est plus précise que la première, et la troisième
-plus précise que la deuxième.  Un programme qui obéit à la troisième
-spécification obéira donc aussi à la deuxième et à la première.  Notons que les
-deux premières spécifications s&rsquo;intéressent strictement au résultat du
-programme, alors que la troisième stipule aussi sa structure: le programme doit
-utiliser une fonction récursive.  On pourrait tout aussi bien spécifier
-l&rsquo;efficacité du programme: il doit s&rsquo;exécuter en moins d&rsquo;une seconde sur telle
-machine, etc.  La spécification décrit la fonctionnalité principale du programme.
+La deuxième spécification est plus précise que la première, et la troisième plus
+précise que la deuxième.  Un programme qui obéit à la troisième spécification
+obéira donc aussi à la deuxième et à la première.  Notons que les deux premières
+spécifications s&rsquo;intéressent strictement au résultat du programme, alors que la
+troisième stipule aussi sa structure: le programme doit utiliser une fonction
+récursive.  On pourrait tout aussi bien spécifier l&rsquo;efficacité du programme:
+&laquo;&nbsp;doit s&rsquo;exécuter en moins d&rsquo;une seconde sur telle machine&nbsp;&raquo;, etc.  Mais au
+minimum, la spécification décrit la fonctionnalité principale du programme.
 </p>
 
 <p>
 La spécification est nécessairement <i>incomplète</i>.  Qu&rsquo;elle soit exprimée dans
 une langue naturelle ou dans un formalisme quelconque, la spécification ne peut
-pas détailler le processus de manière exhaustive, car si c&rsquo;était le cas, ce
-serait le programme.  Et c&rsquo;est précisément en dehors de la spécification
-qu&rsquo;opère la créativité du programmeur.
+pas détailler le processus de manière exhaustive, car si c&rsquo;était le cas, la
+spécification serait le programme.  Le but de la spécification est de décrire ce
+que le programme est censé faire.  Parfois, la spécification décrit aussi
+comment certaines parties du programme doivent fonctionner.  Mais c&rsquo;est toujours
+au programmeur de combler les trous.
 </p>
 
 <p>
-En effet, l&rsquo;élaboration du programme à partir d&rsquo;une spécification a de nombreux
-degrés de liberté.  Il suffit de voir qu&rsquo;il y une infinité de programmes qui
-peuvent satisfaire une spécification.  Tout comme il y a une infinité de façons
-d&rsquo;obtenir le nombre 1: 1, 2 - 1, 1 + 0, 56/56, &#x2026;  Tout ce que la spécification
-ne précise pas est laissé au choix du programmeur.  Il y a donc une infinité de
-processus qui obéissent à une spécification donnée, et une infinité de
-programmes qui engendrent ces processus.
+Le cycle de programmation peut-être résumé par l&rsquo;illustration suivante:
+</p>
+
+
+<figure>
+<p><img src="img/problem4.svg" alt="problem4.svg">
+</p>
+</figure>
+
+<p>
+Il s&rsquo;agit bien d&rsquo;un cycle, car un programme est rarement conforme à sa première
+exécution.  À chaque itération, le programmeur modifie le code source, teste ses
+modifications, et observe le comportement du programme exécuté.  Si le résultat
+attendu est obtenu, il s&rsquo;arrête (et passe à la prochaine modification, ou au
+prochain programme).  Sinon, c&rsquo;est qu&rsquo;il a manifestement fait une erreur, il
+met donc à jour sa représentation interne du programme, son <i>modèle mental</i>.
+Une fois la contradiction résolue, il modifie le code source (ou sa
+spécification) en conséquence, et ainsi recommence le cycle.
 </p>
 
 <p>
-L&rsquo;expertise du programmeur est de savoir exactement quels processus choisir, et
-quels programmes écrire, parmi ces infinités.  Pour chaque programme, il faut
-choisir le langage de programmation, le compilateur, les bibliothèques, les
-algorithmes, les structures de données, etc.  Tous ces éléments doivent
-s&rsquo;accorder pour engendrer le résultat attendu.
+Ce faisant, le programmeur use de sa créativité.  L&rsquo;élaboration du programme à
+partir d&rsquo;une spécification a en effet de nombreux degrés de liberté.  Il suffit
+de voir qu&rsquo;il y une infinité de programmes qui peuvent satisfaire une
+spécification.  Tout comme il y a une infinité de façons d&rsquo;obtenir le nombre 1:
+1, 2 - 1, 1 + 0, 56/56, &#x2026;  Tout ce que la spécification ne précise pas est
+laissé au choix du programmeur.  Il y a donc une infinité de processus qui
+obéissent à une spécification donnée, et une infinité de programmes qui
+engendrent ces processus.  L&rsquo;expertise du programmeur est de savoir exactement
+quels processus choisir, et quels programmes écrire, parmi ces infinités.  Pour
+chaque programme, il faut choisir le langage de programmation, le compilateur,
+les bibliothèques, les algorithmes, les structures de données, etc.  Tous ces
+éléments doivent s&rsquo;accorder pour engendrer le résultat attendu par la
+spécification.
 </p>
 
 <p>
 Mais le programme n&rsquo;a pas seule vocation a être exécuté.  Un programme est
-d&rsquo;abord écrit, puis lu, puis corrigé, puis étendu.  Lors de son développement,
-de nombreuses paires d&rsquo;yeux vont le scruter et le modifier.  Le programmeur doit
-communiquer son intention non plus seulement à la machine, mais aussi à ses
-collègues.
+d&rsquo;abord écrit, puis lu, puis corrigé, puis étendu, puis corrigé, etc.  Lors de
+son développement, de nombreuses paires d&rsquo;yeux vont le scruter et le modifier.
+Le programmeur ne communique son intention plus seulement à la machine, mais
+aussi à ses collègues, et même à un futur soi.  Le choix des noms de variables
+et de fonctions devient important pour communiquer cette intention.  De même, la
+simplicité du programme est une vertu.  Un programme simple est plus facile à
+comprendre, à corriger, et à étendre.  Les choix d&rsquo;architecture, de structures
+de données, d&rsquo;algorithmes, et même de styles, sont faits en prenant en compte
+toutes ces considérations: le programme doit être conforme à la spécification,
+mais il doit aussi être efficace, et clair, et facile à maintenir, et capable
+d&rsquo;être étendu, et bien sûr, délivré dans le temps imparti et à un coût
+raisonnable.
 </p>
 
 <p>
-Et chaque humain a ses préférences particulières.  Le choix des noms de
-variables et de fonctions est important pour communiquer leur fonction dans le
-programme.  La documentation est cruciale, car le code source ne peut exprimer à
-lui seul tous les choix faits par le programmeur.
+La tâche du programmeur est donc d&rsquo;élaborer un programme qui satisfait au mieux
+toutes ces contraintes, de choisir, parmi les infinies combinaisons de
+bibliothèques, de mécanismes, de suites de mots, celles qui offrent le meilleur
+compromis.
 </p>
 
 <p>
-Le programmeur doit satisfaire plusieurs buts.  Avant tout, la correction du
-programme par rapport à la spécification.  Ensuite, les priorités dépendent de
-l&rsquo;application.  L&rsquo;efficacité du programme est toujours pertinente.  Mais on peut
-aussi souhaiter que le programme soit lisible, maintenable, ou modulaire.
-</p>
-
-<p>
-C&rsquo;est là que nous intervenons: nous explorons l&rsquo;espace des programmes possibles,
-et rapportons les avantages et inconvénients de chaque techniquse pour une
-application donnée.
+Et c&rsquo;est précisément là que nous intervenons: nous explorons l&rsquo;espace des
+programmes possibles, et étudions les compromis en jeu pour une application
+donnée.  Et l&rsquo;application qui va nous intéresser, c&rsquo;est l&rsquo;interpréteur
+Narcissus.
 </p>
 </div>
 </div>
@@ -839,7 +883,7 @@ Le <i>diff</i> est extrait des HEAD de <a href="https://github.com/taustin/narci
 <figure id="orgparagraph1">
 <p><img src="img/narcissus-diff.svg" alt="narcissus-diff.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;3&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Chaque ligne du diff correspond à une ligne colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;5&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Chaque ligne du diff correspond à une ligne colorée suivant le type de changement dont elle fait partie.  Les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"></figcaption>
 </figure>
 
 <p>
@@ -920,7 +964,7 @@ interpréteur -modification-&gt; interpréteur modifié
 <figure>
 <p><img src="img/problem3.svg" alt="problem3.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;4&nbsp;:</span> Un rectangle peut être décrit par quatre points, ou par une origine et un vecteur.  La seconde représentation est plus compacte que la première, sans perte d&rsquo;information.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;6&nbsp;:</span> Un rectangle peut être décrit par quatre points, ou par une origine et un vecteur.  La seconde représentation est plus compacte que la première, sans perte d&rsquo;information.</figcaption>
 </figure>
 
 </div>
@@ -1396,7 +1440,7 @@ Japan, who cheerfully complained that he was always being eliminated.
 <figure>
 <p><img src="img/goto.jpg" alt="goto.jpg" title="すみません、高橋さん。">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;8&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;10&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
 </figure>
 
 <p>
@@ -1655,7 +1699,7 @@ toutes lettres, et le code machine bas-niveau.
 <figure>
 <p><img src="img/scuola.jpg" alt="scuola.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;11&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;13&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
 </figure>
 
 </div>
@@ -2164,7 +2208,7 @@ le <i>mode-switching</i> (voir ??).
 <figure>
 <p><img src="img/münchhausen.jpg" alt="münchhausen.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;18&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;20&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
 </div>
 
@@ -3426,7 +3470,7 @@ explain what they are doing. — [<a href="#Knu-84">Knu84</a>]</p>
 <figure>
 <p><img src="img/rug.jpg" alt="rug.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;26&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;28&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
 </figure>
 
 <p>
@@ -5770,7 +5814,7 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 <figure>
 <p><img src="img/lassy-0.svg" alt="lassy-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;36&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;38&nbsp;:</span> Représentation de la mémoire du programme après la création de l&rsquo;objet <code>num</code>, mais avant la création de <code>e1</code>.</figcaption>
 </figure>
 
 <p>
@@ -7995,7 +8039,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;50&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;52&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -9295,7 +9339,7 @@ existantes:
 <figure>
 <p><img src="img/expr-pb-1.svg" alt="expr-pb-1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;53&nbsp;:</span> Dans cette décomposition, les opérations implémentent du code pour chaque variante du langage (sens des flêches).  Ajouter une opération (à gauche) n&rsquo;affecte pas les unités existantes, mais ajouter un terme (à droite) nécessite de modifier toutes les opérations.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;55&nbsp;:</span> Dans cette décomposition, les opérations implémentent du code pour chaque variante du langage (sens des flêches).  Ajouter une opération (à gauche) n&rsquo;affecte pas les unités existantes, mais ajouter un terme (à droite) nécessite de modifier toutes les opérations.</figcaption>
 </figure>
 
 </div>
@@ -9339,7 +9383,7 @@ plusieurs modules.
 <figure>
 <p><img src="img/expr-pb-0.svg" alt="expr-pb-0.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;54&nbsp;:</span> Dans cette décomposition, les termes contiennent le code des opérations.  Ajouter un terme n&rsquo;affecte pas les unités existantes, mais ajouter une opération nécessite de modifier tous les termes.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;56&nbsp;:</span> Dans cette décomposition, les termes contiennent le code des opérations.  Ajouter un terme n&rsquo;affecte pas les unités existantes, mais ajouter une opération nécessite de modifier tous les termes.</figcaption>
 </figure>
 
 </div>
@@ -9360,7 +9404,7 @@ type d&rsquo;extension.
 <figure>
 <p><img src="img/expr-pb-2.svg" alt="expr-pb-2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;55&nbsp;:</span> La décomposition est un choix d&rsquo;implémentation; elle n&rsquo;est pas imposée par le langage.  Ajouter une opération ou ajouter un terme revient à définir une arête dans le graphe (<span class="color c0">▬</span> ). L&rsquo;implémentation détermine juste comment cette arête est définie dans le programme.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;57&nbsp;:</span> La décomposition est un choix d&rsquo;implémentation; elle n&rsquo;est pas imposée par le langage.  Ajouter une opération ou ajouter un terme revient à définir une arête dans le graphe (<span class="color c0">▬</span> ). L&rsquo;implémentation détermine juste comment cette arête est définie dans le programme.</figcaption>
 </figure>
 
 </div>
@@ -9542,7 +9586,7 @@ avec deux interpréteurs.
 <figure id="orgparagraph2">
 <p><img src="img/lamfa-proto.svg" alt="lamfa-proto.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;56&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;58&nbsp;:</span> Définition d&rsquo;un interpréteur en utilisant la délégation par prototype.  L&rsquo;objet <code>fctInterp</code> possède une unique propriété propre: <code>APP</code>.  Les autres propriétés sont déléguées à son prototype, <code>stdInterp</code>.</figcaption>
 </figure>
 
 <p>
@@ -13796,7 +13840,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-08 ven. 20:17 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-12 mar. 19:06 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
