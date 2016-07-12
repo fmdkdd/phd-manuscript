@@ -269,12 +269,20 @@ donc une alternative légitime à la refactorisation dans ce scénario réaliste
 :PROPERTIES:
 :CUSTOM_ID: defs
 :END:
+
+#+BEGIN_aside
+Par anthropomorphisme, on parle aussi de /comportement/ du programme pour
+désigner le processus.
+#+END_aside
+
 Il faut distinguer le code source d'un programme et le processus que le code
 source engendre.  Le /code source/ est l'ensemble des fichiers de texte écrit
 par le programmeur.  Le /processus/ est l'action entreprise par la machine
-lorsqu'elle exécute le code source.  On peut considérer que le code décrit un
-ordre, et la machine exécute cet ordre.  Quand on parle de /programme/, on
-désigne à la fois le code source et le processus.
+lorsqu'elle exécute le code source.  Si on considère que le code source est un
+ordre, le processus est le résultat de l'exécution de cet ordre par la machine.
+Le code source engendre le processus, mais ce sont deux aspects du même
+/programme/.  On emploiera donc le terme programme pour désigner le code source,
+le processus, ou les deux, suivant le contexte.
 
 Du point de vue de la machine, un programme est une simple liste d'instructions.
 Une séquence d'additions, de soustractions, d'écritures et lectures mémoire, et
@@ -297,13 +305,13 @@ suivante, la lit, effectue l'opération, charge, lit, effectue, etc.  Cette
 monomanie contribue à l'utilité que nous trouvons à la machine, car son
 processeur agit certes simplement, mais il agit /vite/.  N'importe quel
 processeur actuel est capable d'effectuer plusieurs milliards d'opérations par
-seconde.  La machine ne différencie donc pas un programme d'un autre; tous se
-mêlent en une immense suite binaire.
+seconde.  Pour la machine, le but du programme importe peu; tous se mêlent en
+une immense suite binaire exécutée à une vitesse nanoscopique.
 
-Le programmeur en revanche cherche à structurer cette suite de nombres.  Une
-suite infinie de zéros et de uns est difficile à appréhender pour un cerveau
-humain; il lui faut des repères, des unités plus digestibles par nos facultés
-organiques.  Un programmeur manipule donc rarement des bits afin de déclarer ses
+Le programmeur en revanche cherche à structurer cette suite binaire.  Une suite
+infinie de zéros et de uns est difficile à appréhender pour un cerveau humain;
+il lui faut des repères, des unités plus digestibles par nos facultés
+organiques.  Un programmeur manipule rarement des bits afin de déclarer ses
 intentions à la machine; il utilise plutôt un langage de programmation.
 
 #+CAPTION: Un programme (point de vue d'un programmeur connaissant le langage
@@ -331,11 +339,11 @@ principalement de lettres plutôt que de nombres.  Les lettres, arrangées en
 permutations judicieuses, nous servent à /nommer/ les objets de la computation
 tels que les variables, les constantes, les fonctions, les classes et autres
 structures.  Les mots sont plus facilement prononçables, davantage mnémoniques,
-et peuvent surtout communiquer l'intention du programmeur par homonymie.  On
-peut ainsi, simplement en suivant les mots, supposer que le code [[fib]] calcule et
-affiche le onzième nombre de la suite de Fibonacci, sans être familier avec le
-langage de programmation utilisé.  Les mots /évoquent/ immédiatement du sens
-alors que les nombres doivent être décodés.
+et peuvent surtout communiquer, par homonymie, l'intention du programmeur.  On
+peut ainsi, simplement en suivant les mots, supposer que le programme [[fib]]
+calcule et affiche le onzième nombre de la suite de Fibonacci, sans être
+familier avec le langage de programmation utilisé.  Les mots /évoquent/
+immédiatement du sens alors que le binaire en est dénué.
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+ATTR_LATEX: :options [-5em]
@@ -348,11 +356,10 @@ finalement découvrir dans un fichier inclus la ligne: ~#define true false~.
 
 Mais, si le programme ainsi décrit est plus confortable pour le programmeur, il
 est incompréhensible par la machine en tant que tel.  Il faut au préalable
-/traduire/ ce programme en code machine avant de pouvoir l'exécuter.  L'analogie
-avec les langues naturelles est pertinente; si je souhaite communiquer le
-contenu de ce document de thèse à des non-francophones, soit je rédige une
-nouvelle version dans une langue qu'ils parlent (écrire le programme en langage
-machine), soit j'emploie les services d'un traducteur.  Heureusement, la
+/traduire/ ce programme en binaire avant de pouvoir l'exécuter.  L'analogie avec
+les langues naturelles est pertinente: si je souhaite communiquer le contenu de
+ce document de thèse à des non-francophones, je dois le traduire dans une langue
+qu'ils parlent (écrire le programme en langage machine).  Heureusement, la
 traduction d'un programme est une tâche moins hasardeuse que la traduction d'un
 document en langue naturelle.  Les langages de programmation sont définis de
 façon à éliminer toute ambiguïté, ce qui permet d'effectuer la traduction en
@@ -361,36 +368,43 @@ langage machine automatiquement.
 #+ATTR_HTML: :style margin-top:-7rem
 #+ATTR_LATEX: :options [-7em]
 #+BEGIN_aside
-Une troisième option serait que les non-francophones apprennent le français pour
+Une seconde option serait que les non-francophones apprennent le français pour
 lire ce manuscrit.  En suivant l'analogie, cela correspond à une machine qui
 exécuterait directement un programme JavaScript.  Bien que techniquement
-possibles, les deux situations sont également improbables.
+possibles, les deux situations sont tout aussi improbables.
 #+END_aside
 
-Le /compilateur/ traduit les programmes d'un langage de programmation vers le
-langage de la machine.  Le compilateur lit le texte du code source, vérifie que
-ce texte est conforme aux règles syntaxiques du langage qu'il traduit, puis
-applique les règles de traduction en langage machine.  Un compilateur permet
-donc au programmeur d'obtenir un programme exécutable par la machine à partir de
-code écrit dans le langage de son choix.  Le programmeur peut manipuler des
-mots, et la machine du binaire.
+La traduction d'un langage de programmation vers le langage machine est
+effectuée par le /compilateur/.  Le compilateur lit le texte du code source,
+vérifie que ce texte est conforme aux règles syntaxiques du langage qu'il
+traduit, puis applique les règles de traduction en langage machine.  Un
+compilateur permet donc au programmeur d'obtenir un programme exécutable par la
+machine à partir de code écrit dans le langage de son choix.  Le programmeur
+peut manipuler des mots, la machine du binaire, et tous s'en trouvent
+contentés.
 
-Comme le compilateur, l'/interpréteur/ traduit le code source, mais plutôt que
-de produire un fichier exécutable, l'interpréteur exécute directement le
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_aside
+[[file:img/problem5.svg]]
+#+END_aside
+
+Comme le compilateur, l'/interpréteur/ traduit le code source.  Mais plutôt que
+de produire un fichier exécutable, un interpréteur exécute directement le
 programme.  La distinction n'est pas toujours pertinente, car la compilation
 peut aussi avoir lieu à l'exécution du programme sans pour autant produire de
 binaire: la compilation /just-in-time/ (JIT) traduit le code source vers des
 instructions machines qui sont directement exécutées.  Ce qui importe, c'est que
-ce sont toutes des façons d'exécuter le code source.  Et si l'on exécute [[fib]], on
-obtient:
+l'on dispose de différentes façons d'exécuter le code source écrit dans un
+langage de programmation.  Et si l'on exécute le programme [[fib]] avec l'un de ces
+traducteurs, on obtient:
 
 #+BEGIN_EXAMPLE
 > node fib.js
 89
 #+END_EXAMPLE
 
-Notons que la compilation n'attache aucun sens particulier aux noms choisis par
-le programmeur.  On aurait pu écrire le programme de [[fib]] ainsi:
+Notons que la compilation n'attache aucun sens particulier aux noms qui
+importent au programmeur.  On aurait pu écrire le programme [[fib]] ainsi:
 
 #+BEGIN_SRC js
 function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
@@ -402,7 +416,7 @@ function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
 #+BEGIN_aside
 Les archives du concours international d'obfuscation de code C [[cite:IOCCC][IOCCC]] recèlent
 d'exemples à suivre pour mystifier tout collaborateur.  Le standard Unicode
-offre également de nouvelles opportunités (voir, par exemple, Mimic [[cite:Mimic][Mimic]]).
+offre également de nouvelles opportunités (cf. Mimic [[cite:Mimic][Mimic]]).
 #+END_aside
 
 Ou, à l'extrême:
@@ -423,17 +437,18 @@ engendre un processus légèrement différent (le dernier sera légèrement plus
 trois calculent bien le onzième nombre de la suite de Fibonacci.  Dans ce cas,
 le processus effectué par la machine ne nous intéresse pas dans son intégralité,
 seul son résultat importe.  On ne souhaite pas savoir le nombre d'instructions
-supplémentaires le troisième programme requiert, ni le nombre de registres qu'il
-utilise, ni le nombre de défauts de cache qu'il cause.  On cherche à comparer le
-/résultat/ du programme observable par l'utilisateur.  Ici, quand on exécute
-chacun des trois programmes, l'interpréteur JavaScript affiche 89; les
-programmes ont donc le même résultat.
+supplémentaires que le troisième programme requiert, ni le nombre de registres
+qu'il utilise, ni le nombre de défauts de cache qu'il cause.  On cherche à
+comparer le /résultat observable/ par l'utilisateur.  Du point de vue de
+l'utilisateur, quand on exécute chacun des trois programmes, l'interpréteur
+JavaScript affiche 89; les programmes sont donc équivalents quand on considère
+le résultat.
 
 #+BEGIN_aside
 Si deux personnes partent de Nantes à Cherbourg et arrivent toutes les deux
 avant dimanche, peu importe si la première a fait le trajet à pieds, et la
-seconde en voiture.  En revanche, leur mode de transport nous intéresse quand il
-s'agit de comparer leurs émissions carbones.
+seconde en voiture.  En revanche, quand il s'agit de comparer leurs émissions
+carbones, c'est bien leur mode de transport nous intéresse.
 #+END_aside
 
 Le résultat est la partie du processus qui nous intéresse à un moment donné.
@@ -443,21 +458,23 @@ programmes qui ont le même résultat mais qui n'ont pas la même durée
 d'exécution, ou la même consommation mémoire.  On distingue alors le résultat du
 programme de son /efficacité/.  Le résultat est sa fonction principale, ce qu'il
 fait; le résultat ne dépend en général pas des spécificités de la machine
-utilisée.  L'efficacité du programme c'est /comment/ le programme calcule son
-résultat; la machine peut avoir une grande influence sur l'efficacité.
+utilisée.  L'efficacité du programme, c'est /comment/ le programme calcule son
+résultat; la machine peut avoir une grande influence sur l'efficacité.  Du point
+de vue de l'efficacité, les trois programmes ne sont pas équivalents.
 
 #+BEGIN_aside
-On improvise plus difficilement un programme qu'un morceau de guitare, bien
-qu'il existe aujourd'hui des environnements de programmation qui facilitent
-l'improvisation [[cite:sonicpi][sonicpi]] [[cite:BFd+13][BFd+13]].
+Sans intention, c'est de l'improvisation.  Mais on improvise plus difficilement
+un programme qu'un morceau de guitare, bien qu'il existe aujourd'hui des
+environnements de programmation qui facilitent l'improvisation [[cite:sonicpi][sonicpi]] [[cite:BFd+13][BFd+13]].
 #+END_aside
 
-Enfin, il y a le résultat obtenu, et il y a le résultat attendu.  Le programmeur
-élabore le programme avec une idée en tête de son résultat, une intention.
-C'est cette idée qui guide le programmeur dans l'élaboration du programme: il
-construit le code source afin d'engendrer un processus qui produira le résultat
-attendu.  Ce résultat attendu est appelé la /spécification/ du programme.  Cette
-spécification peut être plus ou moins détaillée; en voici trois:
+D'autre part, il y a le résultat obtenu, et il y a le résultat attendu.  Le
+programmeur élabore le programme avec une idée en tête de son résultat, une
+intention.  C'est cette idée qui guide le programmeur dans l'élaboration du
+programme: il construit le code source afin d'engendrer un processus qui
+produira le résultat attendu.  Ce résultat attendu est appelé la /spécification/
+du programme.  Cette spécification peut être plus ou moins détaillée; en voici
+trois:
 
 1. Le programme affiche 89.
 2. Le programme affiche le onzième nombre de la suite de Fibonacci.
@@ -466,54 +483,76 @@ spécification peut être plus ou moins détaillée; en voici trois:
    de se terminer.
 
 
-La deuxième spécification est plus précise que la première, et la troisième
-plus précise que la deuxième.  Un programme qui obéit à la troisième
-spécification obéira donc aussi à la deuxième et à la première.  Notons que les
-deux premières spécifications s'intéressent strictement au résultat du
-programme, alors que la troisième stipule aussi sa structure: le programme doit
-utiliser une fonction récursive.  On pourrait tout aussi bien spécifier
-l'efficacité du programme: il doit s'exécuter en moins d'une seconde sur telle
-machine, etc.  La spécification décrit la fonctionnalité principale du programme.
+La deuxième spécification est plus précise que la première, et la troisième plus
+précise que la deuxième.  Un programme qui obéit à la troisième spécification
+obéira donc aussi à la deuxième et à la première.  Notons que les deux premières
+spécifications s'intéressent strictement au résultat du programme, alors que la
+troisième stipule aussi sa structure: le programme doit utiliser une fonction
+récursive.  On pourrait tout aussi bien spécifier l'efficacité du programme:
+"doit s'exécuter en moins d'une seconde sur telle machine", etc.  Mais au
+minimum, la spécification décrit la fonctionnalité principale du programme.
 
 La spécification est nécessairement /incomplète/.  Qu'elle soit exprimée dans
 une langue naturelle ou dans un formalisme quelconque, la spécification ne peut
-pas détailler le processus de manière exhaustive, car si c'était le cas, ce
-serait le programme.  Et c'est précisément en dehors de la spécification
-qu'opère la créativité du programmeur.
+pas détailler le processus de manière exhaustive, car si c'était le cas, la
+spécification serait le programme.  Le but de la spécification est de décrire ce
+que le programme est censé faire.  Parfois, la spécification décrit aussi
+comment certaines parties du programme doivent fonctionner.  Mais c'est toujours
+au programmeur de combler les trous.
 
-En effet, l'élaboration du programme à partir d'une spécification a de nombreux
-degrés de liberté.  Il suffit de voir qu'il y une infinité de programmes qui
-peuvent satisfaire une spécification.  Tout comme il y a une infinité de façons
-d'obtenir le nombre 1: 1, 2 - 1, 1 + 0, 56/56, ...  Tout ce que la spécification
-ne précise pas est laissé au choix du programmeur.  Il y a donc une infinité de
-processus qui obéissent à une spécification donnée, et une infinité de
-programmes qui engendrent ces processus.
+Le cycle de programmation peut-être résumé par l'illustration suivante:
 
-L'expertise du programmeur est de savoir exactement quels processus choisir, et
-quels programmes écrire, parmi ces infinités.  Pour chaque programme, il faut
-choisir le langage de programmation, le compilateur, les bibliothèques, les
-algorithmes, les structures de données, etc.  Tous ces éléments doivent
-s'accorder pour engendrer le résultat attendu.
+[[file:img/problem4.svg]]
+
+Il s'agit bien d'un cycle, car un programme est rarement conforme à sa première
+exécution.  À chaque itération, le programmeur modifie le code source, teste ses
+modifications, et observe le comportement du programme exécuté.  Si le résultat
+attendu est obtenu, il s'arrête (et passe à la prochaine modification, ou au
+prochain programme).  Sinon, c'est qu'il a manifestement fait une erreur, il
+met donc à jour sa représentation interne du programme, son /modèle mental/.
+Une fois la contradiction résolue, il modifie le code source (ou sa
+spécification) en conséquence, et ainsi recommence le cycle.
+
+Ce faisant, le programmeur use de sa créativité.  L'élaboration du programme à
+partir d'une spécification a en effet de nombreux degrés de liberté.  Il suffit
+de voir qu'il y une infinité de programmes qui peuvent satisfaire une
+spécification.  Tout comme il y a une infinité de façons d'obtenir le nombre 1:
+1, 2 - 1, 1 + 0, 56/56, ...  Tout ce que la spécification ne précise pas est
+laissé au choix du programmeur.  Il y a donc une infinité de processus qui
+obéissent à une spécification donnée, et une infinité de programmes qui
+engendrent ces processus.  L'expertise du programmeur est de savoir exactement
+quels processus choisir, et quels programmes écrire, parmi ces infinités.  Pour
+chaque programme, il faut choisir le langage de programmation, le compilateur,
+les bibliothèques, les algorithmes, les structures de données, etc.  Tous ces
+éléments doivent s'accorder pour engendrer le résultat attendu par la
+spécification.
 
 Mais le programme n'a pas seule vocation a être exécuté.  Un programme est
-d'abord écrit, puis lu, puis corrigé, puis étendu.  Lors de son développement,
-de nombreuses paires d'yeux vont le scruter et le modifier.  Le programmeur doit
-communiquer son intention non plus seulement à la machine, mais aussi à ses
-collègues.
+d'abord écrit, puis lu, puis corrigé, puis étendu, puis corrigé, etc.  Lors de
+son développement, de nombreuses paires d'yeux vont le scruter et le modifier.
+Le programmeur ne communique son intention plus seulement à la machine, mais
+aussi à ses collègues, et même à un futur soi.  Le choix des noms de variables
+et de fonctions devient important pour communiquer cette intention.  De même, la
+simplicité du programme est une vertu.  Un programme simple est plus facile à
+comprendre, à corriger, et à étendre.  Les choix d'architecture, de structures
+de données, d'algorithmes, et même de styles, sont faits en prenant en compte
+toutes ces considérations: le programme doit être conforme à la spécification,
+mais il doit aussi être efficace, et clair, et facile à maintenir, et capable
+d'être étendu, et bien sûr, délivré dans le temps imparti et à un coût
+raisonnable.
 
-Et chaque humain a ses préférences particulières.  Le choix des noms de
-variables et de fonctions est important pour communiquer leur fonction dans le
-programme.  La documentation est cruciale, car le code source ne peut exprimer à
-lui seul tous les choix faits par le programmeur.
+# La documentation est également cruciale, car le code source ne peut exprimer à
+# lui seul tous les choix faits par le programmeur.
 
-Le programmeur doit satisfaire plusieurs buts.  Avant tout, la correction du
-programme par rapport à la spécification.  Ensuite, les priorités dépendent de
-l'application.  L'efficacité du programme est toujours pertinente.  Mais on peut
-aussi souhaiter que le programme soit lisible, maintenable, ou modulaire.
+La tâche du programmeur est donc d'élaborer un programme qui satisfait au mieux
+toutes ces contraintes, de choisir, parmi les infinies combinaisons de
+bibliothèques, de mécanismes, de suites de mots, celles qui offrent le meilleur
+compromis.
 
-C'est là que nous intervenons: nous explorons l'espace des programmes possibles,
-et rapportons les avantages et inconvénients de chaque techniquse pour une
-application donnée.
+Et c'est précisément là que nous intervenons: nous explorons l'espace des
+programmes possibles, et étudions les compromis en jeu pour une application
+donnée.  Et l'application qui va nous intéresser, c'est l'interpréteur
+Narcissus.
 
 ** UNREAD Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
