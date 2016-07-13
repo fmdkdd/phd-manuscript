@@ -40,6 +40,7 @@ different person then.'
    - [[#survol][Survol]]
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#unread-préliminaires-code-source-processus-et-spécification][UNREAD Préliminaires: code source, processus, et spécification]]
+   - [[#unwritten-une-présentation-du-langage-javascript][UNWRITTEN Une présentation du langage JavaScript]]
    - [[#unread-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][UNREAD Étude de cas: instrumentation ad-hoc de Narcissus]]
    - [[#unread-le-but-factoriser-les-changements][UNREAD Le but: factoriser les changements]]
    - [[#unread-quatre-axes-de-factorisation-pour-linstrumentation][UNREAD Quatre axes de factorisation pour l'instrumentation]]
@@ -553,6 +554,176 @@ Et c'est précisément là que nous intervenons: nous explorons l'espace des
 programmes possibles, et étudions les compromis en jeu pour une application
 donnée.  Et l'application qui va nous intéresser, c'est l'interpréteur
 Narcissus.
+
+** UNWRITTEN Une présentation du langage JavaScript
+Puisque JavaScript est le langage de programmation le plus utilisé dans ce
+document, des présentations sont de mise.
+
+#+BEGIN_aside
+Plus de 90% des sites web sont visités par l'un des navigateurs suivant: Chrome,
+Firefox, Safari, Internet Explorer ou Opera.  Tous permettent d'évaluer des
+programmes JavaScript dans une page web.
+#+END_aside
+
+JavaScript est /le/ langage de programmation des pages web.  Ce n'est pas juste
+le langage le plus populaire, c'est le seul langage supporté nativement par les
+navigateurs majeurs.  Les alternatives comme les applets Java de feu Sun ou les
+programmes Flash d'Adobe nécessitent l'installation de plugins, ou ne sont pas
+compatibles avec toutes les plates-formes, et surtout sont abandonnées par leurs
+constructeurs.  JavaScript demeure le seul langage qui peut accompagner une page
+web et être exécuté par tous ces navigateurs sans configuration supplémentaire.
+
+JavaScript est utilisé pour rendre les pages web dynamiques (animer des boutons,
+valider des formulaires, ...), voire les transformer en complètes applications
+(cartographie, portail social, ou même éditeur d'objets 3D).  JavaScript dispose
+d'une riche interface avec tous les éléments d'une page web, et plus
+généralement de l'ordinateur: on peut facilement modifier l'arbre d'une page,
+son style, mais on peut tout aussi aisément capturer le pointeur de la souris,
+redimensionner la fenêtre du navigateur, ou accéder à la caméra de l'ordinateur.
+
+Cependant, les programmes en JavaScript ne sont pas restreints aux navigateurs.
+Les interpréteurs JavaScript comme V8 (de Chrome) ou SpiderMonkey (de Firefox)
+sont exécutables en dehors du navigateur, et JavaScript devient alors comparable
+à l'utilité faite du langage Python: un langage simple à prendre en mains,
+disposant d'une riche collection de bibliothèques, et exécutable partout ou des
+interpréteurs sont disponibles.
+
+À l'origine le langage était destiné seulement aux navigateurs.  Son auteur,
+Brendan Eich, est recruté par la compagnie Netscape dans le but de faire une
+version du langage Scheme pour leur navigateur, le simplement nommé Netscape
+Navigator.  En raison d'un partenariat avec Sun, le langage devait ressembler à
+Java; de là aussi vient son nom.  Netscape souhaitait un langage de
+programmation qui pouvait être inclus dans des les fichiers HTML des pages web,
+un langage pour débutants, un langage pour des petits bouts de code, des
+scripts, qui viendraient suppléer les applets Java.
+
+En mai 1995, Brendan Eich produit le premier prototype du langage, qui
+accompagnera la sortie de Netscape Navigator 2.0 en mars 1996.  En raison de son
+succès, Microsoft implémente à son tour un interpréteur de JavaScript, JScript,
+en août de la même année dans son navigateur Internet Explorer.  Les deux
+versions cohabitent avec de légères différences, ce qui conduit à la
+standardisation du langage sous le nom d'ECMAScript en juin 1997.
+
+#+BEGIN_aside
+Pour les conversions implicites tout azimuts, Brendan Eich blâme PHP.
+#+END_aside
+
+Sous ses allures de langage impératif, JavaScript a plus en commun avec Self ou
+Scheme qu'avec Java.  Eich dit s'être inspiré de Awk, C, HyperTalk, Self (pour
+les prototypes), Scheme (pour les fonctions de première classe), et Perl (pour
+les expressions rationnelles).  Contrairement à Java, JavaScript n'est pas un
+langage à classes.  L'unité structurante majeure est la fonction:
+
+#+BEGIN_SRC js
+function f(a, b) { /* code */ }
+#+END_SRC
+
+Les fonctions sont de première classe, c'est-à-dire qu'une fonction est une
+valeur comme une autre, qui peut être passée en argument, retournée par une
+fonction, mise dans une variable, etc.
+
+#+BEGIN_SRC js
+function f(x) { return 2 * x }
+var function_in_var = f
+function_in_var(4) //: 8
+#+END_SRC
+
+JavaScript est typé dynamiquement.  Les déclarations de variables, d'arguments,
+ou de valeurs de retour n'ont pas d'annotation de type.  Une même variable peut
+très bien contenir une fonction, puis un nombre, puis une chaîne de caractères.
+Toujours pour simplifier la prise en main, il n'y a pas de gestion manuelle de
+la mémoire: le glaneur de cellules (/garbage collector/, ou GC) se charge de
+collecter les objets alloués mais inaccessibles.
+
+Le langage a une syntaxe dédiée pour deux structures de base: les tableaux, et
+les objets.  Un tableau peut contenir n'importe quelle valeur, et n'est pas
+nécessairement homogène:
+
+#+BEGIN_SRC js
+var tab = [0,1,2,3,"quatre", function cinq() {}]
+tab[0] //: 0
+tab[4] //: "quatre"
+#+END_SRC
+
+Les tableaux n'ont pas de taille fixe.  On peut leur ajouter des éléments et en
+retirer à n'importe quel moment.  En ce sens, ils ressemblent davantage aux
+vecteurs qu'aux tableaux de C++:
+
+#+BEGIN_SRC js
+var tab = []
+tab.push(6)
+tab.length == 1 //: true
+#+END_SRC
+
+Ce que JavaScript appelle un objet ressemble surtout à un dictionnaire: une
+structure associative où à chaque nom correspond une valeur:
+
+#+BEGIN_SRC js
+var obj = {
+  "a": 0,
+  "b": "un",
+  "c": function() { return 2 }
+}
+
+obj["a"] //: 0
+obj.b //: "un"
+obj.c() //: 2
+#+END_SRC
+
+Comme les tableaux, les objets peuvent être modifié à n'importe quel moment.  On
+peut ajouter une association, la supprimer, ou modifier la valeur associée à un
+nom.  Notons la syntaxe pour appeler une fonction associée dans un objet
+(~obj.c()~), qui est identique à l'invocation d'une méthode en Java.  Mais la
+sémantique est bien différente: ici la fonction n'est pas liée à l'objet par
+construction.  On pourrait tout aussi bien l'invoquer de la sorte:
+
+#+BEGIN_SRC js
+var obj = {
+  "c": function() { return 2 }
+}
+
+var f = obj.c
+f() //: 2
+#+END_SRC
+
+Néanmoins, cette structure associative peut être utilisé pour représenter des
+objets au sens de la programmation par objets.  Les objets de JavaScript dispose
+d'un lien de /prototype/, qui permet la délégation, et donc le partage de
+méthodes, entre objets.
+
+#+BEGIN_SRC js
+var A = {
+  "a": function() { return 0 }
+}
+
+var B = {
+  __proto__: A,
+  "b" : function() { return 1 }
+}
+
+A.a() //: 0
+B.b() //: 1
+B.a() //: 0
+#+END_SRC
+
+Ici on a deux objets, ~A~ et ~B~.  ~A~ contient une seule fonction, ~a~.  ~B~
+contient une seule fonction, ~b~, mais déclare ~A~ comme prototype.  En
+conséquence, ~a~ n'est pas une fonction déclarée sur ~B~, mais ~B.a()~ appellera
+la fonction ~a~ qui existe dans son prototype, ~A~.  Le mécanisme de prototype
+fonctionne comme une liste chaînée...
+
+Dony, Malenfant et Bardou classifie les langages à prototypes [[cite:DMB-98][DMB-98]].  Il est
+intéressant de voir comment cette classification s'applique à JavaScript.
+
+
+
+C'est le langage de Narcissus.  C'est aussi le langage du web.
+
+Mais ultimement, il faut bien comprendre que langage est notre fenêtre sur le
+processus, notre façon de l'exprimer.  Entendons-nous bien, c'est le processus,
+et les manipulations de ce processus qui importent, pas le langage en lui-même.
+Tout ce qu'on pourra présenter ici pourra être réalisé dans d'autres langages.
+Il se trouve que certaines solutions sont plus idiomatiques à JavaScript.
 
 ** UNREAD Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
