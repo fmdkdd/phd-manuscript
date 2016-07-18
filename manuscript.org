@@ -687,9 +687,9 @@ f() //: 2
 #+END_SRC
 
 Néanmoins, cette structure associative peut être utilisé pour représenter des
-objets au sens de la programmation par objets.  Les objets de JavaScript dispose
-d'un lien de /prototype/, qui permet la délégation, et donc le partage de
-méthodes, entre objets.
+objets au sens de la programmation par objets.  Les objets de JavaScript
+disposent d'un lien de /prototype/, qui permet la délégation, et donc le partage
+de méthodes, entre objets.
 
 #+BEGIN_SRC js
 var A = {
@@ -712,10 +712,57 @@ conséquence, ~a~ n'est pas une fonction déclarée sur ~B~, mais ~B.a()~ appell
 la fonction ~a~ qui existe dans son prototype, ~A~.  Le mécanisme de prototype
 fonctionne comme une liste chaînée...
 
-Dony, Malenfant et Bardou classifie les langages à prototypes [[cite:DMB-98][DMB-98]].  Il est
-intéressant de voir comment cette classification s'applique à JavaScript.
+Dony, Malenfant et Bardou classifient les langages à prototypes [[cite:DMB-98][DMB-98]].  Selon
+cette classification, JavaScript a toutes les caractéristiques d'un langage à
+prototypes, à l'exception du clonage:
 
+#+BEGIN_aside
+~this~, plutôt que ~self~, probablement parce que ~this~ était plus familier
+pour les programmeurs Java.
+#+END_aside
 
+- les objets ne sont pas associés à des classes, ils sont concrets;
+- les objets sont des ensembles de couples clé-valeur;
+- les objets communiquent par envoi de messages, mais notons que toutes les
+  valeurs ne sont pas des objets: la distinction avec les types "primitifs"
+  (entiers, booléens...) est due à la proximité avec Java voulue par Sun;
+- les objets peuvent être créés vides (syntaxe ~{}~), ou en étendant un autre
+  objet (~Object.create~ ou syntaxe ~{__proto__: parent}~), mais il n'y a pas de
+  mécanisme pour cloner un objet;
+- le mécanisme des prototypes réalise la notion "est-extension-de", et le lien
+  parent est matérialisé par la propriété ~__proto__~ (ou la fonction
+  ~Object.getPrototypeOf~);
+- pour activer une propriété héritée d'un objet (~B.a~ dans l'exemple
+  ci-dessus), l'interpréteur cherche la propriété sur son parent et l'active
+  s'il la trouve, sinon il continue jusqu'à ce que l'objet soit sans parent,
+  auquel cas la propriété n'est pas définie sur le receveur;
+- le langage dispose du mot-clé ~this~, qui dans une méthode fait référence au
+  receveur du message, et non à l'objet qui définit la méthode.
+
+Voici un exemple d'utilisation de ~this~:
+
+#+BEGIN_SRC js
+var point = {
+  x: 0, y: 0,
+  moveTo: function(x, y) {
+    this.x = x
+    this.y = y
+  },
+}
+
+var p1 = Object.create(point)
+
+p1.moveTo(1,2)
+p1 //: Object {x:1,y:2}
+point //: Object {x:0,y:0,moveTo:function}
+#+END_SRC
+
+L'objet ~point~ contient deux coordonnées, et une fonction ~moveTo~ qui remplace
+ces cordonnées.  L'objet ~p1~ a ~point~ comme parent, et peut donc répondre au
+message ~moveTo~.  Après cette invocation, on voit que ~p1~ a deux propriétés
+~x~ et ~y~ qui correspondent aux valeurs passées à l'appel de ~moveTo~, tandis
+que les coordonnées de l'objet ~point~ sont restées à zéro.  C'est que ~this~
+dans ~moveTo~ fait bien référence au receveur de l'appel, ici ~p1~.
 
 C'est le langage de Narcissus.  C'est aussi le langage du web.
 
