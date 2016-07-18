@@ -150,7 +150,8 @@ conventions even when writing in French, and leave the typography to Babel.
 
 Trouble is, HTML is not that smart.
 
-** TODO Add section to present JavaScript and its features
+** DONE Add section to present JavaScript and its features
+CLOSED: [2016-07-18 lun. 17:41]
 Netscape hired Brendan Eich under the promise of “doing Scheme” in
 the browser.  Working at Silicon Graphics, he had been introduced
 to SICP by Nick Thompson.  However, upper management imposed that
@@ -185,6 +186,19 @@ along, as well as distinction between primitive vs object.
 Dynamic typing
 Objects as dictionaries
 Prototype delegation (compare to Dony classification, have notes on that)
+
+** TODO Word choice: client code / code interprété
+Client/host code is the terminology I've gotten from Narcissus.  Client code
+refers to code that is executed /by/ Narcissus, and host code to the code /of/
+Narcissus that is executed by V8 (or any other JS engine, including Narcissus,
+which gets confusing fast).
+
+The distinction is only useful when discussing the metacircularity.  In other
+cases, readers might be more familiar with "interpreted code", without
+(hopefully) confusion between program code and Narcissus code.
+
+Look out for that when discussing Narcissus and faceted evaluation
+instrumentation.
 
 * Log
 ** [2015-10-08 jeu.]
