@@ -41,6 +41,8 @@ different person then.'
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#unread-préliminaires-code-source-processus-et-spécification][UNREAD Préliminaires: code source, processus, et spécification]]
    - [[#unwritten-une-présentation-du-langage-javascript][UNWRITTEN Une présentation du langage JavaScript]]
+     - [[#genèse-chez-netscape][Genèse chez Netscape]]
+     - [[#un-langage-à-prototypes-qui-doit-ressembler-à-java][Un langage à prototypes qui doit ressembler à Java]]
    - [[#unread-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][UNREAD Étude de cas: instrumentation ad-hoc de Narcissus]]
    - [[#unread-le-but-factoriser-les-changements][UNREAD Le but: factoriser les changements]]
    - [[#unread-quatre-axes-de-factorisation-pour-linstrumentation][UNREAD Quatre axes de factorisation pour l'instrumentation]]
@@ -559,6 +561,7 @@ Narcissus.
 Puisque JavaScript est le langage de programmation le plus utilisé dans ce
 document, des présentations sont de mise.
 
+*** Genèse chez Netscape
 #+BEGIN_aside
 Plus de 90% des sites web sont visités par l'un des navigateurs suivant: Chrome,
 Firefox, Safari, Internet Explorer ou Opera.  Tous permettent d'évaluer des
@@ -608,6 +611,7 @@ standardisation du langage sous le nom d'ECMAScript en juin 1997.
 Pour les conversions implicites tout azimuts, Brendan Eich blâme PHP.
 #+END_aside
 
+*** Un langage à prototypes qui doit ressembler à Java
 Sous ses allures de langage impératif, JavaScript a plus en commun avec Self ou
 Scheme qu'avec Java.  Eich dit s'être inspiré de Awk, C, HyperTalk, Self (pour
 les prototypes), Scheme (pour les fonctions de première classe), et Perl (pour
@@ -764,13 +768,19 @@ message ~moveTo~.  Après cette invocation, on voit que ~p1~ a deux propriétés
 que les coordonnées de l'objet ~point~ sont restées à zéro.  C'est que ~this~
 dans ~moveTo~ fait bien référence au receveur de l'appel, ici ~p1~.
 
-C'est le langage de Narcissus.  C'est aussi le langage du web.
+# Blurb about the scope of this document ties to JS?
 
-Mais ultimement, il faut bien comprendre que langage est notre fenêtre sur le
-processus, notre façon de l'exprimer.  Entendons-nous bien, c'est le processus,
-et les manipulations de ce processus qui importent, pas le langage en lui-même.
-Tout ce qu'on pourra présenter ici pourra être réalisé dans d'autres langages.
-Il se trouve que certaines solutions sont plus idiomatiques à JavaScript.
+# Notre utilisation de JavaScript c'est Narcissus.  Narcissus est écrit en
+# JavaScript, mais c'est aussi un interpréteur /de/ JavaScript.  JavaScript est à
+# la fois notre objet d'étude.  Non, notre objet d'étude c'est le détournement,
+# pas JavaScript en lui-même.  JavaScript c'est le langage d'application de
+# détournement, parce que notre application du détournement c'est Narcissus.
+
+# Mais ultimement, il faut bien comprendre que langage est notre fenêtre sur le
+# processus, notre façon de l'exprimer.  Entendons-nous bien, c'est le processus,
+# et les manipulations de ce processus qui importent, pas le langage en lui-même.
+# Tout ce qu'on pourra présenter ici pourra être réalisé dans d'autres langages.
+# Il se trouve que certaines solutions sont plus idiomatiques à JavaScript.
 
 ** UNREAD Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
