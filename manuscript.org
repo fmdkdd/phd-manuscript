@@ -4504,7 +4504,7 @@ Et pouvoir les évaluer:
 
 L'interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
 implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
-rappelle le patron /Interpreter/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage sera
+rappelle le patron /Interpréteur/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage sera
 représenté par un objet qui comportera une fonction pour chaque opération sur le
 langage.
 
@@ -4533,9 +4533,9 @@ constante; et ~eval~ pour retourner cette constante ultérieurement.  Ligne
 représenter le nombre 3.  Ligne suivante, on peut évaluer cette expression pour
 retourner le nombre passé au constructeur.
 
-Le second terme du langage représente l'addition entre deux constantes.
+Le second terme du langage représente l'addition entre deux termes.
 
-: <term> ::= <num> | <num> + <num>
+: <term> ::= <num> | <term> + <term>
 : <num>  ::= 0 | 1 | 2 | ...
 :
 : eval : Term -> Integer
@@ -4561,12 +4561,12 @@ nouvel objet qui répond à la fonction ~eval~.
 
 ** UNREAD Ajouter des opérations
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
-expression (pretty-printing).
+expression (/pretty-printing/).
 
 : show : Term -> String
 
 Suivant la décomposition par objets, il faut ajouter l'opération sur chaque
-objet qui représente le terme.  Dans des langages objets qui ne permettent pas
+objet qui représente le terme.  Dans des langages à objets qui ne permettent pas
 l'extension, ajouter une opération ne serait pas aussi simple que d'ajouter un
 terme.  C'est la tension qui est au cœur du problème de l'expression.  En
 JavaScript, les objets sont extensibles, donc ajouter une opération se fait
@@ -4647,15 +4647,15 @@ s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"  (ref:foal-ex10)
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3      (ref:foal-ex11)
 #+END_SRC
 
-Le code émule un système de module: ~show~ ligne [[(foal-ex4)]] est une fonction qui
-prend un module de base et retourne un module enrichi avec l'opération ~show~.
-Les modules sont ici de simples objets JavaScript.  L'objet ~base~ passé en
-argument doit contenir les termes du langage: ~base.num~ et ~base.plus~, qui
-sont utilisés comme prototypes des nouveaux objets ~show.num~ et ~show.plus~
-(lignes [[(foal-ex4)]] et [[(foal-ex5)]]).  Ces nouveaux objets contiennent juste
-l'opération ~show~ définies comme précédemment.  Enfin, la fonction ~show~
-retourne un nouveau module (un objet) qui contient les versions enrichies de
-~num~ et ~plus~ (ligne [[(foal-ex7)]]).
+Le code émule un système de modules: ~show~ ligne [[(foal-ex4)]] est une fonction
+qui prend un module de base et retourne un module enrichi avec l'opération
+~show~.  Les modules sont ici de simples objets JavaScript.  L'objet ~base~
+passé en argument doit contenir les termes du langage: ~base.num~ et
+~base.plus~, qui sont utilisés comme prototypes des nouveaux objets ~show.num~
+et ~show.plus~ (lignes [[(foal-ex4)]] et [[(foal-ex5)]]).  Ces nouveaux objets
+contiennent juste l'opération ~show~ définies comme précédemment.  Enfin, la
+fonction ~show~ retourne un nouveau module (un objet) qui contient les versions
+enrichies de ~num~ et ~plus~ (ligne [[(foal-ex7)]]).
 
 Une fois cette fonction définie, on peut instancier le module ~show~ dans la
 variable ~s~ par l'appel ligne [[(foal-ex8)]].  Si on ne considère pas les
@@ -4668,8 +4668,8 @@ affectés par l'ajout de l'opération ~show~, et les nouveaux termes supportent
 les deux opérations.
 
 Mais il y a maintenant un problème d'interopérabilité entre les deux variantes
-du langage.  On peut construire des expressions qui mixent les termes de base
-les termes du module 'show':
+du langage.  On peut construire des expressions qui mélangent les termes de base
+et les termes du module 'show':
 
 : s.plus.new(num.new(1), s.num.new(2)).show()
 
@@ -4709,7 +4709,7 @@ simplement à ~num~ et ~plus~.  Mais ici, comme nous somme dans le corps du
 ~with~, ~num~ et ~plus~ font référence aux objets retournés par l'appel de
 ~show~, pas aux objets originaux.  Les originaux sont inaccessibles car masqués
 par les noms des dérivés dans l'environnement du bloc.  Par construction, les
-expressions créées à l'intérieur du ~with~ ne peuvent pas mixer plusieurs
+expressions créées à l'intérieur du ~with~ ne peuvent pas mélanger plusieurs
 variantes du langage.
 
 Un autre aspect de cette construction est que les dérivés de ~num~ et ~plus~
@@ -4770,7 +4770,7 @@ constante.
 
 Ça reste simple à exprimer en JavaScript, puisque les fonctions contenues dans
 des objets sont comme les autres propriétés: remplaçables à tout moment par
-simple assignation.  On a utilisé l'assignation pour ajouter ~show~, maintenant
+simple affectation.  On a utilisé l'affectation pour ajouter ~show~, maintenant
 on s'en sert pour écraser la définition de ~eval~ et la remplacer par une
 nouvelle:
 
@@ -4781,7 +4781,7 @@ num.new(1).eval() //: 2
 plus.new(num.new(1), num.new(2)).eval() //: 6
 #+END_SRC
 
-Maintenant, une variante.  Plutôt que de retourner le double de ~n~,
+Considérons une variante.  Plutôt que de retourner le double de ~n~,
 l'évaluation d'un ~num~ doit retourner le double du résultat de l'évaluation
 d'origine.  Pour implémenter cette variante, il nous faut pouvoir faire
 référence à l'évaluation d'origine dans la nouvelle version de ~num.eval~.  On
