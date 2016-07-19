@@ -40,12 +40,12 @@ different person then.'
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
-   - [[#unread-préliminaires-code-source-processus-et-spécification][UNREAD Préliminaires: code source, processus, et spécification]]
-   - [[#unwritten-une-présentation-du-langage-javascript][UNWRITTEN Une présentation du langage JavaScript]]
+   - [[#read-préliminaires-code-source-processus-et-spécification][READ Préliminaires: code source, processus, et spécification]]
+   - [[#unread-une-présentation-du-langage-javascript][UNREAD Une présentation du langage JavaScript]]
      - [[#genèse-chez-netscape][Genèse chez Netscape]]
      - [[#un-langage-à-prototypes-qui-doit-ressembler-à-java][Un langage à prototypes qui doit ressembler à Java]]
-   - [[#unread-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][UNREAD Étude de cas: instrumentation ad-hoc de Narcissus]]
-   - [[#unread-le-but-factoriser-les-changements][UNREAD Le but: factoriser les changements]]
+   - [[#read-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][READ Étude de cas: instrumentation ad-hoc de Narcissus]]
+   - [[#read-le-but-factoriser-les-changements][READ Le but: factoriser les changements]]
    - [[#unread-quatre-axes-de-factorisation-pour-linstrumentation][UNREAD Quatre axes de factorisation pour l'instrumentation]]
    - [[#unread-refactoriser-narcissus-une-solution-coûteuse][UNREAD Refactoriser Narcissus: une solution coûteuse]]
    - [[#unread-lidée-le-détournement-de-programme][UNREAD L'idée: le détournement de programme]]
@@ -269,7 +269,7 @@ donc une alternative légitime à la refactorisation dans ce scénario réaliste
 :PROPERTIES:
 :CUSTOM_ID: problem
 :END:
-** UNREAD Préliminaires: code source, processus, et spécification
+** READ Préliminaires: code source, processus, et spécification
 :PROPERTIES:
 :CUSTOM_ID: defs
 :END:
@@ -564,66 +564,64 @@ programmes possibles, et étudions les compromis en jeu pour une application
 donnée.  Et l'application qui va nous intéresser, c'est l'interpréteur
 Narcissus.
 
-** UNWRITTEN Une présentation du langage JavaScript
+** UNREAD Une présentation du langage JavaScript
 Puisque JavaScript est le langage de programmation le plus utilisé dans ce
 document, des présentations sont de mise.
 
 *** Genèse chez Netscape
 #+BEGIN_aside
-Plus de 90% des sites web sont visités par l'un des navigateurs suivant: Chrome,
-Firefox, Safari, Internet Explorer ou Opera.  Tous permettent d'évaluer des
-programmes JavaScript dans une page web.
+Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
+permettent d'évaluer des programmes JavaScript dans une page web.
 #+END_aside
 
 JavaScript est /le/ langage de programmation des pages web.  Ce n'est pas juste
 le langage le plus populaire, c'est le seul langage supporté nativement par les
 navigateurs majeurs.  Les alternatives comme les applets Java de feu Sun ou les
 programmes Flash d'Adobe nécessitent l'installation de plugins, ou ne sont pas
-compatibles avec toutes les plates-formes, et surtout sont abandonnées par leurs
-constructeurs.  JavaScript demeure le seul langage qui peut accompagner une page
-web et être exécuté par tous ces navigateurs sans configuration supplémentaire.
+compatibles avec toutes les plates-formes, mais surtout sont abandonnées par
+leurs constructeurs.  JavaScript demeure le seul langage qui peut accompagner
+une page web et être exécuté par tous ces navigateurs sans installation
+supplémentaire.
 
 JavaScript est utilisé pour rendre les pages web dynamiques (animer des boutons,
 valider des formulaires, ...), voire les transformer en complètes applications
 (cartographie, portail social, ou même éditeur d'objets 3D).  JavaScript dispose
 d'une riche interface avec tous les éléments d'une page web, et plus
-généralement de l'ordinateur: on peut facilement modifier l'arbre d'une page,
-son style, mais on peut tout aussi aisément capturer le pointeur de la souris,
-redimensionner la fenêtre du navigateur, ou accéder à la caméra de l'ordinateur.
+généralement de l'ordinateur: on peut facilement modifier l'arbre d'une page
+HTML et son style, mais on peut tout aussi aisément capturer le pointeur de la
+souris, redimensionner la fenêtre du navigateur, ou accéder à la caméra de
+l'ordinateur.
 
-Cependant, les programmes en JavaScript ne sont pas restreints aux navigateurs.
-Les interpréteurs JavaScript comme V8 (de Chrome) ou SpiderMonkey (de Firefox)
-sont exécutables en dehors du navigateur, et JavaScript devient alors comparable
-à l'utilité faite du langage Python: un langage simple à prendre en mains,
+Les programmes JavaScript ne sont pas restreints aux navigateurs.  Les
+interpréteurs JavaScript comme V8 (de Chrome) ou SpiderMonkey (de Firefox) sont
+exécutables en dehors du navigateur, et JavaScript devient alors comparable à
+l'utilité faite du langage Python: un langage simple à prendre en mains,
 disposant d'une riche collection de bibliothèques, et exécutable partout ou des
-interpréteurs sont disponibles.
+interpréteurs sont disponibles.  Le projet Electron [[cite:electron][electron]], par exemple,
+permet d'écrire des applications multiplateformes en JavaScript.
 
-À l'origine le langage était destiné seulement aux navigateurs.  Son auteur,
-Brendan Eich, est recruté par la compagnie Netscape dans le but de faire une
-version du langage Scheme pour leur navigateur, le simplement nommé Netscape
-Navigator.  En raison d'un partenariat avec Sun, le langage devait ressembler à
-Java; de là aussi vient son nom.  Netscape souhaitait un langage de
-programmation qui pouvait être inclus dans des les fichiers HTML des pages web,
-un langage pour débutants, un langage pour des petits bouts de code, des
-scripts, qui viendraient suppléer les applets Java.
+À l'origine le langage était destiné à faire l'interface entre les pages web et
+les applets Java.  Son auteur, Brendan Eich, est recruté par la compagnie
+Netscape dans le but de faire une version du langage Scheme pour leur navigateur
+web, le simplement nommé Netscape Navigator.  En raison d'un partenariat avec
+Sun, le langage devait ressembler à Java; de là aussi vient son nom.  Netscape
+souhaitait un langage de programmation qui pouvait être inclus dans des les
+fichiers HTML des pages web, un langage pour débutants, un langage pour des
+petits bouts de code, des scripts, qui viendraient suppléer les applets Java.
 
 En mai 1995, Brendan Eich produit le premier prototype du langage, qui
-accompagnera la sortie de Netscape Navigator 2.0 en mars 1996.  En raison de son
-succès, Microsoft implémente à son tour un interpréteur de JavaScript, JScript,
-en août de la même année dans son navigateur Internet Explorer.  Les deux
-versions cohabitent avec de légères différences, ce qui conduit à la
-standardisation du langage sous le nom d'ECMAScript en juin 1997.
-
-#+BEGIN_aside
-Pour les conversions implicites tout azimuts, Brendan Eich blâme PHP.
-#+END_aside
+accompagnera la sortie de Netscape Navigator 2.0 dix mois plus tard.  Le langage
+connaît un vif succès, ce qui pousse le concurrent de Netscape, Microsoft, à
+implémenter à son tour un interpréteur de JavaScript dans son navigateur
+Internet Explorer.  Les deux versions cohabitent avec de légères différences, ce
+qui conduit à la standardisation du langage sous le nom d'ECMAScript en
+juin 1997.
 
 *** Un langage à prototypes qui doit ressembler à Java
-Sous ses allures de langage impératif, JavaScript a plus en commun avec Self ou
-Scheme qu'avec Java.  Eich dit s'être inspiré de Awk, C, HyperTalk, Self (pour
-les prototypes), Scheme (pour les fonctions de première classe), et Perl (pour
-les expressions rationnelles).  Contrairement à Java, JavaScript n'est pas un
-langage à classes.  L'unité structurante majeure est la fonction:
+Sous ses allures de langage impératif, Eich dit s'être principalement inspiré de
+Self (pour les prototypes) et Scheme (pour les fonctions de première classe)
+[[cite:js-history][js-history]].  Contrairement à Java, JavaScript n'est pas un langage à classes.
+L'unité structurante majeure est la fonction:
 
 #+BEGIN_SRC js
 function f(a, b) { /* code */ }
@@ -681,12 +679,12 @@ obj.b //: "un"
 obj.c() //: 2
 #+END_SRC
 
-Comme les tableaux, les objets peuvent être modifié à n'importe quel moment.  On
-peut ajouter une association, la supprimer, ou modifier la valeur associée à un
-nom.  Notons la syntaxe pour appeler une fonction associée dans un objet
-(~obj.c()~), qui est identique à l'invocation d'une méthode en Java.  Mais la
-sémantique est bien différente: ici la fonction n'est pas liée à l'objet par
-construction.  On pourrait tout aussi bien l'invoquer de la sorte:
+Comme les tableaux, les objets peuvent être modifiés à n'importe quel moment.
+On peut ajouter une association, la supprimer, ou modifier la valeur associée à
+un nom.  Notons la syntaxe pour appeler une fonction associée dans un objet
+(~obj.c()~), qui est identique à l'invocation d'une méthode en Java.  Mais en
+JavaScript, la fonction n'est pas liée à l'objet par construction.  On pourrait
+tout aussi bien l'invoquer de la sorte:
 
 #+BEGIN_SRC js
 var obj = {
@@ -717,20 +715,29 @@ B.b() //: 1
 B.a() //: 0
 #+END_SRC
 
-Ici on a deux objets, ~A~ et ~B~.  ~A~ contient une seule fonction, ~a~.  ~B~
-contient une seule fonction, ~b~, mais déclare ~A~ comme prototype.  En
-conséquence, ~a~ n'est pas une fonction déclarée sur ~B~, mais ~B.a()~ appellera
-la fonction ~a~ qui existe dans son prototype, ~A~.  Le mécanisme de prototype
-fonctionne comme une liste chaînée...
+Ici on a deux objets, ~A~ et ~B~.  L'objet ~A~ contient une seule fonction, ~a~.
+L'objet ~B~ contient une seule fonction, ~b~, mais déclare ~A~ comme prototype.
+En conséquence, même si la fonction ~a~ n'est pas déclarée sur ~B~, ~B.a()~
+appellera la fonction ~a~ qui existe dans son prototype, ~A~.  On parle d'une
+/chaîne/ de prototypes comme une liste chaînée.  L'algorithme de recherche d'une
+propriété dans une chaîne de prototypes est d'ailleurs analogue à la recherche
+d'une valeur dans une liste chaînée.
+
+#+ATTR_HTML: :style margin-top:-16rem
+#+BEGIN_side-figure
+[[file:img/dls6.svg]]
+
+Exemple de recherches dans une chaîne de prototypes.  À gauche, on recherche la
+propriété ~a~.  Cette propriété existe sur le second objet dans la chaîne, donc
+la valeur retournée est 2.  À droite, on recherche ~g~ sur la même chaîne, mais
+cette fois ~g~ n'est présent dans aucun objet.  Le troisième objet n'a pas de
+parent, donc la recherche échoue et retourne ~undefined~.
+#+END_side-figure
 
 Dony, Malenfant et Bardou classifient les langages à prototypes [[cite:DMB-98][DMB-98]].  Selon
 cette classification, JavaScript a toutes les caractéristiques d'un langage à
-prototypes, à l'exception du clonage:
-
-#+BEGIN_aside
-~this~, plutôt que ~self~, probablement parce que ~this~ était plus familier
-pour les programmeurs Java.
-#+END_aside
+prototypes.  La seule omission notable est l'absence de mécanisme pour cloner
+des objets:
 
 - les objets ne sont pas associés à des classes, ils sont concrets;
 - les objets sont des ensembles de couples clé-valeur;
@@ -749,6 +756,12 @@ pour les programmeurs Java.
   auquel cas la propriété n'est pas définie sur le receveur;
 - le langage dispose du mot-clé ~this~, qui dans une méthode fait référence au
   receveur du message, et non à l'objet qui définit la méthode.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+~this~, plutôt que ~self~, probablement parce que ~this~ était plus familier
+pour les programmeurs Java.
+#+END_aside
 
 Voici un exemple d'utilisation de ~this~:
 
@@ -789,10 +802,16 @@ dans ~moveTo~ fait bien référence au receveur de l'appel, ici ~p1~.
 # Tout ce qu'on pourra présenter ici pourra être réalisé dans d'autres langages.
 # Il se trouve que certaines solutions sont plus idiomatiques à JavaScript.
 
-** UNREAD Étude de cas: instrumentation ad-hoc de Narcissus
+** READ Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
 :CUSTOM_ID: narc
 :END:
+
+#+BEGIN_aside
+L'hôte est le moteur d'exécution de JavaScript qui exécute le code de Narcissus,
+tandis que le code client est le code JavaScript exécuté par Narcissus.
+#+END_aside
+
 Narcissus est un interpréteur de JavaScript écrit et maintenu par Mozilla
 [[cite:Narcissus][Narcissus]].  Narcissus est écrit en JavaScript, et est métacirculaire: il utilise
 l'environnement hôte pour implémenter directement des parties de l'environnement
@@ -802,26 +821,29 @@ est une implémentation relativement légère (environ 6000 lignes de code) du
 standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet de rapidement prototyper des
 fonctionnalités expérimentales pour le langage.
 
-En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
-analyse d'évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
-d'information qui permet à une valeur d'être étiquetée par une autorité qui a
-des droits d'écriture et de lecture pour cette valeur.  Lorsqu'une valeur
-étiquetée est utilisée dans une expression, son étiquette est propagée au
-résultat de l'expression, ce qui préserve les permissions de l'autorité sur le
-résultat.  Dans l'analyse multi-facettes, chaque valeur étiquetée a deux
-facettes: une facette contient la valeur "privée" à destination de l'autorité,
-une autre facettes contient la valeur "publique" destinée à des observateurs
-tiers non autorisés.  Dans une expression, les facettes sont toutes deux
-évaluées en même temps afin de produire les deux facettes du résultat.  Afin de
-suivre les étiquettes même lors de branchements (des flots /indirects/),
-l'évaluation multi-facettes maintient une liste des embranchements suivis lors
-de l'exécution; cette liste est appelée /program counter/ (PC).
-
-#+ATTR_HTML: :style margin-top:-12rem
 #+BEGIN_side-figure
 [[file:img/a-facet.svg]]
 
 Une valeur à deux facettes.
+#+END_side-figure
+
+En 2012, Austin et Flanagan se sont servi de Narcissus pour implémenter leur
+stratégie d'évaluation multi-facettes [[cite:AF-12][AF-12]], une analyse dynamique de flot
+d'information.  Cette évaluation restreint une valeur en lecture et en écriture
+à une autorité bien définie.  Lorsqu'une valeur ainsi étiquetée est utilisée
+dans une expression, son étiquette est propagée au résultat de l'expression, ce
+qui préserve les permissions de l'autorité sur le résultat.  Dans l'évaluation
+multi-facettes, chaque valeur étiquetée a deux facettes: une facette contient la
+valeur "privée" à destination de l'autorité, et l'autre facette contient la
+valeur "publique" destinée à des observateurs non autorisés.  Pour évaluer une
+expression qui contient des valeurs à facettes, on évalue chaque facette tour à
+tour pour produire les deux facettes du résultat.  Afin de suivre les
+étiquettes même lors de branchements (des flots /indirects/), l'évaluation
+multi-facettes maintient une liste des embranchements suivis lors de
+l'exécution; cette liste est appelée /program counter/ (PC).
+
+#+BEGIN_side-figure
+[[file:img/fenton-example.svg]]
 #+END_side-figure
 
 Par exemple, dans le code ci-contre, même si la valeur de ~x~ n'est pas
@@ -831,27 +853,26 @@ les deux conditionnelles.  C'est un flot indirect de ~x~ à ~z~.  Si le paramèt
 fonction retourne ~false~.  La fonction peut donc extraire toute l'information
 de ~x~ sans jamais directement copier sa valeur.
 
+
 En revanche, si on fait de ~x~ une valeur à facettes avec une valeur privée
 ~true~ et une valeur publique ~false~ (qu'on écrit ~true:false~), alors le
 premier ~if~ sera exécuté deux fois: une fois pour chaque facette de la
-condition.  Après le second ~if~, la fonction retourne la valeur ~true:false~.
-Un observateur non autorisé n'a accès qu'à la valeur publique du résultat, et
+condition, ce qui fait de ~y~ une valeur à facettes ~false:true~.  Après le
+second ~if~, la fonction retourne la valeur ~true:false~.  Un observateur qui ne
+dispose pas de l'autorité ~a~ n'a accès qu'à la valeur publique du résultat, et
 n'est donc pas capable d'inférer la valeur privée de ~x~.  L'évaluation
-multi-facettes permet de protéger l'information de ~x~, même contre les flots
-indirects.
+multi-facettes permet donc de protéger l'information de ~x~, même contre les
+flots indirects.
 
-#+ATTR_HTML: :style margin-top:-13rem
-#+BEGIN_side-figure
-[[file:img/fenton-example.svg]]
-#+END_side-figure
-
-Pour donner une idée de l'échelle du projet, Narcissus fait 6000 lignes de code,
-et les deux plus gros fichiers sont le parseur (1600 lignes) et le fichier
-principal de interpréteur, "jsexec" (1300 lignes).  Ce fichier principal
-contient la logique pour interpréter des arbres de syntaxe abstraits, et pour
-mettre en place l'environnement d'exécution des programmes clients.  Les
-changements effectués pour l'implémentation de l'évaluation multi-facettes sont
-restreints à ce fichier principal; 640 lignes sont affectées, soit la moitié.
+Pour implémenter cette stratégie d'évaluation sur JavaScript, les auteurs ont
+choisi de modifier le code source de Narcissus directement.  Pour donner une
+idée de l'échelle de la tâche, Narcissus fait 6000 lignes de code, et les deux
+plus gros fichiers sont le parseur (1600 lignes) et le fichier principal de
+interpréteur, "jsexec" (1300 lignes).  Ce fichier principal contient la logique
+pour interpréter des arbres de syntaxe abstraits, et pour mettre en place
+l'environnement d'exécution des programmes clients.  Les changements effectués
+pour l'implémentation de l'évaluation multi-facettes sont restreints à ce
+fichier principal; 640 lignes sont affectées, soit la moitié.
 
 #+ATTR_HTML: :style margin-top:-6rem
 #+BEGIN_aside
@@ -859,10 +880,9 @@ On compte les lignes de code physiques, commentaires inclus mais sans compter
 les lignes vides.
 #+END_aside
 
-Pour réaliser l'instrumentation de Narcissus pour l'évaluation multi-facettes,
-les auteurs ont modifié directement le code source de l'interpréteur Narcissus.
-On peut obtenir l'ensemble des changements effectués en extrayant un /diff/ des
-deux versions.  La figure suivante donne une vue d'ensemble de ces changements:
+On peut obtenir l'ensemble des changements requis pour l'évaluation
+multi-facettes en extrayant un /diff/ des deux versions.  La figure suivante
+donne une vue d'ensemble de ces changements:
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
@@ -872,32 +892,51 @@ Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github
 
 #+NAME: visual-narcissus-diff
 #+CAPTION: Visualisation des modifications apportées par l'instrumentation de
-#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Chaque ligne du diff
-#+CAPTION: correspond à une ligne colorée suivant le type de changement dont
-#+CAPTION: elle fait partie.  Les lignes grises ne sont pas affectées par
-#+CAPTION: l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
+#+CAPTION: Narcissus pour l'évaluation multi-facettes.  Chaque ligne colorée
+#+CAPTION: correspond à une ligne du /diff/.  La couleur indique la catégorie
+#+CAPTION: du changement de la ligne, et les lignes grises ne sont pas affectées
+#+CAPTION: par l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
+#+CAPTION: {{{br}}} Ces catégories sont explicitées en [[#narcissus-categories]].
 [[file:img/narcissus-diff.svg]]
 
 On constate immédiatement que les changements effectués par l'instrumentation
 touchent de nombreuses parties du code de l'interpréteur, sans être restreints à
 une ou deux régions particulières.  Les changements sont /éparpillés/ dans le
-code.  De plus, des changements de catégories différentes sont /entremêlés/.
-Résultat, il devient difficile de comprendre les effets de l'instrumentation à
-l'œil nu, ou de s'assurer de sa justesse par rapport à une spécification.  Il
-devient difficile également, sans connaissances avancées de Narcissus et de
-l'évaluation multi-facettes, de savoir si une ligne de code de l'interpréteur
-instrumenté concerne l'interprétation décrite par le standard ECMAScript, ou si
-elle concerne l'évaluation multi-facettes.  Le code de l'interpréteur
-instrumenté ne comporte aucune information qui permet de les distinguer.
+code.  De plus, des changements de catégories différentes sont /entremêlés/:
+certaines fonctions sont affectées par les changements ~evaluateEach~ et
+~ProgramCounter~.  Résultat, il devient difficile de comprendre les effets de
+l'instrumentation en lisant le code à l'œil nu, ou de s'assurer de sa justesse
+par rapport à une spécification.  Il devient difficile également, sans
+connaissances avancées de Narcissus et de l'évaluation multi-facettes, de savoir
+si une ligne de code de l'interpréteur instrumenté concerne l'interprétation
+décrite par le standard ECMAScript, ou si elle concerne l'évaluation
+multi-facettes.  Le code de l'interpréteur instrumenté ne comporte aucune
+information qui permet de les distinguer.
 
-Autre point important: l'instrumentation *duplique tout le code* de
+Autre point important: l'instrumentation /duplique tout le code/ de
 l'interpréteur.  C'est une solution simple pour créer un interpréteur qui
 supporte l'évaluation multi-facettes.  En revanche, la duplication de code a un
 impact important sur la maintenance à long terme: plus de double du code doit
 être maintenu.  Les changements requis dans le code source pour corriger un bug
-dans Narcissus, ou pour ajouter une fonctionnalité doivent désormais être
+dans Narcissus, ou pour ajouter une fonctionnalité, doivent désormais être
 répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
 lorsque /plusieurs/ instrumentations sont envisagées.
+
+Il est évident que les auteurs avaient pour but de démontrer la viabilité de
+l'évaluation multi-facettes sur un langage réaliste, en l'occurrence JavaScript.
+Ils ne cherchaient probablement à résoudre les problèmes d'éparpillement et
+d'entremêlement de code.  C'est pourquoi modifier directement Narcissus était
+une solution adéquate pour atteindre leur but.
+
+Néanmoins, ces problèmes sont légitimes, et pas seulement dans le simple
+contexte d'un interpréteur et d'une analyse de flot dynamique.  La duplication
+de code apparaît bien souvent dans d'autres programmes.  Et il est rare
+qu'ajouter ou modifier une fonctionnalité à un programme n'impacte qu'une partie
+bien définie du code source; éparpillements et entremêlements ne sont pas des
+problèmes spécifiques à l'instrumentation d'un interpréteur.  On peut alors se
+demander si ces problèmes sont évitables, et s'ils le sont, comment les éviter?
+Cette instrumentation de Narcissus constitue un bon scénario pour tenter de
+répondre à ces questions.
 
 # # La sémantique est plus claire parce que plus petite, mais il y a les mêmes
 # # problèmes de duplication.  Pas sûr de garder.
@@ -923,7 +962,7 @@ lorsque /plusieurs/ instrumentations sont envisagées.
 # interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
 # des mécanismes d'extensibilité.
 
-** UNREAD Le but: factoriser les changements
+** READ Le but: factoriser les changements
 D'un point de vue abstrait, on peut voir l'interpréteur comme une fonction
 mathématique qui associe un code source à un processus:
 
@@ -932,28 +971,31 @@ mathématique qui associe un code source à un processus:
 La définition exacte de cette fonction correspond à une spécification de
 l'interpréteur (voir [[#defs]]).
 
-Lorsque l'on parle de modifier l'interpréteur, comme dans la section précédente,
-c'est que l'on modifie cette spécification.  Cette spécification modifiée
-correspond à une nouvelle fonction:
+L'instrumentation de la section précédente correspond à une modification de
+cette spécification.  Et à cette nouvelle spécification correspond à une
+nouvelle fonction:
 
 : spec_2: source -interpréteur modifié-> processus
 
-C'est un premier point de vue: l'interpréteur modifié est vu comme un nouvel
-interpréteur, sans aucune relation avec le premier interpréteur.  En suivant ce
-point de vue, il est naturel d'implémenter l'interpréteur modifié comme un
-nouveau programme.  Le nouveau programme est basé sur le premier, donc on peut
-réutiliser une bonne partie du code source du premier.  Mais une fois les
-modifications effectuées, les deux programmes sont bel et bien indépendants.
+Dans la spécification 1, un programme JavaScript est évalué en suivant les
+règles du standard ECMAScript.  En suivant la spécification 2, un programme
+JavaScript est évalue en suivant les règles de l'évaluation multi-facettes.
 
-Mais on peut aussi adopter un point de vue complémentaire et s'intéresser à la
-/modification/ elle-même:
+À ces spécifications correspondent un programme.  Dans la section précédente, on
+a bien deux programmes: Narcissus correspond à la spécification 1, et Narcissus
+instrumenté par Austin et Flanagan correspond à la spécification 2.
+L'interpréteur modifié est vu comme un nouvel interpréteur, sans aucune relation
+avec le premier.  En suivant ce point de vue, il est naturel d'implémenter
+l'interpréteur modifié comme un nouveau programme.
+
+Pourtant, le nouveau programme est en grande partie basé sur le premier.
+L'instrumentation pour l'évaluation multi-facettes change moins de 10% du code
+source de Narcissus.  On pourrait alors adopter un point de vue complémentaire,
+et s'intéresser à la /modification/ en elle-même:
 
 : interpréteur -modification-> interpréteur modifié
 
 #+BEGIN_side-figure
-#+CAPTION: Un rectangle peut être décrit par quatre points, ou par une
-#+CAPTION: origine et un vecteur.  La seconde représentation est plus
-#+CAPTION: compacte que la première, sans perte d'information.
 [[file:img/problem3.svg]]
 #+END_side-figure
 
@@ -961,14 +1003,16 @@ La modification décrit uniquement les changements, le /delta/, entre les deux
 interpréteurs.  L'interpréteur modifié est alors dérivé de l'interpréteur
 d'origine.  C'est un peu la même distinction que l'on peut faire entre
 représenter un rectangle par quatre sommets, ou bien par une origine et un
-vecteur.
+vecteur.  La seconde représentation est plus compacte que la première, sans
+perte d'information.
 
 Lorsque la modification est relativement mineure par rapport à la taille de
 l'interpréteur, la représentation du couple origine + delta sera plus compacte.
 On qualifiera une telle représentation de /différentielle/.
 
-Mais comment cette représentation différentielle se traduirait dans le code
-source?  Rappelons nous que le processus de développement est le suivant:
+Mais quel est l'intérêt de cette représentation différentielle?
+
+Rappelons nous que le processus de développement est le suivant:
 
 [[file:img/problem0.svg]]
 
@@ -991,8 +1035,8 @@ le programme ne présente plus d'intérêt, ce qui offre une porte de sortie à 
 cycle.
 
 Le changement décrit dans la section précédente correspond à une modification de
-la spécification: le fonctionnement attendu de l'interpréteur est modifié.  Le
-cycle de développement est le suivant:
+la spécification.  Dans le premier point de vue, cela entraîne deux codes
+sources, pour deux programmes, pour deux processus, bien distincts:
 
 [[file:img/problem1.svg]]
 
@@ -1007,27 +1051,26 @@ similarité entre les deux interpréteurs existe bien, elle n'est pas exploitée
 on a deux spécifications, deux codes sources, deux programmes.
 
 Dans une représentation différentielle, le but est de /factoriser/ cette
-similarité.
+similarité.  Plutôt que d'avoir deux programmes, on a un programme et sa
+modification:
 
 [[file:img/problem2.svg]]
 
-On a une spécification et un addendum, un ajout qui décrit une variante de
-comportement de la spécification.  C'est le /delta/ mentionné plus haut.  Pareil
-pour le code source: il n'y a plus deux codes, mais un code d'origine, et un
-autre code qui vient modifier le premier.  Ce code peut engendrer deux
-programmes différents: le programme d'origine, ou le programme qui contient le
-delta.  On retrouve alors les deux processus attendus, mais les similarités de
-la spécification et du code source sont factorisées.
+On a une spécification et son delta qui décrit une variante de comportement de
+la spécification.  Pareil pour le code source: il n'y a plus deux codes, mais un
+code d'origine, et un delta qui décrit les modifications de la spécification.
+Ce code peut engendrer deux programmes différents: le programme d'origine, ou le
+programme qui contient en plus le delta.  On retrouve alors les deux processus
+attendus, mais les similarités de la spécification et du code source sont
+factorisées.
 
 L'intérêt de cette seconde représentation factorisée est qu'elle préserve la
 séparation des préoccupations: l'interpréteur d'origine est conservé, et
 toujours présent dans le code source.  Le delta est séparé, et non plus mêlée
-dans le code de l'interpréteur.
-
-Et cette factorisation passe plus facilement à l'échelle.  Si l'on veut
-appliquer non plus une mais quatre analyses sur Narcissus, on n'a pas à
-dupliquer le code de l'interpréteur quatre fois, mais juste à décrire les quatre
-deltas requis par les analyses.
+dans le code de l'interpréteur.  Et cette factorisation passe plus facilement à
+l'échelle.  Si l'on veut appliquer non plus une mais quatre analyses sur
+Narcissus, on n'a pas à dupliquer le code de l'interpréteur quatre fois, mais
+juste à décrire les quatre deltas requis par les analyses.
 
 Cette factorisation correspond directement à une factorisation algébrique.  Si
 I_1 est l'interpréteur d'origine et I_2 l'interpréteur modifié, on note \delta_2 le
@@ -1038,15 +1081,17 @@ I_2 = \delta_2 I_1 {{{br}}}
 I_3 = \delta_3 I_1 {{{br}}}
 I_4 = \delta_4 I_1 {{{br}}}
 
+Alors,
+
 #+BEGIN_aside
 où Id est la fonction identité.
 #+END_aside
 
 (I_1, I_2, I_3, I_4) = (Id I_1, \delta_2 I_2, \delta_3 I_3, \delta_4 I_4) = (Id, \delta_2, \delta_3, \delta_4) I_1
 
-Au lieu d'avoir les quatre interpréteurs différents, on peut juste conserver les
-modifications et l'interpréteur de base.  C'est une factorisation qui élimine la
-redondance de I_1.
+Au lieu d'avoir quatre interpréteurs différents, on peut juste conserver les
+l'interpréteur de base et les quatre deltas.  C'est une factorisation qui
+élimine la redondance de I_1.
 
 Mais si intuitivement une telle factorisation semble possible, les questions
 naturelles qui suivent sont: comment réaliser cette factorisation dans le code
@@ -1054,6 +1099,9 @@ source?  Par quels moyens?  À quoi ressemble un interpréteur factorisé?  Et
 ultimement, comment factoriser Narcissus?
 
 ** UNREAD Quatre axes de factorisation pour l'instrumentation
+:PROPERTIES:
+:CUSTOM_ID: narcissus-categories
+:END:
 En observant le diff de l'instrumentation de plus près, on peut distinguer
 quatre catégories de changements: les imports/exports, l'ajout du paramètre
 /program counter/, la séparation de l'évaluation multi-facettes, et les ajouts à
