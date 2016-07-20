@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-19 mar. 19:15 -->
+<!-- 2016-07-20 mer. 19:26 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -170,7 +170,7 @@ for the JavaScript code in this tag.
 <li><a href="#narc">2.3. <span class="done READ">READ</span> Étude de cas: instrumentation ad-hoc de Narcissus</a></li>
 <li><a href="#orgheadline12">2.4. <span class="done READ">READ</span> Le but: factoriser les changements</a></li>
 <li><a href="#narcissus-categories">2.5. <span class="todo UNREAD">UNREAD</span> Quatre axes de factorisation pour l&rsquo;instrumentation</a></li>
-<li><a href="#orgheadline14">2.6. <span class="todo UNREAD">UNREAD</span> Refactoriser Narcissus: une solution coûteuse</a></li>
+<li><a href="#orgheadline14">2.6. <span class="done READ">READ</span> Refactoriser Narcissus: une solution coûteuse</a></li>
 <li><a href="#orgheadline15">2.7. <span class="todo UNREAD">UNREAD</span> L&rsquo;idée: le détournement de programme</a></li>
 </ul>
 </li>
@@ -1261,8 +1261,8 @@ qu&rsquo;ajouter ou modifier une fonctionnalité à un programme n&rsquo;impacte
 bien définie du code source; éparpillements et entremêlements ne sont pas des
 problèmes spécifiques à l&rsquo;instrumentation d&rsquo;un interpréteur.  On peut alors se
 demander si ces problèmes sont évitables, et s&rsquo;ils le sont, comment les éviter?
-Cette instrumentation de Narcissus constitue un bon scénario pour tenter de
-répondre à ces questions.
+L&rsquo;instrumentation de Narcissus constitue un bon scénario pour tenter de répondre
+à ces questions.
 </p>
 </div>
 </div>
@@ -1482,10 +1482,10 @@ ultimement, comment factoriser Narcissus?
 <h3 id="narcissus-categories"><a id="orgheadline13"></a><span class="section-number-3">2.5</span> <span class="todo UNREAD">UNREAD</span> Quatre axes de factorisation pour l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-narcissus-categories">
 <p>
-En observant le diff de l&rsquo;instrumentation de plus près, on peut distinguer
-quatre catégories de changements: les imports/exports, l&rsquo;ajout du paramètre
-<i>program counter</i>, la séparation de l&rsquo;évaluation multi-facettes, et les ajouts à
-l&rsquo;objet <code>global</code>.
+En observant les modifications apportées par l&rsquo;instrumentation de Narcissus pour
+l&rsquo;évaluation multi-facettes de plus près, on peut distinguer quatre catégories
+de changements: les imports/exports, l&rsquo;ajout du paramètre <i>program counter</i>,
+le branchement pour évaluer chaque facette, et les ajouts à l&rsquo;objet <code>global</code>.
 </p>
 
 <p>
@@ -1494,6 +1494,14 @@ importées dans le module de l&rsquo;interpréteur, et une nouvelle fonction est
 exportée.  Ce sont de simples ajouts qui sont localisés en début et en fin de
 fichier respectivement.  Voici comment ils se présentent dans le code:
 </p>
+
+<aside>
+<p>
+Le symbole <code>-</code> marque une ligne supprimée de l&rsquo;interpréteur; le symbole <code>+</code>
+marque une ligne ajoutée par l&rsquo;instrumentation.  L&rsquo;absence de marque indique une
+ligne commune aux deux versions.
+</p>
+</aside>
 
 <div class="org-src-container">
 
@@ -1510,20 +1518,20 @@ fichier respectivement.  Voici comment ils se présentent dans le code:
 </pre>
 </div>
 
-<aside style="margin-top:-11rem">
 <p>
-Le symbole <code>-</code> marque une ligne supprimée de l&rsquo;interpréteur; le symbole <code>+</code>
-marque une ligne ajoutée par l&rsquo;instrumentation.  L&rsquo;absence de marque indique une
-ligne commune aux deux versions.
+Notons au passage que JavaScript ne dispose pas de système de modules.  Il n&rsquo;y a
+pas de mots-clés <code>import</code> comme en Java.  Par convention, un simple objet
+JavaScript peut regrouper les valeurs et fonctions exportées par un module:
+c&rsquo;est le cas dans les <code>Exports</code> ci-dessus.  Pour importer ces définitions, il
+suffit alors de faire référence à ces propriétés, c&rsquo;est ce qu&rsquo;on voit dans les
+<code>Imports</code>.
 </p>
-</aside>
 
 <p>
 Seconde catégorie: les changements effectués pour accommoder le <i>program
 counter</i> utilisé par l&rsquo;analyse.  D&rsquo;abord, le constructeur de l&rsquo;objet
 <code>ExecutionContext</code> est étendu pour accepter un argument supplémentaire: la
-valeur courante du <i>program counter</i>, <code>pc</code>.  Voici un extrait du diff qui
-illustre ce changement:
+valeur courante du <i>program counter</i>, <code>pc</code>:
 </p>
 
 <div class="org-src-container">
@@ -1535,14 +1543,11 @@ illustre ce changement:
 </div>
 
 <p>
-Dans Narcissus, une instance de l&rsquo;objet <code>ExecutionContext</code> est créée lorsque le
-contrôle est transféré à du code interprété exécutable: lors de l&rsquo;entrée dans
-une fonction, lors d&rsquo;un appel à <code>eval</code>, ou lors de l&rsquo;exécution d&rsquo;un programme
-entier.  L&rsquo;objet <code>ExecutionContext</code> contient les variables importantes pour
-l&rsquo;exécution du code; en particulier l&rsquo;environnement lexical utilisé pour
-résoudre les noms de variables du code exécuté par ce contexte.  L&rsquo;objet
-<code>ExecutionContext</code> est une réification du concept éponyme de la spécification
-ECMAScript.
+Dans Narcissus, lorsque l&rsquo;interpréteur doit exécuter une fonction, ou tout un
+fichier, il crée une instance de l&rsquo;objet <code>ExecutionContext</code>.  Cet objet contient
+l&rsquo;environnement lexical utilisé pour résoudre les noms de variables du code
+exécuté par ce contexte.  L&rsquo;objet <code>ExecutionContext</code> est une réification du
+concept éponyme de la spécification ECMAScript.
 </p>
 
 <aside style="margin-top:-4rem">
@@ -1552,8 +1557,14 @@ Voir la section 10.3 de la spécification.
 </aside>
 
 <p>
-Puisque la signature du constructeur d&rsquo;<code>ExecutionContext</code> est étendue, tous ses
-appels doivent être modifiés en conséquence pour fournir une valeur correcte
+L&rsquo;évaluation multi-facettes a besoin de suivre la valeur courante du <i>program
+counter</i>, c&rsquo;est pourquoi cette valeur est sauvegardée dans l&rsquo;objet
+<code>ExecutionContext</code>.
+</p>
+
+<p>
+Ce faisant, la signature du constructeur d&rsquo;<code>ExecutionContext</code> est étendue.  Tous
+ses appels doivent être modifiés en conséquence pour fournir une valeur correcte
 pour le paramètre <i>program counter</i>.  Il y a plus de 80 instances de ce simple
 changement dans l&rsquo;instrumentation.  En voici deux exemples:
 </p>
@@ -1563,27 +1574,40 @@ changement dans l&rsquo;instrumentation.  En voici deux exemples:
 <pre class="src src-diff"><span class="org-diff-indicator-removed">-</span><span class="org-diff-removed"> x2 = new ExecutionContext(MODULE_CODE);</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added"> x2 = new ExecutionContext(MODULE_CODE, x.pc);</span>
 
+<span class="org-diff-context">...</span>
+
 <span class="org-diff-indicator-removed">-</span><span class="org-diff-removed"> getValue(execute(n.children[0], x));</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added"> getValue(execute(n.children[0], x), pc);</span>
 </pre>
 </div>
 
 <p>
-Les changements effectués dans l&rsquo;exécution de l&rsquo;arbre syntaxique abstrait pour
-propager les étiquettes sur les valeurs à facettes.  Par exemple, additionner
-deux valeurs à facettes devrait produire une nouvelle valeur à facettes.  Dans
-l&rsquo;implémentation, plutôt que de simplement additionner les deux opérandes,
-l&rsquo;interpréteur doit maintenant d&rsquo;abord inspecter l&rsquo;opérande gauche, et si c&rsquo;est
-une valeur à facettes, il faudra ajouter la valeur de l&rsquo;opérande droite à chaque
-facette.  Bien sûr, l&rsquo;opérande droite peut également être une valeur à facettes,
-et il faut alors séparer l&rsquo;évaluation à nouveau.  L&rsquo;interpréteur Narcissus ne
-contient aucun code pour gérer l&rsquo;addition de deux valeurs à facettes, donc
-l&rsquo;instrumentation doit ajouter la logique nécessaire.  Pour ce faire, chaque
-évaluation d&rsquo;une opération est enrobée dans un appel à la fonction
-<code>evaluateEach</code> qui teste si une valeur est à facettes, et appelle récursivement
-la fonction d&rsquo;évaluation sur chaque facette si c&rsquo;est le cas.  25 appels à
-<code>evaluateEach</code> ont été ainsi ajoutés dans l&rsquo;instrumentation.  Le code suivant
-donne la forme générale de ces changements:
+Ce changement est viral: il entraîne un ajout de paramètre non seulement sur les
+appels au constructeur d&rsquo;<code>ExecutionContext</code>, mais sur d&rsquo;autres fonctions, comme
+<code>getValue</code>, qui feront appel à ce constructeur, et ainsi de suite.
+</p>
+
+<p>
+Troisième catégorie: les changements effectués dans l&rsquo;exécution de l&rsquo;arbre
+syntaxique abstrait pour propager les étiquettes sur les valeurs à facettes.
+Par exemple, additionner deux valeurs à facettes devrait produire une nouvelle
+valeur à facettes.  Dans l&rsquo;implémentation, plutôt que d&rsquo;effectuer une simple
+addition entre les deux opérandes, l&rsquo;interpréteur doit d&rsquo;abord inspecter
+l&rsquo;opérande gauche, et si c&rsquo;est une valeur à facettes, additionner la valeur de
+l&rsquo;opérande droite à chacune de ces facettes.  Bien sûr, l&rsquo;opérande droite peut
+également être une valeur à facettes, et il faut alors faire deux additions de
+ce côté aussi.  L&rsquo;interpréteur Narcissus ne contient aucun code pour gérer
+l&rsquo;addition de deux valeurs à facettes, donc l&rsquo;instrumentation doit ajouter la
+logique nécessaire pour distribuer l&rsquo;addition sur chaque facette.
+</p>
+
+<p>
+Pour ce faire, chaque opération sujette à cette distribution est enrobée dans un
+appel à la fonction <code>evaluateEach</code>.  Cette fonction teste si la valeur passée
+est une valeur à facettes, et effectue récursivement l&rsquo;opération sur chaque
+facette si c&rsquo;est le cas.  Au total, 25 appels à <code>evaluateEach</code> ont été ainsi
+ajoutés dans l&rsquo;instrumentation.  Le code suivant donne la forme générale de ces
+changements:
 </p>
 
 <div class="org-src-container">
@@ -1596,27 +1620,44 @@ donne la forme générale de ces changements:
 </div>
 
 <p>
-À la première ligne on récupère une valeur d&rsquo;un nœud de l&rsquo;AST (p.ex., l&rsquo;opérande
-gauche d&rsquo;une affectation, ou la condition d&rsquo;un <code>if</code>) puis on fait quelque chose
-avec cette valeur.  Sur la seconde ligne, on récupère la même valeur, mais cette
-fois on <i>sépare</i> l&rsquo;évaluation en appelant <code>evaluateEach</code> avec cette valeur comme
-premier argument, et comme second une fonction qui opère sur une valeur simple,
-c&rsquo;est-à-dire sans facettes.
+Dans Narcissus non instrumenté, on récupère une valeur d&rsquo;un nœud de l&rsquo;arbre
+syntaxique (p.ex., l&rsquo;opérande gauche d&rsquo;une affectation, ou la condition d&rsquo;un
+<code>if</code>) puis on fait quelque chose avec cette valeur.  Dans l&rsquo;instrumentation, on
+récupère la même valeur, mais cette fois on <i>distribue</i> l&rsquo;évaluation en appelant
+<code>evaluateEach</code> avec cette valeur comme premier argument, et comme second une
+fonction qui opère sur une valeur simple (<code>v</code>), c&rsquo;est-à-dire sans facettes.
+</p>
+
+<aside>
+<p>
+Il n&rsquo;y a pas de sortie standard dans les programmes JavaScript exécutés par les
+navigateurs web.  La plupart des navigateurs en revanche disposent d&rsquo;une console
+dans laquelle les programmes peuvent écrire via la fonction <code>console.log</code>.
+</p>
+</aside>
+
+<p>
+Quatrième et dernière catégorie: les changements effectués sur l&rsquo;environnement
+d&rsquo;exécution de code client.  Dans un programme JavaScript, l&rsquo;environnement
+d&rsquo;exécution fournit un objet global qui contient les objets de base comme
+<code>Array</code>, <code>Math</code>, <code>String</code> et <code>Object</code>.  Puisqu&rsquo;il est métacirculaire, Narcissus
+expose ces objets aux programmes qu&rsquo;il interprète en réutilisant ceux qui lui
+sont exposés par son environnement hôte.  Certains de ces objets sont
+directement exposés, et d&rsquo;autres sont exposés via des mandataires (<i>proxies</i>).
+L&rsquo;objet global exposé par Narcissus est aussi enrichit par de nouvelles
+propriétés; la fonction <code>print</code> par exemple qui permet d&rsquo;écrire sur la sortie
+standard.
 </p>
 
 <p>
-Les changements effectués sur l&rsquo;environnement d&rsquo;exécution de code client.  Dans
-un programme JavaScript, l&rsquo;environnement d&rsquo;exécution fournit un objet <code>global</code>
-qui contient les définitions de base comme <code>Array</code>, <code>Math</code>, <code>String</code> et
-<code>Object</code>.  Puisque Narcissus est métacirculaire, il réutilise l&rsquo;objet global de
-son environnement hôte pour construire l&rsquo;objet global de l&rsquo;environnement client.
-Ceci est fait en trois étapes.  Premièrement, Narcissus crée un objet
-<code>globalBase</code> avec les propriétés qui viennent remplacer celles de
-l&rsquo;environnement hôte.  Deuxièmement, il crée un objet <code>global</code> client à partir
-de l&rsquo;objet <code>global</code> de son environnement hôte, et met toutes les propriétés de
-<code>globalBase</code> dans cet objet <code>global</code> client.  Troisièmement, il réutilise les
-objets <code>Array</code>, <code>String</code> et <code>Function</code> de l&rsquo;environnement hôte, et les ajoute à
-l&rsquo;objet global client.
+La construction de l&rsquo;objet <code>global</code> s&rsquo;effectue en trois étapes.  Premièrement,
+Narcissus crée l&rsquo;objet <code>globalBase</code> pour contenir les nouvelles propriétés et
+surcharger certaines définitions de l&rsquo;environnement hôte.  Deuxièmement, il crée
+l&rsquo;objet global qui sera exposé au code interprété à partir de l&rsquo;objet global de
+son environnement hôte, et y copie toutes les propriétés de <code>globalBase</code>.
+Troisièmement, il réutilise les objets <code>Array</code>, <code>String</code> et <code>Function</code> de
+l&rsquo;environnement hôte via des mandataires, et les ajoute à l&rsquo;objet global du code
+interprété.
 </p>
 
 <p>
@@ -1636,17 +1677,23 @@ client en ajoutant 50 propriétés à <code>globalBase</code>, comme la suivante
 
 <p>
 L&rsquo;instrumentation change également la propriété <code>String</code> de <code>globalBase</code> pour
-suivre les valeurs étiquetées passées en argument du constructeur de chaînes de
-caractères.
+capturer les valeurs à facettes passées en argument au constructeur de chaînes
+de caractères.
 </p>
 
 <p>
-Le fait que la plupart des changements appartiennent à une de ces quatre
-catégories suggère des axes potentiels de factorisation.  Factoriser permettrait
-de réduire la duplication de code, et surtout de regrouper les changements de
-même nature en un seul endroit.  Par exemple, si l&rsquo;interpréteur disposait d&rsquo;une
-fonction pour ajouter une valeur à l&rsquo;objet global, tous les ajouts à cet objets
-requis par l&rsquo;instrumentation pourraient être effectués au même endroit:
+Enfin, il y a quelques modifications qui n&rsquo;appartiennent à aucune de ces
+catégories: des refactorisations, et des corrections.
+</p>
+
+<p>
+Le fait que la plupart des changements de l&rsquo;instrumentation appartiennent à une
+de ces quatre catégories suggère des axes potentiels de factorisation.
+Factoriser permettrait de réduire la duplication de code, et surtout de
+regrouper les changements de même nature en un seul endroit.  Par exemple, si
+l&rsquo;interpréteur disposait d&rsquo;une fonction pour ajouter une valeur à l&rsquo;objet
+global, tous les ajouts à cet objets requis par l&rsquo;instrumentation pourraient
+être effectués au même endroit:
 </p>
 
 <div class="org-src-container">
@@ -1659,43 +1706,51 @@ requis par l&rsquo;instrumentation pourraient être effectués au même endroit:
 </div>
 
 <p>
-On dispose maintenant de quatre axes de factorisation, mais une question
-demeure: comment utiliser ces axes pour effectivement factoriser Narcissus?
+Mais si on dispose de quatre axes de factorisation, une question demeure:
+comment utiliser ces axes pour effectivement factoriser Narcissus?  Comment
+réaliser cette factorisation?
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline14" class="outline-3">
-<h3 id="orgheadline14"><span class="section-number-3">2.6</span> <span class="todo UNREAD">UNREAD</span> Refactoriser Narcissus: une solution coûteuse</h3>
+<h3 id="orgheadline14"><span class="section-number-3">2.6</span> <span class="done READ">READ</span> Refactoriser Narcissus: une solution coûteuse</h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
-La factorisation évoque immédiatement une solution: la <i>refactorisation</i>.  En
-programmation, refactoriser c&rsquo;est &laquo;&nbsp;changer la structure interne d&rsquo;un programme
-pour le rendre plus simple et plus facile à modifier sans changer son résultat&nbsp;&raquo;
-[<a href="#Fow-99">Fow99</a>].  Par changements successifs de code, le programme est restructuré pour
-être plus clair et plus extensible, sans que son comportement observable n&rsquo;en
-soit affecté.
+Un moyen de modifier Narcissus serait de le <i>refactoriser</i>.  En programmation,
+refactoriser c&rsquo;est &laquo;&nbsp;changer la structure interne d&rsquo;un programme pour le rendre
+plus simple et plus facile à modifier sans changer son résultat&nbsp;&raquo; [<a href="#Fow-99">Fow99</a>].  Par
+changements successifs de code, le programme est restructuré pour être plus
+clair et plus extensible, sans que son comportement observable n&rsquo;en soit
+affecté.
 </p>
 
-<aside style="margin-top:5rem">
 <p>
-Vérifier formellement qu&rsquo;une refactorisation ne change pas la sémantique du
-programme est un problème ouvert.  Ici le but est plus modeste: il suffit que le
-programmeur soit convaincu que le programme se comporte à l&rsquo;identique, mais il
-ne le garantit pas.
+On sait qu&rsquo;il y a une infinité de programmes différents qui donnent le même
+résultat, mais ils ne sont pas tous aussi faciles à modifier.  Suivant les choix
+faits par le concepteur, certaines modifications seront faciles à appliquer
+(s&rsquo;il y a une interface adéquate), tandis que d&rsquo;autres nécessiteront de réécrire
+une grande partie du code source.  Au cours de la vie du programme, la nature
+modifications effectuées peut changer; les modifications anticipées à la
+conception ne sont plus représentatives des modifications présentes.  Pour
+simplifier le travail de maintenance, on peut alors changer la structure du
+programme.
 </p>
-</aside>
 
 <p>
-La refactorisation est justifiable, car comme on l&rsquo;a vu, s&rsquo;il y a une infinité
-de programmes différents qui ont le même résultat, ils ne sont pas tous
-identiques quand il s&rsquo;agit de les modifier.  Heureusement, le programme est
-modifiable.  La refactorisation a pour but de guider la restructuration du
-programme par de petits changements successifs.  Ces changements, pris un à un,
-sont simples à effectuer (presque mécaniques), et il est facile de se convaincre
-(ou d&rsquo;observer) qu&rsquo;ils ne changent pas le comportement du programme.  À
-l&rsquo;inverse, si on restructure le programme entier ou de grandes parties d&rsquo;un seul
-tenant, on fait plutôt de la <i>réécriture</i>.
+Mais restructurer implique de changer le code source, et surtout la logique
+derrière le programme.  Or, les programmes sont fragiles, en grande partie parce
+qu&rsquo;ils sont basés sur des centaines d&rsquo;hypothèses implicites.  Changer le code
+source est une très bonne façon d&rsquo;introduire des erreurs.
+</p>
+
+<p>
+La refactorisation a pour but de guider la restructuration du programme par de
+petits changements successifs.  Ces changements, pris un à un, sont simples à
+effectuer (presque mécaniques), et l&rsquo;idée est qu&rsquo;il est alors plus facile de se
+convaincre (ou d&rsquo;observer) qu&rsquo;ils ne changent pas le comportement du programme.
+À l&rsquo;inverse, si on restructure le programme entier ou de grandes parties d&rsquo;un
+seul tenant, on fait plutôt de la <i>réécriture</i>, ce qui est plus risqué.
 </p>
 
 <aside>
@@ -1706,23 +1761,33 @@ un exemple simplifié d&rsquo;interpréteur.
 </aside>
 
 <p>
-Alors, si l&rsquo;on souhaite factoriser l&rsquo;interpréteur en suivant les quatre axes de
-la section précédente, la refactorisation est une solution légitime.  On pourra
-utiliser différentes techniques (patron visiteur, <i>hooks</i>&#x2026;), qui nous
-conduiront à bien séparer l&rsquo;interpréteur d&rsquo;origine de l&rsquo;évaluation
-multi-facettes.
+Puisqu&rsquo;on souhaite factoriser Narcissus suivant les quatre axes de la section
+précédente, la refactorisation est une solution légitime.  On pourra choisir
+différentes structures (patron visiteur, <i>hooks</i>&#x2026;), qui nous conduiront à
+intégrer plus facilement l&rsquo;évaluation multi-facettes à l&rsquo;interpréteur d&rsquo;origine,
+sans avoir à en modifier la moitié du code source.
 </p>
 
 <p>
-Mais refactoriser, par définition, c&rsquo;est restructurer le programme.
-Restructurer implique de changer le code source.  Donc refactoriser
-l&rsquo;interpréteur demandera un investissement non négligeable, quelles que soient
-les techniques employées.  De plus, rien ne nous garantit que les axes de
-factorisations qui sont indiqués par l&rsquo;évaluation multi-facettes seront aussi
-des axes de factorisation pour d&rsquo;autres analyses.  Si l&rsquo;on souhaite appliquer
-d&rsquo;autres analyses à Narcissus, on risque de dupliquer l&rsquo;effort de
-refactorisation.  La coût de la refactorisation deviendrait plus important que
-le coût de simplement dupliquer les interpréteurs pour chaque analyse.
+Mais même si la refactorisation appelle à la prudence, refactoriser implique
+toujours de modifier le code source; une très bonne façon d&rsquo;introduire des
+erreurs.  S&rsquo;assurer qu&rsquo;une refactorisation préserve la sémantique du programme
+est un problème ouvert.  Restructurer, quelque soit la méthode employée,
+comporte des risques.
+</p>
+
+<p>
+De plus, rien ne nous garantit que les axes de factorisations qui sont indiqués
+par l&rsquo;évaluation multi-facettes seront aussi des axes de factorisation pour
+d&rsquo;autres analyses.  Si l&rsquo;on refactorise Narcissus selon ces quatre axes,
+l&rsquo;évaluation multi-facettes sera alors mieux intégrée, mais si l&rsquo;on souhaite
+appliquer d&rsquo;autres analyses à Narcissus, faudra-t-il refactoriser l&rsquo;interpréteur
+à nouveau?  Refactoriser demande un certain effort, un investissement en temps
+pour comprendre le programme, analyser les axes de factorisation, et appliquer
+la restructuration.  Si cet effort doit être répété pour chaque analyse que l&rsquo;on
+souhaite ajouter à l&rsquo;interpréteur, le coût de la refactorisation deviendrait
+plus important que le coût de la duplication de code que l&rsquo;on essayait de
+minimiser pour commencer.
 </p>
 </div>
 </div>
@@ -14242,7 +14307,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-19 mar. 19:15 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-20 mer. 19:26 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
