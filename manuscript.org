@@ -126,6 +126,7 @@ different person then.'
    - [[#locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][Locality of concerns and locality of execution are irreconciable in the source text]]
    - [[#late-binding-is-the-common-ingredient-to-all-modular-mechanisms][Late binding is the common ingredient to all modular mechanisms]]
    - [[#perspectives-if-automated-programming-is-the-future-this-is-mostly-usesless][Perspectives: if automated programming is the future, this is mostly usesless]]
+   - [[#perspectives-performance][Perspectives: performance]]
  - [[#chutes][Chutes]]
    - [[#unread-le-problème-de-lexpression][UNREAD Le problème de l'expression]]
    - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
@@ -7149,6 +7150,19 @@ specification, or by having a discussion with humans, then modularity
 consideration will change.  Modularity is rarely a concern for generated code.
 But as long as there are humans who read programs, they will appreciate
 clarification.
+
+** Perspectives: performance
+Binding manipulation may go against performance.  We are violating static
+assumptions.  An identifier may now refer to many different things at runtime,
+which does not map neatly to the machine.
+
+In JS engines, prototype mutations and ~with~ are notorious performance
+killers.  They go against the assumptions made by the optimizer.
+
+Reconciling performance and late binding is an interesting challenge.  Garbage
+collection was also deemed too costly to ever be practical.  But, years of
+research and engineering have proved that it can be.  Don't discount late
+binding yet.
 
 * Chutes
 ** UNREAD Le problème de l'expression
