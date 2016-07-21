@@ -46,7 +46,7 @@ different person then.'
      - [[#un-langage-à-prototypes-qui-doit-ressembler-à-java][Un langage à prototypes qui doit ressembler à Java]]
    - [[#read-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][READ Étude de cas: instrumentation ad-hoc de Narcissus]]
    - [[#read-le-but-factoriser-les-changements][READ Le but: factoriser les changements]]
-   - [[#unread-quatre-axes-de-factorisation-pour-linstrumentation][UNREAD Quatre axes de factorisation pour l'instrumentation]]
+   - [[#read-quatre-axes-de-factorisation-pour-linstrumentation][READ Quatre axes de factorisation pour l'instrumentation]]
    - [[#read-refactoriser-narcissus-une-solution-coûteuse][READ Refactoriser Narcissus: une solution coûteuse]]
    - [[#unread-lidée-le-détournement-de-programme][UNREAD L'idée: le détournement de programme]]
  - [[#contexte][Contexte]]
@@ -1098,7 +1098,7 @@ naturelles qui suivent sont: comment réaliser cette factorisation dans le code
 source?  Par quels moyens?  À quoi ressemble un interpréteur factorisé?  Et
 ultimement, comment factoriser Narcissus?
 
-** UNREAD Quatre axes de factorisation pour l'instrumentation
+** READ Quatre axes de factorisation pour l'instrumentation
 :PROPERTIES:
 :CUSTOM_ID: narcissus-categories
 :END:
@@ -1367,47 +1367,64 @@ plus important que le coût de la duplication de code que l'on essayait de
 minimiser pour commencer.
 
 ** UNREAD L'idée: le détournement de programme
-Pour pallier aux coûts de la refactorisation, nous proposons une alternative: le
+Il y a une alternative pragmatique à la refactorisation, que nous appellerons le
 /détournement/.
 
-Le détournement est basé sur un principe simple: plutôt que de modifier le code
-source du programme, on va manipuler son contexte d'exécution.  Le contexte d'un
-programme est aussi important que contexte d'une phrase en français: suivant le
-contexte, le sens de la phrase peut énormément varier.
+Le détournement est basé sur un simple observation: le code source d'un
+programme ne détermine pas son processus.  Le code source /et/ l'interpréteur
+déterminent le processus.  Le code source seul ne donne aucune information si
+l'on ne connaît pas aussi l'interpréteur.  Seul, le code est inerte.  Voici un
+programme:
 
-[super exemple]
+#+BEGIN_EXAMPLE
+(=<`#9]~6ZY32Vx/4Rs+0No-&Jk)"Fh}|Bcy?`=*z]Kw%oG4UUS0/@-ejc(:'8dc
+#+END_EXAMPLE
 
-J'irais même jusqu'à dire que sans aucun contexte, la phrase n'est qu'un
-ensemble de traits vide de sens.  Il suffit d'imaginer ce que signifie la phrase
-pour un non-francophone et non familier avec l'alphabet latin.  Ou encore, de
-constater que le sens de cette phrase en sumérien est perdu à jamais:
+Mais je ne vous dis pas de quel langage il s'agit.  Que fait-il?
 
-[sumérien ?]
+L'interpréteur est crucial, même pour un langage conventionnel.  Suivant
+l'interpréteur, le code source peut engendrer des processus vastement
+différents.  Voici un programme Python:
 
-Comme les phrases, les programmes ont un contexte.  Comme les phrases, ce
-contexte est généralement implicite, et il détermine entièrement le résultat du
-programme.  Un code source n'a de sens que lorsque l'on donne le langage de
-programmation dans lequel il est écrit.  Et encore, le nom du langage est
-insuffisant: on doit se référer à sa sémantique, ou au modèle mental que l'on
-s'en fait.  Différents compilateurs peuvent donner différentes sémantiques aux
-programmes.  Et la machine qui exécute le programme peut encore en altérer le
-comportement.  Le contexte du programme est donc défini par toutes les couches
-d'interprétation qui séparent le code source du processus engendré par la
-machine.
+#+BEGIN_SRC python
+print 89
+#+END_SRC
+
+Sans surprise, ce programme affiche 89 sur la sortie standard.  Mais seulement
+avec un interpréteur pour Python 1 ou 2.  En Python 3, le /même programme/ donne
+une erreur.
+
+Mais maintenant, imaginons que l'on puisse redéfinir la fonction ~print~ avant
+d'exécuter ce programme:
+
+#+BEGIN_SRC python
+print = lambda s: ...
+
+print 89
+#+END_SRC
+
+On ne peut plus dire qu'il affichera 89 si on ne sait pas par quelle fonction
+~print~ a été redéfinie.  On ne touche pas directement à la ligne ~print 89~,
+mais on a bien modifié le programme.
 
 Détourner un programme, c'est changer son comportement en changeant son
 contexte.  L'intérêt c'est qu'on peut modifier le comportement du programme sans
-changer son code source, de la même façon qu'on peut changer le sens d'une
-phrase en la plongeant dans un contexte différent, et sans en changer une
-lettre.
+changer son code source directement.  On peut changer son interpréteur, son
+compilateur, son arbre syntaxique, les bibliothèques qu'il utilise, ou même,
+lorsque le langage le permet, les objets primitifs comme ~Int~ ou ~String~.
 
-On pourrait détourner de la sorte n'importe quel programme.  Mais le but ici,
-c'est de détourner des programmes pour mieux les factoriser.  Le détournement
-nous permet d'exprimer exactement la modification, le /delta/ d'un changement,
-sans avoir à toucher le code source du programme.  Le détournement permet de
-séparer les préoccupations.
+En détournant un programme, on parviendrait à modifier son processus sans le
+restructurer.  La modification effectuée n'affecte pas le code source, elle en
+est distincte.  Le détournement nous permettrait de séparer le programme
+principal de ses modifications.  Dans le scénario d'instrumentation de Narcissus
+pour plusieurs analyses, on pourra détourner l'interpréteur pour chaque analyse,
+tout en préservant une séparation des préoccupations.
 
-[transition]
+Étendre un interpréteur n'est pas un problème particulièrement nouveau.  On le
+retrouve sous différentes formes.  De même, il est intéressant de regarder
+quelles structures pourraient s'adapter au problème si l'on voulait refactoriser
+l'interpréteur.  Et enfin, voir quels mécanismes permettent de détourner un
+programme.
 
 * Contexte
 Une chronologie de la modularité pour construire et faire évoluer des logiciels,
