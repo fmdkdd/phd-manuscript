@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-20 mer. 19:26 -->
+<!-- 2016-07-21 jeu. 18:20 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -169,7 +169,7 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#narc">2.3. <span class="done READ">READ</span> Étude de cas: instrumentation ad-hoc de Narcissus</a></li>
 <li><a href="#orgheadline12">2.4. <span class="done READ">READ</span> Le but: factoriser les changements</a></li>
-<li><a href="#narcissus-categories">2.5. <span class="todo UNREAD">UNREAD</span> Quatre axes de factorisation pour l&rsquo;instrumentation</a></li>
+<li><a href="#narcissus-categories">2.5. <span class="done READ">READ</span> Quatre axes de factorisation pour l&rsquo;instrumentation</a></li>
 <li><a href="#orgheadline14">2.6. <span class="done READ">READ</span> Refactoriser Narcissus: une solution coûteuse</a></li>
 <li><a href="#orgheadline15">2.7. <span class="todo UNREAD">UNREAD</span> L&rsquo;idée: le détournement de programme</a></li>
 </ul>
@@ -270,39 +270,40 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline95">8. <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</a>
+<li><a href="#orgheadline96">8. <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</a>
 <ul>
 <li><a href="#orgheadline91">8.1. Séparation des préoccupations: pourquoi?</a></li>
 <li><a href="#orgheadline92">8.2. Locality of concerns and locality of execution are irreconciable in the source text</a></li>
 <li><a href="#orgheadline93">8.3. Late binding is the common ingredient to all modular mechanisms</a></li>
 <li><a href="#orgheadline94">8.4. Perspectives: if automated programming is the future, this is mostly usesless</a></li>
+<li><a href="#orgheadline95">8.5. Perspectives: performance</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline147">9. Chutes</a>
+<li><a href="#orgheadline148">9. Chutes</a>
 <ul>
-<li><a href="#orgheadline96">9.1. <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</a></li>
-<li><a href="#orgheadline135">9.2. Construire un interpréteur extensible</a>
+<li><a href="#orgheadline97">9.1. <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</a></li>
+<li><a href="#orgheadline136">9.2. Construire un interpréteur extensible</a>
 <ul>
-<li><a href="#orgheadline114">9.2.1. Variations</a></li>
-<li><a href="#orgheadline112">9.2.2. Lisp</a></li>
-<li><a href="#orgheadline115">9.2.3. Haskell</a></li>
-<li><a href="#orgheadline134">9.2.4. Modular monadic interpreters</a></li>
+<li><a href="#orgheadline115">9.2.1. Variations</a></li>
+<li><a href="#orgheadline113">9.2.2. Lisp</a></li>
+<li><a href="#orgheadline116">9.2.3. Haskell</a></li>
+<li><a href="#orgheadline135">9.2.4. Modular monadic interpreters</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline146">9.3. Dynamic scoping to build interpreters</a>
+<li><a href="#orgheadline147">9.3. Dynamic scoping to build interpreters</a>
 <ul>
-<li><a href="#orgheadline136">9.3.1. The base datatype</a></li>
-<li><a href="#orgheadline137">9.3.2. Adding a data variant</a></li>
-<li><a href="#orgheadline138">9.3.3. Adding an operation</a></li>
-<li><a href="#orgheadline141">9.3.4. Adding an operation as a module</a></li>
-<li><a href="#orgheadline143">9.3.5. Modifying an operation</a></li>
-<li><a href="#orgheadline144">9.3.6. Passing state</a></li>
-<li><a href="#orgheadline145">9.3.7. All in one</a></li>
+<li><a href="#orgheadline137">9.3.1. The base datatype</a></li>
+<li><a href="#orgheadline138">9.3.2. Adding a data variant</a></li>
+<li><a href="#orgheadline139">9.3.3. Adding an operation</a></li>
+<li><a href="#orgheadline142">9.3.4. Adding an operation as a module</a></li>
+<li><a href="#orgheadline144">9.3.5. Modifying an operation</a></li>
+<li><a href="#orgheadline145">9.3.6. Passing state</a></li>
+<li><a href="#orgheadline146">9.3.7. All in one</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgheadline148">Références</a></li>
+<li><a href="#orgheadline149">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -1479,7 +1480,7 @@ ultimement, comment factoriser Narcissus?
 </div>
 
 <div id="outline-container-orgheadline13" class="outline-3">
-<h3 id="narcissus-categories"><a id="orgheadline13"></a><span class="section-number-3">2.5</span> <span class="todo UNREAD">UNREAD</span> Quatre axes de factorisation pour l&rsquo;instrumentation</h3>
+<h3 id="narcissus-categories"><a id="orgheadline13"></a><span class="section-number-3">2.5</span> <span class="done READ">READ</span> Quatre axes de factorisation pour l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-narcissus-categories">
 <p>
 En observant les modifications apportées par l&rsquo;instrumentation de Narcissus pour
@@ -1796,63 +1797,86 @@ minimiser pour commencer.
 <h3 id="orgheadline15"><span class="section-number-3">2.7</span> <span class="todo UNREAD">UNREAD</span> L&rsquo;idée: le détournement de programme</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
-Pour pallier aux coûts de la refactorisation, nous proposons une alternative: le
+Il y a une alternative pragmatique à la refactorisation, que nous appellerons le
 <i>détournement</i>.
 </p>
 
 <p>
-Le détournement est basé sur un principe simple: plutôt que de modifier le code
-source du programme, on va manipuler son contexte d&rsquo;exécution.  Le contexte d&rsquo;un
-programme est aussi important que contexte d&rsquo;une phrase en français: suivant le
-contexte, le sens de la phrase peut énormément varier.
+Le détournement est basé sur un simple observation: le code source d&rsquo;un
+programme ne détermine pas son processus.  Le code source <i>et</i> l&rsquo;interpréteur
+déterminent le processus.  Le code source seul ne donne aucune information si
+l&rsquo;on ne connaît pas aussi l&rsquo;interpréteur.  Seul, le code est inerte.  Voici un
+programme:
+</p>
+
+<pre class="example">
+(=&lt;`#9]~6ZY32Vx/4Rs+0No-&amp;Jk)"Fh}|Bcy?`=*z]Kw%oG4UUS0/@-ejc(:'8dc
+</pre>
+
+<p>
+Mais je ne vous dis pas de quel langage il s&rsquo;agit.  Que fait-il?
 </p>
 
 <p>
-[super exemple]
+L&rsquo;interpréteur est crucial, même pour un langage conventionnel.  Suivant
+l&rsquo;interpréteur, le code source peut engendrer des processus vastement
+différents.  Voici un programme Python:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-python"><span class="org-keyword">print</span> 89
+</pre>
+</div>
+
+<p>
+Sans surprise, ce programme affiche 89 sur la sortie standard.  Mais seulement
+avec un interpréteur pour Python 1 ou 2.  En Python 3, le <i>même programme</i> donne
+une erreur.
 </p>
 
 <p>
-J&rsquo;irais même jusqu&rsquo;à dire que sans aucun contexte, la phrase n&rsquo;est qu&rsquo;un
-ensemble de traits vide de sens.  Il suffit d&rsquo;imaginer ce que signifie la phrase
-pour un non-francophone et non familier avec l&rsquo;alphabet latin.  Ou encore, de
-constater que le sens de cette phrase en sumérien est perdu à jamais:
+Mais maintenant, imaginons que l&rsquo;on puisse redéfinir la fonction <code>print</code> avant
+d&rsquo;exécuter ce programme:
 </p>
 
-<p>
-[sumérien ?]
-</p>
+<div class="org-src-container">
+
+<pre class="src src-python"><span class="org-keyword">print</span> = <span class="org-keyword">lambda</span> s: ...
+
+<span class="org-keyword">print</span> 89
+</pre>
+</div>
 
 <p>
-Comme les phrases, les programmes ont un contexte.  Comme les phrases, ce
-contexte est généralement implicite, et il détermine entièrement le résultat du
-programme.  Un code source n&rsquo;a de sens que lorsque l&rsquo;on donne le langage de
-programmation dans lequel il est écrit.  Et encore, le nom du langage est
-insuffisant: on doit se référer à sa sémantique, ou au modèle mental que l&rsquo;on
-s&rsquo;en fait.  Différents compilateurs peuvent donner différentes sémantiques aux
-programmes.  Et la machine qui exécute le programme peut encore en altérer le
-comportement.  Le contexte du programme est donc défini par toutes les couches
-d&rsquo;interprétation qui séparent le code source du processus engendré par la
-machine.
+On ne peut plus dire qu&rsquo;il affichera 89 si on ne sait pas par quelle fonction
+<code>print</code> a été redéfinie.  On ne touche pas directement à la ligne <code>print 89</code>,
+mais on a bien modifié le programme.
 </p>
 
 <p>
 Détourner un programme, c&rsquo;est changer son comportement en changeant son
 contexte.  L&rsquo;intérêt c&rsquo;est qu&rsquo;on peut modifier le comportement du programme sans
-changer son code source, de la même façon qu&rsquo;on peut changer le sens d&rsquo;une
-phrase en la plongeant dans un contexte différent, et sans en changer une
-lettre.
+changer son code source directement.  On peut changer son interpréteur, son
+compilateur, son arbre syntaxique, les bibliothèques qu&rsquo;il utilise, ou même,
+lorsque le langage le permet, les objets primitifs comme <code>Int</code> ou <code>String</code>.
 </p>
 
 <p>
-On pourrait détourner de la sorte n&rsquo;importe quel programme.  Mais le but ici,
-c&rsquo;est de détourner des programmes pour mieux les factoriser.  Le détournement
-nous permet d&rsquo;exprimer exactement la modification, le <i>delta</i> d&rsquo;un changement,
-sans avoir à toucher le code source du programme.  Le détournement permet de
-séparer les préoccupations.
+En détournant un programme, on parviendrait à modifier son processus sans le
+restructurer.  La modification effectuée n&rsquo;affecte pas le code source, elle en
+est distincte.  Le détournement nous permettrait de séparer le programme
+principal de ses modifications.  Dans le scénario d&rsquo;instrumentation de Narcissus
+pour plusieurs analyses, on pourra détourner l&rsquo;interpréteur pour chaque analyse,
+tout en préservant une séparation des préoccupations.
 </p>
 
 <p>
-[transition]
+Étendre un interpréteur n&rsquo;est pas un problème particulièrement nouveau.  On le
+retrouve sous différentes formes.  De même, il est intéressant de regarder
+quelles structures pourraient s&rsquo;adapter au problème si l&rsquo;on voulait refactoriser
+l&rsquo;interpréteur.  Et enfin, voir quels mécanismes permettent de détourner un
+programme.
 </p>
 </div>
 </div>
@@ -9407,8 +9431,8 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 </div>
 
-<div id="outline-container-orgheadline95" class="outline-2">
-<h2 id="orgheadline95"><span class="section-number-2">8</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</h2>
+<div id="outline-container-orgheadline96" class="outline-2">
+<h2 id="orgheadline96"><span class="section-number-2">8</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</h2>
 <div class="outline-text-2" id="text-8">
 </div><div id="outline-container-orgheadline91" class="outline-3">
 <h3 id="orgheadline91"><span class="section-number-3">8.1</span> Séparation des préoccupations: pourquoi?</h3>
@@ -9530,13 +9554,36 @@ clarification.
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgheadline95" class="outline-3">
+<h3 id="orgheadline95"><span class="section-number-3">8.5</span> Perspectives: performance</h3>
+<div class="outline-text-3" id="text-8-5">
+<p>
+Binding manipulation may go against performance.  We are violating static
+assumptions.  An identifier may now refer to many different things at runtime,
+which does not map neatly to the machine.
+</p>
+
+<p>
+In JS engines, prototype mutations and <code>with</code> are notorious performance
+killers.  They go against the assumptions made by the optimizer.
+</p>
+
+<p>
+Reconciling performance and late binding is an interesting challenge.  Garbage
+collection was also deemed too costly to ever be practical.  But, years of
+research and engineering have proved that it can be.  Don&rsquo;t discount late
+binding yet.
+</p>
+</div>
+</div>
 </div>
 
-<div id="outline-container-orgheadline147" class="outline-2">
-<h2 id="orgheadline147"><span class="section-number-2">9</span> Chutes</h2>
+<div id="outline-container-orgheadline148" class="outline-2">
+<h2 id="orgheadline148"><span class="section-number-2">9</span> Chutes</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline96" class="outline-3">
-<h3 id="orgheadline96"><span class="section-number-3">9.1</span> <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</h3>
+</div><div id="outline-container-orgheadline97" class="outline-3">
+<h3 id="orgheadline97"><span class="section-number-3">9.1</span> <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</h3>
 <div class="outline-text-3" id="text-9-1">
 <aside class="todo">
 <p>
@@ -9885,8 +9932,8 @@ d&rsquo;extension.
 </div>
 </div>
 
-<div id="outline-container-orgheadline135" class="outline-3">
-<h3 id="orgheadline135"><span class="section-number-3">9.2</span> Construire un interpréteur extensible</h3>
+<div id="outline-container-orgheadline136" class="outline-3">
+<h3 id="orgheadline136"><span class="section-number-3">9.2</span> Construire un interpréteur extensible</h3>
 <div class="outline-text-3" id="text-9-2">
 <p>
 Le style de l&rsquo;interpréteur du chapitre précédent n&rsquo;est pas extensible.
@@ -10039,9 +10086,9 @@ l&rsquo;une ou l&rsquo;autre interprétation pour un même programme.
 </p>
 </div>
 
-<div id="outline-container-orgheadline97" class="outline-5">
-<h5 id="orgheadline97">Finding a core example</h5>
-<div class="outline-text-5" id="text-orgheadline97">
+<div id="outline-container-orgheadline98" class="outline-5">
+<h5 id="orgheadline98">Finding a core example</h5>
+<div class="outline-text-5" id="text-orgheadline98">
 <p>
 Looking at the operational semantics for faceted evaluation, we can
 see the patterns mentioned previously (<code>pc</code> parameter, new cases for
@@ -11003,9 +11050,9 @@ a separate module with minimal code duplication.
 </div>
 </div>
 
-<div id="outline-container-orgheadline98" class="outline-5">
-<h5 id="orgheadline98">The expression problem</h5>
-<div class="outline-text-5" id="text-orgheadline98">
+<div id="outline-container-orgheadline99" class="outline-5">
+<h5 id="orgheadline99">The expression problem</h5>
+<div class="outline-text-5" id="text-orgheadline99">
 <p>
 First, let&rsquo;s list the additions brought by our extension to the
 interpreter:
@@ -11056,9 +11103,9 @@ extended and original codes to include keywords.)
 </div>
 </div>
 
-<div id="outline-container-orgheadline99" class="outline-5">
-<h5 id="orgheadline99">The expression problem, with a twist</h5>
-<div class="outline-text-5" id="text-orgheadline99">
+<div id="outline-container-orgheadline100" class="outline-5">
+<h5 id="orgheadline100">The expression problem, with a twist</h5>
+<div class="outline-text-5" id="text-orgheadline100">
 <p>
 The expression problem is only concerned with <i>adding</i> data types and
 functions, but when we instrument an interpreter, we will often want
@@ -11136,9 +11183,9 @@ applications.]
 </div>
 </div>
 
-<div id="outline-container-orgheadline100" class="outline-5">
-<h5 id="orgheadline100">The modular instrumentation problem</h5>
-<div class="outline-text-5" id="text-orgheadline100">
+<div id="outline-container-orgheadline101" class="outline-5">
+<h5 id="orgheadline101">The modular instrumentation problem</h5>
+<div class="outline-text-5" id="text-orgheadline101">
 <p>
 We have an interpreter I for a language L, and the source code for I.
 We want to instrument the interpreter I, by extending and modifying
@@ -11195,12 +11242,12 @@ monads, if you have a monadic interpreter.]
 </div>
 </div>
 
-<div id="outline-container-orgheadline114" class="outline-4">
-<h4 id="orgheadline114"><span class="section-number-4">9.2.1</span> Variations</h4>
+<div id="outline-container-orgheadline115" class="outline-4">
+<h4 id="orgheadline115"><span class="section-number-4">9.2.1</span> Variations</h4>
 <div class="outline-text-4" id="text-9-2-1">
-</div><div id="outline-container-orgheadline101" class="outline-5">
-<h5 id="orgheadline101">JavaScript</h5>
-<div class="outline-text-5" id="text-orgheadline101">
+</div><div id="outline-container-orgheadline102" class="outline-5">
+<h5 id="orgheadline102">JavaScript</h5>
+<div class="outline-text-5" id="text-orgheadline102">
 <p>
 See <a href="js/aoping.html">js/aoping.html</a>.
 </p>
@@ -11210,7 +11257,7 @@ See also <a href="lassy15.html">lassy15.html</a> for a way to build interpreters
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline102"></a>Split OO-style instrumented interpreter into modules<br ><div class="outline-text-6" id="text-orgheadline102">
+<ul class="org-ul"><li><a id="orgheadline103"></a>Split OO-style instrumented interpreter into modules<br ><div class="outline-text-6" id="text-orgheadline103">
 <p>
 Let&rsquo;s try to separate the object-oriented instrumented interpreter in
 two modules: one for the base interpreter, ‘base.js&rsquo;, and one for the
@@ -11225,7 +11272,7 @@ to <code>Set.prototype</code> in a separate file right away.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline103"></a>Handling the extra PC parameter<br ><div class="outline-text-7" id="text-orgheadline103">
+<ul class="org-ul"><li><a id="orgheadline104"></a>Handling the extra PC parameter<br ><div class="outline-text-7" id="text-orgheadline104">
 <p>
 The second, more pervasive change is the addition of the program
 counter context in every call.  There are at least two solutions to
@@ -11237,7 +11284,7 @@ this problem:
 </ol>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline104"></a>Using a global variable<br ><div class="outline-text-8" id="text-orgheadline104">
+<ul class="org-ul"><li><a id="orgheadline105"></a>Using a global variable<br ><div class="outline-text-8" id="text-orgheadline105">
 <p>
 <a href="js/lab/oo-split-global/base.js">js/lab/oo-split-global/base.js</a>
 <a href="js/lab/oo-split-global/facets.js">js/lab/oo-split-global/facets.js</a>
@@ -11315,7 +11362,7 @@ dynamic scoping [Art of Interp].
 </p>
 </div></li>
 
-<li><a id="orgheadline105"></a>Using a context object<br ><div class="outline-text-8" id="text-orgheadline105">
+<li><a id="orgheadline106"></a>Using a context object<br ><div class="outline-text-8" id="text-orgheadline106">
 <p>
 <a href="js/lab/oo-split-context/base.js">js/lab/oo-split-context/base.js</a>
 <a href="js/lab/oo-split-context/facets.js">js/lab/oo-split-context/facets.js</a>
@@ -11395,7 +11442,7 @@ that case, both mutability and dynamic typing are leveraged.
 </p>
 </div></li></ul></li>
 
-<li><a id="orgheadline106"></a>Handling the change in the reference rule<br ><div class="outline-text-7" id="text-orgheadline106">
+<li><a id="orgheadline107"></a>Handling the change in the reference rule<br ><div class="outline-text-7" id="text-orgheadline107">
 <p>
 <a href="js/lab/oo-split-global/base.js">js/lab/oo-split-global/base.js</a>
 <a href="js/lab/oo-split-global/facets.js">js/lab/oo-split-global/facets.js</a>
@@ -11522,7 +11569,7 @@ base object-oriented interpreter.
 </p>
 </div></li>
 
-<li><a id="orgheadline107"></a>Summary<br ><div class="outline-text-7" id="text-orgheadline107">
+<li><a id="orgheadline108"></a>Summary<br ><div class="outline-text-7" id="text-orgheadline108">
 <p>
 We split the object-oriented interpreter into two modules:
 </p>
@@ -11556,7 +11603,7 @@ prototype chain.
 </p>
 </div></li></ul></li>
 
-<li><a id="orgheadline108"></a>Split pattern-matching instrumented interpreter into modules<br ><div class="outline-text-6" id="text-orgheadline108">
+<li><a id="orgheadline109"></a>Split pattern-matching instrumented interpreter into modules<br ><div class="outline-text-6" id="text-orgheadline109">
 <p>
 <a href="js/lab/es6-split-global/base.js">js/lab/es6-split-global/base.js</a>
 <a href="js/lab/es6-split-global/facets.js">js/lab/es6-split-global/facets.js</a>
@@ -11573,7 +11620,7 @@ different.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline109"></a>The facet-specific rules are scattered<br ><div class="outline-text-7" id="text-orgheadline109">
+<ul class="org-ul"><li><a id="orgheadline110"></a>The facet-specific rules are scattered<br ><div class="outline-text-7" id="text-orgheadline110">
 <p>
 The <code>eval_apply</code>, <code>eval_deref</code> and <code>eval_assign</code> code for facet values
 is split across the three <code>application_rules</code>, <code>deref_rules</code> and
@@ -11669,7 +11716,7 @@ it.
 </p>
 </div></li>
 
-<li><a id="orgheadline110"></a>Extending the ref function<br ><div class="outline-text-7" id="text-orgheadline110">
+<li><a id="orgheadline111"></a>Extending the ref function<br ><div class="outline-text-7" id="text-orgheadline111">
 <p>
 In the object-oriented approach, we redefined the <code>ref</code> function in
 the facets module and delegated the other rules to the base
@@ -11804,7 +11851,7 @@ namespace, as we did in the object-oriented approach.
 </p>
 </div></li>
 
-<li><a id="orgheadline111"></a>Summary<br ><div class="outline-text-7" id="text-orgheadline111">
+<li><a id="orgheadline112"></a>Summary<br ><div class="outline-text-7" id="text-orgheadline112">
 <p>
 The two solutions (global variable and context object) for dealing
 with the extra ‘pc&rsquo; parameter can be applied here as well.  The same
@@ -11820,7 +11867,7 @@ using dynamic scoping achieves the same effects.
 </p>
 </div></li></ul></li>
 
-<li><a id="orgheadline113"></a>Summary of JavaScript variations<br ><div class="outline-text-6" id="text-orgheadline113">
+<li><a id="orgheadline114"></a>Summary of JavaScript variations<br ><div class="outline-text-6" id="text-orgheadline114">
 <p>
 It appears that, the more the interpreter rely on dynamic features,
 the easier it is to instrument.  The <i>dynamic dispatching</i> of the
@@ -11844,14 +11891,14 @@ context at runtime.
 
 <p>
 In a language with dynamic scoping the interpreter should be a breeze
-to instrument.  That is the focus of the <a href="#orgheadline112">Lisp variations</a>.
+to instrument.  That is the focus of the <a href="#orgheadline113">Lisp variations</a>.
 </p>
 </div></li></ul>
 </div>
 </div>
 
-<div id="outline-container-orgheadline112" class="outline-4">
-<h4 id="orgheadline112"><span class="section-number-4">9.2.2</span> Lisp</h4>
+<div id="outline-container-orgheadline113" class="outline-4">
+<h4 id="orgheadline113"><span class="section-number-4">9.2.2</span> Lisp</h4>
 <div class="outline-text-4" id="text-9-2-2">
 <p>
 <a href="lisp/pm.lisp">lisp/pm.lisp</a>
@@ -11946,13 +11993,13 @@ Furthermore, we also saw that dynamic typing was useful in the
 ‘context&rsquo; object case.  What if we want to benefit from the guarantees
 provided by static types?  Is the modular instrumentation still
 feasible?  Is it cumbersome to write?  That is the focus of the
-<a href="#orgheadline115">Haskell variations</a>.
+<a href="#orgheadline116">Haskell variations</a>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline115" class="outline-4">
-<h4 id="orgheadline115"><span class="section-number-4">9.2.3</span> Haskell</h4>
+<div id="outline-container-orgheadline116" class="outline-4">
+<h4 id="orgheadline116"><span class="section-number-4">9.2.3</span> Haskell</h4>
 <div class="outline-text-4" id="text-9-2-3">
 <p>
 Building scaffolding with languages features has the following
@@ -11990,10 +12037,10 @@ Advantages:
 </ul>
 </div>
 
-<div id="outline-container-orgheadline129" class="outline-5">
-<h5 id="orgheadline129">Building scaffolding with language features</h5>
-<div class="outline-text-5" id="text-orgheadline129">
-</div><ul class="org-ul"><li><a id="orgheadline116"></a>Monadic interpreters<br ><div class="outline-text-6" id="text-orgheadline116">
+<div id="outline-container-orgheadline130" class="outline-5">
+<h5 id="orgheadline130">Building scaffolding with language features</h5>
+<div class="outline-text-5" id="text-orgheadline130">
+</div><ul class="org-ul"><li><a id="orgheadline117"></a>Monadic interpreters<br ><div class="outline-text-6" id="text-orgheadline117">
 <p>
 The monadic interpreter is mostly taken from <a href="http://homepages.inf.ed.ac.uk/wadler/papers/essence/essence.ps">Wadler</a>.
 </p>
@@ -12006,7 +12053,7 @@ The monadic interpreter is mostly taken from <a href="http://homepages.inf.ed.ac
 </ul>
 </div></li>
 
-<li><a id="orgheadline117"></a>Either data type<br ><div class="outline-text-6" id="text-orgheadline117">
+<li><a id="orgheadline118"></a>Either data type<br ><div class="outline-text-6" id="text-orgheadline118">
 <p>
 See <a href="hs/extend-types/Extension.fail.1.hs">hs/extend-types/Extension.fail.1.hs</a>.  Types are extended like
 so:
@@ -12017,14 +12064,14 @@ data FacetTerm  = Facet Principal FacetTerm FacetTerm | BaseTerm Term
 </pre>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline118"></a>What does work<br ><div class="outline-text-7" id="text-orgheadline118">
+<ul class="org-ul"><li><a id="orgheadline119"></a>What does work<br ><div class="outline-text-7" id="text-orgheadline119">
 <ul class="org-ul">
 <li>Maximum reuse from the file ‘Base.hs&rsquo;</li>
 <li>Able to execute `term0` and `term1`</li>
 </ul>
 </div></li>
 
-<li><a id="orgheadline119"></a>What fails<br ><div class="outline-text-7" id="text-orgheadline119">
+<li><a id="orgheadline120"></a>What fails<br ><div class="outline-text-7" id="text-orgheadline120">
 <ul class="org-ul">
 <li>`term2` gives a type error:
 &laquo;&nbsp;Couldn&rsquo;t match expected type `Term&nbsp;&raquo; with actual type `FacetTerm&nbsp;&raquo;&nbsp;&raquo;</li>
@@ -12039,7 +12086,7 @@ term2 = (Lam "y" (Facet 0 (BaseTerm (Lam "x" Bot)) (BaseTerm Bot)))
 </ul>
 </div></li>
 
-<li><a id="orgheadline120"></a>What I wanted<br ><div class="outline-text-7" id="text-orgheadline120">
+<li><a id="orgheadline121"></a>What I wanted<br ><div class="outline-text-7" id="text-orgheadline121">
 <ul class="org-ul">
 <li>`eval term2` gives the same result as when using Extended.eval.</li>
 
@@ -12047,7 +12094,7 @@ term2 = (Lam "y" (Facet 0 (BaseTerm (Lam "x" Bot)) (BaseTerm Bot)))
 </ul>
 </div></li>
 
-<li><a id="orgheadline121"></a>Why it doesn&rsquo;t work<br ><div class="outline-text-7" id="text-orgheadline121">
+<li><a id="orgheadline122"></a>Why it doesn&rsquo;t work<br ><div class="outline-text-7" id="text-orgheadline122">
 <p>
 A FacetTerm is either a Facet or a BaseTerm.  A Facet can contain
 FacetTerms (and hence BaseTerms), but since BaseTerms are just Terms,
@@ -12055,14 +12102,14 @@ they cannot contain Facets.
 </p>
 </div></li>
 
-<li><a id="orgheadline122"></a>Conclusion<br ><div class="outline-text-7" id="text-orgheadline122">
+<li><a id="orgheadline123"></a>Conclusion<br ><div class="outline-text-7" id="text-orgheadline123">
 <p>
 What we really want is to insert the constructor `Facet` into the
 existing data type `Term`.
 </p>
 </div></li></ul></li>
 
-<li><a id="orgheadline123"></a>Type classes<br ><div class="outline-text-6" id="text-orgheadline123">
+<li><a id="orgheadline124"></a>Type classes<br ><div class="outline-text-6" id="text-orgheadline124">
 <p>
 Another suggestion by Rémi.
 </p>
@@ -12095,7 +12142,7 @@ Open Data Types paper, in Section 6.4.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline124"></a>Multi-param types classes<br ><div class="outline-text-7" id="text-orgheadline124">
+<ul class="org-ul"><li><a id="orgheadline125"></a>Multi-param types classes<br ><div class="outline-text-7" id="text-orgheadline125">
 <div class="org-src-container">
 
 <pre class="src src-haskell"><span class="org-haskell-keyword">class</span> <span class="org-haskell-type">Eval</span> term value <span class="org-haskell-keyword">where</span>
@@ -12110,7 +12157,7 @@ offered by this strategy.
 </p>
 </div></li></ul></li>
 
-<li><a id="orgheadline126"></a>Data types à la carte<br ><div class="outline-text-6" id="text-orgheadline126">
+<li><a id="orgheadline127"></a>Data types à la carte<br ><div class="outline-text-6" id="text-orgheadline127">
 <p>
 From Swierstra, 2008.
 </p>
@@ -12156,11 +12203,11 @@ the value type, which would be even <i>hairier</i>.</li>
 </ul>
 
 <p>
-See also my <a href="#orgheadline125">my second attempt</a> at Swierstra, in 2015.
+See also my <a href="#orgheadline126">my second attempt</a> at Swierstra, in 2015.
 </p>
 </div></li>
 
-<li><a id="orgheadline127"></a>Implicit arguments<br ><div class="outline-text-6" id="text-orgheadline127">
+<li><a id="orgheadline128"></a>Implicit arguments<br ><div class="outline-text-6" id="text-orgheadline128">
 <p>
 A simple idea: implicit arguments can replace global variables.
 </p>
@@ -12175,7 +12222,7 @@ See <a href="hs/implicit">implicit</a>.
 </p>
 </div></li>
 
-<li><a id="orgheadline128"></a>Facets as a monad<br ><div class="outline-text-6" id="text-orgheadline128">
+<li><a id="orgheadline129"></a>Facets as a monad<br ><div class="outline-text-6" id="text-orgheadline129">
 <p>
 The faceted evaluation strategy requires a new state global: the program
 counter.  It makes sense to add this state in a state monad to a monadic
@@ -12194,9 +12241,9 @@ See <a href="hs/list-monad/">list-monad</a>.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline130" class="outline-5">
-<h5 id="orgheadline130">Extending the syntax</h5>
-<div class="outline-text-5" id="text-orgheadline130">
+<div id="outline-container-orgheadline131" class="outline-5">
+<h5 id="orgheadline131">Extending the syntax</h5>
+<div class="outline-text-5" id="text-orgheadline131">
 <p>
 See <a href="hs/transform/notes.html">hs/transform/notes.html</a>
 </p>
@@ -12214,12 +12261,12 @@ obliviousness is lost</li>
 </div>
 </div>
 
-<div id="outline-container-orgheadline134" class="outline-4">
-<h4 id="orgheadline134"><span class="section-number-4">9.2.4</span> Modular monadic interpreters</h4>
+<div id="outline-container-orgheadline135" class="outline-4">
+<h4 id="orgheadline135"><span class="section-number-4">9.2.4</span> Modular monadic interpreters</h4>
 <div class="outline-text-4" id="text-9-2-4">
-</div><div id="outline-container-orgheadline131" class="outline-5">
-<h5 id="orgheadline131">The giants</h5>
-<div class="outline-text-5" id="text-orgheadline131">
+</div><div id="outline-container-orgheadline132" class="outline-5">
+<h5 id="orgheadline132">The giants</h5>
+<div class="outline-text-5" id="text-orgheadline132">
 <p>
 There&rsquo;s a body of work on monadic interpreters in functional programming
 languages built around monads, dating from the ‘90s.
@@ -12272,7 +12319,7 @@ Practical Extensibility with Object Algebras.  2012</li>
 </ul>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline125"></a>Data types  à la carte (2015)<br ><div class="outline-text-6" id="text-orgheadline125">
+<ul class="org-ul"><li><a id="orgheadline126"></a>Data types  à la carte (2015)<br ><div class="outline-text-6" id="text-orgheadline126">
 <p>
 Re-reading Swiestra in 2015, my brain parses it much better.
 </p>
@@ -12307,7 +12354,7 @@ related work on type systems for effects.</li>
 </ul>
 </div></li>
 
-<li><a id="orgheadline132"></a>Wadler — The essence of functional programming<br ><div class="outline-text-6" id="text-orgheadline132">
+<li><a id="orgheadline133"></a>Wadler — The essence of functional programming<br ><div class="outline-text-6" id="text-orgheadline133">
 <p>
 How to build a monadic interpreter.  Also serves as a tutorial on monads.
 </p>
@@ -12347,9 +12394,9 @@ interpreter in an oblivious fashion.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline133" class="outline-5">
-<h5 id="orgheadline133">The bigger picture</h5>
-<div class="outline-text-5" id="text-orgheadline133">
+<div id="outline-container-orgheadline134" class="outline-5">
+<h5 id="orgheadline134">The bigger picture</h5>
+<div class="outline-text-5" id="text-orgheadline134">
 <p>
 In the solutions from the functional programming world, the idea seems to
 revolve around reifying the computation (the target program of an interpreter),
@@ -12381,8 +12428,8 @@ a clear advantage of not requiring a parser.
 </div>
 </div>
 
-<div id="outline-container-orgheadline146" class="outline-3">
-<h3 id="orgheadline146"><span class="section-number-3">9.3</span> Dynamic scoping to build interpreters</h3>
+<div id="outline-container-orgheadline147" class="outline-3">
+<h3 id="orgheadline147"><span class="section-number-3">9.3</span> Dynamic scoping to build interpreters</h3>
 <div class="outline-text-3" id="text-9-3">
 <p>
 From the LASSY&rsquo;15 paper.
@@ -12394,8 +12441,8 @@ Odersky as a base to propose solutions to the expression problem.
 </p>
 </div>
 
-<div id="outline-container-orgheadline136" class="outline-4">
-<h4 id="orgheadline136"><span class="section-number-4">9.3.1</span> The base datatype</h4>
+<div id="outline-container-orgheadline137" class="outline-4">
+<h4 id="orgheadline137"><span class="section-number-4">9.3.1</span> The base datatype</h4>
 <div class="outline-text-4" id="text-9-3-1">
 <div class="org-src-container">
 
@@ -12429,8 +12476,8 @@ svg(ref(name(<span class="org-string">'e1'</span>),
 </div>
 </div>
 
-<div id="outline-container-orgheadline137" class="outline-4">
-<h4 id="orgheadline137"><span class="section-number-4">9.3.2</span> Adding a data variant</h4>
+<div id="outline-container-orgheadline138" class="outline-4">
+<h4 id="orgheadline138"><span class="section-number-4">9.3.2</span> Adding a data variant</h4>
 <div class="outline-text-4" id="text-9-3-2">
 <div class="org-src-container">
 
@@ -12452,8 +12499,8 @@ print(e2.eval());
 </div>
 </div>
 
-<div id="outline-container-orgheadline138" class="outline-4">
-<h4 id="orgheadline138"><span class="section-number-4">9.3.3</span> Adding an operation</h4>
+<div id="outline-container-orgheadline139" class="outline-4">
+<h4 id="orgheadline139"><span class="section-number-4">9.3.3</span> Adding an operation</h4>
 <div class="outline-text-4" id="text-9-3-3">
 <div class="org-src-container">
 
@@ -12483,8 +12530,8 @@ This extension is invasive: it modifies the prototypes of <code>num</code> and
 </div>
 </div>
 
-<div id="outline-container-orgheadline141" class="outline-4">
-<h4 id="orgheadline141"><span class="section-number-4">9.3.4</span> Adding an operation as a module</h4>
+<div id="outline-container-orgheadline142" class="outline-4">
+<h4 id="orgheadline142"><span class="section-number-4">9.3.4</span> Adding an operation as a module</h4>
 <div class="outline-text-4" id="text-9-3-4">
 <div class="org-src-container">
 
@@ -12529,9 +12576,9 @@ Works, but can mix languages in unsafe ways:
 </div>
 </div>
 
-<div id="outline-container-orgheadline139" class="outline-5">
-<h5 id="orgheadline139">A use-case for <code>with</code></h5>
-<div class="outline-text-5" id="text-orgheadline139">
+<div id="outline-container-orgheadline140" class="outline-5">
+<h5 id="orgheadline140">A use-case for <code>with</code></h5>
+<div class="outline-text-5" id="text-orgheadline140">
 <div class="org-src-container">
 
 <pre class="src src-js">&lt;&lt;num&gt;&gt;
@@ -12560,9 +12607,9 @@ Outside <code>with</code>, the <code>show</code> module is out of scope:
 </div>
 </div>
 
-<div id="outline-container-orgheadline140" class="outline-5">
-<h5 id="orgheadline140">Selective imports with an IIFE</h5>
-<div class="outline-text-5" id="text-orgheadline140">
+<div id="outline-container-orgheadline141" class="outline-5">
+<h5 id="orgheadline141">Selective imports with an IIFE</h5>
+<div class="outline-text-5" id="text-orgheadline141">
 <div class="org-src-container">
 
 <pre class="src src-js">&lt;&lt;num&gt;&gt;
@@ -12590,8 +12637,8 @@ two examples, we always pass a fresh module so there is no issue.
 </div>
 </div>
 
-<div id="outline-container-orgheadline143" class="outline-4">
-<h4 id="orgheadline143"><span class="section-number-4">9.3.5</span> Modifying an operation</h4>
+<div id="outline-container-orgheadline144" class="outline-4">
+<h4 id="orgheadline144"><span class="section-number-4">9.3.5</span> Modifying an operation</h4>
 <div class="outline-text-4" id="text-9-3-5">
 <div class="org-src-container">
 
@@ -12611,9 +12658,9 @@ anymore.
 </p>
 </div>
 
-<div id="outline-container-orgheadline142" class="outline-5">
-<h5 id="orgheadline142">Non-destructive modification</h5>
-<div class="outline-text-5" id="text-orgheadline142">
+<div id="outline-container-orgheadline143" class="outline-5">
+<h5 id="orgheadline143">Non-destructive modification</h5>
+<div class="outline-text-5" id="text-orgheadline143">
 <div class="org-src-container">
 
 <pre class="src src-js" id="orgsrcblock7">&lt;&lt;num&gt;&gt;
@@ -12651,8 +12698,8 @@ While after the <code>with</code>, <code>num</code> refers to the original, unmo
 </div>
 </div>
 
-<div id="outline-container-orgheadline144" class="outline-4">
-<h4 id="orgheadline144"><span class="section-number-4">9.3.6</span> Passing state</h4>
+<div id="outline-container-orgheadline145" class="outline-4">
+<h4 id="orgheadline145"><span class="section-number-4">9.3.6</span> Passing state</h4>
 <div class="outline-text-4" id="text-9-3-6">
 <p>
 Add a program counter incremented each time a data variant calls
@@ -12691,8 +12738,8 @@ Add a program counter incremented each time a data variant calls
 </div>
 </div>
 
-<div id="outline-container-orgheadline145" class="outline-4">
-<h4 id="orgheadline145"><span class="section-number-4">9.3.7</span> All in one</h4>
+<div id="outline-container-orgheadline146" class="outline-4">
+<h4 id="orgheadline146"><span class="section-number-4">9.3.7</span> All in one</h4>
 <div class="outline-text-4" id="text-9-3-7">
 <p>
 Combine all the extensions without effort.
@@ -12722,9 +12769,9 @@ Combine all the extensions without effort.
 </div>
 </div>
 
-<div id="outline-container-orgheadline148" class="outline-2">
-<h2 id="orgheadline148">Références</h2>
-<div class="outline-text-2" id="text-orgheadline148">
+<div id="outline-container-orgheadline149" class="outline-2">
+<h2 id="orgheadline149">Références</h2>
+<div class="outline-text-2" id="text-orgheadline149">
 <div id="bibliography">
 
 <table>
@@ -14307,7 +14354,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-20 mer. 19:26 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-21 jeu. 18:20 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
