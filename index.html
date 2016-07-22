@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-21 jeu. 18:20 -->
+<!-- 2016-07-22 ven. 19:15 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -232,11 +232,11 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#variations">5. <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
-<li><a href="#orgheadline72">6. Construire un interpréteur par modules <code>[0/4]</code></a>
+<li><a href="#orgheadline72">6. Construire un interpréteur par modules <code>[3/4]</code></a>
 <ul>
-<li><a href="#orgheadline68">6.1. <span class="todo UNREAD">UNREAD</span> Ajouter des termes</a></li>
-<li><a href="#orgheadline69">6.2. <span class="todo UNREAD">UNREAD</span> Ajouter des opérations</a></li>
-<li><a href="#orgheadline70">6.3. <span class="todo UNWRITTEN">UNWRITTEN</span> Modifier des opérations</a></li>
+<li><a href="#orgheadline68">6.1. <span class="done READ">READ</span> Ajouter des termes</a></li>
+<li><a href="#orgheadline69">6.2. <span class="done READ">READ</span> Ajouter des opérations</a></li>
+<li><a href="#orgheadline70">6.3. <span class="done READ">READ</span> Modifier des opérations</a></li>
 <li><a href="#orgheadline71">6.4. <span class="todo UNWRITTEN">UNWRITTEN</span> Passer de l&rsquo;état aux opérations</a></li>
 </ul>
 </li>
@@ -279,7 +279,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline95">8.5. Perspectives: performance</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline148">9. Chutes</a>
+<li><a href="#orgheadline151">9. Chutes</a>
 <ul>
 <li><a href="#orgheadline97">9.1. <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</a></li>
 <li><a href="#orgheadline136">9.2. Construire un interpréteur extensible</a>
@@ -301,9 +301,12 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline146">9.3.7. All in one</a></li>
 </ul>
 </li>
+<li><a href="#orgheadline148">9.4. The stakes of targeting modularity and extensibility</a></li>
+<li><a href="#orgheadline149">9.5. GOTO is indirection; indirection is GOTO?</a></li>
+<li><a href="#orgheadline150">9.6. To end the prototype section</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline149">Références</a></li>
+<li><a href="#orgheadline152">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -894,6 +897,14 @@ Les fonctions sont de première classe, c&rsquo;est-à-dire qu&rsquo;une fonctio
 valeur comme une autre, qui peut être passée en argument, retournée par une
 fonction, mise dans une variable, etc.
 </p>
+
+<aside>
+<p>
+Dans les programmes JavaScript présentés dans ce document, le trigramme <code>//:</code>
+indique la valeur de l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur
+interactif [<a href="#s3c">s3c</a>].
+</p>
+</aside>
 
 <div class="org-src-container">
 
@@ -6197,43 +6208,44 @@ que nous explorons par la suite.
 </div>
 
 <div id="outline-container-orgheadline72" class="outline-2">
-<h2 id="orgheadline72"><span class="section-number-2">6</span> Construire un interpréteur par modules <code>[0/4]</code></h2>
+<h2 id="orgheadline72"><span class="section-number-2">6</span> Construire un interpréteur par modules <code>[3/4]</code></h2>
 <div class="outline-text-2" id="text-6">
 <p>
 <i>Contenu principalement tiré d&rsquo;un papier présenté à l&rsquo;atelier FOAL&rsquo;15 [<a href="#KNS-15">MdKNS15b</a>]</i>.
 </p>
 
 <p>
-Étendre un interpréteur est une instance du problème de l&rsquo;expression (voir
-<a href="#problem">2</a>).  Dans le problème de l&rsquo;expression, on cherche à écrire un
-interpréteur que l&rsquo;on pourra étendre de deux façons: soit en ajoutant des
-nouveaux termes au langage, soit en ajoutant de nouvelles opérations qui
-s&rsquo;appliquent aux termes.
-</p>
-
-<p>
-On a vu précédemment que résoudre le problème de l&rsquo;expression dans un langage
-dynamique n&rsquo;est pas difficile (<a href="#variations">5</a>).  On peut pousser le problème plus
-loin en ajoutant le critère de pouvoir <i>modifier</i> des termes ou des opérations
-existants.
-</p>
-
-<p>
 Ce chapitre présente une façon de construire un interpréteur extensible en
 JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
 fonctionnalité de l&rsquo;interpréteur dynamiquement, sans avoir à changer les arbres
-syntaxiques à exécuter.  Pour ce faire, on utilise principalement la liaison
-tardive à travers la construction <code>with</code> de JavaScript.
+syntaxiques à exécuter.  Le même arbre syntaxique donne différents résultats
+suivant les couches activées.  Pour ce faire, on utilise principalement la
+manipulation de portée à travers la construction <code>with</code> de JavaScript.
 </p>
+
+<p>
+Le problème donné est de construire un interpréteur pour un simple langage
+arithmétique, suivant Odersky et Zenger [<a href="#OZ-05">OZ05</a>].  On enrichit ce langage
+successivement, ce qui correspond à des ajouts ou des modifications de la
+fonctionnalité de l&rsquo;interpréteur.  Mais le but est de réaliser ces ajouts <i>sans
+modifier le code</i> qui précède; chaque fonctionnalité ajoute du code, réutilise
+du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
+</p>
+
+<aside class="todo">
+<p>
+Expression problem <i>is</i> related here.  Either related work here or in context
+chapter.
+</p>
+</aside>
 </div>
 
 <div id="outline-container-orgheadline68" class="outline-3">
-<h3 id="orgheadline68"><span class="section-number-3">6.1</span> <span class="todo UNREAD">UNREAD</span> Ajouter des termes</h3>
+<h3 id="orgheadline68"><span class="section-number-3">6.1</span> <span class="done READ">READ</span> Ajouter des termes</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
-On construit un interpréteur pour un simple langage arithmétique, suivant
-l&rsquo;exemple de Wadler [??] et d&rsquo;Odersky et Zenger [<a href="#OZ-05">OZ05</a>].  Pour commencer, on veut
-juste représenter des nombres entiers:
+Avant l&rsquo;interpréteur, on commence par définir le langage.  Dans le langage de
+base, on veut juste représenter des nombres entiers:
 </p>
 
 <pre class="example">
@@ -6242,20 +6254,35 @@ juste représenter des nombres entiers:
 </pre>
 
 <p>
-Et pouvoir les évaluer:
+À ce langage, on associe une première <i>opération</i>, l&rsquo;interprétation.  La
+fonction d&rsquo;interprétation prend un terme (ici, un nombre), et retourne l&rsquo;entier
+qui correspond:
 </p>
 
 <pre class="example">
 eval : Term -&gt; Integer
 </pre>
 
+<aside class="todo">
 <p>
-L&rsquo;interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
-implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
-rappelle le patron <i>Interpréteur</i> [<a href="#GHJ+94">GHJ+94</a>].  Chaque terme du langage sera
-représenté par un objet qui comportera une fonction pour chaque opération sur le
-langage.
+Interpreter pattern referenced here.  Warrants a description (in solutions to
+the expression problem?)
 </p>
+</aside>
+
+<p>
+L&rsquo;interpréteur doit représenter ces constantes et les évaluer.  Pour implémenter
+ce terme, on utilise une décomposition par objets en JavaScript, qui rappelle le
+patron <i>Interpréteur</i> [<a href="#GHJ+94">GHJ+94</a>].  Chaque terme du langage est représenté par un
+objet qui contient une fonction pour chaque opération sur le langage.  Ici on a
+un seul terme, <code>num</code>, et une seule opération, <code>eval</code>:
+</p>
+
+<aside class="todo">
+<p>
+Is <span class="underline"><span class="underline">proto</span></span> described?
+</p>
+</aside>
 
 <div class="org-src-container">
 
@@ -6271,8 +6298,7 @@ langage.
 
 <aside>
 <p>
-Dans les programmes de ce chapitre, le trigramme <code>//:</code> indique la valeur de
-l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur interactif [<a href="#s3c">s3c</a>].
+Rappel: le trigramme <code>//:</code> indique la valeur de l&rsquo;expression qui précède.
 </p>
 </aside>
 
@@ -6285,25 +6311,24 @@ l&rsquo;expression qui précède.  C&rsquo;est la syntaxe de l&rsquo;éditeur in
 
 <p>
 L&rsquo;objet <code>num</code> comporte deux fonctions: <code>new</code>, le constructeur qui capture la
-constante; et <code>eval</code> pour retourner cette constante ultérieurement.  Ligne
+constante; et <code>eval</code> qui retourne cette constante ultérieurement.  Ligne
 <a href="#coderef-foal-ex0"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex0');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex0');">6</a>, on voit comment créer la première expression du langage pour
 représenter le nombre 3.  Ligne suivante, on peut évaluer cette expression pour
 retourner le nombre passé au constructeur.
 </p>
 
 <p>
-Le second terme du langage représente l&rsquo;addition entre deux termes.
+Première extension du langage: on ajoute un second terme qui représente
+l&rsquo;addition entre deux termes:
 </p>
 
 <pre class="example">
 &lt;term&gt; ::= &lt;num&gt; | &lt;term&gt; + &lt;term&gt;
 &lt;num&gt;  ::= 0 | 1 | 2 | ...
-
-eval : Term -&gt; Integer
 </pre>
 
 <p>
-Suivant notre implémentation par objets, on ajoute le terme en créant un objet
+Suivant notre implémentation par objets, il suffit d&rsquo;ajouter un objet
 <code>plus</code> qui comporte un constructeur et une fonction d&rsquo;évaluation:
 </p>
 
@@ -6316,6 +6341,7 @@ Suivant notre implémentation par objets, on ajoute le terme en créant un objet
 
 <span class="org-keyword">var</span> <span class="org-variable-name">e2</span> = plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2))
 e2.eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
+e1.eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
 </pre>
 </div>
 
@@ -6325,14 +6351,16 @@ opérandes <code>l</code> et <code>r</code>.
 </p>
 
 <p>
-On voit donc que pour ajouter un terme à l&rsquo;interpréteur, il suffit de créer un
-nouvel objet qui répond à la fonction <code>eval</code>.
+Le code de <code>num</code> n&rsquo;est pas modifié.  L&rsquo;expression <code>e1</code> est toujours évaluable.
+L&rsquo;expression <code>e2</code> utilise <code>num</code> sans avoir à modifier le code source.  C&rsquo;est
+l&rsquo;intérêt du patron interpréteur: pour ajouter un terme au langage, il suffit
+d&rsquo;ajouter un objet, sans impacter le reste du programme.
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline69" class="outline-3">
-<h3 id="orgheadline69"><span class="section-number-3">6.2</span> <span class="todo UNREAD">UNREAD</span> Ajouter des opérations</h3>
+<h3 id="orgheadline69"><span class="section-number-3">6.2</span> <span class="done READ">READ</span> Ajouter des opérations</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
@@ -6346,10 +6374,10 @@ show : Term -&gt; String
 <p>
 Suivant la décomposition par objets, il faut ajouter l&rsquo;opération sur chaque
 objet qui représente le terme.  Dans des langages à objets qui ne permettent pas
-l&rsquo;extension, ajouter une opération ne serait pas aussi simple que d&rsquo;ajouter un
-terme.  C&rsquo;est la tension qui est au cœur du problème de l&rsquo;expression.  En
-JavaScript, les objets sont extensibles, donc ajouter une opération se fait
-simplement:
+l&rsquo;extension, une façon de faire serait de modifier le code source des objets en
+question.  C&rsquo;est la tension qui est au cœur du problème de l&rsquo;expression.  En
+JavaScript, les objets sont extensibles, donc ajouter une opération peut se
+faire sans modifier le code des objets eux-mêmes:
 </p>
 
 <div class="org-src-container">
@@ -6381,6 +6409,12 @@ disponible sur les termes créés <i>avant</i> l&rsquo;ajout de l&rsquo;opérati
 leur création l&rsquo;opération <code>show</code> n&rsquo;était pas définie, et pourtant elle
 s&rsquo;applique correctement à ces instances.
 </p>
+
+<aside class="todo">
+<p>
+missing diagram
+</p>
+</aside>
 
 <p>
 Affecter les instances existantes de termes est rendu possible par le mécanisme
@@ -6580,39 +6614,35 @@ on a restreint les expressions aux deux termes du module <code>show</code>.
 Jusqu&rsquo;ici, on a vu comment:
 </p>
 <ul class="org-ul">
-<li>ajouter de nouveaux termes au langage, en ajoutant un module;</li>
+<li>ajouter de nouveaux termes au langage, en ajoutant un objet;</li>
 <li>ajouter de nouvelles opérations, soit globalement en modifiant les prototypes
 des termes, soit localement avec <code>with</code>.</li>
 </ul>
 
 <p>
-Dans les deux cas, les ajouts au code de l&rsquo;interpréteur se font par
-<i>incréments</i>, et sans modifier le code écrit au préalable.  Essentiellement, on
-a une solution au problème de l&rsquo;expression en JavaScript.
+Dans les deux cas, ces ajouts à l&rsquo;interpréteur n&rsquo;ont strictement pas modifié le
+code écrit au préalable.  De là, on a une solution intéressante au problème de
+l&rsquo;expression en JavaScript.
 </p>
 
 <p>
 Mais on peut aller plus loin.  En plus d&rsquo;ajouter des termes et des opérations,
-on peut modifier des opérations existantes, et combiner
+on peut modifier des opérations existantes, et composer les modifications.
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline70" class="outline-3">
-<h3 id="orgheadline70"><span class="section-number-3">6.3</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Modifier des opérations</h3>
+<h3 id="orgheadline70"><span class="section-number-3">6.3</span> <span class="done READ">READ</span> Modifier des opérations</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
-On va maintenant s&rsquo;intéresser à modifier des opérations.  Par exemple, en
-changeant le comportement de l&rsquo;opération <code>eval</code> pour renvoyer le double d&rsquo;une
-constante.
+Essayons de changer le comportement de l&rsquo;opération <code>eval</code> pour doubler
+la valeur de la constante qu&rsquo;elle renvoie.
 </p>
 
 <p>
-Ça reste simple à exprimer en JavaScript, puisque les fonctions contenues dans
-des objets sont comme les autres propriétés: remplaçables à tout moment par
-simple affectation.  On a utilisé l&rsquo;affectation pour ajouter <code>show</code>, maintenant
-on s&rsquo;en sert pour écraser la définition de <code>eval</code> et la remplacer par une
-nouvelle:
+Comme on a utilisé l&rsquo;affectation pour ajouter <code>show</code>, maintenant on s&rsquo;en sert
+pour écraser la définition de <code>eval</code> et la remplacer par une nouvelle:
 </p>
 
 <div class="org-src-container">
@@ -6625,44 +6655,59 @@ plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</spa
 </div>
 
 <p>
-Considérons une variante.  Plutôt que de retourner le double de <code>n</code>,
-l&rsquo;évaluation d&rsquo;un <code>num</code> doit retourner le double du résultat de l&rsquo;évaluation
-d&rsquo;origine.  Pour implémenter cette variante, il nous faut pouvoir faire
-référence à l&rsquo;évaluation d&rsquo;origine dans la nouvelle version de <code>num.eval</code>.  On
-peut sauvegarder la version d&rsquo;origine dans une fermeture:
+Comme pour la première version de <code>show</code>, cette modification affecte
+rétroactivement les termes <code>num</code>.
+</p>
+
+<p>
+Il y a une autre façon de définir cette variante d&rsquo;<code>eval</code>, en réutilisant la
+fonctionnalité de <code>num.eval</code> directement.
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-js">(<span class="org-keyword">function</span>(<span class="org-variable-name">previous_eval</span>) {
-  num.eval = <span class="org-keyword">function</span>() { <span class="org-keyword">return</span> previous_eval.call(<span class="org-constant">this</span>) * 2 }
-}(num.eval))
-
-num.<span class="org-keyword">new</span>(1).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 2</span>
-plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2)).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 6</span>
+<pre class="src src-js"><span id="coderef-foal-ex13" class="coderef-off"><span class="linenr">1: </span>(<span class="org-keyword">function</span>(<span class="org-variable-name">previous_eval</span>) {</span>
+<span class="linenr">2: </span>  num.eval = <span class="org-keyword">function</span>() { <span class="org-keyword">return</span> previous_eval.call(<span class="org-constant">this</span>) * 2 }
+<span class="linenr">3: </span>}(num.eval))
+<span class="linenr">4: </span>
+<span class="linenr">5: </span>num.<span class="org-keyword">new</span>(1).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 2</span>
+<span class="linenr">6: </span>plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2)).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 6</span>
 </pre>
 </div>
 
-<aside>
 <p>
-Une fonctionnalité similaire au mot-clé <code>proceed</code> en AspectJ et autres langages
-à aspects.
+Plutôt que de retourner le double de <code>n</code>, on retourne le double du résultat de
+l&rsquo;évaluation d&rsquo;origine.  Pour implémenter cette variante, il faut pouvoir
+faire référence à l&rsquo;évaluation d&rsquo;origine; c&rsquo;est le raison de la fonction ligne
+<a href="#coderef-foal-ex13"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex13');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex13');">1</a>.  Pour appeler l&rsquo;évaluation d&rsquo;origine on utilise <code>call</code>, en passant
+le receveur <code>this</code> comme argument.
+</p>
+
+<aside class="todo">
+<p>
+ref delta?
 </p>
 </aside>
 
 <p>
-Il ne reste plus qu&rsquo;à appeler cette version antérieure en lui passant l&rsquo;objet
-courant comme receveur à l&rsquo;aide de l&rsquo;appel <code>call(this)</code>.
+Le résultat est identique, mais la construction est subtilement différente.  La
+seconde version <i>réutilise</i> le comportement de l&rsquo;évaluation par défaut, alors
+que la première version n&rsquo;en dépend pas.  Si l&rsquo;on changeait le code de
+l&rsquo;évaluation par défaut, par exemple pour renommer l&rsquo;attribut <code>n</code>, il faudrait
+également changer la première version, mais pas la seconde.  La seconde version
+correspond au delta de la spécification: on double la valeur retournée par
+l&rsquo;évaluation par défaut.  La sémantique est bien différente.
 </p>
 
 <p>
 Mais modifier l&rsquo;objet <code>num</code> d&rsquo;origine de cette façon est destructif: la fonction
-<code>num.eval</code> d&rsquo;origine n&rsquo;est sauvegardée que dans la fermeture, et inaccessible
-par la suite.  C&rsquo;est un mauvais choix si on souhaite rendre l&rsquo;interpréteur
-extensible.  Dans ce cas, on peut plutôt créer un nouveau terme qui fait
-référence à la fonction <code>num.eval</code> pour éviter la duplication de code.  Pour
-cela, on crée une fonction qui sert de module, paramétrée par l&rsquo;objet <code>num</code>
-d&rsquo;origine:
+<code>num.eval</code> d&rsquo;origine est perdue, et le fonctionnement d&rsquo;<code>eval</code> est modifié
+rétroactivement pour les termes créés.
+</p>
+
+<p>
+Comme pour <code>show</code>, on peut ajouter cette modification localement.  Pour cela, on
+crée une fonction qui sert de module, paramétrée par l&rsquo;objet <code>num</code> d&rsquo;origine:
 </p>
 
 <div class="org-src-container">
@@ -6675,15 +6720,32 @@ d&rsquo;origine:
 <span class="org-keyword">with</span> (<span class="org-type">double</span>({num})) {
   plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2)).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 6</span>
 }
+
+plus.<span class="org-keyword">new</span>(num.<span class="org-keyword">new</span>(1), num.<span class="org-keyword">new</span>(2)).eval() <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
 </pre>
 </div>
 
+<aside>
+<p>
+Il n&rsquo;y a pas de mot-clé <code>super</code> en JavaScript, mais on pourrait obtenir une
+référence vers l&rsquo;objet parent à travers <code>Object.getPrototypeOf(this)</code> au lieu de
+<code>base.num</code>.
+</p>
+</aside>
+
 <p>
 Dans le module <code>double</code>, on redéfinit <code>eval</code> à partir de l&rsquo;évaluation
-précédente.  Ceci nous permet de <i>composer</i> les modifications d&rsquo;opérations en
-passant une base modifiée comme paramètre au module <code>double</code>.  L&rsquo;exemple qui
-suit illustre comment combiner ces extensions avec des appels de <code>with</code> en
-cascade:
+passée en argument au module.  Le paramètre <code>base</code> est le module de base qu&rsquo;il
+faut modifier; on crée ensuite un terme <code>num</code> qui hérite de <code>base.num</code>, et
+réutilise le calcul de <code>base.num.eval</code>.  En utilisant <code>with</code>
+on peut créer un terme et l&rsquo;évaluer avec la modification <code>double</code>, mais
+seulement localement.
+</p>
+
+<p>
+Définir la modification d&rsquo;<code>eval</code> par rapport à la version passée en paramètre
+dans <code>base</code> nous permet de composer cette modification.  Juste en combinant les
+appels à <code>with</code>, on peut octupler le résultat:
 </p>
 
 <div class="org-src-container">
@@ -9579,8 +9641,8 @@ binding yet.
 </div>
 </div>
 
-<div id="outline-container-orgheadline148" class="outline-2">
-<h2 id="orgheadline148"><span class="section-number-2">9</span> Chutes</h2>
+<div id="outline-container-orgheadline151" class="outline-2">
+<h2 id="orgheadline151"><span class="section-number-2">9</span> Chutes</h2>
 <div class="outline-text-2" id="text-9">
 </div><div id="outline-container-orgheadline97" class="outline-3">
 <h3 id="orgheadline97"><span class="section-number-3">9.1</span> <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</h3>
@@ -12767,11 +12829,150 @@ Combine all the extensions without effort.
 </div>
 </div>
 </div>
+
+<div id="outline-container-orgheadline148" class="outline-3">
+<h3 id="orgheadline148"><span class="section-number-3">9.4</span> The stakes of targeting modularity and extensibility</h3>
+<div class="outline-text-3" id="text-9-4">
+<p>
+Modularity and extensibility are mostly concerns for the programmer.  The
+machine doesn&rsquo;t care.
+</p>
+
+<p>
+Two programs may have the same results (same mathematical function), but
+differ in modularity and extensibility.  They are orthogonal concerns.
+But modularity and extensibility may affect performance.
+</p>
+
+<p>
+Modularity and extensibility do not have an agreed-upon definition.  They can be
+subjective.  Hence, it is difficult to assert that a program is <i>more modular</i>
+or <i>more extensible</i> than another program.  These are not hard truths.  This
+may make this document less convincing.
+</p>
+
+<p>
+The guiding principle is sticking to the progammer&rsquo;s point of view.  We measure
+<i>effort</i>.  How time-consuming is it to extend this program?  And that one?  How
+many lines of code must be changed?
+</p>
+
+<p>
+Lines of code can be automatically written.  The refactoring that was once
+manual is now two clicks away.  Any well-defined program transformation can be
+automatized.
+</p>
+
+<p>
+Automatization can either generate lower-level code that you don&rsquo;t have to deal
+with (lex/yacc), or generate parts of your code (getter/setter generation in
+Eclipse).  First one, more generally, is what a language does for you.  Second
+one may signal the need for a higher-level language.
+</p>
+
+<p>
+That&rsquo;s an impetus for new languages, or even new paradigms.  AOP: organize your
+programs better!
+</p>
+
+<p>
+The costs of modularity and extensibility is code complexity.  Paving the way
+for endless extensibility makes the code more general, more abstract, harder to
+follow.  Using fancy constructs makes it harder to understand by outsiders.
+Code complexity may also have an impact on program performance.  Fancy
+constructs and indirection may defeat compiler optimizations, leading to slower
+code and larger binaries.
+</p>
+</div>
 </div>
 
-<div id="outline-container-orgheadline149" class="outline-2">
-<h2 id="orgheadline149">Références</h2>
-<div class="outline-text-2" id="text-orgheadline149">
+<div id="outline-container-orgheadline149" class="outline-3">
+<h3 id="orgheadline149"><span class="section-number-3">9.5</span> GOTO is indirection; indirection is GOTO?</h3>
+<div class="outline-text-3" id="text-9-5">
+<p>
+Observer pattern defeats Dijkstra&rsquo;s compass.  How do you know what code is
+executed when you arrive at the line: <code>observers.forEach(call)</code>?  &laquo;&nbsp;The code of
+each subscribed observer.&nbsp;&raquo;  But how do you know what the subscribed observers
+are?  &laquo;&nbsp;You don&rsquo;t, they subscribe at runtime.&nbsp;&raquo;
+</p>
+
+<p>
+Same story with <code>eval</code>, <code>with</code>, or even <code>obj[p.toString()]</code>.  Mechanisms that
+allow the control flow to be determined dynamically.  Late binding of function
+and variable identifiers, even of <i>code</i>.
+</p>
+
+<p>
+Dijkstra&rsquo;s argument for structured programming was that you could easily keep
+track of the control flow.  Think flowchart: the control flows from one box to
+the next; there are no arbitrary jumps.  GOTO destroyed that.
+</p>
+
+<aside>
+<p>
+One could also argue that GOTO destroys the membrane of procedures.  Procedures
+are <i>units</i> of functionality, black-boxes. Membranes are there to manage
+all interactions with the outside world.  Without the membrane, the procedure
+constituents might as well float from one to the other; no guarantees.
+</p>
+
+<p>
+GOTO can jump in and out of procedures, disregarding their membranes.  That&rsquo;s
+treating the code like assembly: no boundaries, just memory offsets.  On the one
+hand, it&rsquo;s flexible and true to the machine.  But on the other hand, it destroys
+one of the benefits of having a procedure in the first place.
+</p>
+
+<p>
+That&rsquo;s also true of AOP languages that allow you to break the class or method
+boundaries.  And of Open Scope, that breaks the module.
+</p>
+</aside>
+
+<p>
+<i>Any</i> late binding mechanism has the same property.  If parts of the control
+flow are decided dynamically, Dijsktra&rsquo;s compass is defeated.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline150" class="outline-3">
+<h3 id="orgheadline150"><span class="section-number-3">9.6</span> To end the prototype section</h3>
+<div class="outline-text-3" id="text-9-6">
+<p>
+The prototype section discusses the difference between prototypes and classes.
+But there&rsquo;s not upshot, no takeaway.
+</p>
+
+<p>
+The last paragraph should answer the question: &laquo;&nbsp;How do prototypes fare for
+building and organizing programs?  Since they are more general, should we always
+use prototypes, or do classes have their strengths?&nbsp;&raquo;
+</p>
+
+<p>
+Mostly, prototypes are better in an <i>incremental</i> setting.  E.g., the Newton.
+Create an object, then derive for a special purpose.  Delegation and cloning are
+well-suited to dynamic adaptation, because there&rsquo;s no rigid class structure to
+bring them down.
+</p>
+
+<p>
+However, the class structure is a boon for compilers and for optimizations.
+Classes are well-suited when the taxonomy is known in advance.  Consequently,
+classes are less extensible.
+</p>
+
+<p>
+[Maybe reverse the two paragraphs?]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline152" class="outline-2">
+<h2 id="orgheadline152">Références</h2>
+<div class="outline-text-2" id="text-orgheadline152">
 <div id="bibliography">
 
 <table>
@@ -14354,7 +14555,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-21 jeu. 18:20 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-22 ven. 19:15 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
