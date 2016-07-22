@@ -98,10 +98,10 @@ different person then.'
      - [[#lua][Lua]]
         - [[#mechanisms-for-extension-3][Mechanisms for extension]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
- - [[#construire-un-interpréteur-par-modules-04][Construire un interpréteur par modules [0/4]]]
-   - [[#unread-ajouter-des-termes][UNREAD Ajouter des termes]]
-   - [[#unread-ajouter-des-opérations][UNREAD Ajouter des opérations]]
-   - [[#unwritten-modifier-des-opérations][UNWRITTEN Modifier des opérations]]
+ - [[#construire-un-interpréteur-par-modules-34][Construire un interpréteur par modules [3/4]]]
+   - [[#read-ajouter-des-termes][READ Ajouter des termes]]
+   - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
+   - [[#read-modifier-des-opérations][READ Modifier des opérations]]
    - [[#unwritten-passer-de-létat-aux-opérations][UNWRITTEN Passer de l'état aux opérations]]
  - [[#read-Étendre-un-interpréteur-par-manipulation-de-portée][READ Étendre un interpréteur par manipulation de portée]]
    - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l'instrumentation]]
@@ -634,6 +634,12 @@ function f(a, b) { /* code */ }
 Les fonctions sont de première classe, c'est-à-dire qu'une fonction est une
 valeur comme une autre, qui peut être passée en argument, retournée par une
 fonction, mise dans une variable, etc.
+
+#+BEGIN_aside
+Dans les programmes JavaScript présentés dans ce document, le trigramme ~//:~
+indique la valeur de l'expression qui précède.  C'est la syntaxe de l'éditeur
+interactif [[cite:s3c][s3c]].
+#+END_aside
 
 #+BEGIN_SRC js
 function f(x) { return 2 * x }
@@ -4592,43 +4598,58 @@ minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
 l'interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
 que nous explorons par la suite.
 
-* Construire un interpréteur par modules [0/4]
+* Construire un interpréteur par modules [3/4]
 /Contenu principalement tiré d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
-
-Étendre un interpréteur est une instance du problème de l'expression (voir
-[[#problem]]).  Dans le problème de l'expression, on cherche à écrire un
-interpréteur que l'on pourra étendre de deux façons: soit en ajoutant des
-nouveaux termes au langage, soit en ajoutant de nouvelles opérations qui
-s'appliquent aux termes.
-
-On a vu précédemment que résoudre le problème de l'expression dans un langage
-dynamique n'est pas difficile ([[#variations]]).  On peut pousser le problème plus
-loin en ajoutant le critère de pouvoir /modifier/ des termes ou des opérations
-existants.
 
 Ce chapitre présente une façon de construire un interpréteur extensible en
 JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
 fonctionnalité de l'interpréteur dynamiquement, sans avoir à changer les arbres
-syntaxiques à exécuter.  Pour ce faire, on utilise principalement la liaison
-tardive à travers la construction ~with~ de JavaScript.
+syntaxiques à exécuter.  Le même arbre syntaxique donne différents résultats
+suivant les couches activées.  Pour ce faire, on utilise principalement la
+manipulation de portée à travers la construction ~with~ de JavaScript.
 
-** UNREAD Ajouter des termes
-On construit un interpréteur pour un simple langage arithmétique, suivant
-l'exemple de Wadler [??] et d'Odersky et Zenger [[cite:OZ-05][OZ-05]].  Pour commencer, on veut
-juste représenter des nombres entiers:
+Le problème donné est de construire un interpréteur pour un simple langage
+arithmétique, suivant Odersky et Zenger [[cite:OZ-05][OZ-05]].  On enrichit ce langage
+successivement, ce qui correspond à des ajouts ou des modifications de la
+fonctionnalité de l'interpréteur.  Mais le but est de réaliser ces ajouts /sans
+modifier le code/ qui précède; chaque fonctionnalité ajoute du code, réutilise
+du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Expression problem /is/ related here.  Either related work here or in context
+chapter.
+#+END_aside
+
+** READ Ajouter des termes
+Avant l'interpréteur, on commence par définir le langage.  Dans le langage de
+base, on veut juste représenter des nombres entiers:
 
 : <term> ::= <num>
 : <num>  ::= 0 | 1 | 2 | ...
 
-Et pouvoir les évaluer:
+À ce langage, on associe une première /opération/, l'interprétation.  La
+fonction d'interprétation prend un terme (ici, un nombre), et retourne l'entier
+qui correspond:
 
 : eval : Term -> Integer
 
-L'interpréteur doit pouvoir représenter des constantes et les évaluer.  Pour
-implémenter ce terme, on utilise une décomposition objet en JavaScript, qui
-rappelle le patron /Interpréteur/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage sera
-représenté par un objet qui comportera une fonction pour chaque opération sur le
-langage.
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Interpreter pattern referenced here.  Warrants a description (in solutions to
+the expression problem?)
+#+END_aside
+
+L'interpréteur doit représenter ces constantes et les évaluer.  Pour implémenter
+ce terme, on utilise une décomposition par objets en JavaScript, qui rappelle le
+patron /Interpréteur/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage est représenté par un
+objet qui contient une fonction pour chaque opération sur le langage.  Ici on a
+un seul terme, ~num~, et une seule opération, ~eval~:
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Is __proto__ described?
+#+END_aside
 
 #+BEGIN_SRC js -n -r
 var num = {
@@ -4641,8 +4662,7 @@ e1.eval() //: 3
 #+END_SRC
 
 #+BEGIN_aside
-Dans les programmes de ce chapitre, le trigramme ~//:~ indique la valeur de
-l'expression qui précède.  C'est la syntaxe de l'éditeur interactif [[cite:s3c][s3c]].
+Rappel: le trigramme ~//:~ indique la valeur de l'expression qui précède.
 #+END_aside
 
 #+CAPTION: Représentation de la mémoire du programme après la création de l'objet
@@ -4650,19 +4670,18 @@ l'expression qui précède.  C'est la syntaxe de l'éditeur interactif [[cite:s3
 [[file:img/lassy-0.svg]]
 
 L'objet ~num~ comporte deux fonctions: ~new~, le constructeur qui capture la
-constante; et ~eval~ pour retourner cette constante ultérieurement.  Ligne
+constante; et ~eval~ qui retourne cette constante ultérieurement.  Ligne
 [[(foal-ex0)]], on voit comment créer la première expression du langage pour
 représenter le nombre 3.  Ligne suivante, on peut évaluer cette expression pour
 retourner le nombre passé au constructeur.
 
-Le second terme du langage représente l'addition entre deux termes.
+Première extension du langage: on ajoute un second terme qui représente
+l'addition entre deux termes:
 
 : <term> ::= <num> | <term> + <term>
 : <num>  ::= 0 | 1 | 2 | ...
-:
-: eval : Term -> Integer
 
-Suivant notre implémentation par objets, on ajoute le terme en créant un objet
+Suivant notre implémentation par objets, il suffit d'ajouter un objet
 ~plus~ qui comporte un constructeur et une fonction d'évaluation:
 
 #+BEGIN_SRC js
@@ -4673,15 +4692,18 @@ var plus = {
 
 var e2 = plus.new(num.new(1), num.new(2))
 e2.eval() //: 3
+e1.eval() //: 3
 #+END_SRC
 
 Pour évaluer ~plus~, on appelle récursivement la fonction ~eval~ sur ses
 opérandes ~l~ et ~r~.
 
-On voit donc que pour ajouter un terme à l'interpréteur, il suffit de créer un
-nouvel objet qui répond à la fonction ~eval~.
+Le code de ~num~ n'est pas modifié.  L'expression ~e1~ est toujours évaluable.
+L'expression ~e2~ utilise ~num~ sans avoir à modifier le code source.  C'est
+l'intérêt du patron interpréteur: pour ajouter un terme au langage, il suffit
+d'ajouter un objet, sans impacter le reste du programme.
 
-** UNREAD Ajouter des opérations
+** READ Ajouter des opérations
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
 expression (/pretty-printing/).
 
@@ -4689,10 +4711,10 @@ expression (/pretty-printing/).
 
 Suivant la décomposition par objets, il faut ajouter l'opération sur chaque
 objet qui représente le terme.  Dans des langages à objets qui ne permettent pas
-l'extension, ajouter une opération ne serait pas aussi simple que d'ajouter un
-terme.  C'est la tension qui est au cœur du problème de l'expression.  En
-JavaScript, les objets sont extensibles, donc ajouter une opération se fait
-simplement:
+l'extension, une façon de faire serait de modifier le code source des objets en
+question.  C'est la tension qui est au cœur du problème de l'expression.  En
+JavaScript, les objets sont extensibles, donc ajouter une opération peut se
+faire sans modifier le code des objets eux-mêmes:
 
 #+BEGIN_SRC js -n -r
 num.show = function() {                      (ref:foal-ex1)
@@ -4717,6 +4739,11 @@ disponible sur les termes créés /avant/ l'ajout de l'opération.  Les variable
 ~e1~ et ~e2~ sont les termes créés dans les exemples précédents.  Au moment de
 leur création l'opération ~show~ n'était pas définie, et pourtant elle
 s'applique correctement à ces instances.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+missing diagram
+#+END_aside
 
 Affecter les instances existantes de termes est rendu possible par le mécanisme
 de délégation.  La délégation est illustrée dans la représentation ci-contre.
@@ -4865,16 +4892,16 @@ Ici, on restreint les expressions au seul terme ~num~ du module ~show~.  Au-dess
 on a restreint les expressions aux deux termes du module ~show~.
 
 Jusqu'ici, on a vu comment:
-- ajouter de nouveaux termes au langage, en ajoutant un module;
+- ajouter de nouveaux termes au langage, en ajoutant un objet;
 - ajouter de nouvelles opérations, soit globalement en modifiant les prototypes
   des termes, soit localement avec ~with~.
 
-Dans les deux cas, les ajouts au code de l'interpréteur se font par
-/incréments/, et sans modifier le code écrit au préalable.  Essentiellement, on
-a une solution au problème de l'expression en JavaScript.
+Dans les deux cas, ces ajouts à l'interpréteur n'ont strictement pas modifié le
+code écrit au préalable.  De là, on a une solution intéressante au problème de
+l'expression en JavaScript.
 
 Mais on peut aller plus loin.  En plus d'ajouter des termes et des opérations,
-on peut modifier des opérations existantes, et combiner
+on peut modifier des opérations existantes, et composer les modifications.
 
 # En passant, on a vu comment ajouter des opérations de deux façons différentes:
 # soit en modifiant directement le prototype des objets représentants les termes
@@ -4885,16 +4912,12 @@ on peut modifier des opérations existantes, et combiner
 # restreindre les termes utilisables dans un bloc de code en utilisant ~with~, ou
 # une fonction.
 
-** UNWRITTEN Modifier des opérations
-On va maintenant s'intéresser à modifier des opérations.  Par exemple, en
-changeant le comportement de l'opération ~eval~ pour renvoyer le double d'une
-constante.
+** READ Modifier des opérations
+Essayons de changer le comportement de l'opération ~eval~ pour doubler
+la valeur de la constante qu'elle renvoie.
 
-Ça reste simple à exprimer en JavaScript, puisque les fonctions contenues dans
-des objets sont comme les autres propriétés: remplaçables à tout moment par
-simple affectation.  On a utilisé l'affectation pour ajouter ~show~, maintenant
-on s'en sert pour écraser la définition de ~eval~ et la remplacer par une
-nouvelle:
+Comme on a utilisé l'affectation pour ajouter ~show~, maintenant on s'en sert
+pour écraser la définition de ~eval~ et la remplacer par une nouvelle:
 
 #+BEGIN_SRC js
 num.eval = function() { return this.n * 2 }
@@ -4903,14 +4926,14 @@ num.new(1).eval() //: 2
 plus.new(num.new(1), num.new(2)).eval() //: 6
 #+END_SRC
 
-Considérons une variante.  Plutôt que de retourner le double de ~n~,
-l'évaluation d'un ~num~ doit retourner le double du résultat de l'évaluation
-d'origine.  Pour implémenter cette variante, il nous faut pouvoir faire
-référence à l'évaluation d'origine dans la nouvelle version de ~num.eval~.  On
-peut sauvegarder la version d'origine dans une fermeture:
+Comme pour la première version de ~show~, cette modification affecte
+rétroactivement les termes ~num~.
 
-#+BEGIN_SRC js
-(function(previous_eval) {
+Il y a une autre façon de définir cette variante d'~eval~, en réutilisant la
+fonctionnalité de ~num.eval~ directement.
+
+#+BEGIN_SRC js -n -r
+(function(previous_eval) {                                      (ref:foal-ex13)
   num.eval = function() { return previous_eval.call(this) * 2 }
 }(num.eval))
 
@@ -4918,21 +4941,31 @@ num.new(1).eval() //: 2
 plus.new(num.new(1), num.new(2)).eval() //: 6
 #+END_SRC
 
+Plutôt que de retourner le double de ~n~, on retourne le double du résultat de
+l'évaluation d'origine.  Pour implémenter cette variante, il faut pouvoir
+faire référence à l'évaluation d'origine; c'est le raison de la fonction ligne
+[[(foal-ex13)]].  Pour appeler l'évaluation d'origine on utilise ~call~, en passant
+le receveur ~this~ comme argument.
+
+#+ATTR_HTML: :class todo
 #+BEGIN_aside
-Une fonctionnalité similaire au mot-clé ~proceed~ en AspectJ et autres langages
-à aspects.
+ref delta?
 #+END_aside
 
-Il ne reste plus qu'à appeler cette version antérieure en lui passant l'objet
-courant comme receveur à l'aide de l'appel ~call(this)~.
+Le résultat est identique, mais la construction est subtilement différente.  La
+seconde version /réutilise/ le comportement de l'évaluation par défaut, alors
+que la première version n'en dépend pas.  Si l'on changeait le code de
+l'évaluation par défaut, par exemple pour renommer l'attribut ~n~, il faudrait
+également changer la première version, mais pas la seconde.  La seconde version
+correspond au delta de la spécification: on double la valeur retournée par
+l'évaluation par défaut.  La sémantique est bien différente.
 
 Mais modifier l'objet ~num~ d'origine de cette façon est destructif: la fonction
-~num.eval~ d'origine n'est sauvegardée que dans la fermeture, et inaccessible
-par la suite.  C'est un mauvais choix si on souhaite rendre l'interpréteur
-extensible.  Dans ce cas, on peut plutôt créer un nouveau terme qui fait
-référence à la fonction ~num.eval~ pour éviter la duplication de code.  Pour
-cela, on crée une fonction qui sert de module, paramétrée par l'objet ~num~
-d'origine:
+~num.eval~ d'origine est perdue, et le fonctionnement d'~eval~ est modifié
+rétroactivement pour les termes créés.
+
+Comme pour ~show~, on peut ajouter cette modification localement.  Pour cela, on
+crée une fonction qui sert de module, paramétrée par l'objet ~num~ d'origine:
 
 #+BEGIN_SRC js
 var double = function(base) {
@@ -4943,13 +4976,26 @@ var double = function(base) {
 with (double({num})) {
   plus.new(num.new(1), num.new(2)).eval() //: 6
 }
+
+plus.new(num.new(1), num.new(2)).eval() //: 3
 #+END_SRC
 
+#+BEGIN_aside
+Il n'y a pas de mot-clé ~super~ en JavaScript, mais on pourrait obtenir une
+référence vers l'objet parent à travers ~Object.getPrototypeOf(this)~ au lieu de
+~base.num~.
+#+END_aside
+
 Dans le module ~double~, on redéfinit ~eval~ à partir de l'évaluation
-précédente.  Ceci nous permet de /composer/ les modifications d'opérations en
-passant une base modifiée comme paramètre au module ~double~.  L'exemple qui
-suit illustre comment combiner ces extensions avec des appels de ~with~ en
-cascade:
+passée en argument au module.  Le paramètre ~base~ est le module de base qu'il
+faut modifier; on crée ensuite un terme ~num~ qui hérite de ~base.num~, et
+réutilise le calcul de ~base.num.eval~.  En utilisant ~with~
+on peut créer un terme et l'évaluer avec la modification ~double~, mais
+seulement localement.
+
+Définir la modification d'~eval~ par rapport à la version passée en paramètre
+dans ~base~ nous permet de composer cette modification.  Juste en combinant les
+appels à ~with~, on peut octupler le résultat:
 
 #+BEGIN_SRC js
 with (double({num})) {
