@@ -104,6 +104,8 @@ different person then.'
    - [[#read-modifier-des-opérations][READ Modifier des opérations]]
    - [[#read-passer-de-létat-aux-opérations][READ Passer de l'état aux opérations]]
    - [[#unwritten-discussion][UNWRITTEN Discussion]]
+     - [[#trois-ingrédients-principaux][Trois ingrédients principaux]]
+     - [[#un-exemple-fantoche][Un exemple fantoche]]
  - [[#read-Étendre-un-interpréteur-par-manipulation-de-portée][READ Étendre un interpréteur par manipulation de portée]]
    - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l'instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
@@ -5108,15 +5110,135 @@ Ici encore, l'ordre d'activation des modules n'a pas d'incidence sur le
 résultat.
 
 ** UNWRITTEN Discussion
-- goal achieved: extend the language and the interpreter without changing a line
-  of the preceding code.
+On a montré comment étendre le langage, en lui ajoutant des nouveaux termes, et
+des nouvelles opérations, sans modifier le code source de l'interpréteur de
+base.  Les extensions peuvent se composer, sans avoir connaissance explicite ou
+préalable des autres extensions.  C'est un bel exemple de détournement.
 
-- main mechanisms at hand: delegation to extend, and scope manipulation with
-  ~with~.  The main idea is: the same code block has different results depending
-  on what's in scope.  With ~with~, we put what we want into the scope.
+*** Trois ingrédients principaux
+Ce détournement a trois ingrédients principaux: la délégation, les extensions
+représentées par des fonctions, et la manipulation de portée.  La délégation
+nous a permis la représentation différentielle des extensions.  Dans l'extension
+~double~, on réutilise le constructeur ~new~ et la fonctionnalité de base de
+~eval~ par délégation.  C'est en partie grâce à la délégation que l'on peut
+composer les extensions de l'interpréteur: l'objet ~num~ créé par ~double~,
+quand il est évalué, invoque la fonction ~eval~ du module de base; à son tour,
+ce module peut être une composition, etc.  Le code de l'évaluation de ~num~ est
+écrit une seule fois, et réutilisé par les extensions par délégation.  La
+délégation permet d'indiquer quel code réutiliser.
 
-  That's diverting.
+Composer les extensions est facilité par leur représentation par des fonctions.
+Nos extensions ~double~, ~show~ et ~state~ sont toutes des fonctions qui
+prennent en argument le module à étendre.  Rappelons qu'il n'y a pas de système
+de module en JavaScript; les modules dont on parle ici sont de pures
+conventions.  En l'occurrence, ce sont justes des objets JavaScript (des
+structures associatives).  En faire des fonctions incite naturellement à les
+composer.  La construction ~with~ n'est d'ailleurs pas nécessaire:
 
+#+BEGIN_SRC js
+var d = double(double(double({num})))
+plus.new(d.num.new(1), d.num.new(2)).eval() //: 6
+#+END_SRC
+
+On voit qu'en réalité, on ne fait que composer des fonctions qui retournent des
+objets (modules) qui contiennent plusieurs fonctions, que l'on va ensuite
+appeler.  Donc, la délégation permet la réutilisation, et les modules en tant
+que fonctions permettent la composition.  Le problème, c'est que ce n'est pas
+suffisant pour détourner l'interpréteur, car on doit modifier le code (ajouter
+le préfixe ~d.~) en fonction de l'extension.  C'est la manipulation de portée
+qui vient résoudre ce problème.
+
+Dans tous les exemples donnés, on évalue toujours /la même ligne de code/, à
+savoir l'arbre syntaxique qui représente l'expression 1 + 2:
+
+#+BEGIN_SRC js
+plus.new(num.new(1), num.new(2)).eval()
+#+END_SRC
+
+Mais cette même expression, suivant les extensions activées, donne différents
+résultats.  L'astuce consiste à changer, pour chaque exemple, les références
+~plus~ et ~num~ grâce à ~with~:
+
+#+BEGIN_SRC js
+with (double(..)) {
+  plus.new(num.new(1), num.new(2)).eval()
+}
+#+END_SRC
+
+Dans cette expression, ~num~ fait référence à l'objet exporté par ~double~, mais
+~double~ n'exporte pas d'objet ~plus~.  Pour savoir à quel objet ~plus~ fait
+référence, il faut connaître les environnements actifs et leur portée.  S'il y a
+une extension qui définit plus (comme ~show~) au dessus de ~double~, c'est cet
+objet qui sera utilisé, sinon, ce sera le ~plus~ de base.
+
+On pourrait faire référence explicitement aux objets retournés par ~double~:
+
+#+BEGIN_SRC js
+var d = double({num})
+plus.new(d.num.new(1), d.num.new(2)).eval()
+#+END_SRC
+
+De cette façon, on voit de quels modules sont tirés les objets ~num~ et ~plus~.
+Mais ça nous demanderait de modifier le code de l'expression.  La construction
+~with~ crée un environnement à partir de l'objet passé en argument, mais qui
+hérite de l'environnement courant.  Si à l'extérieur du ~with~, l'environnement
+contient les associations:
+
+: Environnement global
+: num = objet de base
+: plus = objet de base
+
+alors, à l'intérieur d'un ~with(double)~, on a l'environnement:
+
+: Environnement parent: Environnement global
+: num = objet de double
+: plus = objet de base
+
+La construction ~with~ ne nous est utile que parce qu'elle construit cet
+environnement.  En suivant la sémantique du langage, on n'a plus à préfixer
+~num~ par ~d.~; les préfixes sont implicitement donnés par l'environnement.  La
+création de cet environnement est la clé du détournement, car si l'on change ce
+que ~plus~ et ~num~ et ~eval~ signifient, alors on contrôle le résultat.
+
+Il est important de remarquer que ces trois mécanismes ne sont pas spécifiques à
+JavaScript, ni au scénario de l'extension d'un interpréteur.  La délégation est
+présente dans d'autres langages à prototypes, mais pour satisfaire la
+réutilisation, l'héritage de classes pourrait tout aussi bien convenir.
+Représenter les modules comme des fonctions pourrait se faire par convention
+dans de nombreux langages (en Python, ou en Scheme par exemple).  Les analogues
+de la création d'environnements sont moins évidents, mais on peut y substituer
+des mécanismes qui désambiguïse les noms.
+
+Dans le langage Rust par exemple, on pourrait obtenir un résultat semblable en
+utilisant les traits:
+
+#+BEGIN_SRC rust -n -r
+enum Term {
+  Num(u64),
+  Plus(Term, Term),
+}
+
+trait Eval { fn eval(self) -> u64 }        (ref:foal-ex13)
+
+mod base   { impl Eval for Term { fn eval(..) {}
+mod double { impl Eval for Term { fn eval(..) {}
+
+fn main() {
+  let t = Term(..)
+  { use base::Eval;   t.eval(); } //: 3
+  { use double::Eval; t.eval(); } //: 6
+}
+#+END_SRC
+
+La ligne [[(foal-ex13)]] définit un trait ~Eval~ qui requiert une fonction ~eval~.
+Les deux modules ~base~ et ~double~ fournissent des implémentations de ce trait
+pour la structure ~Term~, qui représente les termes du langage.  Le programme
+construit ensuite un seul terme ~t~ et l'évalue de deux façons différentes, mais
+toujours avec la même invocation: ~t.eval()~.  Pourtant, suivant le module
+activé, le résultat de cette invocation est différent, car l'implémentation du
+trait diffère.
+
+*** Un exemple fantoche
 - example is a bit contrived, as we have to create the AST expression /inside/
   ~with~.  We cannot create it beforehand, then use ~with~ to change its
   evaluation.  To see that, understand that ~plus.new~ is the same as
