@@ -54,7 +54,7 @@ different person then.'
    - [[#read-modéliser-le-monde-la-programmation-par-objets][READ Modéliser le monde: la programmation par objets]]
      - [[#classes-et-héritage-smalltalk][Classes et héritage: Smalltalk]]
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
-   - [[#réifier-le-langage-pour-séparer-les-préoccupations-23][Réifier le langage pour séparer les préoccupations [2/3]]]
+   - [[#réifier-le-langage-pour-séparer-les-préoccupations-][Réifier le langage pour séparer les préoccupations ]]
      - [[#unwritten-la-réflexion][UNWRITTEN La réflexion]]
      - [[#read-limplémentation-ouverte][READ L'implémentation ouverte]]
      - [[#read-la-programmation-par-aspects][READ La programmation par aspects]]
@@ -64,12 +64,12 @@ different person then.'
        - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
-   - [[#tisser-les-facettes-dun-artefact-dinnombrables-dimensions-33][Tisser les facettes d'un artefact d'innombrables dimensions [3/3]]]
+   - [[#tisser-les-facettes-dun-artefact-dinnombrables-dimensions-][Tisser les facettes d'un artefact d'innombrables dimensions ]]
      - [[#read-la-programmation-littéraire][READ La programmation littéraire]]
      - [[#read-la-séplution][READ La séplution]]
      - [[#read-linformation-transparente][READ L'information transparente]]
    - [[#unwritten-limiter-les-effets-de-bord-la-programmation-fonctionnelle][UNWRITTEN Limiter les effets de bord: la programmation fonctionnelle]]
-   - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source-23][La modularité du programme n'est pas la modularité du code source [2/3]]]
+   - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source-][La modularité du programme n'est pas la modularité du code source ]]
      - [[#read-la-modularité-selon-parnas][READ La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
      - [[#read-la-théorie-de-naur-derrière-le-programme][READ La théorie de Naur derrière le programme]]
@@ -98,7 +98,7 @@ different person then.'
      - [[#lua][Lua]]
         - [[#mechanisms-for-extension-3][Mechanisms for extension]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
- - [[#construire-un-interpréteur-par-modules-45][Construire un interpréteur par modules [4/5]]]
+ - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
    - [[#read-ajouter-des-termes][READ Ajouter des termes]]
    - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
    - [[#read-modifier-des-opérations][READ Modifier des opérations]]
@@ -2046,7 +2046,7 @@ pas possible.  Si le langage permet de modifier le lien de prototype après la
 création d'un objet, on a une solution élégante au patron de conception /State/:
 le /mode-switching/ (voir ??).
 
-** Réifier le langage pour séparer les préoccupations [2/3]
+** Réifier le langage pour séparer les préoccupations
 #+CAPTION: Le baron de Münchhausen évite la noyade par capillotraction.
 #+CAPTION: Gustave Doré, 1862.
 [[file:img/münchhausen.jpg]]
@@ -2976,7 +2976,7 @@ compréhensible.  Tous ces mécanismes présentent donc des avantages et des
 inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
-** Tisser les facettes d'un artefact d'innombrables dimensions [3/3]
+** Tisser les facettes d'un artefact d'innombrables dimensions
 #+BEGIN_epig
 WEB may be only for the subset of computer scientists who like to write and to
 explain what they are doing. — [[cite:Knu-84][Knu-84]]
@@ -3511,7 +3511,7 @@ Real programs need side effects, they are delimited by monads, effect systems.
 Functional languages historically have the more advanced type systems.  Strong
 static guarantes, but less runtime flexibility.
 
-** La modularité du programme n'est pas la modularité du code source [2/3]
+** La modularité du programme n'est pas la modularité du code source
 *** READ La modularité selon Parnas
 David Parnas est fréquemment cité comme référence pour la notion de modularité
 d'un système, en particulier l'article "On the Critera to be Used In Decomposing
@@ -4602,7 +4602,7 @@ minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
 l'interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
 que nous explorons par la suite.
 
-* Construire un interpréteur par modules [4/5]
+* Construire un interpréteur par modules
 /Contenu principalement tiré d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
 
 Ce chapitre présente une façon de construire un interpréteur extensible en
