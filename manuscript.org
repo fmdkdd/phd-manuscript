@@ -98,12 +98,12 @@ different person then.'
      - [[#lua][Lua]]
         - [[#mechanisms-for-extension-3][Mechanisms for extension]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
- - [[#construire-un-interpréteur-par-modules-44][Construire un interpréteur par modules [4/4]]]
+ - [[#construire-un-interpréteur-par-modules-45][Construire un interpréteur par modules [4/5]]]
    - [[#read-ajouter-des-termes][READ Ajouter des termes]]
    - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
    - [[#read-modifier-des-opérations][READ Modifier des opérations]]
    - [[#read-passer-de-létat-aux-opérations][READ Passer de l'état aux opérations]]
-   - [[#discussion][Discussion]]
+   - [[#unwritten-discussion][UNWRITTEN Discussion]]
  - [[#read-Étendre-un-interpréteur-par-manipulation-de-portée][READ Étendre un interpréteur par manipulation de portée]]
    - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l'instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
@@ -4599,7 +4599,7 @@ minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
 l'interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
 que nous explorons par la suite.
 
-* Construire un interpréteur par modules [4/4]
+* Construire un interpréteur par modules [4/5]
 /Contenu principalement tiré d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
 
 Ce chapitre présente une façon de construire un interpréteur extensible en
@@ -5105,6 +5105,28 @@ with (state({num, plus})) {
 
 Ici encore, l'ordre d'activation des modules n'a pas d'incidence sur le
 résultat.
+
+** UNWRITTEN Discussion
+- goal achieved: extend the language and the interpreter without changing a line
+  of the preceding code.
+
+- main mechanisms at hand: delegation to extend, and scope manipulation with
+  ~with~.  The main idea is: the same code block has different results depending
+  on what's in scope.  With ~with~, we put what we want into the scope.
+
+  That's diverting.
+
+- example is a bit contrived, as we have to create the AST expression /inside/
+  ~with~.  We cannot create it beforehand, then use ~with~ to change its
+  evaluation.  To see that, understand that ~plus.new~ is the same as
+  ~double.plus.new~ when ~double~ is active.  We could be explicit when calling
+  these terms.
+
+  A better solution would have been to have ~with(double)~ modify the ~eval~
+  directly.  That's a bit what COP in JS [ref] gives you.
+
+- Nevertheless, this idea of scope manipulation can be applied to Narcissus
+  itself, segue.
 
 * READ Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d'un papier rejeté à DLS'15 et à SAC'16 [[cite:KNS-15b][KNS-15b]]/.
