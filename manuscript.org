@@ -98,11 +98,12 @@ different person then.'
      - [[#lua][Lua]]
         - [[#mechanisms-for-extension-3][Mechanisms for extension]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
- - [[#construire-un-interpréteur-par-modules-34][Construire un interpréteur par modules [3/4]]]
+ - [[#construire-un-interpréteur-par-modules-44][Construire un interpréteur par modules [4/4]]]
    - [[#read-ajouter-des-termes][READ Ajouter des termes]]
    - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
    - [[#read-modifier-des-opérations][READ Modifier des opérations]]
-   - [[#unwritten-passer-de-létat-aux-opérations][UNWRITTEN Passer de l'état aux opérations]]
+   - [[#read-passer-de-létat-aux-opérations][READ Passer de l'état aux opérations]]
+   - [[#discussion][Discussion]]
  - [[#read-Étendre-un-interpréteur-par-manipulation-de-portée][READ Étendre un interpréteur par manipulation de portée]]
    - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l'instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
@@ -4598,7 +4599,7 @@ minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
 l'interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
 que nous explorons par la suite.
 
-* Construire un interpréteur par modules [3/4]
+* Construire un interpréteur par modules [4/4]
 /Contenu principalement tiré d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
 
 Ce chapitre présente une façon de construire un interpréteur extensible en
@@ -5005,19 +5006,26 @@ with (double({num})) {
 }}}
 #+END_SRC
 
-** UNWRITTEN Passer de l'état aux opérations
-Dans l'instrumentation de Narcissus pour l'évaluation à facettes, on a vu que de
-l'état était passé récursivement dans l'interpréteur: le /program counter/.
-Pour simuler cette situation dans notre interpréteur de langage arithmétique, on
-va compter le nombre d'appels à ~eval~.
+** READ Passer de l'état aux opérations
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+did we?
+#+END_aside
 
-Pour cela, on écrit une fonction ~state~ qui dérive des termes ~num~ et ~plus~
-et incrémente une variable locale lors d'un appel à ~num.eval~ ou ~plus.eval~.
-L'évaluation est ensuite déléguée aux prototypes de ces termes.  La valeur du
-compteur est accessible via la fonction ~getCount~.
+Dans l'instrumentation de Narcissus pour l'évaluation à facettes, une catégorie
+de changements consistait à passer la valeur du /program counter/ dans les
+appels récursifs à ~execute~.  En s'inspirant de cette situation, on va ici
+étendre les objets qui représentent les termes du langages pour compter le
+nombre d'appels à ~eval~.
+
+Pour cela, on écrit une fonction ~state~ qui va étendre les termes ~num~ et
+~plus~ pour incrémenter le compteur lors d'un appel à ~num.eval~ ou
+~plus.eval~.
 
 #+BEGIN_SRC js
-var state = function(base, count = 0) {
+var state = function(base) {
+  var count = 0
+
   var num = {__proto__: base.num,
     eval() { count++; return base.num.eval.call(this) }}
 
@@ -5035,15 +5043,22 @@ with (state({num,plus})) {
 }
 #+END_SRC
 
+Dans ces redéfinitions de ~num~ et ~plus~, on retourne finalement la valeur de
+~eval~ de base après l'incrémentation.  La valeur du compteur est accessible via
+la fonction ~getCount~, qui sera exposé au code à l'intérieur du bloc ~with~.
+
 Lors du premier appel à ~getCount~, le compteur est bien à zéro, puisqu'aucune
 instruction n'a été évaluée.  Le second appel retourne 3, après l'évaluation de
 l'expression, ce qui correspond bien aux 3 appels de ~eval~: un pour ~plus~, et
 un pour chaque ~num~.
 
-Dans la définition de ~state~, les nouvelles versions de ~eval~ sont définies à
-partir des termes passés en argument dans l'objet ~base~, ce qui permet encore
-une fois la composition d'extensions.  Par exemple, on peut ajouter l'extension
-~double~:
+Ce qui est marquant ici c'est que le compteur est une variable locale à la
+fonction ~state~.  Il n'existe que temporairement, lors d'une activation de
+cette fonction dans un ~with~.  On n'a pas eu à modifier le code précédent
+directement, juste à l'étendre par délégation.
+
+Cette délégation nous permet d'ailleurs de composer les extensions entre elles.
+Par exemple, on peut composer l'extension ~double~ avec ~state~:
 
 #+BEGIN_SRC js
 with (double({num})) {
@@ -5054,22 +5069,28 @@ with (double({num})) {
 }}
 #+END_SRC
 
-Le résultat de l'évaluation est 6, ce qui indique que la modification ~double~
-est bien active.  En même temps, le compteur fonctionne également.  Notons que
-l'ordre d'activation des modules n'importe pas ici:
+Le résultat de l'évaluation de l'expression est 6, ce qui indique que la
+modification ~double~ est bien active.  En même temps, le compteur est
+accessible et donne le bon résultat.
+
+Notons que l'ordre d'activation des modules n'importe pas ici.  Les inverser
+donne le même résultat:
 
 #+BEGIN_SRC js
 with (state({num, plus})) {
-  with (double({num})) { ... }}
+  with (double({num})) {
+    getCount() //: 0
+    plus.new(num.new(1), num.enw(2)).eval() //: 6
+    getCount() //: 3
+ }}
 #+END_SRC
 
-donnerait le même résultat.  La commutativité dépend de la définition des
-modules, bien entendu.  Dans le cas présent, le compteur peut être vu comme un
-effet de bord qui n'interfère pas avec l'évaluation.
+En général, la commutativité dépend de la définition des modules.  Dans le cas
+présent, le compteur peut être vu comme un effet de bord qui n'interfère pas
+avec l'évaluation, donc les deux commutent.
 
-Enfin, on peut ajouter le module ~show~ sans avoir à modifier une seule des
-définitions précédentes.  Ici encore, l'ordre d'activation des modules n'a pas
-d'incidence sur le résultat:
+Enfin, l'opération ~show~ que l'on a défini précédemment elle aussi commute.  On
+peut l'ajouter sans avoir à modifier une seule des définitions précédentes.
 
 #+BEGIN_SRC js
 with (state({num, plus})) {
@@ -5081,6 +5102,9 @@ with (state({num, plus})) {
       getCount() //: 3
       n.show() //: "1+2"
 #+END_SRC
+
+Ici encore, l'ordre d'activation des modules n'a pas d'incidence sur le
+résultat.
 
 * READ Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d'un papier rejeté à DLS'15 et à SAC'16 [[cite:KNS-15b][KNS-15b]]/.
