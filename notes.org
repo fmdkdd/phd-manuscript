@@ -4068,6 +4068,30 @@ problems (for their solutions) and b) other mechanisms.
 Parnas and Naur might go before the problem, before the preliminaries even.  As
 a proper Context section.
 
+** [2016-07-25 lun.]
+*** The need for diverting is real
+The scenario of extending Narcissus without refactoring it is not convoluted.
+
+My good friends at the end of the corridor are trying to extend OpenStack,
+without touching the code base.  They want to provide an extension without
+polluting the tree, to test the waters.  That's legitimate.
+
+When I see the V8 team dropping "strong mode" for code complexity reasons, I
+can't help but think that a diverting approach would have lessened the burden of
+maintaining it.
+
+Diverting is not be an alternative to refactoring where refactoring is
+warranted, it is an alternative to refactoring when you want to prototype
+without touching the tree.
+
+Using a VCS could also work: use a branch per extension, and create multiple
+folders to view into each branch.  Now you have access to all variations, but
+they are synced by the VCS system.  Main contributors can work on the main
+branch, without caring about experimental branches.  Experimenters on the other
+hand can keep hacking on their branch, merging the main patches as they see
+fit.  The process is analogous to diverting, but diverting happens at runtime,
+whereas this happens statically.  Give git example (in appendix?)
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
