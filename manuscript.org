@@ -126,6 +126,7 @@ different person then.'
    - [[#séparation-des-préoccupations-pourquoi][Séparation des préoccupations: pourquoi?]]
    - [[#locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][Locality of concerns and locality of execution are irreconciable in the source text]]
    - [[#late-binding-is-the-common-ingredient-to-all-modular-mechanisms][Late binding is the common ingredient to all modular mechanisms]]
+   - [[#this-could-be-done-with-git][This could be done with Git]]
    - [[#perspectives-if-automated-programming-is-the-future-this-is-mostly-usesless][Perspectives: if automated programming is the future, this is mostly usesless]]
    - [[#perspectives-performance][Perspectives: performance]]
  - [[#chutes][Chutes]]
@@ -7237,6 +7238,28 @@ different things.'
 
 — [[cite:Car-72][Car-72]]
 #+END_QUOTE
+
+That is going against the trend.  The trend is securing, statically analysing
+programs.  Late binding hampers static verification.  We cannot know what the
+program does if what the program does can change at runtime.  Static analysis
+can catch bugs, can help in refactoring, can help assert the code is correct for
+all cases.
+
+However, we have to be aware of the tradeoffs we are making.  Security is not
+free.  If, to make a language more amenable to static analysis we remove
+late-binding features (like ~with~ in strict mode, or push for ~lexical binding~
+as default for elisp [check]), then we are removing flexibility as well.  Unless
+this flexibility is reinstated in a way that is compatible with static safety,
+we are at a loss on that front.
+
+** This could be done with Git
+Using a VCS could also work: use a branch per extension, and create multiple
+folders to view into each branch.  Now you have access to all variations, but
+they are synced by the VCS system.  Main contributors can work on the main
+branch, without caring about experimental branches.  Experimenters on the other
+hand can keep hacking on their branch, merging the main patches as they see
+fit.  The process is analogous to diverting, but diverting happens at runtime,
+whereas this happens statically.  Give git example (in appendix?)
 
 ** Perspectives: if automated programming is the future, this is mostly usesless
 programming automation will probably not care about any of this.  If in the
