@@ -41,7 +41,7 @@ different person then.'
    - [[#survol][Survol]]
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#read-préliminaires-code-source-processus-et-spécification][READ Préliminaires: code source, processus, et spécification]]
-   - [[#unread-une-présentation-du-langage-javascript][UNREAD Une présentation du langage JavaScript]]
+   - [[#read-une-présentation-du-langage-javascript][READ Une présentation du langage JavaScript]]
      - [[#genèse-chez-netscape][Genèse chez Netscape]]
      - [[#un-langage-à-prototypes-qui-doit-ressembler-à-java][Un langage à prototypes qui doit ressembler à Java]]
    - [[#read-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][READ Étude de cas: instrumentation ad-hoc de Narcissus]]
@@ -54,7 +54,7 @@ different person then.'
    - [[#read-modéliser-le-monde-la-programmation-par-objets][READ Modéliser le monde: la programmation par objets]]
      - [[#classes-et-héritage-smalltalk][Classes et héritage: Smalltalk]]
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
-   - [[#réifier-le-langage-pour-séparer-les-préoccupations-][Réifier le langage pour séparer les préoccupations ]]
+   - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
      - [[#unwritten-la-réflexion][UNWRITTEN La réflexion]]
      - [[#read-limplémentation-ouverte][READ L'implémentation ouverte]]
      - [[#read-la-programmation-par-aspects][READ La programmation par aspects]]
@@ -64,12 +64,12 @@ different person then.'
        - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
-   - [[#tisser-les-facettes-dun-artefact-dinnombrables-dimensions-][Tisser les facettes d'un artefact d'innombrables dimensions ]]
+   - [[#tisser-les-facettes-dun-artefact-dinnombrables-dimensions][Tisser les facettes d'un artefact d'innombrables dimensions]]
      - [[#read-la-programmation-littéraire][READ La programmation littéraire]]
      - [[#read-la-séplution][READ La séplution]]
      - [[#read-linformation-transparente][READ L'information transparente]]
    - [[#unwritten-limiter-les-effets-de-bord-la-programmation-fonctionnelle][UNWRITTEN Limiter les effets de bord: la programmation fonctionnelle]]
-   - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source-][La modularité du programme n'est pas la modularité du code source ]]
+   - [[#la-modularité-du-programme-nest-pas-la-modularité-du-code-source][La modularité du programme n'est pas la modularité du code source]]
      - [[#read-la-modularité-selon-parnas][READ La modularité selon Parnas]]
        - [[#conclusions][Conclusions]]
      - [[#read-la-théorie-de-naur-derrière-le-programme][READ La théorie de Naur derrière le programme]]
@@ -572,9 +572,14 @@ programmes possibles, et étudions les compromis en jeu pour une application
 donnée.  Et l'application qui va nous intéresser, c'est l'interpréteur
 Narcissus.
 
-** UNREAD Une présentation du langage JavaScript
+** READ Une présentation du langage JavaScript
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+weird
+#+END_aside
+
 Puisque JavaScript est le langage de programmation le plus utilisé dans ce
-document, des présentations sont de mise.
+document, une présentation est de mise.
 
 *** Genèse chez Netscape
 #+BEGIN_aside
@@ -594,11 +599,17 @@ supplémentaire.
 JavaScript est utilisé pour rendre les pages web dynamiques (animer des boutons,
 valider des formulaires, ...), voire les transformer en complètes applications
 (cartographie, portail social, ou même éditeur d'objets 3D).  JavaScript dispose
-d'une riche interface avec tous les éléments d'une page web, et plus
+d'une interface riche avec tous les éléments d'une page web, et plus
 généralement de l'ordinateur: on peut facilement modifier l'arbre d'une page
 HTML et son style, mais on peut tout aussi aisément capturer le pointeur de la
 souris, redimensionner la fenêtre du navigateur, ou accéder à la caméra de
 l'ordinateur.
+
+#+BEGIN_aside
+On utilise ici "interpréteurs" dans le sens d'exécuteurs de code, quelle que
+soit la méthode exacte d'exécution (interprétation, compilation, mixte...).
+Voir la section précédente.
+#+END_aside
 
 Les programmes JavaScript ne sont pas restreints aux navigateurs.  Les
 interpréteurs JavaScript comme V8 (de Chrome) ou SpiderMonkey (de Firefox) sont
@@ -709,7 +720,7 @@ var f = obj.c
 f() //: 2
 #+END_SRC
 
-Néanmoins, cette structure associative peut être utilisé pour représenter des
+Néanmoins, cette structure associative peut être utilisée pour représenter des
 objets au sens de la programmation par objets.  Les objets de JavaScript
 disposent d'un lien de /prototype/, qui permet la délégation, et donc le partage
 de méthodes, entre objets.
@@ -864,9 +875,8 @@ Par exemple, dans le code ci-contre, même si la valeur de ~x~ n'est pas
 directement affectée à ~z~, la valeur de ~z~ en dépend indirectement, à travers
 les deux conditionnelles.  C'est un flot indirect de ~x~ à ~z~.  Si le paramètre
 ~x~ est ~true~, alors la fonction retourne ~true~, et si ~x~ est ~false~, la
-fonction retourne ~false~.  La fonction peut donc extraire toute l'information
-de ~x~ sans jamais directement copier sa valeur.
-
+fonction retourne ~false~.  Un observateur du résultat de la fonction peut donc
+extraire toute l'information de ~x~ sans jamais directement accéder à sa valeur.
 
 En revanche, si on fait de ~x~ une valeur à facettes avec une valeur privée
 ~true~ et une valeur publique ~false~ (qu'on écrit ~true:false~), alors le
@@ -900,8 +910,8 @@ donne une vue d'ensemble de ces changements:
 
 #+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
-Le /diff/ est extrait des HEAD de [[https://github.com/taustin/narcissus][github/taustin/narcissus]] et
-[[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
+Le /diff/ est extrait des branches principales (/HEAD/) de [[https://github.com/taustin/narcissus][github/taustin/narcissus]]
+et [[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
 #+END_aside
 
 #+NAME: visual-narcissus-diff
@@ -930,7 +940,7 @@ information qui permet de les distinguer.
 Autre point important: l'instrumentation /duplique tout le code/ de
 l'interpréteur.  C'est une solution simple pour créer un interpréteur qui
 supporte l'évaluation multi-facettes.  En revanche, la duplication de code a un
-impact important sur la maintenance à long terme: plus de double du code doit
+impact important sur la maintenance à long terme: plus du double du code doit
 être maintenu.  Les changements requis dans le code source pour corriger un bug
 dans Narcissus, ou pour ajouter une fonctionnalité, doivent désormais être
 répétés dans l'instrumentation.  Le coût de maintenance devient prohibitif
@@ -938,7 +948,7 @@ lorsque /plusieurs/ instrumentations sont envisagées.
 
 Il est évident que les auteurs avaient pour but de démontrer la viabilité de
 l'évaluation multi-facettes sur un langage réaliste, en l'occurrence JavaScript.
-Ils ne cherchaient probablement à résoudre les problèmes d'éparpillement et
+Ils ne cherchaient probablement pas à résoudre les problèmes d'éparpillement et
 d'entremêlement de code.  C'est pourquoi modifier directement Narcissus était
 une solution adéquate pour atteindre leur but.
 
