@@ -103,7 +103,7 @@ different person then.'
    - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
    - [[#read-modifier-des-opérations][READ Modifier des opérations]]
    - [[#read-passer-de-létat-aux-opérations][READ Passer de l'état aux opérations]]
-   - [[#unwritten-discussion][UNWRITTEN Discussion]]
+   - [[#unread-discussion][UNREAD Discussion]]
      - [[#trois-ingrédients-principaux][Trois ingrédients principaux]]
      - [[#un-exemple-fantoche][Un exemple fantoche]]
  - [[#read-Étendre-un-interpréteur-par-manipulation-de-portée][READ Étendre un interpréteur par manipulation de portée]]
@@ -5109,7 +5109,7 @@ with (state({num, plus})) {
 Ici encore, l'ordre d'activation des modules n'a pas d'incidence sur le
 résultat.
 
-** UNWRITTEN Discussion
+** UNREAD Discussion
 On a montré comment étendre le langage, en lui ajoutant des nouveaux termes, et
 des nouvelles opérations, sans modifier le code source de l'interpréteur de
 base.  Les extensions peuvent se composer, sans avoir connaissance explicite ou
@@ -5209,8 +5209,13 @@ dans de nombreux langages (en Python, ou en Scheme par exemple).  Les analogues
 de la création d'environnements sont moins évidents, mais on peut y substituer
 des mécanismes qui désambiguïse les noms.
 
-Dans le langage Rust par exemple, on pourrait obtenir un résultat semblable en
+Par exemple, dans le langage Rust, on pourrait obtenir un résultat semblable en
 utilisant les traits:
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+full example in appendix?
+#+END_aside
 
 #+BEGIN_SRC rust -n -r
 enum Term {
@@ -5239,17 +5244,38 @@ activé, le résultat de cette invocation est différent, car l'implémentation 
 trait diffère.
 
 *** Un exemple fantoche
-- example is a bit contrived, as we have to create the AST expression /inside/
-  ~with~.  We cannot create it beforehand, then use ~with~ to change its
-  evaluation.  To see that, understand that ~plus.new~ is the same as
-  ~double.plus.new~ when ~double~ is active.  We could be explicit when calling
-  these terms.
+Même si l'exemple de l'interpréteur de langage arithmétique montre bien
+l'utilité du détournement, il est peu réaliste, car l'expression qui construit
+l'arbre syntaxique /doit/ apparaître dans le ~with~.  C'est parce que l'on
+substitue les références ~plus~ et ~num~ que l'on peut obtenir différents
+résultats.  Mais cette substitution est effectuée à la construction des objets
+qui représentent les termes, pas à l'évaluation de l'expression.  Si l'on
+écrit:
 
-  A better solution would have been to have ~with(double)~ modify the ~eval~
-  directly.  That's a bit what COP in JS [ref] gives you.
+#+BEGIN_SRC js
+var t = plus.new(num.new(1), num.new(2))
 
-- Nevertheless, this idea of scope manipulation can be applied to Narcissus
-  itself, segue.
+with (double({num})) {
+  t.eval() //: 3
+}
+#+END_SRC
+
+#+BEGIN_aside
+Une façon de réaliser cette activation locale d'extensions serait d'utiliser la
+programmation par contextes [[cite:LAS+11][LAS+11]].
+#+END_aside
+
+On pourrait s'attendre à ce que l'extension modifie l'évaluation des arbres déjà
+construits, même si cette modification n'était active que dans le bloc de
+~with~, mais ce n'est pas le cas.  Suivant la façon dont l'interpréteur est
+conçu, il semble peu réaliste d'activer des extensions à la /construction/ de
+l'arbre syntaxique plutôt qu'à l'évaluation de cet arbre.  On cherche à
+effectuer différentes évaluations d'un même programme, donc il conviendrait
+plutôt de modifier l'évaluation que la construction.
+
+Afin de démontrer l'utilité du détournement dans un scénario plus réaliste, on
+réutilise les techniques illustrées dans ce chapitre afin de détourner
+l'interpréteur Narcissus.
 
 * READ Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d'un papier rejeté à DLS'15 et à SAC'16 [[cite:KNS-15b][KNS-15b]]/.
