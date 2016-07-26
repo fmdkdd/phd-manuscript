@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-07-25 lun. 18:37 -->
+<!-- 2016-07-26 mar. 19:38 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -1026,13 +1026,41 @@ B.a() <span class="org-comment-delimiter">//</span><span class="org-comment">: 0
 
 <p>
 Ici on a deux objets, <code>A</code> et <code>B</code>.  L&rsquo;objet <code>A</code> contient une seule fonction, <code>a</code>.
-L&rsquo;objet <code>B</code> contient une seule fonction, <code>b</code>, mais déclare <code>A</code> comme prototype.
-En conséquence, même si la fonction <code>a</code> n&rsquo;est pas déclarée sur <code>B</code>, <code>B.a()</code>
-appellera la fonction <code>a</code> qui existe dans son prototype, <code>A</code>.  On parle d&rsquo;une
-<i>chaîne</i> de prototypes comme une liste chaînée.  L&rsquo;algorithme de recherche d&rsquo;une
-propriété dans une chaîne de prototypes est d&rsquo;ailleurs analogue à la recherche
-d&rsquo;une valeur dans une liste chaînée.
+L&rsquo;objet <code>B</code> contient une seule fonction, <code>b</code>, mais déclare <code>A</code> comme prototype à
+l&rsquo;aide de la propriété spéciale <code>__proto__</code>.  En conséquence, même si la
+fonction <code>a</code> n&rsquo;est pas déclarée sur <code>B</code>, <code>B.a()</code> appellera la fonction <code>a</code> qui
+existe dans son prototype, <code>A</code>.  On parle d&rsquo;une <i>chaîne</i> de prototypes comme une
+liste chaînée.  L&rsquo;algorithme de recherche d&rsquo;une propriété dans une chaîne de
+prototypes est d&rsquo;ailleurs analogue à la recherche d&rsquo;une valeur dans une liste
+chaînée.
 </p>
+
+<p>
+La propriété <code>__proto__</code> n&rsquo;est pas la seule façon d&rsquo;affecter le prototype d&rsquo;un
+objet à sa création.  On peut créer un objet qui hérite d&rsquo;un autre à l&rsquo;aide
+d&rsquo;<code>Object.create</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">B</span> = Object.create(A)
+B.b = <span class="org-keyword">function</span>() { <span class="org-keyword">return</span> 1 }
+</pre>
+</div>
+
+<p>
+Et on peut aussi modifier le prototype d&rsquo;un objet déjà créé à l&rsquo;aide
+d&rsquo;<code>Object.setPrototypeOf</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">B</span> = {}
+B.b = <span class="org-keyword">function</span>() { <span class="org-keyword">return</span> 1 }
+Object.setPrototypeOf(B, A)
+Object.getPrototypeOf(B) == A <span class="org-comment-delimiter">//</span><span class="org-comment">: true</span>
+</pre>
+</div>
 
 <div style="margin-top:-16rem" class="side-figure">
 
@@ -6287,12 +6315,6 @@ objet qui contient une fonction pour chaque opération sur le langage.  Ici on a
 un seul terme, <code>num</code>, et une seule opération, <code>eval</code>:
 </p>
 
-<aside class="todo">
-<p>
-Is <span class="underline"><span class="underline">proto</span></span> described?
-</p>
-</aside>
-
 <div class="org-src-container">
 
 <pre class="src src-js"><span class="linenr">1: </span><span class="org-keyword">var</span> <span class="org-variable-name">num</span> = {
@@ -6692,12 +6714,6 @@ faire référence à l&rsquo;évaluation d&rsquo;origine; c&rsquo;est le raison 
 le receveur <code>this</code> comme argument.
 </p>
 
-<aside class="todo">
-<p>
-ref delta?
-</p>
-</aside>
-
 <p>
 Le résultat est identique, mais la construction est subtilement différente.  La
 seconde version <i>réutilise</i> le comportement de l&rsquo;évaluation par défaut, alors
@@ -6772,12 +6788,6 @@ appels à <code>with</code>, on peut octupler le résultat:
 <div id="outline-container-orgheadline71" class="outline-3">
 <h3 id="orgheadline71"><span class="section-number-3">6.4</span> <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</h3>
 <div class="outline-text-3" id="text-6-4">
-<aside class="todo">
-<p>
-did we?
-</p>
-</aside>
-
 <p>
 Dans l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation à facettes, une catégorie
 de changements consistait à passer la valeur du <i>program counter</i> dans les
@@ -7053,6 +7063,10 @@ utilisant les traits:
 <aside class="todo">
 <p>
 full example in appendix?
+</p>
+
+<p>
+wait, you are changing eval, but not the term itself.  Is that really similar?
 </p>
 </aside>
 
@@ -14537,7 +14551,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-07-25 lun. 18:37 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-07-26 mar. 19:38 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
