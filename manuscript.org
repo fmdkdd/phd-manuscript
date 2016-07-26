@@ -730,12 +730,32 @@ B.a() //: 0
 #+END_SRC
 
 Ici on a deux objets, ~A~ et ~B~.  L'objet ~A~ contient une seule fonction, ~a~.
-L'objet ~B~ contient une seule fonction, ~b~, mais déclare ~A~ comme prototype.
-En conséquence, même si la fonction ~a~ n'est pas déclarée sur ~B~, ~B.a()~
-appellera la fonction ~a~ qui existe dans son prototype, ~A~.  On parle d'une
-/chaîne/ de prototypes comme une liste chaînée.  L'algorithme de recherche d'une
-propriété dans une chaîne de prototypes est d'ailleurs analogue à la recherche
-d'une valeur dans une liste chaînée.
+L'objet ~B~ contient une seule fonction, ~b~, mais déclare ~A~ comme prototype à
+l'aide de la propriété spéciale ~__proto__~.  En conséquence, même si la
+fonction ~a~ n'est pas déclarée sur ~B~, ~B.a()~ appellera la fonction ~a~ qui
+existe dans son prototype, ~A~.  On parle d'une /chaîne/ de prototypes comme une
+liste chaînée.  L'algorithme de recherche d'une propriété dans une chaîne de
+prototypes est d'ailleurs analogue à la recherche d'une valeur dans une liste
+chaînée.
+
+La propriété ~__proto__~ n'est pas la seule façon d'affecter le prototype d'un
+objet à sa création.  On peut créer un objet qui hérite d'un autre à l'aide
+d'~Object.create~:
+
+#+BEGIN_SRC js
+var B = Object.create(A)
+B.b = function() { return 1 }
+#+END_SRC
+
+Et on peut aussi modifier le prototype d'un objet déjà créé à l'aide
+d'~Object.setPrototypeOf~:
+
+#+BEGIN_SRC js
+var B = {}
+B.b = function() { return 1 }
+Object.setPrototypeOf(B, A)
+Object.getPrototypeOf(B) == A //: true
+#+END_SRC
 
 #+ATTR_HTML: :style margin-top:-16rem
 #+BEGIN_side-figure
@@ -4648,11 +4668,6 @@ ce terme, on utilise une décomposition par objets en JavaScript, qui rappelle l
 patron /Interpréteur/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage est représenté par un
 objet qui contient une fonction pour chaque opération sur le langage.  Ici on a
 un seul terme, ~num~, et une seule opération, ~eval~:
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Is __proto__ described?
-#+END_aside
 
 #+BEGIN_SRC js -n -r
 var num = {
