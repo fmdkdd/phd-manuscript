@@ -4965,11 +4965,6 @@ faire référence à l'évaluation d'origine; c'est le raison de la fonction lig
 [[(foal-ex13)]].  Pour appeler l'évaluation d'origine on utilise ~call~, en passant
 le receveur ~this~ comme argument.
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-ref delta?
-#+END_aside
-
 Le résultat est identique, mais la construction est subtilement différente.  La
 seconde version /réutilise/ le comportement de l'évaluation par défaut, alors
 que la première version n'en dépend pas.  Si l'on changeait le code de
@@ -5024,11 +5019,6 @@ with (double({num})) {
 #+END_SRC
 
 ** READ Passer de l'état aux opérations
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-did we?
-#+END_aside
-
 Dans l'instrumentation de Narcissus pour l'évaluation à facettes, une catégorie
 de changements consistait à passer la valeur du /program counter/ dans les
 appels récursifs à ~execute~.  En s'inspirant de cette situation, on va ici
@@ -5229,6 +5219,8 @@ utilisant les traits:
 #+ATTR_HTML: :class todo
 #+BEGIN_aside
 full example in appendix?
+
+wait, you are changing eval, but not the term itself.  Is that really similar?
 #+END_aside
 
 #+BEGIN_SRC rust -n -r
