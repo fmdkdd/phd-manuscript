@@ -4682,6 +4682,10 @@ patron /Interpréteur/ [[cite:GHJ+94][GHJ+94]].  Chaque terme du langage est rep
 objet qui contient une fonction pour chaque opération sur le langage.  Ici on a
 un seul terme, ~num~, et une seule opération, ~eval~:
 
+#+BEGIN_aside
+Rappel: le trigramme ~//:~ indique la valeur de l'expression qui précède.
+#+END_aside
+
 #+BEGIN_SRC js -n -r
 var num = {
   new(n) { return {__proto__: this, n} },
@@ -4692,13 +4696,10 @@ var e1 = num.new(3)                        (ref:foal-ex0)
 e1.eval() //: 3
 #+END_SRC
 
-#+BEGIN_aside
-Rappel: le trigramme ~//:~ indique la valeur de l'expression qui précède.
-#+END_aside
-
-#+CAPTION: Représentation de la mémoire du programme après la création de l'objet
-#+CAPTION: ~num~, mais avant la création de ~e1~.
-[[file:img/lassy-0.svg]]
+#+BEGIN_side-figure
+#+CAPTION: Représentation des objets en mémoire après la création de ~e1~.
+[[file:img/foal-1.svg]]
+#+END_side-figure
 
 L'objet ~num~ comporte deux fonctions: ~new~, le constructeur qui capture la
 constante; et ~eval~ qui retourne cette constante ultérieurement.  Ligne
@@ -4714,6 +4715,11 @@ l'addition entre deux termes:
 
 Suivant notre implémentation par objets, il suffit d'ajouter un objet
 ~plus~ qui comporte un constructeur et une fonction d'évaluation:
+
+#+BEGIN_side-figure
+#+CAPTION: Après les ajouts ({{{color(c1)}}}) de ~plus~ et ~e2~.
+[[file:img/foal-2.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC js
 var plus = {
@@ -4771,10 +4777,9 @@ disponible sur les termes créés /avant/ l'ajout de l'opération.  Les variable
 leur création l'opération ~show~ n'était pas définie, et pourtant elle
 s'applique correctement à ces instances.
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-missing diagram
-#+END_aside
+#+BEGIN_side-figure
+[[file:img/foal-3.svg]]
+#+END_side-figure
 
 Affecter les instances existantes de termes est rendu possible par le mécanisme
 de délégation.  La délégation est illustrée dans la représentation ci-contre.
@@ -4810,6 +4815,10 @@ peut pas donner à ces dérivés les même noms que les objets originaux, donc o
 utilise un nouvel objet en tant qu'espace de noms.  On ne souhaite pas non
 plus coupler prématurément les dérivés de ~num~ et ~plus~ aux objets dont ils
 dérivent; on abstrait donc ces objets parents à l'aide d'une fonction.
+
+#+BEGIN_side-figure
+[[file:img/foal-4.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC js -n -r
 var show = function(base) {                       (ref:foal-ex4)
