@@ -150,6 +150,11 @@ different person then.'
    - [[#the-stakes-of-targeting-modularity-and-extensibility][The stakes of targeting modularity and extensibility]]
    - [[#goto-is-indirection-indirection-is-goto][GOTO is indirection; indirection is GOTO?]]
    - [[#to-end-the-prototype-section][To end the prototype section]]
+ - [[#appendices][Appendices]]
+   - [[#construire-un-interpréteur-par-modules-1][Construire un interpréteur par modules]]
+     - [[#code-complet-du-chapitre][Code complet du chapitre]]
+     - [[#code-complet-de-lexemple-en-rust][Code complet de l'exemple en Rust]]
+     - [[#la-différence-subtile][La différence subtile]]
  - [[#références][Références]]
 
 * Acknowledgements                                                 :noexport:
@@ -4644,6 +4649,11 @@ Expression problem /is/ related here.  Either related work here or in context
 chapter.
 #+END_aside
 
+#+BEGIN_aside
+Le code complet de ce chapitre est reproduit dans les appendices
+([[#foal-extra-full]]).
+#+END_aside
+
 ** READ Ajouter des termes
 Avant l'interpréteur, on commence par définir le langage.  Dans le langage de
 base, on veut juste représenter des nombres entiers:
@@ -4824,6 +4834,12 @@ et ~show.plus~ (lignes [[(foal-ex4)]] et [[(foal-ex5)]]).  Ces nouveaux objets
 contiennent juste l'opération ~show~ définies comme précédemment.  Enfin, la
 fonction ~show~ retourne un nouveau module (un objet) qui contient les versions
 enrichies de ~num~ et ~plus~ (ligne [[(foal-ex7)]]).
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+Ce module hérite du module ~base~ passé en argument pour des raisons qui sont
+explicitées en appendices ([[#foal-extra-subtle]]).
+#+END_aside
 
 Une fois cette fonction définie, on peut instancier le module ~show~ dans la
 variable ~s~ par l'appel ligne [[(foal-ex8)]].  Si on ne considère pas les
@@ -5149,6 +5165,12 @@ var d = double(double(double({num})))
 plus.new(d.num.new(1), d.num.new(2)).eval() //: 6
 #+END_SRC
 
+#+BEGIN_aside
+Il y a une différence subtile entre composer les modules ainsi et les combiner
+via plusieurs blocs ~with~; différence qui est discutée en appendice
+([[#foal-extra-subtle]]).
+#+END_aside
+
 On voit qu'en réalité, on ne fait que composer des fonctions qui retournent des
 objets (modules) qui contiennent plusieurs fonctions, que l'on va ensuite
 appeler.  Donc, la délégation permet la réutilisation, et les modules en tant
@@ -5223,9 +5245,11 @@ utilisant les traits:
 
 #+ATTR_HTML: :class todo
 #+BEGIN_aside
-full example in appendix?
-
 wait, you are changing eval, but not the term itself.  Is that really similar?
+#+END_aside
+
+#+BEGIN_aside
+Le code complet de cet exemple se trouve dans les appendices [[#foal-extra-rust]].
 #+END_aside
 
 #+BEGIN_SRC rust -n -r
@@ -9771,6 +9795,353 @@ Classes are well-suited when the taxonomy is known in advance.  Consequently,
 classes are less extensible.
 
 [Maybe reverse the two paragraphs?]
+
+* Appendices
+** Construire un interpréteur par modules
+:PROPERTIES:
+:CUSTOM_ID: foal-extra
+:END:
+*** Code complet du chapitre
+:PROPERTIES:
+:CUSTOM_ID: foal-extra-full
+:END:
+Le code complet du chapitre [[#foal]], en un seul programme.
+
+#+BEGIN_SRC js
+// The bare minimum
+
+var num = {
+  new(n) { return {__proto__: this, n} },
+  eval() { return this.n }
+}
+
+var e1 = num.new(3)
+e1.eval() //: 3
+
+// New term: addition
+
+var plus = {
+  new(l, r) { return {__proto__: this, l, r } },
+  eval() { return this.l.eval() + this.r.eval() }
+}
+
+var e2 = plus.new(num.new(1), num.new(2))
+
+e1.eval() //: 3
+e2.eval() //: 3
+
+// Operation pretty-printing
+
+num.show = function() {
+ return this.n.toString()
+}
+
+plus.show = function() {
+  return this.l.show() + '+' + this.r.show()
+}
+
+// new expression support `show`
+plus.new(num.new(1), num.new(2)).show() //: "1+2"
+
+// but `show` is also retroactive
+e1.show() //: "3"
+e2.show() //: "1+2"
+
+// Let's rollback and do it another way
+delete num.show
+delete plus.show
+
+// `show` as a module
+var show = function(base) {
+  var num = {__proto__: base.num,
+    show() { return this.n.toString() }}
+
+  var plus = {__proto__: base.plus,
+    show() { return this.l.show() + '+' + this.r.show() }}
+
+  return {__proto__: base, num, plus}
+}
+
+var s = show({num, plus})
+
+// Is not retroactive anymore
+e2.show //: undefined
+
+// but works on new expressions
+s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
+
+// and `eval` is still supported
+s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3
+
+// Oh but wait, now we have a type problem if we are not careful
+s.plus.new(num.new(1), s.num.new(2)).show() //: TypeError: this.l.show is not a function
+
+// We can force the creation of expressions that support `show`
+with (show({num,plus})) {
+  plus.new(num.new(1), num.new(2)).show()
+} //: "1+2"
+
+// `with` is not necessary; we could use a function
+;(function({num}) {
+  return num.new(1).show()
+}(show({num,plus})))
+//: "1"
+
+// but that requires stating explicitly what terms we want
+// `with is more convenient
+
+// Now we modify `eval` with `double`
+num.eval = function() { return this.n * 2 }
+
+num.new(1).eval() //: 2
+plus.new(num.new(1), num.new(2)).eval() //: 6
+
+// works
+
+// Rollback
+num.eval = function() { return this.n }
+
+// Alternate version: reuse the base `eval`
+;(function(previous_eval) {
+  num.eval = function() { return previous_eval.call(this) * 2 }
+}(num.eval))
+
+num.new(1).eval() //: 2
+plus.new(num.new(1), num.new(2)).eval() //: 6
+
+// but, we lost the base `eval`
+
+// rollback
+num.eval = function() { return this.n }
+
+// and define as a module
+var double = function(base) {
+  var num = {__proto__: base.num,
+    eval() { return base.num.eval.call(this) * 2 }
+  }
+
+  return {__proto__: base, num}
+}
+
+// `double` is activated in `with`
+with (double({num})) {
+  plus.new(num.new(1), num.new(2)).eval()
+} //: 6
+
+// but not outside, where the base `eval` is used
+plus.new(num.new(1), num.new(2)).eval() //: 3
+
+// Can combine the double extension several times
+with (double({num})) {
+  with (double({num})) {
+    with (double({num})) {
+      plus.new(num.new(1), num.new(2)).eval()
+}}} //: 24
+
+// Extensions with local state
+var state = function(base) {
+  var count = 0
+
+  var num = {__proto__: base.num,
+    eval() { count++; return base.num.eval.call(this) }}
+
+  var plus = {__proto__: base.plus,
+    eval() { count++; return base.plus.eval.call(this) }}
+
+  var getCount = function() { return count }
+
+  return {__proto__: base, num, plus, getCount}
+}
+
+with (state({num,plus})) {
+  [
+  getCount(),
+  plus.new(num.new(1), num.new(2)).eval(),
+  getCount(),
+  ]
+} //: [0,3,3]
+
+// Can combine
+with (double({num})) {
+  with (state({num, plus})) {
+    [
+    getCount(),
+    plus.new(num.new(1), num.new(2)).eval(),
+    getCount(),
+    ]
+}} //: [0,6,3]
+
+// `state` and `double` commute
+with (state({num, plus})) {
+  with (double({num})) {
+    [
+    getCount(),
+    plus.new(num.new(1), num.new(2)).eval(),
+    getCount(),
+    ]
+}} //: [0,6,3]
+
+// Can combine with `show` even
+with (state({num, plus})) {
+  with (double({num})) {
+    with (show({num, plus})) {
+      var n
+      [
+      getCount(),
+      n = plus.new(num.new(1), num.new(2)),
+      n.eval(),
+      getCount(),
+      n.show(),
+      ]
+}}} //: [0,Object {l:Object {n:1},r:Object {n:2}},6,3,"1+2"]
+
+// Can compose modules without chaining `with` blocks
+var d = double(double(double({num})))
+plus.new(d.num.new(1), d.num.new(2)).eval() //: 24
+
+// Cannot write the expression in advance in a variable
+var t = plus.new(num.new(1), num.new(2))
+
+// and 'activate' the extension at evaluation time
+with (double({num})) {
+  t.eval()
+} //: 3
+
+// However, we can wrap the whole `with` in a function
+
+var p1 = function(m = {}) {
+  with (m) {
+    return plus.new(num.new(1), num.new(2))
+  }
+}
+
+// Then standard eval
+p1().eval() //: 3
+
+// or double eval
+p1(double({num})).eval() //: 6
+
+// or show!
+p1(show({num,plus})).show() //: "1+2"
+
+// or everything!
+p1(show(state(double({num, plus})))).eval() //: 6
+p1(show(state(double({num, plus})))).show() //: "1+2"
+
+var p2 = function(m = {}) {
+  with (m) {
+    var n = plus.new(num.new(1), num.new(2))
+    return [
+    getCount(),
+    n.eval(),
+    getCount(),
+    n.show(),
+    ]
+  }
+}
+
+p2(show(state(double({num, plus})))) //: [0,6,3,"1+2"]
+#+END_SRC
+
+*** Code complet de l'exemple en Rust
+:PROPERTIES:
+:CUSTOM_ID: foal-extra-rust
+:END:
+Le code de l'exemple en Rust était abrégé pour épargner les détails.  Voici le
+code complet pour ceux qui n'étaient pas convaincus par les ellipses.
+
+#+BEGIN_SRC rust
+#[derive(Clone)]
+enum Term {
+  Num(u64),
+  Plus(Box<Term>, Box<Term>),
+}
+
+
+fn main() {
+  let e1 = Term::Num(3);
+  let e2 = Term::Plus(Box::new(Term::Num(1)), Box::new(Term::Num(2)));
+
+  {
+    use eval1::Eval;
+    println!("{} {}", e1.clone().eval(), e2.clone().eval());
+  }
+
+  {
+    use eval2::Eval;
+    println!("{} {}", e1.clone().eval(), e2.clone().eval());
+  }
+
+  {
+    use eval3::Eval;
+    println!("{} {}", e1.clone().eval(), e2.clone().eval());
+  }
+}
+
+mod eval1 {
+  use Term;
+
+  pub trait Eval {
+    fn eval(self) -> u64;
+  }
+
+  impl Eval for Term {
+    fn eval(self) -> u64 {
+      match self {
+        Term::Num(n) => n,
+        Term::Plus(t1, t2) => t1.eval() + t2.eval(),
+      }
+    }
+  }
+}
+
+mod eval2 {
+  use Term;
+
+  pub trait Eval {
+    fn eval(self) -> u64;
+  }
+
+  impl Eval for Term {
+    fn eval(self) -> u64 {
+      match self {
+        Term::Num(n) => n * 2,
+        Term::Plus(t1, t2) => t1.eval() + t2.eval(),
+      }
+    }
+  }
+}
+
+mod eval3 {
+  use eval1;
+  use Term;
+
+  pub trait Eval {
+    fn eval(self) -> u64;
+  }
+
+  impl Eval for Term {
+    fn eval(self) -> u64 {
+      match self {
+        Term::Num(_) => eval1::Eval::eval(self) * 2,
+        Term::Plus(t1, t2) => t1.eval() + t2.eval(),
+      }
+    }
+  }
+}
+
+#+END_SRC
+
+*** La différence subtile
+:PROPERTIES:
+:CUSTOM_ID: foal-extra-subtle
+:END:
+Utiliser plusieurs ~with~ c'est composer les environnements.  Composer les
+fonctions, c'est retourner un objet unique qui sert d'environnement.  Le
+'fallback' fourni implicitement par le mécanisme d'environnements doit être
+émulé par la composition de fonctions avec ~__proto__~.
+
+C'est assez clair avec un diagramme.
 
 * Références
 :PROPERTIES:
