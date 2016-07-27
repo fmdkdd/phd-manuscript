@@ -4806,7 +4806,8 @@ var show = function(base) {                       (ref:foal-ex4)
   var plus = {__proto__: base.plus,               (ref:foal-ex6)
     show() { return this.l.show() + '+' + this.r.show() }}
 
-  return {num, plus} }                            (ref:foal-ex7)
+  return {__proto__: base, num, plus}             (ref:foal-ex7)
+}
 
 var s = show({num, plus})                         (ref:foal-ex8)
 e2.show //: undefined                             (ref:foal-ex9)
@@ -4983,8 +4984,11 @@ crée une fonction qui sert de module, paramétrée par l'objet ~num~ d'origine:
 #+BEGIN_SRC js
 var double = function(base) {
   var num = {__proto__: base.num,
-    eval() { return base.num.eval.call(this) * 2 }}
-  return {num} }
+    eval() { return base.num.eval.call(this) * 2 }
+  }
+
+  return {__proto__: base, num}
+ }
 
 with (double({num})) {
   plus.new(num.new(1), num.new(2)).eval() //: 6
@@ -5041,7 +5045,7 @@ var state = function(base) {
 
   var getCount = function() { return count }
 
-  return {num, plus, getCount}}
+  return {__proto__: base, num, plus, getCount}}
 
 with (state({num,plus})) {
   getCount() //: 0
@@ -5071,7 +5075,7 @@ Par exemple, on peut composer l'extension ~double~ avec ~state~:
 with (double({num})) {
   with (state({num, plus})) {
     getCount() //: 0
-    plus.new(num.new(1), num.enw(2)).eval() //: 6
+    plus.new(num.new(1), num.new(2)).eval() //: 6
     getCount() //: 3
 }}
 #+END_SRC
@@ -5087,9 +5091,9 @@ donne le même résultat:
 with (state({num, plus})) {
   with (double({num})) {
     getCount() //: 0
-    plus.new(num.new(1), num.enw(2)).eval() //: 6
+    plus.new(num.new(1), num.new(2)).eval() //: 6
     getCount() //: 3
- }}
+}}
 #+END_SRC
 
 En général, la commutativité dépend de la définition des modules.  Dans le cas
@@ -5108,6 +5112,7 @@ with (state({num, plus})) {
       n.eval() //: 6
       getCount() //: 3
       n.show() //: "1+2"
+}}}
 #+END_SRC
 
 Ici encore, l'ordre d'activation des modules n'a pas d'incidence sur le
@@ -5231,8 +5236,8 @@ enum Term {
 
 trait Eval { fn eval(self) -> u64 }        (ref:foal-ex13)
 
-mod base   { impl Eval for Term { fn eval(..) {}
-mod double { impl Eval for Term { fn eval(..) {}
+mod base   { impl Eval for Term { fn eval(..) {}}}
+mod double { impl Eval for Term { fn eval(..) {}}}
 
 fn main() {
   let t = Term(..)
