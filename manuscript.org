@@ -105,7 +105,7 @@ different person then.'
    - [[#read-passer-de-létat-aux-opérations][READ Passer de l'état aux opérations]]
    - [[#unread-discussion][UNREAD Discussion]]
      - [[#trois-ingrédients-principaux][Trois ingrédients principaux]]
-     - [[#un-exemple-fantoche][Un exemple fantoche]]
+     - [[#manipuler-la-portée-suffit-pour-détourner-le-programme][Manipuler la portée suffit pour détourner le programme]]
  - [[#read-Étendre-un-interpréteur-par-manipulation-de-portée][READ Étendre un interpréteur par manipulation de portée]]
    - [[#manipuler-la-portée-des-variables-pour-linstrumentation][Manipuler la portée des variables pour l'instrumentation]]
      - [[#la-portée-dans-le-motif-module][La portée dans le motif module]]
@@ -4627,7 +4627,10 @@ l'interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
 que nous explorons par la suite.
 
 * Construire un interpréteur par modules
-/Contenu principalement tiré d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
+:PROPERTIES:
+:CUSTOM_ID: foal
+:END:
+/Contenu tiré en partie d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
 
 Ce chapitre présente une façon de construire un interpréteur extensible en
 JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
@@ -5278,39 +5281,73 @@ toujours avec la même invocation: ~t.eval()~.  Pourtant, suivant le module
 activé, le résultat de cette invocation est différent, car l'implémentation du
 trait diffère.
 
-*** Un exemple fantoche
-Même si l'exemple de l'interpréteur de langage arithmétique montre bien
-l'utilité du détournement, il est peu réaliste, car l'expression qui construit
-l'arbre syntaxique /doit/ apparaître dans le ~with~.  C'est parce que l'on
-substitue les références ~plus~ et ~num~ que l'on peut obtenir différents
-résultats.  Mais cette substitution est effectuée à la construction des objets
-qui représentent les termes, pas à l'évaluation de l'expression.  Si l'on
-écrit:
+*** Manipuler la portée suffit pour détourner le programme
+Dans tous les exemples que l'on a donné, on a pu voir qu'enrober le code d'un
+~with~ nous permettait de modifier son résultat.  Avec un ~with(double)~ on
+activait l'évaluation qui double les valeurs des nombres, avec ~with(show)~ on
+permettait d'utiliser l'opération ~show~ sur les arbres syntaxiques, etc.
 
-#+BEGIN_SRC js
-var t = plus.new(num.new(1), num.new(2))
+Un inconvénient, c'est que l'on doit construire l'arbre syntaxique à l'intérieur
+du ~with~.  On ne peut pas construire l'arbre une seule fois, et réutiliser sa
+valeur pour différentes évaluations.  C'est à dire, on voudrait écrire:
+
+#+BEGIN_SRC js -n -r
+var t = plus.new(num.new(1), num.new(2))       (ref:foal-ex14)
 
 with (double({num})) {
   t.eval() //: 3
 }
 #+END_SRC
 
-#+BEGIN_aside
-Une façon de réaliser cette activation locale d'extensions serait d'utiliser la
-programmation par contextes [[cite:LAS+11][LAS+11]].
-#+END_aside
+Sauf que évaluer ~t~ ici nous donne 3, et non 6.  L'extension ~double~ ne
+s'applique pas, car ~double~ ne fait que remplacer les références ~num~ et
+~plus~.  Or, à l'intérieur du ~with~, on n'utilise pas ~plus~ et ~num~
+directement: ils ont déjà été utilisés à la construction ligne [[(foal-ex14)]].
 
-On pourrait s'attendre à ce que l'extension modifie l'évaluation des arbres déjà
-construits, même si cette modification n'était active que dans le bloc de
-~with~, mais ce n'est pas le cas.  Suivant la façon dont l'interpréteur est
-conçu, il semble peu réaliste d'activer des extensions à la /construction/ de
-l'arbre syntaxique plutôt qu'à l'évaluation de cet arbre.  On cherche à
-effectuer différentes évaluations d'un même programme, donc il conviendrait
-plutôt de modifier l'évaluation que la construction.
+On peut simuler une réutilisation du même arbre syntaxique; il suffit d'en faire
+une fonction:
 
-Afin de démontrer l'utilité du détournement dans un scénario plus réaliste, on
-réutilise les techniques illustrées dans ce chapitre afin de détourner
-l'interpréteur Narcissus.
+#+BEGIN_SRC js
+var p1 = function(m = {}) {
+  with (m) {
+    return plus.new(num.new(1), num.new(2))      (ref:foal-ex15)
+  }
+}
+#+END_SRC
+
+La variable ~p1~ représente un arbre syntaxique, un programme de notre langage
+arithmétique.  Ce langage est paramétré par le module ~m~, qui sera actif lors
+de la construction de l'arbre syntaxique ligne [[(foal-ex15)]].
+
+On peut maintenant utiliser cette fonction, mais avec différents modules:
+
+#+BEGIN_SRC js
+p1().eval() //: 3
+p1(double({num})).eval() //: 6
+p1(double(double({num}))).eval() //: 12
+p1(show({num,plus})).show() //: "1+2"
+#+END_SRC
+
+Par défaut, si aucun module n'est passé en argument, on utilisera les ~plus~ et
+~num~ de base déclarés globalement.  En revanche, si on passe ~double~, on
+construit un arbre syntaxique avec ce module activé.  On peut ensuite évaluer
+cet arbre avec ~eval~, pour obtenir 6.  La composition de modules est possible
+par composition de fonctions, et les modules qui offrent de nouvelles opérations
+fonctionnent tout aussi bien.
+
+On a alors une fonction, ~p1~, dont le résultat est entièrement déterminé par
+l'argument qu'on lui passe.  Cette fonction en réalité appelle les ~plus~ et
+~num~ passés en argument à travers ~with~.  C'est une inversion de contrôle:
+la fonction ~p1~ définit la structure du programme, mais le code exécuté est
+fournit par l'appelant.  Et cette inversion est rendue possible par
+l'utilisation du ~with~ à l'intérieur de la fonction qui vient manipuler les
+références ~plus~ et ~num~.  Autrement dit, la manipulation de la portée suffit
+pour détourner le programme.
+
+Dans ce chapitre, on a construit l'interpréteur de toutes pièces.  Mais on peut
+utiliser la manipulation de portée sur un programme existant.  Dans le chapitre
+suivant, on montre comment la manipulation de portée peut être employée pour
+détourner l'interpréteur Narcissus.
 
 * READ Étendre un interpréteur par manipulation de portée
 /Chapitre principalement tiré d'un papier rejeté à DLS'15 et à SAC'16 [[cite:KNS-15b][KNS-15b]]/.
@@ -10020,6 +10057,7 @@ p1().eval() //: 3
 
 // or double eval
 p1(double({num})).eval() //: 6
+p1(double(double({num}))).eval() //: 12
 
 // or show!
 p1(show({num,plus})).show() //: "1+2"
