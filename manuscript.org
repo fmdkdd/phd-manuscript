@@ -35,7 +35,7 @@ different person then.'
  - [[#abstract][Abstract]]
  - [[#résumé][Résumé]]
  - [[#unwritten-introduction][UNWRITTEN Introduction]]
-   - [[#problème-étendre-un-interprèteur-par-de-multiple-analyses][Problème: étendre un interprèteur par de multiple analyses]]
+   - [[#problème-étendre-un-interpréteur-par-de-multiple-analyses][Problème: étendre un interpréteur par de multiple analyses]]
    - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
    - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
    - [[#survol][Survol]]
@@ -237,7 +237,7 @@ mais a un impact potentiel sur son efficacité et sa sûreté.  Le détournement
 donc une alternative légitime à la refactorisation dans ce scénario réaliste.
 
 * UNWRITTEN Introduction
-** Problème: étendre un interprèteur par de multiple analyses
+** Problème: étendre un interpréteur par de multiple analyses
 - Contexte de sécurité web.
 - Scripts de pages web passent par un interpréteur.
 - Sécuriser un script = analyser ses fonctionnalités
@@ -2271,11 +2271,11 @@ intéressés à appliquer la réflexion sur à d'autres systèmes, ce qu'ils app
 plus généralement "implémentation ouverte" [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]] [[cite:KLL+97][KLL+97]].
 
 [[cite:Rao-91][Rao-91]] commence par remarquer que tout système définit une /interface/ qui peut
-être vue comme un langage.  Tout système est donc aussi un interprète de son
+être vue comme un langage.  Tout système est donc aussi un interpréteur de son
 interface.  Alors, la réflexion dans les langages de programmation n'est qu'un
 cas particulier, et on peut l'appliquer à tout système qui expose une interface.
-Et comme un interprète réflexif permet au programme d'inspecter et de modifier
-le processus engendré par l'interprète, il en va de même pour un système plus
+Et comme un interpréteur réflexif permet au programme d'inspecter et de modifier
+le processus engendré par l'interpréteur, il en va de même pour un système plus
 général.
 
 Mais à quoi ressemble un système réflexif, en général?  Rao définit un système
@@ -2339,8 +2339,8 @@ optimisations du tableur.
 
 Mais il ne s'agit pas ici de simplement séparer le /mécanisme/ de la
 /politique/; un système à implémentation ouverte ne propose pas nécessairement
-toute liberté au client.  Tout comme un interprète peut n'exposer que certaines
-parties du langage par une interface réflexive, ici aussi un système à
+toute liberté au client.  Tout comme un interpréteur peut n'exposer que
+certaines parties du langage par une interface réflexive, ici aussi un système à
 implémentation ouverte peut choisir l'étendue de son interface d'implémentation.
 
 [[cite:KLL+97][KLL+97]] donne des recettes pour construire ces systèmes, en fonction des besoins
@@ -2367,7 +2367,7 @@ d'interface d'implémentation; le système à implémentation ouverte promet
 davantage de réutilisation de code.
 
 On ne spécifie pas /comment/ cette interface d'implémentation est rendue
-disponible par le système.  Dans les interprètes, la réflexion est souvent
+disponible par le système.  Dans les interpréteurs, la réflexion est souvent
 utilisée, mais d'autres solutions sont envisageables suivant le système:
 inversion de contrôle, patrons de conception Stratégie, n'importe quel moyen
 d'exécuter le code du client pour modifier le processus considéré comme étant de
