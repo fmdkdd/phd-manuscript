@@ -4987,7 +4987,9 @@ fonctionnalité de ~num.eval~ directement.
 
 #+BEGIN_SRC js -n -r
 (function(previous_eval) {                                      (ref:foal-ex13)
-  num.eval = function() { return previous_eval.call(this) * 2 }
+  num.eval = function() {
+    return previous_eval.call(this) * 2
+  }
 }(num.eval))
 
 num.new(1).eval() //: 2
@@ -9933,8 +9935,9 @@ s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
 // and `eval` is still supported
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3
 
-// Oh but wait, now we have a type problem if we are not careful
-s.plus.new(num.new(1), s.num.new(2)).show() //: TypeError: this.l.show is not a function
+// But wait, now we have a type problem if we are not careful
+s.plus.new(num.new(1), s.num.new(2)).show()
+//: TypeError: this.l.show is not a function
 
 // We can force the creation of expressions that support `show`
 with (show({num,plus})) {
@@ -10121,7 +10124,8 @@ enum Term {
 
 fn main() {
   let e1 = Term::Num(3);
-  let e2 = Term::Plus(Box::new(Term::Num(1)), Box::new(Term::Num(2)));
+  let e2 = Term::Plus(Box::new(Term::Num(1)),
+                      Box::new(Term::Num(2)));
 
   {
     use eval1::Eval;
