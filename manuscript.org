@@ -154,7 +154,7 @@ different person then.'
    - [[#construire-un-interpréteur-par-modules-1][Construire un interpréteur par modules]]
      - [[#code-complet-du-chapitre][Code complet du chapitre]]
      - [[#code-complet-de-lexemple-en-rust][Code complet de l'exemple en Rust]]
-     - [[#la-différence-subtile][La différence subtile]]
+     - [[#unread-la-différence-subtile][UNREAD La différence subtile]]
  - [[#références][Références]]
 
 * Acknowledgements                                                 :noexport:
@@ -4817,6 +4817,8 @@ plus coupler prématurément les dérivés de ~num~ et ~plus~ aux objets dont il
 dérivent; on abstrait donc ces objets parents à l'aide d'une fonction.
 
 #+BEGIN_side-figure
+#+CAPTION: Ajouter ~s~ n'affecte ni ~e1~ ni ~e2~: c'est un nouvel objet qui
+#+CAPTION: réutilise ~num~ et ~plus~ sans les modifier.
 [[file:img/foal-4.svg]]
 #+END_side-figure
 
@@ -4893,6 +4895,10 @@ On peut empêcher la création d'expressions mixtes par construction.  Il suffit
 de n'autoriser qu'un seul module de termes à la fois, en masquant les références
 vers les ~num~ et ~plus~ originaux.  C'est possible avec la construction ~with~
 de JavaScript.
+
+#+BEGIN_side-figure
+[[file:img/foal-5.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC js
 with (show({num,plus})) {
@@ -5008,6 +5014,10 @@ rétroactivement pour les termes créés.
 
 Comme pour ~show~, on peut ajouter cette modification localement.  Pour cela, on
 crée une fonction qui sert de module, paramétrée par l'objet ~num~ d'origine:
+
+#+BEGIN_side-figure
+[[file:img/foal-6.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC js
 var double = function(base) {
@@ -5226,6 +5236,10 @@ Mais ça nous demanderait de modifier le code de l'expression.  La construction
 ~with~ crée un environnement à partir de l'objet passé en argument, mais qui
 hérite de l'environnement courant.  Si à l'extérieur du ~with~, l'environnement
 contient les associations:
+
+#+BEGIN_side-figure
+[[file:img/foal-7.svg]]
+#+END_side-figure
 
 : Environnement global
 : num = objet de base
@@ -10179,16 +10193,53 @@ mod eval3 {
 
 #+END_SRC
 
-*** La différence subtile
+*** UNREAD La différence subtile
 :PROPERTIES:
 :CUSTOM_ID: foal-extra-subtle
 :END:
-Utiliser plusieurs ~with~ c'est composer les environnements.  Composer les
-fonctions, c'est retourner un objet unique qui sert d'environnement.  Le
-'fallback' fourni implicitement par le mécanisme d'environnements doit être
-émulé par la composition de fonctions avec ~__proto__~.
+Pour pouvoir activer plusieurs extensions de l'interpréteur en même temps, on a
+vu que l'on pouvait combiner les appels à ~with~:
 
-C'est assez clair avec un diagramme.
+#+BEGIN_side-figure
+[[file:img/foal-8.svg]]
+#+END_side-figure
+
+#+BEGIN_SRC js
+with(double({num})) { ... }
+#+END_SRC
+
+L'extension ~double~ retourne un objet qui redéfinit uniquement ~num~, et non
+~plus~.  Mais cela ne nous empêche pas d'utiliser ~plus~ à l'intérieur du bloc
+de ~with~, car ~plus~ est défini dans l'environnement global, et sa portée
+s'étend à l'intérieur du ~with~.  Par surcharge, les références à ~num~ dans le
+~with~ pointent vers l'objet créé par ~double~, et les références à ~plus~
+pointent vers l'objet ~plus~ de base.
+
+Maintenant, si on tente d'utiliser directement l'objet retourné par ~double~
+pour construire des arbres syntaxiques:
+
+#+BEGIN_SRC js
+var m = double(state{num,plus})
+
+with (m) {
+  getCount()
+  plus.new(num.new(1), num.new(2))
+}
+#+END_SRC
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+BEGIN_side-figure
+[[file:img/foal-9.svg]]
+#+END_side-figure
+
+Puisque ~state~ définit ~getCount~, on s'attend à ce que cette fonction soit
+disponible à l'intérieur du ~with~, même si on a composé ~state~ avec ~double~.
+Mais pour que ce soit le cas, il faut que l'objet renvoyé par ~double~ hérite de
+l'objet renvoyé par ~state~.  La différence subtile, c'est que combiner les
+~with~ utilise les environnements pour créer un lien de délégation entre les
+objets créés par les modules.  En utilisant un seul ~with~, on ne bénéficie plus
+de cette délégation implicite.  Il faut la rendre explicite, et c'est pour cela
+que l'on rajoute le ~__proto__: base~ dans l'objet retourné par les modules.
 
 * Références
 :PROPERTIES:
