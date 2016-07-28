@@ -35,15 +35,12 @@ different person then.'
  - [[#abstract][Abstract]]
  - [[#résumé][Résumé]]
  - [[#unwritten-introduction][UNWRITTEN Introduction]]
-   - [[#problème-étendre-un-interpréteur-par-de-multiple-analyses][Problème: étendre un interpréteur par de multiple analyses]]
-   - [[#but-mécanismes-pour-étendre-simplement-un-interpréteur-en-préservant-la-séparation-des-préoccupations][But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations]]
-   - [[#portée-interpréteurs-en-javascript][Portée: interpréteurs en JavaScript]]
-   - [[#survol][Survol]]
  - [[#le-problème-étendre-des-interpréteurs][Le problème: étendre des interpréteurs]]
    - [[#read-préliminaires-code-source-processus-et-spécification][READ Préliminaires: code source, processus, et spécification]]
    - [[#read-une-présentation-du-langage-javascript][READ Une présentation du langage JavaScript]]
      - [[#genèse-chez-netscape][Genèse chez Netscape]]
      - [[#un-langage-à-prototypes-qui-doit-ressembler-à-java][Un langage à prototypes qui doit ressembler à Java]]
+   - [[#unread-contexte-sécuriser-linformatique-en-nuage][UNREAD Contexte: sécuriser l'informatique en nuage]]
    - [[#read-Étude-de-cas-instrumentation-ad-hoc-de-narcissus][READ Étude de cas: instrumentation ad-hoc de Narcissus]]
    - [[#read-le-but-factoriser-les-changements][READ Le but: factoriser les changements]]
    - [[#read-quatre-axes-de-factorisation-pour-linstrumentation][READ Quatre axes de factorisation pour l'instrumentation]]
@@ -237,36 +234,6 @@ mais a un impact potentiel sur son efficacité et sa sûreté.  Le détournement
 donc une alternative légitime à la refactorisation dans ce scénario réaliste.
 
 * UNWRITTEN Introduction
-** Problème: étendre un interpréteur par de multiple analyses
-- Contexte de sécurité web.
-- Scripts de pages web passent par un interpréteur.
-- Sécuriser un script = analyser ses fonctionnalités
-  - runtime monitoring
-  - access control
-  - logging
-- Une analyse dynamique = une modification de l'interpréteur
-- Modification du code source en conflit avec la séparation des préoccupations
-  - perte d'extensibilité, perte de lisibilité, difficulté de maintenance...
-- Ajouter une analyse devrait être simple
-  - sans requérir des modifications invasives de l'interpréteur
-  - maximiser la flexibilité, minimiser le coût d'adoption
-- Ajouter une analyse ne doit pas impacter la lisibilité du code de l'interpréteur
-  - séparation des préoccupations
-- Analyses peuvent se composer sans effort particulier (lorsqu'elles
-  n'interfèrent pas entre elles)
-
-** But: mécanismes pour étendre simplement un interpréteur en préservant la séparation des préoccupations
-- Trouver des mécanismes, des constructions (patterns) pour étendre des interpréteurs
-- Améliorer la situation
-
-** Portée: interpréteurs en JavaScript
-- Mécanismes et patterns génériques, pas nécessairement liés à un langage
-  particulier.
-- Software engineering
-- Point de vue du programmeur
-  - Travail sur le code source, l'éditeur de programmes, les outils du programmeur
-
-** Survol
 * Le problème: étendre des interpréteurs
 :PROPERTIES:
 :CUSTOM_ID: problem
@@ -840,6 +807,77 @@ dans ~moveTo~ fait bien référence au receveur de l'appel, ici ~p1~.
 # et les manipulations de ce processus qui importent, pas le langage en lui-même.
 # Tout ce qu'on pourra présenter ici pourra être réalisé dans d'autres langages.
 # Il se trouve que certaines solutions sont plus idiomatiques à JavaScript.
+
+** UNREAD Contexte: sécuriser l'informatique en nuage
+JavaScript est le langage des programmes exécutés par les pages web.  Il est
+rare aujourd'hui de trouver une page web qui ne nécessite pas au moins un petit
+morceau de JavaScript, sans parler des applications web comme Facebook ou Google
+Maps qui rivalisent avec les applications classiques en taille de programme.
+
+Seulement, tous ces programmes posent un vrai problème de sécurité pour
+l'utilisateur.  Avant l'avènement d'Internet, exécuter un programme était un
+acte conscient et explicite: il fallait se procurer le programme (le plus
+souvent sur un support physique), puis l'installer, puis l'exécuter.  Bien sûr,
+il existait des programmes malveillants: virus, /malwares/ et autres portes
+dérobées qui pouvaient s'installer à votre insu, dissimulés dans le programme
+que vous vouliez installer, ou en utilisant des failles du système
+d'exploitation.  Mais quand bien même, pour que les programmes malveillants
+pénètrent votre ordinateur, il fallait un acte conscient: introduire une
+disquette, un CD-ROM, ou cliquer sur "Installer".  Même aujourd'hui,
+l'installation d'un nouveau logiciel requiert des droits d'administration sur la
+plupart des systèmes d'exploitation.  En revanche, dans un navigateur, les
+programmes JavaScript sont exécutés par défaut et sans demande de confirmation.
+
+Bien sûr, les navigateurs ont des mécanismes pour éviter que n'importe quel
+programme JavaScript vienne effacer votre disque dur lorsque vous aller sur
+Wikipédia.  Ces programmes sont exécutés dans ce qu'on appelle une /machine
+virtuelle/: ils ont un accès restreint aux fonctionnalités du système
+d'exploitation sous-jacent.  Par exemple, un programme JavaScript n'a pas accès
+aux fichiers stockés sur le disque.  Les applications web peuvent sauvegarder
+des données sur la machine, mais ces données sont écrites et gérées par le
+navigateur lui-même; l'application web interagit avec le navigateur pour les
+obtenir.  Le navigateur élève une barrière entre les programmes JavaScript et le
+système d'exploitation.
+
+#+BEGIN_aside
+Il faut comprendre que cette barrière n'est pas pour autant infaillible. Par
+malice, par erreur ou par inadvertance, elle peut comporter des failles qui
+permettront à un programme de la contourner.  Voir par exemple [[cite:firefox-exploit][firefox-exploit]].
+#+END_aside
+
+Néanmoins, les protections mises en place par le navigateur ne sont pas toujours
+suffisantes pour éviter les drames.  Par exemple, il n'y a pas de restrictions
+pour empêcher un programme JavaScript d'envoyer mon mot de passe à un serveur
+auquel il n'était pas destiné (voir [[cite:lastpass-fail][lastpass-fail]]).  On peut tenter d'y remédier
+en /analysant/ le programme.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+ref Information flow
+#+END_aside
+
+Analyser le programmer c'est l'exécuter afin d'en observer son comportement.
+L'analyse n'exécute le plus souvent qu'une /partie/ du programme; on pourra
+ainsi analyser le programme pour voir avec quels serveurs il tente de
+communiquer, mais sans réaliser cette communication.  De l'analyse, on peut
+tirer de l'information qui permettra de prendre une décision: est-ce que ce
+programme est malveillant ou bénin?  Les /analyses de flot d'information/ ont
+pour but de répondre à ce genre de questions.  Mais il y a d'autres analyses qui
+nous aident à améliorer le programme: Valgrind détecte les fuites de mémoire
+[[cite:valgrind][valgrind]], et les /profilers/ recensent le temps d'exécution de chaque fonction
+pour guider le programmeur lors d'une optimisation.
+
+Il est donc intéressant de pouvoir effectuer différentes analyses sur les
+programmes JavaScript.  Des analyses de flot d'information aideront à détecter
+des programmes malveillants, et des analyses de performance aideront à
+optimiser tous types de programmes.
+
+Mais pour pouvoir effectuer ces analyses, il faut avant tout les implémenter.
+Implémenter une analyse c'est essentiellement implémenter à un interpréteur.
+C'est une tâche qui nécessite un effort non trivial.  Une façon économe d'écrire
+une analyse est d'ailleurs de modifier un interpréteur existant plutôt que d'en
+construire un nouveau.  Mais, comme la section suivante va le montrer, cette
+solution n'est pas non plus idéale pour implémenter plusieurs analyses.
 
 ** READ Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
