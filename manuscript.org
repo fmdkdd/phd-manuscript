@@ -2056,9 +2056,6 @@ programme.
 :PROPERTIES:
 :CUSTOM_ID: chrono
 :END:
-Une chronologie de la modularité pour construire et faire évoluer des logiciels,
-centrée sur les langages de programmations.
-
 ** UNWRITTEN Apprivoiser le flot de contrôle: la programmation structurée
 #+BEGIN_epig
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
@@ -2089,9 +2086,9 @@ out in text space) and the process (spread out in time) as trivial as possible.
 #+BEGIN_side-figure
 [[file:img/dijkstra-process-program.svg]]
 
-L'objet du programmeur est le processus effectué par la machine, et manipulé
-indirectement via un programme.  Dijkstra tente de construire des programmes qui
-reflètent le comportement du processus.
+L'objet du programmeur est le processus effectué par la machine, mais ce
+processus n'est manipulé qu'indirectement via un programme.  Dijkstra tente de
+construire des programmes qui reflètent le comportement du processus.
 #+END_side-figure
 
 Dijkstra commence par établir une distinction cruciale entre le /programme/ tapé
@@ -2151,19 +2148,19 @@ Et c'est là que ~goto~ pose problème.  En utilisant un ~goto~, le processus pe
 continuer l'exécution vers n'importe quelle ligne du programme: même au beau
 milieu d'une procédure, ou d'une boucle.  Le système de coordonnée n'est plus
 suffisant pour connaître avec certitude l'état du processus, les valeurs des
-variables.  Il faudrait également savoir à tout moment le chemin exact emprunté
-par le processus.  Mais ce n'est plus un système de coordonnées: on ne peut plus
-raisonner /localement/ dans une boucle ou une procédure, il faut considérer
-l'intégralité du programme.
+variables.  Il faudrait également connaître à tout moment le chemin exact
+emprunté par le processus.  Mais ce n'est plus un système de coordonnées: on ne
+peut plus raisonner /localement/ dans une boucle ou une procédure, il faut
+considérer l'intégralité du programme.
 
-Pour Dijkstra, ~goto~ est une construction qui permet trop facilement de
-transformer le programme en véritable labyrinthe; d'obscurcir la correspondance
-entre le programme et le processus.  C'est une construction qui va donc à
-l'encontre du but qu'il a fixé en commençant la lettre.
+C'est pourquoi, d'après Dijkstra, ~goto~ est une construction qui permet trop
+facilement de transformer le programme en véritable labyrinthe; d'obscurcir la
+correspondance entre le programme et le processus.  C'est une construction qui
+va à l'encontre du but qu'il a énoncé en commençant la lettre.
 
-Mais la programmation structurée ne se réduit pas à l'abolition des ~goto~ dans
-un programme.  Au contraire, se concentrer sur le ~goto~ serait passer
-complètement à côté du message initial; Knuth le remarque très justement [[cite:Knu-74][Knu-74]]:
+La programmation structurée ne se réduit pas à l'abolition des ~goto~ dans un
+programme.  Au contraire, se concentrer sur le ~goto~ serait passer complètement
+à côté du message initial; Knuth le remarque très justement [[cite:Knu-74][Knu-74]]:
 
 #+BEGIN_QUOTE
 There has been far too much emphasis on GO TO elimination instead of the really
@@ -2175,15 +2172,13 @@ qualitative goal like good program structure.
 La programmation structurée tente simplement de résoudre les problèmes posés par
 la complexité croissante des programmes.  Les programmes pour les premiers
 ordinateurs, écrits en assembleur ou langage machine, avaient comme principal
-objectif d'utiliser au mieux les capacités de l'ordinateur.  L'assembleur est un
-langage flexible, qui offre notamment la possibilité de changer le programme
-chargé en mémoire pendant l'exécution (/self-modifying code/).  Pour optimiser
+objectif d'utiliser au mieux les capacités de l'ordinateur.  Pour optimiser
 l'utilisation de la mémoire, l'affectation des registres se fait à la main, en
 prenant garde qu'aucun code n'écrase les registres d'un autre.  Plus les
 machines deviennent rapides, et moins toutes ces techniques de programmation en
 assembleur deviennent nécessaires.  Le frein vient surtout de notre capacité à
-comprendre et gérer de larges programmes écrits dans des langages de plus
-haut niveau.  Wirth [[cite:Wir-74a][Wir-74a]] relate ce changement de contraintes:
+comprendre et gérer de larges programmes écrits dans des langages de plus haut
+niveau.  Wirth [[cite:Wir-74a][Wir-74a]] relate ce changement de contraintes:
 
 #+BEGIN_QUOTE
 As the power of computers on the one side, and the complexity and size of the
@@ -2197,8 +2192,10 @@ worthless if we cannot provide /reliability/.
 #+END_QUOTE
 
 La programmation structurée cherche donc à produire des programmes fiables avant
-toute chose.  Wirth la décrit comme un mouvement, une attitude plutôt qu'une
-liste de règles à suivre:
+toute chose.  L'efficacité est une préoccupation secondaire.  Ce qui importe,
+c'est de pouvoir écrire et comprendre des programmes complexes, malgré les
+limites de nos capacités cognitives.  Wirth parle d'un mouvement, une attitude
+plutôt qu'une liste de règles à suivre:
 
 #+BEGIN_QUOTE
 [Structured programming] is the expression of a conviction that the programmer's
@@ -2212,73 +2209,70 @@ manage intellectually, where we fully understand the totality of their
 implications.
 #+END_QUOTE
 
-Mais Wirth nous donne néanmoins des recettes.
+La programmation prône donc d'utiliser des langages qui maintiennent le système
+implicite de coordonnés de Dijkstra.  Des langages comme ALGOL et Pascal, dans
+lesquels les procédures n'ont qu'un seul point d'entrée et un seul point de
+sortie, et où les ~goto~ et autres sauts arbitraires sont proscrits.
 
-# GOTO is about single entry, single exit
+Seulement, en voulant reléguer l'efficacité à la seconde place, et avec elle les
+langages et constructions non structurés, on perd aussi en flexibilité.
+L'assembleur est un langage malléable, qui offre notamment la possibilité de
+changer le programme chargé en mémoire pendant son exécution (/self-modifying
+code/).  Et s'il est vrai que le ~goto~ peut être remplacé dans la plupart des
+cas par des constructions de boucles appropriées (~do while~, ~loop then~), son
+cousin moins populaire, ~comefrom~ offre des possibilités sans égales.
 
-# that can be done by composing sequence, condition, and repetition
+[segue comefrom as first diverting example]
 
-# this serves the overall view: hierarchical refinements, top-down approach
-
-
-
-
-
-
-
+# Mais Wirth nous donne néanmoins des recettes.
 
 # For Dij, there is something else than the program.  But it's not the theory of
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
 # knowledge the programmer has of that process.
 
-Argues for a single entry point into procedures, and single exit point.  Not
-jumping directly in the middle, or exiting prematurely.
+# On the legacy front, most programmers are cargo-culting the fear of GOTO (though
+# Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
+# it.  However, the discipline of single-exit is more controversial, as most
+# modern languages offer constructs for early exits from procedures (return
+# statement) or from loops (break and continue statements, sometimes with
+# labels).
 
-Exemplified by ALGOL, and Pascal [[cite:Wir-74][Wir-74]] [[cite:Wir-74a][Wir-74a]].
+# The fear of GOTO is an example of focusing on the wrong issue: structured
+# programming is a proposal for clearer programs.  Blindly removing all GOTOs and
+# labels from an unstructured program does not make it structured.  The focus is
+# on writing programs that clearly reflect their dynamic process.  As Parnas noted
+# [[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
+# processes, not by adding a "module" statement to the language.  The same
+# situation arises here.
 
-On the legacy front, most programmers are cargo-culting the fear of GOTO (though
-Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
-it.  However, the discipline of single-exit is more controversial, as most
-modern languages offer constructs for early exits from procedures (return
-statement) or from loops (break and continue statements, sometimes with
-labels).
+# Knuth finit sa défense du GOTO par imaginer les systèmes de manipulation de
+# programmes du futur:
 
-The fear of GOTO is an example of focusing on the wrong issue: structured
-programming is a proposal for clearer programs.  Blindly removing all GOTOs and
-labels from an unstructured program does not make it structured.  The focus is
-on writing programs that clearly reflect their dynamic process.  As Parnas noted
-[[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
-processes, not by adding a "module" statement to the language.  The same
-situation arises here.
+# #+BEGIN_QUOTE
+# Program manipulation systems appear to be a promising future tool which will
+# help programmers to improve their programs, and to enjoy doing it.  Standard
+# operating procedure nowadays is usually to hand code critical portions of a
+# routine in assembly language.  Let us hope such assemblers will die out, and we
+# will see several levels of language instead: At the highest levels we will be
+# able to write abstract programs, while at the lowest levels we will be able to
+# control storage and register allocation, and to suppress subscript range
+# checking, etc.  With an integrated system it will be possible to do debugging
+# and analysis of the transformed program using a higher level language for
+# communication.  All levels will, of course, exhibit program structure
+# syntactically so that our eyes can grasp it.
+# #+END_QUOTE
 
-Knuth finit sa défense du GOTO par imaginer les systèmes de manipulation de
-programmes du futur:
+# L'idée est tentante, mais peut-être trop enthousiaste.  Knuth écrit en 1974, et
+# je peux constater que 40 ans plus tard la situation n'est pas celle prédite.
+# Bien qu'il existe de nombreux langages de programmation, et beaucoup qui sont
+# qualifiés de "haut-niveau", aucun ne permet de manipuler différents niveaux
+# d'abstraction comme le décrit Knuth.  Aucun ne réconcilie la perte de contrôle
+# et d'efficacité avec la montée en abstraction.
 
-#+BEGIN_QUOTE
-Program manipulation systems appear to be a promising future tool which will
-help programmers to improve their programs, and to enjoy doing it.  Standard
-operating procedure nowadays is usually to hand code critical portions of a
-routine in assembly language.  Let us hope such assemblers will die out, and we
-will see several levels of language instead: At the highest levels we will be
-able to write abstract programs, while at the lowest levels we will be able to
-control storage and register allocation, and to suppress subscript range
-checking, etc.  With an integrated system it will be possible to do debugging
-and analysis of the transformed program using a higher level language for
-communication.  All levels will, of course, exhibit program structure
-syntactically so that our eyes can grasp it.
-#+END_QUOTE
-
-L'idée est tentante, mais peut-être trop enthousiaste.  Knuth écrit en 1974, et
-je peux constater que 40 ans plus tard la situation n'est pas celle prédite.
-Bien qu'il existe de nombreux langages de programmation, et beaucoup qui sont
-qualifiés de "haut-niveau", aucun ne permet de manipuler différents niveaux
-d'abstraction comme le décrit Knuth.  Aucun ne réconcilie la perte de contrôle
-et d'efficacité avec la montée en abstraction.
-
-Mais peut-être que Knuth s'en est lui-même rendu compte.  Le langage du futur
-était annoncé pour 1984, l'année où il publie son système de Literate
-Programming qui permet de mêler une description haut-niveau du programme en
-toutes lettres, et le code machine bas-niveau.
+# Mais peut-être que Knuth s'en est lui-même rendu compte.  Le langage du futur
+# était annoncé pour 1984, l'année où il publie son système de Literate
+# Programming qui permet de mêler une description haut-niveau du programme en
+# toutes lettres, et le code machine bas-niveau.
 
 ** READ Modéliser le monde: la programmation par objets
 #+BEGIN_full-figure
