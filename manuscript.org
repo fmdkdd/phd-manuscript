@@ -9985,18 +9985,17 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3
 
 // But wait, now we have a type problem if we are not careful
 s.plus.new(num.new(1), s.num.new(2)).show()
-//: TypeError: this.l.show is not a function
+//! TypeError: this.l.show is not a function
 
 // We can force the creation of expressions that support `show`
 with (show({num,plus})) {
-  plus.new(num.new(1), num.new(2)).show()
-} //: "1+2"
+  plus.new(num.new(1), num.new(2)).show() //: "1+2"
+}
 
 // `with` is not necessary; we could use a function
-;(function({num}) {
-  return num.new(1).show()
+(function({num}) {
+  num.new(1).show() //: "1"
 }(show({num,plus})))
-//: "1"
 
 // but that requires stating explicitly what terms we want
 // `with is more convenient
@@ -10036,8 +10035,8 @@ var double = function(base) {
 
 // `double` is activated in `with`
 with (double({num})) {
-  plus.new(num.new(1), num.new(2)).eval()
-} //: 6
+  plus.new(num.new(1), num.new(2)).eval() //: 6
+}
 
 // but not outside, where the base `eval` is used
 plus.new(num.new(1), num.new(2)).eval() //: 3
@@ -10046,8 +10045,8 @@ plus.new(num.new(1), num.new(2)).eval() //: 3
 with (double({num})) {
   with (double({num})) {
     with (double({num})) {
-      plus.new(num.new(1), num.new(2)).eval()
-}}} //: 24
+      plus.new(num.new(1), num.new(2)).eval() //: 24
+}}}
 
 // Extensions with local state
 var state = function(base) {
@@ -10065,46 +10064,37 @@ var state = function(base) {
 }
 
 with (state({num,plus})) {
-  [
-  getCount(),
-  plus.new(num.new(1), num.new(2)).eval(),
-  getCount(),
-  ]
-} //: [0,3,3]
+  getCount() //: 0
+  plus.new(num.new(1), num.new(2)).eval() //: 3
+  getCount() //: 3
+}
 
 // Can combine
 with (double({num})) {
   with (state({num, plus})) {
-    [
-    getCount(),
-    plus.new(num.new(1), num.new(2)).eval(),
-    getCount(),
-    ]
-}} //: [0,6,3]
+    getCount() //: 0
+    plus.new(num.new(1), num.new(2)).eval() //: 6
+    getCount() //: 3
+}}
 
 // `state` and `double` commute
 with (state({num, plus})) {
   with (double({num})) {
-    [
-    getCount(),
-    plus.new(num.new(1), num.new(2)).eval(),
-    getCount(),
-    ]
-}} //: [0,6,3]
+    getCount() //: 0
+    plus.new(num.new(1), num.new(2)).eval() //: 6
+    getCount() //: 3
+}}
 
 // Can combine with `show` even
 with (state({num, plus})) {
   with (double({num})) {
     with (show({num, plus})) {
-      var n
-      [
-      getCount(),
-      n = plus.new(num.new(1), num.new(2)),
-      n.eval(),
-      getCount(),
-      n.show(),
-      ]
-}}} //: [0,Object {l:Object {n:1},r:Object {n:2}},6,3,"1+2"]
+      getCount() //: 0
+      var n = plus.new(num.new(1), num.new(2))
+      n.eval() //: 6
+      getCount() //: 3
+      n.show() //: "1+2"
+}}}
 
 // Can compose modules without chaining `with` blocks
 var d = double(double(double({num})))
@@ -10115,8 +10105,8 @@ var t = plus.new(num.new(1), num.new(2))
 
 // and 'activate' the extension at evaluation time
 with (double({num})) {
-  t.eval()
-} //: 3
+  t.eval() //: 3
+}
 
 // However, we can wrap the whole `with` in a function
 
@@ -10143,16 +10133,14 @@ p1(show(state(double({num, plus})))).show() //: "1+2"
 var p2 = function(m = {}) {
   with (m) {
     var n = plus.new(num.new(1), num.new(2))
-    return [
-    getCount(),
-    n.eval(),
-    getCount(),
-    n.show(),
-    ]
+    getCount() //: 0
+    n.eval() //: 6
+    getCount() //: 3
+    n.show() //: "1+2"
   }
 }
 
-p2(show(state(double({num, plus})))) //: [0,6,3,"1+2"]
+p2(show(state(double({num, plus}))))
 #+END_SRC
 
 *** Code complet de l'exemple en Rust
