@@ -16,7 +16,7 @@
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
 
-#+TODO: UNWRITTEN(w) UNREAD(r) | READ(d)
+#+TODO: UNWRITTEN(w) UNREAD INPROGRESS | READ
 
 #+BEGIN_QUOTE
 "I could tell you my adventures--beginning from this morning," said Alice a
@@ -50,8 +50,9 @@ different person then.'
    - [[#read-quatre-axes-de-factorisation-pour-linstrumentation][READ Quatre axes de factorisation pour l'instrumentation]]
    - [[#read-refactoriser-narcissus-une-solution-coûteuse][READ Refactoriser Narcissus: une solution coûteuse]]
    - [[#unread-lidée-le-détournement-de-programme][UNREAD L'idée: le détournement de programme]]
- - [[#une-chronologie-du-détournement-dans-les-langages-de-programmation][Une chronologie du détournement dans les langages de programmation]]
-   - [[#unwritten-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNWRITTEN Apprivoiser le flot de contrôle: la programmation structurée]]
+ - [[#inprogress-une-chronologie-du-détournement-dans-les-langages-de-programmation][INPROGRESS Une chronologie du détournement dans les langages de programmation]]
+   - [[#unread-apprivoiser-le-flot-de-contrôle-la-programmation-structurée][UNREAD Apprivoiser le flot de contrôle: la programmation structurée]]
+   - [[#inprogress-la-programmation-littéraire][INPROGRESS La programmation littéraire]]
    - [[#read-modéliser-le-monde-la-programmation-par-objets][READ Modéliser le monde: la programmation par objets]]
      - [[#classes-et-héritage-smalltalk][Classes et héritage: Smalltalk]]
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
@@ -66,7 +67,6 @@ different person then.'
        - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
        - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
    - [[#tisser-les-facettes-dun-artefact-dinnombrables-dimensions][Tisser les facettes d'un artefact d'innombrables dimensions]]
-     - [[#read-la-programmation-littéraire][READ La programmation littéraire]]
      - [[#read-la-séplution][READ La séplution]]
      - [[#read-linformation-transparente][READ L'information transparente]]
    - [[#unwritten-limiter-les-effets-de-bord-la-programmation-fonctionnelle][UNWRITTEN Limiter les effets de bord: la programmation fonctionnelle]]
@@ -2052,11 +2052,11 @@ quelles structures pourraient s'adapter au problème si l'on voulait refactorise
 l'interpréteur.  Et enfin, voir quels mécanismes permettent de détourner un
 programme.
 
-* Une chronologie du détournement dans les langages de programmation
+* INPROGRESS Une chronologie du détournement dans les langages de programmation
 :PROPERTIES:
 :CUSTOM_ID: chrono
 :END:
-** UNWRITTEN Apprivoiser le flot de contrôle: la programmation structurée
+** UNREAD Apprivoiser le flot de contrôle: la programmation structurée
 #+BEGIN_epig
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
 Japan, who cheerfully complained that he was always being eliminated.
@@ -2209,70 +2209,371 @@ manage intellectually, where we fully understand the totality of their
 implications.
 #+END_QUOTE
 
-La programmation prône donc d'utiliser des langages qui maintiennent le système
-implicite de coordonnés de Dijkstra.  Des langages comme ALGOL et Pascal, dans
-lesquels les procédures n'ont qu'un seul point d'entrée et un seul point de
-sortie, et où les ~goto~ et autres sauts arbitraires sont proscrits.
+La programmation structurée prône donc l'utilisation des langages qui
+maintiennent le système implicite de coordonnés de Dijkstra.  Des langages comme
+ALGOL et Pascal, dans lesquels les procédures n'ont qu'un seul point d'entrée et
+un seul point de sortie, et où les ~goto~ et autres sauts arbitraires sont
+proscrits.
 
 Seulement, en voulant reléguer l'efficacité à la seconde place, et avec elle les
 langages et constructions non structurés, on perd aussi en flexibilité.
 L'assembleur est un langage malléable, qui offre notamment la possibilité de
 changer le programme chargé en mémoire pendant son exécution (/self-modifying
-code/).  Et s'il est vrai que le ~goto~ peut être remplacé dans la plupart des
-cas par des constructions de boucles appropriées (~do while~, ~loop then~), son
-cousin moins populaire, ~comefrom~ offre des possibilités sans égales.
+code/).  Modifier le code du programme de cette façon va à l'encontre des
+principes de la programmation structurée.  De même, le ~goto~ décrié par
+Dijkstra a des avantages qui ne sont pas couverts par les constructions
+de boucles usuelles [[cite:Knu-74][Knu-74]].
 
-[segue comefrom as first diverting example]
+Autre exemple: le ~COMEFROM~ [[cite:Cla-73][Cla-73]].  Le ~COMEFROM~ est le dual du ~GOTO~: un
+~GOTO 10~ transfère le contrôle à la ligne 10, alors qu'un ~COMEFROM 10~
+/capture/ le contrôle après l'exécution de la ligne 10.
 
-# Mais Wirth nous donne néanmoins des recettes.
+#+ATTR_HTML: :style margin-top:-3rem
+#+BEGIN_side-figure
+[[file:img/aop5.svg]]
+
+~COMEFROM~ est le dual de ~GOTO~.
+#+END_side-figure
+
+#+BEGIN_EXAMPLE fortran
+10 J=1
+11 COME FROM 20
+12 WRITE (6,40) J STOP
+13 COME FROM 10
+20 J=J+2
+40 FORMAT (14)
+#+END_EXAMPLE
+
+Dans cet exemple tiré de [[cite:Cla-73][Cla-73]], les lignes exécutées sont, dans l'ordre: 10,
+13, 20, 11, 12.  ~STOP~ termine le programme à la ligne 12, et la ligne 40 n'est
+jamais exécutée.  Le flot de contrôle n'est pas évident à suivre.  Après chaque
+ligne, il faut regarder tout le programme pour voir s'il y a un ~COME FROM~ où
+poursuivre l'exécution.  Ici c'est assez simple de se débarrasser des ~COME
+FROM~ pour obtenir le programme équivalent:
+
+#+BEGIN_EXAMPLE fortran
+10 J=1
+20 J=J+2
+12 WRITE (6,40) J STOP
+#+END_EXAMPLE
+
+Sans ~COME FROM~, le programme est limpide.  Ces deux exemples illustrent la
+correspondance entre le programme et le processus.  La correspondance est plus
+direct dans le second programme; ce programme est donc plus clair.  ~COMEFROM~
+rend le code encore plus difficile à suivre qu'un ~GOTO~, et c'est bien
+l'intention de son auteur, qui voit le débat autour du ~GOTO~ avec humour:
+
+#+BEGIN_QUOTE
+Nearly six years after publication of Dijkstra's now-famous letter, the subject
+of GOTO-less programming still stirs considerable controversy.
+
+The author has developed a new language construct on which, he believes, both
+the pro- and the anti-GOTO factions can agree.
+#+END_QUOTE
+
+#+BEGIN_aside
+L'idée du ~COME FROM~ n'est pas éloignée du mécanisme de méthode d'aspects
+([[#aop]]).
+#+END_aside
+
+Même s'il faut voir ~COME FROM~ comme une blague (aucun langage ne l'inclut),
+un tel mécanisme n'est pas totalement dénué d'intérêt.  Intuitivement, ~COME
+FROM~ peut remplacer un ~GOTO~:
+
+#+BEGIN_EXAMPLE fortran
+10 PRINT CHR$(205.5+RND(1))
+20 GOTO 10
+#+END_EXAMPLE
+
+#+BEGIN_EXAMPLE fortran
+10 COME FROM 20
+20 PRINT CHR$(205.5+RND(1))
+#+END_EXAMPLE
+
+Dans ces deux programmes, ~GOTO~ et ~COME FROM~ permettent tous deux de réaliser
+une la boucle infinie.  Mais il y a une différence notable: ~GOTO~ influe sur le
+flot d'exécution qui le suit, tandis que ~COME FROM~ capture l'exécution qui le
+précède.  En combinant les deux, on pourrait modifier un programme à distance:
+
+#+BEGIN_side-figure
+[[file:img/cometo.svg]]
+#+END_side-figure
+
+#+BEGIN_EXAMPLE fortran
+10 X=1
+20 PRINT X
+
+... bien plus loin ...
+
+4040 COME FROM 10
+4041 X=12
+4042 GOTO 20
+#+END_EXAMPLE
+
+Dans cet exemple, le programme affiche 12.  Après l'affectation ligne 10,
+l'exécution est capturée par le ~COME FROM~ ligne 4040, puis on change la valeur
+de ~X~ avant de retourner à l'affichage ligne 20.
+
+#+BEGIN_aside
+Ajouter du code sans modifier le code existant est d'autant plus utile quand on
+programme sur des cartes perforées, où insérer des lignes au début du programme
+menace de décaler les cartes suivantes, et donc de devoir renouveler
+l'ensemble.  Mais c'est un problème rarement rencontré de nos jours.
+#+END_aside
+
+Notons que sans les lignes 4040, 4041 et 4042, le programme affiche 1.  Si on
+rajoute ces lignes, on modifie le comportement du programme simplement en
+rajoutant du code source, sans modifier du code existant.  C'est un exemple de
+détournement de programme.  Le code supplémentaire interrompt et capture le flot
+de contrôle, exécute de nouvelles instructions, et retourne à l'endroit de
+l'interruption.
+
+Alors, bien que Dijkstra nous mette en garde contre les constructions qui
+manipulent le flot de contrôle, elles ont aussi leur intérêt. Les utiliser sans
+vergogne certes obscurcit la correspondance entre le programme et son processus,
+mais les utiliser raisonnablement semble offrir une flexibilité qui n'a pas
+d'analogues.  Se priver de ces constructions serait se priver de cette
+flexibilité.  Il est alors dommage de constater que le folklore interprète la
+proclamation de Dijkstra littéralement.  Le ~GOTO~ est rarement inclus dans les
+langages modernes, et dans les langages où il l'est, son utilisation est
+vilipendée.  Le message de la programmation structurée est de clarifier la
+correspondance programme-processus, pas d'abolir les ~GOTO~.
 
 # For Dij, there is something else than the program.  But it's not the theory of
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
 # knowledge the programmer has of that process.
 
-# On the legacy front, most programmers are cargo-culting the fear of GOTO (though
-# Knuth argues that it has its uses [[cite:Knu-74][Knu-74]]).  Few languages in use today propose
-# it.  However, the discipline of single-exit is more controversial, as most
-# modern languages offer constructs for early exits from procedures (return
-# statement) or from loops (break and continue statements, sometimes with
-# labels).
+** INPROGRESS La programmation littéraire
+:PROPERTIES:
+:CUSTOM_ID: proglit
+:END:
+La programmation structurée recommandait une discipline de construction du
+programme du haut vers le bas, par raffinements successifs.  On commence par une
+description de haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié
+le programme dans le moindre détail.
 
-# The fear of GOTO is an example of focusing on the wrong issue: structured
-# programming is a proposal for clearer programs.  Blindly removing all GOTOs and
-# labels from an unstructured program does not make it structured.  The focus is
-# on writing programs that clearly reflect their dynamic process.  As Parnas noted
-# [[cite:DBB+03][DBB+03]], modularity is solved by improving the design and documentation
-# processes, not by adding a "module" statement to the language.  The same
-# situation arises here.
+Knuth [[cite:Knu-84][Knu-84]] remarque que sa façon de construire les programmes va souvent
+à l'encontre de ce principe:
 
-# Knuth finit sa défense du GOTO par imaginer les systèmes de manipulation de
-# programmes du futur:
+#+BEGIN_QUOTE
+I knew that I often created major parts of programs in a "bottom-up" fashion,
+starting with the definitions of basic procedures and data structures and
+gradually building more and more powerful subroutines.  I had the feeling that
+top-down and bottom-up were opposing methodologies: one more suitable for
+program exposition and the other more suitable for program creation.
+#+END_QUOTE
 
-# #+BEGIN_QUOTE
-# Program manipulation systems appear to be a promising future tool which will
-# help programmers to improve their programs, and to enjoy doing it.  Standard
-# operating procedure nowadays is usually to hand code critical portions of a
-# routine in assembly language.  Let us hope such assemblers will die out, and we
-# will see several levels of language instead: At the highest levels we will be
-# able to write abstract programs, while at the lowest levels we will be able to
-# control storage and register allocation, and to suppress subscript range
-# checking, etc.  With an integrated system it will be possible to do debugging
-# and analysis of the transformed program using a higher level language for
-# communication.  All levels will, of course, exhibit program structure
-# syntactically so that our eyes can grasp it.
-# #+END_QUOTE
+Mais les deux approches ne sont pas nécessairement antagonistes si l'on prend du
+recul.  Ces approches supposent une structure hiérarchique, que le programme est
+un arbre.  Knuth considère qu'on peut voir un programme aussi bien comme un
+réseau, comme une /toile d'araignée/.  Ce qui importe, c'est d'exprimer les
+relations qui forment ce réseau:
 
-# L'idée est tentante, mais peut-être trop enthousiaste.  Knuth écrit en 1974, et
-# je peux constater que 40 ans plus tard la situation n'est pas celle prédite.
-# Bien qu'il existe de nombreux langages de programmation, et beaucoup qui sont
-# qualifiés de "haut-niveau", aucun ne permet de manipuler différents niveaux
-# d'abstraction comme le décrit Knuth.  Aucun ne réconcilie la perte de contrôle
-# et d'efficacité avec la montée en abstraction.
+#+BEGIN_QUOTE
+A complex piece of software consists of simple parts and simple relations
+between those parts; the programmer's task is to state those parts and those
+relationships, in whatever order is best for human comprehension – not in some
+rigidly determined order like top-down or bottom-up.
+#+END_QUOTE
 
-# Mais peut-être que Knuth s'en est lui-même rendu compte.  Le langage du futur
-# était annoncé pour 1984, l'année où il publie son système de Literate
-# Programming qui permet de mêler une description haut-niveau du programme en
-# toutes lettres, et le code machine bas-niveau.
+#+ATTR_HTML: :style margin-top:-7rem
+#+BEGIN_side-figure
+[[file:img/knuth0.svg]]
+
+Un programme ressemble davantage à un réseau qu'à un arbre.
+#+END_side-figure
+
+WEB est le système de /programmation littéraire/ développé par Knuth pour
+permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
+contient du Pascal et du TeX mêlés.  Il ne s'agit pas simplement d'écrire des
+commentaires autour du code; plutôt l'inverse.  Knuth souhaite décrire le
+programme /avant tout/ pour un humain, et en second lieu pour la machine:
+
+#+BEGIN_QUOTE
+Instead of imagining that our main task is to instruct a /computer/ what to do,
+let us concentrate rather on explaining to /human beings/ what we want to do.
+#+END_QUOTE
+
+La machine n'a que faire des considérations de style, ou de l'ordre de
+présentation du programme; le code source suffit.  Pour l'humain en revanche,
+les explications sont très utiles pour comprendre le fonctionnement du programme
+et les intentions de son auteur.
+
+Knuth écrit un programme WEB comme il écrit un article: il explique les grandes
+lignes, puis fournit les détails dans un second temps.  L'exemple qu'il donne
+est un programme qui liste les 1000 premiers nombres premiers:
+
+#+BEGIN_EXAMPLE -n -r
+@* Printing primes: An example of \WEB.
+The following program is essentially the same as
+Edsger Dijkstra's "first example of step-wise
+program composition." ...
+
+@<Program to print...@>=
+program print_primets(output);
+const @!m = 1000;
+@<Other constants of the program@>@;               (ref:lit0)
+var @<Variables of the program@>@;
+begin @<Print the first |m| prime numbers@>;
+end.
+#+END_EXAMPLE
+
+La première partie est écrite en TeX; le ~@*~ dénote une section.  Toutes les
+commande usuelles de TeX sont disponibles, ce qui permet en particulier d'écrire
+des mathématiques sans être limité par la table des caractères ASCII.
+
+La seconde partie est le programme Pascal.  Ces 6 lignes couvrent l'intégralité
+du programme, mais le contenu principal est décrit dans d'autres sections.  Par
+exemple, la ligne [[(lit0)]] fait référence à une section qui contient toutes
+les constantes déclarées par le programme.  La ligne [[(lit0)]] donne au lecteur
+du programme une idée du code qui va être exécuté ici (des affectations de
+constantes), mais le programmeur n'a pas à donner ces détails maintenant.  Tout
+ce que le lecteur voit pour l'instant, c'est la structure du programme.
+
+Plus loin dans le document, les constantes sont définies avec l'opérateur ~=~:
+
+#+BEGIN_SRC pascal
+@<Other constants of the program@>=
+rr = 50;
+cc = 4;
+ww = 10;
+#+END_SRC
+
+C'est le code qui va être inséré à la ligne [[(lit0)]] de l'exemple précédent.  Les
+constantes sont décrites, mais dans un second temps.  D'après Knuth, c'est
+l'ordre "psychologiquement correct": l'ordre dans lequel on comprend mieux le
+programme.  Le langage WEB permet d'écrire le programme dans cet ordre.
+
+D'ailleurs, il est possible de rajouter du code à une section ultérieurement,
+une sorte d'/addendum/:
+
+#+BEGIN_SRC pascal
+@<Other constants of the program@>+=
+ord_max = 30;
+#+END_SRC
+
+En l'occurrence, cette constante est définie /après/ sa première apparition
+dans du code.  Un peu au dessus, on peut lire:
+
+#+BEGIN_SRC pascal
+@<Variables of the program@>+=
+ord: 2..ord_max;
+#+END_SRC
+
+La valeur maximale que peut prendre ~ord~ est d'abord justifiée
+mathématiquement, avant d'être définie en code.  L'opérateur ~+=~, permet de
+rajouter du code à une section, de n'importe quel point du document source.
+C'est particulièrement adapté pour les constantes et les variables, qui en
+Pascal doivent être déclarées au début du programme.  Mais toutes les variables
+ne sont pas utilisées par toutes les parties du programme; d'où le mécanisme de
+concaténation de WEB qui permet de regrouper les variables avec le morceau de
+code qui les utilise.  C'est une sorte de regroupement des préoccupations.
+
+Le document source contient donc du TeX et du Pascal.  À partir de ce source,
+deux documents sont générés par deux programmes différents: TANGLE et WEAVE.
+TANGLE reconstruit le programme Pascal monolithique; il parcourt les sections et
+remplace les références par leur contenu, afin d'émettre du code qui pourra être
+accepté par un compilateur Pascal.  WEAVE produit le document lisible par un
+humain et imprimable.  Il numérote les sections et introduit des liens pour
+chaque référence; il indique également quelles sections utilisent quel code,
+pour permettre au lecteur de s'y retrouver sur un format papier.  Le document
+est le /programme littéraire/: une exposition structurée du programme, qui
+contient à la fois tout le programme et les explications de chaque morceau.
+
+#+ATTR_HTML: :style margin-top:-15rem
+#+BEGIN_side-figure
+[[file:img/knuth1.svg]]
+
+À partir d'un programme littéraire WEB, WEAVE produit un document imprimable, et
+TANGLE produit l'exécutable.
+#+END_side-figure
+
+Il y a deux différences majeures entre un programme littéraire et un programme
+agrémenté de commentaires classiques.  Dans un programme classique, la structure
+du code est imposée par le langage de programmation, ainsi que l'ordre
+d'apparition des fonctions ou des variables.  Lire le code pour le comprendre
+demande de suivre les appels, et de savoir distinguer les parties essentielles à
+la fonctionnalité des détails annexes (comme le traitement d'erreurs, ou de cas
+particuliers rares).  Dans un programme littéraire, l'ordre est imposé par le
+discours, l'explication du programme.  La structure est donc complètement
+renversée: l'explication domine, et le programme est secondaire; il découle de
+l'explication.
+
+Mais la programmation littéraire, par le mécanisme des sections, permet
+également de recomposer les éléments du programme.  Les variables peuvent être
+définies à plusieurs endroits du document.  Les traitements des erreurs communes
+à plusieurs fonctions peuvent être relocalisés et décrits dans une même annexe.
+Seuls les langages de programmation qui ont des macros suffisamment flexibles
+peuvent permettre cette recomposition du code.  Un programme littéraire vient
+ajouter cette fonctionnalité au dessus de n'importe quel langage.
+
+#+ATTR_HTML: :style margin-top:-3rem
+#+BEGIN_aside
+WEB est définit pour le langage Pascal.  Mais d'autres implémentations de la
+programmation littéraire peuvent s'appliquer à tous les langages.  Noweb et Org
+mode sont deux exemples.
+#+END_aside
+
+La programmation littéraire permet de séparer les préoccupations.  Knuth
+n'utilise pas le terme, mais donne un exemple générique d'une procédure ~update~
+qui met à jour une structure de données:
+
+#+BEGIN_EXAMPLE
+procedure update;
+begin if (input data is invalid) then
+  (Issue an error message and try to recover);
+(Update the data structure);
+end.
+#+END_EXAMPLE
+
+Dans un programme classique, le code pour traiter l'erreur et le code pour
+mettre à jour la structure sont tous deux placés dans la procédure.  Or, si le
+code de la mise à jour est trivial (une ou deux lignes), et que le traitement de
+l'erreur ne l'est pas (10-15 lignes), il y a un déséquilibre.  Traiter le cas
+particulier prend une place disproportionnée par rapport à la fonctionnalité
+essentielle de la procédure.  Knuth pense qu'un programmeur, /inconsciemment/,
+tente de minimiser le code du traitement d'erreur pour rétablir une proportion
+en accord avec l'importance de chaque morceau de code.  En conséquence, le
+traitement de l'erreur sera peut-être incomplet.
+
+Mais dans un programme littéraire, le code du traitement de l'erreur n'est que
+mentionné dans la procédure.  Les détails apparaîtront plus loin, dans une
+section dédiée, où le programmeur a tout le loisir d'écrire le traitement
+d'erreur le plus exhaustif sans entraîner un quelconque déséquilibre.
+
+Il faut certainement fournir plus d'efforts pour écrire un programme littéraire.
+Là où un programme classique peut se contenter du code et de quelques
+commentaires, un programme littéraire encourage la documentation du raisonnement
+derrière le code, ce qui demande de clarifier toutes les décisions faites par
+le programmeur.  Knuth nous rappelle que ce n'est pas forcément un désavantage
+de la méthode:
+
+#+BEGIN_QUOTE
+I had known for a long time that the programs I construct for publication in a
+book, or the programs that I construct in front of a class, have tended to be
+comparatively free of errors, because I am forced to clarify my thoughts as I do
+the programming.  By contrast, when writing for myself alone, I have often taken
+shortcuts that proved later to be dreadful mistakes.  It's harder for me to fool
+myself in such ways when I'm writing a WEB program, because I'm in "expository
+mode" (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
+less debugging time.
+#+END_QUOTE
+
+-----
+
+La programmation littéraire change les priorités du programmeur.  Dans un
+programme classique, on construit une suite d'instructions valides pour la
+machine d'abord, et un programme compréhensible par autrui en second lieu.  Dans
+un programme littéraire, la priorité est de communiquer un raisonnement à
+l'humain, et dans un second temps produire un programme pour la machine.
+
+WEB est le langage proposé par Knuth qui permet de recomposer les programmes
+Pascal selon le sens "psychologiquement correct"; le sens de l'explication
+naturel d'un article ou livre technique.  WEB permet de définir du code
+partiellement, qui contient des références vers les parties manquantes.  Le
+"code source" mêle prose (en TeX) et code (en Pascal), et deux compilateurs
+traversent la source pour produire soit un document imprimable pour le lecteur,
+soit un programme exécutable par la machine.
 
 ** READ Modéliser le monde: la programmation par objets
 #+BEGIN_full-figure
@@ -3615,238 +3916,6 @@ si elle ne faisait pas partie de la section précédente, trouverait sa place da
 celle-ci.  Les thèmes de ce chapitre sont un autre exemple d'objet aux
 nombreuses dimensions, irréconciliables sous une seule décomposition.
 #+END_aside
-
-*** READ La programmation littéraire
-:PROPERTIES:
-:CUSTOM_ID: proglit
-:END:
-La programmation structurée recommandait une discipline de construction du
-programme du haut vers le bas, par raffinements successifs.  On commence par une
-description de haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié
-le programme dans le moindre détail.
-
-Knuth [[cite:Knu-84][Knu-84]] remarque que sa façon de construire les programmes va souvent
-à l'encontre de ce principe:
-
-#+BEGIN_QUOTE
-I knew that I often created major parts of programs in a "bottom-up" fashion,
-starting with the definitions of basic procedures and data structures and
-gradually building more and more powerful subroutines.  I had the feeling that
-top-down and bottom-up were opposing methodologies: one more suitable for
-program exposition and the other more suitable for program creation.
-#+END_QUOTE
-
-Mais les deux approches ne sont pas nécessairement antagonistes si l'on prend du
-recul.  Ces approches supposent une structure hiérarchique, que le programme est
-un arbre.  Knuth considère qu'on peut voir un programme aussi bien comme un
-réseau, comme une /toile d'araignée/.  Ce qui importe, c'est d'exprimer les
-relations qui forment ce réseau:
-
-#+BEGIN_QUOTE
-A complex piece of software consists of simple parts and simple relations
-between those parts; the programmer's task is to state those parts and those
-relationships, in whatever order is best for human comprehension – not in some
-rigidly determined order like top-down or bottom-up.
-#+END_QUOTE
-
-#+ATTR_HTML: :style margin-top:-7rem
-#+BEGIN_side-figure
-[[file:img/knuth0.svg]]
-
-Un programme ressemble davantage à un réseau qu'à un arbre.
-#+END_side-figure
-
-WEB est le système de /programmation littéraire/ développé par Knuth pour
-permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
-contient du Pascal et du TeX mêlés.  Il ne s'agit pas simplement d'écrire des
-commentaires autour du code; plutôt l'inverse.  Knuth souhaite décrire le
-programme /avant tout/ pour un humain, et en second lieu pour la machine:
-
-#+BEGIN_QUOTE
-Instead of imagining that our main task is to instruct a /computer/ what to do,
-let us concentrate rather on explaining to /human beings/ what we want to do.
-#+END_QUOTE
-
-La machine n'a que faire des considérations de style, ou de l'ordre de
-présentation du programme; le code source suffit.  Pour l'humain en revanche,
-les explications sont très utiles pour comprendre le fonctionnement du programme
-et les intentions de son auteur.
-
-Knuth écrit un programme WEB comme il écrit un article: il explique les grandes
-lignes, puis fournit les détails dans un second temps.  L'exemple qu'il donne
-est un programme qui liste les 1000 premiers nombres premiers:
-
-#+BEGIN_EXAMPLE -n -r
-@* Printing primes: An example of \WEB.
-The following program is essentially the same as
-Edsger Dijkstra's "first example of step-wise
-program composition." ...
-
-@<Program to print...@>=
-program print_primets(output);
-const @!m = 1000;
-@<Other constants of the program@>@;               (ref:lit0)
-var @<Variables of the program@>@;
-begin @<Print the first |m| prime numbers@>;
-end.
-#+END_EXAMPLE
-
-La première partie est écrite en TeX; le ~@*~ dénote une section.  Toutes les
-commande usuelles de TeX sont disponibles, ce qui permet en particulier d'écrire
-des mathématiques sans être limité par la table des caractères ASCII.
-
-La seconde partie est le programme Pascal.  Ces 6 lignes couvrent l'intégralité
-du programme, mais le contenu principal est décrit dans d'autres sections.  Par
-exemple, la ligne [[(lit0)]] fait référence à une section qui contient toutes
-les constantes déclarées par le programme.  La ligne [[(lit0)]] donne au lecteur
-du programme une idée du code qui va être exécuté ici (des affectations de
-constantes), mais le programmeur n'a pas à donner ces détails maintenant.  Tout
-ce que le lecteur voit pour l'instant, c'est la structure du programme.
-
-Plus loin dans le document, les constantes sont définies avec l'opérateur ~=~:
-
-#+BEGIN_SRC pascal
-@<Other constants of the program@>=
-rr = 50;
-cc = 4;
-ww = 10;
-#+END_SRC
-
-C'est le code qui va être inséré à la ligne [[(lit0)]] de l'exemple précédent.  Les
-constantes sont décrites, mais dans un second temps.  D'après Knuth, c'est
-l'ordre "psychologiquement correct": l'ordre dans lequel on comprend mieux le
-programme.  Le langage WEB permet d'écrire le programme dans cet ordre.
-
-D'ailleurs, il est possible de rajouter du code à une section ultérieurement,
-une sorte d'/addendum/:
-
-#+BEGIN_SRC pascal
-@<Other constants of the program@>+=
-ord_max = 30;
-#+END_SRC
-
-En l'occurrence, cette constante est définie /après/ sa première apparition
-dans du code.  Un peu au dessus, on peut lire:
-
-#+BEGIN_SRC pascal
-@<Variables of the program@>+=
-ord: 2..ord_max;
-#+END_SRC
-
-La valeur maximale que peut prendre ~ord~ est d'abord justifiée
-mathématiquement, avant d'être définie en code.  L'opérateur ~+=~, permet de
-rajouter du code à une section, de n'importe quel point du document source.
-C'est particulièrement adapté pour les constantes et les variables, qui en
-Pascal doivent être déclarées au début du programme.  Mais toutes les variables
-ne sont pas utilisées par toutes les parties du programme; d'où le mécanisme de
-concaténation de WEB qui permet de regrouper les variables avec le morceau de
-code qui les utilise.  C'est une sorte de regroupement des préoccupations.
-
-Le document source contient donc du TeX et du Pascal.  À partir de ce source,
-deux documents sont générés par deux programmes différents: TANGLE et WEAVE.
-TANGLE reconstruit le programme Pascal monolithique; il parcourt les sections et
-remplace les références par leur contenu, afin d'émettre du code qui pourra être
-accepté par un compilateur Pascal.  WEAVE produit le document lisible par un
-humain et imprimable.  Il numérote les sections et introduit des liens pour
-chaque référence; il indique également quelles sections utilisent quel code,
-pour permettre au lecteur de s'y retrouver sur un format papier.  Le document
-est le /programme littéraire/: une exposition structurée du programme, qui
-contient à la fois tout le programme et les explications de chaque morceau.
-
-#+ATTR_HTML: :style margin-top:-15rem
-#+BEGIN_side-figure
-[[file:img/knuth1.svg]]
-
-À partir d'un programme littéraire WEB, WEAVE produit un document imprimable, et
-TANGLE produit l'exécutable.
-#+END_side-figure
-
-Il y a deux différences majeures entre un programme littéraire et un programme
-agrémenté de commentaires classiques.  Dans un programme classique, la structure
-du code est imposée par le langage de programmation, ainsi que l'ordre
-d'apparition des fonctions ou des variables.  Lire le code pour le comprendre
-demande de suivre les appels, et de savoir distinguer les parties essentielles à
-la fonctionnalité des détails annexes (comme le traitement d'erreurs, ou de cas
-particuliers rares).  Dans un programme littéraire, l'ordre est imposé par le
-discours, l'explication du programme.  La structure est donc complètement
-renversée: l'explication domine, et le programme est secondaire; il découle de
-l'explication.
-
-Mais la programmation littéraire, par le mécanisme des sections, permet
-également de recomposer les éléments du programme.  Les variables peuvent être
-définies à plusieurs endroits du document.  Les traitements des erreurs communes
-à plusieurs fonctions peuvent être relocalisés et décrits dans une même annexe.
-Seuls les langages de programmation qui ont des macros suffisamment flexibles
-peuvent permettre cette recomposition du code.  Un programme littéraire vient
-ajouter cette fonctionnalité au dessus de n'importe quel langage.
-
-#+ATTR_HTML: :style margin-top:-3rem
-#+BEGIN_aside
-WEB est définit pour le langage Pascal.  Mais d'autres implémentations de la
-programmation littéraire peuvent s'appliquer à tous les langages.  Noweb et Org
-mode sont deux exemples.
-#+END_aside
-
-La programmation littéraire permet de séparer les préoccupations.  Knuth
-n'utilise pas le terme, mais donne un exemple générique d'une procédure ~update~
-qui met à jour une structure de données:
-
-#+BEGIN_EXAMPLE
-procedure update;
-begin if (input data is invalid) then
-  (Issue an error message and try to recover);
-(Update the data structure);
-end.
-#+END_EXAMPLE
-
-Dans un programme classique, le code pour traiter l'erreur et le code pour
-mettre à jour la structure sont tous deux placés dans la procédure.  Or, si le
-code de la mise à jour est trivial (une ou deux lignes), et que le traitement de
-l'erreur ne l'est pas (10-15 lignes), il y a un déséquilibre.  Traiter le cas
-particulier prend une place disproportionnée par rapport à la fonctionnalité
-essentielle de la procédure.  Knuth pense qu'un programmeur, /inconsciemment/,
-tente de minimiser le code du traitement d'erreur pour rétablir une proportion
-en accord avec l'importance de chaque morceau de code.  En conséquence, le
-traitement de l'erreur sera peut-être incomplet.
-
-Mais dans un programme littéraire, le code du traitement de l'erreur n'est que
-mentionné dans la procédure.  Les détails apparaîtront plus loin, dans une
-section dédiée, où le programmeur a tout le loisir d'écrire le traitement
-d'erreur le plus exhaustif sans entraîner un quelconque déséquilibre.
-
-Il faut certainement fournir plus d'efforts pour écrire un programme littéraire.
-Là où un programme classique peut se contenter du code et de quelques
-commentaires, un programme littéraire encourage la documentation du raisonnement
-derrière le code, ce qui demande de clarifier toutes les décisions faites par
-le programmeur.  Knuth nous rappelle que ce n'est pas forcément un désavantage
-de la méthode:
-
-#+BEGIN_QUOTE
-I had known for a long time that the programs I construct for publication in a
-book, or the programs that I construct in front of a class, have tended to be
-comparatively free of errors, because I am forced to clarify my thoughts as I do
-the programming.  By contrast, when writing for myself alone, I have often taken
-shortcuts that proved later to be dreadful mistakes.  It's harder for me to fool
-myself in such ways when I'm writing a WEB program, because I'm in "expository
-mode" (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
-less debugging time.
-#+END_QUOTE
-
------
-
-La programmation littéraire change les priorités du programmeur.  Dans un
-programme classique, on construit une suite d'instructions valides pour la
-machine d'abord, et un programme compréhensible par autrui en second lieu.  Dans
-un programme littéraire, la priorité est de communiquer un raisonnement à
-l'humain, et dans un second temps produire un programme pour la machine.
-
-WEB est le langage proposé par Knuth qui permet de recomposer les programmes
-Pascal selon le sens "psychologiquement correct"; le sens de l'explication
-naturel d'un article ou livre technique.  WEB permet de définir du code
-partiellement, qui contient des références vers les parties manquantes.  Le
-"code source" mêle prose (en TeX) et code (en Pascal), et deux compilateurs
-traversent la source pour produire soit un document imprimable pour le lecteur,
-soit un programme exécutable par la machine.
 
 *** READ La séplution
 :PROPERTIES:
