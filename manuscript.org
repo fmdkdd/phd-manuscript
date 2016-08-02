@@ -2336,24 +2336,29 @@ d'analogues.  Se priver de ces constructions serait se priver de cette
 flexibilité.  Il est alors dommage de constater que le folklore interprète la
 proclamation de Dijkstra littéralement.  Le ~GOTO~ est rarement inclus dans les
 langages modernes, et dans les langages où il l'est, son utilisation est
-vilipendée.  Le message de la programmation structurée est de clarifier la
-correspondance programme-processus, pas d'abolir les ~GOTO~.
+vilipendée.  L'intention de la programmation structurée est de clarifier la
+correspondance programme-processus, ce qui passe par être capable de découper le
+programme en unités sur lesquelles on peut raisonner indépendamment.
+Ultimement, le but est de permettre aux programmeurs de comprendre des
+programmes complexes.  Mais il y a d'autres façons d'aborder ce but.
 
 # For Dij, there is something else than the program.  But it's not the theory of
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
 # knowledge the programmer has of that process.
 
-** INPROGRESS La programmation littéraire
+** READ L'ordre psychologiquement correct: la programmation littéraire
 :PROPERTIES:
 :CUSTOM_ID: proglit
 :END:
-La programmation structurée recommandait une discipline de construction du
-programme du haut vers le bas, par raffinements successifs.  On commence par une
-description de haut-niveau, qu'on enrichit petit à petit jusqu'à avoir spécifié
-le programme dans le moindre détail.
+La programmation structurée recommande une discipline de construction du
+programme de haut en bas (/top-down/), par raffinements successifs.  On commence
+par une spécification de haut-niveau, qu'on enrichit petit à petit jusqu'à avoir
+décrit le programme dans le moindre détail.  L'intention de cette méthodologie
+est de réaliser des programmes corrects par construction, par opposition à un
+développement de bas en haut (/bottom-up/), où l'on rassemble différentes pièces
+afin d'élaborer un ensemble cohérent.
 
-Knuth [[cite:Knu-84][Knu-84]] remarque que sa façon de construire les programmes va souvent
-à l'encontre de ce principe:
+Knuth [[cite:Knu-84][Knu-84]] confesse qu'il préfère la seconde méthode:
 
 #+BEGIN_QUOTE
 I knew that I often created major parts of programs in a "bottom-up" fashion,
