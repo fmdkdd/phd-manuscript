@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-01 lun. 18:47 -->
+<!-- 2016-08-02 mar. 19:15 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -181,11 +181,11 @@ for the JavaScript code in this tag.
 <li><a href="#idea">2.5. <span class="todo UNREAD">UNREAD</span> L&rsquo;idée: le détournement de programme</a></li>
 </ul>
 </li>
-<li><a href="#chrono">3. <span class="todo INPROGRESS">INPROGRESS</span> Une chronologie du détournement dans les langages de programmation</a>
+<li><a href="#chrono">3. <span class="todo INPROGRESS">INPROGRESS</span> Le détournement à travers l&rsquo;histoire des langages de programmation</a>
 <ul>
-<li><a href="#orgheadline18">3.1. <span class="todo UNREAD">UNREAD</span> Apprivoiser le flot de contrôle: la programmation structurée</a></li>
-<li><a href="#proglit">3.2. <span class="todo INPROGRESS">INPROGRESS</span> La programmation littéraire</a></li>
-<li><a href="#orgheadline22">3.3. <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</a>
+<li><a href="#orgheadline18">3.1. <span class="todo UNREAD">UNREAD</span> Le programme reflète le processus: la programmation structurée</a></li>
+<li><a href="#proglit">3.2. <span class="done READ">READ</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</a></li>
+<li><a href="#orgheadline22">3.3. <span class="todo INPROGRESS">INPROGRESS</span> Modéliser le monde: la programmation par objets</a>
 <ul>
 <li><a href="#Smalltalk">3.3.1. Classes et héritage: Smalltalk</a></li>
 <li><a href="#orgheadline21">3.3.2. Prototypes et délégation: Self</a></li>
@@ -2661,11 +2661,11 @@ programme.
 </div>
 
 <div id="outline-container-orgheadline37" class="outline-2">
-<h2 id="chrono"><a id="orgheadline37"></a><span class="section-number-2">3</span> <span class="todo INPROGRESS">INPROGRESS</span> Une chronologie du détournement dans les langages de programmation</h2>
+<h2 id="chrono"><a id="orgheadline37"></a><span class="section-number-2">3</span> <span class="todo INPROGRESS">INPROGRESS</span> Le détournement à travers l&rsquo;histoire des langages de programmation</h2>
 <div class="outline-text-2" id="text-chrono">
 </div>
 <div id="outline-container-orgheadline18" class="outline-3">
-<h3 id="orgheadline18"><span class="section-number-3">3.1</span> <span class="todo UNREAD">UNREAD</span> Apprivoiser le flot de contrôle: la programmation structurée</h3>
+<h3 id="orgheadline18"><span class="section-number-3">3.1</span> <span class="todo UNREAD">UNREAD</span> Le programme reflète le processus: la programmation structurée</h3>
 <div class="outline-text-3" id="text-3-1">
 <div class="epig">
 <p>
@@ -3024,25 +3024,30 @@ d&rsquo;analogues.  Se priver de ces constructions serait se priver de cette
 flexibilité.  Il est alors dommage de constater que le folklore interprète la
 proclamation de Dijkstra littéralement.  Le <code>GOTO</code> est rarement inclus dans les
 langages modernes, et dans les langages où il l&rsquo;est, son utilisation est
-vilipendée.  Le message de la programmation structurée est de clarifier la
-correspondance programme-processus, pas d&rsquo;abolir les <code>GOTO</code>.
+vilipendée.  L&rsquo;intention de la programmation structurée est de clarifier la
+correspondance programme-processus, ce qui passe par être capable de découper le
+programme en unités sur lesquelles on peut raisonner indépendamment.
+Ultimement, le but est de permettre aux programmeurs de comprendre des
+programmes complexes.  Mais il y a d&rsquo;autres façons d&rsquo;aborder ce but.
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline19" class="outline-3">
-<h3 id="proglit"><a id="orgheadline19"></a><span class="section-number-3">3.2</span> <span class="todo INPROGRESS">INPROGRESS</span> La programmation littéraire</h3>
+<h3 id="proglit"><a id="orgheadline19"></a><span class="section-number-3">3.2</span> <span class="done READ">READ</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</h3>
 <div class="outline-text-3" id="text-proglit">
 <p>
-La programmation structurée recommandait une discipline de construction du
-programme du haut vers le bas, par raffinements successifs.  On commence par une
-description de haut-niveau, qu&rsquo;on enrichit petit à petit jusqu&rsquo;à avoir spécifié
-le programme dans le moindre détail.
+La programmation structurée recommande une discipline de construction du
+programme de haut en bas (<i>top-down</i>), par raffinements successifs.  On commence
+par une spécification de haut-niveau, qu&rsquo;on enrichit petit à petit jusqu&rsquo;à avoir
+décrit le programme dans le moindre détail.  L&rsquo;intention de cette méthodologie
+est de réaliser des programmes corrects par construction, par opposition à un
+développement de bas en haut (<i>bottom-up</i>), où l&rsquo;on rassemble différentes pièces
+afin d&rsquo;élaborer un ensemble cohérent.
 </p>
 
 <p>
-Knuth [<a href="#Knu-84">Knu84</a>] remarque que sa façon de construire les programmes va souvent
-à l&rsquo;encontre de ce principe:
+Knuth [<a href="#Knu-84">Knu84</a>] confesse qu&rsquo;il préfère la seconde méthode:
 </p>
 
 <blockquote>
@@ -3057,10 +3062,11 @@ program exposition and the other more suitable for program creation.
 
 <p>
 Mais les deux approches ne sont pas nécessairement antagonistes si l&rsquo;on prend du
-recul.  Ces approches supposent une structure hiérarchique, que le programme est
-un arbre.  Knuth considère qu&rsquo;on peut voir un programme aussi bien comme un
-réseau, comme une <i>toile d&rsquo;araignée</i>.  Ce qui importe, c&rsquo;est d&rsquo;exprimer les
-relations qui forment ce réseau:
+recul.  Ces approches supposent l&rsquo;une comme l&rsquo;autre que le programme a une
+structure hiérarchique, une forme d&rsquo;arbre.  On peut alors élaborer l&rsquo;arbre soit
+à partir de la racine, vers les feuilles, où l&rsquo;inverse.  Mais Knuth considère
+que l&rsquo;on peut voir un programme comme un réseau, comme une <i>toile d&rsquo;araignée</i>.
+Ce qui importe, c&rsquo;est d&rsquo;exprimer les relations qui forment ce réseau:
 </p>
 
 <blockquote>
@@ -3086,11 +3092,12 @@ Un programme ressemble davantage à un réseau qu&rsquo;à un arbre.
 </div>
 
 <p>
-WEB est le système de <i>programmation littéraire</i> développé par Knuth pour
-permettre de tisser ce réseau.  En WEB, un programmeur écrit un document qui
-contient du Pascal et du TeX mêlés.  Il ne s&rsquo;agit pas simplement d&rsquo;écrire des
-commentaires autour du code; plutôt l&rsquo;inverse.  Knuth souhaite décrire le
-programme <i>avant tout</i> pour un humain, et en second lieu pour la machine:
+Pour permettre au programmeur de tisser cette toile, Knuth développe le système
+de <i>programmation littéraire</i> WEB.  En WEB, un programmeur écrit un document qui
+contient du Pascal et du TeX mêlés.  Mais il ne s&rsquo;agit pas simplement d&rsquo;écrire
+des commentaires en TeX autour d&rsquo;un programme Pascal, ou même d&rsquo;insérer des
+programmes Pascal dans un document TeX.  Knuth souhaite que le programme soit
+destiné <i>avant tout</i> au lecteur humain, et en second lieu à la machine:
 </p>
 
 <blockquote>
@@ -3109,15 +3116,17 @@ et les intentions de son auteur.
 
 <p>
 Knuth écrit un programme WEB comme il écrit un article: il explique les grandes
-lignes, puis fournit les détails dans un second temps.  L&rsquo;exemple qu&rsquo;il donne
-est un programme qui liste les 1000 premiers nombres premiers:
+lignes, puis fournit les détails dans un second temps.  L&rsquo;ordre d&rsquo;exécution
+n&rsquo;est pas nécessairement l&rsquo;ordre d&rsquo;exposition.  Un programme littéraire est
+organisé comme un manuel à destination du programmeur étranger.  Knuth donne un
+exemple de programme qui liste les 1000 premiers nombres premiers:
 </p>
 
 <pre class="example">
 <span class="linenr"> 1: </span>@* Printing primes: An example of \WEB.
 <span class="linenr"> 2: </span>The following program is essentially the same as
 <span class="linenr"> 3: </span>Edsger Dijkstra's "first example of step-wise
-<span class="linenr"> 4: </span>program composition." ...
+<span class="linenr"> 4: </span>program composition." [...]
 <span class="linenr"> 5: </span>
 <span class="linenr"> 6: </span>@&lt;Program to print...@&gt;=
 <span class="linenr"> 7: </span>program print_primets(output);
@@ -3129,19 +3138,19 @@ est un programme qui liste les 1000 premiers nombres premiers:
 </pre>
 
 <p>
-La première partie est écrite en TeX; le <code>@*</code> dénote une section.  Toutes les
+Le premier paragraphe est écrit en TeX; le <code>@*</code> dénote une section.  Toutes les
 commande usuelles de TeX sont disponibles, ce qui permet en particulier d&rsquo;écrire
 des mathématiques sans être limité par la table des caractères ASCII.
 </p>
 
 <p>
-La seconde partie est le programme Pascal.  Ces 6 lignes couvrent l&rsquo;intégralité
-du programme, mais le contenu principal est décrit dans d&rsquo;autres sections.  Par
-exemple, la ligne <a href="#coderef-lit0"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-lit0');" onmouseout="CodeHighlightOff(this, 'coderef-lit0');">9</a> fait référence à une section qui contient toutes
-les constantes déclarées par le programme.  La ligne <a href="#coderef-lit0"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-lit0');" onmouseout="CodeHighlightOff(this, 'coderef-lit0');">9</a> donne au lecteur
-du programme une idée du code qui va être exécuté ici (des affectations de
-constantes), mais le programmeur n&rsquo;a pas à donner ces détails maintenant.  Tout
-ce que le lecteur voit pour l&rsquo;instant, c&rsquo;est la structure du programme.
+Le second paragraphe est le programme Pascal.  Ces 6 lignes décrivent le
+programme du début à la fin, en omettant les détails pour la suite.  La ligne
+<a href="#coderef-lit0"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-lit0');" onmouseout="CodeHighlightOff(this, 'coderef-lit0');">9</a> déclare juste que c&rsquo;est à ce moment dans le programme que les constantes
+sont déclarées, mais le code qui déclare ces constantes apparaîtra dans des
+sections ultérieures.  Ce paragraphe donne au lecteur une idée du fonctionnement
+du programme, mais sans s&rsquo;embourber dans les détails.  Tout ce que le lecteur
+voit pour l&rsquo;instant c&rsquo;est une description de haut niveau.
 </p>
 
 <p>
@@ -3161,12 +3170,18 @@ ww = 10;
 C&rsquo;est le code qui va être inséré à la ligne <a href="#coderef-lit0"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-lit0');" onmouseout="CodeHighlightOff(this, 'coderef-lit0');">9</a> de l&rsquo;exemple précédent.  Les
 constantes sont décrites, mais dans un second temps.  D&rsquo;après Knuth, c&rsquo;est
 l&rsquo;ordre &laquo;&nbsp;psychologiquement correct&nbsp;&raquo;: l&rsquo;ordre dans lequel on comprend mieux le
-programme.  Le langage WEB permet d&rsquo;écrire le programme dans cet ordre.
+programme.  C&rsquo;est à ce moment, mais pas avant, qu&rsquo;il peut nous expliquer que
+<code>rr</code>, <code>cc</code>, et <code>ww</code> représentent respectivement le nombre de lignes, de
+colonnes, et de caractères de la sortie du programme.
 </p>
 
 <p>
-D&rsquo;ailleurs, il est possible de rajouter du code à une section ultérieurement,
-une sorte d&rsquo;<i>addendum</i>:
+En poursuivant cette idée, toutes les constantes n&rsquo;ont pas à être définies en
+une seule fois.  Dans un premier temps, Knuth nous a décrit les constantes
+d&rsquo;affichage parce qu&rsquo;il expliquait la phase d&rsquo;impression du programme.  Mais
+l&rsquo;algorithme pour trouver les nombres premiers utilise aussi des constantes qui
+seront déclarées au même endroit.  L&rsquo;opérateur <code>+=</code> permet de compléter le
+contenu de cette section, sorte d&rsquo;<i>addendum</i>:
 </p>
 
 <div class="org-src-container">
@@ -3177,7 +3192,7 @@ ord_max = 30;
 </div>
 
 <p>
-En l&rsquo;occurrence, cette constante est définie <i>après</i> sa première apparition
+En l&rsquo;occurrence, cette constante est même définie <i>après</i> sa première apparition
 dans du code.  Un peu au dessus, on peut lire:
 </p>
 
@@ -3189,27 +3204,33 @@ ord: 2..ord_max;
 </div>
 
 <p>
-La valeur maximale que peut prendre <code>ord</code> est d&rsquo;abord justifiée
-mathématiquement, avant d&rsquo;être définie en code.  L&rsquo;opérateur <code>+=</code>, permet de
-rajouter du code à une section, de n&rsquo;importe quel point du document source.
-C&rsquo;est particulièrement adapté pour les constantes et les variables, qui en
-Pascal doivent être déclarées au début du programme.  Mais toutes les variables
-ne sont pas utilisées par toutes les parties du programme; d&rsquo;où le mécanisme de
-concaténation de WEB qui permet de regrouper les variables avec le morceau de
-code qui les utilise.  C&rsquo;est une sorte de regroupement des préoccupations.
+Dans un programme Pascal, faire référence à la constante avant de l&rsquo;avoir
+définie serait une erreur.  Mais ici, peu importe l&rsquo;ordre qui prime est l&rsquo;ordre
+psychologique.  La valeur maximale que peut prendre <code>ord</code> est d&rsquo;abord justifiée
+mathématiquement, avant d&rsquo;être définie en code.  L&rsquo;opérateur <code>+=</code> permet de
+rajouter du code à une section, et ce de n&rsquo;importe quel point du document
+source.  C&rsquo;est particulièrement adapté pour les constantes et les variables, qui
+en Pascal doivent être déclarées au début du programme.  Mais toutes les
+variables ne sont pas utilisées par toutes les parties du programme; d&rsquo;où le
+mécanisme de concaténation de WEB qui permet de regrouper les variables avec le
+morceau de code qui les utilise.  C&rsquo;est une sorte de regroupement des
+préoccupations.
 </p>
 
 <p>
-Le document source contient donc du TeX et du Pascal.  À partir de ce source,
-deux documents sont générés par deux programmes différents: TANGLE et WEAVE.
-TANGLE reconstruit le programme Pascal monolithique; il parcourt les sections et
-remplace les références par leur contenu, afin d&rsquo;émettre du code qui pourra être
-accepté par un compilateur Pascal.  WEAVE produit le document lisible par un
-humain et imprimable.  Il numérote les sections et introduit des liens pour
-chaque référence; il indique également quelles sections utilisent quel code,
-pour permettre au lecteur de s&rsquo;y retrouver sur un format papier.  Le document
-est le <i>programme littéraire</i>: une exposition structurée du programme, qui
-contient à la fois tout le programme et les explications de chaque morceau.
+Le document source contient du TeX et du Pascal, mais c&rsquo;est un document peu
+digeste pour un lecteur humain, et inexécutable par la machine car dans le
+désordre.  À partir de ce source, deux documents sont générés par deux
+programmes différents: TANGLE et WEAVE.  TANGLE reconstruit le programme Pascal
+monolithique; il parcourt les sections et remplace les références par leur
+contenu afin d&rsquo;émettre du code qui pourra être accepté par un compilateur
+Pascal.  WEAVE produit une source compatible TeX, qui pourra engendrer le
+document imprimable et lisible par un humain.  Il numérote les sections et
+introduit des liens pour chaque référence; il indique également quelles sections
+utilisent quel code, pour permettre au lecteur de s&rsquo;y retrouver sur un format
+papier.  C&rsquo;est ce document qui est le <i>programme littéraire</i>: une exposition
+structurée du programme, qui contient à la fois tout le code source, et des
+explications pour chaque partie, dans un ordre naturel d&rsquo;exposition.
 </p>
 
 <div style="margin-top:-15rem" class="side-figure">
@@ -3220,47 +3241,53 @@ contient à la fois tout le programme et les explications de chaque morceau.
 </figure>
 
 <p>
-À partir d&rsquo;un programme littéraire WEB, WEAVE produit un document imprimable, et
-TANGLE produit l&rsquo;exécutable.
+À partir d&rsquo;un programme littéraire WEB, WEAVE produit un fichier TeX source, et
+TANGLE produit un fichier Pascal.
 </p>
 
 </div>
 
 <p>
-Il y a deux différences majeures entre un programme littéraire et un programme
-agrémenté de commentaires classiques.  Dans un programme classique, la structure
-du code est imposée par le langage de programmation, ainsi que l&rsquo;ordre
-d&rsquo;apparition des fonctions ou des variables.  Lire le code pour le comprendre
-demande de suivre les appels, et de savoir distinguer les parties essentielles à
-la fonctionnalité des détails annexes (comme le traitement d&rsquo;erreurs, ou de cas
+Un programme littéraire n&rsquo;est pas simplement un programme bien commenté.  Dans
+un programme classique, la structure du code est imposée par le langage de
+programmation; le langage peut même imposer l&rsquo;ordre d&rsquo;apparition des fonctions
+ou des variables, comme en C.  Lire le code pour comprendre le programme demande
+de suivre les appels, et de savoir distinguer les parties essentielles à la
+fonctionnalité des détails annexes (comme le traitement d&rsquo;erreurs, ou de cas
 particuliers rares).  Dans un programme littéraire, l&rsquo;ordre est imposé par le
-discours, l&rsquo;explication du programme.  La structure est donc complètement
-renversée: l&rsquo;explication domine, et le programme est secondaire; il découle de
-l&rsquo;explication.
+discours, l&rsquo;explication de la fonctionnalité.  La structure d&rsquo;un programme
+littéraire est donc complètement renversée: l&rsquo;explication domine, et le
+programme est secondaire; il découle de l&rsquo;explication.
+</p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/knuth2.svg" alt="knuth2.svg">
+</p>
+</figure>
+
+</div>
+
+<p>
+Et pour permettre au programmeur de composer le programme dans l&rsquo;ordre de
+l&rsquo;explication, la programmation littéraire offre un mécanisme pertinent pour le
+détournement.  Une section du programme peut être simplement nommée, et on peut
+lui ajouter du code de n&rsquo;importe quel autre point du programme.  Knuth l&rsquo;utilise
+pour regrouper les définitions de variables dispersées dans le document, mais on
+peut imaginer d&rsquo;autres applications.  La différence avec l&rsquo;utilisation couplée
+de <code>GOTO</code> et <code>COME FROM</code> de la section précédente c&rsquo;est que l&rsquo;opérateur <code>+=</code> ne
+nous permet que d&rsquo;ajouter du code à un section existante, pas le remplacer.
+Mais l&rsquo;idée est similaire, et n&rsquo;est pas restreinte à Pascal.  WEB est lié au
+langage Pascal, mais d&rsquo;autres implémentations de la programmation littéraire
+peuvent s&rsquo;appliquer à tous les langages: Noweb [<a href="#Noweb">Now</a>] et Org mode [<a href="#Orgmode">Org</a>] sont
+deux exemples.
 </p>
 
 <p>
-Mais la programmation littéraire, par le mécanisme des sections, permet
-également de recomposer les éléments du programme.  Les variables peuvent être
-définies à plusieurs endroits du document.  Les traitements des erreurs communes
-à plusieurs fonctions peuvent être relocalisés et décrits dans une même annexe.
-Seuls les langages de programmation qui ont des macros suffisamment flexibles
-peuvent permettre cette recomposition du code.  Un programme littéraire vient
-ajouter cette fonctionnalité au dessus de n&rsquo;importe quel langage.
-</p>
-
-<aside style="margin-top:-3rem">
-<p>
-WEB est définit pour le langage Pascal.  Mais d&rsquo;autres implémentations de la
-programmation littéraire peuvent s&rsquo;appliquer à tous les langages.  Noweb et Org
-mode sont deux exemples.
-</p>
-</aside>
-
-<p>
-La programmation littéraire permet de séparer les préoccupations.  Knuth
-n&rsquo;utilise pas le terme, mais donne un exemple générique d&rsquo;une procédure <code>update</code>
-qui met à jour une structure de données:
+La programmation littéraire permet de séparer et regrouper les préoccupations.
+Knuth n&rsquo;utilise pas le terme, mais donne un exemple qui en a le parfum.  Il
+s&rsquo;agit d&rsquo;écrire une procédure <code>update</code> qui met à jour une structure de données:
 </p>
 
 <pre class="example">
@@ -3275,74 +3302,46 @@ end.
 Dans un programme classique, le code pour traiter l&rsquo;erreur et le code pour
 mettre à jour la structure sont tous deux placés dans la procédure.  Or, si le
 code de la mise à jour est trivial (une ou deux lignes), et que le traitement de
-l&rsquo;erreur ne l&rsquo;est pas (10-15 lignes), il y a un déséquilibre.  Traiter le cas
-particulier prend une place disproportionnée par rapport à la fonctionnalité
-essentielle de la procédure.  Knuth pense qu&rsquo;un programmeur, <i>inconsciemment</i>,
-tente de minimiser le code du traitement d&rsquo;erreur pour rétablir une proportion
-en accord avec l&rsquo;importance de chaque morceau de code.  En conséquence, le
-traitement de l&rsquo;erreur sera peut-être incomplet.
+l&rsquo;erreur ne l&rsquo;est pas (10-15 lignes), il y a un déséquilibre cognitif.  Traiter
+le cas particulier prend une place disproportionnée par rapport à la
+fonctionnalité essentielle de la procédure.  Knuth suggère qu&rsquo;un programmeur,
+<i>inconsciemment</i>, tente de minimiser le code du traitement d&rsquo;erreur pour
+rétablir un équilibre où la longueur du code est proportionnelle à son
+importance.  En conséquence, le traitement de l&rsquo;erreur sera raccourci, et
+peut-être incomplet.
 </p>
 
 <p>
 Mais dans un programme littéraire, le code du traitement de l&rsquo;erreur n&rsquo;est que
 mentionné dans la procédure.  Les détails apparaîtront plus loin, dans une
-section dédiée, où le programmeur a tout le loisir d&rsquo;écrire le traitement
-d&rsquo;erreur le plus exhaustif sans entraîner un quelconque déséquilibre.
+section dédiée, où le programmeur aura tout le loisir de traiter l&rsquo;erreur de
+façon exhaustive, sans percevoir un quelconque déséquilibre.
 </p>
 
 <p>
-Il faut certainement fournir plus d&rsquo;efforts pour écrire un programme littéraire.
-Là où un programme classique peut se contenter du code et de quelques
-commentaires, un programme littéraire encourage la documentation du raisonnement
-derrière le code, ce qui demande de clarifier toutes les décisions faites par
-le programmeur.  Knuth nous rappelle que ce n&rsquo;est pas forcément un désavantage
-de la méthode:
-</p>
-
-<blockquote>
-<p>
-I had known for a long time that the programs I construct for publication in a
-book, or the programs that I construct in front of a class, have tended to be
-comparatively free of errors, because I am forced to clarify my thoughts as I do
-the programming.  By contrast, when writing for myself alone, I have often taken
-shortcuts that proved later to be dreadful mistakes.  It&rsquo;s harder for me to fool
-myself in such ways when I&rsquo;m writing a WEB program, because I&rsquo;m in &laquo;&nbsp;expository
-mode&nbsp;&raquo; (analogous to classroom lecturing) whenever a WEB is being spun.  Ergo,
-less debugging time.
-</p>
-</blockquote>
-
-<hr >
-
-<p>
-La programmation littéraire change les priorités du programmeur.  Dans un
+La programmation littéraire renverse les priorités du programmeur.  Dans un
 programme classique, on construit une suite d&rsquo;instructions valides pour la
 machine d&rsquo;abord, et un programme compréhensible par autrui en second lieu.  Dans
 un programme littéraire, la priorité est de communiquer un raisonnement à
-l&rsquo;humain, et dans un second temps produire un programme pour la machine.
-</p>
-
-<p>
-WEB est le langage proposé par Knuth qui permet de recomposer les programmes
-Pascal selon le sens &laquo;&nbsp;psychologiquement correct&nbsp;&raquo;; le sens de l&rsquo;explication
-naturel d&rsquo;un article ou livre technique.  WEB permet de définir du code
-partiellement, qui contient des références vers les parties manquantes.  Le
-&laquo;&nbsp;code source&nbsp;&raquo; mêle prose (en TeX) et code (en Pascal), et deux compilateurs
-traversent la source pour produire soit un document imprimable pour le lecteur,
-soit un programme exécutable par la machine.
+l&rsquo;humain; la machine est secondaire.  La programmation structurée aussi
+cherchait à s&rsquo;abstraire des idiosyncrasies de la machine et des langages
+bas-niveau.  La programmation littéraire va un pas plus loin en proposant au
+programmeur d&rsquo;imposer l&rsquo;ordre du code, mais les programmes manipulent encore des
+variables, des boucles et des procédures.  La programmation par objets, en
+revanche, propose un nouveau paradigme.
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline22" class="outline-3">
-<h3 id="orgheadline22"><span class="section-number-3">3.3</span> <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</h3>
+<h3 id="orgheadline22"><span class="section-number-3">3.3</span> <span class="todo INPROGRESS">INPROGRESS</span> Modéliser le monde: la programmation par objets</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="full-figure">
 
 <figure>
 <p><img src="img/scuola.jpg" alt="scuola.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;22&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;23&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
 </figure>
 
 </div>
@@ -3851,7 +3850,7 @@ le <i>mode-switching</i> (voir ??).
 <figure>
 <p><img src="img/münchhausen.jpg" alt="münchhausen.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;29&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
 </div>
 
@@ -5113,7 +5112,7 @@ explain what they are doing. — [<a href="#Knu-84">Knu84</a>]</p>
 <figure>
 <p><img src="img/rug.jpg" alt="rug.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;37&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;38&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
 </figure>
 
 <p>
@@ -6464,7 +6463,7 @@ Rappel: le trigramme <code>//:</code> indique la valeur de l&rsquo;expression qu
 <figure>
 <p><img src="img/foal-1.svg" alt="foal-1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;41&nbsp;:</span> Représentation des objets en mémoire après la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> Représentation des objets en mémoire après la création de <code>e1</code>.</figcaption>
 </figure>
 
 </div>
@@ -6497,7 +6496,7 @@ Suivant notre implémentation par objets, il suffit d&rsquo;ajouter un objet
 <figure>
 <p><img src="img/foal-2.svg" alt="foal-2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> Après les ajouts (<span class="color c1">▬</span> ) de <code>plus</code> et <code>e2</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> Après les ajouts (<span class="color c1">▬</span> ) de <code>plus</code> et <code>e2</code>.</figcaption>
 </figure>
 
 </div>
@@ -6637,7 +6636,7 @@ dérivent; on abstrait donc ces objets parents à l&rsquo;aide d&rsquo;une fonct
 <figure>
 <p><img src="img/foal-4.svg" alt="foal-4.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;44&nbsp;:</span> Ajouter <code>s</code> n&rsquo;affecte ni <code>e1</code> ni <code>e2</code>: c&rsquo;est un nouvel objet qui réutilise <code>num</code> et <code>plus</code> sans les modifier.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> Ajouter <code>s</code> n&rsquo;affecte ni <code>e1</code> ni <code>e2</code>: c&rsquo;est un nouvel objet qui réutilise <code>num</code> et <code>plus</code> sans les modifier.</figcaption>
 </figure>
 
 </div>
@@ -9106,7 +9105,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;61&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;62&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -11717,6 +11716,18 @@ Peter Naur.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Noweb">Now</a>]
+</td>
+<td class="bibtexitem">
+Noweb -- a simple, extensible tool for literate programming.
+[&nbsp;<a href="http://www.cs.tufts.edu/~nr/noweb/">http</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="NS-01">NS01</a>]
 </td>
 <td class="bibtexitem">
@@ -11726,6 +11737,18 @@ Matthias Neubauer and Michael Sperber.
   Conference on Functional Programming (ICFP '01), Firenze (Florence), Italy,
   September 3-5, 2001.</em>, pages 38--49, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1145/507635.507642">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="Orgmode">Org</a>]
+</td>
+<td class="bibtexitem">
+Org mode for emacs -- your life in plain text.
+[&nbsp;<a href="http://orgmode.org/">http</a>&nbsp;]
 
 </td>
 </tr>
@@ -12203,7 +12226,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-01 lun. 18:47 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-02 mar. 19:15 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
