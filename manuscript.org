@@ -70,6 +70,7 @@ different person then.'
      - [[#read-la-séplution][READ La séplution]]
      - [[#read-linformation-transparente][READ L'information transparente]]
    - [[#unwritten-limiter-les-effets-de-bord-la-programmation-fonctionnelle][UNWRITTEN Limiter les effets de bord: la programmation fonctionnelle]]
+   - [[#unwritten-le-problème-de-lexpression][UNWRITTEN Le problème de l'expression]]
  - [[#unwritten-travaux-connexes][UNWRITTEN Travaux connexes]]
    - [[#les-mécanismes-de-recomposition-du-programme][Les mécanismes de recomposition du programme]]
      - [[#le-problème-de-lexpression][Le problème de l'expression]]
@@ -127,7 +128,6 @@ different person then.'
    - [[#perspectives-if-automated-programming-is-the-future-this-is-mostly-usesless][Perspectives: if automated programming is the future, this is mostly usesless]]
    - [[#perspectives-performance][Perspectives: performance]]
  - [[#chutes][Chutes]]
-   - [[#unread-le-problème-de-lexpression][UNREAD Le problème de l'expression]]
    - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
        - [[#finding-a-core-example][Finding a core example]]
        - [[#the-expression-problem][The expression problem]]
@@ -2630,34 +2630,33 @@ Ah, voilà enfin le roi de la classe ! — [[cite:HM-93][HM-93]]
 #+END_epig
 
 C'est avec le langage Smalltalk qui débute la programmation par objets [[cite:Ing-78][Ing-78]]
-[[cite:Ing-81][Ing-81]] [[cite:Kay-93][Kay-93]].
+[[cite:Ing-81][Ing-81]] [[cite:Kay-93][Kay-93]].  Alan Kay, alors employé au laboratoire de recherche de Xerox à
+Palo Alto (PARC), souhaite développer l'ordinateur personnel pour tous.  Il est
+inspiré par le NLS (Online System) de Douglas Engelbart [[cite:EE-68][EE-68]], un système qui
+permet d'organiser des documents de travail, de créer de multiples vues de ces
+documents, d'établir des relations (prémices de l'hypertexte), et de collaborer
+à distance; tout cela dans le but "d'accroître l'intelligence humaine".  Kay
+voit dans l'ordinateur personnel à la fois un support qui permettrait à tout un
+chacun de décupler ses facultés de raisonnement et d'analyse, mais aussi un
+catalyseur de créativité.  Chacun pourrait créer une simulation interactive pour
+mieux comprendre un phénomène, développer un outil pour résoudre un problème de
+la vie courante, mais aussi composer des mélodies inédites, ou tracer des
+esquisses improbables.  L'ordinateur personnel serait à l'intellect ce que
+l'exosquelette est au corps humain.
 
-Alan Kay, alors employé au laboratoire de recherche de Xerox à Palo Alto (PARC),
-souhaite développer l'ordinateur personnel pour tous.  Il est inspiré par le NLS
-(Online System) de Douglas Engelbart [[cite:EE-68][EE-68]], un système qui permet d'organiser
-des documents de travail, de créer de multiples vues de ces documents, d'établir
-des relations (prémices de l'hypertexte), et de collaborer à distance, dans le
-but "d'accroître l'intelligence humaine".  Kay voit dans l'ordinateur personnel
-à la fois un support qui permettrait à tout un chacun de décupler ses facultés
-de raisonnement et d'analyse, mais aussi un catalyseur de créativité.  Chacun
-pourrait créer une simulation interactive pour mieux comprendre un phénomène, ou
-créer un outil pour résoudre un problème de la vie courante, mais aussi composer
-des mélodies inédites, ou faire des esquisses improbables.  L'ordinateur
-personnel serait à l'intellect ce que l'exosquelette est au corps humain.
-
-En 1971, Kay crée le /Learning Research Group/ à PARC dans le but de construire
-cet ordinateur.  Inspiré par les travaux de Piaget et Bruner sur le
-développement intellectuel chez les enfants, il souhaite construire un
-ordinateur intuitif, qui pourra servir aux enfants "de tout âge".  Programmer ce
-système serait simple comme bonjour, et c'est pourquoi il nomme son langage de
-programmation "Smalltalk".
+Dans le but de construire cet ordinateur personnel pour tous, Kay crée au sein
+de PARC le /Learning Research Group/ en 1971.  Inspiré par les travaux de Piaget
+et Bruner sur le développement intellectuel chez les enfants, il souhaite
+construire un ordinateur intuitif utilisable par les enfants "de tout âge".
+Programmer ce système serait simple comme bonjour, et c'est pourquoi il nomme
+son langage de programmation "Smalltalk".
 
 Smalltalk est inspiré par Sketchpad [[cite:Sut-63][Sut-63]], SIMULA [[cite:DN-66][DN-66]], LISP [[cite:McC-60][McC-60]].  De
 Sketchpad, il retient l'utilisation des contraintes et l'interactivité.  De
 SIMULA, il tire la différence entre les classes de procédures et leurs
 instances, et le mécanisme d'héritage.  Et de LISP, il emprunte le style de
 construction récursif, l'absence de gestion manuelle de la mémoire, et
-l'homoiconicité.
+la relation symbiotique entre programme et structures de données.
 
 Pour Kay, les /objets/ de Smalltalk sont comme des cellules: des constituants
 quasi-autonomes, capables de se répliquer:
@@ -2672,7 +2671,8 @@ useful structure?
 
 Ce qui se traduit, en Smalltalk, par le principe du "tout objet".  Un nombre
 entier est un objet.  Une chaîne de caractère est un objet.  Une liste chaînée
-est un objet.  Un fichier est un objet.  Une image est un objet.
+est un objet.  Un fichier est un objet.  Une image est un objet.  Et un objet,
+bien entendu, est un objet.
 
 Les objets ont leur propre mémoire: ils sont les seuls maîtres des données
 qu'ils manipulent.  L'objet liste chaînée contient les références vers ses
@@ -2682,12 +2682,13 @@ données: c'est une forme de type de donnée abstrait.
 
 Pour communiquer entre eux, les objets s'envoient des /messages/.  Il n'y a pas
 de procédures, seulement des /méthodes/ qui répondent à certains messages.  Pour
-additionner deux entiers par exemple, on écrit ~2 + 3~, qu'il faut lire comme
-"Passer le message ~+3~ à l'objet ~2~".  L'objet ~2~ contient une méthode qui
-interprète le message ~+3~ comme une addition avec l'objet ~3~, ce qui retourne
-un nouvel objet: ~5~.  On ne pense plus alors en termes d'opérateur (~+~) et
-d'opérandes (~2~ et ~3~), mais d'un objet (~2~) qui reçoit un message (~+3~).
-C'est le changement de paradigme majeur de la programmation par objets:
+additionner deux entiers par exemple, on écrit ~2 + 3~, comme en arithmétique
+classique.  Mais en Smalltalk il faut lire cette expression comme "Passer le
+message ~+3~ à l'objet ~2~".  L'objet ~2~ contient une méthode qui interprète le
+message ~+3~ comme une addition avec l'objet ~3~, ce qui retourne un nouvel
+objet: ~5~.  On ne pense plus alors en termes d'opérateur (~+~) et d'opérandes
+(~2~ et ~3~), mais d'un objet (~2~) qui reçoit un message (~+3~).  C'est le
+changement de paradigme majeur de la programmation par objets:
 
 #+BEGIN_QUOTE
 On the one hand, the act of assembling expressions into statements and then into
@@ -2703,14 +2704,15 @@ Le passage de messages est une métaphore uniforme.  Pour additionner deux point
 l'objet qui le reçoit et l'interprète.  C'est le mécanisme de /liaison
 dynamique/.
 
-#+CAPTION: L'addition de deux points fait appel à l'addition des coordonnées.
+#+CAPTION: Ici, l'addition de deux points fait appel à l'addition des
+#+CAPTION: coordonnées.
 #+BEGIN_SRC smalltalk
 + t1
   [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
 #+END_SRC
 
-Le programmeur ne crée pas des objets directement.  Il crée des /classes/.  Une
-classe est un moule à partir duquel on peut créer des objets.  Une classe
+Le programmeur ne crée pas des objets directement.  Il décrit des /classes/.
+Une classe est un moule à partir duquel on peut créer des objets.  Une classe
 contient les données privées manipulées par l'objet (ses /attributs/), et ses
 méthodes, qui sont partagées entre toutes les /instances/ de cette classe.
 
@@ -2736,8 +2738,8 @@ L'héritage permet aux classes ~Integer~ et ~Float~ de réutiliser les méthodes
 #+END_side-figure
 
 #+CAPTION: Les comparaisons sur les nombres sont définiies dans la classe
-#+CAPTION: ~Number~ en termes de la soustraction.  Code source tiré de
-#+CAPTION: [[cite:Smalltalk78][Smalltalk78]].
+#+CAPTION: ~Number~ en termes de la soustraction.  Code source tiré de la
+#+CAPTION: machine virtuelle Smalltalk-78 [[cite:Smalltalk78][Smalltalk78]].
 #+BEGIN_SRC smalltalk
 < t1
   [⇑ self - t1 < 0]
@@ -2753,9 +2755,9 @@ vraiment représentés par des objets dans la machine virtuelle.  Ingalls le
 remarque avec humour: "The implementor must cheat, but not get caught".
 #+END_aside
 
-Pour Ingalls, la modularité dans un système complexe c'est de ne jamais dépendre
-des détails internes d'un autre objet.  Les classes et le passage de message
-contribuent à forcer cette barrière:
+Pour Ingalls, co-auteur de Smalltalk, la modularité dans un système complexe
+c'est de ne jamais dépendre des détails internes d'un autre objet.  Les classes
+et le passage de message contribuent à forcer cette barrière:
 
 #+BEGIN_QUOTE
 Objects are created and manipulated by sending messages.  The communication
@@ -2771,29 +2773,36 @@ methods for computing responses to messages and representation of data in the
 instances.
 #+END_QUOTE
 
-Que le langage soit centré sur les objets a un avantage pour l'extensibilité.
-Ingalls donne l'exemple d'ajouter un nouvel objet au système, et de faire les
-modifications nécessaires pour représenter cet objet sur la sortie standard.
-Dans un système qui contiendrait une fonction ~print~ centrale, c'est cette
-fonction qu'il faudrait modifier.  Elle pourrait être large et compliquée, et il
-faudrait faire attention à ne pas affecter l'affichage des autres objets.  En
-Smalltalk, tous les objets sont affichables s'ils répondent au message ~printon:
-s~.  Du coup, il suffit d'ajouter cette méthode dans le nouvel objet, ce qui
-garantit de ne pas affecter le reste du système.  La nouvelle fonctionnalité est
-localisée dans l'objet.
+#+BEGIN_aside
+Ce problème est proche du problème de l'Expression posé par Wadler, que nous
+étudierons par la suite ([[#expr]]) car il est aussi lié à l'extension des
+interpréteurs.
+#+END_aside
 
-Et puisque les objets ne dépendent pas de la représentation interne d'autres
-objets, on peut les recompiler séparémment.  Modifier ou ajouter un champ à la
-classe ~Rectangle~ n'impacte que le code de l'objet, jamais le code extérieur.
-Les objets peuvent être compilés indépendamment.
+Le paradigme objet favorise l'extensibilité.  Ingalls donne comme exemple
+l'ajout d'un nouvel objet au système, et les modifications nécessaires pour
+représenter cet objet sur la sortie standard.  Dans un système qui contiendrait
+une fonction ~print~ centrale, c'est cette fonction qu'il faudrait modifier.
+Elle pourrait être large et compliquée, et il faudrait faire attention à ne pas
+affecter l'affichage des autres objets.  En Smalltalk, tous les objets sont
+affichables s'ils répondent au message ~printon: s~.  Du coup, il suffit
+d'ajouter cette méthode dans le nouvel objet, sans avoir à toucher au reste du
+système.  La nouvelle fonctionnalité est localisée dans l'objet que l'on
+ajoute.  Le système est extensible.
+
+Un autre avantage est la recompilation indépendante des classes.  Les objets ne
+dépendent pas de la représentation interne d'autres objets.  Modifier ou ajouter
+un champ à la classe ~Rectangle~ n'impacte que le code généré pour cette classe,
+jamais le code des classes extérieures.  Les classes peuvent donc être compilées
+indépendamment.
 
 L'héritage de classes permet la réutilisation de code.  Mais une classe ne peut
 avoir qu'un seul parent, ce qui force une hiérarchie des objets du système sous
-forme d'arbre, qui peut s'avérer inflexible.  Dans l'exemple ci-contre, trois
+forme d'arbre qui peut s'avérer inflexible.  Dans l'exemple ci-contre, trois
 classes ont des opérations en commun qui ne peuvent pas être partagées seulement
-par l'héritage.  L'implémentation de Smalltalk pour l'ordinateur STAR de Xerox
-permet à une classe de réutiliser les méthodes de plusieurs classes à la fois
-par le mécanisme des /traits/ [[cite:CBL+82][CBL+82]].
+par héritage car leur intersection est nulle.  L'implémentation de Smalltalk
+pour l'ordinateur STAR de Xerox permet à une classe de réutiliser les méthodes
+de plusieurs classes à la fois par le mécanisme des /traits/ [[cite:CBL+82][CBL+82]].
 
 #+ATTR_HTML: :style margin-top:-11rem
 #+ATTR_LATEX: :options [-11em]
@@ -2808,9 +2817,9 @@ par l'héritage.
 Un trait décrit une fonctionnalité qui peut être réemployée par plusieurs
 classes; il contient une ou plusieurs méthodes et leurs implémentations, ainsi
 que les attributs utilisés par ces méthodes.  Une classe peut implémenter
-plusieurs traits, ce qui transforme la hiérarchie en graphe dirigé acyclique.
-Un trait peut en outre implémenter des traits à son tour, ce qui permet de
-regrouper des traits souvent utilisés ensemble.
+plusieurs traits; on passe d'un arbre à un graphe dirigé acyclique.  Un trait
+peut en outre implémenter des traits à son tour, ce qui permet de regrouper des
+traits souvent utilisés ensemble.
 
 #+ATTR_HTML: :style margin-top:-9rem
 #+BEGIN_side-figure
@@ -2820,16 +2829,22 @@ Une classe peut récupérer les méthodes de plusieurs traits à la fois, ce qui
 permet de factoriser ces trois classes.
 #+END_side-figure
 
-Pour Kay, un des ingrédients clés de la flexibilité apportée par programmation
-par objets est la /liaison tardive/ (/late binding/).  Le passage de messages en
-est un exemple: l'opération effectuée dépend de l'objet qui reçoit le message,
-et cet objet peut ne pas être déterminé avant l'exécution du programme, donc
-l'opération devra être choisie dynamiquement.  De même, dans l'exemple de la
-classe ~Number~, on fait référence au message ~-~, qui n'est pas défini sur
-~Number~: c'est une forme de liaison tardive.  Autre exemple: la fonction ~eval~
-en LISP permet d'exécuter du texte construit dynamiquement; les premières
-versions de Smalltalk permettaient de traiter la syntaxe à l'exécution de la
-même manière.
+Pour Kay, l'ingrédient clé de la flexibilité de la programmation par objets est
+le retard de liaison causé par le passage de messages.  On n'appelle plus une
+procédure qui correspond à un code spécifique, mais on passe une requête.
+L'opération effectuée, le code invoqué, dépend entièrement de l'objet qui reçoit
+cette requête.  Avec l'héritage, cet objet n'est pas nécessairement connu du
+code appelant; on peut effectuer des opérations sur des ~Number~ sans savoir si
+ce sont des instances d'~Integer~ ou de ~Float~ avec lesquelles on traite.
+Le message est un lien indirect, et puisqu'il est indirect, il peut être plus
+facilement modifié, comme l'exemple d'Ingalls le montre.
+
+# Intuitivement, ce qui est indirect est plus facile à détourner.
+
+L'indirection est donc un principe général utile pour le détournement que l'on
+souhaite réaliser.  Mais cette indirection n'est pas restreinte aux seuls
+langages à classes.  On peut aussi faire de la programmation par objets avec des
+/prototypes/.
 
 *** Prototypes et délégation: Self
 On peut faire de la programmation par objets sans classes et sans héritage.  Les
@@ -4224,6 +4239,266 @@ Real programs need side effects, they are delimited by monads, effect systems.
 
 Functional languages historically have the more advanced type systems.  Strong
 static guarantes, but less runtime flexibility.
+
+** UNWRITTEN Le problème de l'expression
+:PROPERTIES:
+:CUSTOM_ID: expr
+:END:
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Slightly incomplete without the OO solution, but this was already described in
+the Hyper/J section.  Might merge, might cut altogether.
+#+END_aside
+
+Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
+nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
+
+#+BEGIN_aside
+Les deux contraintes de recompilation et de typage statique ne sont pas
+nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
+difficile, mais l'extension d'interpréteur est avant tout un problème
+d'extensibilité, et s'applique aussi bien à des langages interprétés (non
+compilés), et typés dynamiquement.
+#+END_aside
+
+#+BEGIN_QUOTE
+The Expression Problem is a new name for an old problem.  The goal is to define
+a datatype by cases, where one can add new cases to the datatype and new
+functions over the datatype, without recompiling existing code, and while
+retaining static type safety (e.g., no casts).
+#+END_QUOTE
+
+Dans un langage fonctionnel, une façon courante d'implémenter un interpréteur
+est en utilisant un /{{{adt}}}/ pour représenter les termes.  En Haskell par
+exemple, on définit un simple langage arithmétique par le type algébrique
+suivant:
+
+#+BEGIN_SRC haskell
+data Term = Constant Int
+          | Plus Term Term
+          | Mult Term Term
+#+END_SRC
+
+~Term~ est un type qui a trois variantes: un terme est soit une constante
+(~Constant~, un entier), une addition (~Plus~), ou une multiplication.
+
+La syntaxe du type algébrique correspond à la façon usuelle de définir des
+grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
+pourrait être:
+
+#+BEGIN_EXAMPLE
+<term> ::= <int> | <term> + <term> | <term> * <term>
+<int>  ::= 0 | 1 | 2 ...
+#+END_EXAMPLE
+
+Ici encore, un terme a trois variantes.  L'addition et la multiplication
+contiennent d'autres termes, et la variante constante ne contient qu'un nombre
+terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
+rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
+de programmation étant souvent définies par une BNF, le type algébrique est la
+solution la plus évidente pour les représenter.
+
+~Constant~, ~Plus~ et ~Mult~ sont les /constructeurs/ du type ~Term~, qui
+permettent de créer des expressions du langage.  L'expression 2 + 5 * 3 sera
+construite par:
+
+: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+AST illustration
+#+END_aside
+
+Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
+{{{ast}}} de cette expression.
+
+Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
+produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Dans
+la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
+on parlera plutôt d'/opérations/.
+
+La principale est l'opération d'évaluation qui donne un sens à chaque terme du
+langage.  Par exemple, on souhaite évaluer les expressions de notre langage
+arithmétique en suivant le sens usuel de l'addition et de la multiplication
+d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
+obtenir des entiers, puis on les additionne.  En Haskell, on écrira l'évaluation
+en traitant les trois variantes séparément, par /pattern matching/:
+
+#+BEGIN_SRC haskell
+eval :: Term -> Int
+eval (Constant n) = n
+eval (Plus t1 t2) = eval t1 + eval t2
+eval (Mult t1 t2) = eval t1 * eval t2
+#+END_SRC
+
+La première ligne donne le type de l'opération: elle consomme un terme pour
+produire un entier.  Chaque variante de terme est traitée explicitement sur
+chaque ligne.  On remarque que l'évaluation est récursive pour ~Plus~ et
+~Mult~.  La définition du type algébrique l'était déjà: ~Term~ est utilisé dans
+sa propre définition.  Les grammaires de langage sont souvent récursives, pour
+permettre la construction de grandes expressions à partir de simples éléments.  Même
+un langage aussi simple que celui-ci exhibe cette récursion.
+
+On peut maintenant évaluer l'expression 2 + 5 * 3:
+
+: > eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: 17
+
+Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
+/pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
+sortie est plus amicale pour l'œil humain.  Typiquement, le pretty printer d'un
+langage transforme l'arbre syntaxique en code source que le programmeur a
+l'habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
+le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot ~Constant~
+qui n'apporte pas d'information capitale.
+
+#+BEGIN_SRC haskell
+pp :: Term -> String
+pp (Constant n) = show n
+pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
+pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
+#+END_SRC
+
+#+BEGIN_aside
+On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
+#+END_aside
+
+Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
+
+: > pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: 2 + 5 * 3
+
+L'implémentation de l'affichage a la même structure que de l'implémentation de
+l'évaluation.  On traite les trois variantes du type algébrique dans trois
+lignes différentes.  Les deux variantes ~Plus~ et ~Mult~ sont définies
+récursivement, mais pas la variante ~Constant~, qui est un terminal dans la
+grammaire.  L'opération traite l'arbre syntaxique en partant de la racine, puis
+s'applique récursivement sur les nœuds de l'arbre jusqu'aux feuilles.  Ce
+processus, commun aux interpréteurs, est parfois appelé une /descente
+récursive/.
+
+Dans le problème de l'expression, on cherche à étendre le langage et son
+interpréteur de deux façons: en rajoutant des nouveaux termes au langage, et en
+rajoutant de nouvelles opérations.
+
+Avec ~pp~, on a déjà vu comment ajouter une nouvelle opération à l'interpréteur:
+il suffit de définir son comportement pour toutes les variantes des termes du
+langage.  ~Term~ a 3 variantes, donc ~pp~ définit 3 cas.  Notons aussi que pour
+ajouter l'opération il suffit d'/ajouter/ du code à l'interpréteur.  Aucune
+modification au code existant n'est requise.  C'est une distinction importante,
+car il est souvent plus facile d'ajouter du code que de modifier du code
+existant.
+
+On peut caractériser la complexité d'un changement de l'interpréteur comme la
+complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
+de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes, une
+opération aura une complexité de l'ordre de /v/ lignes de code (O(v)).  On note
+que ces lignes sont des additions par un '+': +O(v).
+
+#+BEGIN_aside
+On notera les lignes qui modifient une définition existante par '~', et les
+lignes supprimées par un '-'.
+#+END_aside
+
+Étendre le langage demande de modifier le code existant.  Si on veut rajouter un
+terme pour la soustraction, il faut commencer par étendre le type algébrique
+~Term~:
+
+#+BEGIN_SRC haskell
+data Term = Constant Int
+          | Plus Term Term
+          | Mult Term Term
+~         | Minus Term Term
+#+END_SRC
+
+C'est une ligne de code ajoutée.  Mais c'est surtout une /redéfinition/ du type
+algébrique.  Typiquement, ajouter une variante induit une recompilation.  On
+compte donc cette ligne comme une modification, et non un simple ajout.
+
+Mais il faut aussi traiter cette nouvelle variante dans les opérations
+existantes:
+
+#+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
+#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
+#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
+#+CAPTION: (à droite) nécessite de modifier toutes les opérations.
+[[file:img/expr-pb-1.svg]]
+#+END_side-figure
+
+#+BEGIN_SRC haskell
+  eval :: Term -> Int
+~ eval (Minus t1 t2) = eval t1 - eval t2
+
+  pp :: Term -> String
+~ pp (Minus t1 t2) = pp t1 ++ " - " ++ pp t2
+#+END_SRC
+
+Au total, si on a ~p~ opérations dans l'interpréteur, le changement a une
+complexité de ~O(p).
+
+Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
+une opération et ajouter un terme ne sont pas des changements similaires pour
+autant.  Ajouter un terme demande de /modifier/ des définitions existantes dans
+l'interpréteur, alors que pour ajouter une opération il suffit d'adjoindre une
+nouvelle fonction.
+
+Le problème de l'expression touche à la fois à la modularité et à
+l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
+l'interpréteur.  Et à la modularité, parce que les termes et les opérations
+peuvent être considérés comme des /unités/ indépendantes, des modules.  Pour
+respecter la modularité, on cherche à ce que chaque extension soit restreinte à
+un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
+un module sans affecter les autres, mais ajouter un terme requiert de modifier
+plusieurs modules.
+
+#+BEGIN_side-figure
+#+CAPTION: Dans cette décomposition, les termes contiennent le code des
+#+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
+#+CAPTION: mais ajouter une opération nécessite de modifier tous les termes.
+[[file:img/expr-pb-0.svg]]
+#+END_side-figure
+
+Le problème n'est pas exclusif à Haskell.  Dans [[#hyperj]], on a vu exactement la
+situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
+fois chaque terme était représenté par un objet qui encapsulait les définitions
+des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
+ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
+faillait modifier tous les objets des termes existants.  Le choix de l'unité
+principale de décomposition (termes ou opérations), favorise l'un ou l'autre
+type d'extension.
+
+#+ATTR_HTML: :style margin-top:4rem
+#+BEGIN_side-figure
+#+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
+#+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
+#+CAPTION: revient à définir une arête dans le graphe ({{{color(c0)}}}).
+#+CAPTION: L'implémentation détermine juste comment cette arête est définie dans
+#+CAPTION: le programme.
+[[file:img/expr-pb-2.svg]]
+#+END_side-figure
+
+Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
+l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
+Haskell (et autres langages de la famille de ML), tandis que la décomposition
+par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
+la façon dont l'interpréteur est construit, un langage peut supporter l'une ou
+l'autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
+solutions proposées au problème de l'expression nécessitent rarement un nouveau
+langage, mais exploitent plutôt les mécanismes existants d'une nouvelle façon.
+
+Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
+aident à résoudre le problème de l'expression sont des mécanismes qui /a priori/
+facilitent l'extension de l'interpréteur.  Peut-être que certains de ces
+mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
+Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
+d'extension.
+
+[
+
+- Different from /instrumentation/ which modifies existing terms and operations.
+
+]
 
 * UNWRITTEN Travaux connexes
 ** Les mécanismes de recomposition du programme
@@ -7681,263 +7956,6 @@ research and engineering have proved that it can be.  Don't discount late
 binding yet.
 
 * Chutes                                                           :noexport:
-** UNREAD Le problème de l'expression
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Slightly incomplete without the OO solution, but this was already described in
-the Hyper/J section.  Might merge, might cut altogether.
-#+END_aside
-
-Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
-nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
-
-#+BEGIN_aside
-Les deux contraintes de recompilation et de typage statique ne sont pas
-nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
-difficile, mais l'extension d'interpréteur est avant tout un problème
-d'extensibilité, et s'applique aussi bien à des langages interprétés (non
-compilés), et typés dynamiquement.
-#+END_aside
-
-#+BEGIN_QUOTE
-The Expression Problem is a new name for an old problem.  The goal is to define
-a datatype by cases, where one can add new cases to the datatype and new
-functions over the datatype, without recompiling existing code, and while
-retaining static type safety (e.g., no casts).
-#+END_QUOTE
-
-Dans un langage fonctionnel, une façon courante d'implémenter un interpréteur
-est en utilisant un /{{{adt}}}/ pour représenter les termes.  En Haskell par
-exemple, on définit un simple langage arithmétique par le type algébrique
-suivant:
-
-#+BEGIN_SRC haskell
-data Term = Constant Int
-          | Plus Term Term
-          | Mult Term Term
-#+END_SRC
-
-~Term~ est un type qui a trois variantes: un terme est soit une constante
-(~Constant~, un entier), une addition (~Plus~), ou une multiplication.
-
-La syntaxe du type algébrique correspond à la façon usuelle de définir des
-grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
-pourrait être:
-
-#+BEGIN_EXAMPLE
-<term> ::= <int> | <term> + <term> | <term> * <term>
-<int>  ::= 0 | 1 | 2 ...
-#+END_EXAMPLE
-
-Ici encore, un terme a trois variantes.  L'addition et la multiplication
-contiennent d'autres termes, et la variante constante ne contient qu'un nombre
-terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
-rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
-de programmation étant souvent définies par une BNF, le type algébrique est la
-solution la plus évidente pour les représenter.
-
-~Constant~, ~Plus~ et ~Mult~ sont les /constructeurs/ du type ~Term~, qui
-permettent de créer des expressions du langage.  L'expression 2 + 5 * 3 sera
-construite par:
-
-: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-AST illustration
-#+END_aside
-
-Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
-{{{ast}}} de cette expression.
-
-Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
-produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Dans
-la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
-on parlera plutôt d'/opérations/.
-
-La principale est l'opération d'évaluation qui donne un sens à chaque terme du
-langage.  Par exemple, on souhaite évaluer les expressions de notre langage
-arithmétique en suivant le sens usuel de l'addition et de la multiplication
-d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
-obtenir des entiers, puis on les additionne.  En Haskell, on écrira l'évaluation
-en traitant les trois variantes séparément, par /pattern matching/:
-
-#+BEGIN_SRC haskell
-eval :: Term -> Int
-eval (Constant n) = n
-eval (Plus t1 t2) = eval t1 + eval t2
-eval (Mult t1 t2) = eval t1 * eval t2
-#+END_SRC
-
-La première ligne donne le type de l'opération: elle consomme un terme pour
-produire un entier.  Chaque variante de terme est traitée explicitement sur
-chaque ligne.  On remarque que l'évaluation est récursive pour ~Plus~ et
-~Mult~.  La définition du type algébrique l'était déjà: ~Term~ est utilisé dans
-sa propre définition.  Les grammaires de langage sont souvent récursives, pour
-permettre la construction de grandes expressions à partir de simples éléments.  Même
-un langage aussi simple que celui-ci exhibe cette récursion.
-
-On peut maintenant évaluer l'expression 2 + 5 * 3:
-
-: > eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
-: 17
-
-Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
-/pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
-sortie est plus amicale pour l'œil humain.  Typiquement, le pretty printer d'un
-langage transforme l'arbre syntaxique en code source que le programmeur a
-l'habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
-le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot ~Constant~
-qui n'apporte pas d'information capitale.
-
-#+BEGIN_SRC haskell
-pp :: Term -> String
-pp (Constant n) = show n
-pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
-pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
-#+END_SRC
-
-#+BEGIN_aside
-On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
-#+END_aside
-
-Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
-
-: > pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
-: 2 + 5 * 3
-
-L'implémentation de l'affichage a la même structure que de l'implémentation de
-l'évaluation.  On traite les trois variantes du type algébrique dans trois
-lignes différentes.  Les deux variantes ~Plus~ et ~Mult~ sont définies
-récursivement, mais pas la variante ~Constant~, qui est un terminal dans la
-grammaire.  L'opération traite l'arbre syntaxique en partant de la racine, puis
-s'applique récursivement sur les nœuds de l'arbre jusqu'aux feuilles.  Ce
-processus, commun aux interpréteurs, est parfois appelé une /descente
-récursive/.
-
-Dans le problème de l'expression, on cherche à étendre le langage et son
-interpréteur de deux façons: en rajoutant des nouveaux termes au langage, et en
-rajoutant de nouvelles opérations.
-
-Avec ~pp~, on a déjà vu comment ajouter une nouvelle opération à l'interpréteur:
-il suffit de définir son comportement pour toutes les variantes des termes du
-langage.  ~Term~ a 3 variantes, donc ~pp~ définit 3 cas.  Notons aussi que pour
-ajouter l'opération il suffit d'/ajouter/ du code à l'interpréteur.  Aucune
-modification au code existant n'est requise.  C'est une distinction importante,
-car il est souvent plus facile d'ajouter du code que de modifier du code
-existant.
-
-On peut caractériser la complexité d'un changement de l'interpréteur comme la
-complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
-de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes, une
-opération aura une complexité de l'ordre de /v/ lignes de code (O(v)).  On note
-que ces lignes sont des additions par un '+': +O(v).
-
-#+BEGIN_aside
-On notera les lignes qui modifient une définition existante par '~', et les
-lignes supprimées par un '-'.
-#+END_aside
-
-Étendre le langage demande de modifier le code existant.  Si on veut rajouter un
-terme pour la soustraction, il faut commencer par étendre le type algébrique
-~Term~:
-
-#+BEGIN_SRC haskell
-data Term = Constant Int
-          | Plus Term Term
-          | Mult Term Term
-~         | Minus Term Term
-#+END_SRC
-
-C'est une ligne de code ajoutée.  Mais c'est surtout une /redéfinition/ du type
-algébrique.  Typiquement, ajouter une variante induit une recompilation.  On
-compte donc cette ligne comme une modification, et non un simple ajout.
-
-Mais il faut aussi traiter cette nouvelle variante dans les opérations
-existantes:
-
-#+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
-#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
-#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
-#+CAPTION: (à droite) nécessite de modifier toutes les opérations.
-[[file:img/expr-pb-1.svg]]
-#+END_side-figure
-
-#+BEGIN_SRC haskell
-  eval :: Term -> Int
-~ eval (Minus t1 t2) = eval t1 - eval t2
-
-  pp :: Term -> String
-~ pp (Minus t1 t2) = pp t1 ++ " - " ++ pp t2
-#+END_SRC
-
-Au total, si on a ~p~ opérations dans l'interpréteur, le changement a une
-complexité de ~O(p).
-
-Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
-une opération et ajouter un terme ne sont pas des changements similaires pour
-autant.  Ajouter un terme demande de /modifier/ des définitions existantes dans
-l'interpréteur, alors que pour ajouter une opération il suffit d'adjoindre une
-nouvelle fonction.
-
-Le problème de l'expression touche à la fois à la modularité et à
-l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
-l'interpréteur.  Et à la modularité, parce que les termes et les opérations
-peuvent être considérés comme des /unités/ indépendantes, des modules.  Pour
-respecter la modularité, on cherche à ce que chaque extension soit restreinte à
-un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
-un module sans affecter les autres, mais ajouter un terme requiert de modifier
-plusieurs modules.
-
-#+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les termes contiennent le code des
-#+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
-#+CAPTION: mais ajouter une opération nécessite de modifier tous les termes.
-[[file:img/expr-pb-0.svg]]
-#+END_side-figure
-
-Le problème n'est pas exclusif à Haskell.  Dans [[#hyperj]], on a vu exactement la
-situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
-fois chaque terme était représenté par un objet qui encapsulait les définitions
-des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
-ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
-faillait modifier tous les objets des termes existants.  Le choix de l'unité
-principale de décomposition (termes ou opérations), favorise l'un ou l'autre
-type d'extension.
-
-#+ATTR_HTML: :style margin-top:4rem
-#+BEGIN_side-figure
-#+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
-#+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
-#+CAPTION: revient à définir une arête dans le graphe ({{{color(c0)}}}).
-#+CAPTION: L'implémentation détermine juste comment cette arête est définie dans
-#+CAPTION: le programme.
-[[file:img/expr-pb-2.svg]]
-#+END_side-figure
-
-Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
-l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
-Haskell (et autres langages de la famille de ML), tandis que la décomposition
-par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
-la façon dont l'interpréteur est construit, un langage peut supporter l'une ou
-l'autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
-solutions proposées au problème de l'expression nécessitent rarement un nouveau
-langage, mais exploitent plutôt les mécanismes existants d'une nouvelle façon.
-
-Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
-aident à résoudre le problème de l'expression sont des mécanismes qui /a priori/
-facilitent l'extension de l'interpréteur.  Peut-être que certains de ces
-mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
-Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
-d'extension.
-
-[
-
-- Different from /instrumentation/ which modifies existing terms and operations.
-
-]
-
 ** Construire un interpréteur extensible
 Le style de l'interpréteur du chapitre précédent n'est pas extensible.
 L'interpréteur suit le patron module en JavaScript, qui a pour intention de
