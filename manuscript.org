@@ -4,7 +4,7 @@
 #+SUBTITLE: Application à des analyses dynamiques de sécurité en JavaScript
 #+AUTHOR: fmdkdd
 #+LANGUAGE: fr
-#+OPTIONS: tags:nil H:4 num:3 toc:3 ':t
+#+OPTIONS: tags:nil H:4 num:3 toc:2 ':t
 
 #+MACRO: acr @@latex:\textsc{$1}@@
 #+MACRO: color @@html:<span class="color $1">▬</span>@@ @@latex:\colorrule{$1}@@
@@ -57,18 +57,18 @@ different person then.'
      - [[#classes-et-héritage-smalltalk][Classes et héritage: Smalltalk]]
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
    - [[#réifier-le-langage-pour-séparer-les-préoccupations][Réifier le langage pour séparer les préoccupations]]
-     - [[#inprogress-la-réflexion][INPROGRESS La réflexion]]
-     - [[#read-limplémentation-ouverte][READ L'implémentation ouverte]]
-     - [[#read-la-programmation-par-aspects][READ La programmation par aspects]]
-       - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
-       - [[#exprimer-les-aspects-par-un-langage-dédié][Exprimer les aspects par un langage dédié]]
-       - [[#dautres-mécanismes-pour-la-programmation-par-aspects][D'autres mécanismes pour la programmation par aspects]]
-       - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
-       - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
-       - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
+   - [[#inprogress-la-réflexion][INPROGRESS La réflexion]]
+   - [[#read-limplémentation-ouverte][READ L'implémentation ouverte]]
+   - [[#read-la-programmation-par-aspects][READ La programmation par aspects]]
+     - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
+     - [[#exprimer-les-aspects-par-un-langage-dédié][Exprimer les aspects par un langage dédié]]
+     - [[#dautres-mécanismes-pour-la-programmation-par-aspects][D'autres mécanismes pour la programmation par aspects]]
+     - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
+     - [[#le-mécanisme-essentiel-pour-la-programmation-par-aspects][Le mécanisme essentiel pour la programmation par aspects]]
+     - [[#les-limites-de-la-programmation-par-aspects][Les limites de la programmation par aspects]]
    - [[#tisser-les-facettes-dun-artefact-dinnombrables-dimensions][Tisser les facettes d'un artefact d'innombrables dimensions]]
-     - [[#read-la-séplution][READ La séplution]]
-     - [[#read-linformation-transparente][READ L'information transparente]]
+   - [[#read-la-séplution][READ La séplution]]
+   - [[#read-linformation-transparente][READ L'information transparente]]
    - [[#unwritten-limiter-les-effets-de-bord-la-programmation-fonctionnelle][UNWRITTEN Limiter les effets de bord: la programmation fonctionnelle]]
    - [[#unwritten-le-problème-de-lexpression][UNWRITTEN Le problème de l'expression]]
  - [[#unwritten-travaux-connexes][UNWRITTEN Travaux connexes]]
@@ -626,6 +626,9 @@ Narcissus.
 
 ** Une présentation du langage JavaScript
 *** Genèse chez Netscape
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 #+BEGIN_aside
 Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
 permettent d'évaluer des programmes JavaScript dans une page web.
@@ -681,6 +684,9 @@ qui conduit à la standardisation du langage sous le nom d'ECMAScript en
 juin 1997.
 
 *** Un langage à prototypes qui doit ressembler à Java
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Sous ses allures de langage impératif, Eich dit s'être principalement inspiré de
 Self (pour les prototypes) et Scheme (pour les fonctions de première classe)
 [[cite:js-history][js-history]].  Contrairement à Java, JavaScript n'est pas un langage à classes.
@@ -1141,6 +1147,9 @@ machines.
 # - encapsulation
 
 *** Conclusions
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n'est pas toujours bien entendu.  On trouve dans l'article
 déterminant de 1972 les avantages d'un système modulaire, et un critère pour les
@@ -1380,6 +1389,9 @@ guidance, in an active and constructive environment.
 #+END_QUOTE
 
 *** Conclusions
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Naur établit une distinction importante entre le code source d'un programme, et
 la connaissance que le programmeur a de son fonctionnement.  C'est une
 distinction intuitive pour quiconque a une expérience même modeste de
@@ -3032,7 +3044,7 @@ langage.  Et ils sont sont aussi très utiles pour le détournement.
 #+CAPTION: Gustave Doré, 1862.
 [[file:img/münchhausen.jpg]]
 
-*** INPROGRESS La réflexion
+** INPROGRESS La réflexion
 En programmation par objets, on cherche une correspondance entre les acteurs du
 domaine d'application et les objets manipulés par le programme.  Dans la
 simulation d'un écosystème qui comprend de l'herbe, des moutons et des loups, on
@@ -3205,7 +3217,7 @@ interpreter semantics.
 previous implementation which used code transformation; better performance, less
 maintenance.
 
-*** READ L'implémentation ouverte
+** READ L'implémentation ouverte
 La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
 des programmes de contrôler, d'inspecter, de modifier, et d'étendre la
 sémantique du langage.
@@ -3330,7 +3342,7 @@ inversion de contrôle, patrons de conception Stratégie, n'importe quel moyen
 d'exécuter le code du client pour modifier le processus considéré comme étant de
 la responsabilité du module.
 
-*** READ La programmation par aspects
+** READ La programmation par aspects
 :PROPERTIES:
 :CUSTOM_ID: aop
 :END:
@@ -3349,7 +3361,7 @@ reconnaître que la décomposition d'un programme selon l'axe classique des
 fonctions et des classes n'est pas suffisante pour maintenir ces trois qualités;
 les aspects y remédient en introduisant une nouvelle dimension de composition.
 
-**** La distinction entre les composants et les aspects
+*** La distinction entre les composants et les aspects
 #+BEGIN_QUOTE
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
@@ -3469,7 +3481,7 @@ compose them to produce the overall system.
 /AOP := Aspect-Oriented Programming/
 #+END_aside
 
-**** Exprimer les aspects par un langage dédié
+*** Exprimer les aspects par un langage dédié
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
 programme, le langage dans lequel le programme est écrit, et le compilateur pour
@@ -3532,7 +3544,7 @@ dimensions.  On peut se poser la question: si l'on souhaite appliquer la
 programmation par aspects, faut-il réimplémenter un tisseur pour chaque
 application?  Y a-t-il d'autres façons de faire?
 
-**** D'autres mécanismes pour la programmation par aspects
+*** D'autres mécanismes pour la programmation par aspects
 La caractéristique principale de la programmation par aspects est la distinction
 entre composants et aspects.  Cette distinction, si elle apparaît au moment de
 la conception du programme doit être maintenue dans son implémentation.  Tout
@@ -3603,7 +3615,7 @@ supportent pas les mécanismes de bas-niveau qui pourraient servir à exprimer d
 aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
 d'AspectJ [[cite:KHH+01][KHH+01]].
 
-**** AspectJ: jonctions, coupes, et méthodes d'aspect
+*** AspectJ: jonctions, coupes, et méthodes d'aspect
 #+BEGIN_QUOTE
 AspectJ is intended to be a practical AOP language that provides, in a Java
 compatible package, a solid and well-worked-out set of AOP features.
@@ -3790,7 +3802,7 @@ Le programme peut être compilé avec ou sans les aspects, et engendrer deux
 exécutables différents.
 #+END_side-figure
 
-**** Le mécanisme essentiel pour la programmation par aspects
+*** Le mécanisme essentiel pour la programmation par aspects
 Être oubliable est une propriété qui peut être considérée comme caractéristique
 de la programmation par aspects [[cite:FF-04][FF-04]].  Filman et Friedman cherchent à
 identifier les systèmes qui suivent la programmation par aspects.  Il semble
@@ -3887,7 +3899,7 @@ système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
 événements.  Un système à événements fournit donc un mécanisme qui peut être
 utilisé pour faire de la programmation par aspects.
 
-**** Les limites de la programmation par aspects
+*** Les limites de la programmation par aspects
 Le but de la programmation par aspects est louable: distinguer les composants
 des aspects dans le programme, c'est mettre de l'ordre, c'est séparer les choses
 différentes, et regrouper les fonctionnalités similaires.  Le bénéfice, c'est
@@ -3988,7 +4000,7 @@ celle-ci.  Les thèmes de ce chapitre sont un autre exemple d'objet aux
 nombreuses dimensions, irréconciliables sous une seule décomposition.
 #+END_aside
 
-*** READ La séplution
+** READ La séplution
 :PROPERTIES:
 :CUSTOM_ID: hyperj
 :END:
@@ -4128,7 +4140,7 @@ des hypercoupes, et précise leur composition avant de les passer au compilateur
 qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 /superimposition/.
 
-*** READ L'information transparente
+** READ L'information transparente
 Les mécanismes de décomposition sont insuffisants pour anticiper les changements
 d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
 nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
