@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-02 mar. 19:15 -->
+<!-- 2016-08-03 mer. 18:42 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -154,22 +154,9 @@ for the JavaScript code in this tag.
 <li><a href="#prelims">1. <span class="done READ">READ</span> Préliminaires</a>
 <ul>
 <li><a href="#defs">1.1. Code source, processus, et spécification</a></li>
-<li><a href="#orgheadline6">1.2. Une présentation du langage JavaScript</a>
-<ul>
-<li><a href="#orgheadline4">1.2.1. Genèse chez Netscape</a></li>
-<li><a href="#orgheadline5">1.2.2. Un langage à prototypes qui doit ressembler à Java</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline8">1.3. La modularité selon Parnas</a>
-<ul>
-<li><a href="#orgheadline7">1.3.1. Conclusions</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline10">1.4. La théorie de Naur derrière le programme</a>
-<ul>
-<li><a href="#orgheadline9">1.4.1. Conclusions</a></li>
-</ul>
-</li>
+<li><a href="#orgheadline6">1.2. Une présentation du langage JavaScript</a></li>
+<li><a href="#orgheadline8">1.3. La modularité selon Parnas</a></li>
+<li><a href="#orgheadline10">1.4. La théorie de Naur derrière le programme</a></li>
 </ul>
 </li>
 <li><a href="#problem">2. Le problème: instrumenter et étendre des interpréteurs</a>
@@ -185,119 +172,58 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgheadline18">3.1. <span class="todo UNREAD">UNREAD</span> Le programme reflète le processus: la programmation structurée</a></li>
 <li><a href="#proglit">3.2. <span class="done READ">READ</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</a></li>
-<li><a href="#orgheadline22">3.3. <span class="todo INPROGRESS">INPROGRESS</span> Modéliser le monde: la programmation par objets</a>
-<ul>
-<li><a href="#Smalltalk">3.3.1. Classes et héritage: Smalltalk</a></li>
-<li><a href="#orgheadline21">3.3.2. Prototypes et délégation: Self</a></li>
+<li><a href="#orgheadline22">3.3. <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</a></li>
+<li><a href="#orgheadline23">3.4. Réifier le langage pour séparer les préoccupations</a></li>
+<li><a href="#orgheadline24">3.5. <span class="todo INPROGRESS">INPROGRESS</span> La réflexion</a></li>
+<li><a href="#orgheadline25">3.6. <span class="done READ">READ</span> L&rsquo;implémentation ouverte</a></li>
+<li><a href="#aop">3.7. <span class="done READ">READ</span> La programmation par aspects</a></li>
+<li><a href="#orgheadline33">3.8. Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</a></li>
+<li><a href="#hyperj">3.9. <span class="done READ">READ</span> La séplution</a></li>
+<li><a href="#orgheadline35">3.10. <span class="done READ">READ</span> L&rsquo;information transparente</a></li>
+<li><a href="#orgheadline36">3.11. <span class="todo UNWRITTEN">UNWRITTEN</span> Limiter les effets de bord: la programmation fonctionnelle</a></li>
+<li><a href="#expr">3.12. <span class="todo UNWRITTEN">UNWRITTEN</span> Le problème de l&rsquo;expression</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline32">3.4. Réifier le langage pour séparer les préoccupations</a>
+<li><a href="#orgheadline62">4. <span class="todo UNWRITTEN">UNWRITTEN</span> Travaux connexes</a>
 <ul>
-<li><a href="#orgheadline23">3.4.1. <span class="todo UNWRITTEN">UNWRITTEN</span> La réflexion</a></li>
-<li><a href="#orgheadline24">3.4.2. <span class="done READ">READ</span> L&rsquo;implémentation ouverte</a></li>
-<li><a href="#aop">3.4.3. <span class="done READ">READ</span> La programmation par aspects</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline35">3.5. Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</a>
-<ul>
-<li><a href="#hyperj">3.5.1. <span class="done READ">READ</span> La séplution</a></li>
-<li><a href="#orgheadline34">3.5.2. <span class="done READ">READ</span> L&rsquo;information transparente</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline36">3.6. <span class="todo UNWRITTEN">UNWRITTEN</span> Limiter les effets de bord: la programmation fonctionnelle</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline61">4. <span class="todo UNWRITTEN">UNWRITTEN</span> Travaux connexes</a>
-<ul>
-<li><a href="#orgheadline49">4.1. Les mécanismes de recomposition du programme</a>
-<ul>
-<li><a href="#orgheadline38">4.1.1. Le problème de l&rsquo;expression</a></li>
-<li><a href="#orgheadline39">4.1.2. Dynamic binding</a></li>
-<li><a href="#orgheadline40">4.1.3. Building from modules</a></li>
-<li><a href="#orgheadline41">4.1.4. Building with monads</a></li>
-<li><a href="#orgheadline42">4.1.5. Bytecode instrumentation</a></li>
-<li><a href="#orgheadline48">4.1.6. Superimposition</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline60">4.2. Travaux connexes concernant l&rsquo;instrumentation</a>
-<ul>
-<li><a href="#orgheadline50">4.2.1. Domain-specific languages</a></li>
-<li><a href="#orgheadline51">4.2.2. Scripting languages</a></li>
-<li><a href="#orgheadline53">4.2.3. Emacs</a></li>
-<li><a href="#orgheadline55">4.2.4. Eclipse and other IDEs</a></li>
-<li><a href="#orgheadline57">4.2.5. Web browsers</a></li>
-<li><a href="#orgheadline59">4.2.6. Lua</a></li>
-</ul>
-</li>
+<li><a href="#orgheadline50">4.1. Les mécanismes de recomposition du programme</a></li>
+<li><a href="#orgheadline61">4.2. Travaux connexes concernant l&rsquo;instrumentation</a></li>
 </ul>
 </li>
 <li><a href="#variations">5. <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
 <li><a href="#foal">6. Construire un interpréteur par modules</a>
 <ul>
-<li><a href="#orgheadline63">6.1. <span class="done READ">READ</span> Ajouter des termes</a></li>
-<li><a href="#orgheadline64">6.2. <span class="done READ">READ</span> Ajouter des opérations</a></li>
-<li><a href="#orgheadline65">6.3. <span class="done READ">READ</span> Modifier des opérations</a></li>
-<li><a href="#orgheadline66">6.4. <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</a></li>
-<li><a href="#orgheadline69">6.5. <span class="todo UNREAD">UNREAD</span> Discussion</a>
-<ul>
-<li><a href="#orgheadline67">6.5.1. Trois ingrédients principaux</a></li>
-<li><a href="#orgheadline68">6.5.2. Manipuler la portée suffit pour détourner le programme</a></li>
-</ul>
-</li>
+<li><a href="#orgheadline64">6.1. <span class="done READ">READ</span> Ajouter des termes</a></li>
+<li><a href="#orgheadline65">6.2. <span class="done READ">READ</span> Ajouter des opérations</a></li>
+<li><a href="#orgheadline66">6.3. <span class="done READ">READ</span> Modifier des opérations</a></li>
+<li><a href="#orgheadline67">6.4. <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</a></li>
+<li><a href="#orgheadline70">6.5. <span class="todo UNREAD">UNREAD</span> Discussion</a></li>
 </ul>
 </li>
 <li><a href="#dls">7. <span class="done READ">READ</span> Étendre un interpréteur par manipulation de portée</a>
 <ul>
-<li><a href="#orgheadline74">7.1. Manipuler la portée des variables pour l&rsquo;instrumentation</a>
+<li><a href="#orgheadline75">7.1. Manipuler la portée des variables pour l&rsquo;instrumentation</a></li>
+<li><a href="#orgheadline76">7.2. Ouvrir le motif module en JavaScript</a></li>
+<li><a href="#orgheadline82">7.3. Étendre Narcissus par manipulation de portée</a></li>
+<li><a href="#orgheadline88">7.4. Discussion</a></li>
+</ul>
+</li>
+<li><a href="#orgheadline96">8. <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</a>
 <ul>
-<li><a href="#orgheadline71">7.1.1. La portée dans le motif module</a></li>
-<li><a href="#orgheadline72">7.1.2. Ouvrir le motif module</a></li>
-<li><a href="#orgheadline73">7.1.3. Disposer les environnements en couches</a></li>
+<li><a href="#orgheadline90">8.1. Séparation des préoccupations: pourquoi?</a></li>
+<li><a href="#orgheadline91">8.2. Locality of concerns and locality of execution are irreconciable in the source text</a></li>
+<li><a href="#orgheadline92">8.3. Late binding is the common ingredient to all modular mechanisms</a></li>
+<li><a href="#orgheadline93">8.4. This could be done with Git</a></li>
+<li><a href="#orgheadline94">8.5. Perspectives: if automated programming is the future, this is mostly usesless</a></li>
+<li><a href="#orgheadline95">8.6. Perspectives: performance</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline75">7.2. Ouvrir le motif module en JavaScript</a></li>
-<li><a href="#orgheadline81">7.3. Étendre Narcissus par manipulation de portée</a>
+<li><a href="#orgheadline101">9. Appendices</a>
 <ul>
-<li><a href="#orgheadline76">7.3.1. Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</a></li>
-<li><a href="#orgheadline77">7.3.2. Ajouter l&rsquo;analyse de trace</a></li>
-<li><a href="#orgheadline78">7.3.3. Ajouter l&rsquo;analyse FlowR</a></li>
-<li><a href="#orgheadline79">7.3.4. Ajouter l&rsquo;analyse d&rsquo;environnements</a></li>
-<li><a href="#orgheadline80">7.3.5. Évaluation</a></li>
+<li><a href="#foal-extra">9.1. Construire un interpréteur par modules</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline87">7.4. Discussion</a>
-<ul>
-<li><a href="#orgheadline82">7.4.1. La tension entre flexibilité et sûreté</a></li>
-<li><a href="#orgheadline83">7.4.2. D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</a></li>
-<li><a href="#orgheadline84">7.4.3. Pourquoi ne pas utiliser la programmation par aspects?</a></li>
-<li><a href="#orgheadline85">7.4.4. Appliquer la manipulation de portée à d&rsquo;autres langages</a></li>
-<li><a href="#orgheadline86">7.4.5. Inconvénients de la manipulation de portée avec <code>with</code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgheadline95">8. <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</a>
-<ul>
-<li><a href="#orgheadline89">8.1. Séparation des préoccupations: pourquoi?</a></li>
-<li><a href="#orgheadline90">8.2. Locality of concerns and locality of execution are irreconciable in the source text</a></li>
-<li><a href="#orgheadline91">8.3. Late binding is the common ingredient to all modular mechanisms</a></li>
-<li><a href="#orgheadline92">8.4. This could be done with Git</a></li>
-<li><a href="#orgheadline93">8.5. Perspectives: if automated programming is the future, this is mostly usesless</a></li>
-<li><a href="#orgheadline94">8.6. Perspectives: performance</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline100">9. Appendices</a>
-<ul>
-<li><a href="#foal-extra">9.1. Construire un interpréteur par modules</a>
-<ul>
-<li><a href="#foal-extra-full">9.1.1. Code complet du chapitre</a></li>
-<li><a href="#foal-extra-rust">9.1.2. Code complet de l&rsquo;exemple en Rust</a></li>
-<li><a href="#foal-extra-subtle">9.1.3. <span class="todo UNREAD">UNREAD</span> La différence subtile</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#orgheadline101">Références</a></li>
+<li><a href="#orgheadline102">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -851,8 +777,8 @@ Narcissus.
 <h3 id="orgheadline6"><span class="section-number-3">1.2</span> Une présentation du langage JavaScript</h3>
 <div class="outline-text-3" id="text-1-2">
 </div><div id="outline-container-orgheadline4" class="outline-4">
-<h4 id="orgheadline4"><span class="section-number-4">1.2.1</span> Genèse chez Netscape</h4>
-<div class="outline-text-4" id="text-1-2-1">
+<h4 id="orgheadline4">Genèse chez Netscape</h4>
+<div class="outline-text-4" id="text-orgheadline4">
 <aside>
 <p>
 Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
@@ -924,8 +850,8 @@ juin 1997.
 </div>
 
 <div id="outline-container-orgheadline5" class="outline-4">
-<h4 id="orgheadline5"><span class="section-number-4">1.2.2</span> Un langage à prototypes qui doit ressembler à Java</h4>
-<div class="outline-text-4" id="text-1-2-2">
+<h4 id="orgheadline5">Un langage à prototypes qui doit ressembler à Java</h4>
+<div class="outline-text-4" id="text-orgheadline5">
 <p>
 Sous ses allures de langage impératif, Eich dit s&rsquo;être principalement inspiré de
 Self (pour les prototypes) et Scheme (pour les fonctions de première classe)
@@ -1338,7 +1264,7 @@ et de développer des outils pour passer d&rsquo;une forme à l&rsquo;autre.
 <p>
 Ce ne sont que des suggestions, et l&rsquo;article ne dit pas comment réaliser ces
 transformations.  On trouve des mises en œuvre de ces idées dans la
-programmation littéraire (<a href="#proglit">3.2</a>) et dans la programmation par aspects (<a href="#aop">3.4.3</a>).
+programmation littéraire (<a href="#proglit">3.2</a>) et dans la programmation par aspects (<a href="#aop">3.7</a>).
 </p>
 </aside>
 
@@ -1510,8 +1436,8 @@ machines.
 </div>
 
 <div id="outline-container-orgheadline7" class="outline-4">
-<h4 id="orgheadline7"><span class="section-number-4">1.3.1</span> Conclusions</h4>
-<div class="outline-text-4" id="text-1-3-1">
+<h4 id="orgheadline7">Conclusions</h4>
+<div class="outline-text-4" id="text-orgheadline7">
 <p>
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n&rsquo;est pas toujours bien entendu.  On trouve dans l&rsquo;article
@@ -1820,8 +1746,8 @@ guidance, in an active and constructive environment.
 </div>
 
 <div id="outline-container-orgheadline9" class="outline-4">
-<h4 id="orgheadline9"><span class="section-number-4">1.4.1</span> Conclusions</h4>
-<div class="outline-text-4" id="text-1-4-1">
+<h4 id="orgheadline9">Conclusions</h4>
+<div class="outline-text-4" id="text-orgheadline9">
 <p>
 Naur établit une distinction importante entre le code source d&rsquo;un programme, et
 la connaissance que le programmeur a de son fonctionnement.  C&rsquo;est une
@@ -2660,8 +2586,8 @@ programme.
 </div>
 </div>
 
-<div id="outline-container-orgheadline37" class="outline-2">
-<h2 id="chrono"><a id="orgheadline37"></a><span class="section-number-2">3</span> <span class="todo INPROGRESS">INPROGRESS</span> Le détournement à travers l&rsquo;histoire des langages de programmation</h2>
+<div id="outline-container-orgheadline38" class="outline-2">
+<h2 id="chrono"><a id="orgheadline38"></a><span class="section-number-2">3</span> <span class="todo INPROGRESS">INPROGRESS</span> Le détournement à travers l&rsquo;histoire des langages de programmation</h2>
 <div class="outline-text-2" id="text-chrono">
 </div>
 <div id="outline-container-orgheadline18" class="outline-3">
@@ -2924,7 +2850,7 @@ FROM</code> pour obtenir le programme équivalent:
 <p>
 Sans <code>COME FROM</code>, le programme est limpide.  Ces deux exemples illustrent la
 correspondance entre le programme et le processus.  La correspondance est plus
-direct dans le second programme; ce programme est donc plus clair.  <code>COMEFROM</code>
+directe dans le second programme; ce programme est donc plus clair.  <code>COMEFROM</code>
 rend le code encore plus difficile à suivre qu&rsquo;un <code>GOTO</code>, et c&rsquo;est bien
 l&rsquo;intention de son auteur, qui voit le débat autour du <code>GOTO</code> avec humour:
 </p>
@@ -2944,7 +2870,7 @@ the pro- and the anti-GOTO factions can agree.
 <aside>
 <p>
 L&rsquo;idée du <code>COME FROM</code> n&rsquo;est pas éloignée du mécanisme de méthode d&rsquo;aspects
-(<a href="#aop">3.4.3</a>).
+(<a href="#aop">3.7</a>).
 </p>
 </aside>
 
@@ -3334,7 +3260,7 @@ revanche, propose un nouveau paradigme.
 </div>
 
 <div id="outline-container-orgheadline22" class="outline-3">
-<h3 id="orgheadline22"><span class="section-number-3">3.3</span> <span class="todo INPROGRESS">INPROGRESS</span> Modéliser le monde: la programmation par objets</h3>
+<h3 id="orgheadline22"><span class="section-number-3">3.3</span> <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="full-figure">
 
@@ -3363,31 +3289,28 @@ Ah, voilà enfin le roi de la classe ! — [<a href="#HM-93">HM93</a>]</p>
 </div>
 
 <p>
-C&rsquo;est avec le langage Smalltalk qui débute la programmation par objets [<a href="#Ing-78">Ing78</a>,<a href="#Ing-81">Ing81</a>,<a href="#Kay-93">Kay93</a>].
+C&rsquo;est avec le langage Smalltalk qui débute la programmation par objets [<a href="#Ing-78">Ing78</a>,<a href="#Ing-81">Ing81</a>,<a href="#Kay-93">Kay93</a>].  Alan Kay, alors employé au laboratoire de recherche de Xerox à
+Palo Alto (PARC), souhaite développer l&rsquo;ordinateur personnel pour tous.  Il est
+inspiré par le NLS (Online System) de Douglas Engelbart [<a href="#EE-68">EE68</a>], un système qui
+permet d&rsquo;organiser des documents de travail, de créer de multiples vues de ces
+documents, d&rsquo;établir des relations (prémices de l&rsquo;hypertexte), et de collaborer
+à distance; tout cela dans le but &laquo;&nbsp;d&rsquo;accroître l&rsquo;intelligence humaine&nbsp;&raquo;.  Kay
+voit dans l&rsquo;ordinateur personnel à la fois un support qui permettrait à tout un
+chacun de décupler ses facultés de raisonnement et d&rsquo;analyse, mais aussi un
+catalyseur de créativité.  Chacun pourrait créer une simulation interactive pour
+mieux comprendre un phénomène, développer un outil pour résoudre un problème de
+la vie courante, mais aussi composer des mélodies inédites, ou tracer des
+esquisses improbables.  L&rsquo;ordinateur personnel serait à l&rsquo;intellect ce que
+l&rsquo;exosquelette est au corps humain.
 </p>
 
 <p>
-Alan Kay, alors employé au laboratoire de recherche de Xerox à Palo Alto (PARC),
-souhaite développer l&rsquo;ordinateur personnel pour tous.  Il est inspiré par le NLS
-(Online System) de Douglas Engelbart [<a href="#EE-68">EE68</a>], un système qui permet d&rsquo;organiser
-des documents de travail, de créer de multiples vues de ces documents, d&rsquo;établir
-des relations (prémices de l&rsquo;hypertexte), et de collaborer à distance, dans le
-but &laquo;&nbsp;d&rsquo;accroître l&rsquo;intelligence humaine&nbsp;&raquo;.  Kay voit dans l&rsquo;ordinateur personnel
-à la fois un support qui permettrait à tout un chacun de décupler ses facultés
-de raisonnement et d&rsquo;analyse, mais aussi un catalyseur de créativité.  Chacun
-pourrait créer une simulation interactive pour mieux comprendre un phénomène, ou
-créer un outil pour résoudre un problème de la vie courante, mais aussi composer
-des mélodies inédites, ou faire des esquisses improbables.  L&rsquo;ordinateur
-personnel serait à l&rsquo;intellect ce que l&rsquo;exosquelette est au corps humain.
-</p>
-
-<p>
-En 1971, Kay crée le <i>Learning Research Group</i> à PARC dans le but de construire
-cet ordinateur.  Inspiré par les travaux de Piaget et Bruner sur le
-développement intellectuel chez les enfants, il souhaite construire un
-ordinateur intuitif, qui pourra servir aux enfants &laquo;&nbsp;de tout âge&nbsp;&raquo;.  Programmer ce
-système serait simple comme bonjour, et c&rsquo;est pourquoi il nomme son langage de
-programmation &laquo;&nbsp;Smalltalk&nbsp;&raquo;.
+Dans le but de construire cet ordinateur personnel pour tous, Kay crée au sein
+de PARC le <i>Learning Research Group</i> en 1971.  Inspiré par les travaux de Piaget
+et Bruner sur le développement intellectuel chez les enfants, il souhaite
+construire un ordinateur intuitif utilisable par les enfants &laquo;&nbsp;de tout âge&nbsp;&raquo;.
+Programmer ce système serait simple comme bonjour, et c&rsquo;est pourquoi il nomme
+son langage de programmation &laquo;&nbsp;Smalltalk&nbsp;&raquo;.
 </p>
 
 <p>
@@ -3396,7 +3319,7 @@ Sketchpad, il retient l&rsquo;utilisation des contraintes et l&rsquo;interactivi
 SIMULA, il tire la différence entre les classes de procédures et leurs
 instances, et le mécanisme d&rsquo;héritage.  Et de LISP, il emprunte le style de
 construction récursif, l&rsquo;absence de gestion manuelle de la mémoire, et
-l&rsquo;homoiconicité.
+la relation symbiotique entre programme et structures de données.
 </p>
 
 <p>
@@ -3417,7 +3340,8 @@ useful structure?
 <p>
 Ce qui se traduit, en Smalltalk, par le principe du &laquo;&nbsp;tout objet&nbsp;&raquo;.  Un nombre
 entier est un objet.  Une chaîne de caractère est un objet.  Une liste chaînée
-est un objet.  Un fichier est un objet.  Une image est un objet.
+est un objet.  Un fichier est un objet.  Une image est un objet.  Et un objet,
+bien entendu, est un objet.
 </p>
 
 <p>
@@ -3431,12 +3355,13 @@ données: c&rsquo;est une forme de type de donnée abstrait.
 <p>
 Pour communiquer entre eux, les objets s&rsquo;envoient des <i>messages</i>.  Il n&rsquo;y a pas
 de procédures, seulement des <i>méthodes</i> qui répondent à certains messages.  Pour
-additionner deux entiers par exemple, on écrit <code>2 + 3</code>, qu&rsquo;il faut lire comme
-&laquo;&nbsp;Passer le message <code>+3</code> à l&rsquo;objet <code>2</code>&nbsp;&raquo;.  L&rsquo;objet <code>2</code> contient une méthode qui
-interprète le message <code>+3</code> comme une addition avec l&rsquo;objet <code>3</code>, ce qui retourne
-un nouvel objet: <code>5</code>.  On ne pense plus alors en termes d&rsquo;opérateur (<code>+</code>) et
-d&rsquo;opérandes (<code>2</code> et <code>3</code>), mais d&rsquo;un objet (<code>2</code>) qui reçoit un message (<code>+3</code>).
-C&rsquo;est le changement de paradigme majeur de la programmation par objets:
+additionner deux entiers par exemple, on écrit <code>2 + 3</code>, comme en arithmétique
+classique.  Mais en Smalltalk il faut lire cette expression comme &laquo;&nbsp;Passer le
+message <code>+3</code> à l&rsquo;objet <code>2</code>&nbsp;&raquo;.  L&rsquo;objet <code>2</code> contient une méthode qui interprète le
+message <code>+3</code> comme une addition avec l&rsquo;objet <code>3</code>, ce qui retourne un nouvel
+objet: <code>5</code>.  On ne pense plus alors en termes d&rsquo;opérateur (<code>+</code>) et d&rsquo;opérandes
+(<code>2</code> et <code>3</code>), mais d&rsquo;un objet (<code>2</code>) qui reçoit un message (<code>+3</code>).  C&rsquo;est le
+changement de paradigme majeur de la programmation par objets:
 </p>
 
 <blockquote>
@@ -3445,8 +3370,7 @@ On the one hand, the act of assembling expressions into statements and then into
 methods is not very different from conventional programming.  On the other hand,
 the experience is totally different, for the objects which populate and traverse
 the code are active entities, and writing expressions feels like organizing
-trained animals rather than pushing boxes around.
-</p>
+trained animals rather than pushing boxes around. — [<a href="#Kay-93">Kay93</a>]</p>
 </blockquote>
 
 <p>
@@ -3458,15 +3382,15 @@ dynamique</i>.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name">L&rsquo;addition de deux points fait appel à l&rsquo;addition des coordonnées.</label>
+<label class="org-src-name">Ici, l&rsquo;addition de deux points fait appel à l&rsquo;addition des coordonnées.</label>
 <pre class="src src-smalltalk">+ t1
   [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
 </pre>
 </div>
 
 <p>
-Le programmeur ne crée pas des objets directement.  Il crée des <i>classes</i>.  Une
-classe est un moule à partir duquel on peut créer des objets.  Une classe
+Le programmeur ne crée pas des objets directement.  Il décrit des <i>classes</i>.
+Une classe est un moule à partir duquel on peut créer des objets.  Une classe
 contient les données privées manipulées par l&rsquo;objet (ses <i>attributs</i>), et ses
 méthodes, qui sont partagées entre toutes les <i>instances</i> de cette classe.
 </p>
@@ -3500,7 +3424,7 @@ L&rsquo;héritage permet aux classes <code>Integer</code> et <code>Float</code> 
 </div>
 
 <div class="org-src-container">
-<label class="org-src-name">Les comparaisons sur les nombres sont définiies dans la classe <code>Number</code> en termes de la soustraction.  Code source tiré de [<a href="#Smalltalk78">IFK</a>].</label>
+<label class="org-src-name">Les comparaisons sur les nombres sont définiies dans la classe <code>Number</code> en termes de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78 [<a href="#Smalltalk78">IFK</a>].</label>
 <pre class="src src-smalltalk">&lt; t1
   [⇑ self - t1 &lt; 0]
 &gt; t1
@@ -3519,9 +3443,9 @@ remarque avec humour: &laquo;&nbsp;The implementor must cheat, but not get caugh
 </aside>
 
 <p>
-Pour Ingalls, la modularité dans un système complexe c&rsquo;est de ne jamais dépendre
-des détails internes d&rsquo;un autre objet.  Les classes et le passage de message
-contribuent à forcer cette barrière:
+Pour Ingalls, co-auteur de Smalltalk, la modularité dans un système complexe
+c&rsquo;est de ne jamais dépendre des détails internes d&rsquo;un autre objet.  Les classes
+et le passage de message contribuent à forcer cette barrière:
 </p>
 
 <blockquote>
@@ -3540,38 +3464,46 @@ need never know about internal representation.
 The class is the natural unit of modularity, as it describes all the external
 messages understood by its instances, as well as all the internal details about
 methods for computing responses to messages and representation of data in the
-instances.
-</p>
+instances. — [<a href="#Ing-78">Ing78</a>]</p>
 </blockquote>
 
+<aside>
 <p>
-Que le langage soit centré sur les objets a un avantage pour l&rsquo;extensibilité.
-Ingalls donne l&rsquo;exemple d&rsquo;ajouter un nouvel objet au système, et de faire les
-modifications nécessaires pour représenter cet objet sur la sortie standard.
-Dans un système qui contiendrait une fonction <code>print</code> centrale, c&rsquo;est cette
-fonction qu&rsquo;il faudrait modifier.  Elle pourrait être large et compliquée, et il
-faudrait faire attention à ne pas affecter l&rsquo;affichage des autres objets.  En
-Smalltalk, tous les objets sont affichables s&rsquo;ils répondent au message <code>printon:
-s</code>.  Du coup, il suffit d&rsquo;ajouter cette méthode dans le nouvel objet, ce qui
-garantit de ne pas affecter le reste du système.  La nouvelle fonctionnalité est
-localisée dans l&rsquo;objet.
+Ce problème est proche du problème de l&rsquo;Expression posé par Wadler, que nous
+étudierons par la suite (<a href="#expr">3.12</a>) car il est aussi lié à l&rsquo;extension des
+interpréteurs.
+</p>
+</aside>
+
+<p>
+Le paradigme objet favorise l&rsquo;extensibilité.  Ingalls donne comme exemple
+l&rsquo;ajout d&rsquo;un nouvel objet au système, et les modifications nécessaires pour
+représenter cet objet sur la sortie standard.  Dans un système qui contiendrait
+une fonction <code>print</code> centrale, c&rsquo;est cette fonction qu&rsquo;il faudrait modifier.
+Elle pourrait être large et compliquée, et il faudrait faire attention à ne pas
+affecter l&rsquo;affichage des autres objets.  En Smalltalk, tous les objets sont
+affichables s&rsquo;ils répondent au message <code>printon: s</code>.  Du coup, il suffit
+d&rsquo;ajouter cette méthode dans le nouvel objet, sans avoir à toucher au reste du
+système.  La nouvelle fonctionnalité est localisée dans l&rsquo;objet que l&rsquo;on
+ajoute.  Le système est extensible.
 </p>
 
 <p>
-Et puisque les objets ne dépendent pas de la représentation interne d&rsquo;autres
-objets, on peut les recompiler séparémment.  Modifier ou ajouter un champ à la
-classe <code>Rectangle</code> n&rsquo;impacte que le code de l&rsquo;objet, jamais le code extérieur.
-Les objets peuvent être compilés indépendamment.
+Un autre avantage est la recompilation indépendante des classes.  Les objets ne
+dépendent pas de la représentation interne d&rsquo;autres objets.  Modifier ou ajouter
+un champ à la classe <code>Rectangle</code> n&rsquo;impacte que le code généré pour cette classe,
+jamais le code des classes extérieures.  Les classes peuvent donc être compilées
+indépendamment.
 </p>
 
 <p>
 L&rsquo;héritage de classes permet la réutilisation de code.  Mais une classe ne peut
 avoir qu&rsquo;un seul parent, ce qui force une hiérarchie des objets du système sous
-forme d&rsquo;arbre, qui peut s&rsquo;avérer inflexible.  Dans l&rsquo;exemple ci-contre, trois
+forme d&rsquo;arbre qui peut s&rsquo;avérer inflexible.  Dans l&rsquo;exemple ci-contre, trois
 classes ont des opérations en commun qui ne peuvent pas être partagées seulement
-par l&rsquo;héritage.  L&rsquo;implémentation de Smalltalk pour l&rsquo;ordinateur STAR de Xerox
-permet à une classe de réutiliser les méthodes de plusieurs classes à la fois
-par le mécanisme des <i>traits</i> [<a href="#CBL+82">CBL+82</a>].
+par héritage car leur intersection est nulle.  L&rsquo;implémentation de Smalltalk
+pour l&rsquo;ordinateur STAR de Xerox permet à une classe de réutiliser les méthodes
+de plusieurs classes à la fois par le mécanisme des <i>traits</i> [<a href="#CBL+82">CBL+82</a>].
 </p>
 
 <div style="margin-top:-11rem" class="side-figure">
@@ -3593,9 +3525,9 @@ par l&rsquo;héritage.
 Un trait décrit une fonctionnalité qui peut être réemployée par plusieurs
 classes; il contient une ou plusieurs méthodes et leurs implémentations, ainsi
 que les attributs utilisés par ces méthodes.  Une classe peut implémenter
-plusieurs traits, ce qui transforme la hiérarchie en graphe dirigé acyclique.
-Un trait peut en outre implémenter des traits à son tour, ce qui permet de
-regrouper des traits souvent utilisés ensemble.
+plusieurs traits; on passe d&rsquo;un arbre à un graphe dirigé acyclique.  Un trait
+peut en outre implémenter des traits à son tour, ce qui permet de regrouper des
+traits souvent utilisés ensemble.
 </p>
 
 <div style="margin-top:-9rem" class="side-figure">
@@ -3613,16 +3545,22 @@ permet de factoriser ces trois classes.
 </div>
 
 <p>
-Pour Kay, un des ingrédients clés de la flexibilité apportée par programmation
-par objets est la <i>liaison tardive</i> (<i>late binding</i>).  Le passage de messages en
-est un exemple: l&rsquo;opération effectuée dépend de l&rsquo;objet qui reçoit le message,
-et cet objet peut ne pas être déterminé avant l&rsquo;exécution du programme, donc
-l&rsquo;opération devra être choisie dynamiquement.  De même, dans l&rsquo;exemple de la
-classe <code>Number</code>, on fait référence au message <code>-</code>, qui n&rsquo;est pas défini sur
-<code>Number</code>: c&rsquo;est une forme de liaison tardive.  Autre exemple: la fonction <code>eval</code>
-en LISP permet d&rsquo;exécuter du texte construit dynamiquement; les premières
-versions de Smalltalk permettaient de traiter la syntaxe à l&rsquo;exécution de la
-même manière.
+Pour Kay, l&rsquo;ingrédient clé de la flexibilité de la programmation par objets est
+le retard de liaison causé par le passage de messages.  On n&rsquo;appelle plus une
+procédure qui correspond à un code spécifique, mais on passe une requête.
+L&rsquo;opération effectuée, le code invoqué, dépend entièrement de l&rsquo;objet qui reçoit
+cette requête.  Avec l&rsquo;héritage, cet objet n&rsquo;est pas nécessairement connu du
+code appelant; on peut effectuer des opérations sur des <code>Number</code> sans savoir si
+ce sont des instances d&rsquo;<code>Integer</code> ou de <code>Float</code> avec lesquelles on traite.
+Le message est un lien indirect, et puisqu&rsquo;il est indirect, il peut être plus
+facilement modifié, comme l&rsquo;exemple d&rsquo;Ingalls le montre.
+</p>
+
+<p>
+L&rsquo;indirection est donc un principe général utile pour le détournement que l&rsquo;on
+souhaite réaliser.  Mais cette indirection n&rsquo;est pas restreinte aux seuls
+langages à classes.  On peut aussi faire de la programmation par objets avec des
+<i>prototypes</i>.
 </p>
 </div>
 </div>
@@ -3631,23 +3569,20 @@ même manière.
 <h4 id="orgheadline21"><span class="section-number-4">3.3.2</span> Prototypes et délégation: Self</h4>
 <div class="outline-text-4" id="text-3-3-2">
 <p>
-On peut faire de la programmation par objets sans classes et sans héritage.  Les
-langages <i>à prototypes</i> poursuivent l&rsquo;approche du tout objet et la généralise.
+Les langages à prototypes poursuivent l&rsquo;approche du tout objet.  Il n&rsquo;y a plus
+de classes, plus d&rsquo;instances, seulement des objets.
 </p>
 
 <p>
-Taivalsaari [<a href="#Tai-97">Tai97</a>] voit, entre ces deux approches, une distinction
-philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l&rsquo;école
-d&rsquo;Athènes: de Platon [<a href="#Pla-98">Pla98</a>] et d&rsquo;Aristote [<a href="#Ari-35">AriBC</a>].  Platon distingue les
-<i>formes</i>, qui sont les descriptions idéales des choses, des <i>instances</i> de ces
-formes, qui sont leur manifestation concrète et imparfaite.  Platon considère
-que les formes sont plus réelles que leurs instances.  Aristote croit qu&rsquo;il est
-possible d&rsquo;établir l&rsquo;unique taxonomie correcte de toutes les choses naturelles.
-Il classe une chose à partir de ses propriétés essentielles (le genre), et des
-propriétés qui la distingue des autres choses du même genre (le différentiel).
-On voit le parallèle avec l&rsquo;héritage en programmation par objets: quand une
-classe hérite, elle déclare son genre, et les méthodes additionnelles décrivent
-son différentiel.
+Taivalsaari [<a href="#Tai-97">Tai97</a>] voit entre ces deux approches une distinction philosophique.
+Les langages à classes (SIMULA, Smalltalk, Java) suivent l&rsquo;école d&rsquo;Athènes: de
+Platon et d&rsquo;Aristote.  Platon distingue les <i>formes</i>, qui sont les descriptions
+idéales des choses, des <i>instances</i> de ces formes, qui sont leur manifestation
+concrète et imparfaite.  Platon considère que les formes sont plus réelles que
+leurs instances.  Pour Aristote, il existe une unique taxonomie correcte de
+toutes les choses naturelles, et il souhaite l&rsquo;établir.  Il classe une chose à
+partir de ses propriétés essentielles (le genre), et ses propriétés qui la
+distinguent les autres choses du même genre (le différentiel).
 </p>
 
 <p>
@@ -3655,9 +3590,9 @@ Aristote, comme Platon, voyaient la classification comme absolue: la taxonomie
 est la seule vraie hiérarchie des choses.  À l&rsquo;inverse, Wittgenstein la
 considère subjective [<a href="#Wit-53">Wit53</a>].  Certains concepts sont difficiles à définir en
 <i>intension</i>, par une liste de propriétés communes à toutes ses instances.
-Wittgenstein propose la notion de <i>ressemblance familière</i>.  La chose n&rsquo;est pas
-déterminée par une définition absolue, mais par ses similarités avec des
-prototypes représentatifs.
+Wittgenstein propose plutôt la notion de <i>ressemblance familière</i>.  La chose
+n&rsquo;est plus déterminée par une définition absolue, mais par ses similarités avec
+des prototypes représentatifs.
 </p>
 
 <p>
@@ -3667,14 +3602,24 @@ De cette distinction philosophique, Taivalsaari tire trois conclusions:
 <ul class="org-ul">
 <li>Il n&rsquo;y a pas de hiérarchie de classe optimale.  Le choix est subjectif et
 dépend non seulement des besoins de l&rsquo;application, mais surtout de son
-concepteur.  Les langages à classes <i>nécessitent</i> une hiérarchie, et en
-conséquence elle est souvent <i>inflexible</i>, difficile à modifier sans impacter
-une grande partie du système.</li>
+concepteur.  Les langages à classes <i>nécessitent</i> d&rsquo;établir une hiérarchie, et
+celle-ci est souvent inflexible.  Lorsque le choix de cette hiérarchie sera
+remis en question, il sera difficile de la modifier sans impacter une grande
+partie du système.</li>
 
 <li>Dans une hiérarchie de classes, ce sont les classes du milieu qui sont souvent
 les plus représentatives des objets de l&rsquo;application.  Les classes les plus
-hautes sont trop abstraites, et les classes les plus basses trop spécifiques.</li>
+hautes sont trop abstraites pour être utiles, et les classes les plus basses
+trop spécifiques pour être réutilisables.</li>
+</ul>
 
+<aside>
+<p>
+C&rsquo;est le point de vue constructiviste popularisé par Piaget.
+</p>
+</aside>
+
+<ul class="org-ul">
 <li>Les prototypes correspondent davantage au processus de réflexion humain.  En
 abordant un domaine, on ne commence pas par établir des classes abstraites qui
 capturent l&rsquo;essence des objets considérés.  On part d&rsquo;exemples, de cas
@@ -3687,8 +3632,8 @@ la dernière étape de la réflexion.</li>
 
 <p>
 Ces conclusions suggèrent que les langages à prototypes sont plus flexibles pour
-modéliser le monde.  Les classes sont trop rigides, trop abstraites; la
-flexibilité découle des <i>prototypes</i>.  Ce point de vue fait écho à Lieberman
+modéliser le monde.  Les classes sont trop rigides, trop abstraites; les
+prototypes sont plus <i>dynamiques</i>.  Ce point de vue fait écho à Lieberman
 [<a href="#Lie-86">Lie86</a>], qui illustre la différence entre les deux mécanismes à l&rsquo;aide d&rsquo;un
 éléphant nommé Clyde.
 </p>
@@ -3702,17 +3647,7 @@ partage s&rsquo;effectue exactement?  De deux façons: on peut utiliser les clas
 les prototypes.
 </p>
 
-<p>
-En utilisant les classes, on construit le concept abstrait d&rsquo;<i>éléphant</i>, qui
-contient toutes les propriétés que l&rsquo;on juge essentielles aux éléphants.  Clyde
-et Fred sont des <i>instances</i> de ce concept (cette classe); l&rsquo;instantiation est
-un premier mécanisme de partage du savoir.  Le second est l&rsquo;héritage: si Fred et
-Clyde ont des propriétés communes, non essentielles, comme des grandes oreilles,
-alors je peux créer un sous-concept d&rsquo;éléphant <i>africain</i> qui hérite du
-concept d&rsquo;éléphant pour les représenter spécifiquement.
-</p>
-
-<div style="margin-top:-14rem" class="side-figure">
+<div style="margin-top:-15rem" class="side-figure">
 
 <figure>
 <p><img src="img/self0.svg" alt="self0.svg">
@@ -3728,20 +3663,16 @@ Fred.  Les deux mécanismes de partage sont l&rsquo;héritage et l&rsquo;instant
 </div>
 
 <p>
-En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le
-premier éléphant que je rencontre, il devient mon <i>prototype</i> d&rsquo;éléphant.  Si on
-me demande la couleur d&rsquo;un éléphant, je suppose qu&rsquo;ils sont tous de la même
-couleur que Clyde, et je réponds &laquo;&nbsp;gris&nbsp;&raquo;.  Fred est aussi un éléphant, et il
-ressemble beaucoup à Clyde.  Je lie les deux en disant que Clyde est le
-prototype de Fred; il est <i>comme</i> Clyde, mais avec un nom différent.  Si Fred a
-d&rsquo;autres particularités, s&rsquo;il a la peau bleue, je l&rsquo;inscris seulement dans sa
-représentation.  Si on me demande la couleur de Fred, je n&rsquo;ai besoin que
-d&rsquo;inspecter la représentation de Fred.  Mais si on me demande combien de pattes
-a Fred, il en a autant que Clyde, son prototype.  L&rsquo;information non spécifique
-à Fred est sauvegardée par le prototype: c&rsquo;est le mécanisme de <i>délégation</i>.
+En utilisant les classes, on construit le concept abstrait d&rsquo;<i>éléphant</i>, qui
+contient toutes les propriétés que l&rsquo;on juge essentielles aux éléphants.  Clyde
+et Fred sont des <i>instances</i> de ce concept (cette classe); l&rsquo;instantiation est
+un premier mécanisme de partage du savoir.  Le second est l&rsquo;héritage: si Fred et
+Clyde ont des propriétés communes, non essentielles, comme des grandes oreilles,
+alors je peux créer un sous-concept d&rsquo;éléphant <i>africain</i> qui hérite du
+concept d&rsquo;éléphant pour les représenter spécifiquement.
 </p>
 
-<div style="margin-top:-4rem" class="side-figure">
+<div style="margin-top:2rem" class="side-figure">
 
 <figure>
 <p><img src="img/self1.svg" alt="self1.svg">
@@ -3750,29 +3681,39 @@ a Fred, il en a autant que Clyde, son prototype.  L&rsquo;information non spéci
 
 <p>
 Dans les langages à prototype, on manipule directement les objets qui
-représentent Clyde et Fred.  Le mécanisme essentiel de partage est la
-délégation.
+représentent Clyde et Fred.  Le mécanisme de partage est la délégation.
 </p>
 
 </div>
 
-<p>
-Dony, Malenfant et Bardou [<a href="#DMB-98">DMB98</a>] recensent les langages à prototypes pour en
-déterminer les caractéristiques.  Ils identifient notamment trois façons de
-créer des objets.  On en a déjà vu deux: créer un objet <i>ex nihilo</i> (Clyde), et
-par <i>extension</i> d&rsquo;un autre (Fred à partir de Clyde).  La troisième façon est le
-<i>clonage</i>: créer un nouvel objet qui possède des copies profondes des propriétés
-de l&rsquo;original.  Modifier le clone n&rsquo;affecte pas l&rsquo;original, alors que modifier
-un objet créé par extension peut modifier son prototype.
-</p>
 
 <p>
-Self [<a href="#US-91">US91</a>], est un langage à prototypes plutôt représentatif (un prototype de
-cette classe de langages?).  Comme en Smalltalk, tout est objet.  Mais à
-l&rsquo;inverse de Smalltalk, il n&rsquo;y a pas de classes.  Le programmeur ne crée pas une
-hiérarchie de concepts, mais des familles d&rsquo;objets.  Cette absence de structure
-est un avantage dans un processus de développement interactif: on peut raffiner
-les objets à l&rsquo;exécution.  Mais c&rsquo;est aussi un inconvénient en pratique:
+En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le premier
+éléphant que je rencontre, il devient mon éléphant <i>prototype</i>.  Si on me
+demande la couleur d&rsquo;un éléphant, je suppose qu&rsquo;ils sont tous de la même couleur
+que Clyde, et je réponds &laquo;&nbsp;gris&nbsp;&raquo;.  Puis je rencontre Fred, et il ressemble
+beaucoup à Clyde.  Je lie les deux en disant que Clyde est le prototype de Fred;
+il est <i>comme</i> Clyde, mais avec un nom différent.  Si Fred a d&rsquo;autres
+particularités, s&rsquo;il a la peau bleue, je l&rsquo;inscris seulement dans sa
+représentation.  Si on me demande la couleur de Fred, je n&rsquo;ai besoin que
+d&rsquo;inspecter la représentation de Fred.  Mais si on me demande combien de pattes
+a Fred, il en a autant que Clyde, son prototype.  L&rsquo;information non spécifique à
+Fred est sauvegardée par son prototype: c&rsquo;est le mécanisme de <i>délégation</i>.
+</p>
+
+<aside>
+<p>
+Un prototype de cette classe de langages?
+</p>
+</aside>
+
+<p>
+Self [<a href="#US-91">US91</a>], est un langage à prototypes plutôt représentatif.  Comme en
+Smalltalk, tout est objet.  Mais à l&rsquo;inverse de Smalltalk, il n&rsquo;y a pas de
+classes.  Le programmeur ne crée pas une hiérarchie de concepts, mais des
+familles d&rsquo;objets.  Cette absence de structure est un avantage dans un processus
+de développement interactif: on peut raffiner les objets à l&rsquo;exécution.  Mais
+pour ses auteurs, c&rsquo;est aussi un inconvénient en pratique:
 </p>
 
 <blockquote>
@@ -3799,14 +3740,15 @@ it will have to include navigational and descriptive aids.
 
 <p>
 Les langages à prototypes sont particulièrement adaptés pour représenter des
-objets qui ont un comportement unique.  Mais il arrive souvent que l&rsquo;on doive
-gérer de nombreux objets similaires.  Les concepteurs de Self décrivent une
-façon de structurer ces objets à l&rsquo;aide de traits [<a href="#UCC+91">UCC+91</a>].  Comme en Smalltalk,
-un trait est un objet qui regroupe les méthodes utilisées par plusieurs objets.
-On crée ensuite un objet prototype qui étend ce trait, et fournit une
-implémentation et des valeurs d&rsquo;attributs par défaut.  Tous les objets de la
-même famille étendent ce prototype.  Cette structure permet de séparer les
-méthodes (le comportement) des attributs (l&rsquo;état).
+objets qui ont un comportement unique, comme dans des interfaces graphiques
+[<a href="#Smi-95">Smi95</a>].  Mais il arrive souvent que l&rsquo;on doive gérer de nombreux objets
+similaires.  Les concepteurs de Self décrivent une façon de structurer ces
+objets à l&rsquo;aide de traits [<a href="#UCC+91">UCC+91</a>].  Comme en Smalltalk, un trait est un objet qui
+regroupe les méthodes utilisées par plusieurs objets.  On crée ensuite un objet
+prototype qui étend ce trait, et fournit une implémentation et des valeurs
+d&rsquo;attributs par défaut.  Tous les objets de la même famille étendent ce
+prototype.  Cette structure permet de séparer les méthodes (le comportement) des
+attributs (l&rsquo;état).
 </p>
 
 <div style="margin-top:-13rem" class="side-figure">
@@ -3825,26 +3767,39 @@ et instances, alors qu&rsquo;en Self ce sont tous des objets qui ont juste des r
 différents.
 </p>
 
-<aside class="todo">
+<aside>
 <p>
-Mode-switching better explained as mechanism later on.  Paragraph should
-elaborate on the object/class distinctions.
+Le Newton était basé sur un langage à prototypes; entre autres raisons pour son
+faible coût en mémoire [<a href="#Smi-95">Smi95</a>].
 </p>
 </aside>
 
 <p>
 Les concepteurs de Self remarquent que le mécanisme de délégation est plus
-général que l&rsquo;héritage.  Le premier peut émuler le second, mais l&rsquo;inverse n&rsquo;est
-pas possible.  Si le langage permet de modifier le lien de prototype après la
-création d&rsquo;un objet, on a une solution élégante au patron de conception <i>State</i>:
-le <i>mode-switching</i> (voir ??).
+général que l&rsquo;héritage.  Le premier émule le second, mais pas l&rsquo;inverse.  En
+outre, la délégation et le clonage facilitent l&rsquo;adaptation dynamique du
+programme.  Sans hiérarchie à respecter, il est plus facile de remplacer des
+objets par d&rsquo;autres, qui ont un comportement différent.  La délégation est un
+autre exemple d&rsquo;indirection, et donc un mécanisme utile pour le détournement.
+</p>
+
+<p>
+D&rsquo;un autre côté, les langages à classes, en imposant une structure
+supplémentaire, peuvent être mieux optimisés, mais sont moins adaptés pour des
+situations où la taxonomie n&rsquo;est pas bien définie.
+</p>
+
+<p>
+Mais cette opposition n&rsquo;est pas irréconciliable.  Les mécanismes réflexifs sont
+capables de proposer aussi bien l&rsquo;héritage que la délégation au sein d&rsquo;un même
+langage.  Et ils sont sont aussi très utiles pour le détournement.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline32" class="outline-3">
-<h3 id="orgheadline32"><span class="section-number-3">3.4</span> Réifier le langage pour séparer les préoccupations</h3>
+<div id="outline-container-orgheadline23" class="outline-3">
+<h3 id="orgheadline23"><span class="section-number-3">3.4</span> Réifier le langage pour séparer les préoccupations</h3>
 <div class="outline-text-3" id="text-3-4">
 
 <figure>
@@ -3853,10 +3808,11 @@ le <i>mode-switching</i> (voir ??).
 <figcaption><span class="figure-number">Figure&nbsp;30&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
 </div>
+</div>
 
-<div id="outline-container-orgheadline23" class="outline-4">
-<h4 id="orgheadline23"><span class="section-number-4">3.4.1</span> <span class="todo UNWRITTEN">UNWRITTEN</span> La réflexion</h4>
-<div class="outline-text-4" id="text-3-4-1">
+<div id="outline-container-orgheadline24" class="outline-3">
+<h3 id="orgheadline24"><span class="section-number-3">3.5</span> <span class="todo INPROGRESS">INPROGRESS</span> La réflexion</h3>
+<div class="outline-text-3" id="text-3-5">
 <p>
 En programmation par objets, on cherche une correspondance entre les acteurs du
 domaine d&rsquo;application et les objets manipulés par le programme.  Dans la
@@ -4088,9 +4044,9 @@ maintenance.
 </div>
 </div>
 
-<div id="outline-container-orgheadline24" class="outline-4">
-<h4 id="orgheadline24"><span class="section-number-4">3.4.2</span> <span class="done READ">READ</span> L&rsquo;implémentation ouverte</h4>
-<div class="outline-text-4" id="text-3-4-2">
+<div id="outline-container-orgheadline25" class="outline-3">
+<h3 id="orgheadline25"><span class="section-number-3">3.6</span> <span class="done READ">READ</span> L&rsquo;implémentation ouverte</h3>
+<div class="outline-text-3" id="text-3-6">
 <p>
 La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
 des programmes de contrôler, d&rsquo;inspecter, de modifier, et d&rsquo;étendre la
@@ -4258,9 +4214,9 @@ la responsabilité du module.
 </div>
 </div>
 
-<div id="outline-container-orgheadline31" class="outline-4">
-<h4 id="aop"><a id="orgheadline31"></a><span class="section-number-4">3.4.3</span> <span class="done READ">READ</span> La programmation par aspects</h4>
-<div class="outline-text-4" id="text-aop">
+<div id="outline-container-orgheadline32" class="outline-3">
+<h3 id="aop"><a id="orgheadline32"></a><span class="section-number-3">3.7</span> <span class="done READ">READ</span> La programmation par aspects</h3>
+<div class="outline-text-3" id="text-aop">
 <p>
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l&rsquo;interface
@@ -4281,9 +4237,9 @@ les aspects y remédient en introduisant une nouvelle dimension de composition.
 </p>
 </div>
 
-<div id="outline-container-orgheadline25" class="outline-5">
-<h5 id="orgheadline25">La distinction entre les composants et les aspects</h5>
-<div class="outline-text-5" id="text-orgheadline25">
+<div id="outline-container-orgheadline26" class="outline-4">
+<h4 id="orgheadline26"><span class="section-number-4">3.7.1</span> La distinction entre les composants et les aspects</h4>
+<div class="outline-text-4" id="text-3-7-1">
 <blockquote>
 <p>
 A design process and a programming language work well together when the
@@ -4440,9 +4396,9 @@ compose them to produce the overall system.
 </div>
 </div>
 
-<div id="outline-container-orgheadline26" class="outline-5">
-<h5 id="orgheadline26">Exprimer les aspects par un langage dédié</h5>
-<div class="outline-text-5" id="text-orgheadline26">
+<div id="outline-container-orgheadline27" class="outline-4">
+<h4 id="orgheadline27"><span class="section-number-4">3.7.2</span> Exprimer les aspects par un langage dédié</h4>
+<div class="outline-text-4" id="text-3-7-2">
 <p>
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
@@ -4527,9 +4483,9 @@ application?  Y a-t-il d&rsquo;autres façons de faire?
 </div>
 </div>
 
-<div id="outline-container-orgheadline27" class="outline-5">
-<h5 id="orgheadline27">D&rsquo;autres mécanismes pour la programmation par aspects</h5>
-<div class="outline-text-5" id="text-orgheadline27">
+<div id="outline-container-orgheadline28" class="outline-4">
+<h4 id="orgheadline28"><span class="section-number-4">3.7.3</span> D&rsquo;autres mécanismes pour la programmation par aspects</h4>
+<div class="outline-text-4" id="text-3-7-3">
 <p>
 La caractéristique principale de la programmation par aspects est la distinction
 entre composants et aspects.  Cette distinction, si elle apparaît au moment de
@@ -4616,9 +4572,9 @@ d&rsquo;AspectJ [<a href="#KHH+01">KHH+01</a>].
 </div>
 </div>
 
-<div id="outline-container-orgheadline28" class="outline-5">
-<h5 id="orgheadline28">AspectJ: jonctions, coupes, et méthodes d&rsquo;aspect</h5>
-<div class="outline-text-5" id="text-orgheadline28">
+<div id="outline-container-orgheadline29" class="outline-4">
+<h4 id="orgheadline29"><span class="section-number-4">3.7.4</span> AspectJ: jonctions, coupes, et méthodes d&rsquo;aspect</h4>
+<div class="outline-text-4" id="text-3-7-4">
 <blockquote>
 <p>
 AspectJ is intended to be a practical AOP language that provides, in a Java
@@ -4869,9 +4825,9 @@ exécutables différents.
 </div>
 </div>
 
-<div id="outline-container-orgheadline29" class="outline-5">
-<h5 id="orgheadline29">Le mécanisme essentiel pour la programmation par aspects</h5>
-<div class="outline-text-5" id="text-orgheadline29">
+<div id="outline-container-orgheadline30" class="outline-4">
+<h4 id="orgheadline30"><span class="section-number-4">3.7.5</span> Le mécanisme essentiel pour la programmation par aspects</h4>
+<div class="outline-text-4" id="text-3-7-5">
 <p>
 Être oubliable est une propriété qui peut être considérée comme caractéristique
 de la programmation par aspects [<a href="#FF-04">FF04</a>].  Filman et Friedman cherchent à
@@ -5005,9 +4961,9 @@ utilisé pour faire de la programmation par aspects.
 </div>
 </div>
 
-<div id="outline-container-orgheadline30" class="outline-5">
-<h5 id="orgheadline30">Les limites de la programmation par aspects</h5>
-<div class="outline-text-5" id="text-orgheadline30">
+<div id="outline-container-orgheadline31" class="outline-4">
+<h4 id="orgheadline31"><span class="section-number-4">3.7.6</span> Les limites de la programmation par aspects</h4>
+<div class="outline-text-4" id="text-3-7-6">
 <p>
 Le but de la programmation par aspects est louable: distinguer les composants
 des aspects dans le programme, c&rsquo;est mettre de l&rsquo;ordre, c&rsquo;est séparer les choses
@@ -5096,11 +5052,10 @@ système.
 </div>
 </div>
 </div>
-</div>
 
-<div id="outline-container-orgheadline35" class="outline-3">
-<h3 id="orgheadline35"><span class="section-number-3">3.5</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</h3>
-<div class="outline-text-3" id="text-3-5">
+<div id="outline-container-orgheadline33" class="outline-3">
+<h3 id="orgheadline33"><span class="section-number-3">3.8</span> Tisser les facettes d&rsquo;un artefact d&rsquo;innombrables dimensions</h3>
+<div class="outline-text-3" id="text-3-8">
 <div class="epig">
 <p>
 WEB may be only for the subset of computer scientists who like to write and to
@@ -5142,10 +5097,11 @@ nombreuses dimensions, irréconciliables sous une seule décomposition.
 </p>
 </aside>
 </div>
+</div>
 
-<div id="outline-container-orgheadline33" class="outline-4">
-<h4 id="hyperj"><a id="orgheadline33"></a><span class="section-number-4">3.5.1</span> <span class="done READ">READ</span> La séplution</h4>
-<div class="outline-text-4" id="text-hyperj">
+<div id="outline-container-orgheadline34" class="outline-3">
+<h3 id="hyperj"><a id="orgheadline34"></a><span class="section-number-3">3.9</span> <span class="done READ">READ</span> La séplution</h3>
+<div class="outline-text-3" id="text-hyperj">
 <p>
 La programmation par aspects a pour but la séparation des composants et des
 aspects.  C&rsquo;est à dire, la séparation de <i>certaines</i> préoccupations: les
@@ -5329,9 +5285,9 @@ qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 </div>
 </div>
 
-<div id="outline-container-orgheadline34" class="outline-4">
-<h4 id="orgheadline34"><span class="section-number-4">3.5.2</span> <span class="done READ">READ</span> L&rsquo;information transparente</h4>
-<div class="outline-text-4" id="text-3-5-2">
+<div id="outline-container-orgheadline35" class="outline-3">
+<h3 id="orgheadline35"><span class="section-number-3">3.10</span> <span class="done READ">READ</span> L&rsquo;information transparente</h3>
+<div class="outline-text-3" id="text-3-10">
 <p>
 Les mécanismes de décomposition sont insuffisants pour anticiper les changements
 d&rsquo;un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
@@ -5477,11 +5433,10 @@ garantie, juste un compromis pragmatique.
 </p>
 </div>
 </div>
-</div>
 
 <div id="outline-container-orgheadline36" class="outline-3">
-<h3 id="orgheadline36"><span class="section-number-3">3.6</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Limiter les effets de bord: la programmation fonctionnelle</h3>
-<div class="outline-text-3" id="text-3-6">
+<h3 id="orgheadline36"><span class="section-number-3">3.11</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Limiter les effets de bord: la programmation fonctionnelle</h3>
+<div class="outline-text-3" id="text-3-11">
 <p>
 Parallel evolution to OO.
 </p>
@@ -5505,16 +5460,366 @@ static guarantes, but less runtime flexibility.
 </p>
 </div>
 </div>
+
+<div id="outline-container-orgheadline37" class="outline-3">
+<h3 id="expr"><a id="orgheadline37"></a><span class="section-number-3">3.12</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Le problème de l&rsquo;expression</h3>
+<div class="outline-text-3" id="text-expr">
+<aside class="todo">
+<p>
+Slightly incomplete without the OO solution, but this was already described in
+the Hyper/J section.  Might merge, might cut altogether.
+</p>
+</aside>
+
+<p>
+Comment étendre un interpréteur n&rsquo;est pas un nouveau problème.  Wadler [<a href="#Wad-98">Wad98</a>]
+nomme un cas spécifique d&rsquo;extension qui s&rsquo;applique aux langages fonctionnels:
+</p>
+
+<aside>
+<p>
+Les deux contraintes de recompilation et de typage statique ne sont pas
+nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
+difficile, mais l&rsquo;extension d&rsquo;interpréteur est avant tout un problème
+d&rsquo;extensibilité, et s&rsquo;applique aussi bien à des langages interprétés (non
+compilés), et typés dynamiquement.
+</p>
+</aside>
+
+<blockquote>
+<p>
+The Expression Problem is a new name for an old problem.  The goal is to define
+a datatype by cases, where one can add new cases to the datatype and new
+functions over the datatype, without recompiling existing code, and while
+retaining static type safety (e.g., no casts).
+</p>
+</blockquote>
+
+<p>
+Dans un langage fonctionnel, une façon courante d&rsquo;implémenter un interpréteur
+est en utilisant un <i>type algébrique de données</i> pour représenter les termes.  En Haskell par
+exemple, on définit un simple langage arithmétique par le type algébrique
+suivant:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Constant</span> <span class="org-haskell-constructor">Int</span>
+          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Plus</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Mult</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+</pre>
 </div>
 
-<div id="outline-container-orgheadline61" class="outline-2">
-<h2 id="orgheadline61"><span class="section-number-2">4</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Travaux connexes</h2>
+<p>
+<code>Term</code> est un type qui a trois variantes: un terme est soit une constante
+(<code>Constant</code>, un entier), une addition (<code>Plus</code>), ou une multiplication.
+</p>
+
+<p>
+La syntaxe du type algébrique correspond à la façon usuelle de définir des
+grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
+pourrait être:
+</p>
+
+<pre class="example">
+&lt;term&gt; ::= &lt;int&gt; | &lt;term&gt; + &lt;term&gt; | &lt;term&gt; * &lt;term&gt;
+&lt;int&gt;  ::= 0 | 1 | 2 ...
+</pre>
+
+<p>
+Ici encore, un terme a trois variantes.  L&rsquo;addition et la multiplication
+contiennent d&rsquo;autres termes, et la variante constante ne contient qu&rsquo;un nombre
+terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
+rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
+de programmation étant souvent définies par une BNF, le type algébrique est la
+solution la plus évidente pour les représenter.
+</p>
+
+<p>
+<code>Constant</code>, <code>Plus</code> et <code>Mult</code> sont les <i>constructeurs</i> du type <code>Term</code>, qui
+permettent de créer des expressions du langage.  L&rsquo;expression 2 + 5 * 3 sera
+construite par:
+</p>
+
+<pre class="example">
+Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+</pre>
+
+<aside class="todo">
+<p>
+AST illustration
+</p>
+</aside>
+
+<p>
+Cette valeur représente l&rsquo;expression 2 + 5 * 3, et nous donne en même temps un
+arbre syntaxique abstrait de cette expression.
+</p>
+
+<p>
+Pour évaluer l&rsquo;expression arithmétique, il faut évaluer l&rsquo;arbre syntaxique et
+produire un nombre en retour.  C&rsquo;est le rôle de l&rsquo;interpréteur du langage.  Dans
+la terminologie de Wadler, l&rsquo;évaluation est une fonction du le type algébrique;
+on parlera plutôt d&rsquo;<i>opérations</i>.
+</p>
+
+<p>
+La principale est l&rsquo;opération d&rsquo;évaluation qui donne un sens à chaque terme du
+langage.  Par exemple, on souhaite évaluer les expressions de notre langage
+arithmétique en suivant le sens usuel de l&rsquo;addition et de la multiplication
+d&rsquo;entiers.  C&rsquo;est à dire, pour évaluer <code>Plus t1 t2</code>, on évalue <code>t1</code> et <code>t2</code> pour
+obtenir des entiers, puis on les additionne.  En Haskell, on écrira l&rsquo;évaluation
+en traitant les trois variantes séparément, par <i>pattern matching</i>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-definition">eval</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
+<span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Constant</span> n) <span class="org-haskell-operator">=</span> n
+<span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Plus</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">+</span> eval t2
+<span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Mult</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">*</span> eval t2
+</pre>
+</div>
+
+<p>
+La première ligne donne le type de l&rsquo;opération: elle consomme un terme pour
+produire un entier.  Chaque variante de terme est traitée explicitement sur
+chaque ligne.  On remarque que l&rsquo;évaluation est récursive pour <code>Plus</code> et
+<code>Mult</code>.  La définition du type algébrique l&rsquo;était déjà: <code>Term</code> est utilisé dans
+sa propre définition.  Les grammaires de langage sont souvent récursives, pour
+permettre la construction de grandes expressions à partir de simples éléments.  Même
+un langage aussi simple que celui-ci exhibe cette récursion.
+</p>
+
+<p>
+On peut maintenant évaluer l&rsquo;expression 2 + 5 * 3:
+</p>
+
+<pre class="example">
+&gt; eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+17
+</pre>
+
+<p>
+Un interpréteur peut définir plusieurs opérations.  Wadler prend l&rsquo;exemple d&rsquo;un
+<i>pretty-printer</i>, une opération d&rsquo;affichage des arbres syntaxiques dont la
+sortie est plus amicale pour l&rsquo;œil humain.  Typiquement, le pretty printer d&rsquo;un
+langage transforme l&rsquo;arbre syntaxique en code source que le programmeur a
+l&rsquo;habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
+le <code>Plus</code>, qui est préfixe, en <code>+</code> infixe, et faire disparaître le mot <code>Constant</code>
+qui n&rsquo;apporte pas d&rsquo;information capitale.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-definition">pp</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">String</span>
+<span class="org-haskell-definition">pp</span> (<span class="org-haskell-constructor">Constant</span> n) <span class="org-haskell-operator">=</span> show n
+<span class="org-haskell-definition">pp</span> (<span class="org-haskell-constructor">Plus</span> t1 t2) <span class="org-haskell-operator">=</span> pp t1 <span class="org-haskell-operator">++</span> <span class="org-string">" + "</span> <span class="org-haskell-operator">++</span> pp t2
+<span class="org-haskell-definition">pp</span> (<span class="org-haskell-constructor">Mult</span> t1 t2) <span class="org-haskell-operator">=</span> pp t1 <span class="org-haskell-operator">++</span> <span class="org-string">" * "</span> <span class="org-haskell-operator">++</span> pp t2
+</pre>
+</div>
+
+<aside>
+<p>
+On peut voir le pretty printer comme la réciproque de l&rsquo;analyseur syntaxique.
+</p>
+</aside>
+
+<p>
+Si on affiche ainsi l&rsquo;arbre syntaxique de l&rsquo;expression 2 + 5 * 3, on obtient:
+</p>
+
+<pre class="example">
+&gt; pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+2 + 5 * 3
+</pre>
+
+<p>
+L&rsquo;implémentation de l&rsquo;affichage a la même structure que de l&rsquo;implémentation de
+l&rsquo;évaluation.  On traite les trois variantes du type algébrique dans trois
+lignes différentes.  Les deux variantes <code>Plus</code> et <code>Mult</code> sont définies
+récursivement, mais pas la variante <code>Constant</code>, qui est un terminal dans la
+grammaire.  L&rsquo;opération traite l&rsquo;arbre syntaxique en partant de la racine, puis
+s&rsquo;applique récursivement sur les nœuds de l&rsquo;arbre jusqu&rsquo;aux feuilles.  Ce
+processus, commun aux interpréteurs, est parfois appelé une <i>descente
+récursive</i>.
+</p>
+
+<p>
+Dans le problème de l&rsquo;expression, on cherche à étendre le langage et son
+interpréteur de deux façons: en rajoutant des nouveaux termes au langage, et en
+rajoutant de nouvelles opérations.
+</p>
+
+<p>
+Avec <code>pp</code>, on a déjà vu comment ajouter une nouvelle opération à l&rsquo;interpréteur:
+il suffit de définir son comportement pour toutes les variantes des termes du
+langage.  <code>Term</code> a 3 variantes, donc <code>pp</code> définit 3 cas.  Notons aussi que pour
+ajouter l&rsquo;opération il suffit d&rsquo;<i>ajouter</i> du code à l&rsquo;interpréteur.  Aucune
+modification au code existant n&rsquo;est requise.  C&rsquo;est une distinction importante,
+car il est souvent plus facile d&rsquo;ajouter du code que de modifier du code
+existant.
+</p>
+
+<p>
+On peut caractériser la complexité d&rsquo;un changement de l&rsquo;interpréteur comme la
+complexité d&rsquo;un algorithme.  L&rsquo;opération <code>pp</code> comporte autant de ligne qu&rsquo;il y a
+de variantes de <code>Term</code>, plus une pour sa signature.  S&rsquo;il y a <i>v</i> variantes, une
+opération aura une complexité de l&rsquo;ordre de <i>v</i> lignes de code (O(v)).  On note
+que ces lignes sont des additions par un &rsquo;+&rsquo;: +O(v).
+</p>
+
+<aside>
+<p>
+On notera les lignes qui modifient une définition existante par &rsquo;~&rsquo;, et les
+lignes supprimées par un &rsquo;-&rsquo;.
+</p>
+</aside>
+
+<p>
+Étendre le langage demande de modifier le code existant.  Si on veut rajouter un
+terme pour la soustraction, il faut commencer par étendre le type algébrique
+<code>Term</code>:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Constant</span> <span class="org-haskell-constructor">Int</span>
+          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Plus</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Mult</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+<span class="org-haskell-operator">~</span>         <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Minus</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+</pre>
+</div>
+
+<p>
+C&rsquo;est une ligne de code ajoutée.  Mais c&rsquo;est surtout une <i>redéfinition</i> du type
+algébrique.  Typiquement, ajouter une variante induit une recompilation.  On
+compte donc cette ligne comme une modification, et non un simple ajout.
+</p>
+
+<p>
+Mais il faut aussi traiter cette nouvelle variante dans les opérations
+existantes:
+</p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/expr-pb-1.svg" alt="expr-pb-1.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> Dans cette décomposition, les opérations implémentent du code pour chaque variante du langage (sens des flêches).  Ajouter une opération (à gauche) n&rsquo;affecte pas les unités existantes, mais ajouter un terme (à droite) nécessite de modifier toutes les opérations.</figcaption>
+</figure>
+
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell">  eval <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
+<span class="org-haskell-operator">~</span> eval (<span class="org-haskell-type">Minus</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">-</span> eval t2
+
+  pp <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">String</span>
+<span class="org-haskell-operator">~</span> pp (<span class="org-haskell-type">Minus</span> t1 t2) <span class="org-haskell-operator">=</span> pp t1 <span class="org-haskell-operator">++</span> <span class="org-string">" - "</span> <span class="org-haskell-operator">++</span> pp t2
+</pre>
+</div>
+
+<p>
+Au total, si on a <code>p</code> opérations dans l&rsquo;interpréteur, le changement a une
+complexité de ~O(p).
+</p>
+
+<p>
+Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
+une opération et ajouter un terme ne sont pas des changements similaires pour
+autant.  Ajouter un terme demande de <i>modifier</i> des définitions existantes dans
+l&rsquo;interpréteur, alors que pour ajouter une opération il suffit d&rsquo;adjoindre une
+nouvelle fonction.
+</p>
+
+<p>
+Le problème de l&rsquo;expression touche à la fois à la modularité et à
+l&rsquo;extensibilité.  À l&rsquo;extensibilité, parce qu&rsquo;on cherche à étendre
+l&rsquo;interpréteur.  Et à la modularité, parce que les termes et les opérations
+peuvent être considérés comme des <i>unités</i> indépendantes, des modules.  Pour
+respecter la modularité, on cherche à ce que chaque extension soit restreinte à
+un module.  Dans l&rsquo;exemple en Haskell, ajouter une opération revient à ajouter
+un module sans affecter les autres, mais ajouter un terme requiert de modifier
+plusieurs modules.
+</p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/expr-pb-0.svg" alt="expr-pb-0.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> Dans cette décomposition, les termes contiennent le code des opérations.  Ajouter un terme n&rsquo;affecte pas les unités existantes, mais ajouter une opération nécessite de modifier tous les termes.</figcaption>
+</figure>
+
+</div>
+
+<p>
+Le problème n&rsquo;est pas exclusif à Haskell.  Dans <a href="#hyperj">3.9</a>, on a vu exactement la
+situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
+fois chaque terme était représenté par un objet qui encapsulait les définitions
+des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
+ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
+faillait modifier tous les objets des termes existants.  Le choix de l&rsquo;unité
+principale de décomposition (termes ou opérations), favorise l&rsquo;un ou l&rsquo;autre
+type d&rsquo;extension.
+</p>
+
+<div style="margin-top:4rem" class="side-figure">
+
+<figure>
+<p><img src="img/expr-pb-2.svg" alt="expr-pb-2.svg">
+</p>
+<figcaption><span class="figure-number">Figure&nbsp;44&nbsp;:</span> La décomposition est un choix d&rsquo;implémentation; elle n&rsquo;est pas imposée par le langage.  Ajouter une opération ou ajouter un terme revient à définir une arête dans le graphe (<span class="color c0">▬</span> ). L&rsquo;implémentation détermine juste comment cette arête est définie dans le programme.</figcaption>
+</figure>
+
+</div>
+
+<p>
+Le langage de programmation <i>favorise</i> une décomposition, mais il n&rsquo;empêche pas
+l&rsquo;autre.  Canoniquement, la décomposition par opérations est plus évidente en
+Haskell (et autres langages de la famille de ML), tandis que la décomposition
+par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
+la façon dont l&rsquo;interpréteur est construit, un langage peut supporter l&rsquo;une ou
+l&rsquo;autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
+solutions proposées au problème de l&rsquo;expression nécessitent rarement un nouveau
+langage, mais exploitent plutôt les mécanismes existants d&rsquo;une nouvelle façon.
+</p>
+
+<p>
+Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
+aident à résoudre le problème de l&rsquo;expression sont des mécanismes qui <i>a priori</i>
+facilitent l&rsquo;extension de l&rsquo;interpréteur.  Peut-être que certains de ces
+mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
+Mais dans l&rsquo;ensemble, quelques-uns seront applicables à d&rsquo;autres scénarios
+d&rsquo;extension.
+</p>
+
+<p>
+[
+</p>
+
+<ul class="org-ul">
+<li>Different from <i>instrumentation</i> which modifies existing terms and operations.</li>
+</ul>
+
+<p>
+]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline62" class="outline-2">
+<h2 id="orgheadline62"><span class="section-number-2">4</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Travaux connexes</h2>
 <div class="outline-text-2" id="text-4">
-</div><div id="outline-container-orgheadline49" class="outline-3">
-<h3 id="orgheadline49"><span class="section-number-3">4.1</span> Les mécanismes de recomposition du programme</h3>
+</div><div id="outline-container-orgheadline50" class="outline-3">
+<h3 id="orgheadline50"><span class="section-number-3">4.1</span> Les mécanismes de recomposition du programme</h3>
 <div class="outline-text-3" id="text-4-1">
-</div><div id="outline-container-orgheadline38" class="outline-4">
-<h4 id="orgheadline38"><span class="section-number-4">4.1.1</span> Le problème de l&rsquo;expression</h4>
+</div><div id="outline-container-orgheadline39" class="outline-4">
+<h4 id="orgheadline39"><span class="section-number-4">4.1.1</span> Le problème de l&rsquo;expression</h4>
 <div class="outline-text-4" id="text-4-1-1">
 <p>
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) &#x2026;
@@ -5522,8 +5827,8 @@ Wadler, Odersky, Krishnamurthi, Oliveira (expression families) &#x2026;
 </div>
 </div>
 
-<div id="outline-container-orgheadline39" class="outline-4">
-<h4 id="orgheadline39"><span class="section-number-4">4.1.2</span> Dynamic binding</h4>
+<div id="outline-container-orgheadline40" class="outline-4">
+<h4 id="orgheadline40"><span class="section-number-4">4.1.2</span> Dynamic binding</h4>
 <div class="outline-text-4" id="text-4-1-2">
 <p>
 Introduced by McCarthy&rsquo;s LISP [<a href="#McC-60">McC60</a>] as a bug.  Can be emulated by passing a
@@ -5556,8 +5861,8 @@ on the binding semantics of Scheme, which reduce its applicability.
 </div>
 </div>
 
-<div id="outline-container-orgheadline40" class="outline-4">
-<h4 id="orgheadline40"><span class="section-number-4">4.1.3</span> Building from modules</h4>
+<div id="outline-container-orgheadline41" class="outline-4">
+<h4 id="orgheadline41"><span class="section-number-4">4.1.3</span> Building from modules</h4>
 <div class="outline-text-4" id="text-4-1-3">
 <p>
 Findler &amp; Flatt, Newspeak
@@ -5565,8 +5870,8 @@ Findler &amp; Flatt, Newspeak
 </div>
 </div>
 
-<div id="outline-container-orgheadline41" class="outline-4">
-<h4 id="orgheadline41"><span class="section-number-4">4.1.4</span> Building with monads</h4>
+<div id="outline-container-orgheadline42" class="outline-4">
+<h4 id="orgheadline42"><span class="section-number-4">4.1.4</span> Building with monads</h4>
 <div class="outline-text-4" id="text-4-1-4">
 <p>
 Wadler, Steele, Spinoza, Swierstra, Rúnar, &#x2026;
@@ -5623,8 +5928,8 @@ sign of equivalence between the mecanisms.
 </div>
 </div>
 
-<div id="outline-container-orgheadline42" class="outline-4">
-<h4 id="orgheadline42"><span class="section-number-4">4.1.5</span> Bytecode instrumentation</h4>
+<div id="outline-container-orgheadline43" class="outline-4">
+<h4 id="orgheadline43"><span class="section-number-4">4.1.5</span> Bytecode instrumentation</h4>
 <div class="outline-text-4" id="text-4-1-5">
 <p>
 Ansaloni.  Targets bytecode, which is low-level code.
@@ -5647,12 +5952,12 @@ bytecode compiler of WebKit (there is no standard, unlike Java).
 </div>
 </div>
 
-<div id="outline-container-orgheadline48" class="outline-4">
-<h4 id="orgheadline48"><span class="section-number-4">4.1.6</span> Superimposition</h4>
+<div id="outline-container-orgheadline49" class="outline-4">
+<h4 id="orgheadline49"><span class="section-number-4">4.1.6</span> Superimposition</h4>
 <div class="outline-text-4" id="text-4-1-6">
-</div><div id="outline-container-orgheadline43" class="outline-5">
-<h5 id="orgheadline43">Caesar</h5>
-<div class="outline-text-5" id="text-orgheadline43">
+</div><div id="outline-container-orgheadline44" class="outline-5">
+<h5 id="orgheadline44">Caesar</h5>
+<div class="outline-text-5" id="text-orgheadline44">
 <p>
 Caesar has everything and the kitchen sink.
 [<a href="#AGM+06">AGM+06</a>]</p>
@@ -5669,9 +5974,9 @@ the benefit brought by the new mechanisms.
 </div>
 </div>
 
-<div id="outline-container-orgheadline45" class="outline-5">
-<h5 id="orgheadline45">Software product lines</h5>
-<div class="outline-text-5" id="text-orgheadline45">
+<div id="outline-container-orgheadline46" class="outline-5">
+<h5 id="orgheadline46">Software product lines</h5>
+<div class="outline-text-5" id="text-orgheadline46">
 <p>
 [<a href="#ABK+13">ABK+13</a>] provides a well-rounded survey of the field.
 </p>
@@ -5738,7 +6043,7 @@ to their implementation via the <code>original</code> keyword.
 </p>
 
 <p>
-FeatureHouse [<a href="#AKL-13">AKL13</a>] is akin to <a href="#orgheadline44">Semantic patches</a>, in that it uses a reduced
+FeatureHouse [<a href="#AKL-13">AKL13</a>] is akin to <a href="#orgheadline45">Semantic patches</a>, in that it uses a reduced
 syntax tree in order to transform code.  One writes a base program, then another
 program can be superimposed on it by matching their reduced syntax trees.  The
 base program code can be called using the <code>original</code> keyword.  Three-way merges
@@ -5767,7 +6072,7 @@ essentially instances of superimposition.
 FOP is well-suited to implementing <i>heterogeneous concerns</i> (one variation per
 join point), while AOP is better for <i>homogeneous concerns</i> (one variation,
 multiple join points). [<a href="#MO-04">MO04</a>] illustrates the compromises of each approaches (and
-presents <a href="#orgheadline43">Caesar</a> as the superior solution).
+presents <a href="#orgheadline44">Caesar</a> as the superior solution).
 </p>
 
 <p>
@@ -5786,7 +6091,7 @@ Handling feature interactions is an open problem.  Detecting them also.
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline46"></a>Mechanisms for instrumentation<br ><div class="outline-text-6" id="text-orgheadline46">
+<ul class="org-ul"><li><a id="orgheadline47"></a>Mechanisms for instrumentation<br ><div class="outline-text-6" id="text-orgheadline47">
 <p>
 FOP implementations presented here are static organization of code into
 features.  Much like design patterns or frameworks, they require the programmer
@@ -5830,9 +6135,9 @@ prevents obliviousness.
 </div></li></ul>
 </div>
 
-<div id="outline-container-orgheadline44" class="outline-5">
-<h5 id="orgheadline44">Semantic patches</h5>
-<div class="outline-text-5" id="text-orgheadline44">
+<div id="outline-container-orgheadline45" class="outline-5">
+<h5 id="orgheadline45">Semantic patches</h5>
+<div class="outline-text-5" id="text-orgheadline45">
 <p>
 [<a href="#PLM-07">PLM07</a>].  A solution to <i>collateral evolution</i>.  When a library function changes
 name, or gains an argument, client code must makes the necessary changes.  The
@@ -5898,7 +6203,7 @@ interesting.  See <a href="notes.html#MissingReference">Shapes of computation</a
 </p>
 </div>
 
-<ul class="org-ul"><li><a id="orgheadline47"></a>Mechanisms for extension<br ><div class="outline-text-6" id="text-orgheadline47">
+<ul class="org-ul"><li><a id="orgheadline48"></a>Mechanisms for extension<br ><div class="outline-text-6" id="text-orgheadline48">
 <p>
 It&rsquo;s another approach, transforming code to alleviate the maintenance cost.
 </p>
@@ -5919,11 +6224,11 @@ examples from the Linux kernel.
 </div>
 </div>
 
-<div id="outline-container-orgheadline60" class="outline-3">
-<h3 id="orgheadline60"><span class="section-number-3">4.2</span> Travaux connexes concernant l&rsquo;instrumentation</h3>
+<div id="outline-container-orgheadline61" class="outline-3">
+<h3 id="orgheadline61"><span class="section-number-3">4.2</span> Travaux connexes concernant l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-4-2">
-</div><div id="outline-container-orgheadline50" class="outline-4">
-<h4 id="orgheadline50"><span class="section-number-4">4.2.1</span> Domain-specific languages</h4>
+</div><div id="outline-container-orgheadline51" class="outline-4">
+<h4 id="orgheadline51"><span class="section-number-4">4.2.1</span> Domain-specific languages</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 Greater control for language designer.  Gives a constrained playground for
@@ -5941,8 +6246,8 @@ Monads can be seen as DSLs (but this is an insight better saved for later).
 </div>
 </div>
 
-<div id="outline-container-orgheadline51" class="outline-4">
-<h4 id="orgheadline51"><span class="section-number-4">4.2.2</span> Scripting languages</h4>
+<div id="outline-container-orgheadline52" class="outline-4">
+<h4 id="orgheadline52"><span class="section-number-4">4.2.2</span> Scripting languages</h4>
 <div class="outline-text-4" id="text-4-2-2">
 <p>
 Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
@@ -5963,8 +6268,8 @@ in the Core, it might be adequate to have a dedicated background section to it.
 </div>
 </div>
 
-<div id="outline-container-orgheadline53" class="outline-4">
-<h4 id="orgheadline53"><span class="section-number-4">4.2.3</span> Emacs</h4>
+<div id="outline-container-orgheadline54" class="outline-4">
+<h4 id="orgheadline54"><span class="section-number-4">4.2.3</span> Emacs</h4>
 <div class="outline-text-4" id="text-4-2-3">
 <p>
 See Emacs Manual, [<a href="#Sta-81">Sta81</a>], [<a href="#Hal-88">Hal88</a>].  Emacs is an example of an extensible system.
@@ -5992,7 +6297,7 @@ Especially they list &laquo;&nbsp;Language features for extensibility&nbsp;&raqu
 </p>
 <ol class="org-ol">
 <li>Global variables.  They can be queried, referred to, and redefined.</li>
-<li><a href="#orgheadline39">4.1.2</a>.  Useful for redefining binding on the fly.</li>
+<li><a href="#orgheadline40">4.1.2</a>.  Useful for redefining binding on the fly.</li>
 <li>File-local variables.  Good for customization, but really they give a
 file-local value for a global variable.</li>
 <li>Hooks.  They give points in the control flow to insert extension code.
@@ -6021,9 +6326,9 @@ dynamic binding to lexical binding.
 </p>
 </div>
 
-<div id="outline-container-orgheadline52" class="outline-5">
-<h5 id="orgheadline52">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline52">
+<div id="outline-container-orgheadline53" class="outline-5">
+<h5 id="orgheadline53">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline53">
 <p>
 Global variables, dynamic binding, hooks.
 </p>
@@ -6035,8 +6340,8 @@ Though hooks are more a convention than a first-class mechanism.
 </div>
 </div>
 
-<div id="outline-container-orgheadline55" class="outline-4">
-<h4 id="orgheadline55"><span class="section-number-4">4.2.4</span> Eclipse and other IDEs</h4>
+<div id="outline-container-orgheadline56" class="outline-4">
+<h4 id="orgheadline56"><span class="section-number-4">4.2.4</span> Eclipse and other IDEs</h4>
 <div class="outline-text-4" id="text-4-2-4">
 <p>
 As noted by [<a href="#Ler-11">Ler11</a>], the Eclipse platform is extensible, and built using
@@ -6051,9 +6356,9 @@ boilerplate code and XML (which Eclipse can generate for you, I understand).
 </p>
 </div>
 
-<div id="outline-container-orgheadline54" class="outline-5">
-<h5 id="orgheadline54">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline54">
+<div id="outline-container-orgheadline55" class="outline-5">
+<h5 id="orgheadline55">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline55">
 <p>
 The mechanisms for extension seems to revolve around the observer pattern: a
 host plugin raises events which can be intercepted by extensions [<a href="#Bol-03">Bol03</a>].
@@ -6066,8 +6371,8 @@ So, a lot of convention.
 </div>
 </div>
 
-<div id="outline-container-orgheadline57" class="outline-4">
-<h4 id="orgheadline57"><span class="section-number-4">4.2.5</span> Web browsers</h4>
+<div id="outline-container-orgheadline58" class="outline-4">
+<h4 id="orgheadline58"><span class="section-number-4">4.2.5</span> Web browsers</h4>
 <div class="outline-text-4" id="text-4-2-5">
 <p>
 Many extensions are written for web browsers.  The mechanisms are heavy,
@@ -6080,9 +6385,9 @@ by the browser.
 </p>
 </div>
 
-<div id="outline-container-orgheadline56" class="outline-5">
-<h5 id="orgheadline56">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline56">
+<div id="outline-container-orgheadline57" class="outline-5">
+<h5 id="orgheadline57">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline57">
 <p>
 Convention.  Write manifest, and define the agreed-upon functions (install,
 startup).
@@ -6091,8 +6396,8 @@ startup).
 </div>
 </div>
 
-<div id="outline-container-orgheadline59" class="outline-4">
-<h4 id="orgheadline59"><span class="section-number-4">4.2.6</span> Lua</h4>
+<div id="outline-container-orgheadline60" class="outline-4">
+<h4 id="orgheadline60"><span class="section-number-4">4.2.6</span> Lua</h4>
 <div class="outline-text-4" id="text-4-2-6">
 <p>
 An extensible extension language [<a href="#IFF-96">IdFF96</a>].
@@ -6209,9 +6514,9 @@ is doing its thing, without agreeing on a common protocol.
 </p>
 </div>
 
-<div id="outline-container-orgheadline58" class="outline-5">
-<h5 id="orgheadline58">Mechanisms for extension</h5>
-<div class="outline-text-5" id="text-orgheadline58">
+<div id="outline-container-orgheadline59" class="outline-5">
+<h5 id="orgheadline59">Mechanisms for extension</h5>
+<div class="outline-text-5" id="text-orgheadline59">
 <p>
 The kernel+configuration, as seen in EMACS.  Mechanisms over policy shares our
 philosophy and provides programmers with tools to solve their problems in their
@@ -6228,8 +6533,8 @@ Changing the interpreter does not seem possible, even from C.
 </div>
 </div>
 
-<div id="outline-container-orgheadline62" class="outline-2">
-<h2 id="variations"><a id="orgheadline62"></a><span class="section-number-2">5</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
+<div id="outline-container-orgheadline63" class="outline-2">
+<h2 id="variations"><a id="orgheadline63"></a><span class="section-number-2">5</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
 <div class="outline-text-2" id="text-variations">
 <p>
 Essayons d&rsquo;abord d&rsquo;écrire un interpréteur pour chaque sémantique de &lambda;<sup>facet</sup>, sans
@@ -6362,8 +6667,8 @@ que nous explorons par la suite.
 </div>
 </div>
 
-<div id="outline-container-orgheadline70" class="outline-2">
-<h2 id="foal"><a id="orgheadline70"></a><span class="section-number-2">6</span> Construire un interpréteur par modules</h2>
+<div id="outline-container-orgheadline71" class="outline-2">
+<h2 id="foal"><a id="orgheadline71"></a><span class="section-number-2">6</span> Construire un interpréteur par modules</h2>
 <div class="outline-text-2" id="text-foal">
 <p>
 <i>Contenu tiré en partie d&rsquo;un papier présenté à l&rsquo;atelier FOAL&rsquo;15 [<a href="#KNS-15">MdKNS15b</a>]</i>.
@@ -6402,8 +6707,8 @@ Le code complet de ce chapitre est reproduit dans les appendices
 </aside>
 </div>
 
-<div id="outline-container-orgheadline63" class="outline-3">
-<h3 id="orgheadline63"><span class="section-number-3">6.1</span> <span class="done READ">READ</span> Ajouter des termes</h3>
+<div id="outline-container-orgheadline64" class="outline-3">
+<h3 id="orgheadline64"><span class="section-number-3">6.1</span> <span class="done READ">READ</span> Ajouter des termes</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
 Avant l&rsquo;interpréteur, on commence par définir le langage.  Dans le langage de
@@ -6463,7 +6768,7 @@ Rappel: le trigramme <code>//:</code> indique la valeur de l&rsquo;expression qu
 <figure>
 <p><img src="img/foal-1.svg" alt="foal-1.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;42&nbsp;:</span> Représentation des objets en mémoire après la création de <code>e1</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> Représentation des objets en mémoire après la création de <code>e1</code>.</figcaption>
 </figure>
 
 </div>
@@ -6496,7 +6801,7 @@ Suivant notre implémentation par objets, il suffit d&rsquo;ajouter un objet
 <figure>
 <p><img src="img/foal-2.svg" alt="foal-2.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;43&nbsp;:</span> Après les ajouts (<span class="color c1">▬</span> ) de <code>plus</code> et <code>e2</code>.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;46&nbsp;:</span> Après les ajouts (<span class="color c1">▬</span> ) de <code>plus</code> et <code>e2</code>.</figcaption>
 </figure>
 
 </div>
@@ -6528,8 +6833,8 @@ d&rsquo;ajouter un objet, sans impacter le reste du programme.
 </div>
 </div>
 
-<div id="outline-container-orgheadline64" class="outline-3">
-<h3 id="orgheadline64"><span class="section-number-3">6.2</span> <span class="done READ">READ</span> Ajouter des opérations</h3>
+<div id="outline-container-orgheadline65" class="outline-3">
+<h3 id="orgheadline65"><span class="section-number-3">6.2</span> <span class="done READ">READ</span> Ajouter des opérations</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
@@ -6636,7 +6941,7 @@ dérivent; on abstrait donc ces objets parents à l&rsquo;aide d&rsquo;une fonct
 <figure>
 <p><img src="img/foal-4.svg" alt="foal-4.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;45&nbsp;:</span> Ajouter <code>s</code> n&rsquo;affecte ni <code>e1</code> ni <code>e2</code>: c&rsquo;est un nouvel objet qui réutilise <code>num</code> et <code>plus</code> sans les modifier.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;48&nbsp;:</span> Ajouter <code>s</code> n&rsquo;affecte ni <code>e1</code> ni <code>e2</code>: c&rsquo;est un nouvel objet qui réutilise <code>num</code> et <code>plus</code> sans les modifier.</figcaption>
 </figure>
 
 </div>
@@ -6831,8 +7136,8 @@ on peut modifier des opérations existantes, et composer les modifications.
 </div>
 </div>
 
-<div id="outline-container-orgheadline65" class="outline-3">
-<h3 id="orgheadline65"><span class="section-number-3">6.3</span> <span class="done READ">READ</span> Modifier des opérations</h3>
+<div id="outline-container-orgheadline66" class="outline-3">
+<h3 id="orgheadline66"><span class="section-number-3">6.3</span> <span class="done READ">READ</span> Modifier des opérations</h3>
 <div class="outline-text-3" id="text-6-3">
 <p>
 Essayons de changer le comportement de l&rsquo;opération <code>eval</code> pour doubler
@@ -6967,8 +7272,8 @@ appels à <code>with</code>, on peut octupler le résultat:
 </div>
 </div>
 
-<div id="outline-container-orgheadline66" class="outline-3">
-<h3 id="orgheadline66"><span class="section-number-3">6.4</span> <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</h3>
+<div id="outline-container-orgheadline67" class="outline-3">
+<h3 id="orgheadline67"><span class="section-number-3">6.4</span> <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</h3>
 <div class="outline-text-3" id="text-6-4">
 <p>
 Dans l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation à facettes, une catégorie
@@ -7097,8 +7402,8 @@ résultat.
 </div>
 </div>
 
-<div id="outline-container-orgheadline69" class="outline-3">
-<h3 id="orgheadline69"><span class="section-number-3">6.5</span> <span class="todo UNREAD">UNREAD</span> Discussion</h3>
+<div id="outline-container-orgheadline70" class="outline-3">
+<h3 id="orgheadline70"><span class="section-number-3">6.5</span> <span class="todo UNREAD">UNREAD</span> Discussion</h3>
 <div class="outline-text-3" id="text-6-5">
 <p>
 On a montré comment étendre le langage, en lui ajoutant des nouveaux termes, et
@@ -7108,8 +7413,8 @@ préalable des autres extensions.  C&rsquo;est un bel exemple de détournement.
 </p>
 </div>
 
-<div id="outline-container-orgheadline67" class="outline-4">
-<h4 id="orgheadline67"><span class="section-number-4">6.5.1</span> Trois ingrédients principaux</h4>
+<div id="outline-container-orgheadline68" class="outline-4">
+<h4 id="orgheadline68"><span class="section-number-4">6.5.1</span> Trois ingrédients principaux</h4>
 <div class="outline-text-4" id="text-6-5-1">
 <p>
 Ce détournement a trois ingrédients principaux: la délégation, les extensions
@@ -7304,8 +7609,8 @@ trait diffère.
 </div>
 </div>
 
-<div id="outline-container-orgheadline68" class="outline-4">
-<h4 id="orgheadline68"><span class="section-number-4">6.5.2</span> Manipuler la portée suffit pour détourner le programme</h4>
+<div id="outline-container-orgheadline69" class="outline-4">
+<h4 id="orgheadline69"><span class="section-number-4">6.5.2</span> Manipuler la portée suffit pour détourner le programme</h4>
 <div class="outline-text-4" id="text-6-5-2">
 <p>
 Dans tous les exemples que l&rsquo;on a donné, on a pu voir qu&rsquo;enrober le code d&rsquo;un
@@ -7402,8 +7707,8 @@ détourner l&rsquo;interpréteur Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline88" class="outline-2">
-<h2 id="dls"><a id="orgheadline88"></a><span class="section-number-2">7</span> <span class="done READ">READ</span> Étendre un interpréteur par manipulation de portée</h2>
+<div id="outline-container-orgheadline89" class="outline-2">
+<h2 id="dls"><a id="orgheadline89"></a><span class="section-number-2">7</span> <span class="done READ">READ</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-dls">
 <p>
 <i>Chapitre principalement tiré d&rsquo;un papier rejeté à DLS&rsquo;15 et à SAC&rsquo;16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -7447,8 +7752,8 @@ langage JavaScript.
 </p>
 </div>
 
-<div id="outline-container-orgheadline74" class="outline-3">
-<h3 id="orgheadline74"><span class="section-number-3">7.1</span> Manipuler la portée des variables pour l&rsquo;instrumentation</h3>
+<div id="outline-container-orgheadline75" class="outline-3">
+<h3 id="orgheadline75"><span class="section-number-3">7.1</span> Manipuler la portée des variables pour l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 L&rsquo;ingrédient clé de cette section est la notion de <i>portée de variable</i>, et
@@ -7487,8 +7792,8 @@ modèle en JavaScript.
 </p>
 </div>
 
-<div id="outline-container-orgheadline71" class="outline-4">
-<h4 id="orgheadline71"><span class="section-number-4">7.1.1</span> La portée dans le motif module</h4>
+<div id="outline-container-orgheadline72" class="outline-4">
+<h4 id="orgheadline72"><span class="section-number-4">7.1.1</span> La portée dans le motif module</h4>
 <div class="outline-text-4" id="text-7-1-1">
 <p>
 L&rsquo;interpréteur Narcissus est construit à partir du <i>motif module</i>.  Il n&rsquo;y a pas
@@ -7707,8 +8012,8 @@ module.  C&rsquo;est son rôle, mais ça s&rsquo;oppose à notre but d&rsquo;ext
 </div>
 </div>
 
-<div id="outline-container-orgheadline72" class="outline-4">
-<h4 id="orgheadline72"><span class="section-number-4">7.1.2</span> Ouvrir le motif module</h4>
+<div id="outline-container-orgheadline73" class="outline-4">
+<h4 id="orgheadline73"><span class="section-number-4">7.1.2</span> Ouvrir le motif module</h4>
 <div class="outline-text-4" id="text-7-1-2">
 <p>
 On cherche maintenant à accéder à l&rsquo;environnement de la FIA de l&rsquo;extérieur du
@@ -7930,8 +8235,8 @@ dans une chaîne d&rsquo;environnements.
 </div>
 </div>
 
-<div id="outline-container-orgheadline73" class="outline-4">
-<h4 id="orgheadline73"><span class="section-number-4">7.1.3</span> Disposer les environnements en couches</h4>
+<div id="outline-container-orgheadline74" class="outline-4">
+<h4 id="orgheadline74"><span class="section-number-4">7.1.3</span> Disposer les environnements en couches</h4>
 <div class="outline-text-4" id="text-7-1-3">
 <p>
 On a vu que tout environnement a un environnement parent.  Si un nom n&rsquo;est pas
@@ -8127,8 +8432,8 @@ C&rsquo;est l&rsquo;objet de la section suivante.
 </div>
 </div>
 
-<div id="outline-container-orgheadline75" class="outline-3">
-<h3 id="orgheadline75"><span class="section-number-3">7.2</span> Ouvrir le motif module en JavaScript</h3>
+<div id="outline-container-orgheadline76" class="outline-3">
+<h3 id="orgheadline76"><span class="section-number-3">7.2</span> Ouvrir le motif module en JavaScript</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
@@ -8483,8 +8788,8 @@ applique ces mécanismes à Narcissus.
 </div>
 </div>
 
-<div id="outline-container-orgheadline81" class="outline-3">
-<h3 id="orgheadline81"><span class="section-number-3">7.3</span> Étendre Narcissus par manipulation de portée</h3>
+<div id="outline-container-orgheadline82" class="outline-3">
+<h3 id="orgheadline82"><span class="section-number-3">7.3</span> Étendre Narcissus par manipulation de portée</h3>
 <div class="outline-text-3" id="text-7-3">
 <p>
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -8532,8 +8837,8 @@ l&rsquo;instrumentation.
 </p>
 </div>
 
-<div id="outline-container-orgheadline76" class="outline-4">
-<h4 id="orgheadline76"><span class="section-number-4">7.3.1</span> Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</h4>
+<div id="outline-container-orgheadline77" class="outline-4">
+<h4 id="orgheadline77"><span class="section-number-4">7.3.1</span> Ajouter l&rsquo;analyse d&rsquo;évaluation multi-facettes</h4>
 <div class="outline-text-4" id="text-7-3-1">
 <p>
 On a vu dans l&rsquo;étude de cas que l&rsquo;implémentation de l&rsquo;évaluation multi-facettes
@@ -8684,8 +8989,8 @@ nous lui avons simplement donné un nom.
 </div>
 </div>
 
-<div id="outline-container-orgheadline77" class="outline-4">
-<h4 id="orgheadline77"><span class="section-number-4">7.3.2</span> Ajouter l&rsquo;analyse de trace</h4>
+<div id="outline-container-orgheadline78" class="outline-4">
+<h4 id="orgheadline78"><span class="section-number-4">7.3.2</span> Ajouter l&rsquo;analyse de trace</h4>
 <div class="outline-text-4" id="text-7-3-2">
 <p>
 En plus de l&rsquo;évaluation multi-facettes, on a défini trois autres analyses sur
@@ -8805,7 +9110,7 @@ AspectScript.
 
 <p>
 La fonction <code>i13n.pushLayer</code> est un alias de la fonction <code>pushEnv</code> définie dans
-la section <a href="#orgheadline73">7.1.3</a>.
+la section <a href="#orgheadline74">7.1.3</a>.
 </p>
 
 <p>
@@ -8880,8 +9185,8 @@ insère dans l&rsquo;environnement du module.
 </div>
 </div>
 
-<div id="outline-container-orgheadline78" class="outline-4">
-<h4 id="orgheadline78"><span class="section-number-4">7.3.3</span> Ajouter l&rsquo;analyse FlowR</h4>
+<div id="outline-container-orgheadline79" class="outline-4">
+<h4 id="orgheadline79"><span class="section-number-4">7.3.3</span> Ajouter l&rsquo;analyse FlowR</h4>
 <div class="outline-text-4" id="text-7-3-3">
 <p>
 Le principe de l&rsquo;analyse FlowR est d&rsquo;empêcher des flots de données illicites
@@ -9019,8 +9324,8 @@ Et celle-ci nous permet d&rsquo;installer l&rsquo;analyse FlowR en quatre lignes
 </div>
 </div>
 
-<div id="outline-container-orgheadline79" class="outline-4">
-<h4 id="orgheadline79"><span class="section-number-4">7.3.4</span> Ajouter l&rsquo;analyse d&rsquo;environnements</h4>
+<div id="outline-container-orgheadline80" class="outline-4">
+<h4 id="orgheadline80"><span class="section-number-4">7.3.4</span> Ajouter l&rsquo;analyse d&rsquo;environnements</h4>
 <div class="outline-text-4" id="text-7-3-4">
 <p>
 Les techniques que l&rsquo;on propose dans ce chapitre sont basées essentiellement sur
@@ -9105,7 +9410,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;62&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;65&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -9150,8 +9455,8 @@ produire le fichier au format DOT.
 </div>
 </div>
 
-<div id="outline-container-orgheadline80" class="outline-4">
-<h4 id="orgheadline80"><span class="section-number-4">7.3.5</span> Évaluation</h4>
+<div id="outline-container-orgheadline81" class="outline-4">
+<h4 id="orgheadline81"><span class="section-number-4">7.3.5</span> Évaluation</h4>
 <div class="outline-text-4" id="text-7-3-5">
 <p>
 Notre instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes consiste en
@@ -9197,7 +9502,7 @@ communs d&rsquo;instrumentation de fonctions (<code>around</code>, <code>before<
 </p>
 
 <p>
-En utilisant la technique de disposition en couches de la section <a href="#orgheadline73">7.1.3</a>, on peut activer plusieurs analyses à
+En utilisant la technique de disposition en couches de la section <a href="#orgheadline74">7.1.3</a>, on peut activer plusieurs analyses à
 l&rsquo;exécution avec des options de lancement.  Par exemple:
 </p>
 
@@ -9408,8 +9713,8 @@ duplication de code.
 </div>
 </div>
 
-<div id="outline-container-orgheadline87" class="outline-3">
-<h3 id="orgheadline87"><span class="section-number-3">7.4</span> Discussion</h3>
+<div id="outline-container-orgheadline88" class="outline-3">
+<h3 id="orgheadline88"><span class="section-number-3">7.4</span> Discussion</h3>
 <div class="outline-text-3" id="text-7-4">
 <p>
 L&rsquo;idée principale de ce chapitre est que la manipulation de la portée des
@@ -9420,8 +9725,8 @@ modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 </p>
 </div>
 
-<div id="outline-container-orgheadline82" class="outline-4">
-<h4 id="orgheadline82"><span class="section-number-4">7.4.1</span> La tension entre flexibilité et sûreté</h4>
+<div id="outline-container-orgheadline83" class="outline-4">
+<h4 id="orgheadline83"><span class="section-number-4">7.4.1</span> La tension entre flexibilité et sûreté</h4>
 <div class="outline-text-4" id="text-7-4-1">
 <p>
 On peut voir la propriété <code>E</code> qui expose l&rsquo;environnement manipulable du module
@@ -9586,8 +9891,8 @@ programmeur de choisir le compromis le mieux adapté au problème.
 </div>
 </div>
 
-<div id="outline-container-orgheadline83" class="outline-4">
-<h4 id="orgheadline83"><span class="section-number-4">7.4.2</span> D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</h4>
+<div id="outline-container-orgheadline84" class="outline-4">
+<h4 id="orgheadline84"><span class="section-number-4">7.4.2</span> D&rsquo;autres façons d&rsquo;étendre l&rsquo;interpréteur</h4>
 <div class="outline-text-4" id="text-7-4-2">
 <p>
 Il y a d&rsquo;autres façons, plus évidentes, d&rsquo;ouvrir le module.  Pour commencer,
@@ -9755,8 +10060,8 @@ greffer, il n&rsquo;a pas à s&rsquo;en soucier, d&rsquo;où moins de code à ma
 </div>
 </div>
 
-<div id="outline-container-orgheadline84" class="outline-4">
-<h4 id="orgheadline84"><span class="section-number-4">7.4.3</span> Pourquoi ne pas utiliser la programmation par aspects?</h4>
+<div id="outline-container-orgheadline85" class="outline-4">
+<h4 id="orgheadline85"><span class="section-number-4">7.4.3</span> Pourquoi ne pas utiliser la programmation par aspects?</h4>
 <div class="outline-text-4" id="text-7-4-3">
 <p>
 Étendre un module par du code extérieur sans que le code du module n&rsquo;expose
@@ -9948,8 +10253,8 @@ cible qu&rsquo;une version interne modifiée du navigateur Internet Explorer.
 </div>
 </div>
 
-<div id="outline-container-orgheadline85" class="outline-4">
-<h4 id="orgheadline85"><span class="section-number-4">7.4.4</span> Appliquer la manipulation de portée à d&rsquo;autres langages</h4>
+<div id="outline-container-orgheadline86" class="outline-4">
+<h4 id="orgheadline86"><span class="section-number-4">7.4.4</span> Appliquer la manipulation de portée à d&rsquo;autres langages</h4>
 <div class="outline-text-4" id="text-7-4-4">
 <p>
 On n&rsquo;a pas utilisé une bibliothèque d&rsquo;aspects, mais l&rsquo;approche de ce chapitre est
@@ -9986,8 +10291,8 @@ exemple.
 </div>
 </div>
 
-<div id="outline-container-orgheadline86" class="outline-4">
-<h4 id="orgheadline86"><span class="section-number-4">7.4.5</span> Inconvénients de la manipulation de portée avec <code>with</code></h4>
+<div id="outline-container-orgheadline87" class="outline-4">
+<h4 id="orgheadline87"><span class="section-number-4">7.4.5</span> Inconvénients de la manipulation de portée avec <code>with</code></h4>
 <div class="outline-text-4" id="text-7-4-5">
 <p>
 L&rsquo;utilisation de <code>with</code> comporte néanmoins quelques inconvénients.  On utilise
@@ -10031,11 +10336,11 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 </div>
 
-<div id="outline-container-orgheadline95" class="outline-2">
-<h2 id="orgheadline95"><span class="section-number-2">8</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</h2>
+<div id="outline-container-orgheadline96" class="outline-2">
+<h2 id="orgheadline96"><span class="section-number-2">8</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</h2>
 <div class="outline-text-2" id="text-8">
-</div><div id="outline-container-orgheadline89" class="outline-3">
-<h3 id="orgheadline89"><span class="section-number-3">8.1</span> Séparation des préoccupations: pourquoi?</h3>
+</div><div id="outline-container-orgheadline90" class="outline-3">
+<h3 id="orgheadline90"><span class="section-number-3">8.1</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-8-1">
 <ul class="org-ul">
 <li>Séparation difficile à obtenir</li>
@@ -10062,8 +10367,8 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 </div>
 
-<div id="outline-container-orgheadline90" class="outline-3">
-<h3 id="orgheadline90"><span class="section-number-3">8.2</span> Locality of concerns and locality of execution are irreconciable in the source text</h3>
+<div id="outline-container-orgheadline91" class="outline-3">
+<h3 id="orgheadline91"><span class="section-number-3">8.2</span> Locality of concerns and locality of execution are irreconciable in the source text</h3>
 <div class="outline-text-3" id="text-8-2">
 <p>
 Is AOP useful for the instrumentation problem?  First, the initial use case of
@@ -10121,8 +10426,8 @@ support, using AOP mechanisms will only satisfy one notion of locality.
 </div>
 </div>
 
-<div id="outline-container-orgheadline91" class="outline-3">
-<h3 id="orgheadline91"><span class="section-number-3">8.3</span> Late binding is the common ingredient to all modular mechanisms</h3>
+<div id="outline-container-orgheadline92" class="outline-3">
+<h3 id="orgheadline92"><span class="section-number-3">8.3</span> Late binding is the common ingredient to all modular mechanisms</h3>
 <div class="outline-text-3" id="text-8-3">
 <blockquote>
 <p>
@@ -10158,8 +10463,8 @@ we are at a loss on that front.
 </div>
 </div>
 
-<div id="outline-container-orgheadline92" class="outline-3">
-<h3 id="orgheadline92"><span class="section-number-3">8.4</span> This could be done with Git</h3>
+<div id="outline-container-orgheadline93" class="outline-3">
+<h3 id="orgheadline93"><span class="section-number-3">8.4</span> This could be done with Git</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 Using a VCS could also work: use a branch per extension, and create multiple
@@ -10173,8 +10478,8 @@ whereas this happens statically.  Give git example (in appendix?)
 </div>
 </div>
 
-<div id="outline-container-orgheadline93" class="outline-3">
-<h3 id="orgheadline93"><span class="section-number-3">8.5</span> Perspectives: if automated programming is the future, this is mostly usesless</h3>
+<div id="outline-container-orgheadline94" class="outline-3">
+<h3 id="orgheadline94"><span class="section-number-3">8.5</span> Perspectives: if automated programming is the future, this is mostly usesless</h3>
 <div class="outline-text-3" id="text-8-5">
 <p>
 programming automation will probably not care about any of this.  If in the
@@ -10187,8 +10492,8 @@ clarification.
 </div>
 </div>
 
-<div id="outline-container-orgheadline94" class="outline-3">
-<h3 id="orgheadline94"><span class="section-number-3">8.6</span> Perspectives: performance</h3>
+<div id="outline-container-orgheadline95" class="outline-3">
+<h3 id="orgheadline95"><span class="section-number-3">8.6</span> Perspectives: performance</h3>
 <div class="outline-text-3" id="text-8-6">
 <p>
 Binding manipulation may go against performance.  We are violating static
@@ -10211,15 +10516,15 @@ binding yet.
 </div>
 </div>
 
-<div id="outline-container-orgheadline100" class="outline-2">
-<h2 id="orgheadline100"><span class="section-number-2">9</span> Appendices</h2>
+<div id="outline-container-orgheadline101" class="outline-2">
+<h2 id="orgheadline101"><span class="section-number-2">9</span> Appendices</h2>
 <div class="outline-text-2" id="text-9">
-</div><div id="outline-container-orgheadline99" class="outline-3">
-<h3 id="foal-extra"><a id="orgheadline99"></a><span class="section-number-3">9.1</span> Construire un interpréteur par modules</h3>
+</div><div id="outline-container-orgheadline100" class="outline-3">
+<h3 id="foal-extra"><a id="orgheadline100"></a><span class="section-number-3">9.1</span> Construire un interpréteur par modules</h3>
 <div class="outline-text-3" id="text-foal-extra">
 </div>
-<div id="outline-container-orgheadline96" class="outline-4">
-<h4 id="foal-extra-full"><a id="orgheadline96"></a><span class="section-number-4">9.1.1</span> Code complet du chapitre</h4>
+<div id="outline-container-orgheadline97" class="outline-4">
+<h4 id="foal-extra-full"><a id="orgheadline97"></a><span class="section-number-4">9.1.1</span> Code complet du chapitre</h4>
 <div class="outline-text-4" id="text-foal-extra-full">
 <p>
 Le code complet du chapitre <a href="#foal">6</a>, en un seul programme.
@@ -10455,8 +10760,8 @@ p2(show(state(<span class="org-type">double</span>({num, plus}))))
 </div>
 </div>
 
-<div id="outline-container-orgheadline97" class="outline-4">
-<h4 id="foal-extra-rust"><a id="orgheadline97"></a><span class="section-number-4">9.1.2</span> Code complet de l&rsquo;exemple en Rust</h4>
+<div id="outline-container-orgheadline98" class="outline-4">
+<h4 id="foal-extra-rust"><a id="orgheadline98"></a><span class="section-number-4">9.1.2</span> Code complet de l&rsquo;exemple en Rust</h4>
 <div class="outline-text-4" id="text-foal-extra-rust">
 <p>
 Le code de l&rsquo;exemple en Rust était abrégé pour épargner les détails.  Voici le
@@ -10549,8 +10854,8 @@ code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
 </div>
 </div>
 
-<div id="outline-container-orgheadline98" class="outline-4">
-<h4 id="foal-extra-subtle"><a id="orgheadline98"></a><span class="section-number-4">9.1.3</span> <span class="todo UNREAD">UNREAD</span> La différence subtile</h4>
+<div id="outline-container-orgheadline99" class="outline-4">
+<h4 id="foal-extra-subtle"><a id="orgheadline99"></a><span class="section-number-4">9.1.3</span> <span class="todo UNREAD">UNREAD</span> La différence subtile</h4>
 <div class="outline-text-4" id="text-foal-extra-subtle">
 <p>
 Pour pouvoir activer plusieurs extensions de l&rsquo;interpréteur en même temps, on a
@@ -10621,9 +10926,9 @@ que l&rsquo;on rajoute le <code>__proto__: base</code> dans l&rsquo;objet retour
 </div>
 </div>
 
-<div id="outline-container-orgheadline101" class="outline-2">
-<h2 id="orgheadline101">Références</h2>
-<div class="outline-text-2" id="text-orgheadline101">
+<div id="outline-container-orgheadline102" class="outline-2">
+<h2 id="orgheadline102">Références</h2>
+<div class="outline-text-2" id="text-orgheadline102">
 <div id="bibliography">
 
 <table>
@@ -10724,20 +11029,6 @@ Sven Apel, Christian Kästner, and Christian Lengauer.
   featurehouse experience.
  <em>IEEE Trans. Software Eng.</em>, 39(1):63--79, 2013.
 [&nbsp;<a href="http://dx.doi.org/10.1109/TSE.2011.120">DOI</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Ari-35">AriBC</a>]
-</td>
-<td class="bibtexitem">
-Aristotle.
- <em>Categories</em>.
- Internet Classics Archive, 350 B.C.
-[&nbsp;<a href="http://classics.mit.edu/Aristotle/categories.html">.html</a>&nbsp;]
 
 </td>
 </tr>
@@ -11831,19 +12122,6 @@ Thomas F.&nbsp;J.-M. Pasquier, Jean Bacon, and Brian Shand.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Pla-98">Pla98</a>]
-</td>
-<td class="bibtexitem">
-Plato.
- <em>The Republic</em>.
- 1998.
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
 [<a name="PLM-06">PLM06</a>]
 </td>
 <td class="bibtexitem">
@@ -11936,6 +12214,20 @@ Hridesh Rajan and Kevin&nbsp;J. Sullivan.
 <td class="bibtexitem">
 s3c - online javascript editor with code evaluation.
 [&nbsp;<a href="https://fmdkdd.github.io/s3c/">http</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="Smi-95">Smi95</a>]
+</td>
+<td class="bibtexitem">
+Walter&nbsp;R. Smith.
+ Using a prototype-based language for user interface: The newton
+  project's experience.
+ In <em>OOPSLA</em>, pages 61--72, 1995.
 
 </td>
 </tr>
@@ -12138,6 +12430,19 @@ Daniel Veditz.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Wad-98">Wad98</a>]
+</td>
+<td class="bibtexitem">
+Philip Wadler.
+ The expression problem, 1998.
+[&nbsp;<a href="http://homepages.inf.ed.ac.uk/wadler/papers/expression/expression.txt">.txt</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Wir-74a">Wir74</a>]
 </td>
 <td class="bibtexitem">
@@ -12226,7 +12531,7 @@ Ludwig Wittgenstein.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-02 mar. 19:15 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-03 mer. 18:42 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
