@@ -2847,41 +2847,48 @@ langages à classes.  On peut aussi faire de la programmation par objets avec de
 /prototypes/.
 
 *** Prototypes et délégation: Self
-On peut faire de la programmation par objets sans classes et sans héritage.  Les
-langages /à prototypes/ poursuivent l'approche du tout objet et la généralise.
+Les langages à prototypes poursuivent l'approche du tout objet.  Il n'y a plus
+de classes, plus d'instances, seulement des objets.
 
-Taivalsaari [[cite:Tai-97][Tai-97]] voit, entre ces deux approches, une distinction
-philosophique.  Les langages à classes (SIMULA, Smalltalk, Java) suivent l'école
-d'Athènes: de Platon [[cite:Pla-98][Pla-98]] et d'Aristote [[cite:Ari-35][Ari-35]].  Platon distingue les
-/formes/, qui sont les descriptions idéales des choses, des /instances/ de ces
-formes, qui sont leur manifestation concrète et imparfaite.  Platon considère
-que les formes sont plus réelles que leurs instances.  Aristote croit qu'il est
-possible d'établir l'unique taxonomie correcte de toutes les choses naturelles.
-Il classe une chose à partir de ses propriétés essentielles (le genre), et des
-propriétés qui la distingue des autres choses du même genre (le différentiel).
-On voit le parallèle avec l'héritage en programmation par objets: quand une
-classe hérite, elle déclare son genre, et les méthodes additionnelles décrivent
-son différentiel.
+Taivalsaari [[cite:Tai-97][Tai-97]] voit entre ces deux approches une distinction philosophique.
+Les langages à classes (SIMULA, Smalltalk, Java) suivent l'école d'Athènes: de
+Platon et d'Aristote.  Platon distingue les /formes/, qui sont les descriptions
+idéales des choses, des /instances/ de ces formes, qui sont leur manifestation
+concrète et imparfaite.  Platon considère que les formes sont plus réelles que
+leurs instances.  Pour Aristote, il existe une unique taxonomie correcte de
+toutes les choses naturelles, et il souhaite l'établir.  Il classe une chose à
+partir de ses propriétés essentielles (le genre), et ses propriétés qui la
+distinguent les autres choses du même genre (le différentiel).
+
+# On voit le parallèle avec l'héritage en programmation par objets: quand une
+# classe hérite, elle déclare son genre, et les méthodes additionnelles décrivent
+# son différentiel.
 
 Aristote, comme Platon, voyaient la classification comme absolue: la taxonomie
 est la seule vraie hiérarchie des choses.  À l'inverse, Wittgenstein la
 considère subjective [[cite:Wit-53][Wit-53]].  Certains concepts sont difficiles à définir en
 /intension/, par une liste de propriétés communes à toutes ses instances.
-Wittgenstein propose la notion de /ressemblance familière/.  La chose n'est pas
-déterminée par une définition absolue, mais par ses similarités avec des
-prototypes représentatifs.
+Wittgenstein propose plutôt la notion de /ressemblance familière/.  La chose
+n'est plus déterminée par une définition absolue, mais par ses similarités avec
+des prototypes représentatifs.
 
 De cette distinction philosophique, Taivalsaari tire trois conclusions:
 
 - Il n'y a pas de hiérarchie de classe optimale.  Le choix est subjectif et
   dépend non seulement des besoins de l'application, mais surtout de son
-  concepteur.  Les langages à classes /nécessitent/ une hiérarchie, et en
-  conséquence elle est souvent /inflexible/, difficile à modifier sans impacter
-  une grande partie du système.
+  concepteur.  Les langages à classes /nécessitent/ d'établir une hiérarchie, et
+  celle-ci est souvent inflexible.  Lorsque le choix de cette hiérarchie sera
+  remis en question, il sera difficile de la modifier sans impacter une grande
+  partie du système.
 
 - Dans une hiérarchie de classes, ce sont les classes du milieu qui sont souvent
   les plus représentatives des objets de l'application.  Les classes les plus
-  hautes sont trop abstraites, et les classes les plus basses trop spécifiques.
+  hautes sont trop abstraites pour être utiles, et les classes les plus basses
+  trop spécifiques pour être réutilisables.
+
+#+BEGIN_aside
+C'est le point de vue constructiviste popularisé par Piaget.
+#+END_aside
 
 - Les prototypes correspondent davantage au processus de réflexion humain.  En
   abordant un domaine, on ne commence pas par établir des classes abstraites qui
@@ -2893,8 +2900,8 @@ De cette distinction philosophique, Taivalsaari tire trois conclusions:
 
 
 Ces conclusions suggèrent que les langages à prototypes sont plus flexibles pour
-modéliser le monde.  Les classes sont trop rigides, trop abstraites; la
-flexibilité découle des /prototypes/.  Ce point de vue fait écho à Lieberman
+modéliser le monde.  Les classes sont trop rigides, trop abstraites; les
+prototypes sont plus /dynamiques/.  Ce point de vue fait écho à Lieberman
 [[cite:Lie-86][Lie-86]], qui illustre la différence entre les deux mécanismes à l'aide d'un
 éléphant nommé Clyde.
 
@@ -2923,41 +2930,45 @@ sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et
 Fred.  Les deux mécanismes de partage sont l'héritage et l'instantiation.
 #+END_side-figure
 
-En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le
-premier éléphant que je rencontre, il devient mon /prototype/ d'éléphant.  Si on
-me demande la couleur d'un éléphant, je suppose qu'ils sont tous de la même
-couleur que Clyde, et je réponds "gris".  Fred est aussi un éléphant, et il
-ressemble beaucoup à Clyde.  Je lie les deux en disant que Clyde est le
-prototype de Fred; il est /comme/ Clyde, mais avec un nom différent.  Si Fred a
-d'autres particularités, s'il a la peau bleue, je l'inscris seulement dans sa
+En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le premier
+éléphant que je rencontre, il devient mon éléphant /prototype/.  Si on me
+demande la couleur d'un éléphant, je suppose qu'ils sont tous de la même couleur
+que Clyde, et je réponds "gris".  Puis je rencontre Fred, et il ressemble
+beaucoup à Clyde.  Je lie les deux en disant que Clyde est le prototype de Fred;
+il est /comme/ Clyde, mais avec un nom différent.  Si Fred a d'autres
+particularités, s'il a la peau bleue, je l'inscris seulement dans sa
 représentation.  Si on me demande la couleur de Fred, je n'ai besoin que
 d'inspecter la représentation de Fred.  Mais si on me demande combien de pattes
-a Fred, il en a autant que Clyde, son prototype.  L'information non spécifique
-à Fred est sauvegardée par le prototype: c'est le mécanisme de /délégation/.
+a Fred, il en a autant que Clyde, son prototype.  L'information non spécifique à
+Fred est sauvegardée par son prototype: c'est le mécanisme de /délégation/.
 
 #+ATTR_HTML: :style margin-top:-4rem
 #+BEGIN_side-figure
 [[file:img/self1.svg]]
 
 Dans les langages à prototype, on manipule directement les objets qui
-représentent Clyde et Fred.  Le mécanisme essentiel de partage est la
-délégation.
+représentent Clyde et Fred.  Le mécanisme de partage est la délégation.
 #+END_side-figure
 
-Dony, Malenfant et Bardou [[cite:DMB-98][DMB-98]] recensent les langages à prototypes pour en
-déterminer les caractéristiques.  Ils identifient notamment trois façons de
-créer des objets.  On en a déjà vu deux: créer un objet /ex nihilo/ (Clyde), et
-par /extension/ d'un autre (Fred à partir de Clyde).  La troisième façon est le
-/clonage/: créer un nouvel objet qui possède des copies profondes des propriétés
-de l'original.  Modifier le clone n'affecte pas l'original, alors que modifier
-un objet créé par extension peut modifier son prototype.
+# Dony, Malenfant et Bardou [[cite:DMB-98][DMB-98]] recensent les langages à
+# prototypes pour en déterminer les caractéristiques.  Ils identifient notamment
+# trois façons de créer des objets.  On en a déjà vu deux: créer un objet /ex
+# nihilo/ (Clyde), et par /extension/ d'un autre (Fred à partir de Clyde).  La
+# troisième façon est le /clonage/: créer un nouvel objet qui possède des copies
+# profondes des propriétés de l'original.  Modifier le clone n'affecte pas
+# l'original, alors que modifier un objet créé par extension peut modifier son
+# prototype.
 
-Self [[cite:US-91][US-91]], est un langage à prototypes plutôt représentatif (un prototype de
-cette classe de langages?).  Comme en Smalltalk, tout est objet.  Mais à
-l'inverse de Smalltalk, il n'y a pas de classes.  Le programmeur ne crée pas une
-hiérarchie de concepts, mais des familles d'objets.  Cette absence de structure
-est un avantage dans un processus de développement interactif: on peut raffiner
-les objets à l'exécution.  Mais c'est aussi un inconvénient en pratique:
+#+BEGIN_aside
+Un prototype de cette classe de langages?
+#+END_aside
+
+Self [[cite:US-91][US-91]], est un langage à prototypes plutôt représentatif.  Comme en
+Smalltalk, tout est objet.  Mais à l'inverse de Smalltalk, il n'y a pas de
+classes.  Le programmeur ne crée pas une hiérarchie de concepts, mais des
+familles d'objets.  Cette absence de structure est un avantage dans un processus
+de développement interactif: on peut raffiner les objets à l'exécution.  Mais
+c'est aussi un inconvénient en pratique:
 
 #+BEGIN_QUOTE
 Reducing the number of basic concepts in a language can make the language easier
@@ -2976,14 +2987,15 @@ it will have to include navigational and descriptive aids.
 #+END_QUOTE
 
 Les langages à prototypes sont particulièrement adaptés pour représenter des
-objets qui ont un comportement unique.  Mais il arrive souvent que l'on doive
-gérer de nombreux objets similaires.  Les concepteurs de Self décrivent une
-façon de structurer ces objets à l'aide de traits [[cite:UCC+91][UCC+91]].  Comme en Smalltalk,
-un trait est un objet qui regroupe les méthodes utilisées par plusieurs objets.
-On crée ensuite un objet prototype qui étend ce trait, et fournit une
-implémentation et des valeurs d'attributs par défaut.  Tous les objets de la
-même famille étendent ce prototype.  Cette structure permet de séparer les
-méthodes (le comportement) des attributs (l'état).
+objets qui ont un comportement unique, comme dans des interfaces graphiques
+[[cite:Smi-95][Smi-95]].  Mais il arrive souvent que l'on doive gérer de nombreux objets
+similaires.  Les concepteurs de Self décrivent une façon de structurer ces
+objets à l'aide de traits [[cite:UCC+91][UCC+91]].  Comme en Smalltalk, un trait est un objet qui
+regroupe les méthodes utilisées par plusieurs objets.  On crée ensuite un objet
+prototype qui étend ce trait, et fournit une implémentation et des valeurs
+d'attributs par défaut.  Tous les objets de la même famille étendent ce
+prototype.  Cette structure permet de séparer les méthodes (le comportement) des
+attributs (l'état).
 
 #+ATTR_HTML: :style margin-top:-13rem
 #+BEGIN_side-figure
@@ -2995,17 +3007,25 @@ En Smalltalk, le langage fait une distinction syntaxique entre classes, traits,
 et instances, alors qu'en Self ce sont tous des objets qui ont juste des rôles
 différents.
 
-#+ATTR_HTML: :class todo
 #+BEGIN_aside
-Mode-switching better explained as mechanism later on.  Paragraph should
-elaborate on the object/class distinctions.
+Le Newton était basé sur un langage à prototypes; entre autres raisons pour son
+faible coût en mémoire [[cite:Smi-95][Smi-95]].
 #+END_aside
 
 Les concepteurs de Self remarquent que le mécanisme de délégation est plus
-général que l'héritage.  Le premier peut émuler le second, mais l'inverse n'est
-pas possible.  Si le langage permet de modifier le lien de prototype après la
-création d'un objet, on a une solution élégante au patron de conception /State/:
-le /mode-switching/ (voir ??).
+général que l'héritage.  Le premier émule le second, mais pas l'inverse.  En
+outre, la délégation et le clonage facilitent l'adaptation dynamique du
+programme.  Sans hiérarchie à respecter, il est plus facile de remplacer des
+objets par d'autres, qui ont un comportement différent.  La délégation est un
+autre exemple d'indirection, et donc un mécanisme utile pour le détournement.
+
+D'un autre côté, les langages à classes, en imposant une structure
+supplémentaire, peuvent être mieux optimisés, mais sont moins adaptés pour des
+situations où la taxonomie n'est pas bien définie.
+
+Mais cette opposition n'est pas irréconciliable.  Les mécanismes réflexifs sont
+capables de proposer aussi bien l'héritage que la délégation au sein d'un même
+langage.  Et ils sont sont aussi très utiles pour le détournement.
 
 ** Réifier le langage pour séparer les préoccupations
 #+CAPTION: Le baron de Münchhausen évite la noyade par capillotraction.
