@@ -2924,6 +2924,16 @@ le réutiliser lorsque je rencontre un autre éléphant, Fred.  Mais comment ce
 partage s'effectue exactement?  De deux façons: on peut utiliser les classes, ou
 les prototypes.
 
+#+ATTR_HTML: :style margin-top:-15rem
+#+ATTR_LATEX: :options [-15em]
+#+BEGIN_side-figure
+[[file:img/self0.svg]]
+
+Dans des langages à classes, on réifie le concept d'éléphant (et même des
+sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et
+Fred.  Les deux mécanismes de partage sont l'héritage et l'instantiation.
+#+END_side-figure
+
 En utilisant les classes, on construit le concept abstrait d'/éléphant/, qui
 contient toutes les propriétés que l'on juge essentielles aux éléphants.  Clyde
 et Fred sont des /instances/ de ce concept (cette classe); l'instantiation est
@@ -2932,15 +2942,14 @@ Clyde ont des propriétés communes, non essentielles, comme des grandes oreille
 alors je peux créer un sous-concept d'éléphant /africain/ qui hérite du
 concept d'éléphant pour les représenter spécifiquement.
 
-#+ATTR_HTML: :style margin-top:-14rem
-#+ATTR_LATEX: :options [-14em]
+#+ATTR_HTML: :style margin-top:2rem
 #+BEGIN_side-figure
-[[file:img/self0.svg]]
+[[file:img/self1.svg]]
 
-Dans des langages à classes, on réifie le concept d'éléphant (et même des
-sous-concept) avant de pouvoir manipuler les objets qui représentent Clyde et
-Fred.  Les deux mécanismes de partage sont l'héritage et l'instantiation.
+Dans les langages à prototype, on manipule directement les objets qui
+représentent Clyde et Fred.  Le mécanisme de partage est la délégation.
 #+END_side-figure
+
 
 En utilisant les prototypes, je ne crée pas de concept.  Si Clyde est le premier
 éléphant que je rencontre, il devient mon éléphant /prototype/.  Si on me
@@ -2953,14 +2962,6 @@ représentation.  Si on me demande la couleur de Fred, je n'ai besoin que
 d'inspecter la représentation de Fred.  Mais si on me demande combien de pattes
 a Fred, il en a autant que Clyde, son prototype.  L'information non spécifique à
 Fred est sauvegardée par son prototype: c'est le mécanisme de /délégation/.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_side-figure
-[[file:img/self1.svg]]
-
-Dans les langages à prototype, on manipule directement les objets qui
-représentent Clyde et Fred.  Le mécanisme de partage est la délégation.
-#+END_side-figure
 
 # Dony, Malenfant et Bardou [[cite:DMB-98][DMB-98]] recensent les langages à
 # prototypes pour en déterminer les caractéristiques.  Ils identifient notamment
