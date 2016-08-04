@@ -2056,18 +2056,30 @@ restructurer.  La modification effectuée n'affecte pas le code source, elle en
 est distincte.  Le détournement nous permettrait de séparer le programme
 principal de ses modifications.  Dans le scénario d'instrumentation de Narcissus
 pour plusieurs analyses, on pourra détourner l'interpréteur pour chaque analyse,
-tout en préservant une séparation des préoccupations.
+tout en séparant les préoccupations.
 
-Étendre un interpréteur n'est pas un problème particulièrement nouveau.  On le
-retrouve sous différentes formes.  De même, il est intéressant de regarder
-quelles structures pourraient s'adapter au problème si l'on voulait refactoriser
-l'interpréteur.  Et enfin, voir quels mécanismes permettent de détourner un
-programme.
+Étendre un interpréteur n'est pas un problème particulièrement nouveau.  De
+même, cette idée de détournement prend différentes formes à travers l'histoire
+des langages.  Le chapitre suivant étudie plus en détail l'existant.
 
 * INPROGRESS Le détournement à travers l'histoire des langages de programmation
 :PROPERTIES:
 :CUSTOM_ID: chrono
 :END:
+Dans ce chapitre, on s'intéresse aux travaux qui cherchent à étendre des
+interpréteurs, ou à étendre des programmes en général.  Si le problème est
+similaire, la solution proposée pourra peut être s'appliquer à notre problème.
+
+#+BEGIN_side-figure
+[[file:img/sota3.svg]]
+#+END_side-figure
+
+Un thème qui résonne à travers ce chapitre est l'/indirection/.  On va voir que
+pour modifier et étendre un programme, une idée récurrente est de découpler les
+parties que l'on souhaite modifier du reste du programme.  On ne fait plus
+référence à ces parties directement, mais indirectement, ce qui permet de les
+changer plus facilement.
+
 ** UNREAD Le programme reflète le processus: la programmation structurée
 #+BEGIN_epig
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
