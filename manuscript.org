@@ -3063,28 +3063,33 @@ Mais cette opposition n'est pas irréconciliable.  Les mécanismes réflexifs so
 capables de proposer aussi bien l'héritage que la délégation au sein d'un même
 langage.  Et ils sont sont aussi très utiles pour le détournement.
 
-** Réifier le langage pour séparer les préoccupations
+** UNREAD Réifier le langage: métaprogrammation et réflexion
 #+CAPTION: Le baron de Münchhausen évite la noyade par capillotraction.
 #+CAPTION: Gustave Doré, 1862.
 [[file:img/münchhausen.jpg]]
 
-** INPROGRESS La réflexion
-En programmation par objets, on cherche une correspondance entre les acteurs du
-domaine d'application et les objets manipulés par le programme.  Dans la
-simulation d'un écosystème qui comprend de l'herbe, des moutons et des loups, on
-trouve des objets qui représentent l'herbe, des objets moutons, et des objets
-loups.  Un objet du programme est une /réification/ de l'objet de l'écosystème.
+En programmation par objets, on cherche à établir une correspondance entre les
+objets que l'on modélise et les objets que l'on écrit.  Dans la simulation d'un
+écosystème qui comprend de l'herbe, des moutons et des loups, on trouve des
+objets qui représentent l'herbe, des objets moutons, et des objets loups.  Un
+objet du programme est une /réification/ de l'objet de l'écosystème.
 
-Mais un programme peut aussi réifier les acteurs de sa propre exécution, les
+Mais un programme peut aussi réifier les objets de sa propre exécution, les
 objets de la sémantique; on parle alors de /réflexion/.  La réflexion permet à
 un programme d'altérer sa structure, ou de modifier la sémantique du langage,
 pendant qu'il s'exécute.  Cette adaptation dynamique offre de nouvelles façons
-de concevoir des programmes extensibles.
+de modifier et d'étendre des programmes.
 
-En Java, un programme peut obtenir les méthodes d'un objet via l'API de
-réflexion:
+#+BEGIN_aside
+On peut parler ici plus précisément d'introspection structurelle, d'après la
+nomenclature de Tanter [[cite:Tan-09][Tan-09]].
+#+END_aside
 
-#+BEGIN_SRC java :classname A :results verbatim :exports both :eval no-export -n -r
+Un simple exemple de réflexion, c'est d'être capable d'inspecter une classe à
+l'exécution, ainsi que ses méthodes et attributs.  L'API de réflexion du langage
+Java nous le permet:
+
+#+BEGIN_SRC java -n -r :classname A :results verbatim :exports both :eval no-export
 import java.lang.reflect.*;
 
 class A {
@@ -3131,117 +3136,115 @@ leurs signatures complètes.  On voit que l'API de réflexion réifie les objets
 la programmation par objets: on a une classe ~Field~ pour les attributs, une
 classe ~Method~, une classe ~Object~, et une classe ~Class~.
 
+#+ATTR_HTML: :style margin-top:6rem
+#+BEGIN_aside
+/Remote Procedure Call/
+#+END_aside
+
 On peut non seulement inspecter ces objets, mais aussi en synthétiser des
 instances, sans connaître leurs noms statiquement.  Ligne [[(synth)]] on crée une
 instance de ~A~, ~anA~, et on invoque la méthode ~m2~ récupérée elle aussi par
 réflexion.  Invoquer une méthode dynamiquement à partir d'une chaîne qui
 contient son nom rend le programme plus flexible: ça permet par exemple
-d'implémenter simplement l'appel de procédure distante (RPC).  On peut aussi
-récupérer ou changer la valeur un attribut dynamiquement, ce qui est utile pour
-écrire des objets qui font la passerelle avec des bases de données
-relationnelles (ORM).
+d'implémenter simplement l'appel de procédure distante (/RPC/).  On peut aussi
+récupérer ou changer la valeur d'un attribut dynamiquement, ce qui est utile
+pour écrire des objets qui font la passerelle avec des bases de données
+relationnelles (/ORM/).
+
+#+ATTR_HTML: :style margin-top:-3.5rem
+#+BEGIN_aside
+/Object-Relational Mapping/
+#+END_aside
 
 #+BEGIN_aside
 On peut néanmoins synthétiser des classes en Java en utilisant un chargeur de
-classes personnalisé, en utilisant des outils comme Javassist, ou en manipulant
-la JVM directement [??].
+classes personnalisé, en utilisant des outils comme Javassist.
 #+END_aside
 
-Mais l'API de réflexion de Java ne permet pas de synthétiser de nouveaux
-éléments: on ne peut pas ajouter d'attributs ni de méthodes à une classe, ni
-créer de classe dynamiquement.
+L'API de réflexion de Java ne permet pas de synthétiser de nouveaux éléments: on
+ne peut pas ajouter d'attributs ni de méthodes à une classe, ni créer de classe
+dynamiquement.  Dans des langages plus dynamiques comme Python ou JavaScript,
+synthétiser ces objets est possible sans cérémonie:
 
-Le protocole metaobjet de CommonLisp va plus loin [[cite:KRB-91][KRB-91]].  Le protocole
-metaobjet régit les
-façon dont le langage interprète le passage de message ou l'héritage [[cite:KRB-91][KRB-91]].
+#+BEGIN_SRC python :results output
+C = type('C', (), {'m2': lambda self, i: i * 2})
 
-[exemple d'ajout d'une méthode au runtime]
-[exemple de noSuchMethod]
+c = C()
+print(c.m2(3))
+#+END_SRC
 
-La réflexion est un autre exemple de la liaison tardive mentionnée par Kay [[#Smalltalk][\sect]].
+#+RESULTS:
+: 6
 
-A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
-#+BEGIN_QUOTE
-The general trend in the evolution of programming languages has been to postpone
-formal binding times towards the running of programs, but to use more and more
-sophisticated analysis and implementation techniques to bring actual times back
-to the earlier stages.
-#+END_QUOTE
-Later binding = more runtime flexibility, but also less guarantees and less
-performance.
+Ici on crée, on utilisant la fonction ~type~, une classe ~C~ qui contient une
+méthode ~m2~ comme dans l'exemple précédent.  On peut ensuite instancier cette
+classe (~c~) et appeler la méthode ~m2~ comme sur une classe décrite
+statiquement.
 
-Appliquée aux interpréteurs,
+Modifier une méthode existante est tout aussi anodin:
 
-Un cas particulier est interpréteur meta-circulaire.
+#+BEGIN_SRC python :results output
+class C():
+  def m2(self, i):
+    return i * 2
 
+c = C()
+print(c.m2(3))
 
+C.m2 = lambda self, i: i * 20
+print(c.m2(3))
+#+END_SRC
 
+#+RESULTS:
+: 6
+: 60
 
+Un autre mécanisme intéressant est de donner la possibilité à une classe
+d'intercepter les appels à une méthode qu'elle ne définit pas.  C'est déjà
+possible en Smalltalk, via la méthode spéciale ~doesNotUnderstand~.  De façon
+analogue, en Python:
 
+#+BEGIN_SRC python :results output
+class C():
+  def __getattr__(self, name):
+    return lambda *args: print(*args)
 
+c = C()
 
+c.m1(1,2,3)
+c.m2(4,5,6)
+c.notAMethod("cueillir des cerises")
+#+END_SRC
 
------
+#+RESULTS:
+: 1 2 3
+: 4 5 6
+: cueillir des cerises
 
-[[cite:Tan-09][Tan-09]] gives a nice survey of reflection and its uses.  Useful distinctions are
-made between /introspection/, /introcession/, /structural reflection/, and
-/behavioral reflection/; also between a program (a textual description) and a
-/computational system/ (a running process described by a program).
+La classe ~C~ définit une unique méthode: la méthode spéciale ~__getattr__~.
+Pourtant, on peut appeler les méthodes ~m1~, ~m2~ et ~notAMethod~ sur l'instance
+~c~.  La méthode ~__getattr__~ intercepte les appels aux méthodes non définies
+sur la classe, et en l'occurrence retourne une méthode unique qui affiche ses
+arguments sur la sortie standard.  Potentiellement, cela nous donne un point
+unique du code à modifier si l'on souhaite étendre le comportement de la classe.
+On pourrait même de cette façon définir un mécanisme de liaison dynamique
+personnalisé pour cette classe.
 
-[[cite:DS-01][DS-01]] give a general method to reify selected parts of a meta-circular
-interpreter.
+Le protocole métaobjet de CLOS (CommonLisp Object System) [[cite:KRB-91][KRB-91]] va encore plus
+loin, en exposant au programmeur le protocole qui implémente les mécanismes de
+programmation par objets dans ce langage.  Pour réconcilier les différentes
+implémentations de programmation par objets qui existait en CommonLisp (Flavors,
+LOOPS), CLOS laisse au programmeur la possibilité de redéfinir l'héritage entre
+classes, la liaison dynamique, ou la visibilité des membres.  En Python ou en
+Java, il y une structure de classe imposée, et un mécanisme de liaison par
+défaut qu'il n'est pas toujours possible de redéfinir.  En CLOS, ce qui est
+fourni est avant tout le protocole métaobjet; puis une implémentation par défaut
+de ce protocole, mais qui est en tout point redéfinissable par le programmeur.
+Autrement dit, le programmeur ne programme plus seulement des applications, mais
+il programme en partie le langage.  Il programme le /programme/ lui-même, d'où
+le terme de métaprogrammation.
 
-[[cite:Ste-94a][Ste-94a]] studies object-oriented languages which support open implementation.
-The open implementation of a language (the interpreter) is itself written in one
-language called the /implementation language/, and its meta-level interface
-allows the system to interpret a range of /engendered languages/.
-
-[[cite:SW-96][SW-96]] describe three approaches to code non-functional requirements while
-preserving the separation of concerns: systems-based, language-based, and
-MOP-based.  They find that MOP-based solutions are more flexible, especially as
-they can be applied to other domains without modifying the code.  However, they
-consider non-functional requirements like persistence and atomicity.
-
-Reflection for dynamic adaptation [[cite:DSC+99][DSC+99]].  Dynamic adaptation echoes the
-motivation of open implementation: an application should adapt dynamically to
-the need of the users, thereby enhancing performance.  This is mostly a concern
-in systems software, operating systems and middlewares.  They use a memory
-allocator example and compare using design patterns, DLLs and reflection.
-Essentially, reflection is more flexible, but also less efficient.
-
-[[cite:RC-02][RC-02]] illustrates how unanticipated dynamic adaptation can be achieved using
-MOPs in Java.
-
-Unifying AOP and OOP [[cite:RS-09a][RS-09a]].
-
-[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
-proxy which has a handful of traps that are useful to override: when the value
-is called as a function, when the value is used as a record, when the value is
-used as an index in an array, when the value is used in a binary operation ...
-
-They exhibit several scenarios where virtual values are useful: lazy evaluation,
-revocable membranes, and tainting.  They modified Narcissus (again!) to add
-their virtual values extension, but the implementation seems incomplete
-regarding all operations available in JavaScript.
-
-They motivate virtual values as a nice way to extend languages without having to
-touch the interpreter.  Though they do not talk at all of the limitations of
-this approach: can you write any extension that you would write by modifying the
-interpreter with virtual values?  The only downsides they acknowledge are
-performance hits and potential breakage of JS invariants (‘x*x' returning a
-negative number, or ‘x === x' returning false).
-
-It seems evident that virtual values are only hooks for values.  So you cannot
-override any other part of the module which is not explicitly given by a trap.
-Getting a trace of the interpreter execution is out.  Also, you need to specify
-your analysis from the point of view of handler on values, not by altering the
-interpreter semantics.
-
-[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
-previous implementation which used code transformation; better performance, less
-maintenance.
-
-** READ L'implémentation ouverte
+** INPROGRESS L'implémentation ouverte
 La réflexion dans les langages à objets, et en particulier dans CLOS, permet à
 des programmes de contrôler, d'inspecter, de modifier, et d'étendre la
 sémantique du langage.
