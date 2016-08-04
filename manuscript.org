@@ -4541,7 +4541,23 @@ d'extension.
 
 ]
 
-* UNWRITTEN Travaux connexes
+** UNWRITTEN Récapitulatif
+La réflexion proposée par Java est un exemple de métaprogrammation, mais
+restreinte.  L'idée de "programmer le programme" poussée à son paroxysme nous
+amène à programmer le langage.  Les mots même du programme n'ont plus de sens
+par défaut.  C'est le glissement qu'il est si facile d'obtenir en préfixant du
+code Lisp par une apostrophe ~'~.
+
+A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
+#+BEGIN_QUOTE
+The general trend in the evolution of programming languages has been to postpone
+formal binding times towards the running of programs, but to use more and more
+sophisticated analysis and implementation techniques to bring actual times back
+to the earlier stages.
+#+END_QUOTE
+Later binding = more runtime flexibility, but also less guarantees and less
+performance.
+
 ** Les mécanismes de recomposition du programme
 *** Le problème de l'expression
 Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
