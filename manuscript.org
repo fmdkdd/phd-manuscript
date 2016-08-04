@@ -58,8 +58,8 @@ different person then.'
      - [[#prototypes-et-délégation-self][Prototypes et délégation: Self]]
    - [[#unread-réifier-le-langage-métaprogrammation-et-réflexion][UNREAD Réifier le langage: métaprogrammation et réflexion]]
      - [[#read-limplémentation-ouverte][READ L'implémentation ouverte]]
-   - [[#inprogress-la-programmation-par-aspects][INPROGRESS La programmation par aspects]]
-     - [[#la-distinction-entre-les-composants-et-les-aspects][La distinction entre les composants et les aspects]]
+   - [[#inprogress-séparer-les-préoccupations-la-programmation-par-aspects][INPROGRESS Séparer les préoccupations: la programmation par aspects]]
+     - [[#la-distinction-entre-composants-et-aspects][La distinction entre composants et aspects]]
      - [[#exprimer-les-aspects-par-un-langage-dédié][Exprimer les aspects par un langage dédié]]
      - [[#dautres-mécanismes-pour-la-programmation-par-aspects][D'autres mécanismes pour la programmation par aspects]]
      - [[#aspectj-jonctions-coupes-et-méthodes-daspect][AspectJ: jonctions, coupes, et méthodes d'aspect]]
@@ -3364,26 +3364,29 @@ utilisée, mais d'autres solutions sont envisageables suivant le système:
 l'inversion de contrôle, ou le patron de conception Stratégie seraient
 envisageables.  Un autre bon candidat est la programmation par aspects.
 
-** INPROGRESS La programmation par aspects
+** INPROGRESS Séparer les préoccupations: la programmation par aspects
 :PROPERTIES:
 :CUSTOM_ID: aop
 :END:
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
-d'implémentation d'un système [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].
+d'implémentation d'un système à implémentation ouverte [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].
 
-La motivation derrière la programmation par aspects est très proche de la
-motivation pour l'implémentation ouverte: les deux approches proposent de
-nouvelles techniques pour organiser le code, pour qu'il soit à la fois simple à
-écrire, facile à maintenir, et ne sacrifie pas l'efficacité.  Dans
-l'implémentation ouverte l'idée est que le système expose une interface
-secondaire qui donne un accès direct à son fonctionnement interne, ce qui permet
-certaines optimisations.  Dans la programmation par aspects, l'idée est de
-reconnaître que la décomposition d'un programme selon l'axe classique des
-fonctions et des classes n'est pas suffisante pour maintenir ces trois qualités;
-les aspects y remédient en introduisant une nouvelle dimension de composition.
+La motivation derrière la programmation par aspects est d'ailleurs similaire:
+les deux approches proposent de nouvelles techniques pour organiser le code,
+pour qu'il soit à la fois simple à écrire, facile à maintenir, et ne sacrifie
+pas l'efficacité.  Dans l'implémentation ouverte l'idée est que le système
+expose une interface secondaire qui donne un accès direct à son fonctionnement
+interne, ce qui permet certaines optimisations.  Dans la programmation par
+aspects, l'idée est de reconnaître que la décomposition d'un programme selon
+l'axe classique des fonctions et des classes n'est pas suffisante pour maintenir
+ces trois qualités; les aspects y remédient en introduisant une nouvelle
+dimension de composition.
 
-*** La distinction entre les composants et les aspects
+*** La distinction entre composants et aspects
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 #+BEGIN_QUOTE
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
@@ -3504,6 +3507,9 @@ compose them to produce the overall system.
 #+END_aside
 
 *** Exprimer les aspects par un langage dédié
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
 programme, le langage dans lequel le programme est écrit, et le compilateur pour
@@ -3567,6 +3573,9 @@ programmation par aspects, faut-il réimplémenter un tisseur pour chaque
 application?  Y a-t-il d'autres façons de faire?
 
 *** D'autres mécanismes pour la programmation par aspects
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 La caractéristique principale de la programmation par aspects est la distinction
 entre composants et aspects.  Cette distinction, si elle apparaît au moment de
 la conception du programme doit être maintenue dans son implémentation.  Tout
@@ -3621,7 +3630,7 @@ concern – concept, goal, team structure etc. – rather than in units imposed 
 us by the tools we are using.  We would like the modularity of a system to
 reflect the way "we want to think about it" rather than the way the language or
 other tools force us to think about it.  In software, Parnas is generally
-credited with this idea [[cite:Par-72][Par-72]] [[cite:Par-74][Par-74]]. — [[cite:KHH+01][KHH+01]]
+credited with this idea. — [[cite:KHH+01][KHH+01]]
 #+END_QUOTE
 
 #+ATTR_HTML: :style margin-top:-10rem
@@ -3635,19 +3644,17 @@ Néanmoins, créer un langage dédié pour chaque application peut avoir un coû
 trop élevé pour adopter la programmation par aspects.  Et tous les langages ne
 supportent pas les mécanismes de bas-niveau qui pourraient servir à exprimer des
 aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
-d'AspectJ [[cite:KHH+01][KHH+01]].
+d'AspectJ.
 
 *** AspectJ: jonctions, coupes, et méthodes d'aspect
-#+BEGIN_QUOTE
-AspectJ is intended to be a practical AOP language that provides, in a Java
-compatible package, a solid and well-worked-out set of AOP features.
-#+END_QUOTE
-
-AspectJ est un langage d'aspects pour Java.  Dans un système par aspects, il y a
-un langage d'aspects, ici AspectJ, et un langage de composants, ici ce sera
-Java.  AspectJ est un langage d'aspect /général/, qui fournit des mécanismes de
-recomposition applicables à tout programme Java.  Et pour ce faire, AspectJ
-propose deux types de recomposition.
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+AspectJ est un langage d'aspects pour Java [[cite:KHH+01][KHH+01]].  Dans un système par aspects,
+il y a un langage d'aspects, ici AspectJ, et un langage de composants, ici ce
+sera Java.  AspectJ est un langage d'aspect /général/, qui fournit des
+mécanismes de recomposition applicables à tout programme Java.  Et pour ce
+faire, AspectJ propose deux types de recomposition.
 
 En premier, les déclarations inter-types permettent de définir, au sein d'un
 même aspect, des attributs et des méthodes pour une ou plusieurs classes [[cite:Asp-03][Asp-03]].
@@ -3825,6 +3832,9 @@ exécutables différents.
 #+END_side-figure
 
 *** Le mécanisme essentiel pour la programmation par aspects
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Être oubliable est une propriété qui peut être considérée comme caractéristique
 de la programmation par aspects [[cite:FF-04][FF-04]].  Filman et Friedman cherchent à
 identifier les systèmes qui suivent la programmation par aspects.  Il semble
@@ -3922,6 +3932,9 @@ système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
 utilisé pour faire de la programmation par aspects.
 
 *** Les limites de la programmation par aspects
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Le but de la programmation par aspects est louable: distinguer les composants
 des aspects dans le programme, c'est mettre de l'ordre, c'est séparer les choses
 différentes, et regrouper les fonctionnalités similaires.  Le bénéfice, c'est
