@@ -220,7 +220,7 @@ dynamique et la métaprogrammation.
 Pour illustrer le détournement, on commence par un interpréteur d'expressions
 arithmétiques, et l'on passe en revue les techniques utilisables pour détourner
 l'interpréteur afin qu'il supporte de nouveaux termes et opérations; un scénario
-similaire au problème de l'Expression.  On montre comment le détournement peut
+similaire au problème de l'expression.  On montre comment le détournement peut
 aider à construire des interpréteurs par incréments, en couches successives, ce
 qui permet de dynamiquement activer des comportements alternatifs.
 
@@ -5267,8 +5267,8 @@ expression (/pretty-printing/).
 Suivant la décomposition par objets, il faut ajouter l'opération sur chaque
 objet qui représente le terme.  Dans des langages à objets qui ne permettent pas
 l'extension, une façon de faire serait de modifier le code source des objets en
-question.  C'est la tension qui est au cœur du problème de l'expression.  En
-JavaScript, les objets sont extensibles, donc ajouter une opération peut se
+question.  C'est la tension qui est au cœur du problème de l'expression ([[#expr]]).
+En JavaScript, les objets sont extensibles, donc ajouter une opération peut se
 faire sans modifier le code des objets eux-mêmes:
 
 #+BEGIN_SRC js -n -r
