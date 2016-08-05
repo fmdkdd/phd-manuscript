@@ -3912,22 +3912,23 @@ système.
 :PROPERTIES:
 :CUSTOM_ID: expr
 :END:
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Slightly incomplete without the OO solution, but this was already described in
-the Hyper/J section.  Might merge, might cut altogether.
-#+END_aside
+Le problème de l'expression est un problème proche du notre.  Le but est de
+pouvoir étendre un interpréteur sans avoir à modifier les définitions
+existantes.  Toute solution à ce problème sera donc potentiellement pertinente
+pour l'extension de Narcissus.
 
-Comment étendre un interpréteur n'est pas un nouveau problème.  Wadler [[cite:Wad-98][Wad-98]]
-nomme un cas spécifique d'extension qui s'applique aux langages fonctionnels:
+*** Définition du problème
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+Wadler définit le problème ainsi [[cite:Wad-98][Wad-98]]:
 
-#+BEGIN_aside
-Les deux contraintes de recompilation et de typage statique ne sont pas
-nécessaires pour rendre le problème intéressant.  Elle le rendent certes plus
-difficile, mais l'extension d'interpréteur est avant tout un problème
-d'extensibilité, et s'applique aussi bien à des langages interprétés (non
-compilés), et typés dynamiquement.
-#+END_aside
+# #+BEGIN_aside
+# Les deux contraintes de recompilation et de typage statique ne sont pas
+# nécessaires pour rendre le problème intéressant.  Elles imposent davantage de
+# contraintes aux solutions certes, mais les solutions
+# un interpréteur n'est pas pour au
+# #+END_aside
 
 #+BEGIN_QUOTE
 The Expression Problem is a new name for an old problem.  The goal is to define
@@ -3960,7 +3961,7 @@ pourrait être:
 #+END_EXAMPLE
 
 Ici encore, un terme a trois variantes.  L'addition et la multiplication
-contiennent d'autres termes, et la variante constante ne contient qu'un nombre
+contiennent d'autres termes, et la variante ~int~ ne contient qu'un nombre
 terminal.  On voit que le type algébrique est suffisamment proche de la BNF pour
 rendre la traduction en code Haskell triviale.  Les grammaires pour les langages
 de programmation étant souvent définies par une BNF, le type algébrique est la
@@ -3981,36 +3982,46 @@ Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
 {{{ast}}} de cette expression.
 
 Pour évaluer l'expression arithmétique, il faut évaluer l'arbre syntaxique et
-produire un nombre en retour.  C'est le rôle de l'interpréteur du langage.  Dans
-la terminologie de Wadler, l'évaluation est une fonction du le type algébrique;
-on parlera plutôt d'/opérations/.
+produire un nombre en retour.  C'est le rôle de l'interpréteur du langage, qui
+sera donc une fonction du type algébrique.  Dans la terminologie de Wadler, ces
+fonctions sont appelées des /opérations/.
 
-La principale est l'opération d'évaluation qui donne un sens à chaque terme du
-langage.  Par exemple, on souhaite évaluer les expressions de notre langage
-arithmétique en suivant le sens usuel de l'addition et de la multiplication
-d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue ~t1~ et ~t2~ pour
-obtenir des entiers, puis on les additionne.  En Haskell, on écrira l'évaluation
-en traitant les trois variantes séparément, par /pattern matching/:
+L'opération principale est l'opération d'évaluation qui donne un sens à chaque
+terme du langage.  Par exemple, on souhaite évaluer les expressions de notre
+langage arithmétique en suivant le sens usuel de l'addition et de la
+multiplication d'entiers.  C'est à dire, pour évaluer ~Plus t1 t2~, on évalue
+~t1~ et ~t2~ pour obtenir des entiers, puis on les additionne.  En Haskell, on
+écrira l'évaluation en traitant les trois variantes séparément, par /pattern
+matching/:
 
-#+BEGIN_SRC haskell
+#+BEGIN_SRC haskell -n -r
 eval :: Term -> Int
-eval (Constant n) = n
-eval (Plus t1 t2) = eval t1 + eval t2
-eval (Mult t1 t2) = eval t1 * eval t2
+eval (Constant n) = n                  (ref:expr1)
+eval (Plus t1 t2) = eval t1 + eval t2  (ref:expr2)
+eval (Mult t1 t2) = eval t1 * eval t2  (ref:expr3)
 #+END_SRC
 
 La première ligne donne le type de l'opération: elle consomme un terme pour
 produire un entier.  Chaque variante de terme est traitée explicitement sur
-chaque ligne.  On remarque que l'évaluation est récursive pour ~Plus~ et
-~Mult~.  La définition du type algébrique l'était déjà: ~Term~ est utilisé dans
-sa propre définition.  Les grammaires de langage sont souvent récursives, pour
-permettre la construction de grandes expressions à partir de simples éléments.  Même
-un langage aussi simple que celui-ci exhibe cette récursion.
+chaque ligne.  Si le terme est une constante, c'est la ligne [[(expr1)]] qui sera
+exécutée, si c'est un ~Plus~, la ligne [[(expr2)]], et ainsi de suite.
+
+On remarque que l'évaluation est récursive pour ~Plus~ et ~Mult~.  La définition
+du type algébrique l'était déjà: ~Term~ est utilisé dans sa propre définition.
+Les grammaires de langage sont souvent récursives, pour permettre la
+construction de grandes expressions à partir de simples éléments.  Même un
+langage aussi simple que celui-ci exhibe cette récursion.
 
 On peut maintenant évaluer l'expression 2 + 5 * 3:
 
-: > eval Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: > eval (Plus (Constant 2) (Mult (Constant 5) (Constant 3)))
 : 17
+
+#+BEGIN_aside
+On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
+Sauf qu'ici on ne définit cet l'analyseur, puisqu'on construit directement les
+arbres syntaxiques.
+#+END_aside
 
 Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
 /pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
@@ -4027,13 +4038,9 @@ pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
 pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
 #+END_SRC
 
-#+BEGIN_aside
-On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
-#+END_aside
-
 Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
 
-: > pp Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+: > pp (Plus (Constant 2) (Mult (Constant 5) (Constant 3)))
 : 2 + 5 * 3
 
 L'implémentation de l'affichage a la même structure que de l'implémentation de
@@ -4059,9 +4066,9 @@ existant.
 
 On peut caractériser la complexité d'un changement de l'interpréteur comme la
 complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
-de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes, une
-opération aura une complexité de l'ordre de /v/ lignes de code (O(v)).  On note
-que ces lignes sont des additions par un '+': +O(v).
+de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes,
+ajouter une opération aura une complexité de l'ordre de /v/ lignes de code
+(O(v)).  On note que ces lignes sont des additions par un '+': +O(v).
 
 #+BEGIN_aside
 On notera les lignes qui modifient une définition existante par '~', et les
@@ -4087,9 +4094,10 @@ Mais il faut aussi traiter cette nouvelle variante dans les opérations
 existantes:
 
 #+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les opérations implémentent du code pour
-#+CAPTION: chaque variante du langage (sens des flêches).  Ajouter une opération
-#+CAPTION: (à gauche) n'affecte pas les unités existantes, mais ajouter un terme
+#+CAPTION: Dans une décomposition fonctionnelle classique, les opérations
+#+CAPTION: implémentent du code pour chaque variante du langage
+#+CAPTION: (sens des flêches).  Ajouter une opération (à gauche) n'affecte
+#+CAPTION: pas les unités existantes, mais ajouter un terme
 #+CAPTION: (à droite) nécessite de modifier toutes les opérations.
 [[file:img/expr-pb-1.svg]]
 #+END_side-figure
@@ -4120,6 +4128,95 @@ un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
 un module sans affecter les autres, mais ajouter un terme requiert de modifier
 plusieurs modules.
 
+*** Problème inverse en programmation par objets
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+Le problème de l'expression se pose aussi en programmation par objets.
+
+Une façon classique d'implémenter un interpréteur en programmation par objets
+est de suivre le patron Interpréteur [[cite:GHJ+94][GHJ+94]].  Dans ce patron, chaque terme du
+langage est représenté par une classe, et chaque classe possède une méthode par
+opération.
+
+#+BEGIN_SRC java :classname Test :results verbatim :exports both :eval no-export
+abstract class Term { abstract int eval(); }
+
+class Constant extends Term {
+  int n;
+  Constant(int n) { this.n = n; }
+  int eval() { return n; }
+}
+
+class Plus extends Term {
+  Term t1, t2;
+
+  Plus(Term t1, Term t2) {
+    this.t1 = t1;
+    this.t2 = t2;
+  }
+
+  int eval() {
+    return t1.eval() + t2.eval();
+  }
+}
+
+class Test {
+  public static void main(String[] args) {
+    Term e1 = new Plus(new Constant(1), new Constant(2));
+    System.out.println(e1.eval());
+  }
+}
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+Ici on a deux classes ~Constant~ et ~Plus~ qui implémentent l'opération ~eval~.
+Tous les termes héritent de la classe abstraite ~Term~ qui définit les
+opérations supportées.  Comme précédemment, l'évaluation de ~Plus.eval~ est
+récursive.  Cette fois en revanche, la définition de l'opération ~eval~ n'est
+pas localisée en un seul endroit dans le code source, mais répartie dans les
+objets.  Chaque classe terme définit sa propre évaluation.
+
+En conséquence, ajouter un terme au langage se fait simplement en ajoutant une
+nouvel classe:
+
+#+BEGIN_SRC java
+class Mult extends Term {
+  Term t1, t2;
+
+  Mult(Term t1, Term t2) {
+    this.t1 = t1;
+    this.t2 = t2;
+  }
+
+  int eval() {
+    return t1.eval() * t2.eval();
+  }
+}
+#+END_SRC
+
+On n'a pas à modifier le code des autres classes.  Ajouter un terme au langage
+revient à ajouter +O(p) lignes, s'il y a /p/ opérations.
+
+En revanche, pour ajouter une opération comme l'affichage il faut modifier toutes
+les classes existantes:
+
+#+BEGIN_SRC java
+abstract class Term {
+~  abstract String pp();
+
+class Constant extends Term {
+~  String pp() { ... }
+
+class Plus extends Term {
+~  String pp() { ... }
+
+class Mult extends Term {
+~  String pp() { ... }
+#+END_SRC
+
 #+BEGIN_side-figure
 #+CAPTION: Dans cette décomposition, les termes contiennent le code des
 #+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
@@ -4127,14 +4224,24 @@ plusieurs modules.
 [[file:img/expr-pb-0.svg]]
 #+END_side-figure
 
-Le problème n'est pas exclusif à Haskell.  Dans [[#hyperj]], on a vu exactement la
-situation inverse en Java.  Là aussi on définissait un interpréteur, mais cette
-fois chaque terme était représenté par un objet qui encapsulait les définitions
-des opérations pour ce terme.  En conséquence, ajouter un terme correspondait à
-ajouter un objet, donc ajouter un module.  Mais pour ajouter une opération il
-faillait modifier tous les objets des termes existants.  Le choix de l'unité
-principale de décomposition (termes ou opérations), favorise l'un ou l'autre
-type d'extension.
+Cela implique de rajouter l'opération sur ~Term~, puis de la définir pour tous
+les termes.  Pour /v/ termes, on a ~O(v) lignes modifiées.  C'est la situation
+inverse que dans la décomposition fonctionnelle précédente.
+
+Le problème de l'expression se manifeste ici aussi, puisqu'on peut ajouter des
+termes sans recompiler les classes existantes, mais ajouter des opérations
+demande de modifier les classes existantes.
+
+*** Des solutions intéressantes
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+FP: open function; Swierstra things
+
+OOP: visitor (Krishnamurthi), Zenger Odersky, Oliveira
+
+------
 
 #+ATTR_HTML: :style margin-top:4rem
 #+BEGIN_side-figure
@@ -4162,13 +4269,19 @@ mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
 Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
 d'extension.
 
-[
+Expression problem is different than ours:
 
-- Different from /instrumentation/ which modifies existing terms and operations.
+- we want to extend, but also modify existing operations.  We want to reuse the
+  existing structure as much as possible.
 
-]
+- we do not control the structure of the interpreter.  Might not be a
+  straightforward operation/datatype decomposition, or Interpreter pattern.  And
+  extensions might also want to modify things outside this neat boundary.
 
-** READ La séplution
+But its solutions are definitely reusable in our context.
+
+** UNWRITTEN Autres mécanismes de détournement
+*** READ La séplution
 :PROPERTIES:
 :CUSTOM_ID: hyperj
 :END:
