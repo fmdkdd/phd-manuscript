@@ -5581,6 +5581,9 @@ base.  Les extensions peuvent se composer, sans avoir connaissance explicite ou
 préalable des autres extensions.  C'est un bel exemple de détournement.
 
 *** Trois ingrédients principaux
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Ce détournement a trois ingrédients principaux: la délégation, les extensions
 représentées par des fonctions, et la manipulation de portée.  La délégation
 nous a permis la représentation différentielle des extensions.  Dans l'extension
@@ -5723,6 +5726,9 @@ activé, le résultat de cette invocation est différent, car l'implémentation 
 trait diffère.
 
 *** Manipuler la portée suffit pour détourner le programme
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Dans tous les exemples que l'on a donné, on a pu voir qu'enrober le code d'un
 ~with~ nous permettait de modifier son résultat.  Avec un ~with(double)~ on
 activait l'évaluation qui double les valeurs des nombres, avec ~with(show)~ on
@@ -5852,6 +5858,9 @@ modèle est inspiré du fonctionnement de JavaScript, mais n'est pas forcément 
 modèle en JavaScript.
 
 *** La portée dans le motif module
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 L'interpréteur Narcissus est construit à partir du /motif module/.  Il n'y a pas
 de système de module en JavaScript, et c'est ce motif simple qui est souvent
 utilisé à la place.  Le motif utilisé par Narcissus se présente ainsi:
@@ -6032,6 +6041,9 @@ motif module ne permet pas, en l'état, d'accéder à ces noms de l'extérieur d
 module.  C'est son rôle, mais ça s'oppose à notre but d'extensibilité.
 
 *** Ouvrir le motif module
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 On cherche maintenant à accéder à l'environnement de la FIA de l'extérieur du
 module, à obtenir une référence vers cet environnement.  En regardant les
 diagrammes précédents, on pourrait penser que ~m.g.env~ suffit: il s'agit bien
@@ -6205,6 +6217,9 @@ plus élégante qui tire partie du mécanisme de résolution des noms de variabl
 dans une chaîne d'environnements.
 
 *** Disposer les environnements en couches
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 On a vu que tout environnement a un environnement parent.  Si un nom n'est pas
 trouvé dans un environnement, la recherche se poursuit dans l'environnement
 parent.  La recherche continue ainsi jusqu'à ce que le nom soit trouvé, ou que
@@ -6686,6 +6701,9 @@ seules modifications nécessaires à apporter au module pour pouvoir commencer
 l'instrumentation.
 
 *** Ajouter l'analyse d'évaluation multi-facettes
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 On a vu dans l'étude de cas que l'implémentation de l'évaluation multi-facettes
 sur Narcissus pouvait être répartie en trois catégories de changements.  La
 première catégorie était l'ajout du /program counter/ par extension de l'objet
@@ -6814,6 +6832,9 @@ surcharger que des valeurs identifiées.  Pour pouvoir redéfinir cette fonction
 nous lui avons simplement donné un nom.
 
 *** Ajouter l'analyse de trace
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 En plus de l'évaluation multi-facettes, on a défini trois autres analyses sur
 l'interpréteur: une simple analyse de trace, une analyse de flot d'information,
 FlowR, décrite par Pasquier, Bacon et Shand [[cite:PBS-14][PBS-14]], et une analyse qui extrait
@@ -6962,6 +6983,9 @@ insère dans l'environnement du module.
 #+END_side-figure
 
 *** Ajouter l'analyse FlowR
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Le principe de l'analyse FlowR est d'empêcher des flots de données illicites
 dans le programme.  Pour cela, on colle des étiquettes sur les fonctions, comme
 "privée" ou "interne", une approche similaire aux /principals/ des valeurs à
@@ -7073,6 +7097,9 @@ i13n.pushLayer(_env, {
 #+END_SRC
 
 *** Ajouter l'analyse d'environnements
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Les techniques que l'on propose dans ce chapitre sont basées essentiellement sur
 la manipulation d'environnements.  Pour mieux comprendre ces manipulations, on a
 utilisé des diagrammes qui représentent les objets et les environnements
@@ -7175,6 +7202,9 @@ d'abord construire le graphe en parcourant tous les objets récoltés, puis
 produire le fichier au format DOT.
 
 *** Évaluation
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Notre instrumentation de Narcissus pour l'évaluation multi-facettes consiste en
 440 lignes de code, dans un seul fichier séparé de l'interpréteur;
 l'instrumentation faite par Austin et Flanagan comportait 640 lignes mêlées au
@@ -7365,6 +7395,9 @@ peut nécessairement en changer une partie; c'est ce qui nous a permis de
 modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 
 *** La tension entre flexibilité et sûreté
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 On peut voir la propriété ~E~ qui expose l'environnement manipulable du module
 comme une interface spéciale, une interface d'instrumentation, qu'on peut
 rapprocher du concept d'"implémentation ouverte" de [[cite:Kic-96][Kic-96]].  Cette interface
@@ -7494,6 +7527,9 @@ l'utilisation de ~with~ dans le module, qui permet de les changer.  C'est au
 programmeur de choisir le compromis le mieux adapté au problème.
 
 *** D'autres façons d'étendre l'interpréteur
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Il y a d'autres façons, plus évidentes, d'ouvrir le module.  Pour commencer,
 puisqu'on cherche à briser la protection offerte par la fonction anonyme,
 pourquoi ne pas l'enlever?  Et définir nos fonctions directement à la racine:
@@ -7628,6 +7664,9 @@ greffer, il n'a pas à s'en soucier, d'où moins de code à maintenir.
 # export c,d,f         (extension)
 
 *** Pourquoi ne pas utiliser la programmation par aspects?
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 Étendre un module par du code extérieur sans que le code du module n'expose
 d'interface pour, activer et désactiver les extensions dynamiquement, les
 combiner ... ces objectifs rappellent fortement la programmation par aspects.
@@ -7785,6 +7824,9 @@ d'aspects pour JavaScript existe dans la littérature [[cite:LVG-10][LVG-10]], m
 cible qu'une version interne modifiée du navigateur Internet Explorer.
 
 *** Appliquer la manipulation de portée à d'autres langages
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 On n'a pas utilisé une bibliothèque d'aspects, mais l'approche de ce chapitre est
 certainement ancrée dans le paradigme de la programmation par aspects.  Et c'est
 justement intéressant de voir que la simple manipulation de la portée des
@@ -7811,6 +7853,9 @@ manipuler directement la résolution de portée, par un mécanisme réflexif par
 exemple.
 
 *** Inconvénients de la manipulation de portée avec ~with~
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 L'utilisation de ~with~ comporte néanmoins quelques inconvénients.  On utilise
 ~with~ ici juste parce que c'est le seul moyen qu'on a de manipuler la portée
 des variables du code du module en JavaScript standard.  Ça nous évite d'avoir à
