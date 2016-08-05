@@ -4421,222 +4421,6 @@ des hypercoupes, et précise leur composition avant de les passer au compilateur
 qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 /superimposition/.
 
-** READ L'information transparente
-Les mécanismes de décomposition sont insuffisants pour anticiper les changements
-d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
-nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
-techniques demande d'adopter un nouveau paradigme, et de nouveaux outils.  Que
-ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
-partie du code source et suivre la discipline prescrite afin de bénéficier de
-ses vertus.  Mais le plus grand risque, au long terme, c'est d'adopter de
-nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
-langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
-pourraient tomber en désuétude faute d'engouement.  L'/information transparente/
-[[cite:Gri-01][Gri-01]] est une alternative pragmatique qui s'applique à n'importe quel langage,
-en utilisant des outils standards.
-
-La motivation de l'auteur est de mieux appréhender des changements de logiciels
-qui dépassent la décomposition modulaire offerte par les langage de
-programmation classiques.  Une décomposition modulaire adéquate doit minimiser
-ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
-convenir à tous les axes d'évolution.
-
-Le principe de l'information transparente est d'exploiter les similarités du
-code, et en particulier les similarités /cohérentes/:
-
-#+BEGIN_QUOTE
-Code elements likely to be changed together as part of a complete, consistent
-change should look similar, and code elements unlikely to be changed together
-should look different.
-#+END_QUOTE
-
-L'auteur donne l'exemple d'un outil de planification qui visait des programmes
-écrits en C et qu'il a fallu adapter pour des programmes écrits en Ada.  L'outil
-construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
-de l'arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
-faut capturer les boucles.  En C, il faut par exemple capturer ~while~.  En Ada,
-la construction est ~loop~.  Puisque le code de l'outil est /cohérent/, les
-variables et les fonctions qui manipulent le ~while~ de C s'appellent ~WHILE~,
-ou ~WhileStmt~.  Du coup, il suffit de faire une simple recherche sur tous les
-fichiers du projet, avec ~grep~, pour trouver tous les endroits qu'il faudra
-adapter pour les programmes Ada.
-
-Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
-logiciels qui ne traitent que de l'ASCII.  En Unicode, un octet ne correspond
-pas nécessairement à un caractère, contrairement à l'ASCII. Pour compter le
-nombre de caractères d'une chaîne en ASCII, il suffit de compter les octets.
-Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
-deux cas d'utilisation: est-ce que ce ~int~ compte les caractères, ou les
-octets?  Le type de la variable ne suffit pas pour donner cette information.  En
-revanche, les programmeurs du logiciel discernent les deux cas à travers les
-noms de variable: une variable préfixée par ~cch~ contient un nombre de
-caractères, et un préfixe ~cb~ indique un nombre d'octets.  Puisque cette
-nomenclature est respectée par tout le projet, elle peut être utilisée pour
-distinguer les deux cas d'usage, et faciliter le passage à Unicode.
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-Une forme de notation hongroise, où le type /logique/ de la variable est indiqué
-plutôt que le type utilisé par le compilateur.
-#+END_aside
-
-Ce principe ne s'applique pas seulement au code.  Dans les commentaires de
-programmes, il est courant de de trouver les mots ~TODO~, ~FIXME~ ou ~REFACTOR~
-pour indiquer un problème que l'auteur, dans le feu de l'action, note pour une
-correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s'appliquent,
-ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
-Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
-en faisant une simple recherche de texte.  L'environnement de développement
-Eclipse affiche une liste de toutes les tâches du projet, construite en glanant
-ces mots-clés.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_aside
-TODO: add Eclipse ref
-#+END_aside
-
-#+ATTR_HTML: :style margin-top:2rem
-#+BEGIN_side-figure
-[[file:img/griswold0.svg]]
-
-Les similarités d'un projet peuvent être récupérées par des outils standard.
-Ici, ~grep~ permet de créer différentes vues du projet.
-#+END_side-figure
-
-L'information transparente permet de recréer de la localité grâce à la
-similarité des morceaux de code.  Tous les morceaux affectés par le même
-changement sont localisés par leur forme: que ce soit l'emploi de variables de
-même nom, ou ayant un préfixe commun, ou la présence d'un mot-clé, ou même une
-similarité dans l'arbre de syntaxe:
-
-#+BEGIN_QUOTE
-When the code relating to a particular change is not localized to a module, an
-information-transparent module design allows a programmer to use available
-software tools to economically identify the related code, easing the
-change. That is, the “signature” of the changing design decision can be used to
-create locality out of similarity, providing a module view of the code that
-crosscuts its explicit textual, procedural, module, and file structures.  This
-signature is one or more shared characteristics of the code to be changed, such
-as the use of particular variables, data structures, language features, or
-system resources.
-#+END_QUOTE
-
-L'avantage de cette approche est qu'elle peut s'appliquer à n'importe quel
-langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
-sur des conventions et des outils standards.  Elle demande moins de changements
-structurels, ou en tout cas des changements qui n'affectent généralement pas la
-sémantique du code, ce qui la rend plus économique à adopter qu'un nouveau
-paradigme.
-
-En contrepartie, les conventions sont fragiles.  En utilisant une notation
-hongroise pour guider l'adaptation d'Unicode, il n'y aucune garantie
-d'exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
-caractères et s'appellent simplement ~i~.  Ou pire, peut-être qu'une variable
-préfixée ~cch~ est en réalité utilisée pour compter des octets!  L'information
-transparente facilite la localisation des similarités, mais n'offre aucune
-garantie, juste un compromis pragmatique.
-
-# Not sure that any tool or programming language could guard against "logical"
-# mistakes made by the programmer.  But that is an insight best left to the
-# Synthesis section, along with a well-chosen XKCD strip.
-
-
-** UNWRITTEN Récapitulatif
-La réflexion proposée par Java est un exemple de métaprogrammation, mais
-restreinte.  L'idée de "programmer le programme" poussée à son paroxysme nous
-amène à programmer le langage.  Les mots même du programme n'ont plus de sens
-par défaut.  C'est le glissement qu'il est si facile d'obtenir en préfixant du
-code Lisp par une apostrophe ~'~.
-
-A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
-#+BEGIN_QUOTE
-The general trend in the evolution of programming languages has been to postpone
-formal binding times towards the running of programs, but to use more and more
-sophisticated analysis and implementation techniques to bring actual times back
-to the earlier stages.
-#+END_QUOTE
-Later binding = more runtime flexibility, but also less guarantees and less
-performance.
-
-** Les mécanismes de recomposition du programme
-*** Le problème de l'expression
-Wadler, Odersky, Krishnamurthi, Oliveira (expression families) ...
-
-*** Dynamic binding
-Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
-dynamic environment in lexical binding [[cite:Que-03][Que-03]].
-
-Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
-their first-class privileges).
-
-[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
-binding adds expressiveness to a purely functional language.  They give examples
-in Perl, TeX, Common Lisp and Bash.
-
-[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
-dimensions of propagation of bindings (call stack and delayed lambdas), and
-offering a filter function to toggle the activation of a propagated binding.
-
-Some use-cases are mentioned, but none are demonstrated in the paper.  The
-proposal is not motivated enough by concrete applications that would be
-difficult to solve using existing mechanisms.  Also, the work is really focused
-on the binding semantics of Scheme, which reduce its applicability.
-
-*** Building from modules
-Findler & Flatt, Newspeak
-
-*** Building with monads
-Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
-
-Free algebras, free monads.  Basically reify data in a way that is accepted by
-the type system of the underlying language to allow unanticipated extension.
-
-[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
-/object algebras/.  Object algebras are akin to a free algebra.  Instead of
-locking down the actual objects used as expressions too early, they leave them
-open using abstract factories.  Providing a factory when evaluating the
-expression gives you either integer evaluation, or pretty-printing.
-
-Their solution is applicable to Java with generics, without significant
-syntactic overhead (less than related work).  And, they leverage the type system
-to capture erroneous composition.
-
-Aspects and monads are sometimes both viewed as mechanisms to achieve modularity
-in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]].
-
-De Meuter shows we can use a monad to memoize ~fib~, so efficiency concern is
-cleanly separated.  But a function is enough to memoize ~fib~, so the example is
-not very convincing.  Well, he does not write ~fib~ as a function, but as a
-method in a custom OO language embedded in Scheme.  Then, he is just
-intercepting the method name in the ~bind~ of the "interpreter".  Which is kinda
-like reflection.
-
-Hofer and Ostermann are more on point, noting that common monads correspond to
-concerns that can be written as aspects: error handling (Error monad), dynamic
-scoping (Reader monad), continuations (Continuation monad).  Their conclusion is
-AOP != monad: monads manipulate computation on a finer granularity that AOP
-can't do.  On the other hand, AOP is more declarative, and can come in different
-degrees of obliviousness, but monads are always explicit.
-
-I think the better angle is to just say "Monads are a mecanism touted as
-separating concerns and promoting modularity", and that's enough to consider
-them.  Maybe mention that some have related them to aspects, but there is no
-sign of equivalence between the mecanisms.
-
-*** Bytecode instrumentation
-Ansaloni.  Targets bytecode, which is low-level code.
-
-Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
-alter the behavior of a program with no access to its source code.  Inserts code
-after/before point of interest.
-
-[[cite:BRG+14][BRG+14]] instruments the bytecode interpreter of WebKit to enable information flow
-tracking.  Bytecode instrumentation is difficult, because you lose high-level
-details of the source code like "when does an if block ends".  They have to
-build a control-flow graph to know when to discard program counters used by the
-information flow analysis.  Also, instrumenting the bytecode is specific to the
-bytecode compiler of WebKit (there is no standard, unlike Java).
-
 *** Superimposition
 **** Caesar
 Caesar has everything and the kitchen sink.
@@ -4821,7 +4605,200 @@ evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM
 more focused on introducing the collateral evolution problem, with plenty of
 examples from the Linux kernel.
 
-** Travaux connexes concernant l'instrumentation
+*** READ L'information transparente
+Les mécanismes de décomposition sont insuffisants pour anticiper les changements
+d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
+nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
+techniques demande d'adopter un nouveau paradigme, et de nouveaux outils.  Que
+ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
+partie du code source et suivre la discipline prescrite afin de bénéficier de
+ses vertus.  Mais le plus grand risque, au long terme, c'est d'adopter de
+nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
+langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
+pourraient tomber en désuétude faute d'engouement.  L'/information transparente/
+[[cite:Gri-01][Gri-01]] est une alternative pragmatique qui s'applique à n'importe quel langage,
+en utilisant des outils standards.
+
+La motivation de l'auteur est de mieux appréhender des changements de logiciels
+qui dépassent la décomposition modulaire offerte par les langage de
+programmation classiques.  Une décomposition modulaire adéquate doit minimiser
+ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
+convenir à tous les axes d'évolution.
+
+Le principe de l'information transparente est d'exploiter les similarités du
+code, et en particulier les similarités /cohérentes/:
+
+#+BEGIN_QUOTE
+Code elements likely to be changed together as part of a complete, consistent
+change should look similar, and code elements unlikely to be changed together
+should look different.
+#+END_QUOTE
+
+L'auteur donne l'exemple d'un outil de planification qui visait des programmes
+écrits en C et qu'il a fallu adapter pour des programmes écrits en Ada.  L'outil
+construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
+de l'arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
+faut capturer les boucles.  En C, il faut par exemple capturer ~while~.  En Ada,
+la construction est ~loop~.  Puisque le code de l'outil est /cohérent/, les
+variables et les fonctions qui manipulent le ~while~ de C s'appellent ~WHILE~,
+ou ~WhileStmt~.  Du coup, il suffit de faire une simple recherche sur tous les
+fichiers du projet, avec ~grep~, pour trouver tous les endroits qu'il faudra
+adapter pour les programmes Ada.
+
+Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
+logiciels qui ne traitent que de l'ASCII.  En Unicode, un octet ne correspond
+pas nécessairement à un caractère, contrairement à l'ASCII. Pour compter le
+nombre de caractères d'une chaîne en ASCII, il suffit de compter les octets.
+Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
+deux cas d'utilisation: est-ce que ce ~int~ compte les caractères, ou les
+octets?  Le type de la variable ne suffit pas pour donner cette information.  En
+revanche, les programmeurs du logiciel discernent les deux cas à travers les
+noms de variable: une variable préfixée par ~cch~ contient un nombre de
+caractères, et un préfixe ~cb~ indique un nombre d'octets.  Puisque cette
+nomenclature est respectée par tout le projet, elle peut être utilisée pour
+distinguer les deux cas d'usage, et faciliter le passage à Unicode.
+
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+Une forme de notation hongroise, où le type /logique/ de la variable est indiqué
+plutôt que le type utilisé par le compilateur.
+#+END_aside
+
+Ce principe ne s'applique pas seulement au code.  Dans les commentaires de
+programmes, il est courant de de trouver les mots ~TODO~, ~FIXME~ ou ~REFACTOR~
+pour indiquer un problème que l'auteur, dans le feu de l'action, note pour une
+correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s'appliquent,
+ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
+Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
+en faisant une simple recherche de texte.  L'environnement de développement
+Eclipse affiche une liste de toutes les tâches du projet, construite en glanant
+ces mots-clés.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+TODO: add Eclipse ref
+#+END_aside
+
+#+ATTR_HTML: :style margin-top:2rem
+#+BEGIN_side-figure
+[[file:img/griswold0.svg]]
+
+Les similarités d'un projet peuvent être récupérées par des outils standard.
+Ici, ~grep~ permet de créer différentes vues du projet.
+#+END_side-figure
+
+L'information transparente permet de recréer de la localité grâce à la
+similarité des morceaux de code.  Tous les morceaux affectés par le même
+changement sont localisés par leur forme: que ce soit l'emploi de variables de
+même nom, ou ayant un préfixe commun, ou la présence d'un mot-clé, ou même une
+similarité dans l'arbre de syntaxe:
+
+#+BEGIN_QUOTE
+When the code relating to a particular change is not localized to a module, an
+information-transparent module design allows a programmer to use available
+software tools to economically identify the related code, easing the
+change. That is, the “signature” of the changing design decision can be used to
+create locality out of similarity, providing a module view of the code that
+crosscuts its explicit textual, procedural, module, and file structures.  This
+signature is one or more shared characteristics of the code to be changed, such
+as the use of particular variables, data structures, language features, or
+system resources.
+#+END_QUOTE
+
+L'avantage de cette approche est qu'elle peut s'appliquer à n'importe quel
+langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
+sur des conventions et des outils standards.  Elle demande moins de changements
+structurels, ou en tout cas des changements qui n'affectent généralement pas la
+sémantique du code, ce qui la rend plus économique à adopter qu'un nouveau
+paradigme.
+
+En contrepartie, les conventions sont fragiles.  En utilisant une notation
+hongroise pour guider l'adaptation d'Unicode, il n'y aucune garantie
+d'exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
+caractères et s'appellent simplement ~i~.  Ou pire, peut-être qu'une variable
+préfixée ~cch~ est en réalité utilisée pour compter des octets!  L'information
+transparente facilite la localisation des similarités, mais n'offre aucune
+garantie, juste un compromis pragmatique.
+
+# Not sure that any tool or programming language could guard against "logical"
+# mistakes made by the programmer.  But that is an insight best left to the
+# Synthesis section, along with a well-chosen XKCD strip.
+
+*** Dynamic binding
+Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
+dynamic environment in lexical binding [[cite:Que-03][Que-03]].
+
+Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
+their first-class privileges).
+
+[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
+binding adds expressiveness to a purely functional language.  They give examples
+in Perl, TeX, Common Lisp and Bash.
+
+[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
+dimensions of propagation of bindings (call stack and delayed lambdas), and
+offering a filter function to toggle the activation of a propagated binding.
+
+Some use-cases are mentioned, but none are demonstrated in the paper.  The
+proposal is not motivated enough by concrete applications that would be
+difficult to solve using existing mechanisms.  Also, the work is really focused
+on the binding semantics of Scheme, which reduce its applicability.
+
+*** Building from modules
+Findler & Flatt, Newspeak
+
+*** Building with monads
+Wadler, Steele, Spinoza, Swierstra, Rúnar, ...
+
+Free algebras, free monads.  Basically reify data in a way that is accepted by
+the type system of the underlying language to allow unanticipated extension.
+
+[[cite:OC-12][OC-12]] gives Java code with generics for solving the expression problem using
+/object algebras/.  Object algebras are akin to a free algebra.  Instead of
+locking down the actual objects used as expressions too early, they leave them
+open using abstract factories.  Providing a factory when evaluating the
+expression gives you either integer evaluation, or pretty-printing.
+
+Their solution is applicable to Java with generics, without significant
+syntactic overhead (less than related work).  And, they leverage the type system
+to capture erroneous composition.
+
+Aspects and monads are sometimes both viewed as mechanisms to achieve modularity
+in software [[cite:DBB+03][DBB+03]] [[cite:HO-07][HO-07]] [[cite:Meu-97][Meu-97]].
+
+De Meuter shows we can use a monad to memoize ~fib~, so efficiency concern is
+cleanly separated.  But a function is enough to memoize ~fib~, so the example is
+not very convincing.  Well, he does not write ~fib~ as a function, but as a
+method in a custom OO language embedded in Scheme.  Then, he is just
+intercepting the method name in the ~bind~ of the "interpreter".  Which is kinda
+like reflection.
+
+Hofer and Ostermann are more on point, noting that common monads correspond to
+concerns that can be written as aspects: error handling (Error monad), dynamic
+scoping (Reader monad), continuations (Continuation monad).  Their conclusion is
+AOP != monad: monads manipulate computation on a finer granularity that AOP
+can't do.  On the other hand, AOP is more declarative, and can come in different
+degrees of obliviousness, but monads are always explicit.
+
+I think the better angle is to just say "Monads are a mecanism touted as
+separating concerns and promoting modularity", and that's enough to consider
+them.  Maybe mention that some have related them to aspects, but there is no
+sign of equivalence between the mecanisms.
+
+*** Bytecode instrumentation
+Ansaloni.  Targets bytecode, which is low-level code.
+
+Jinliner [[cite:TSN+02][TSN+02]] can insert code into the bytecode of a Java program.  Allows to
+alter the behavior of a program with no access to its source code.  Inserts code
+after/before point of interest.
+
+[[cite:BRG+14][BRG+14]] instruments the bytecode interpreter of WebKit to enable information flow
+tracking.  Bytecode instrumentation is difficult, because you lose high-level
+details of the source code like "when does an if block ends".  They have to
+build a control-flow graph to know when to discard program counters used by the
+information flow analysis.  Also, instrumenting the bytecode is specific to the
+bytecode compiler of WebKit (there is no standard, unlike Java).
+
 *** Virtual values and proxies
 [[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
 proxy which has a handful of traps that are useful to override: when the value
@@ -4857,18 +4834,6 @@ Downsides include tooling, development time, unfamiliarity and competition with
 general-purposes languages.
 
 Monads can be seen as DSLs (but this is an insight better saved for later).
-
-*** Scripting languages
-Tcl 1988, Python 1991, Lua 1993, VBA 1993, JS 1995.  Scripting languages are an
-early ‘90s phenomenon.  Dealing with low-level languages was deemed too heavy,
-but writing your whole system in a high-level language was too costly.  The
-compromise was to write the kernel in C, and the rest in a scripting language.
-
-With sufficiently efficient high-level languages, the kernel+configuration
-approach might be unneeded.
-
-JavaScript being a scripting language for the browser, as well as an object used
-in the Core, it might be adequate to have a dedicated background section to it.
 
 *** Emacs
 See Emacs Manual, [[cite:Sta-81][Sta-81]], [[cite:Hal-88][Hal-88]].  Emacs is an example of an extensible system.
@@ -4940,84 +4905,22 @@ by the browser.
 Convention.  Write manifest, and define the agreed-upon functions (install,
 startup).
 
-*** Lua
-An extensible extension language [[cite:IFF-96][IFF-96]].
+** UNWRITTEN Récapitulatif
+La réflexion proposée par Java est un exemple de métaprogrammation, mais
+restreinte.  L'idée de "programmer le programme" poussée à son paroxysme nous
+amène à programmer le langage.  Les mots même du programme n'ont plus de sens
+par défaut.  C'est le glissement qu'il est si facile d'obtenir en préfixant du
+code Lisp par une apostrophe ~'~.
 
-Extensible systems comprise of a kernel and a configuration.  The kernel is the
-core of the system, the parts that cannot change, and is usually compiled for
-speed and efficiency.  The configuration part is written in an interpreted,
-flexible language, which can interact with the kernel.
-
-Another take, in the conclusion, is that the kernel is a virtual machine for
-programs written in the configuration language.
-
-Note that if performance can suffer, writing the whole system as a configuration
-gives even greater flexibility.
-
-Configuration languages can be simple: .ini files, X11 resource files, but they
-can have more features (scripting languages).  Also called /extension
-languages/.
-
-Five requirements for extension languages:
-1. good data structures (key-value maps for configuration)
-2. simple syntax for amateur programmers
-3. lightweight
-4. not static type checking or exception handling, as only small programs are
-   written in them
-5. should be extensible
-
-Requirement 4 is actually an absence of requirement.  Unfortunately, people
-/will/ write large systems in it, especially if the language is easy to pick up.
-Arguably, the cost of such features may conflict with requirement 3.  Otherwise,
-this list looks more like a checklist for Lua.
-
-On a related note, [[cite:Bla-82][Bla-82]] devotes a whole thesis against exceptions.
-
-Extension programs have no =main=.
-
-Associative arrays are a powerful data structure which make plenty of algorithms
-trivial (free hashtables), and more efficient to implement than lists.
-
-Amusingly, the associative array syntax was inspired by BibTeX.
-
-Associative arrays + first-class functions = classes.
-
-No error handling, but errors can be raised.  To catch them, we can define
-/fallback/ functions.
-
-Setting a fallback on the "index" event allows to define a custom delegation
-mechanism between tables.
-
-Compared to Lisp, Lua is portable and has easier syntax.  Tcl is slow and has
-strange syntax.  Python is not embeddable, and is already too complex (modules
-and exception handling).
-
-At the time of writing, Lua is 20 times slower than C (this factor is said to be
-"typical for interpreted languages", and cites "Java, The Language" for this
-assertion).
-
-The latest numbers on the [[http://benchmarksgame.alioth.debian.org][benchmarks game]] show Lua being 5 to 79 times slower,
-while consuming more memory.
-
-In the conclusion, they allude at extending web browsers with Lua.  A follow-up
-seems to be [[cite:HBI-98][HBI-98]], which proposes Lua as a target for CGI on web servers.
-
-[[cite:IFF-07][IFF-07]] goes over the history of Lua, up to version 5.1 released in 2006.
-
-One tenet of Lua is "Mechanisms, not policy": provide language mechanisms and
-let programmers code the way they want to with them.  An example is message
-dispatch: rather than using a class construct, Lua programmers can use fallbacks.
-
-Though they regret not stating a policy when it comes to modules, since everyone
-is doing its thing, without agreeing on a common protocol.
-
-****  Mechanisms for extension
-The kernel+configuration, as seen in EMACS.  Mechanisms over policy shares our
-philosophy and provides programmers with tools to solve their problems in their
-own way.
-
-To extend Lua, bindings from C can be added, and custom data structure as well.
-Changing the interpreter does not seem possible, even from C.
+A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
+#+BEGIN_QUOTE
+The general trend in the evolution of programming languages has been to postpone
+formal binding times towards the running of programs, but to use more and more
+sophisticated analysis and implementation techniques to bring actual times back
+to the earlier stages.
+#+END_QUOTE
+Later binding = more runtime flexibility, but also less guarantees and less
+performance.
 
 * UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible
 :PROPERTIES:
