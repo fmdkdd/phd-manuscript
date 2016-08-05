@@ -2,6 +2,9 @@
 ;; consistency with manual export from Emacs.
 (package-initialize)
 
+;; Quell warning from Org export
+(setq python-indent-guess-indent-offset nil)
+
 (with-eval-after-load 'org
   ;; Tell Org how to export 'cite' links
   ;; XXX: This is actually overridden by ox-bibtex.
