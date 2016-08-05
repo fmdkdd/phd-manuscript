@@ -3909,152 +3909,7 @@ compréhensible.  Tous ces mécanismes présentent donc des avantages et des
 inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
-** Tisser les facettes d'un artefact d'innombrables dimensions
-#+CAPTION: Tapis turc "Holbein", fin du XVe siècle.
-[[file:img/rug.jpg]]
-
-La programmation par aspects fait apparaître la distinction entre deux facettes
-de la fonctionnalité d'un programme: les composants, essentiels, et les aspects,
-oubliables.  Puisque ces unités existent dans la phase de conception, la
-programmation par aspects permet de les exprimer directement dans le code.  Le
-tisseur d'aspects regroupe ces unités pour produire un programme exécutable.
-
-Les méthodes de cette section réalisent également une distinction de même ordre:
-le code source n'est plus organisé seulement en fonctions, classes, modules et
-fichiers, mais selon de multiples axes transversaux.  Toutes ces méthodes ont en
-commun de considérer le programme comme un objet aux nombreuses dimensions, qui
-ne sont pas réconciliables sur un seul axe de décomposition.  Chaque dimension
-du programme est spécifiée séparément, et l'exécutable final est tissé à partir
-des ces fils différents.
-
-#+ATTR_HTML: :style margin-top:-10rem
-#+BEGIN_aside
-Cette définition convient tout aussi bien à la programmation par aspects, qui,
-si elle ne faisait pas partie de la section précédente, trouverait sa place dans
-celle-ci.  Les thèmes de ce chapitre sont un autre exemple d'objet aux
-nombreuses dimensions, irréconciliables sous une seule décomposition.
-#+END_aside
-
-** READ L'information transparente
-Les mécanismes de décomposition sont insuffisants pour anticiper les changements
-d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
-nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
-techniques demande d'adopter un nouveau paradigme, et de nouveaux outils.  Que
-ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
-partie du code source et suivre la discipline prescrite afin de bénéficier de
-ses vertus.  Mais le plus grand risque, au long terme, c'est d'adopter de
-nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
-langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
-pourraient tomber en désuétude faute d'engouement.  L'/information transparente/
-[[cite:Gri-01][Gri-01]] est une alternative pragmatique qui s'applique à n'importe quel langage,
-en utilisant des outils standards.
-
-La motivation de l'auteur est de mieux appréhender des changements de logiciels
-qui dépassent la décomposition modulaire offerte par les langage de
-programmation classiques.  Une décomposition modulaire adéquate doit minimiser
-ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
-convenir à tous les axes d'évolution.
-
-Le principe de l'information transparente est d'exploiter les similarités du
-code, et en particulier les similarités /cohérentes/:
-
-#+BEGIN_QUOTE
-Code elements likely to be changed together as part of a complete, consistent
-change should look similar, and code elements unlikely to be changed together
-should look different.
-#+END_QUOTE
-
-L'auteur donne l'exemple d'un outil de planification qui visait des programmes
-écrits en C et qu'il a fallu adapter pour des programmes écrits en Ada.  L'outil
-construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
-de l'arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
-faut capturer les boucles.  En C, il faut par exemple capturer ~while~.  En Ada,
-la construction est ~loop~.  Puisque le code de l'outil est /cohérent/, les
-variables et les fonctions qui manipulent le ~while~ de C s'appellent ~WHILE~,
-ou ~WhileStmt~.  Du coup, il suffit de faire une simple recherche sur tous les
-fichiers du projet, avec ~grep~, pour trouver tous les endroits qu'il faudra
-adapter pour les programmes Ada.
-
-Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
-logiciels qui ne traitent que de l'ASCII.  En Unicode, un octet ne correspond
-pas nécessairement à un caractère, contrairement à l'ASCII. Pour compter le
-nombre de caractères d'une chaîne en ASCII, il suffit de compter les octets.
-Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
-deux cas d'utilisation: est-ce que ce ~int~ compte les caractères, ou les
-octets?  Le type de la variable ne suffit pas pour donner cette information.  En
-revanche, les programmeurs du logiciel discernent les deux cas à travers les
-noms de variable: une variable préfixée par ~cch~ contient un nombre de
-caractères, et un préfixe ~cb~ indique un nombre d'octets.  Puisque cette
-nomenclature est respectée par tout le projet, elle peut être utilisée pour
-distinguer les deux cas d'usage, et faciliter le passage à Unicode.
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-Une forme de notation hongroise, où le type /logique/ de la variable est indiqué
-plutôt que le type utilisé par le compilateur.
-#+END_aside
-
-Ce principe ne s'applique pas seulement au code.  Dans les commentaires de
-programmes, il est courant de de trouver les mots ~TODO~, ~FIXME~ ou ~REFACTOR~
-pour indiquer un problème que l'auteur, dans le feu de l'action, note pour une
-correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s'appliquent,
-ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
-Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
-en faisant une simple recherche de texte.  L'environnement de développement
-Eclipse affiche une liste de toutes les tâches du projet, construite en glanant
-ces mots-clés.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_aside
-TODO: add Eclipse ref
-#+END_aside
-
-#+ATTR_HTML: :style margin-top:2rem
-#+BEGIN_side-figure
-[[file:img/griswold0.svg]]
-
-Les similarités d'un projet peuvent être récupérées par des outils standard.
-Ici, ~grep~ permet de créer différentes vues du projet.
-#+END_side-figure
-
-L'information transparente permet de recréer de la localité grâce à la
-similarité des morceaux de code.  Tous les morceaux affectés par le même
-changement sont localisés par leur forme: que ce soit l'emploi de variables de
-même nom, ou ayant un préfixe commun, ou la présence d'un mot-clé, ou même une
-similarité dans l'arbre de syntaxe:
-
-#+BEGIN_QUOTE
-When the code relating to a particular change is not localized to a module, an
-information-transparent module design allows a programmer to use available
-software tools to economically identify the related code, easing the
-change. That is, the “signature” of the changing design decision can be used to
-create locality out of similarity, providing a module view of the code that
-crosscuts its explicit textual, procedural, module, and file structures.  This
-signature is one or more shared characteristics of the code to be changed, such
-as the use of particular variables, data structures, language features, or
-system resources.
-#+END_QUOTE
-
-L'avantage de cette approche est qu'elle peut s'appliquer à n'importe quel
-langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
-sur des conventions et des outils standards.  Elle demande moins de changements
-structurels, ou en tout cas des changements qui n'affectent généralement pas la
-sémantique du code, ce qui la rend plus économique à adopter qu'un nouveau
-paradigme.
-
-En contrepartie, les conventions sont fragiles.  En utilisant une notation
-hongroise pour guider l'adaptation d'Unicode, il n'y aucune garantie
-d'exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
-caractères et s'appellent simplement ~i~.  Ou pire, peut-être qu'une variable
-préfixée ~cch~ est en réalité utilisée pour compter des octets!  L'information
-transparente facilite la localisation des similarités, mais n'offre aucune
-garantie, juste un compromis pragmatique.
-
-# Not sure that any tool or programming language could guard against "logical"
-# mistakes made by the programmer.  But that is an insight best left to the
-# Synthesis section, along with a well-chosen XKCD strip.
-
-** UNWRITTEN Le problème de l'expression
+** INPROGRESS Le problème de l'expression
 :PROPERTIES:
 :CUSTOM_ID: expr
 :END:
@@ -4453,6 +4308,125 @@ Hyper/J est une implémentation de la séplution pour Java.  Un programmeur écr
 des hypercoupes, et précise leur composition avant de les passer au compilateur,
 qui génère du bytecode Java.  Le mécanisme de composition est une instance de
 /superimposition/.
+
+** READ L'information transparente
+Les mécanismes de décomposition sont insuffisants pour anticiper les changements
+d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
+nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
+techniques demande d'adopter un nouveau paradigme, et de nouveaux outils.  Que
+ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
+partie du code source et suivre la discipline prescrite afin de bénéficier de
+ses vertus.  Mais le plus grand risque, au long terme, c'est d'adopter de
+nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
+langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
+pourraient tomber en désuétude faute d'engouement.  L'/information transparente/
+[[cite:Gri-01][Gri-01]] est une alternative pragmatique qui s'applique à n'importe quel langage,
+en utilisant des outils standards.
+
+La motivation de l'auteur est de mieux appréhender des changements de logiciels
+qui dépassent la décomposition modulaire offerte par les langage de
+programmation classiques.  Une décomposition modulaire adéquate doit minimiser
+ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
+convenir à tous les axes d'évolution.
+
+Le principe de l'information transparente est d'exploiter les similarités du
+code, et en particulier les similarités /cohérentes/:
+
+#+BEGIN_QUOTE
+Code elements likely to be changed together as part of a complete, consistent
+change should look similar, and code elements unlikely to be changed together
+should look different.
+#+END_QUOTE
+
+L'auteur donne l'exemple d'un outil de planification qui visait des programmes
+écrits en C et qu'il a fallu adapter pour des programmes écrits en Ada.  L'outil
+construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
+de l'arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
+faut capturer les boucles.  En C, il faut par exemple capturer ~while~.  En Ada,
+la construction est ~loop~.  Puisque le code de l'outil est /cohérent/, les
+variables et les fonctions qui manipulent le ~while~ de C s'appellent ~WHILE~,
+ou ~WhileStmt~.  Du coup, il suffit de faire une simple recherche sur tous les
+fichiers du projet, avec ~grep~, pour trouver tous les endroits qu'il faudra
+adapter pour les programmes Ada.
+
+Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
+logiciels qui ne traitent que de l'ASCII.  En Unicode, un octet ne correspond
+pas nécessairement à un caractère, contrairement à l'ASCII. Pour compter le
+nombre de caractères d'une chaîne en ASCII, il suffit de compter les octets.
+Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
+deux cas d'utilisation: est-ce que ce ~int~ compte les caractères, ou les
+octets?  Le type de la variable ne suffit pas pour donner cette information.  En
+revanche, les programmeurs du logiciel discernent les deux cas à travers les
+noms de variable: une variable préfixée par ~cch~ contient un nombre de
+caractères, et un préfixe ~cb~ indique un nombre d'octets.  Puisque cette
+nomenclature est respectée par tout le projet, elle peut être utilisée pour
+distinguer les deux cas d'usage, et faciliter le passage à Unicode.
+
+#+ATTR_HTML: :style margin-top:-6rem
+#+BEGIN_aside
+Une forme de notation hongroise, où le type /logique/ de la variable est indiqué
+plutôt que le type utilisé par le compilateur.
+#+END_aside
+
+Ce principe ne s'applique pas seulement au code.  Dans les commentaires de
+programmes, il est courant de de trouver les mots ~TODO~, ~FIXME~ ou ~REFACTOR~
+pour indiquer un problème que l'auteur, dans le feu de l'action, note pour une
+correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s'appliquent,
+ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
+Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
+en faisant une simple recherche de texte.  L'environnement de développement
+Eclipse affiche une liste de toutes les tâches du projet, construite en glanant
+ces mots-clés.
+
+#+ATTR_HTML: :style margin-top:-4rem
+#+BEGIN_aside
+TODO: add Eclipse ref
+#+END_aside
+
+#+ATTR_HTML: :style margin-top:2rem
+#+BEGIN_side-figure
+[[file:img/griswold0.svg]]
+
+Les similarités d'un projet peuvent être récupérées par des outils standard.
+Ici, ~grep~ permet de créer différentes vues du projet.
+#+END_side-figure
+
+L'information transparente permet de recréer de la localité grâce à la
+similarité des morceaux de code.  Tous les morceaux affectés par le même
+changement sont localisés par leur forme: que ce soit l'emploi de variables de
+même nom, ou ayant un préfixe commun, ou la présence d'un mot-clé, ou même une
+similarité dans l'arbre de syntaxe:
+
+#+BEGIN_QUOTE
+When the code relating to a particular change is not localized to a module, an
+information-transparent module design allows a programmer to use available
+software tools to economically identify the related code, easing the
+change. That is, the “signature” of the changing design decision can be used to
+create locality out of similarity, providing a module view of the code that
+crosscuts its explicit textual, procedural, module, and file structures.  This
+signature is one or more shared characteristics of the code to be changed, such
+as the use of particular variables, data structures, language features, or
+system resources.
+#+END_QUOTE
+
+L'avantage de cette approche est qu'elle peut s'appliquer à n'importe quel
+langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
+sur des conventions et des outils standards.  Elle demande moins de changements
+structurels, ou en tout cas des changements qui n'affectent généralement pas la
+sémantique du code, ce qui la rend plus économique à adopter qu'un nouveau
+paradigme.
+
+En contrepartie, les conventions sont fragiles.  En utilisant une notation
+hongroise pour guider l'adaptation d'Unicode, il n'y aucune garantie
+d'exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
+caractères et s'appellent simplement ~i~.  Ou pire, peut-être qu'une variable
+préfixée ~cch~ est en réalité utilisée pour compter des octets!  L'information
+transparente facilite la localisation des similarités, mais n'offre aucune
+garantie, juste un compromis pragmatique.
+
+# Not sure that any tool or programming language could guard against "logical"
+# mistakes made by the programmer.  But that is an insight best left to the
+# Synthesis section, along with a well-chosen XKCD strip.
 
 
 ** UNWRITTEN Récapitulatif
