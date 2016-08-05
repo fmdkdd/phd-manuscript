@@ -3364,10 +3364,13 @@ utilisée, mais d'autres solutions sont envisageables suivant le système:
 l'inversion de contrôle, ou le patron de conception Stratégie seraient
 envisageables.  Un autre bon candidat est la programmation par aspects.
 
-** INPROGRESS Séparer les préoccupations: la programmation par aspects
+** READ Séparer les préoccupations: la programmation par aspects
 :PROPERTIES:
 :CUSTOM_ID: aop
 :END:
+#+CAPTION: Tapis turc "Holbein", fin du XVe siècle.
+[[file:img/rug.jpg]]
+
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
 d'implémentation d'un système à implémentation ouverte [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].
@@ -3831,106 +3834,6 @@ Le programme peut être compilé avec ou sans les aspects, et engendrer deux
 exécutables différents.
 #+END_side-figure
 
-*** Le mécanisme essentiel pour la programmation par aspects
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-Être oubliable est une propriété qui peut être considérée comme caractéristique
-de la programmation par aspects [[cite:FF-04][FF-04]].  Filman et Friedman cherchent à
-identifier les systèmes qui suivent la programmation par aspects.  Il semble
-clair que lorsqu'on utilise AspectJ, on fait de la programmation par aspects.
-Mais si on construit un système similaire à celui des filtres d'images, avec un
-langage dédié pour les filtres, est-ce un système d'aspects?  À l'inverse, si on
-rajoute à un langage une construction qui regroupent des méthodes, a-t-on un
-langage de programmation par aspects?
-
-Dans la publication d'origine [[cite:KLM+97][KLM+97]], le seul critère de définition d'un système
-par aspects est qu'il permet d'exprimer séparément les composants des aspects,
-des unités issues de la phase de conception du système.  Mais Filman et Friedman
-ne s'intéressent pas tant à la /méthodologie/ de la programmation par aspects,
-qu'aux /mécanismes/ qui la supportent:
-
-#+BEGIN_QUOTE
-Here we address the structural essence of AOP, not its application—somewhat
-similar to the difference between defining object-oriented programming systems
-in terms of polymorphic methods and inheritance versus waxing euphoric about
-objects as the appropriate way to model the world.
-
-[...]
-
-Understanding something involves both understanding how it works (mechanism) and
-what it's good for (methodology).  In computer science, we're rarely shy about
-grandiose methodological claims (see, for example, the literature of AI or the
-Internet).  But mechanism is important – appreciating mechanisms leads to
-improved mechanisms, recognition of commonalities and isomorphisms, and plain
-old clarity about what's actually happening.
-
-— [[cite:FF-04][FF-04]]
-#+END_QUOTE
-
-D'après eux, pour faire de la programmation par aspect il suffit de pouvoir
-exprimer des déclarations de la forme:
-
-#+BEGIN_QUOTE
-Dans les programmes P, quand la condition C est vraie, réaliser l'action A.
-#+END_QUOTE
-
-Autrement dit, il suffit de disposer d'un ~COMEFROM~ [[cite:Cla-73][Cla-73]].  Le ~COMEFROM~ est
-le dual du ~GOTO~: un ~GOTO 10~ transfère le contrôle à la ligne 10, alors qu'un
-~COMEFROM 10~ /capture/ le contrôle après l'exécution de la ligne 10.
-
-#+ATTR_HTML: :style margin-top:-3rem
-#+BEGIN_side-figure
-[[file:img/aop5.svg]]
-
-~COMEFROM~ est le dual de ~GOTO~.
-#+END_side-figure
-
-#+BEGIN_EXAMPLE fortran
-10 J=1
-11 COME FROM 20
-12 WRITE (6,40) J STOP
-13 COME FROM 10
-20 J=J+2
-40 FORMAT (14)
-#+END_EXAMPLE
-
-Dans cet exemple, les lignes exécutées sont, dans l'ordre: 10, 13, 20, 11, 12
-(~STOP~ termine le programme).  On voit tout de suite qu'un ~COMEFROM~ rend le
-code encore plus difficile à suivre qu'un ~GOTO~.  C'est bien l'intention de son
-auteur, qui voit le débat autour du ~GOTO~ avec humour:
-
-#+BEGIN_QUOTE
-Nearly six years after publication of Dijkstra's now-famous letter, the subject
-of GOTO-less programming still stirs considerable controversy.
-
-The author has developed a new language construct on which, he believes, both
-the pro- and the anti-GOTO factions can agree.
-#+END_QUOTE
-
-Le ~COMEFROM~ est donc une plaisanterie élaborée, qui n'a a priori rien à voir
-avec la programmation par aspects.  Mais on s'intéresse ici aux mécanismes, et
-le mécanisme du ~COMEFROM~ — la possibilité de capturer le contrôle — est
-l'essence des jonctions et des coupes proposées par AspectJ.
-
-Bien sûr, le ~COMEFROM~ décrit par Clark ne permet de venir que d'une autre
-ligne du programme, alors qu'AspectJ permet de capturer le contrôle lors
-d'appels de méthodes, la lecture ou l'affectation d'une variable.  Mais en
-réalité, le ~COMEFROM~ de Clark est adapté à la granularité offerte par le
-langage: la ligne.  Dans AspectJ, l'unité de composition est la méthode, et la
-classe.  Un ~COMEFROM~ pour Java pourrait ressembler à ce qu'AspectJ offre à
-travers le langage des coupes de jonctions.
-
-En ne prenant en compte que le mécanisme, on peut déterminer si d'autres
-systèmes ou langages, qui ne sont pas présentés comme des systèmes d'aspects,
-permettent tout de même de faire de la programmation par aspects.  En
-particulier, les systèmes à événements peuvent être vus comme équivalents à un
-~COMEFROM~; si les composants ne communiquent qu'à travers des événements, on
-peut écrire des aspects qui capturent ces événements, sans impacter le reste du
-système (les aspects sont oubliables): il s'agit simplement de souscrire à ces
-événements.  Un système à événements fournit donc un mécanisme qui peut être
-utilisé pour faire de la programmation par aspects.
-
 *** Les limites de la programmation par aspects
 :PROPERTIES:
 :UNNUMBERED: t
@@ -3948,20 +3851,18 @@ comportement d'un module seulement en regardant son code, il faut prendre en
 compte tous les aspects qui peuvent intervenir pendant l'exécution du code du
 module.  La compréhension du programme devient nécessairement globale: il faut
 connaître tous les aspects qui peuvent s'y appliquer, et en prenant en compte
-les aspects qui pourraient être activés dynamiquement.
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-[[cite:KM-05][KM-05]] ?
-#+END_aside
+les aspects qui pourraient être activés dynamiquement.  C'est un problème
+considéré par Kiczales et Mezini comme inhérent à l'approche de la programmation
+par aspects [[cite:KM-05][KM-05]].
 
 Une façon d'atténuer ce problème est de faire apparaître, dans l'environnement
 de développement du programmeur, les endroits du code où des aspects pourraient
-s'exécuter; l'article qui introduit AspectJ [[cite:KHH+01][KHH+01]] montre une telle
-fonctionnalité dans Emacs.  Les aspects deviennent explicites, mais l'intégrité
-du module demeure compromise.  Le système nécessite toujours une analyse globale
-pour être compris, et les aspects traversent encore la barrière du module, ce
-qui empêche de développer le module indépendamment des aspects.
+s'exécuter.  L'article qui introduit AspectJ [[cite:KHH+01][KHH+01]] montre une telle
+fonctionnalité dans l'éditeur de texte Emacs.  Les aspects deviennent
+explicites, mais l'intégrité du module demeure compromise.  Le système nécessite
+toujours une analyse globale pour être compris, et les aspects traversent encore
+la barrière du module, ce qui empêche de développer le module indépendamment des
+aspects.
 
 Les aspects capturent les points d'exécution du module, ce qui revient à dire
 que tout module expose une interface /implicite/ qui est utilisée par les
@@ -3974,7 +3875,10 @@ système, à adopter si le besoin de modifier plusieurs modules en un seul lieu
 (dans un aspect) surpasse le besoin de comprendre et développer les modules
 indépendamment.
 
------
+*** Conclusions
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 
 La contribution principale de la programmation par aspects est de distinguer
 deux types de programmes qui cohabitent dans un même système: les composants, en
@@ -3994,6 +3898,7 @@ Il ne faut donc pas mélanger la méthodologie—le but philosophique de la
 programmation par aspects—et les (multiples) mécanismes qui permettent
 d'atteindre ce but.  En particulier, on peut faire de la programmation par
 aspects sans AspectJ, sans jonctions, sans coupes, et sans méthodes d'aspects.
+C'est le cas du langage des filtres d'images.
 
 Enfin, la programmation par aspects n'est pas une balle en argent.  Les
 jonctions et les coupes sont oubliables par les composants, mais sacrifient le
