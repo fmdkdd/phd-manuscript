@@ -3134,9 +3134,9 @@ leurs signatures complètes.  On voit que l'API de réflexion réifie les objets
 la programmation par objets: on a une classe ~Field~ pour les attributs, une
 classe ~Method~, une classe ~Object~, et une classe ~Class~.
 
-#+ATTR_HTML: :style margin-top:6rem
+#+ATTR_HTML: :style margin-top:7rem
 #+BEGIN_aside
-/Remote Procedure Call/
+/RPC: Remote Procedure Call/
 #+END_aside
 
 On peut non seulement inspecter ces objets, mais aussi en synthétiser des
@@ -3149,9 +3149,9 @@ récupérer ou changer la valeur d'un attribut dynamiquement, ce qui est utile
 pour écrire des objets qui font la passerelle avec des bases de données
 relationnelles (/ORM/).
 
-#+ATTR_HTML: :style margin-top:-3.5rem
+#+ATTR_HTML: :style margin-top:-2rem
 #+BEGIN_aside
-/Object-Relational Mapping/
+/ORM: Object-Relational Mapping/
 #+END_aside
 
 #+BEGIN_aside
@@ -3228,19 +3228,23 @@ unique du code à modifier si l'on souhaite étendre le comportement de la class
 On pourrait même de cette façon définir un mécanisme de liaison dynamique
 personnalisé pour cette classe.
 
-Le protocole métaobjet de CLOS (CommonLisp Object System) [[cite:KRB-91][KRB-91]] va encore plus
-loin, en exposant au programmeur le protocole qui implémente les mécanismes de
-programmation par objets dans ce langage.  Pour réconcilier les différentes
-implémentations de programmation par objets qui existait en CommonLisp (Flavors,
-LOOPS), CLOS laisse au programmeur la possibilité de redéfinir l'héritage entre
-classes, la liaison dynamique, ou la visibilité des membres.  En Python ou en
-Java, il y une structure de classe imposée, et un mécanisme de liaison par
-défaut qu'il n'est pas toujours possible de redéfinir.  En CLOS, ce qui est
-fourni est avant tout le protocole métaobjet; puis une implémentation par défaut
-de ce protocole, mais qui est en tout point redéfinissable par le programmeur.
-Autrement dit, le programmeur ne programme plus seulement des applications, mais
-il programme en partie le langage.  Il programme le /programme/ lui-même, d'où
-le terme de métaprogrammation.
+#+BEGIN_aside
+/CLOS: CommonLisp Object System/
+#+END_aside
+
+Le protocole métaobjet de CLOS [[cite:KRB-91][KRB-91]] va encore plus loin, en exposant au
+programmeur le protocole qui implémente les mécanismes de programmation par
+objets dans ce langage.  Pour réconcilier les différentes implémentations de
+programmation par objets qui existait en CommonLisp (Flavors, LOOPS), CLOS
+laisse au programmeur la possibilité de redéfinir l'héritage entre classes, la
+liaison dynamique, ou la visibilité des membres.  En Python ou en Java, il y une
+structure de classe imposée, et un mécanisme de liaison par défaut qu'il n'est
+pas toujours possible de redéfinir.  En CLOS, ce qui est fourni est avant tout
+le protocole métaobjet; puis une implémentation par défaut de ce protocole, mais
+qui est en tout point redéfinissable par le programmeur.  Autrement dit, le
+programmeur ne programme plus seulement des applications, mais il programme en
+partie le langage.  Il programme le /programme/ lui-même, d'où le terme de
+métaprogrammation.
 
 *** READ L'implémentation ouverte
 :PROPERTIES:
@@ -3494,6 +3498,10 @@ comme la performance, ou la gestion d'erreurs.  Le but de la programmation par
 aspects est de pouvoir exprimer clairement ces deux catégories de
 fonctionnalités:
 
+#+BEGIN_aside
+/AOP: Aspect-Oriented Programming/
+#+END_aside
+
 #+BEGIN_QUOTE
 The goal of AOP is to support the programmer in cleanly separating components
 and aspects from each other, by providing mechanisms that make it possible to
@@ -3502,11 +3510,6 @@ abstract and compose them to produce the overall system.  This is in contrast to
 from each other by providing mechanisms that make it possible to abstract and
 compose them to produce the overall system.
 #+END_QUOTE
-
-#+ATTR_HTML: :style margin-top:-11rem
-#+BEGIN_aside
-/AOP := Aspect-Oriented Programming/
-#+END_aside
 
 *** Exprimer les aspects par un langage dédié
 :PROPERTIES:
@@ -5873,6 +5876,11 @@ var Narcissus = (function(){                        (ref:ex0-iife-start)
   }                                                 (ref:ex0-return-end)
 }())                                                (ref:ex0-iife-end)
 #+END_SRC
+
+#+ATTR_HTML: :style margin-top:12rem
+#+BEGIN_aside
+/API: Application Programmer Interface/
+#+END_aside
 
 Le but de ce motif est de créer un environnement pour toutes les définitions du
 module.  En JavaScript, une définition faite à la racine d'un fichier (une
