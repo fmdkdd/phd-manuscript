@@ -1462,7 +1462,7 @@ et [[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
 #+CAPTION: correspond à une ligne du /diff/.  La couleur indique la catégorie
 #+CAPTION: du changement de la ligne, et les lignes grises ne sont pas affectées
 #+CAPTION: par l'instrumentation.  [[file:img/narcissus-diff-legend.svg]]
-#+CAPTION: {{{br}}} Ces catégories sont explicitées en [[#narcissus-categories]].
+#+CAPTION: Ces catégories sont explicitées en [[#narcissus-categories]].
 [[file:img/narcissus-diff.svg]]
 
 On constate immédiatement que les changements effectués par l'instrumentation
@@ -4031,12 +4031,12 @@ Mais il faut aussi traiter cette nouvelle variante dans les opérations
 existantes:
 
 #+BEGIN_side-figure
-#+CAPTION: Dans une décomposition fonctionnelle classique, les opérations
-#+CAPTION: implémentent du code pour chaque variante du langage
-#+CAPTION: (sens des flêches).  Ajouter une opération (à gauche) n'affecte
-#+CAPTION: pas les unités existantes, mais ajouter un terme
-#+CAPTION: (à droite) nécessite de modifier toutes les opérations.
 [[file:img/expr-pb-1.svg]]
+
+Dans une décomposition fonctionnelle classique, les opérations implémentent du
+code pour chaque variante du langage (sens des flêches).  Ajouter une opération
+(à gauche) n'affecte pas les unités existantes, mais ajouter un terme (à droite)
+nécessite de modifier toutes les opérations.
 #+END_side-figure
 
 #+BEGIN_SRC haskell
@@ -4155,10 +4155,11 @@ class Mult extends Term {
 #+END_SRC
 
 #+BEGIN_side-figure
-#+CAPTION: Dans cette décomposition, les termes contiennent le code des
-#+CAPTION: opérations.  Ajouter un terme n'affecte pas les unités existantes,
-#+CAPTION: mais ajouter une opération nécessite de modifier tous les termes.
 [[file:img/expr-pb-0.svg]]
+
+Dans cette décomposition, les termes contiennent le code des opérations.
+Ajouter un terme n'affecte pas les unités existantes, mais ajouter une opération
+nécessite de modifier tous les termes.
 #+END_side-figure
 
 Cela implique de rajouter l'opération sur ~Term~, puis de la définir pour tous
@@ -4184,12 +4185,12 @@ OOP: visitor (Krishnamurthi), HyperJ? Zenger Odersky, Oliveira
 
 #+ATTR_HTML: :style margin-top:4rem
 #+BEGIN_side-figure
-#+CAPTION: La décomposition est un choix d'implémentation; elle n'est pas
-#+CAPTION: imposée par le langage.  Ajouter une opération ou ajouter un terme
-#+CAPTION: revient à définir une arête dans le graphe ({{{color(c0)}}}).
-#+CAPTION: L'implémentation détermine juste comment cette arête est définie dans
-#+CAPTION: le programme.
 [[file:img/expr-pb-2.svg]]
+
+La décomposition est un choix d'implémentation; elle n'est pas imposée par le
+langage.  Ajouter une opération ou ajouter un terme revient à définir une arête
+dans le graphe ({{{color(c0)}}}).  L'implémentation détermine juste comment
+cette arête est définie dans le programme.
 #+END_side-figure
 
 Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
@@ -5048,8 +5049,9 @@ e1.eval() //: 3
 #+END_SRC
 
 #+BEGIN_side-figure
-#+CAPTION: Représentation des objets en mémoire après la création de ~e1~.
 [[file:img/foal-1.svg]]
+
+Représentation des objets en mémoire après la création de ~e1~.
 #+END_side-figure
 
 L'objet ~num~ comporte deux fonctions: ~new~, le constructeur qui capture la
@@ -5068,8 +5070,9 @@ Suivant notre implémentation par objets, il suffit d'ajouter un objet
 ~plus~ qui comporte un constructeur et une fonction d'évaluation:
 
 #+BEGIN_side-figure
-#+CAPTION: Après les ajouts ({{{color(c1)}}}) de ~plus~ et ~e2~.
 [[file:img/foal-2.svg]]
+
+Après les ajouts ({{{color(c1)}}}) de ~plus~ et ~e2~.
 #+END_side-figure
 
 #+BEGIN_SRC js
@@ -5168,9 +5171,10 @@ plus coupler prématurément les dérivés de ~num~ et ~plus~ aux objets dont il
 dérivent; on abstrait donc ces objets parents à l'aide d'une fonction.
 
 #+BEGIN_side-figure
-#+CAPTION: Ajouter ~s~ n'affecte ni ~e1~ ni ~e2~: c'est un nouvel objet qui
-#+CAPTION: réutilise ~num~ et ~plus~ sans les modifier.
 [[file:img/foal-4.svg]]
+
+Ajouter ~s~ n'affecte ni ~e1~ ni ~e2~: c'est un nouvel objet qui réutilise ~num~
+et ~plus~ sans les modifier.
 #+END_side-figure
 
 #+BEGIN_SRC js -n -r
