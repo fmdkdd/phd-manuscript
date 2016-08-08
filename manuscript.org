@@ -4064,7 +4064,7 @@ un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
 un module sans affecter les autres, mais ajouter un terme requiert de modifier
 plusieurs modules.
 
-*** Problème inverse en programmation par objets
+*** Le problème inverse en programmation par objets
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
@@ -4169,18 +4169,74 @@ Le problème de l'expression se manifeste ici aussi, puisqu'on peut ajouter des
 termes sans recompiler les classes existantes, mais ajouter des opérations
 demande de modifier les classes existantes.
 
-*** Des solutions intéressantes
+*** Solution: types et fonctions ouverts
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-Une solution au problème dans la décomposition fonctionnelle est de pouvoir
-rajouter des cas aux opérations déjà définies.  [[cite:LH-06][LH-06]]
+Dans la décomposition fonctionnelle, le problème peut être résolu si l'on est
+capable d'étendre le types de données algébriques qui représente les termes,
+ainsi que les fonctions qui représentent des opérations.  C'est la solution
+proposée par Löh et Hinze [[cite:LH-06][LH-06]].  Ils suggèrent une extension à Haskell dans
+laquelle certains types de données algébriques et certaines fonctions sont
+/ouverts/.  Il suffit de préfixer la définition d'un type ou d'une fonction par
+le mot-clé ~open~ pour les ouvrir.  Par exemple, on définirait ~Term~ de cette
+façon:
 
-FP: open function; Swierstra things
+#+BEGIN_SRC haskell
+open data Term :: *
+#+END_SRC
 
-OOP: visitor (Krishnamurthi), HyperJ? Zenger Odersky, Oliveira
+Puis, chaque constructeur de terme sera donné par sa signature:
 
-------
+#+BEGIN_SRC haskell
+Constant :: Int -> Term
+Plus :: Term -> Term -> Term
+Mult :: Term -> Term -> Term
+#+END_SRC
+
+L'intérêt c'est que ce type reste ouvert: on peut lui ajouter des constructeurs
+après la déclaration du type.
+
+De même, les fonctions ouvertes se déclarent ainsi:
+
+#+BEGIN_SRC haskell
+open eval :: Term -> Int
+#+END_SRC
+
+Et de nouveaux cas peuvent être rajoutés pour traiter de nouvelles variantes de
+~Term~:
+
+#+BEGIN_SRC haskell
+Plus :: Term -> Term -> Term
+eval (Plus t1 t2) = eval t1 + eval t2
+#+END_SRC
+
+Ils proposent en outre de changer la stratégie de résolution du
+pattern-matching.  Le comportement par défaut d'Haskell est de choisir le
+premier motif qui correspond (/first-fit/).  Pour des fonctions ouvertes, ils
+suggèrent plutôt de choisir le motif le plus précis (/best-fit/).  Ils décrivent
+la sémantique de cette nouvelle stratégie, ainsi que la sémantique des types et
+fonctions ouverts, et esquissent une implémentation par réécriture vers du code
+Haskell.
+
+Ils notent au passage que l'on peut simuler cette extension avec des classes
+types (/typeclasses/).  Les constructeurs de termes deviennent des types, et les
+opérations deviennent des classes types avec une seule méthode:
+
+#+BEGIN_SRC haskell
+data Constant = Constant Int
+
+class Eval a where
+  eval :: a -> Int
+
+instance Eval Constant where
+   eval (Constant n) = n
+
+data Plus a b = Plus a b
+
+instance (Eval a, Eval b) => Eval (Plus a b) where
+  eval (Plus a b) = eval a + eval b
+#+END_SRC
 
 #+ATTR_HTML: :style margin-top:4rem
 #+BEGIN_side-figure
@@ -4191,6 +4247,26 @@ langage.  Ajouter une opération ou ajouter un terme revient à définir une ar�
 dans le graphe ({{{color(c0)}}}).  L'implémentation détermine juste comment
 cette arête est définie dans le programme.
 #+END_side-figure
+
+On peut ainsi continuer d'ajouter de nouveaux termes et de nouvelles opérations,
+sans avoir à étendre le langage Haskell.  Cette solution a l'avantage de séparer
+complètement les termes et les opérations; il n'y a plus de pression imposée par
+un axe principal (termes d'abord, ou opérations d'abord) car les relations entre
+variantes et opérations sont toutes décrites indépendamment.
+
+Un inconvénient d'utiliser les classes types est que le type des expressions du
+langage dépend de l'expression.  Les expressions ~1 +2~ et ~1~ n'ont pas de type
+commun:
+
+#+BEGIN_SRC haskell
+Plus (Constant 1) (Constant 2) :: Plus Constant Constant
+Constant 1 :: Constant
+#+END_SRC
+
+Alors qu'avec les types et fonctions ouverts, toutes les expressions ont le même
+type ~Term~.  On ne peut plus écrire des fonctions qui prend des termes en
+paramètre, il faut nécessairement passer par les contraintes des classes types.
+En particulier, on ne peut plus inspecter les arbres syntaxiques.
 
 Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
 l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
