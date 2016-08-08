@@ -207,11 +207,6 @@ pour empêcher un programme JavaScript d'envoyer mon mot de passe à un serveur
 auquel il n'était pas destiné (voir [[cite:lastpass-fail][lastpass-fail]]).  On peut tenter d'y remédier
 en /analysant/ le programme.
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-ref Information flow
-#+END_aside
-
 #+BEGIN_aside
 L'analyse peut considérer une exécution sur un jeu de données particulier
 (analyse /dynamique/), ou bien considérer toutes les exécutions possibles
@@ -224,10 +219,10 @@ ainsi analyser le programme pour voir avec quels serveurs il tente de
 communiquer, mais sans réaliser cette communication.  De l'analyse, on peut
 tirer de l'information qui permettra de prendre une décision: est-ce que ce
 programme est malveillant ou bénin?  Les analyses de /flot d'information/ ont
-pour but de répondre à ce genre de questions.  Mais il y a d'autres analyses qui
-nous aident à améliorer le programme: Valgrind détecte les fuites de mémoire
-[[cite:valgrind][valgrind]], et les /profilers/ recensent le temps d'exécution de chaque fonction
-pour guider le programmeur lors d'une optimisation.
+pour but de répondre à ce genre de questions [[cite:SM-03][SM-03]].  Mais il y a d'autres
+analyses qui nous aident à améliorer le programme: Valgrind détecte les fuites
+de mémoire [[cite:valgrind][valgrind]], et les /profilers/ recensent le temps d'exécution de chaque
+fonction pour guider le programmeur lors d'une optimisation.
 
 Il est donc intéressant de pouvoir effectuer différentes analyses sur les
 programmes JavaScript.  Des analyses de flot d'information aideront à détecter
