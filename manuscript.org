@@ -78,7 +78,6 @@ different person then.'
    - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
    - [[#the-stakes-of-targeting-modularity-and-extensibility][The stakes of targeting modularity and extensibility]]
    - [[#goto-is-indirection-indirection-is-goto][GOTO is indirection; indirection is GOTO?]]
-   - [[#to-end-the-prototype-section][To end the prototype section]]
  - [[#appendices][Appendices]]
    - [[#construire-un-interpréteur-par-modules-1][Construire un interpréteur par modules]]
  - [[#références][Références]]
@@ -9989,25 +9988,6 @@ boundaries.  And of Open Scope, that breaks the module.
 
 /Any/ late binding mechanism has the same property.  If parts of the control
 flow are decided dynamically, Dijsktra's compass is defeated.
-
-** To end the prototype section
-The prototype section discusses the difference between prototypes and classes.
-But there's not upshot, no takeaway.
-
-The last paragraph should answer the question: "How do prototypes fare for
-building and organizing programs?  Since they are more general, should we always
-use prototypes, or do classes have their strengths?"
-
-Mostly, prototypes are better in an /incremental/ setting.  E.g., the Newton.
-Create an object, then derive for a special purpose.  Delegation and cloning are
-well-suited to dynamic adaptation, because there's no rigid class structure to
-bring them down.
-
-However, the class structure is a boon for compilers and for optimizations.
-Classes are well-suited when the taxonomy is known in advance.  Consequently,
-classes are less extensible.
-
-[Maybe reverse the two paragraphs?]
 
 * Appendices
 ** Construire un interpréteur par modules
