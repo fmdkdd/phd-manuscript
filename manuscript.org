@@ -212,12 +212,18 @@ en /analysant/ le programme.
 ref Information flow
 #+END_aside
 
+#+BEGIN_aside
+L'analyse peut considérer une exécution sur un jeu de données particulier
+(analyse /dynamique/), ou bien considérer toutes les exécutions possibles
+(analyse /statique/).
+#+END_aside
+
 Analyser le programmer c'est l'exécuter afin d'en observer son comportement.
 L'analyse n'exécute le plus souvent qu'une /partie/ du programme; on pourra
 ainsi analyser le programme pour voir avec quels serveurs il tente de
 communiquer, mais sans réaliser cette communication.  De l'analyse, on peut
 tirer de l'information qui permettra de prendre une décision: est-ce que ce
-programme est malveillant ou bénin?  Les /analyses de flot d'information/ ont
+programme est malveillant ou bénin?  Les analyses de /flot d'information/ ont
 pour but de répondre à ce genre de questions.  Mais il y a d'autres analyses qui
 nous aident à améliorer le programme: Valgrind détecte les fuites de mémoire
 [[cite:valgrind][valgrind]], et les /profilers/ recensent le temps d'exécution de chaque fonction
@@ -229,29 +235,37 @@ des programmes malveillants, et des analyses de performance aideront à
 optimiser tous types de programmes.
 
 Mais pour pouvoir effectuer ces analyses, il faut avant tout les implémenter.
-Implémenter une analyse c'est essentiellement implémenter à un interpréteur.
+Implémenter une analyse c'est essentiellement implémenter un interpréteur.
 C'est une tâche qui nécessite un effort non trivial.  Une façon économe d'écrire
 une analyse est d'ailleurs de modifier un interpréteur existant plutôt que d'en
-construire un nouveau.  Mais, comme on le montrera ([[#problem]]), cette solution
-n'est pas non plus idéale pour implémenter plusieurs analyses.  Dans un contexte
-de recherche, il faut pouvoir itérer rapidement pour couvrir l'espace des
-solutions.  Prototyper des analyses pour des programmes JavaScript devrait donc
-être rapide.  Mais dans le même temps, il ne faut pas non plus sacrifier la
+construire un nouveau.  Mais, comme on le montrera (chapitre [[#problem]]), cette
+solution n'est pas non plus idéale pour implémenter plusieurs analyses.  Dans un
+contexte exploratoire, il faut pouvoir itérer rapidement pour couvrir l'espace
+des solutions.  Prototyper des analyses pour des programmes JavaScript devrait
+donc être rapide.  Mais dans le même temps, il ne faut pas non plus sacrifier la
 facilité de maintenance et d'évolution de l'interpréteur.
 
 C'est pourquoi nous proposons le /détournement/ comme solution économe et
 pragmatique pour modifier et étendre des interpréteurs par de multiples analyses
-([[#idea]]).  Détourner un interpréteur repose sur l'utilisation de mécanismes de
-langage qui nous permettent de modifier le comportement d'un programme sans
-modifier directement son code source: des mécanismes tels que le liaison
-dynamique, les variables à portée dynamique ou la métaprogrammation ([[#chrono]]).
+(chapitre [[#idea]]).  Détourner un interpréteur repose sur l'utilisation de
+mécanismes linguistiques qui nous permettent de modifier le comportement d'un
+programme sans modifier directement son code source: des mécanismes tels que le
+liaison dynamique, les variables à portée dynamique ou la métaprogrammation
+(chapitre [[#chrono]]).
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+préciser quelles techniques pour le contenu des deux permiers chapitre de
+contribution
+#+END_aside
 
 Pour illustrer le détournement, on utilisera de simples interpréteurs que l'on
-modifiera en utilisant différentes techniques ([[#variations]] [[#foal]]).  Puis, pour
-démontrer l'utilité du détournement sur un interpréteur réaliste, on applique
-ces techniques à Narcissus ([[#dls]]), un interpréteur de JavaScript.  On montre
-comment, grâce au détournement, on peut facilement ajouter des analyses
-dynamiques de programmes sans impacter le code source de l'interpréteur.
+modifiera en utilisant différentes techniques (chapitres [[#variations]] et [[#foal]]).
+Puis, pour démontrer l'utilité du détournement sur un interpréteur réaliste, on
+appliquera ces techniques à Narcissus (chapitre [[#dls]]), un interpréteur de
+JavaScript.  On montrera comment, grâce au détournement, on peut facilement
+ajouter des analyses dynamiques de programmes sans impacter le code source de
+l'interpréteur.
 
 Mais avant de voir tout cela, il faut commencer par quelques définitions.
 
