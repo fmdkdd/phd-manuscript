@@ -3916,12 +3916,11 @@ solution la plus évidente pour les représenter.
 permettent de créer des expressions du langage.  L'expression 2 + 5 * 3 sera
 construite par:
 
-: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
+#+BEGIN_side-figure
+[[file:img/ast.svg]]
+#+END_side-figure
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-AST illustration
-#+END_aside
+: Plus (Constant 2) (Mult (Constant 5) (Constant 3))
 
 Cette valeur représente l'expression 2 + 5 * 3, et nous donne en même temps un
 {{{ast}}} de cette expression.
