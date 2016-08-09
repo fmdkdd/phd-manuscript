@@ -4306,7 +4306,14 @@ Puisque le type ~Term~ est destiné à être étendu, il faut pouvoir distinguer
 expressions suivant les termes qu'elles contiennent.  La représentation des
 termes choisie ici permet cette distinction.
 
+*** Solution: patrons visiteur
+Combiner le patron interpréteur et le patron visiteur permet de d'ajouter des
+opérations.  Mais il y a un problème de type: un visiteur ne supportera pas
+nécessairement les futures variantes.  Krishnamurthi, Felleisen et Friedman
+proposent le visiteur extensible pour y remédier [[cite:KFF-98][KFF-98]].  Dans le visiteur
+extensible, on ajoute un constructeur virtuel (/factory/).
 
+Le patron de conception /visiteur/
 OOP: visitor (Krishnamurthi), HyperJ? Zenger Odersky, Oliveira
 
 ------
