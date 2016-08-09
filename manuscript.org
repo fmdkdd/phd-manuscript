@@ -10484,6 +10484,77 @@ objets créés par les modules.  En utilisant un seul ~with~, on ne bénéficie 
 de cette délégation implicite.  Il faut la rendre explicite, et c'est pour cela
 que l'on rajoute le ~__proto__: base~ dans l'objet retourné par les modules.
 
+*** UNREAD Le receveur du constructeur est le prototype
+Les termes du langages sont représentés par des objets.  Il n'y a pas de
+constructeurs d'objets en JavaScript, puisque c'est un langage à prototypes.
+Mais dans les exemples du chapitre, on utilise par convention la méthode ~new~
+comme constructeur:
+
+#+BEGIN_SRC js
+var num = {
+  new(n) { return {__proto__: this, n }},
+  eval() { return this.n },
+}
+#+END_SRC
+
+On peut se demander pourquoi faire référence à ~this~ ici.  Le constructeur doit
+renvoyer un ~num~ après tout, donc pourquoi ne pas écrire directement:
+
+#+BEGIN_SRC js
+var numNum = {
+  new(n) { return {__proto__: numNum, n }}
+  eval() { return this.n },
+}
+#+END_SRC
+
+Utiliser ~this~, le receveur du constructeur, nous permet de réutiliser ce
+constructeur lorsque l'on étend ~num~ par la suite.
+
+#+BEGIN_SRC js
+var doubleNum = {
+  __proto__: num,
+  eval() { return this.n * 2 },
+}
+
+doubleNum.new(1).eval() //: 2
+#+END_SRC
+
+Dans l'appel ~doubleNum.new~, ~this~ sera ~doubleNum~, donc l'objet crée par
+~new~ héritera de ~doubleNum~.  Appeler ~eval~ sur cet objet exécutera la
+fonction ~doubleNum.eval~, ce qui est l'intention.
+
+En revanche, si l'on étend ~numNum~ de la même façon:
+
+#+BEGIN_SRC js
+var doubleNum = {
+  __proto__: num,
+  eval() { return this.n * 2 },
+}
+
+doubleNum.new(1).eval() //: 1
+#+END_SRC
+
+Cette fois, l'objet créé par ~doubleNum.new~ hérite de ~numNum~, et c'est la
+méthode ~eval~ de ~numNum~ qui est invoquée.
+
+On peut aussi résoudre le problème en redéfinissant ~new~ dans ~doubleNum~:
+
+#+BEGIN_SRC js
+var doubleNum = {
+  __proto__: num,
+  new(n) { return {__proto__: doubleNum, n }},
+  eval() { return this.n * 2 },
+}
+
+doubleNum.new(1).eval() //: 2
+#+END_SRC
+
+Puisque ~new~ peut être vue comme un constructeur virtuel (/factory/), il suffit
+de fournir une implémentation de ce constructeur pour le type ~doubleNum~ que
+l'on raffine.  Mais en utilisant le receveur ~this~ comme prototype du
+constructeur, on évite d'avoir à redéfinir le constructeur dans chaque
+extension.
+
 * Références
 :PROPERTIES:
 :UNNUMBERED: t
