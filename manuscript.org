@@ -4228,6 +4228,7 @@ la sémantique de cette nouvelle stratégie, ainsi que la sémantique des types 
 fonctions ouverts, et esquissent une implémentation par réécriture vers du code
 Haskell.
 
+*** Solution: classes types
 Ils notent au passage que l'on peut simuler cette extension avec des classes
 types (/typeclasses/).  Les constructeurs de termes deviennent des types, et les
 opérations deviennent des classes types avec une seule méthode:
@@ -4277,12 +4278,34 @@ type ~Term~.  On ne peut plus écrire des fonctions qui prend des termes en
 paramètre, il faut nécessairement passer par les contraintes des classes types.
 En particulier, on ne peut plus inspecter les arbres syntaxiques.
 
-*** Solution: types de données à la carte
-Swierstra propose une solution au problème de l'expression basée en partie sur
-la monade gratuite (/free monad/) [[cite:Swi-08][Swi-08]].
+Swierstra propose une solution au problème de l'expression qui contourne cet
+inconvénient [[cite:Swi-08][Swi-08]].  Sa solution est basée sur les classes types et la monade
+gratuite (/free monad/).  Là aussi, chaque terme est implémenté par un type de
+données algébriques, et chaque opération est une classe type.  Mais toutes les
+expressions ont le terme commun ~Term~:
 
+#+BEGIN_SRC haskell
+data Term f = In (f (Term f))
+#+END_SRC
 
+si bien que le type des expressions contient explicitement les termes qu'elle
+utilise:
 
+#+BEGIN_aside
+L'opérateur ~:+:~ est le constructeur de à l'union disjointe (similaire au
+constructeur ~Either~ en Haskell).
+#+END_aside
+
+#+BEGIN_SRC haskell
+e1 :: Term (Constant :+: Plus)
+e1 = plus (plus (constant 1) (constant 2)) (constant 3)
+#+END_SRC
+
+Précédemment, le type était lié à l'arbre syntaxique de l'expression.  Ici, ce
+n'est pas le cas; ~Constant~ et ~Plus~ n'apparaissent qu'une seule fois.
+Puisque le type ~Term~ est destiné à être étendu, il faut pouvoir distinguer les
+expressions suivant les termes qu'elles contiennent.  La représentation des
+termes choisie ici permet cette distinction.
 
 
 OOP: visitor (Krishnamurthi), HyperJ? Zenger Odersky, Oliveira
