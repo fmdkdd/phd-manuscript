@@ -12,6 +12,7 @@
 #+MACRO: ast arbre syntaxique abstrait
 #+MACRO: adt type algébrique de données
 #+MACRO: br @@latex:\\@@ @@html:<br/>@@
+#+MACRO: etal /et al./
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
@@ -4306,12 +4307,129 @@ Puisque le type ~Term~ est destiné à être étendu, il faut pouvoir distinguer
 expressions suivant les termes qu'elles contiennent.  La représentation des
 termes choisie ici permet cette distinction.
 
-*** Solution: patrons visiteur
-Combiner le patron interpréteur et le patron visiteur permet de d'ajouter des
-opérations.  Mais il y a un problème de type: un visiteur ne supportera pas
-nécessairement les futures variantes.  Krishnamurthi, Felleisen et Friedman
-proposent le visiteur extensible pour y remédier [[cite:KFF-98][KFF-98]].  Dans le visiteur
-extensible, on ajoute un constructeur virtuel (/factory/).
+*** Solution: utiliser le patron visiteur
+Dans la décomposition objet qui suit le patron interpréteur, ajouter des
+opérations requiert de modifier toutes les classes.  Gamma {{{etal}}} notent que
+pour y remédier, on peut utiliser le patron visiteur [[cite:GHJ+94][GHJ+94]].  Dans le patron
+visiteur, les classes qui représentent les termes n'ont plus qu'une seule
+méthode: ~accept(Visitor)~:
+
+#+BEGIN_SRC java
+abstract class Term { abstract <T> T accept(Visitor<T> v); }
+
+class Constant extends Term {
+  int n;
+  Constant(int n) { this.n = n; }
+  <T> T accept(Visitor<T> v) { return v.forConstant(this); }
+}
+
+class Plus extends Term {
+  Term a, b;
+  Plus(Term a, Term b) { this.a = a; this.b = b; }
+  <T> T accept(Visitor<T> v) { return v.forPlus(this); }
+}
+#+END_SRC
+
+Les appels ~v.forConstant~ et ~v.forPlus~ impliquent l'interface suivante pour
+le visiteur:
+
+#+BEGIN_SRC java
+interface Visitor<T> {
+  T forConstant(Constant c);
+  T forPlus(Plus p);
+}
+#+END_SRC
+
+Pour ajouter une opération, il faut maintenant créer un visiteur qui doit obéir
+à cette interface:
+
+#+BEGIN_SRC java
+class Eval implements Visitor<Integer> {
+  public Integer forConstant(Constant c) {
+    return c.n;
+  }
+
+  public Integer forPlus(Plus p) {
+    return p.a.accept(this) + p.b.accept(this);
+  }
+}
+#+END_SRC
+
+Une méthode pour chaque terme.  Pour tester, il suffit de passer une instance de
+ce visiteur à une expression:
+
+#+BEGIN_SRC java
+Term e1 = new Plus(new Constant(1), new Constant(2));
+System.out.println(e1.accept(new Eval()));
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+D'un premier coup d'œil on pourrait se dire que l'on a juste retrouvé la
+décomposition fonctionnelle, en plus verbeux.  L'opération ~Eval~ contient une
+méthode pour chaque terme, et si l'on souhaite ajouter des termes, il faudra
+ajouter une méthode pour ce terme à ~Eval~ et à l'interface ~Visitor~.
+
+Krishnamurthi {{{etal}}} proposent donc protocole du /visiteur extensible/ pour
+pouvoir ajouter des termes sans affecter les opérations existantes.  Pour
+ajouter un terme dans le visiteur extensible, il faut ajouter une classe qui
+représente ce terme:
+
+#+BEGIN_SRC java
+class Mult extends Term {
+  Term a, b;
+  Mult(Term a, Term b) { this.a = a; this.b = b; }
+  <T> T accept(Visitor<T> v) {
+    return ((VisitorForMult<T>)v).forMult(this);
+  }
+}
+#+END_SRC
+
+#+BEGIN_aside
+On pourrait capturer cette erreur et notifier le visiteur par un protocole
+spécifique; une méthode ~unknownTerm~ dans ~Visitor~ par exemple.  Ou bien
+donner une implémentation par défaut, ce que font Zenger et Odersky [[cite:ZO-01][ZO-01]].
+#+END_aside
+
+Notons ici la conversion forcée de ~Visitor~ en ~VisitorForMult~.  L'interface
+~Visitor~ ne sait pas traiter un terme ~Mult~, mais on peut étendre cette
+interface par une autre.   Si un visiteur ne sait pas traiter des ~Mult~, cette
+conversion causera une exception.  Le programme n'est donc pas sûr.
+
+Il faut maintenant définir cette nouvelle interface:
+
+#+BEGIN_SRC java
+interface VisitorForMult<T> extends Visitor<T> {
+  T forMult(Mult m);
+}
+#+END_SRC
+
+On ne modifie par ~Visitor~; on ajoute seulement une interface pour ~Mult~.
+De même, pour étendre l'opération ~Eval~:
+
+#+BEGIN_SRC java
+class EvalForMult extends Eval implements VisitorForMult<Integer> {
+  public Integer forMult(Mult m) {
+    return m.a.accept(this) * m.b.accept(this);
+  }
+}
+#+END_SRC
+
+Si bien que l'ajout du terme ~Mult~ ne modifie aucune classe existante.  Et
+comme ajouter une opération sur tous les termes existants revient à implémenter
+les différents visiteurs, là non plus on ne modifie pas de classes existantes.
+
+L'inconvénient restant de cette approche est la lourdeur structurelle du
+protocole.  Il faut implémenter des interfaces, des visiteurs, jongler avec des
+types génériques, des conversions...
+
+D'autres solutions plus simples existent.  Odersky et Zenger utilisent le
+langage Scala, et notamment les /mixin/ et l'auto-référence pour résoudre le
+problème de l'expression en préservant la sûreté [[cite:OZ-05][OZ-05]].  Plus récemment, Wang et
+Oliveira montrent que la covariance peut suffire pour préserver la sûreté, ce
+qui donne une solution simple même en Java [[cite:WO-16][WO-16]].
+
 
 Le patron de conception /visiteur/
 OOP: visitor (Krishnamurthi), HyperJ? Zenger Odersky, Oliveira
