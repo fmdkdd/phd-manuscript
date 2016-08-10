@@ -4430,39 +4430,149 @@ problème de l'expression en préservant la sûreté [[cite:OZ-05][OZ-05]].  Plu
 Oliveira montrent que la covariance peut suffire pour préserver la sûreté, ce
 qui donne une solution simple même en Java [[cite:WO-16][WO-16]].
 
+*** Solution: les algèbres d'objets
+Oliveira et Cook ont une autre façon d'utiliser le patron visiteur qu'ils
+appellent une /algèbre d'objets/ [[cite:OC-12][OC-12]].
 
-Le patron de conception /visiteur/
-OOP: visitor (Krishnamurthi), HyperJ? Zenger Odersky, Oliveira
+Dans leur solution, les termes du langage sont toujours des classes:
 
-------
+#+BEGIN_SRC java
+interface Term { int eval(); }
 
+class Constant implements Term {
+  int n;
+  Constant(int n) { this.n = n; }
+  public int eval() { return n; }
+}
 
-Le langage de programmation /favorise/ une décomposition, mais il n'empêche pas
-l'autre.  Canoniquement, la décomposition par opérations est plus évidente en
-Haskell (et autres langages de la famille de ML), tandis que la décomposition
-par termes est plus évidente en Java (et autres langages objets).  Mais, suivant
-la façon dont l'interpréteur est construit, un langage peut supporter l'une ou
-l'autre décomposition, voire les deux.  Il suffit de voir que les nombreuses
-solutions proposées au problème de l'expression nécessitent rarement un nouveau
-langage, mais exploitent plutôt les mécanismes existants d'une nouvelle façon.
+class Plus implements Term {
+  Term a, b;
+  Plus(Term a, Term b) { this.a = a; this.b = b; }
+  public int eval() { return a.eval() + b.eval(); }
+}
+#+END_SRC
 
-Et ce sont ces différents mécanismes qui nous intéressent.  Les mécanismes qui
-aident à résoudre le problème de l'expression sont des mécanismes qui /a priori/
-facilitent l'extension de l'interpréteur.  Peut-être que certains de ces
-mécanismes ne sont utiles que pour les extensions spécifiques à ce problème.
-Mais dans l'ensemble, quelques-uns seront applicables à d'autres scénarios
-d'extension.
+Ici on a un langage minimal.  Les classes peuvent implémenter différentes
+opérations; ici l'opération d'évaluation.
 
-Expression problem is different than ours:
+L'idée de l'algèbre d'objets est de construire des expressions virtuelles, qui
+seront évaluées par différentes algèbres.  Plutôt que de construire l'expression
+1 + 2 en utilisant les constructeurs ~Constant~ et ~Plus~:
 
-- we want to extend, but also modify existing operations.  We want to reuse the
-  existing structure as much as possible.
+: new Plus(new Constant(1), new Constant(2))
 
-- we do not control the structure of the interpreter.  Might not be a
-  straightforward operation/datatype decomposition, or Interpreter pattern.  And
-  extensions might also want to modify things outside this neat boundary.
+on utilise les constructeurs virtuels ~constant~ et ~plus~:
 
-But its solutions are definitely reusable in our context.
+#+BEGIN_SRC java
+<T> T e2(Visitor<T> v) {
+  return v.plus(v.constant(1), v.constant(2));
+}
+#+END_SRC
+
+Ces constructeurs virtuels sont des méthodes d'un visiteur qui représente
+l'algèbre d'objet.  C'est le visiteur qui détermine le type de retour de cette
+fonction.  L'expression ~e2~ ne fait que décrire la structure ~plus(constant,
+constant)~.
+
+L'interface ~Visitor~ est similaire à celle du visiteur extensible; une méthode
+pour chaque terme:
+
+#+BEGIN_SRC java
+interface Visitor<T> {
+  T constant(int n);
+  T plus(T e1, T e2);
+}
+#+END_SRC
+
+Sauf que dans le visiteur extensible, la méthode ~forConstant~ prenait une
+~Constant~ comme paramètre.  Ici, les méthodes sont des constructeurs virtuels
+(/factory/) pour les termes.
+
+On peut d'ailleurs implémenter un visiteur qui produit des ~Constant~ et des
+~Term~ directement:
+
+#+BEGIN_SRC java
+class ASTVisitor implements Visitor<Term> {
+  public Term constant(int n) {
+    return new Constant(n);
+  }
+
+  public Term plus(Term a, Term b) {
+    return new Plus(a, b);
+  }
+}
+#+END_SRC
+
+Pour l'utiliser, il suffit d'invoquer l'expression ~e2~ avec ce visiteur:
+
+: e2(new ASTVisitor()).eval();
+
+: 3
+
+Mais on peut aussi passer un autre visiteur, qui correspond à une autre
+opération sur le langage.  Si on ajoute l'opération d'affichage:
+
+#+BEGIN_SRC java
+interface PP { String pp(); }
+
+class PPVisitor implements Visitor<PP> {
+  public PP constant(int n) {
+    return () -> new Integer(n).toString();
+  }
+
+  public PP plus(PP a, PP b) {
+    return () -> a.pp() + " + " + b.pp();
+  }
+}
+#+END_SRC
+
+On peut ensuite exécuter cette opération sur l'expression ~e2~ en substituant le
+visiteur:
+
+: e2(new PPVisitor()).pp();
+
+: 1 + 2
+
+Ajouter un terme comporte les même étapes que dans le visiteur extensible:
+ajouter une classe pour représenter le terme, étendre l'interface du visiteur
+pour supporter ce terme, et implémenter cette nouvelle interface pour chaque
+opération.
+
+Les algèbres d'objets sont donc très proches du visiteur extensible.  Elles
+éliminent cependant le problème de sûreté, et réduisent le bruit structurel.
+
+L'utilisation des constructeurs virtuels est intéressante car non seulement elle
+rend les expressions lisibles, mais en même temps ces expressions n'ont aucune
+sémantique attachée.  Cette approche rend évidente le fait que l'expression
+construit simplement un arbre syntaxique, et que le visiteur peut être vu comme
+un interpréteur de cet arbre.
+
+*** Conclusions
+Les différentes solutions au problème de l'expression montrent que même si le
+langage de programmation peut favoriser une certaine décomposition (selon les
+termes, ou selon les opérations), ce biais est contournable.  La décomposition
+par opérations est plus évidente en Haskell (et autres langages de la famille de
+ML), tandis que la décomposition par termes est plus évidente en Java (et autres
+langages objets).  Mais en utilisant divers mécanismes de ces langages, on peut
+réconcilier ces deux décompositions.
+
+Comme le problème de l'expression est lié à l'extension des interpréteurs, les
+mécanismes que l'on vient d'étudier pourront être pertinents pour l'extension de
+Narcissus.
+
+Mais le problème de l'expression est néanmoins différent du problème que l'on a
+posé.  Les solutions au problème de l'expression permettent d'étendre des
+interpréteurs, /à condition qu'ils suivent une certaine structure/.  Les termes
+sont des classes qui acceptent un visiteur; ou les termes sont les variantes
+d'un type de données algébrique.
+
+Pour étendre Narcissus, on cherche à minimiser les changements apportés à
+l'interpréteur existant.  S'il ne suit pas une des structures extensibles
+exposées ici, il faudrait alors le refactoriser, ce qui impliquerait des
+modifications de son code source trop importantes.
+
+Néanmoins, ces solutions sont applicables pour le problème plus large, qui est
+de construire des interpréteurs extensibles.
 
 ** UNWRITTEN Autres mécanismes de détournement
 *** READ La séplution
