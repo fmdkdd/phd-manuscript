@@ -46,12 +46,12 @@ different person then.'
    - [[#read-le-but-factoriser-les-changements][READ Le but: factoriser les changements]]
    - [[#read-quatre-axes-de-factorisation-pour-linstrumentation][READ Quatre axes de factorisation pour l'instrumentation]]
    - [[#read-refactoriser-narcissus-une-solution-coûteuse][READ Refactoriser Narcissus: une solution coûteuse]]
-   - [[#unread-lidée-le-détournement-de-programme][UNREAD L'idée: le détournement de programme]]
+   - [[#read-lidée-le-détournement-de-programme][READ L'idée: le détournement de programme]]
  - [[#inprogress-le-détournement-à-travers-lhistoire-des-langages-de-programmation][INPROGRESS Le détournement à travers l'histoire des langages de programmation]]
-   - [[#unread-le-programme-reflète-le-processus-la-programmation-structurée][UNREAD Le programme reflète le processus: la programmation structurée]]
+   - [[#read-le-programme-reflète-le-processus-la-programmation-structurée][READ Le programme reflète le processus: la programmation structurée]]
    - [[#read-lordre-psychologiquement-correct-la-programmation-littéraire][READ L'ordre psychologiquement correct: la programmation littéraire]]
    - [[#read-modéliser-le-monde-la-programmation-par-objets][READ Modéliser le monde: la programmation par objets]]
-   - [[#unread-réifier-le-langage-métaprogrammation-et-réflexion][UNREAD Réifier le langage: métaprogrammation et réflexion]]
+   - [[#read-réifier-le-langage-métaprogrammation-et-réflexion][READ Réifier le langage: métaprogrammation et réflexion]]
    - [[#read-séparer-les-préoccupations-la-programmation-par-aspects][READ Séparer les préoccupations: la programmation par aspects]]
    - [[#unread-le-problème-de-lexpression][UNREAD Le problème de l'expression]]
    - [[#inprogress-autres-mécanismes-de-détournement][INPROGRESS Autres mécanismes de détournement]]
@@ -1554,7 +1554,7 @@ nouvelle fonction:
 
 Dans la spécification 1, un programme JavaScript est évalué en suivant les
 règles du standard ECMAScript.  En suivant la spécification 2, un programme
-JavaScript est évalue en suivant les règles de l'évaluation multi-facettes.
+JavaScript est évalué en suivant les règles de l'évaluation multi-facettes.
 
 À ces spécifications correspondent un programme.  Dans la section précédente, on
 a bien deux programmes: Narcissus correspond à la spécification 1, et Narcissus
@@ -1941,14 +1941,14 @@ souhaite ajouter à l'interpréteur, le coût de la refactorisation deviendrait
 plus important que le coût de la duplication de code que l'on essayait de
 minimiser pour commencer.
 
-** UNREAD L'idée: le détournement de programme
+** READ L'idée: le détournement de programme
 :PROPERTIES:
 :CUSTOM_ID: idea
 :END:
 Il y a une alternative pragmatique à la refactorisation, que nous appellerons le
 /détournement/.
 
-Le détournement est basé sur un simple observation: le code source d'un
+Le détournement est basé sur une simple observation: le code source d'un
 programme ne détermine pas son processus.  Le code source /et/ l'interpréteur
 déterminent le processus.  Le code source seul ne donne aucune information si
 l'on ne connaît pas aussi l'interpréteur.  Seul, le code est inerte.  Voici un
@@ -1986,8 +1986,8 @@ On ne peut plus dire qu'il affichera 89 si on ne sait pas par quelle fonction
 mais on a bien modifié le programme.
 
 Détourner un programme, c'est changer son comportement en changeant son
-contexte.  L'intérêt c'est qu'on peut modifier le comportement du programme sans
-changer son code source directement.  On peut changer son interpréteur, son
+contexte.  L'intérêt est que l'on peut modifier le comportement du programme
+sans changer son code source directement.  On peut changer son interpréteur, son
 compilateur, son arbre syntaxique, les bibliothèques qu'il utilise, ou même,
 lorsque le langage le permet, les objets primitifs comme ~Int~ ou ~String~.
 
@@ -2020,7 +2020,7 @@ parties que l'on souhaite modifier du reste du programme.  On ne fait plus
 référence à ces parties directement, mais indirectement, ce qui permet de les
 changer plus facilement.
 
-** UNREAD Le programme reflète le processus: la programmation structurée
+** READ Le programme reflète le processus: la programmation structurée
 #+BEGIN_epig
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
 Japan, who cheerfully complained that he was always being eliminated.
@@ -2280,9 +2280,10 @@ de ~X~ avant de retourner à l'affichage ligne 20.
 
 #+BEGIN_aside
 Ajouter du code sans modifier le code existant est d'autant plus utile quand on
-programme sur des cartes perforées, où insérer des lignes au début du programme
-menace de décaler les cartes suivantes, et donc de devoir renouveler
-l'ensemble.  Mais c'est un problème rarement rencontré de nos jours.
+programme sur des cartes perforées numérotées, où insérer des lignes au début du
+programme menace de décaler la numérotation des cartes suivantes, et donc de
+devoir numéroter à nouveau l'ensemble.  Mais c'est un problème rarement
+rencontré de nos jours.
 #+END_aside
 
 Notons que sans les lignes 4040, 4041 et 4042, le programme affiche 1.  Si on
@@ -3004,29 +3005,32 @@ Mais cette opposition n'est pas irréconciliable.  Les mécanismes réflexifs so
 capables de proposer aussi bien l'héritage que la délégation au sein d'un même
 langage.  Et ils sont sont aussi très utiles pour le détournement.
 
-** UNREAD Réifier le langage: métaprogrammation et réflexion
+** READ Réifier le langage: métaprogrammation et réflexion
+:PROPERTIES:
+:CUSTOM_ID: metaobj
+:END:
 #+CAPTION: Le baron de Münchhausen évite la noyade par capillotraction.
 #+CAPTION: Gustave Doré, 1862.
 [[file:img/münchhausen.jpg]]
 
 En programmation par objets, on cherche à établir une correspondance entre les
-objets que l'on modélise et les objets que l'on écrit.  Dans la simulation d'un
-écosystème qui comprend de l'herbe, des moutons et des loups, on trouve des
+objets que l'on modélise et les objets que l'on programme.  Dans la simulation
+d'un écosystème qui comprend de l'herbe, des moutons et des loups, on trouve des
 objets qui représentent l'herbe, des objets moutons, et des objets loups.  Un
 objet du programme est une /réification/ de l'objet de l'écosystème.
 
 Mais un programme peut aussi réifier les objets de sa propre exécution, les
-objets de la sémantique; on parle alors de /réflexion/.  La réflexion permet à
-un programme d'altérer sa structure, ou de modifier la sémantique du langage,
-pendant qu'il s'exécute.  Cette adaptation dynamique offre de nouvelles façons
-de modifier et d'étendre des programmes.
+objets de la sémantique; on parle alors de /réflexion/.  La réflexion permet
+même à un programme d'altérer sa structure, ou de modifier la sémantique du
+langage, pendant qu'il s'exécute.  Cette adaptation dynamique offre de nouvelles
+façons de modifier et d'étendre des programmes.
 
 #+BEGIN_aside
-On peut parler ici plus précisément d'introspection structurelle, d'après la
-nomenclature de Tanter [[cite:Tan-09][Tan-09]].
+On peut parler ici plus précisément d'introspection structurelle (voir par
+exemple la nomenclature de Tanter [[cite:Tan-09][Tan-09]]).
 #+END_aside
 
-Un simple exemple de réflexion, c'est d'être capable d'inspecter une classe à
+Un simple exemple de réflexion: être capable d'inspecter une classe à
 l'exécution, ainsi que ses méthodes et attributs.  L'API de réflexion du langage
 Java nous le permet:
 
@@ -3175,7 +3179,7 @@ personnalisé pour cette classe.
 /CLOS: CommonLisp Object System/
 #+END_aside
 
-Le protocole métaobjet de CLOS [[cite:KRB-91][KRB-91]] va encore plus loin, en exposant au
+Le protocole des métaobjets de CLOS [[cite:KRB-91][KRB-91]] va encore plus loin, en exposant au
 programmeur le protocole qui implémente les mécanismes de programmation par
 objets dans ce langage.  Pour réconcilier les différentes implémentations de
 programmation par objets qui existait en CommonLisp (Flavors, LOOPS), CLOS
@@ -3183,11 +3187,11 @@ laisse au programmeur la possibilité de redéfinir l'héritage entre classes, l
 liaison dynamique, ou la visibilité des membres.  En Python ou en Java, il y une
 structure de classe imposée, et un mécanisme de liaison par défaut qu'il n'est
 pas toujours possible de redéfinir.  En CLOS, ce qui est fourni est avant tout
-le protocole métaobjet; puis une implémentation par défaut de ce protocole, mais
-qui est en tout point redéfinissable par le programmeur.  Autrement dit, le
+le protocole des métaobjets; puis une implémentation par défaut de ce protocole,
+mais qui est en tout point redéfinissable par le programme.  Autrement dit, le
 programmeur ne programme plus seulement des applications, mais il programme en
-partie le langage.  Il programme le /programme/ lui-même, d'où le terme de
-métaprogrammation.
+partie le langage.  Il programme l'/interprétation du programme/, d'où le terme
+de métaprogrammation.
 
 *** READ L'implémentation ouverte
 :PROPERTIES:
@@ -3680,12 +3684,12 @@ Une coupe nommée peut être utilisée par une méthode d'aspect, mais aussi par
 n'importe quelle autre coupe, ce qui encourage la composition, et réduit la
 duplication de code.
 
-Les jonctions exposées par AspectJ évoquent fortement les réifications d'un
-protocole métaobjet: appel et exécution de méthode, création d'une instance.
-Mais il y a d'autres coupes intéressantes qui sont applicables à n'importe quel
-langage à procédures: ~withincode(method)~ permet de cibler n'importe quelle
-jonction qui émane de la méthode donnée.  C'est particulièrement utile associé à
-d'autres coupes:
+Les jonctions exposées par AspectJ évoquent fortement les réifications du
+protocole des métaobjets (voir [[#metaobj]]): appel et exécution de méthode,
+création d'une instance.  Mais il y a d'autres coupes intéressantes qui sont
+applicables à n'importe quel langage à procédures: ~withincode(method)~ permet
+de cibler n'importe quelle jonction qui émane de la méthode donnée.  C'est
+particulièrement utile associé à d'autres coupes:
 
 #+BEGIN_SRC java
 call(void m()) && withincode(void m())
