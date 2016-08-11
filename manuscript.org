@@ -4679,28 +4679,6 @@ changements structurels, ce qui la rend plus économique à adopter qu'un nouvea
 paradigme.  En contrepartie, elle n'offre aucune garantie.  Si l'on malpelle
 ~TODO~ en ~TOOD~, la note ne sera peut être oubliée à jamais.
 
-*** Dynamic binding
-Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
-dynamic environment in lexical binding [[cite:Que-03][Que-03]].
-
-Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
-their first-class privileges).
-
-[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
-binding adds expressiveness to a purely functional language.  They give examples
-in Perl, TeX, Common Lisp and Bash.
-
-[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
-dimensions of propagation of bindings (call stack and delayed lambdas), and
-offering a filter function to toggle the activation of a propagated binding.
-
-Some use-cases are mentioned, but none are demonstrated in the paper.  The
-proposal is not motivated enough by concrete applications that would be
-difficult to solve using existing mechanisms.  Also, the work is really focused
-on the binding semantics of Scheme, which reduce its applicability.
-
-Emacs customization benefits from dynamic binding [[cite:Sta-81][Sta-81]].
-
 *** Virtual values and proxies
 [[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
 proxy which has a handful of traps that are useful to override: when the value
@@ -4728,6 +4706,28 @@ interpreter semantics.
 [[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
 previous implementation which used code transformation; better performance, less
 maintenance.
+
+*** Dynamic binding
+Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
+dynamic environment in lexical binding [[cite:Que-03][Que-03]].
+
+Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
+their first-class privileges).
+
+[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
+binding adds expressiveness to a purely functional language.  They give examples
+in Perl, TeX, Common Lisp and Bash.
+
+[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
+dimensions of propagation of bindings (call stack and delayed lambdas), and
+offering a filter function to toggle the activation of a propagated binding.
+
+Some use-cases are mentioned, but none are demonstrated in the paper.  The
+proposal is not motivated enough by concrete applications that would be
+difficult to solve using existing mechanisms.  Also, the work is really focused
+on the binding semantics of Scheme, which reduce its applicability.
+
+Emacs customization benefits from dynamic binding [[cite:Sta-81][Sta-81]].
 
 ** UNWRITTEN Récapitulatif
 La réflexion proposée par Java est un exemple de métaprogrammation, mais
