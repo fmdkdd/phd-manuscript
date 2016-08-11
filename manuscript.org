@@ -4375,10 +4375,10 @@ décomposition fonctionnelle, en plus verbeux.  L'opération ~Eval~ contient une
 méthode pour chaque terme, et si l'on souhaite ajouter des termes, il faudra
 ajouter une méthode pour ce terme à ~Eval~ et à l'interface ~Visitor~.
 
-Krishnamurthi {{{etal}}} proposent donc protocole du /visiteur extensible/ pour
-pouvoir ajouter des termes sans affecter les opérations existantes.  Pour
-ajouter un terme dans le visiteur extensible, il faut ajouter une classe qui
-représente ce terme:
+Krishnamurthi {{{etal}}} [[cite:KFF-98][KFF-98]] proposent donc protocole du /visiteur
+extensible/ pour pouvoir ajouter des termes sans affecter les opérations
+existantes.  Pour ajouter un terme dans le visiteur extensible, il faut ajouter
+une classe qui représente ce terme:
 
 #+BEGIN_SRC java
 class Mult extends Term {
@@ -4429,10 +4429,11 @@ protocole.  Il faut implémenter des interfaces, des visiteurs, jongler avec des
 types génériques, des conversions...
 
 D'autres solutions plus simples existent.  Odersky et Zenger utilisent le
-langage Scala, et notamment les /mixin/ et l'auto-référence pour résoudre le
-problème de l'expression en préservant la sûreté [[cite:OZ-05][OZ-05]].  Plus récemment, Wang et
-Oliveira montrent que la covariance peut suffire pour préserver la sûreté, ce
-qui donne une solution simple même en Java [[cite:WO-16][WO-16]].
+langage Scala, et notamment les /mixins/ et l'auto-référence pour résoudre le
+problème de l'expression en préservant la sûreté [[cite:OZ-05][OZ-05]].  Findler et Flatt
+utilisent également les /mixins/ pour résoudre le problème en MzScheme [[cite:FF-98][FF-98]].
+Plus récemment, Wang et Oliveira montrent que la covariance peut suffire pour
+préserver la sûreté, ce qui donne une solution simple même en Java [[cite:WO-16][WO-16]].
 
 *** Solution: les algèbres d'objets
 Oliveira et Cook ont une autre façon d'utiliser le patron visiteur qu'ils
