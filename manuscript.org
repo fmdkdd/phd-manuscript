@@ -4,7 +4,7 @@
 #+SUBTITLE: Application à des analyses dynamiques de sécurité en JavaScript
 #+AUTHOR: fmdkdd
 #+LANGUAGE: fr
-#+OPTIONS: tags:nil H:4 num:3 toc:2 ':t
+#+OPTIONS: tags:nil H:4 num:2 toc:2 ':t
 
 #+MACRO: acr @@latex:\textsc{$1}@@
 #+MACRO: color @@html:<span class="color $1">▬</span>@@ @@latex:\colorrule{$1}@@
@@ -566,9 +566,6 @@ Narcissus.
 
 ** Une présentation du langage JavaScript
 *** Genèse chez Netscape
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 #+BEGIN_aside
 Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
 permettent d'évaluer des programmes JavaScript dans une page web.
@@ -624,9 +621,6 @@ qui conduit à la standardisation du langage sous le nom d'ECMAScript en
 juin 1997.
 
 *** Un langage à prototypes qui doit ressembler à Java
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Sous ses allures de langage impératif, Eich dit s'être principalement inspiré de
 Self (pour les prototypes) et Scheme (pour les fonctions de première classe)
 [[cite:js-history][js-history]].  Contrairement à Java, JavaScript n'est pas un langage à classes.
@@ -1087,9 +1081,6 @@ machines.
 # - encapsulation
 
 *** Conclusions
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Parnas est souvent cité pour ses travaux sur la modularité, à juste titre, mais
 son message principal n'est pas toujours bien entendu.  On trouve dans l'article
 déterminant de 1972 les avantages d'un système modulaire, et un critère pour les
@@ -1329,9 +1320,6 @@ guidance, in an active and constructive environment.
 #+END_QUOTE
 
 *** Conclusions
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Naur établit une distinction importante entre le code source d'un programme, et
 la connaissance que le programmeur a de son fonctionnement.  C'est une
 distinction intuitive pour quiconque a une expérience même modeste de
@@ -2592,7 +2580,6 @@ revanche, propose un nouveau paradigme.
 *** Classes et héritage: Smalltalk
 :PROPERTIES:
 :CUSTOM_ID: Smalltalk
-:UNNUMBERED: t
 :END:
 #+BEGIN_epig
 Classification is the objectification of {{{emph(ness)}}}ness. — Dan
@@ -2821,9 +2808,6 @@ langages à classes.  On peut aussi faire de la programmation par objets avec de
 /prototypes/.
 
 *** Prototypes et délégation: Self
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Les langages à prototypes poursuivent l'approche du tout objet.  Il n'y a plus
 de classes, plus d'instances, seulement des objets.
 
@@ -3194,9 +3178,6 @@ partie le langage.  Il programme l'/interprétation du programme/, d'où le term
 de métaprogrammation.
 
 *** READ L'implémentation ouverte
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 La réflexion n'est pas restreinte aux implémentations de langages à objets, ni
 aux langages de programmation.  Les membres de Xerox PARC se sont donc
 intéressés à appliquer la réflexion sur à d'autres systèmes, ce qu'ils appellent
@@ -3337,9 +3318,6 @@ ces trois qualités; les aspects y remédient en introduisant une nouvelle
 dimension de composition.
 
 *** La distinction entre composants et aspects
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 #+BEGIN_QUOTE
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
@@ -3459,9 +3437,6 @@ compose them to produce the overall system.
 #+END_QUOTE
 
 *** Exprimer les aspects par un langage dédié
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Une implémentation par aspects reflète cette distinction.  Pour une application
 écrite dans un langage classique, il y a trois éléments importants: le
 programme, le langage dans lequel le programme est écrit, et le compilateur pour
@@ -3525,9 +3500,6 @@ programmation par aspects, faut-il réimplémenter un tisseur pour chaque
 application?  Y a-t-il d'autres façons de faire?
 
 *** D'autres mécanismes pour la programmation par aspects
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 La caractéristique principale de la programmation par aspects est la distinction
 entre composants et aspects.  Cette distinction, si elle apparaît au moment de
 la conception du programme doit être maintenue dans son implémentation.  Tout
@@ -3599,9 +3571,6 @@ aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
 d'AspectJ.
 
 *** AspectJ: jonctions, coupes, et méthodes d'aspect
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 AspectJ est un langage d'aspects pour Java [[cite:KHH+01][KHH+01]].  Dans un système par aspects,
 il y a un langage d'aspects, ici AspectJ, et un langage de composants, ici ce
 sera Java.  AspectJ est un langage d'aspect /général/, qui fournit des
@@ -3784,9 +3753,6 @@ exécutables différents.
 #+END_side-figure
 
 *** Les limites de la programmation par aspects
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Le but de la programmation par aspects est louable: distinguer les composants
 des aspects dans le programme, c'est mettre de l'ordre, c'est séparer les choses
 différentes, et regrouper les fonctionnalités similaires.  Le bénéfice, c'est
@@ -3825,10 +3791,6 @@ système, à adopter si le besoin de modifier plusieurs modules en un seul lieu
 indépendamment.
 
 *** Conclusions
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
-
 La contribution principale de la programmation par aspects est de distinguer
 deux types de programmes qui cohabitent dans un même système: les composants, en
 charge de la fonctionnalité du système, et les aspects, qui décrivent des
@@ -3868,9 +3830,6 @@ existantes.  Toute solution à ce problème sera donc potentiellement pertinente
 pour l'extension de Narcissus.
 
 *** Définition du problème
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Wadler définit le problème ainsi [[cite:Wad-98][Wad-98]]:
 
 # #+BEGIN_aside
@@ -4078,9 +4037,6 @@ un module sans affecter les autres, mais ajouter un terme requiert de modifier
 plusieurs modules.
 
 *** Le problème inverse en programmation par objets
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Le problème de l'expression se pose aussi en programmation par objets.
 
 Une façon classique d'implémenter un interpréteur en programmation par objets
@@ -4183,9 +4139,6 @@ termes sans recompiler les classes existantes, mais ajouter des opérations
 demande de modifier les classes existantes.
 
 *** Solution: ouvrir les types et les fonctions
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Dans la décomposition fonctionnelle, le problème peut être résolu si l'on est
 capable d'étendre le types de données algébriques qui représente les termes,
 ainsi que les fonctions qui représentent des opérations.  C'est la solution
@@ -5458,9 +5411,6 @@ base.  Les extensions peuvent se composer, sans avoir connaissance explicite ou
 préalable des autres extensions.  C'est un bel exemple de détournement.
 
 *** Trois ingrédients principaux
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Ce détournement a trois ingrédients principaux: la délégation, les extensions
 représentées par des fonctions, et la manipulation de portée.  La délégation
 nous a permis la représentation différentielle des extensions.  Dans l'extension
@@ -5603,9 +5553,6 @@ activé, le résultat de cette invocation est différent, car l'implémentation 
 trait diffère.
 
 *** Manipuler la portée suffit pour détourner le programme
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Dans tous les exemples que l'on a donné, on a pu voir qu'enrober le code d'un
 ~with~ nous permettait de modifier son résultat.  Avec un ~with(double)~ on
 activait l'évaluation qui double les valeurs des nombres, avec ~with(show)~ on
@@ -5735,9 +5682,6 @@ modèle est inspiré du fonctionnement de JavaScript, mais n'est pas forcément 
 modèle en JavaScript.
 
 *** La portée dans le motif module
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 L'interpréteur Narcissus est construit à partir du /motif module/.  Il n'y a pas
 de système de module en JavaScript, et c'est ce motif simple qui est souvent
 utilisé à la place.  Le motif utilisé par Narcissus se présente ainsi:
@@ -5918,9 +5862,6 @@ motif module ne permet pas, en l'état, d'accéder à ces noms de l'extérieur d
 module.  C'est son rôle, mais ça s'oppose à notre but d'extensibilité.
 
 *** Ouvrir le motif module
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 On cherche maintenant à accéder à l'environnement de la FIA de l'extérieur du
 module, à obtenir une référence vers cet environnement.  En regardant les
 diagrammes précédents, on pourrait penser que ~m.g.env~ suffit: il s'agit bien
@@ -6094,9 +6035,6 @@ plus élégante qui tire partie du mécanisme de résolution des noms de variabl
 dans une chaîne d'environnements.
 
 *** Disposer les environnements en couches
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 On a vu que tout environnement a un environnement parent.  Si un nom n'est pas
 trouvé dans un environnement, la recherche se poursuit dans l'environnement
 parent.  La recherche continue ainsi jusqu'à ce que le nom soit trouvé, ou que
@@ -6578,9 +6516,6 @@ seules modifications nécessaires à apporter au module pour pouvoir commencer
 l'instrumentation.
 
 *** Ajouter l'analyse d'évaluation multi-facettes
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 On a vu dans l'étude de cas que l'implémentation de l'évaluation multi-facettes
 sur Narcissus pouvait être répartie en trois catégories de changements.  La
 première catégorie était l'ajout du /program counter/ par extension de l'objet
@@ -6709,9 +6644,6 @@ surcharger que des valeurs identifiées.  Pour pouvoir redéfinir cette fonction
 nous lui avons simplement donné un nom.
 
 *** Ajouter l'analyse de trace
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 En plus de l'évaluation multi-facettes, on a défini trois autres analyses sur
 l'interpréteur: une simple analyse de trace, une analyse de flot d'information,
 FlowR, décrite par Pasquier, Bacon et Shand [[cite:PBS-14][PBS-14]], et une analyse qui extrait
@@ -6860,9 +6792,6 @@ insère dans l'environnement du module.
 #+END_side-figure
 
 *** Ajouter l'analyse FlowR
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Le principe de l'analyse FlowR est d'empêcher des flots de données illicites
 dans le programme.  Pour cela, on colle des étiquettes sur les fonctions, comme
 "privée" ou "interne", une approche similaire aux /principals/ des valeurs à
@@ -6974,9 +6903,6 @@ i13n.pushLayer(_env, {
 #+END_SRC
 
 *** Ajouter l'analyse d'environnements
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Les techniques que l'on propose dans ce chapitre sont basées essentiellement sur
 la manipulation d'environnements.  Pour mieux comprendre ces manipulations, on a
 utilisé des diagrammes qui représentent les objets et les environnements
@@ -7079,9 +7005,6 @@ d'abord construire le graphe en parcourant tous les objets récoltés, puis
 produire le fichier au format DOT.
 
 *** Évaluation
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Notre instrumentation de Narcissus pour l'évaluation multi-facettes consiste en
 440 lignes de code, dans un seul fichier séparé de l'interpréteur;
 l'instrumentation faite par Austin et Flanagan comportait 640 lignes mêlées au
@@ -7272,9 +7195,6 @@ peut nécessairement en changer une partie; c'est ce qui nous a permis de
 modifier Narcissus pour accepter plusieurs analyses dynamiquement.
 
 *** La tension entre flexibilité et sûreté
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 On peut voir la propriété ~E~ qui expose l'environnement manipulable du module
 comme une interface spéciale, une interface d'instrumentation, qu'on peut
 rapprocher du concept d'"implémentation ouverte" de [[cite:Kic-96][Kic-96]].  Cette interface
@@ -7404,9 +7324,6 @@ l'utilisation de ~with~ dans le module, qui permet de les changer.  C'est au
 programmeur de choisir le compromis le mieux adapté au problème.
 
 *** D'autres façons d'étendre l'interpréteur
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Il y a d'autres façons, plus évidentes, d'ouvrir le module.  Pour commencer,
 puisqu'on cherche à briser la protection offerte par la fonction anonyme,
 pourquoi ne pas l'enlever?  Et définir nos fonctions directement à la racine:
@@ -7541,9 +7458,6 @@ greffer, il n'a pas à s'en soucier, d'où moins de code à maintenir.
 # export c,d,f         (extension)
 
 *** Pourquoi ne pas utiliser la programmation par aspects?
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 Étendre un module par du code extérieur sans que le code du module n'expose
 d'interface pour, activer et désactiver les extensions dynamiquement, les
 combiner ... ces objectifs rappellent fortement la programmation par aspects.
@@ -7701,9 +7615,6 @@ d'aspects pour JavaScript existe dans la littérature [[cite:LVG-10][LVG-10]], m
 cible qu'une version interne modifiée du navigateur Internet Explorer.
 
 *** Appliquer la manipulation de portée à d'autres langages
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 On n'a pas utilisé une bibliothèque d'aspects, mais l'approche de ce chapitre est
 certainement ancrée dans le paradigme de la programmation par aspects.  Et c'est
 justement intéressant de voir que la simple manipulation de la portée des
@@ -7730,9 +7641,6 @@ manipuler directement la résolution de portée, par un mécanisme réflexif par
 exemple.
 
 *** Inconvénients de la manipulation de portée avec ~with~
-:PROPERTIES:
-:UNNUMBERED: t
-:END:
 L'utilisation de ~with~ comporte néanmoins quelques inconvénients.  On utilise
 ~with~ ici juste parce que c'est le seul moyen qu'on a de manipuler la portée
 des variables du code du module en JavaScript standard.  Ça nous évite d'avoir à
