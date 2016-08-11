@@ -79,7 +79,6 @@ different person then.'
    - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
    - [[#the-stakes-of-targeting-modularity-and-extensibility][The stakes of targeting modularity and extensibility]]
    - [[#goto-is-indirection-indirection-is-goto][GOTO is indirection; indirection is GOTO?]]
-   - [[#read-linformation-transparente][READ L'information transparente]]
  - [[#appendices][Appendices]]
    - [[#construire-un-interpréteur-par-modules-1][Construire un interpréteur par modules]]
  - [[#références][Références]]
@@ -4638,128 +4637,21 @@ programmation par aspects (~after~, ~before~, ~around~).
 L'intérêt de cette approche, c'est qu'elle ne dépend pas (ou peu) du langage
 concerné.  On peut créer des hypercoupes regroupant des extraits de programmes
 dans différents langages de programmation.  Ce qui importe, c'est de préciser
-commen ces extraits sont combinés pour synthétiser le programme final.
+comment ces extraits sont combinés pour synthétiser le programme final.
 
-*** Superimposition
-**** Software product lines
-[[cite:ABK+13][ABK+13]] provides a well-rounded survey of the field.
+Il y d'autres exemples de superposition, notamment dans le domaine de la
+programmation par fonctionnalités (/Feature-Oriented Programming/) et des lignes
+de produit [[cite:ABK+13][ABK+13]].  FeatureHouse [[cite:AKL-13][AKL-13]] est similaire à Hyper/J dans la mesure
+où l'on peut superposer plusieurs extraits de la même classe.  Combiner trois
+extraits ou plus est aussi possible, et résolu comme dans un système de contrôle
+de version.  FeatureHouse se base sur un arbre syntaxique réduit du programme,
+et comme Hyper/J, est essentiellement indépendant du langage de programmation.
 
-An engineering methodology to create and maintain variants of a software
-product, with optional features (analogy with car assembly lines, which allow
-for adding optional features while reusing the same assembly process).
-
-Inspired by the similar evolution in the mass production of consumer goods.
-From handcrafting to mass production, to mass customization: product lines that
-cover a spectrum of variations.  Examples abound: cars, multi-flavored
-detergent, phones, Subway sandwiches ...  Software product lines are the
-realization of mass customization for software products (yeah!).
-
-A product line engineering platform combines all the artifacts, documentation
-and methodologies of a family of products.  The goal of PLE is to manage the
-/commonality/ and /variability/ of a product family.  PLE is not specific to
-software.
-
-Properties of a SPL:
-- binding time (composition can happen at compile-time, load-time or run-time)
-- language solution vs. tool based
-- annotation (think C preprocessor) vs. composition (features in their own unit)
-- preplanning effort (can you add features without designing for it?)
-- feature traceability (mapping between feature model to solution space)
-- separation of concerns
-- information hiding
-- uniformity
-
-Software product lines mechanisms include:
-- global parameters
-- design patterns (observer, strategy, decorator)
-- frameworks
-- components
-
-Using version control branches to manage variability is also discussed.  Each
-branch correspond to a product, and code sharing is provided by the version
-control tool.  However, version control manages /products/ rather than
-/features/.  Features are not apparent independently of the base code, except
-when looking at diffs.
-
-Feature-oriented programming allows the decomposition of a program into features
-first.  Jak is a Java extension that supports FOP [[cite:BSR-04][BSR-04]].  A feature corresponds
-to a layer, and each layer can contain multiple classes that implement the
-feature.  Further layers can /refine/ the classes of previous layer, and refer
-to their implementation via the =original= keyword.
-
-FeatureHouse [[cite:AKL-13][AKL-13]] is akin to [[Semantic patches]], in that it uses a reduced
-syntax tree in order to transform code.  One writes a base program, then another
-program can be superimposed on it by matching their reduced syntax trees.  The
-base program code can be called using the =original= keyword.  Three-way merges
-are also possible, and resolved like in version control systems.  The model of
-reduced syntax trees of FeatureHouse is language independent, as are the
-composition mechanisms.  Language plugins can be written to tell
-FeatureHouse how to generate, compose, and pretty-print reduced syntax trees.
-
-#+BEGIN_EXAMPLE
-public class A {
-  private int foo() { return 0; }
-}
-
-public class A {
-  private int foo() { original(); return 1; }
-}
-#+END_EXAMPLE
-
-FeatureHouse also supports quantification.  Mixins and traits mechanisms are
-essentially instances of superimposition.
-
-FOP is well-suited to implementing /heterogeneous concerns/ (one variation per
-join point), while AOP is better for /homogeneous concerns/ (one variation,
-multiple join points). [[cite:MO-04][MO-04]] illustrates the compromises of each approaches (and
-presents [[Caesar]] as the superior solution).
-
-If you cannot maintain a separation of concerns in the code itself, you can
-emulate it through views.  /Virtual separation of concerns/ is using tools to
-provide coherent views of features that are scattered in the code [[cite:AK-09][AK-09]].
-
-Virtual separation of concerns has few downsides and many benefits: simplicity
-and flexibility being the chief advantages.
-
-Handling feature interactions is an open problem.  Detecting them also.
-
-***** Mechanisms for instrumentation
-FOP implementations presented here are static organization of code into
-features.  Much like design patterns or frameworks, they require the programmer
-to design for extensibility beforehand.  AspectJ allows extending an existing
-code base (unlike the original AOP vision, which emphasized the design decision
-of separating components from aspects).
-
-The notion of superimposition is nice.  Recognizing that inheritance, mixins and
-traits are all instances of superimposition is a powerful insight.
-
-Virtual separation of concerns makes some good points.  If the primary
-decomposition is tyranny, then we have no hope of organizing the physical code
-into features.  However, we can leverage editing tools to re-arrange and view
-the code in any way we like.  One physical representation, many views.  Each
-view can provide different information about the system.
-
-The motivation behind all such mechanisms is a desire to organize snippets of
-code, to structure modules, and avoid repetitions.  The ultimate conclusion of
-that trend is a language-agnostic manipulation syntax based on hypertext.  Each
-snippet has a name, and tags (for marking membership of a feature, but mostly
-for non-hierarchical organization).  Any snippets can be referenced by another
-(for documentation), and can be included for execution.  Snippets can be
-referenced to by name, or by tags.  Tags and wildcards allow quantification.
-
-Tags also allow to view the program through different lenses.  Snippets can have
-parameters, hence are a form a macros.
-
-Links are two way, and kept in sync by the programming system (editor): this
-prevents obliviousness.
-
-**** Semantic patches
-[[cite:PLM-07][PLM-07]].  A solution to /collateral evolution/.  When a library function changes
-name, or gains an argument, client code must makes the necessary changes.  The
-changes in client code are collateral.
-
-In a semantic patch, one describes the pattern of collateral changes needed to
-adapt client code.
+De la même manière, les /patches sémantiques/ [[cite:PLM-07][PLM-07]] reconnaissent des arbres
+syntaxiques partiels afin de répliquer des changements automatiquement.
+L'application principale est de pouvoir modifier des drivers lorsque l'interface
+du noyau Linux change.  Dans un patch sémantique, on décrit le motif général du
+changement à l'aide d'ellipses:
 
 #+BEGIN_EXAMPLE
 @ rule2 @
@@ -4782,36 +4674,56 @@ proc_info_func (
 }
 #+END_EXAMPLE
 
-Identifiers are declared in the header with a syntactic class.  They are matched
-in the target code according to the context where they appear in the body of the
-semantic path.
+L'ellipse peut correspondre à n'importe quelle séquence d'instructions dans le
+code du driver.  Les patches sémantiques sont donc applicables à tous les
+fichiers qui contiennent ce motif, ce qui permet d'automatiser le changement.
 
-The dots =...= are an operator to match any sequence of code between two lines.
-There is a mention of the dots matching the /control-flow/ of the code, though
-nothing indicates that =spatch= interprets the target code in any way.
+Enfin, si on ne peut pas séparer les préoccupations avec ces outils, on peut
+toujours l'émuler en créant ses propres vues.  C'est l'idée de l'information
+transparente [[cite:Gri-01][Gri-01]], que l'on retrouve aussi sous le nom de séparation virtuelle
+des préoccupations [[cite:AK-09][AK-09]].  Le principe de l'information transparente est
+d'exploiter les similarités du code, et en particulier les similarités
+/cohérentes/:
 
-[[cite:JH-07][JH-07]] demystifies the tool by giving a denotational semantics.  Indeed, the dots
-only match the syntax.
+#+BEGIN_QUOTE
+Code elements likely to be changed together as part of a complete, consistent
+change should look similar, and code elements unlikely to be changed together
+should look different.
+#+END_QUOTE
 
-The related work section of [[cite:JH-07][JH-07]] has a few surveys on software evolution, and
-in particular the Journal of Software Maintenance and Evolution.
+#+BEGIN_side-figure
+[[file:img/griswold0.svg]]
 
-All around a nice idea, though you still have to write the semantic patches from
-scratch for every change.
+Les similarités d'un projet peuvent être récupérées par des outils standard.
+Ici, ~grep~ permet de créer différentes vues du projet.
+#+END_side-figure
 
-The (unintended) idea of source transformation based on dynamic control flow is
-interesting.  See [[file:notes.org::*Shapes%20of%20computation][Shapes of computation]].
+Par exemple, pour adapter une analyse de programmes C pour analyser également
+des programmes Ada, on peut réutiliser l'analyse des boucles ~while~ en C pour
+les boucles ~loop~ en Ada.  Si le code de l'outil est /cohérent/, les variables
+et les fonctions qui manipulent le ~while~ de C s'appelleront ~WHILE~, ou
+~WhileStmt~.  Du coup, il suffira de faire une simple recherche sur tous les
+fichiers du projet, avec ~grep~ par exemple, pour trouver tous les endroits
+qu'il faudra adapter pour les programmes Ada.
 
-***** Mechanisms for extension
-It's another approach, transforming code to alleviate the maintenance cost.
+#+ATTR_HTML: :style margin-top:6rem
+#+BEGIN_aside
+TODO: add Eclipse ref
+#+END_aside
 
-However, it's a crutch.  We would prefer not having to have to make those
-changes in the first place, even if the kernel libraries are updated.
+Ce principe s'applique pas seulement au code.  Une pratique courante est
+d'inclure les mots ~TODO~, ~FIXME~ ou ~REFACTOR~ dans les commentaires d'un code
+source pour indiquer un problème que l'auteur note dans le feu de l'action, dans
+l'intention de le résoudre ultérieurement.  On peut ensuite facilement obtenir
+une liste de toutes ces notes avec une simple recherche dans le texte.
+L'environnement de développement Eclipse affiche par exemple toutes les tâches
+d'un projet à partir de ces mots-clés.
 
-The concept of /collateral evolution/ is certainly related.  When interpreters
-evolve, collateral changes are needed on the analyses.  Previous work [[cite:PLM-06][PLM-06]] was
-more focused on introducing the collateral evolution problem, with plenty of
-examples from the Linux kernel.
+L'information transparente a l'avantage de pouvoir s'appliquer à n'importe quel
+programme, puisqu'elle ne repose que sur des conventions.  Elle n'impose pas de
+changements structurels, ce qui la rend plus économique à adopter qu'un nouveau
+paradigme.  En contrepartie, elle n'offre aucune garantie.  Si l'on malpelle
+~TODO~ en ~TOOD~, la note ne sera peut être oubliée à jamais.
 
 *** Dynamic binding
 Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
@@ -10015,125 +9927,6 @@ boundaries.  And of Open Scope, that breaks the module.
 
 /Any/ late binding mechanism has the same property.  If parts of the control
 flow are decided dynamically, Dijsktra's compass is defeated.
-
-** READ L'information transparente
-Les mécanismes de décomposition sont insuffisants pour anticiper les changements
-d'un programme.  La programmation littéraire, AspectJ et Hyper/J proposent de
-nouvelles façons d'organiser le code source pour y remédier, mais adopter ces
-techniques demande d'adopter un nouveau paradigme, et de nouveaux outils.  Que
-ce soit du TeX, des aspects, ou des hypercoupes, il faut réécrire une bonne
-partie du code source et suivre la discipline prescrite afin de bénéficier de
-ses vertus.  Mais le plus grand risque, au long terme, c'est d'adopter de
-nouveaux outils, des compilateurs qui non seulement sont spécifiques à un seul
-langage (WEB vise Pascal, et AspectJ et Hyper/J sont faits pour Java), mais qui
-pourraient tomber en désuétude faute d'engouement.  L'/information transparente/
-[[cite:Gri-01][Gri-01]] est une alternative pragmatique qui s'applique à n'importe quel langage,
-en utilisant des outils standards.
-
-La motivation de l'auteur est de mieux appréhender des changements de logiciels
-qui dépassent la décomposition modulaire offerte par les langage de
-programmation classiques.  Une décomposition modulaire adéquate doit minimiser
-ce type de changements, mais, quelle que soit la décomposition, elle ne peut pas
-convenir à tous les axes d'évolution.
-
-Le principe de l'information transparente est d'exploiter les similarités du
-code, et en particulier les similarités /cohérentes/:
-
-#+BEGIN_QUOTE
-Code elements likely to be changed together as part of a complete, consistent
-change should look similar, and code elements unlikely to be changed together
-should look different.
-#+END_QUOTE
-
-L'auteur donne l'exemple d'un outil de planification qui visait des programmes
-écrits en C et qu'il a fallu adapter pour des programmes écrits en Ada.  L'outil
-construit un arbre syntaxique des programmes C, et élabore un diagramme à partir
-de l'arbre.  Pour pouvoir faire la même chose pour des programmes en Ada, il
-faut capturer les boucles.  En C, il faut par exemple capturer ~while~.  En Ada,
-la construction est ~loop~.  Puisque le code de l'outil est /cohérent/, les
-variables et les fonctions qui manipulent le ~while~ de C s'appellent ~WHILE~,
-ou ~WhileStmt~.  Du coup, il suffit de faire une simple recherche sur tous les
-fichiers du projet, avec ~grep~, pour trouver tous les endroits qu'il faudra
-adapter pour les programmes Ada.
-
-Il rapporte un autre exemple: intégrer le support du standard Unicode dans des
-logiciels qui ne traitent que de l'ASCII.  En Unicode, un octet ne correspond
-pas nécessairement à un caractère, contrairement à l'ASCII. Pour compter le
-nombre de caractères d'une chaîne en ASCII, il suffit de compter les octets.
-Mais en Unicode, les deux ne sont plus équivalents.  Il faut donc distinguer les
-deux cas d'utilisation: est-ce que ce ~int~ compte les caractères, ou les
-octets?  Le type de la variable ne suffit pas pour donner cette information.  En
-revanche, les programmeurs du logiciel discernent les deux cas à travers les
-noms de variable: une variable préfixée par ~cch~ contient un nombre de
-caractères, et un préfixe ~cb~ indique un nombre d'octets.  Puisque cette
-nomenclature est respectée par tout le projet, elle peut être utilisée pour
-distinguer les deux cas d'usage, et faciliter le passage à Unicode.
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-Une forme de notation hongroise, où le type /logique/ de la variable est indiqué
-plutôt que le type utilisé par le compilateur.
-#+END_aside
-
-Ce principe ne s'applique pas seulement au code.  Dans les commentaires de
-programmes, il est courant de de trouver les mots ~TODO~, ~FIXME~ ou ~REFACTOR~
-pour indiquer un problème que l'auteur, dans le feu de l'action, note pour une
-correction ultérieure.  Ces mots-clés jouxtent le code auquel ils s'appliquent,
-ce qui permet à tout programmeur qui va voir le code de les prendre en compte.
-Mais on peut aussi facilement obtenir une liste de tous les problèmes du projet
-en faisant une simple recherche de texte.  L'environnement de développement
-Eclipse affiche une liste de toutes les tâches du projet, construite en glanant
-ces mots-clés.
-
-#+ATTR_HTML: :style margin-top:-4rem
-#+BEGIN_aside
-TODO: add Eclipse ref
-#+END_aside
-
-#+ATTR_HTML: :style margin-top:2rem
-#+BEGIN_side-figure
-[[file:img/griswold0.svg]]
-
-Les similarités d'un projet peuvent être récupérées par des outils standard.
-Ici, ~grep~ permet de créer différentes vues du projet.
-#+END_side-figure
-
-L'information transparente permet de recréer de la localité grâce à la
-similarité des morceaux de code.  Tous les morceaux affectés par le même
-changement sont localisés par leur forme: que ce soit l'emploi de variables de
-même nom, ou ayant un préfixe commun, ou la présence d'un mot-clé, ou même une
-similarité dans l'arbre de syntaxe:
-
-#+BEGIN_QUOTE
-When the code relating to a particular change is not localized to a module, an
-information-transparent module design allows a programmer to use available
-software tools to economically identify the related code, easing the
-change. That is, the “signature” of the changing design decision can be used to
-create locality out of similarity, providing a module view of the code that
-crosscuts its explicit textual, procedural, module, and file structures.  This
-signature is one or more shared characteristics of the code to be changed, such
-as the use of particular variables, data structures, language features, or
-system resources.
-#+END_QUOTE
-
-L'avantage de cette approche est qu'elle peut s'appliquer à n'importe quel
-langage de programmation—même à n'importe quel fichier texte—puisqu'elle repose
-sur des conventions et des outils standards.  Elle demande moins de changements
-structurels, ou en tout cas des changements qui n'affectent généralement pas la
-sémantique du code, ce qui la rend plus économique à adopter qu'un nouveau
-paradigme.
-
-En contrepartie, les conventions sont fragiles.  En utilisant une notation
-hongroise pour guider l'adaptation d'Unicode, il n'y aucune garantie
-d'exhaustivité ou de correction.  Peut-être que plusieurs variables comptent des
-caractères et s'appellent simplement ~i~.  Ou pire, peut-être qu'une variable
-préfixée ~cch~ est en réalité utilisée pour compter des octets!  L'information
-transparente facilite la localisation des similarités, mais n'offre aucune
-garantie, juste un compromis pragmatique.
-
-# Not sure that any tool or programming language could guard against "logical"
-# mistakes made by the programmer.  But that is an insight best left to the
-# Synthesis section, along with a well-chosen XKCD strip.
 
 * Appendices
 ** Construire un interpréteur par modules
