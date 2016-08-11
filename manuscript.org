@@ -4581,58 +4581,18 @@ Néanmoins, ces solutions sont applicables pour le problème plus large, qui est
 de construire des interpréteurs extensibles.
 
 ** INPROGRESS Autres mécanismes de détournement
-*** READ La séplution
-:PROPERTIES:
-:CUSTOM_ID: hyperj
-:END:
-La programmation par aspects a pour but la séparation des composants et des
-aspects.  C'est à dire, la séparation de /certaines/ préoccupations: les
-préoccupations transversales, orthogonales à la fonctionnalité du code.  En
-programmation par aspects, on a deux axes de composition du programme: l'axe des
-composants, pour la fonctionnalité principale, et l'axe des aspects, pour les
-fonctionnalités transversales.  L'axe des aspects reste dépendant de l'axe des
-composants: ce dernier est l'axe dominant, qui impose la structure du programme,
-ce qui peut limiter les choix de composition du programme.  D'autres
-recompositions sont possibles, comme celle proposée par Hyper/J [[cite:TOH+99][TOH+99]] [[cite:TO-00][TO-00]].
+*** La superposition
+La superposition regroupe un ensemble de techniques qui visent à étendre le
+programme au niveau du code source plutôt qu'au niveau du langage.
 
-Hyper/J est une implémentation de la séparation pluridimensionnelle des
-préoccupations (qu'on appellera /séplution/) pour Java, tout comme AspectJ est
-une implémentation de la programmation par aspects pour Java.  La séplution est
-un paradigme qui permet la recomposition des préoccupations selon plusieurs
-axes, et de façon symétrique, contrairement à la programmation par aspects.
-
-Dans [[cite:TOH+99][TOH+99]], les auteurs motivent la séplution avec l'exemple d'un système qui
-permet de construire des programmes dans un langage simple, une instance du
-problème de l'expression.  Le système permet de créer des expressions
-arithmétiques, qui sont des additions ou des soustractions de sous-expressions,
-soit des nombres.
-
-Pour implémenter ce système, ils proposent de représenter chaque nœud de l'arbre
-syntaxique par une classe: une classe ~Expression~, une classe ~Number~, une
-classe ~Plus~, etc.  Chaque classe implémente trois méthodes, qui correspondent
-à trois traitements différents de l'arbre syntaxique: ~eval~ évalue la valeur
-arithmétique de l'expression, ~display~ affiche l'expression, et ~check~ vérifie
-que l'expression est bien formée.
-
-#+BEGIN_side-figure
-[[file:img/hyperj1.svg]]
-
-Les trois traitements communs à chaque nœud de l'arbre de syntaxe sont trois
-préoccupations différentes, éparpillées dans chaque classe.  L'unité
-d'abstraction, la classe, ne correspond pas à l'unité des traitements.
-#+END_side-figure
-
-Immédiatement, ils constatent que chaque traitement peut être considéré comme
-une préoccupation, et que selon cette décomposition en classes, ces
-préoccupations sont toutes éparpillées dans les méthodes correspondantes des
-différentes classes.  Il n'y a pas de vue centralisée d'une préoccupation.
-
-Cet éparpillement est un problème lorsqu'ils cherchent à étendre la
-fonctionnalité du système.  Modifier une fonctionnalité nécessite de toucher à
-une méthode dans différentes classes.  Ajouter la synchronisation des expressions
-dans une base de donnée requiert d'ajouter des appels dans les constructeurs et
-accesseurs de chaque classe.  Les modifications ont un impact élevé sur
-l'implémentation, que les auteurs souhaitent minimiser:
+Hyper/J est un système pour séparation pluridimensionnelle des préoccupations
+pour Java [[cite:TOH+99][TOH+99]] [[cite:TO-00][TO-00]].  C'est un paradigme qui permet de séparer les
+préoccupations d'un système selon plusieurs axes, en regroupant tous les
+artefacts liés à une préoccupation: le code source, mais aussi la documentation,
+et les documents de conception.  Le but de cette séparation et de minimiser
+l'impact d'un changement.  Les auteurs prennent l'exemple de problème de
+l'expression, où, on l'a vu, ajouter un terme ou une opération n'est pas
+équivalent.
 
 #+BEGIN_QUOTE
 The goal of low impact of changes requires /additive/, rather than /invasive/,
@@ -4644,82 +4604,41 @@ artifcats.  Thus, additive changes in one artifact, like requirements, may not
 translate to additive changes in other artifacts, like design and code.
 #+END_QUOTE
 
-La séplution doit donc permettre de modifier le système sans avoir à modifier sa
-structure en profondeur.  Une nouvelle fonctionnalité devrait se traduire par un
-ajout de code, et pas par de la modification de code existant.  Et pour réaliser
-ce but, l'exemple du problème de l'expression montre que les unités
-d'abstraction classiques sont insuffisantes; elles imposent toutes une dimension
-de composition.  Et même si elles permettent plusieurs dimensions de
-composition, comme la programmation par aspects, il y a toujours une dimension
-qui prime sur l'autre.  C'est un constat qu'ils nomment la "tyrannie de la
-décomposition dominante".
-
-Pour abolir cette tyrannie, ils proposent l'/hypercoupe/: une façon de regrouper
-tous les artefacts du système qui touchent à une même préoccupation.  Une
-hypercoupe contient le code source, la description informelle de la
-fonctionnalité, sa spécification, sa conception, sa documentation, etc.
-
-Continuant l'exemple, on peut regrouper les fonctionnalités d'évaluation,
-d'affichage, de vérification et de synchronisation par des hypercoupes
-différentes.  Le papier illustre à travers des diagrammes UML ce qu'Hyper/J
-permet de faire en Java.
+Pour les auteurs, si un ajout de fonctionnalité ne se traduit pas en ajout de
+code, c'est que les abstractions du langage de programmation ne sont pas
+adaptées.  L'abstraction proposée en Hyper/J pour résoudre le problème de
+l'expression est l'/hypercoupe/.
 
 #+ATTR_HTML: :style margin-top:-10rem
 #+BEGIN_side-figure
 [[file:img/hyperj2.svg]]
 
-Recomposition en utilisant des hypercoupes pour chaque traitement.  Les trois
-traitements sont isolés par chaque hypercoupe, mais les classes sont communes à
-toutes.
+Séparation des préoccupations dans le problème de l'expression en utilisant des
+hypercoupes.  Chaque hypercoupe correspond à une opération, et les classes qui
+représentent les termes apparaissent toutes les hypercoupes.
 #+END_side-figure
 
-Une hypercoupe n'isole pas nécessairement une partie du système.  Les unités
-d'abstraction que sont les classes et méthodes peuvent apparaître dans plusieurs
-hypercoupes.  C'est le cas ici: la classe ~Expression~ apparaît dans toutes les
-hypercoupes.  Les hypercoupes sont des organisations, des vues différentes du
-même système, et certaines parties du systèmes sont pertinentes pour plusieurs
-vues.
+L'hypercoupe regroupe tous les artefacts liés à la préoccupation.  Pour le
+problème de l'expression, il y aura par exemple hypercoupe pour chaque
+opération: ~eval~, ~display~ (/pretty-printing/), ou bien encore ~check~ pour
+une analyse du programme.  Les artefacts peuvent apparaître dans plusieurs
+hypercoupes.  C'est le cas ici: les classes qui représentent les termes
+apparaissent dans toutes les hypercoupes.  Les hypercoupes sont simplement des
+vues différentes d'un même système.
 
-Une fois les hypercoupes définies, il faut également décrire comment elles se
-composent pour former le système final: comment composer la documentation pour
-produire un document unique, et comment composer le code pour produire un
-exécutable.  Cette composition dépend évidemment des artefacts considérés.
+Dans Hyper/J, la superposition intervient lorsqu'il s'agit de composer les
+hypercoupe pour synthétiser le programme.  Composer le code source se fait à
+partir des noms de classes et des méthodes: deux classes homonymes dans deux
+hypercoupes différentes combineront leurs méthodes.  Dans les hypercoupes de
+l'exemple, on obtient une seule classe ~Term~ qui aura trois méthodes: ~eval~,
+~display~, et ~check~.  La superposition s'applique aussi aux méthodes
+homonymes, mais on peut en plus préciser de quelle façon combiner comme en
+programmation par aspects (~after~, ~before~, ~around~).
 
-En Hyper/J, la composition du code source se fait sur le nom des classes ou des
-méthodes: deux classes ayant le même nom dans deux hypercoupes différentes
-combineront leur contenu, et récursivement pour leurs méthodes.  Pour les
-méthodes, on peut aussi spécifier qu'il faut surcharger la méthode de même nom
-de l'hypercoupe précédente, sans pour autant utiliser l'héritage de classe.
-
------
-
-La séplution a pour but de minimiser les modifications à apporter au code source
-lorsqu'une nouvelle fonctionnalité est implémentée, et d'abolir l'asymétrie de
-la décomposition dominante.  L'idée importante de la séplution est de
-reconnaître qu'une préoccupation a plusieurs dimensions dans le programme, et
-n'apparaît pas seulement dans le code source.  Les hypercoupes sont des
-projections qui regroupent tous les artefacts relatifs à une préoccupation: le
-code source, mais aussi les documents de conception.  La séplution est donc une
-méthodologie de développement, de la conception à l'implémentation, dont les
-unités d'abstraction sont les fonctionnalités du système.
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-Une méthodologie qui est proche des domaines de la programmation par
-fonctionnalité (/Feature-Oriented Programming/) et de l'ingénierie des modèles
-(/Model-Driven Engineering/).  Mais ces domaines dépassent la portée de ce
-document.
-#+END_aside
-
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Superimposition referenced here, but not described anywhere.
-#+END_aside
-
-Hyper/J est une implémentation de la séplution pour Java.  Un programmeur écrit
-des hypercoupes, et précise leur composition avant de les passer au compilateur,
-qui génère du bytecode Java.  Le mécanisme de composition est une instance de
-/superimposition/.
+L'intérêt de cette approche, c'est qu'elle ne dépend pas (ou peu) du langage
+concerné.  On peut créer des hypercoupes regroupant des extraits de programmes
+dans différents langages de programmation.  Ce qui importe, c'est de préciser
+commen ces extraits sont combinés pour synthétiser le programme final.
 
 *** Superimposition
 **** Software product lines
