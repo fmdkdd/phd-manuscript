@@ -54,7 +54,7 @@ different person then.'
    - [[#read-réifier-le-langage-métaprogrammation-et-réflexion][READ Réifier le langage: métaprogrammation et réflexion]]
    - [[#read-séparer-les-préoccupations-la-programmation-par-aspects][READ Séparer les préoccupations: la programmation par aspects]]
    - [[#unread-le-problème-de-lexpression][UNREAD Le problème de l'expression]]
-   - [[#inprogress-autres-mécanismes-de-détournement][INPROGRESS Autres mécanismes de détournement]]
+   - [[#unread-autres-mécanismes-de-détournement][UNREAD Autres mécanismes de détournement]]
    - [[#unwritten-récapitulatif][UNWRITTEN Récapitulatif]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
@@ -4532,7 +4532,7 @@ modifications de son code source trop importantes.
 Néanmoins, ces solutions sont applicables pour le problème plus large, qui est
 de construire des interpréteurs extensibles.
 
-** INPROGRESS Autres mécanismes de détournement
+** UNREAD Autres mécanismes de détournement
 *** La superposition
 La superposition regroupe un ensemble de techniques qui visent à étendre le
 programme au niveau du code source plutôt qu'au niveau du langage.
@@ -4748,26 +4748,33 @@ d'effets JSConTest qui était précédemment basé sur de la transformation de c
 [[cite:KT-13][KT-13]].
 
 *** La portée dynamique
-Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
-dynamic environment in lexical binding [[cite:Que-03][Que-03]].
+La portée dynamique est aussi un moyen de détourner des programmes.  C'est un
+des ingrédients de l'extensibilité de l'éditeur de texte Emacs [[cite:Sta-81][Sta-81]].  Stallman
+prend l'exemple d'associer temporairement une séquence de touche à une action,
+tant qu'un mode d'édition spécifique est actif.  Si le mode fait référence à la
+table des raccourcis ~bind-map~, on peut, par portée dynamique, redéfinir
+temporairement ~bind-map~ lors de l'activation de ce mode:
 
-Implicit parameters [[cite:LLM+00][LLM+00]] provide dynamic scoping for Haskell (though they lose
-their first-class privileges).
+#+BEGIN_SRC elisp
+(let ((bind-map ...))
+  (specific-edit-mode))
+#+END_SRC
 
-[[cite:Mor-98][Mor-98]] gives a syntactic theory of dynamic binding, and prove that dynamic
-binding adds expressiveness to a purely functional language.  They give examples
-in Perl, TeX, Common Lisp and Bash.
+Et ce, sans besoin de modifier la façon dont le mode accède à ~bind-map~.  De
+façon générale, la portée dynamique permet à l'appelant de surcharger les
+variables libres d'une fonction.
 
-[[cite:Tan-09a][Tan-09a]] generalizes dynamic and static binding by making explicit the two
-dimensions of propagation of bindings (call stack and delayed lambdas), and
-offering a filter function to toggle the activation of a propagated binding.
-
-Some use-cases are mentioned, but none are demonstrated in the paper.  The
-proposal is not motivated enough by concrete applications that would be
-difficult to solve using existing mechanisms.  Also, the work is really focused
-on the binding semantics of Scheme, which reduce its applicability.
-
-Emacs customization benefits from dynamic binding [[cite:Sta-81][Sta-81]].
+Historiquement, la portée dynamique est d'abord une erreur de programmation dans
+les premières implémentations de Lisp [[cite:McC-81][McC-81]], ce qui a été rectifié par l'ajout
+de l'opérateur ~FUNCTION~ [[cite:Mos-70][Mos-70]].  Un Lisp traditionnel peut donc comporter des
+variables à portée dynamique, et d'autres à portée lexicale.  Moreau note que la
+portée dynamique apporte de l'expressivité à un langage purement fonctionnel
+[[cite:Mor-98][Mor-98]], mais que la plupart des langages courants n'offrent que la portée
+lexicale.  Il donne l'exemple de Perl, TeX, CommonLisp et Bash comme langages
+majeurs à portée dynamique.  Comme Queinnec le montre, on peut émuler la portée
+dynamique dans une fonction en lui passant un argument supplémentaire d'où
+retirer ses variables [[cite:Que-03][Que-03]].  Néanmoins, le langage Haskell implémente tout de
+même la portée dynamique à travers l'extension des paramètres implicites [[cite:LLM+00][LLM+00]].
 
 ** UNWRITTEN Récapitulatif
 La réflexion proposée par Java est un exemple de métaprogrammation, mais
