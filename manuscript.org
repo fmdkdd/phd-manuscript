@@ -55,7 +55,7 @@ different person then.'
    - [[#read-séparer-les-préoccupations-la-programmation-par-aspects][READ Séparer les préoccupations: la programmation par aspects]]
    - [[#unread-le-problème-de-lexpression][UNREAD Le problème de l'expression]]
    - [[#unread-autres-mécanismes-de-détournement][UNREAD Autres mécanismes de détournement]]
-   - [[#inprogress-récapitulatif][INPROGRESS Récapitulatif]]
+   - [[#unread-récapitulatif][UNREAD Récapitulatif]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
    - [[#read-ajouter-des-termes][READ Ajouter des termes]]
@@ -4781,30 +4781,48 @@ dynamique dans une fonction en lui passant un argument supplémentaire d'où
 retirer ses variables [[cite:Que-03][Que-03]].  Néanmoins, le langage Haskell implémente tout de
 même la portée dynamique à travers l'extension des paramètres implicites [[cite:LLM+00][LLM+00]].
 
-** INPROGRESS Récapitulatif
-La réflexion proposée par Java est un exemple de métaprogrammation, mais
-restreinte.  L'idée de "programmer le programme" poussée à son paroxysme nous
-amène à programmer le langage.  Les mots même du programme n'ont plus de sens
-par défaut.  C'est le glissement qu'il est si facile d'obtenir en préfixant du
-code Lisp par une apostrophe ~'~.
+** UNREAD Récapitulatif
+Dans tous les travaux que l'on a étudié dans ce chapitre il y a un thème qui
+résonne: l'indirection.
 
-A interesting observation on binding is quoted from [[cite:MJD-96][MJD-96]]:
+D'abord, la programmation structurée nous met en garde /contre/ l'indirection.
+C'est parce que ~GOTO~ cause de l'indirection qu'il est jugé néfaste pour la
+compréhension des programmes.  La programmation littéraire met au centre la
+compréhension du programme: le programme est avant tout écrit pour l'humain.  Le
+programme littéraire est composé par morceaux, des extraits liés entre eux par
+des liens, des indirections qui permettent de tisser le programme final et sa
+documentation.  Dans la programmation par objets, les mécanismes d'héritage, de
+délégation, de liaison dynamique et de traits sont tous des exemples
+d'indirection au service de l'extensibilité.  La réflexion, la métaprogrammation
+et l'implémentation ouverte poussent l'indirection à l'extrême: le programme
+observe et modifie sa propre interprétation.  Dans une moindre mesure, les
+aspects interceptent les appels de méthodes pour modifier les programmes à
+distance.
+
+On peut même voir dans ce bref historique émerger une tendance vers davantage
+d'indirection, ce que remarquent Malenfant {{{etal}}} [[cite:MJD-96][MJD-96]]:
+
 #+BEGIN_QUOTE
 The general trend in the evolution of programming languages has been to postpone
 formal binding times towards the running of programs, but to use more and more
 sophisticated analysis and implementation techniques to bring actual times back
 to the earlier stages.
 #+END_QUOTE
-Later binding = more runtime flexibility, but also less guarantees and less
-performance.
 
-Findler & Flatt [[cite:FF-98][FF-98]], moral of the story:
+L'indirection est aussi présente dans les différentes solutions au problème de
+l'expression, qui est un problème d'extensibilité des interpréteurs.  Les
+fonctions ouvertes et les classes types sont similaires à la liaison dynamique
+de la programmation par objets, un exemple d'indirection.  Le patron visiteur
+est une inversion de contrôle qui introduit une indirection: on appelle une
+méthode /à travers/ un visiteur.  Enfin, les valeurs virtuelles et les
+mandataires ne sont /que/ de l'indirection, et la portée dynamique repose sur
+l'utilisation des variables libres, qui sont elles-mêmes des indirections.
 
-#+BEGIN_QUOTE
-Separate a module's linking specification from its encapsulated definitions
-
-Separate a class's superclass specifications from its extending definitions.
-#+END_QUOTE
+Il apparaît donc que l'indirection, sous toutes ces formes, est l'ingrédient
+principal pour étendre des programmes en général, et des interpréteurs en
+particulier.  En conséquence, il convient de privilégier l'indirection pour
+modifier le comportement d'un programme, pour le détourner.  C'est ce que l'on
+va faire dans les chapitres suivants.
 
 * UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible
 :PROPERTIES:
