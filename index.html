@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-11 jeu. 19:19 -->
+<!-- 2016-08-12 ven. 19:37 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -168,7 +168,7 @@ for the JavaScript code in this tag.
 <li><a href="#idea">2.5. <span class="done READ">READ</span> L&rsquo;idée: le détournement de programme</a></li>
 </ul>
 </li>
-<li><a href="#chrono">3. <span class="todo INPROGRESS">INPROGRESS</span> Le détournement à travers l&rsquo;histoire des langages de programmation</a>
+<li><a href="#chrono">3. Le détournement à travers l&rsquo;histoire des langages de programmation</a>
 <ul>
 <li><a href="#orgheadline18">3.1. <span class="done READ">READ</span> Le programme reflète le processus: la programmation structurée</a></li>
 <li><a href="#proglit">3.2. <span class="done READ">READ</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</a></li>
@@ -176,8 +176,8 @@ for the JavaScript code in this tag.
 <li><a href="#metaobj">3.4. <span class="done READ">READ</span> Réifier le langage: métaprogrammation et réflexion</a></li>
 <li><a href="#aop">3.5. <span class="done READ">READ</span> Séparer les préoccupations: la programmation par aspects</a></li>
 <li><a href="#expr">3.6. <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</a></li>
-<li><a href="#orgheadline43">3.7. <span class="todo INPROGRESS">INPROGRESS</span> Autres mécanismes de détournement</a></li>
-<li><a href="#orgheadline44">3.8. <span class="todo UNWRITTEN">UNWRITTEN</span> Récapitulatif</a></li>
+<li><a href="#orgheadline43">3.7. <span class="todo UNREAD">UNREAD</span> Autres mécanismes de détournement</a></li>
+<li><a href="#orgheadline44">3.8. <span class="todo UNREAD">UNREAD</span> Récapitulatif</a></li>
 </ul>
 </li>
 <li><a href="#variations">4. <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
@@ -2586,7 +2586,7 @@ des langages.  Le chapitre suivant étudie plus en détail l&rsquo;existant.
 </div>
 
 <div id="outline-container-orgheadline45" class="outline-2">
-<h2 id="chrono"><a id="orgheadline45"></a><span class="section-number-2">3</span> <span class="todo INPROGRESS">INPROGRESS</span> Le détournement à travers l&rsquo;histoire des langages de programmation</h2>
+<h2 id="chrono"><a id="orgheadline45"></a><span class="section-number-2">3</span> Le détournement à travers l&rsquo;histoire des langages de programmation</h2>
 <div class="outline-text-2" id="text-chrono">
 <p>
 Dans ce chapitre, on s&rsquo;intéresse aux travaux qui cherchent à étendre des
@@ -3056,6 +3056,13 @@ des commentaires en TeX autour d&rsquo;un programme Pascal, ou même d&rsquo;ins
 programmes Pascal dans un document TeX.  Knuth souhaite que le programme soit
 destiné <i>avant tout</i> au lecteur humain, et en second lieu à la machine:
 </p>
+
+<aside>
+<p>
+Un sentiment partagé par Abelson et Sussman: &laquo;&nbsp;Programs must be written for
+people to read, and only incidentally for machines to execute&nbsp;&raquo; [<a href="#AS-96">AS96</a>].
+</p>
+</aside>
 
 <blockquote>
 <p>
@@ -3859,7 +3866,7 @@ façons de modifier et d&rsquo;étendre des programmes.
 <aside>
 <p>
 On peut parler ici plus précisément d&rsquo;introspection structurelle (voir par
-exemple la nomenclature de Tanter [<a href="#Tan-09">�T09b</a>]).
+exemple la nomenclature de Tanter [<a href="#Tan-09">�T09</a>]).
 </p>
 </aside>
 
@@ -5910,7 +5917,7 @@ de construire des interpréteurs extensibles.
 </div>
 
 <div id="outline-container-orgheadline43" class="outline-3">
-<h3 id="orgheadline43"><span class="section-number-3">3.7</span> <span class="todo INPROGRESS">INPROGRESS</span> Autres mécanismes de détournement</h3>
+<h3 id="orgheadline43"><span class="section-number-3">3.7</span> <span class="todo UNREAD">UNREAD</span> Autres mécanismes de détournement</h3>
 <div class="outline-text-3" id="text-3-7">
 </div><div id="outline-container-orgheadline40" class="outline-4">
 <h4 id="orgheadline40">La superposition</h4>
@@ -6106,100 +6113,166 @@ paradigme.  En contrepartie, elle n&rsquo;offre aucune garantie.  Si l&rsquo;on 
 </div>
 
 <div id="outline-container-orgheadline41" class="outline-4">
-<h4 id="orgheadline41">Virtual values and proxies</h4>
+<h4 id="orgheadline41">Les valeurs virtuelles et les mandataires</h4>
 <div class="outline-text-4" id="text-orgheadline41">
 <p>
-[<a href="#ADF-11">ADF11</a>] proposes a proxy protocol for values.  A <i>virtual value</i> is wrapped by a
-proxy which has a handful of traps that are useful to override: when the value
-is called as a function, when the value is used as a record, when the value is
-used as an index in an array, when the value is used in a binary operation &#x2026;
+Austin, Disney et Flanagan proposent d&rsquo;étendre les langages à l&rsquo;aide de <i>valeurs
+virtuelles</i> [<a href="#ADF-11">ADF11</a>].  Une valeur virtuelle est une valeur dont le comportement
+peut être redéfinit par le programmeur.  Par exemple, lorsqu&rsquo;une valeur
+virtuelle est utilisée comme indice dans un tableau, ou dans un test d&rsquo;égalité,
+ou invoquée comme une fonction, le programmeur peut intercepter cet usage et y
+substituer son propre comportement.
 </p>
 
 <p>
-They exhibit several scenarios where virtual values are useful: lazy evaluation,
-revocable membranes, and tainting.  They modified Narcissus (again!) to add
-their virtual values extension, but the implementation seems incomplete
-regarding all operations available in JavaScript.
+Avec les valeurs virtuelles, on peut par exemple implémenter la <i>mémorisation</i>
+de valeurs.  Ils donnent l&rsquo;exemple d&rsquo;une fonction <code>delay</code> qui prend comme
+argument une fonction qui représente le calcul à mémoriser.  La valeur retournée
+par <code>delay</code> est une valeur virtuelle, qui se comporte comme une valeur
+primitive: pour le reste du programme, ce n&rsquo;est plus une fonction.  La première
+fois que le programme utilise cette valeur virtuelle, le calcul sera exécuté et
+mémorisé.  Le calcul est donc effectué au plus seule fois, de façon transparente
+pour le programme.
+</p>
+
+<aside>
+<p>
+Un calcul coûteux qui retourne un entier, mais retardé par une fonction, peut
+être utilisé comme un entier par le biais de <code>delay</code>.
+</p>
+</aside>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">v</span> = delay(() =&gt; large_computation_returns_an_int())
+<span class="org-keyword">return</span> Math.max(v, threshold)
+</pre>
+</div>
+
+<p>
+Les auteurs donnent aussi l&rsquo;exemple de valeurs virtuelles pour de l&rsquo;analyse de
+flot d&rsquo;information.  Une valeur virtuelle peut être colorée par la fonction
+<code>taint</code>, ce qui colore toutes les valeurs avec lesquelles elle interagit,
+elles-mêmes devenant des valeurs virtuelles.  Ajouter 1 et 2, où 1 est une
+valeur colorée donnera la valeur colorée 3.  Les valeurs colorées sont en tout
+point semblables aux valeurs primitives, mais elles propagent leur couleur.
 </p>
 
 <p>
-They motivate virtual values as a nice way to extend languages without having to
-touch the interpreter.  Though they do not talk at all of the limitations of
-this approach: can you write any extension that you would write by modifying the
-interpreter with virtual values?  The only downsides they acknowledge are
-performance hits and potential breakage of JS invariants (‘x*x&rsquo; returning a
-negative number, or ‘x <code>=</code> x&rsquo; returning false).
+L&rsquo;intention des valeurs virtuelles est d&rsquo;implémenter des stratégies
+d&rsquo;interprétation alternatives, sans avoir à modifier l&rsquo;interpréteur.  Il faut
+néanmoins que l&rsquo;interpréteur supporte les valeurs virtuelles dans un premier
+temps.  Mais une fois cette modification effectuée, les différentes stratégies
+d&rsquo;interprétation peuvent se faire à travers les valeurs virtuelles directement.
 </p>
 
 <p>
-It seems evident that virtual values are only hooks for values.  So you cannot
-override any other part of the module which is not explicitly given by a trap.
-Getting a trace of the interpreter execution is out.  Also, you need to specify
-your analysis from the point of view of handler on values, not by altering the
-interpreter semantics.
+Un inconvénient potentiel de cette approche est qu&rsquo;il faut implémenter la
+stratégie d&rsquo;interprétation du point de vue de la valeur: quoi faire quand la
+valeur est ajoutée à une autre valeur, quoi faire quand elle est utilisée dans
+une conditionnelle, quoi faire quand elle est appelée comme fonction, etc.
+Suivant la stratégie d&rsquo;interprétation, modifier l&rsquo;interpréteur peut être plus
+direct.
 </p>
 
 <p>
-[<a href="#KT-13">KT13</a>] implements access control on JS objects through ES6 proxies.  Improves a
-previous implementation which used code transformation; better performance, less
-maintenance.
+Mais plus important, toutes les modifications de l&rsquo;interpréteur ne sont pas
+réalisables à travers les valeurs virtuelles.  Comme une valeur virtuelle est
+toujours créée explicitement à partir d&rsquo;une valeur primitive, on ne peut pas
+capturer toutes les valeurs primitives du programme pour tracer l&rsquo;interprétation
+par exemple.  Intuitivement, les valeurs virtuelles sont plus adaptées pour des
+stratégies d&rsquo;interprétations qui n&rsquo;affectent que certaines valeurs, et non tout
+le comportement du programme.  Par exemple, la mémorisation est utile pour des
+valeurs ponctuelles, mais les valeurs virtuelles ne permettent pas de
+transformer tout le langage en langage à évaluation paresseuse.
+</p>
+
+<p>
+Une valeur virtuelle est essentiellement un <i>mandataire</i> (<i>proxy</i>) autour d&rsquo;une
+valeur primitive.  Les auteurs baptisent d&rsquo;ailleurs leur langage &lambda;<sub>proxy</sub>.  Un
+mandataire s&rsquo;intercale entre le reste du programme et la valeur primitive, et
+permet de redéfinir comment cette valeur réagit aux opérations usuelles du
+langage qui d&rsquo;habitude échappent au contrôle du programmeur.  Les valeurs
+virtuelles ont inspiré l&rsquo;implémentation des mandataires en JavaScript [<a href="#CM-13">CM13</a>], qui
+n&rsquo;est cependant pas aussi riche des raisons de compatibilité.  Néanmoins, Keil
+et Thiemann ont utilisé ces mandataires avec succès pour améliorer leur moniteur
+d&rsquo;effets JSConTest qui était précédemment basé sur de la transformation de code
+[<a href="#KT-13">KT13</a>].
 </p>
 </div>
 </div>
 
 <div id="outline-container-orgheadline42" class="outline-4">
-<h4 id="orgheadline42">Dynamic binding</h4>
+<h4 id="orgheadline42">La portée dynamique</h4>
 <div class="outline-text-4" id="text-orgheadline42">
 <p>
-Introduced by McCarthy&rsquo;s LISP [<a href="#McC-60">McC60</a>] as a bug.  Can be emulated by passing a
-dynamic environment in lexical binding [<a href="#Que-03">Que03</a>].
+La portée dynamique est aussi un moyen de détourner des programmes.  C&rsquo;est un
+des ingrédients de l&rsquo;extensibilité de l&rsquo;éditeur de texte Emacs [<a href="#Sta-81">Sta81</a>].  Stallman
+prend l&rsquo;exemple d&rsquo;associer temporairement une séquence de touche à une action,
+tant qu&rsquo;un mode d&rsquo;édition spécifique est actif.  Si le mode fait référence à la
+table des raccourcis <code>bind-map</code>, on peut, par portée dynamique, redéfinir
+temporairement <code>bind-map</code> lors de l&rsquo;activation de ce mode:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-elisp">(<span class="org-keyword">let</span> ((bind-map ...))
+  (specific-edit-mode))
+</pre>
+</div>
+
+<p>
+Et ce, sans besoin de modifier la façon dont le mode accède à <code>bind-map</code>.  De
+façon générale, la portée dynamique permet à l&rsquo;appelant de surcharger les
+variables libres d&rsquo;une fonction.
 </p>
 
 <p>
-Implicit parameters [<a href="#LLM+00">LLM+00</a>] provide dynamic scoping for Haskell (though they lose
-their first-class privileges).
-</p>
-
-<p>
-[<a href="#Mor-98">Mor98</a>] gives a syntactic theory of dynamic binding, and prove that dynamic
-binding adds expressiveness to a purely functional language.  They give examples
-in Perl, TeX, Common Lisp and Bash.
-</p>
-
-<p>
-[<a href="#Tan-09a">�T09a</a>] generalizes dynamic and static binding by making explicit the two
-dimensions of propagation of bindings (call stack and delayed lambdas), and
-offering a filter function to toggle the activation of a propagated binding.
-</p>
-
-<p>
-Some use-cases are mentioned, but none are demonstrated in the paper.  The
-proposal is not motivated enough by concrete applications that would be
-difficult to solve using existing mechanisms.  Also, the work is really focused
-on the binding semantics of Scheme, which reduce its applicability.
-</p>
-
-<p>
-Emacs customization benefits from dynamic binding [<a href="#Sta-81">Sta81</a>].
+Historiquement, la portée dynamique est d&rsquo;abord une erreur de programmation dans
+les premières implémentations de Lisp [<a href="#McC-81">McC81</a>], ce qui a été rectifié par l&rsquo;ajout
+de l&rsquo;opérateur <code>FUNCTION</code> [<a href="#Mos-70">Mos70</a>].  Un Lisp traditionnel peut donc comporter des
+variables à portée dynamique, et d&rsquo;autres à portée lexicale.  Moreau note que la
+portée dynamique apporte de l&rsquo;expressivité à un langage purement fonctionnel
+[<a href="#Mor-98">Mor98</a>], mais que la plupart des langages courants n&rsquo;offrent que la portée
+lexicale.  Il donne l&rsquo;exemple de Perl, TeX, CommonLisp et Bash comme langages
+majeurs à portée dynamique.  Comme Queinnec le montre, on peut émuler la portée
+dynamique dans une fonction en lui passant un argument supplémentaire d&rsquo;où
+retirer ses variables [<a href="#Que-03">Que03</a>].  Néanmoins, le langage Haskell implémente tout de
+même la portée dynamique à travers l&rsquo;extension des paramètres implicites [<a href="#LLM+00">LLM+00</a>].
 </p>
 </div>
 </div>
 </div>
 
 <div id="outline-container-orgheadline44" class="outline-3">
-<h3 id="orgheadline44"><span class="section-number-3">3.8</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Récapitulatif</h3>
+<h3 id="orgheadline44"><span class="section-number-3">3.8</span> <span class="todo UNREAD">UNREAD</span> Récapitulatif</h3>
 <div class="outline-text-3" id="text-3-8">
 <p>
-La réflexion proposée par Java est un exemple de métaprogrammation, mais
-restreinte.  L&rsquo;idée de &laquo;&nbsp;programmer le programme&nbsp;&raquo; poussée à son paroxysme nous
-amène à programmer le langage.  Les mots même du programme n&rsquo;ont plus de sens
-par défaut.  C&rsquo;est le glissement qu&rsquo;il est si facile d&rsquo;obtenir en préfixant du
-code Lisp par une apostrophe ~&rsquo;~.
+Dans tous les travaux que l&rsquo;on a étudié dans ce chapitre il y a un thème qui
+résonne: l&rsquo;indirection.
 </p>
 
 <p>
-A interesting observation on binding is quoted from [<a href="#MJD-96">MJD96</a>]:
+D&rsquo;abord, la programmation structurée nous met en garde <i>contre</i> l&rsquo;indirection.
+C&rsquo;est parce que <code>GOTO</code> cause de l&rsquo;indirection qu&rsquo;il est jugé néfaste pour la
+compréhension des programmes.  La programmation littéraire met au centre la
+compréhension du programme: le programme est avant tout écrit pour l&rsquo;humain.  Le
+programme littéraire est composé par morceaux, des extraits liés entre eux par
+des liens, des indirections qui permettent de tisser le programme final et sa
+documentation.  Dans la programmation par objets, les mécanismes d&rsquo;héritage, de
+délégation, de liaison dynamique et de traits sont tous des exemples
+d&rsquo;indirection au service de l&rsquo;extensibilité.  La réflexion, la métaprogrammation
+et l&rsquo;implémentation ouverte poussent l&rsquo;indirection à l&rsquo;extrême: le programme
+observe et modifie sa propre interprétation.  Dans une moindre mesure, les
+aspects interceptent les appels de méthodes pour modifier les programmes à
+distance.
 </p>
+
+<p>
+On peut même voir dans ce bref historique émerger une tendance vers davantage
+d&rsquo;indirection, ce que remarquent Malenfant <i>et al.</i> [<a href="#MJD-96">MJD96</a>]:
+</p>
+
 <blockquote>
 <p>
 The general trend in the evolution of programming languages has been to postpone
@@ -6208,24 +6281,25 @@ sophisticated analysis and implementation techniques to bring actual times back
 to the earlier stages.
 </p>
 </blockquote>
+
 <p>
-Later binding = more runtime flexibility, but also less guarantees and less
-performance.
+L&rsquo;indirection est aussi présente dans les différentes solutions au problème de
+l&rsquo;expression, qui est un problème d&rsquo;extensibilité des interpréteurs.  Les
+fonctions ouvertes et les classes types sont similaires à la liaison dynamique
+de la programmation par objets, un exemple d&rsquo;indirection.  Le patron visiteur
+est une inversion de contrôle qui introduit une indirection: on appelle une
+méthode <i>à travers</i> un visiteur.  Enfin, les valeurs virtuelles et les
+mandataires ne sont <i>que</i> de l&rsquo;indirection, et la portée dynamique repose sur
+l&rsquo;utilisation des variables libres, qui sont elles-mêmes des indirections.
 </p>
 
 <p>
-Findler &amp; Flatt [<a href="#FF-98">FF98</a>], moral of the story:
+Il apparaît donc que l&rsquo;indirection, sous toutes ces formes, est l&rsquo;ingrédient
+principal pour étendre des programmes en général, et des interpréteurs en
+particulier.  En conséquence, il convient de privilégier l&rsquo;indirection pour
+modifier le comportement d&rsquo;un programme, pour le détourner.  C&rsquo;est ce que l&rsquo;on
+va faire dans les chapitres suivants.
 </p>
-
-<blockquote>
-<p>
-Separate a module&rsquo;s linking specification from its encapsulated definitions
-</p>
-
-<p>
-Separate a class&rsquo;s superclass specifications from its extending definitions.
-</p>
-</blockquote>
 </div>
 </div>
 </div>
@@ -10835,6 +10909,20 @@ Sven Apel, Christian Kästner, and Christian Lengauer.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="AS-96">AS96</a>]
+</td>
+<td class="bibtexitem">
+Harold Abelson and Gerald&nbsp;J. Sussman.
+ <em>Structure and Interpretation of Computer Programs, Second
+  Edition</em>.
+ MIT Press, 1996.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Asp-03">Asp03</a>]
 </td>
 <td class="bibtexitem">
@@ -10915,6 +11003,19 @@ R.&nbsp;Lawrence Clark.
  We don't know where to goto if we don't know where we've come from.
  <em>Datamation</em>, 1973.
 [&nbsp;<a href="http://www.fortran.com/fortran/come_from.html">.html</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="CM-13">CM13</a>]
+</td>
+<td class="bibtexitem">
+Tom&nbsp;Van Cutsem and Mark&nbsp;S. Miller.
+ Trustworthy proxies - virtualizing objects with invariants.
+ In <em>ECOOP</em>, pages 154--178, 2013.
 
 </td>
 </tr>
@@ -11491,6 +11592,20 @@ John McCarthy.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="McC-81">McC81</a>]
+</td>
+<td class="bibtexitem">
+John McCarthy.
+ History of LISP (LISP session part IV).
+ In Richard&nbsp;L. Wexelblatt, editor, <em>History of Programming
+  Languages</em>, pages 173--197. Academic Press, New York, 1981.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="KNS-15b">MdKNS15a</a>]
 </td>
 <td class="bibtexitem">
@@ -11587,6 +11702,21 @@ Luc Moreau.
  A Syntactic Theory of Dynamic Binding.
  <em>Higher-Order and Symbolic Computation</em>, 11(3):233--279, 1998.
 [&nbsp;<a href="http://dx.doi.org/10.1023/A:1010087314987">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="Mos-70">Mos70</a>]
+</td>
+<td class="bibtexitem">
+J.&nbsp;Moses.
+ The function of FUNCTION in LISP, or, why the FUNARG problem
+  should be called the environment problem.
+ Report MAC-M-428 and A. I. MEMO 199, Massachusetts Institute of
+  Technology, A.I. Lab., Cambridge, Massachusetts, 1970.
 
 </td>
 </tr>
@@ -12051,22 +12181,7 @@ Matthias Zenger and Martin Odersky.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
-[<a name="Tan-09a">�T09a</a>]
-</td>
-<td class="bibtexitem">
-Éric Tanter.
- Beyond static and dynamic scope.
- In <em>Proceedings of the 5th Symposium on Dynamic Languages, DLS
-  2009, October 26, 2010, Orlando, Florida, USA</em>, pages 3--14, 2009.
-[&nbsp;<a href="http://dx.doi.org/10.1145/1640134.1640137">DOI</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Tan-09">�T09b</a>]
+[<a name="Tan-09">�T09</a>]
 </td>
 <td class="bibtexitem">
 Éric Tanter.
@@ -12082,7 +12197,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-11 jeu. 19:19 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-12 ven. 19:37 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
