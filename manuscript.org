@@ -4679,35 +4679,75 @@ changements structurels, ce qui la rend plus économique à adopter qu'un nouvea
 paradigme.  En contrepartie, elle n'offre aucune garantie.  Si l'on malpelle
 ~TODO~ en ~TOOD~, la note ne sera peut être oubliée à jamais.
 
-*** Virtual values and proxies
-[[cite:ADF-11][ADF-11]] proposes a proxy protocol for values.  A /virtual value/ is wrapped by a
-proxy which has a handful of traps that are useful to override: when the value
-is called as a function, when the value is used as a record, when the value is
-used as an index in an array, when the value is used in a binary operation ...
+*** Les valeurs virtuelles et les mandataires
+Austin, Disney et Flanagan proposent d'étendre les langages à l'aide de /valeurs
+virtuelles/ [[cite:ADF-11][ADF-11]].  Une valeur virtuelle est une valeur dont le comportement
+peut être redéfinit par le programmeur.  Par exemple, lorsqu'une valeur
+virtuelle est utilisée comme indice dans un tableau, ou dans un test d'égalité,
+ou invoquée comme une fonction, le programmeur peut intercepter cet usage et y
+substituer son propre comportement.
 
-They exhibit several scenarios where virtual values are useful: lazy evaluation,
-revocable membranes, and tainting.  They modified Narcissus (again!) to add
-their virtual values extension, but the implementation seems incomplete
-regarding all operations available in JavaScript.
+Avec les valeurs virtuelles, on peut par exemple implémenter la /mémorisation/
+de valeurs.  Ils donnent l'exemple d'une fonction ~delay~ qui prend comme
+argument une fonction qui représente le calcul à mémoriser.  La valeur retournée
+par ~delay~ est une valeur virtuelle, qui se comporte comme une valeur
+primitive: pour le reste du programme, ce n'est plus une fonction.  La première
+fois que le programme utilise cette valeur virtuelle, le calcul sera exécuté et
+mémorisé.  Le calcul est donc effectué au plus seule fois, de façon transparente
+pour le programme.
 
-They motivate virtual values as a nice way to extend languages without having to
-touch the interpreter.  Though they do not talk at all of the limitations of
-this approach: can you write any extension that you would write by modifying the
-interpreter with virtual values?  The only downsides they acknowledge are
-performance hits and potential breakage of JS invariants (‘x*x' returning a
-negative number, or ‘x === x' returning false).
+#+BEGIN_aside
+Un calcul coûteux qui retourne un entier, mais retardé par une fonction, peut
+être utilisé comme un entier par le biais de ~delay~.
+#+END_aside
 
-It seems evident that virtual values are only hooks for values.  So you cannot
-override any other part of the module which is not explicitly given by a trap.
-Getting a trace of the interpreter execution is out.  Also, you need to specify
-your analysis from the point of view of handler on values, not by altering the
-interpreter semantics.
+#+BEGIN_SRC js
+var v = delay(() => large_computation_returns_an_int())
+return Math.max(v, threshold)
+#+END_SRC
 
-[[cite:KT-13][KT-13]] implements access control on JS objects through ES6 proxies.  Improves a
-previous implementation which used code transformation; better performance, less
-maintenance.
+Les auteurs donnent aussi l'exemple de valeurs virtuelles pour de l'analyse de
+flot d'information.  Une valeur virtuelle peut être colorée par la fonction
+~taint~, ce qui colore toutes les valeurs avec lesquelles elle interagit,
+elles-mêmes devenant des valeurs virtuelles.  Ajouter 1 et 2, où 1 est une
+valeur colorée donnera la valeur colorée 3.  Les valeurs colorées sont en tout
+point semblables aux valeurs primitives, mais elles propagent leur couleur.
 
-*** Dynamic binding
+L'intention des valeurs virtuelles est d'implémenter des stratégies
+d'interprétation alternatives, sans avoir à modifier l'interpréteur.  Il faut
+néanmoins que l'interpréteur supporte les valeurs virtuelles dans un premier
+temps.  Mais une fois cette modification effectuée, les différentes stratégies
+d'interprétation peuvent se faire à travers les valeurs virtuelles directement.
+
+Un inconvénient potentiel de cette approche est qu'il faut implémenter la
+stratégie d'interprétation du point de vue de la valeur: quoi faire quand la
+valeur est ajoutée à une autre valeur, quoi faire quand elle est utilisée dans
+une conditionnelle, quoi faire quand elle est appelée comme fonction, etc.
+Suivant la stratégie d'interprétation, modifier l'interpréteur peut être plus
+direct.
+
+Mais plus important, toutes les modifications de l'interpréteur ne sont pas
+réalisables à travers les valeurs virtuelles.  Comme une valeur virtuelle est
+toujours créée explicitement à partir d'une valeur primitive, on ne peut pas
+capturer toutes les valeurs primitives du programme pour tracer l'interprétation
+par exemple.  Intuitivement, les valeurs virtuelles sont plus adaptées pour des
+stratégies d'interprétations qui n'affectent que certaines valeurs, et non tout
+le comportement du programme.  Par exemple, la mémorisation est utile pour des
+valeurs ponctuelles, mais les valeurs virtuelles ne permettent pas de
+transformer tout le langage en langage à évaluation paresseuse.
+
+Une valeur virtuelle est essentiellement un /mandataire/ (/proxy/) autour d'une
+valeur primitive.  Les auteurs baptisent d'ailleurs leur langage \lambda_proxy.  Un
+mandataire s'intercale entre le reste du programme et la valeur primitive, et
+permet de redéfinir comment cette valeur réagit aux opérations usuelles du
+langage qui d'habitude échappent au contrôle du programmeur.  Les valeurs
+virtuelles ont inspiré l'implémentation des mandataires en JavaScript [[cite:CM-13][CM-13]], qui
+n'est cependant pas aussi riche des raisons de compatibilité.  Néanmoins, Keil
+et Thiemann ont utilisé ces mandataires avec succès pour améliorer leur moniteur
+d'effets JSConTest qui était précédemment basé sur de la transformation de code
+[[cite:KT-13][KT-13]].
+
+*** La portée dynamique
 Introduced by McCarthy's LISP [[cite:McC-60][McC-60]] as a bug.  Can be emulated by passing a
 dynamic environment in lexical binding [[cite:Que-03][Que-03]].
 
