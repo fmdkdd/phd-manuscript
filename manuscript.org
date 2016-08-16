@@ -53,7 +53,7 @@ different person then.'
    - [[#read-modéliser-le-monde-la-programmation-par-objets][READ Modéliser le monde: la programmation par objets]]
    - [[#read-réifier-le-langage-métaprogrammation-et-réflexion][READ Réifier le langage: métaprogrammation et réflexion]]
    - [[#read-séparer-les-préoccupations-la-programmation-par-aspects][READ Séparer les préoccupations: la programmation par aspects]]
-   - [[#unread-le-problème-de-lexpression][UNREAD Le problème de l'expression]]
+   - [[#read-le-problème-de-lexpression][READ Le problème de l'expression]]
    - [[#unread-autres-mécanismes-de-détournement][UNREAD Autres mécanismes de détournement]]
    - [[#unread-récapitulatif][UNREAD Récapitulatif]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
@@ -3825,7 +3825,7 @@ compréhensible.  Tous ces mécanismes présentent donc des avantages et des
 inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
-** UNREAD Le problème de l'expression
+** READ Le problème de l'expression
 :PROPERTIES:
 :CUSTOM_ID: expr
 :END:
@@ -3863,7 +3863,7 @@ data Term = Constant Int
 #+END_SRC
 
 ~Term~ est un type qui a trois variantes: un terme est soit une constante
-(~Constant~, un entier), une addition (~Plus~), ou une multiplication.
+(~Constant~, un entier), une addition (~Plus~), ou une multiplication (~Mult~).
 
 La syntaxe du type algébrique correspond à la façon usuelle de définir des
 grammaires: la forme de Backus-Naur (BNF).  Une BNF pour le langage arithmétique
@@ -3931,18 +3931,18 @@ On peut maintenant évaluer l'expression 2 + 5 * 3:
 : 17
 
 #+BEGIN_aside
-On peut voir le pretty printer comme la réciproque de l'analyseur syntaxique.
-Sauf qu'ici on ne définit cet l'analyseur, puisqu'on construit directement les
+On peut voir l'afficheur comme la réciproque de l'analyseur syntaxique.  Sauf
+qu'ici on ne définit pas cet l'analyseur, puisqu'on construit directement les
 arbres syntaxiques.
 #+END_aside
 
 Un interpréteur peut définir plusieurs opérations.  Wadler prend l'exemple d'un
-/pretty-printer/, une opération d'affichage des arbres syntaxiques dont la
-sortie est plus amicale pour l'œil humain.  Typiquement, le pretty printer d'un
-langage transforme l'arbre syntaxique en code source que le programmeur a
+afficheur (/pretty-printer/), une opération d'affichage des arbres syntaxiques
+dont la sortie est plus amicale pour l'œil humain.  Typiquement, l'afficheur
+d'un langage transforme l'arbre syntaxique en code source que le programmeur a
 l'habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
-le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot ~Constant~
-qui n'apporte pas d'information capitale.
+le ~Plus~, qui est préfixe, en ~+~ infixe, et faire disparaître le mot
+~Constant~ qui n'apporte pas d'information capitale.
 
 #+BEGIN_SRC haskell
 pp :: Term -> String
@@ -3981,7 +3981,7 @@ On peut caractériser la complexité d'un changement de l'interpréteur comme la
 complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
 de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes,
 ajouter une opération aura une complexité de l'ordre de /v/ lignes de code
-(O(v)).  On note que ces lignes sont des additions par un '+': +O(v).
+(O(/v/)).  On note que ces lignes sont des additions par un '+': +O(/v/).
 
 #+BEGIN_aside
 On notera les lignes qui modifient une définition existante par '~', et les
@@ -4034,12 +4034,11 @@ nouvelle fonction.
 
 Le problème de l'expression touche à la fois à la modularité et à
 l'extensibilité.  À l'extensibilité, parce qu'on cherche à étendre
-l'interpréteur.  Et à la modularité, parce que les termes et les opérations
-peuvent être considérés comme des /unités/ indépendantes, des modules.  Pour
-respecter la modularité, on cherche à ce que chaque extension soit restreinte à
-un module.  Dans l'exemple en Haskell, ajouter une opération revient à ajouter
-un module sans affecter les autres, mais ajouter un terme requiert de modifier
-plusieurs modules.
+l'interpréteur.  Et à la modularité, parce qu'on cherche à découper les termes
+et les opérations en modules, à réduire leurs dépendances.  Chaque extension
+devrait être restreinte à un module.  Dans l'exemple en Haskell, ajouter une
+opération revient à ajouter un module sans affecter les autres, mais ajouter un
+terme requiert de modifier plusieurs modules.
 
 *** Le problème inverse en programmation par objets
 Le problème de l'expression se pose aussi en programmation par objets.
@@ -4087,7 +4086,7 @@ Tous les termes héritent de la classe abstraite ~Term~ qui définit les
 opérations supportées.  Comme précédemment, l'évaluation de ~Plus.eval~ est
 récursive.  Cette fois en revanche, la définition de l'opération ~eval~ n'est
 pas localisée en un seul endroit dans le code source, mais répartie dans les
-objets.  Chaque classe terme définit sa propre évaluation.
+objets.  Chaque classe de terme définit sa propre évaluation.
 
 En conséquence, ajouter un terme au langage se fait simplement en ajoutant une
 nouvel classe:
@@ -4108,7 +4107,7 @@ class Mult extends Term {
 #+END_SRC
 
 On n'a pas à modifier le code des autres classes.  Ajouter un terme au langage
-revient à ajouter +O(p) lignes, s'il y a /p/ opérations.
+revient à ajouter +O(/p/) lignes, s'il y a /p/ opérations.
 
 En revanche, pour ajouter une opération comme l'affichage il faut modifier toutes
 les classes existantes:
@@ -4136,7 +4135,7 @@ nécessite de modifier tous les termes.
 #+END_side-figure
 
 Cela implique de rajouter l'opération sur ~Term~, puis de la définir pour tous
-les termes.  Pour /v/ termes, on a ~O(v) lignes modifiées.  C'est la situation
+les termes.  Pour /v/ termes, on a ~O(/v/) lignes modifiées.  C'est la situation
 inverse que dans la décomposition fonctionnelle précédente.
 
 Le problème de l'expression se manifeste ici aussi, puisqu'on peut ajouter des
@@ -4235,10 +4234,10 @@ Plus (Constant 1) (Constant 2) :: Plus Constant Constant
 Constant 1 :: Constant
 #+END_SRC
 
-Alors qu'avec les types et fonctions ouverts, toutes les expressions ont le même
-type ~Term~.  On ne peut plus écrire des fonctions qui prend des termes en
-paramètre, il faut nécessairement passer par les contraintes des classes types.
-En particulier, on ne peut plus inspecter les arbres syntaxiques.
+Avec les types et fonctions ouverts, toutes les expressions avaient le même type
+~Term~.  Mais ici, on ne peut plus écrire des fonctions qui prennent des termes
+en paramètre, il faut nécessairement passer par les contraintes des classes
+types.  En particulier, on ne peut plus inspecter les arbres syntaxiques.
 
 Swierstra propose une solution au problème de l'expression qui contourne cet
 inconvénient [[cite:Swi-08][Swi-08]].  Sa solution est basée sur les classes types et la monade
@@ -4254,7 +4253,7 @@ si bien que le type des expressions contient explicitement les termes qu'elle
 utilise:
 
 #+BEGIN_aside
-L'opérateur ~:+:~ est le constructeur de à l'union disjointe (similaire au
+L'opérateur ~:+:~ est le constructeur de l'union disjointe (similaire au
 constructeur ~Either~ en Haskell).
 #+END_aside
 
@@ -4268,6 +4267,10 @@ n'est pas le cas; ~Constant~ et ~Plus~ n'apparaissent qu'une seule fois.
 Puisque le type ~Term~ est destiné à être étendu, il faut pouvoir distinguer les
 expressions suivant les termes qu'elles contiennent.  La représentation des
 termes choisie ici permet cette distinction.
+
+En revanche, l'approche de Swierstra requiert d'élaborer une machinerie complexe
+avant de pouvoir combiner les termes ainsi.  L'utilisation de la monade gratuite
+est aussi critiquable pour son inefficacité [[cite:KI-15][KI-15]].
 
 *** Solution: utiliser le patron visiteur
 Dans la décomposition objet qui suit le patron interpréteur, ajouter des
@@ -4317,8 +4320,8 @@ class Eval implements Visitor<Integer> {
 }
 #+END_SRC
 
-Une méthode pour chaque terme.  Pour tester, il suffit de passer une instance de
-ce visiteur à une expression:
+À chaque terme correspond une méthode.  Pour tester, il suffit de passer une
+instance de ce visiteur à une expression:
 
 #+BEGIN_SRC java
 Term e1 = new Plus(new Constant(1), new Constant(2));
@@ -4333,7 +4336,7 @@ décomposition fonctionnelle, en plus verbeux.  L'opération ~Eval~ contient une
 méthode pour chaque terme, et si l'on souhaite ajouter des termes, il faudra
 ajouter une méthode pour ce terme à ~Eval~ et à l'interface ~Visitor~.
 
-Krishnamurthi {{{etal}}} [[cite:KFF-98][KFF-98]] proposent donc protocole du /visiteur
+Krishnamurthi {{{etal}}} [[cite:KFF-98][KFF-98]] proposent donc le protocole du /visiteur
 extensible/ pour pouvoir ajouter des termes sans affecter les opérations
 existantes.  Pour ajouter un terme dans le visiteur extensible, il faut ajouter
 une classe qui représente ce terme:
@@ -4390,8 +4393,10 @@ D'autres solutions plus simples existent.  Odersky et Zenger utilisent le
 langage Scala, et notamment les /mixins/ et l'auto-référence pour résoudre le
 problème de l'expression en préservant la sûreté [[cite:OZ-05][OZ-05]].  Findler et Flatt
 utilisent également les /mixins/ pour résoudre le problème en MzScheme [[cite:FF-98][FF-98]].
-Plus récemment, Wang et Oliveira montrent que la covariance peut suffire pour
-préserver la sûreté, ce qui donne une solution simple même en Java [[cite:WO-16][WO-16]].
+Pour Ernst, la solution est triviale dans les langages qui disposent du
+polymorphisme de famille [[cite:Ern-04][Ern-04]].  Et plus récemment, Wang et Oliveira montrent
+que la covariance peut suffire pour préserver la sûreté, ce qui donne une
+solution simple même en Java [[cite:WO-16][WO-16]].
 
 *** Solution: les algèbres d'objets
 Oliveira et Cook ont une autre façon d'utiliser le patron visiteur qu'ils
@@ -4400,15 +4405,15 @@ appellent une /algèbre d'objets/ [[cite:OC-12][OC-12]].
 Dans leur solution, les termes du langage sont toujours des classes:
 
 #+BEGIN_SRC java
-interface Term { int eval(); }
+abstract class Term { abstract int eval(); }
 
-class Constant implements Term {
+class Constant extends Term {
   int n;
   Constant(int n) { this.n = n; }
   public int eval() { return n; }
 }
 
-class Plus implements Term {
+class Plus extends Term {
   Term a, b;
   Plus(Term a, Term b) { this.a = a; this.b = b; }
   public int eval() { return a.eval() + b.eval(); }
@@ -4422,7 +4427,9 @@ L'idée de l'algèbre d'objets est de construire des expressions virtuelles, qui
 seront évaluées par différentes algèbres.  Plutôt que de construire l'expression
 1 + 2 en utilisant les constructeurs ~Constant~ et ~Plus~:
 
-: new Plus(new Constant(1), new Constant(2))
+#+BEGIN_SRC java
+Term e2 = new Plus(new Constant(1), new Constant(2));
+#+END_SRC
 
 on utilise les constructeurs virtuels ~constant~ et ~plus~:
 
@@ -4475,6 +4482,13 @@ Pour l'utiliser, il suffit d'invoquer l'expression ~e2~ avec ce visiteur:
 Mais on peut aussi passer un autre visiteur, qui correspond à une autre
 opération sur le langage.  Si on ajoute l'opération d'affichage:
 
+#+BEGIN_aside
+On utilise ici les lambdas de Java 8 pour éliminer le bruit syntaxique.  De
+manière équivalent, on pourrait retourner une instance de l'interface ~PP~ qui
+n'implémenterait qu'une seule méthode, ~pp~.  Les lambdas ne sont pas
+nécessaires pour les algèbres d'objets.
+#+END_aside
+
 #+BEGIN_SRC java
 interface PP { String pp(); }
 
@@ -4502,7 +4516,8 @@ pour supporter ce terme, et implémenter cette nouvelle interface pour chaque
 opération.
 
 Les algèbres d'objets sont donc très proches du visiteur extensible.  Elles
-éliminent cependant le problème de sûreté, et réduisent le bruit structurel.
+éliminent cependant le problème de sûreté, et réduisent le bruit structurel,
+mais sans pour autant l'éliminer complètement.
 
 L'utilisation des constructeurs virtuels est intéressante car non seulement elle
 rend les expressions lisibles, mais en même temps ces expressions n'ont aucune
@@ -4523,19 +4538,19 @@ Comme le problème de l'expression est lié à l'extension des interpréteurs, l
 mécanismes que l'on vient d'étudier pourront être pertinents pour l'extension de
 Narcissus.
 
-Mais le problème de l'expression est néanmoins différent du problème que l'on a
-posé.  Les solutions au problème de l'expression permettent d'étendre des
-interpréteurs, /à condition qu'ils suivent une certaine structure/.  Les termes
-sont des classes qui acceptent un visiteur; ou les termes sont les variantes
-d'un type de données algébrique.
+Mais le problème de l'expression est différent du problème que l'on a posé.  Les
+solutions au problème de l'expression permettent d'étendre des interpréteurs, /à
+condition qu'ils suivent une certaine structure/.  Les termes sont des classes
+qui acceptent un visiteur; ou les termes sont les variantes d'un type de données
+algébrique.
 
 Pour étendre Narcissus, on cherche à minimiser les changements apportés à
 l'interpréteur existant.  S'il ne suit pas une des structures extensibles
 exposées ici, il faudrait alors le refactoriser, ce qui impliquerait des
 modifications de son code source trop importantes.
 
-Néanmoins, ces solutions sont applicables pour le problème plus large, qui est
-de construire des interpréteurs extensibles.
+Néanmoins, ces solutions restent applicables au problème plus large, qui est de
+construire des interpréteurs extensibles.
 
 ** UNREAD Autres mécanismes de détournement
 *** La superposition
