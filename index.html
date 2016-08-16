@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-12 ven. 19:37 -->
+<!-- 2016-08-16 mar. 16:16 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -175,7 +175,7 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline22">3.3. <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</a></li>
 <li><a href="#metaobj">3.4. <span class="done READ">READ</span> Réifier le langage: métaprogrammation et réflexion</a></li>
 <li><a href="#aop">3.5. <span class="done READ">READ</span> Séparer les préoccupations: la programmation par aspects</a></li>
-<li><a href="#expr">3.6. <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</a></li>
+<li><a href="#expr">3.6. <span class="done READ">READ</span> Le problème de l&rsquo;expression</a></li>
 <li><a href="#orgheadline43">3.7. <span class="todo UNREAD">UNREAD</span> Autres mécanismes de détournement</a></li>
 <li><a href="#orgheadline44">3.8. <span class="todo UNREAD">UNREAD</span> Récapitulatif</a></li>
 </ul>
@@ -4922,7 +4922,7 @@ système.
 </div>
 
 <div id="outline-container-orgheadline39" class="outline-3">
-<h3 id="expr"><a id="orgheadline39"></a><span class="section-number-3">3.6</span> <span class="todo UNREAD">UNREAD</span> Le problème de l&rsquo;expression</h3>
+<h3 id="expr"><a id="orgheadline39"></a><span class="section-number-3">3.6</span> <span class="done READ">READ</span> Le problème de l&rsquo;expression</h3>
 <div class="outline-text-3" id="text-expr">
 <p>
 Le problème de l&rsquo;expression est un problème proche du notre.  Le but est de
@@ -4965,7 +4965,7 @@ suivant:
 
 <p>
 <code>Term</code> est un type qui a trois variantes: un terme est soit une constante
-(<code>Constant</code>, un entier), une addition (<code>Plus</code>), ou une multiplication.
+(<code>Constant</code>, un entier), une addition (<code>Plus</code>), ou une multiplication (<code>Mult</code>).
 </p>
 
 <p>
@@ -5064,20 +5064,20 @@ On peut maintenant évaluer l&rsquo;expression 2 + 5 * 3:
 
 <aside>
 <p>
-On peut voir le pretty printer comme la réciproque de l&rsquo;analyseur syntaxique.
-Sauf qu&rsquo;ici on ne définit cet l&rsquo;analyseur, puisqu&rsquo;on construit directement les
+On peut voir l&rsquo;afficheur comme la réciproque de l&rsquo;analyseur syntaxique.  Sauf
+qu&rsquo;ici on ne définit pas cet l&rsquo;analyseur, puisqu&rsquo;on construit directement les
 arbres syntaxiques.
 </p>
 </aside>
 
 <p>
 Un interpréteur peut définir plusieurs opérations.  Wadler prend l&rsquo;exemple d&rsquo;un
-<i>pretty-printer</i>, une opération d&rsquo;affichage des arbres syntaxiques dont la
-sortie est plus amicale pour l&rsquo;œil humain.  Typiquement, le pretty printer d&rsquo;un
-langage transforme l&rsquo;arbre syntaxique en code source que le programmeur a
+afficheur (<i>pretty-printer</i>), une opération d&rsquo;affichage des arbres syntaxiques
+dont la sortie est plus amicale pour l&rsquo;œil humain.  Typiquement, l&rsquo;afficheur
+d&rsquo;un langage transforme l&rsquo;arbre syntaxique en code source que le programmeur a
 l&rsquo;habitude de lire.  Appliqué aux expressions arithmétiques, il faut transformer
-le <code>Plus</code>, qui est préfixe, en <code>+</code> infixe, et faire disparaître le mot <code>Constant</code>
-qui n&rsquo;apporte pas d&rsquo;information capitale.
+le <code>Plus</code>, qui est préfixe, en <code>+</code> infixe, et faire disparaître le mot
+<code>Constant</code> qui n&rsquo;apporte pas d&rsquo;information capitale.
 </p>
 
 <div class="org-src-container">
@@ -5130,7 +5130,7 @@ On peut caractériser la complexité d&rsquo;un changement de l&rsquo;interprét
 complexité d&rsquo;un algorithme.  L&rsquo;opération <code>pp</code> comporte autant de ligne qu&rsquo;il y a
 de variantes de <code>Term</code>, plus une pour sa signature.  S&rsquo;il y a <i>v</i> variantes,
 ajouter une opération aura une complexité de l&rsquo;ordre de <i>v</i> lignes de code
-(O(v)).  On note que ces lignes sont des additions par un &rsquo;+&rsquo;: +O(v).
+(O(<i>v</i>)).  On note que ces lignes sont des additions par un &rsquo;+&rsquo;: +O(<i>v</i>).
 </p>
 
 <aside>
@@ -5208,12 +5208,11 @@ nouvelle fonction.
 <p>
 Le problème de l&rsquo;expression touche à la fois à la modularité et à
 l&rsquo;extensibilité.  À l&rsquo;extensibilité, parce qu&rsquo;on cherche à étendre
-l&rsquo;interpréteur.  Et à la modularité, parce que les termes et les opérations
-peuvent être considérés comme des <i>unités</i> indépendantes, des modules.  Pour
-respecter la modularité, on cherche à ce que chaque extension soit restreinte à
-un module.  Dans l&rsquo;exemple en Haskell, ajouter une opération revient à ajouter
-un module sans affecter les autres, mais ajouter un terme requiert de modifier
-plusieurs modules.
+l&rsquo;interpréteur.  Et à la modularité, parce qu&rsquo;on cherche à découper les termes
+et les opérations en modules, à réduire leurs dépendances.  Chaque extension
+devrait être restreinte à un module.  Dans l&rsquo;exemple en Haskell, ajouter une
+opération revient à ajouter un module sans affecter les autres, mais ajouter un
+terme requiert de modifier plusieurs modules.
 </p>
 </div>
 </div>
@@ -5274,7 +5273,7 @@ Tous les termes héritent de la classe abstraite <code>Term</code> qui définit 
 opérations supportées.  Comme précédemment, l&rsquo;évaluation de <code>Plus.eval</code> est
 récursive.  Cette fois en revanche, la définition de l&rsquo;opération <code>eval</code> n&rsquo;est
 pas localisée en un seul endroit dans le code source, mais répartie dans les
-objets.  Chaque classe terme définit sa propre évaluation.
+objets.  Chaque classe de terme définit sa propre évaluation.
 </p>
 
 <p>
@@ -5301,7 +5300,7 @@ nouvel classe:
 
 <p>
 On n&rsquo;a pas à modifier le code des autres classes.  Ajouter un terme au langage
-revient à ajouter +O(p) lignes, s&rsquo;il y a <i>p</i> opérations.
+revient à ajouter +O(<i>p</i>) lignes, s&rsquo;il y a <i>p</i> opérations.
 </p>
 
 <p>
@@ -5342,7 +5341,7 @@ nécessite de modifier tous les termes.
 
 <p>
 Cela implique de rajouter l&rsquo;opération sur <code>Term</code>, puis de la définir pour tous
-les termes.  Pour <i>v</i> termes, on a ~O(v) lignes modifiées.  C&rsquo;est la situation
+les termes.  Pour <i>v</i> termes, on a ~O(<i>v</i>) lignes modifiées.  C&rsquo;est la situation
 inverse que dans la décomposition fonctionnelle précédente.
 </p>
 
@@ -5489,10 +5488,10 @@ commun:
 </div>
 
 <p>
-Alors qu&rsquo;avec les types et fonctions ouverts, toutes les expressions ont le même
-type <code>Term</code>.  On ne peut plus écrire des fonctions qui prend des termes en
-paramètre, il faut nécessairement passer par les contraintes des classes types.
-En particulier, on ne peut plus inspecter les arbres syntaxiques.
+Avec les types et fonctions ouverts, toutes les expressions avaient le même type
+<code>Term</code>.  Mais ici, on ne peut plus écrire des fonctions qui prennent des termes
+en paramètre, il faut nécessairement passer par les contraintes des classes
+types.  En particulier, on ne peut plus inspecter les arbres syntaxiques.
 </p>
 
 <p>
@@ -5516,7 +5515,7 @@ utilise:
 
 <aside>
 <p>
-L&rsquo;opérateur <code>:+:</code> est le constructeur de à l&rsquo;union disjointe (similaire au
+L&rsquo;opérateur <code>:+:</code> est le constructeur de l&rsquo;union disjointe (similaire au
 constructeur <code>Either</code> en Haskell).
 </p>
 </aside>
@@ -5534,6 +5533,12 @@ n&rsquo;est pas le cas; <code>Constant</code> et <code>Plus</code> n&rsquo;appar
 Puisque le type <code>Term</code> est destiné à être étendu, il faut pouvoir distinguer les
 expressions suivant les termes qu&rsquo;elles contiennent.  La représentation des
 termes choisie ici permet cette distinction.
+</p>
+
+<p>
+En revanche, l&rsquo;approche de Swierstra requiert d&rsquo;élaborer une machinerie complexe
+avant de pouvoir combiner les termes ainsi.  L&rsquo;utilisation de la monade gratuite
+est aussi critiquable pour son inefficacité [<a href="#KI-15">KI15</a>].
 </p>
 </div>
 </div>
@@ -5601,8 +5606,8 @@ Pour ajouter une opération, il faut maintenant créer un visiteur qui doit obé
 </div>
 
 <p>
-Une méthode pour chaque terme.  Pour tester, il suffit de passer une instance de
-ce visiteur à une expression:
+À chaque terme correspond une méthode.  Pour tester, il suffit de passer une
+instance de ce visiteur à une expression:
 </p>
 
 <div class="org-src-container">
@@ -5620,7 +5625,7 @@ ajouter une méthode pour ce terme à <code>Eval</code> et à l&rsquo;interface 
 </p>
 
 <p>
-Krishnamurthi <i>et al.</i> [<a href="#KFF-98">KFF98</a>] proposent donc protocole du <i>visiteur
+Krishnamurthi <i>et al.</i> [<a href="#KFF-98">KFF98</a>] proposent donc le protocole du <i>visiteur
 extensible</i> pour pouvoir ajouter des termes sans affecter les opérations
 existantes.  Pour ajouter un terme dans le visiteur extensible, il faut ajouter
 une classe qui représente ce terme:
@@ -5697,8 +5702,10 @@ D&rsquo;autres solutions plus simples existent.  Odersky et Zenger utilisent le
 langage Scala, et notamment les <i>mixins</i> et l&rsquo;auto-référence pour résoudre le
 problème de l&rsquo;expression en préservant la sûreté [<a href="#OZ-05">OZ05</a>].  Findler et Flatt
 utilisent également les <i>mixins</i> pour résoudre le problème en MzScheme [<a href="#FF-98">FF98</a>].
-Plus récemment, Wang et Oliveira montrent que la covariance peut suffire pour
-préserver la sûreté, ce qui donne une solution simple même en Java [<a href="#WO-16">WdSO16</a>].
+Pour Ernst, la solution est triviale dans les langages qui disposent du
+polymorphisme de famille [<a href="#Ern-04">Ern04</a>].  Et plus récemment, Wang et Oliveira montrent
+que la covariance peut suffire pour préserver la sûreté, ce qui donne une
+solution simple même en Java [<a href="#WO-16">WdSO16</a>].
 </p>
 </div>
 </div>
@@ -5717,15 +5724,15 @@ Dans leur solution, les termes du langage sont toujours des classes:
 
 <div class="org-src-container">
 
-<pre class="src src-java"><span class="org-keyword">interface</span> <span class="org-type">Term</span> { <span class="org-type">int</span> <span class="org-function-name">eval</span>(); }
+<pre class="src src-java"><span class="org-keyword">abstract</span> <span class="org-keyword">class</span> <span class="org-type">Term</span> { <span class="org-keyword">abstract</span> <span class="org-type">int</span> <span class="org-function-name">eval</span>(); }
 
-<span class="org-keyword">class</span> <span class="org-type">Constant</span> <span class="org-keyword">implements</span> <span class="org-type">Term</span> {
+<span class="org-keyword">class</span> <span class="org-type">Constant</span> <span class="org-keyword">extends</span> <span class="org-type">Term</span> {
   <span class="org-type">int</span> <span class="org-variable-name">n</span>;
   <span class="org-function-name">Constant</span>(<span class="org-type">int</span> <span class="org-variable-name">n</span>) { <span class="org-keyword">this</span>.n = n; }
   <span class="org-keyword">public</span> <span class="org-type">int</span> <span class="org-function-name">eval</span>() { <span class="org-keyword">return</span> n; }
 }
 
-<span class="org-keyword">class</span> <span class="org-type">Plus</span> <span class="org-keyword">implements</span> <span class="org-type">Term</span> {
+<span class="org-keyword">class</span> <span class="org-type">Plus</span> <span class="org-keyword">extends</span> <span class="org-type">Term</span> {
   <span class="org-type">Term</span> <span class="org-variable-name">a</span>, <span class="org-variable-name">b</span>;
   <span class="org-function-name">Plus</span>(<span class="org-type">Term</span> <span class="org-variable-name">a</span>, <span class="org-type">Term</span> <span class="org-variable-name">b</span>) { <span class="org-keyword">this</span>.a = a; <span class="org-keyword">this</span>.b = b; }
   <span class="org-keyword">public</span> <span class="org-type">int</span> <span class="org-function-name">eval</span>() { <span class="org-keyword">return</span> a.eval() + b.eval(); }
@@ -5744,9 +5751,11 @@ seront évaluées par différentes algèbres.  Plutôt que de construire l&rsquo
 1 + 2 en utilisant les constructeurs <code>Constant</code> et <code>Plus</code>:
 </p>
 
-<pre class="example">
-new Plus(new Constant(1), new Constant(2))
+<div class="org-src-container">
+
+<pre class="src src-java"><span class="org-type">Term</span> <span class="org-variable-name">e2</span> = <span class="org-keyword">new</span> <span class="org-type">Plus</span>(<span class="org-keyword">new</span> <span class="org-type">Constant</span>(1), <span class="org-keyword">new</span> <span class="org-type">Constant</span>(2));
 </pre>
+</div>
 
 <p>
 on utilise les constructeurs virtuels <code>constant</code> et <code>plus</code>:
@@ -5823,6 +5832,15 @@ Mais on peut aussi passer un autre visiteur, qui correspond à une autre
 opération sur le langage.  Si on ajoute l&rsquo;opération d&rsquo;affichage:
 </p>
 
+<aside>
+<p>
+On utilise ici les lambdas de Java 8 pour éliminer le bruit syntaxique.  De
+manière équivalent, on pourrait retourner une instance de l&rsquo;interface <code>PP</code> qui
+n&rsquo;implémenterait qu&rsquo;une seule méthode, <code>pp</code>.  Les lambdas ne sont pas
+nécessaires pour les algèbres d&rsquo;objets.
+</p>
+</aside>
+
 <div class="org-src-container">
 
 <pre class="src src-java"><span class="org-keyword">interface</span> <span class="org-type">PP</span> { <span class="org-type">String</span> <span class="org-function-name">pp</span>(); }
@@ -5861,7 +5879,8 @@ opération.
 
 <p>
 Les algèbres d&rsquo;objets sont donc très proches du visiteur extensible.  Elles
-éliminent cependant le problème de sûreté, et réduisent le bruit structurel.
+éliminent cependant le problème de sûreté, et réduisent le bruit structurel,
+mais sans pour autant l&rsquo;éliminer complètement.
 </p>
 
 <p>
@@ -5894,11 +5913,11 @@ Narcissus.
 </p>
 
 <p>
-Mais le problème de l&rsquo;expression est néanmoins différent du problème que l&rsquo;on a
-posé.  Les solutions au problème de l&rsquo;expression permettent d&rsquo;étendre des
-interpréteurs, <i>à condition qu&rsquo;ils suivent une certaine structure</i>.  Les termes
-sont des classes qui acceptent un visiteur; ou les termes sont les variantes
-d&rsquo;un type de données algébrique.
+Mais le problème de l&rsquo;expression est différent du problème que l&rsquo;on a posé.  Les
+solutions au problème de l&rsquo;expression permettent d&rsquo;étendre des interpréteurs, <i>à
+condition qu&rsquo;ils suivent une certaine structure</i>.  Les termes sont des classes
+qui acceptent un visiteur; ou les termes sont les variantes d&rsquo;un type de données
+algébrique.
 </p>
 
 <p>
@@ -5909,8 +5928,8 @@ modifications de son code source trop importantes.
 </p>
 
 <p>
-Néanmoins, ces solutions sont applicables pour le problème plus large, qui est
-de construire des interpréteurs extensibles.
+Néanmoins, ces solutions restent applicables au problème plus large, qui est de
+construire des interpréteurs extensibles.
 </p>
 </div>
 </div>
@@ -11155,6 +11174,20 @@ Electron: Build cross-platform desktop apps with javascript, html and css,
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Ern-04">Ern04</a>]
+</td>
+<td class="bibtexitem">
+Erik Ernst.
+ The expression problem, scandinavian style.
+ In <em>Proceeding of MASPEGHI 2004 workshop at ECOOP 2004</em>, 2004.
+[&nbsp;<a href="http://www.i3s.unice.fr/maspeghi2004/final-version/e_ernst.pdf">.pdf</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="Esolang">Eso</a>]
 </td>
 <td class="bibtexitem">
@@ -11389,6 +11422,22 @@ Gregor Kiczales, Erik Hilsdale, Jim Hugunin, Mik Kersten, Jeffrey Palm, and
   Conference, Budapest, Hungary, June 18-22, 2001, Proceedings</em>, pages
   327--353, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45337-7_18">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="KI-15">KI15</a>]
+</td>
+<td class="bibtexitem">
+Oleg Kiselyov and Hiromi Ishii.
+ Freer monads, more extensible effects.
+ In <em>Proceedings of the 8th ACM SIGPLAN Symposium on Haskell,
+  Haskell 2015, Vancouver, BC, Canada, September 3-4, 2015</em>, pages 94--105,
+  2015.
+[&nbsp;<a href="http://dx.doi.org/10.1145/2804302.2804319">DOI</a>&nbsp;]
 
 </td>
 </tr>
@@ -12197,7 +12246,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-12 ven. 19:37 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-16 mar. 16:16 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
