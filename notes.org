@@ -4196,6 +4196,52 @@ org, org-tree-to-indirect-buffer.
 
 Making a note here.
 
+** [2016-08-16 mar.]
+*** Multiple indirect buffers from subtrees
+To add on the previous note, if you want /multiple/ such views on the same org
+document, pass the prefix argument or customize org-indirect-buffer-display, as
+noted in the documentation.
+
+** [2016-08-17 mer.]
+*** Planning for the conclusion
+First, a recap of what we talked about.
+
+Then specific highlights on what was important: late binding.
+
+Then a more critical look back at the work: why do you want separation of
+concerns?  Locality, using git.  Especially: if this really serious?  It does
+not seem to ease maintenance.  Familiarity is important, and tricks like ~with~
+are surprises waiting to blow up.  I'd say it has its uses when you know what
+you are doing, but is not a fits-all solution.
+
+Can we apply it elsewhere?  I don't really believe in one-size-fits-all
+solutions.  Every situation is slightly different.  The state of art chapter
+showed a bunch of different ways to tackle extensibility.  It's not a bad thing.
+There are compromises to be made all the time.  There is not superior solution,
+just trade offs to be made.  That's what make it fun.
+
+Then perspectives: what's next if we wanted to go further in this direction?
+For the ~with~ trick, eliminating performance disparity is one thing.  Then,
+combining multiple analyses need to be looked into.  At the very least, we could
+statically warn on problematic overrides.  More generally, we could offer
+conflict resolving strategies, like conflicts of advices in AOP: two analyses
+override the same method, how do you proceed?  This could be done at runtime for
+a dynamic language, or statically if the language provides enough clues.
+
+Ultimately though, the larger goal is to find better ways to write, organize and
+maintain programs.  This is still an open problem.  It's also not really a
+problem, as what we have is clearly good enough for the millions of programmers
+and programs out there, that run on billions of computers every day.  Still, I
+guess one could have said the exact same thing 10, 20, or even 50 years ago.  So
+if you feel like there have been any improvement in the matter in the past
+decades, then I guess it's worth keeping going further.
+
+I believe the problem will stay open as long as there are humans writing
+programs and weirdly caring about how it reads.  If humans are taken out of the
+equation, and, for instance, computers become good enough at generating programs
+from loose directions, then maybe how the programs are actually written will
+matter less.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
