@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-16 mar. 16:16 -->
+<!-- 2016-08-18 jeu. 18:57 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -6315,9 +6315,25 @@ l&rsquo;utilisation des variables libres, qui sont elles-mêmes des indirections
 <p>
 Il apparaît donc que l&rsquo;indirection, sous toutes ces formes, est l&rsquo;ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
-particulier.  En conséquence, il convient de privilégier l&rsquo;indirection pour
-modifier le comportement d&rsquo;un programme, pour le détourner.  C&rsquo;est ce que l&rsquo;on
-va faire dans les chapitres suivants.
+particulier.  Le chapitre <a href="#foal">5</a> montre comment utiliser des mécanismes
+d&rsquo;indirection de JavaScript pour construire des interpréteurs de façon
+incrémentale.
+</p>
+
+<p>
+On observe que la plupart des solutions exposées ici proposent de rendre les
+programmes extensibles par <i>construction</i>.  Si les programmes suivent le
+paradigme proposé, alors il sera plus facile de les étendre par la suite.  Mais
+lorsque le programme est déjà écrit, et qu&rsquo;il ne suit pas une solution
+extensible, que faire?  On peut le réecrire, pour adapoter l&rsquo;un des paradigmes
+mentionné.  L&rsquo;alternative, c&rsquo;est de le détourner.  Le chapitre <a href="#variations">4</a>
+montre comment utiliser l&rsquo;indirection dans différents langages afin de détourner
+des interpréteurs existants.
+</p>
+
+<p>
+Enfin, le chapitre <a href="#dls">6</a> montre comment appliquer l&rsquo;indirection en JavaScript
+pour détourner l&rsquo;interpréteur Narcissus.
 </p>
 </div>
 </div>
@@ -10145,7 +10161,39 @@ d&rsquo;appliquer la technique de ce chapitre.
 <div id="outline-container-orgheadline79" class="outline-2">
 <h2 id="orgheadline79"><span class="section-number-2">7</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</h2>
 <div class="outline-text-2" id="text-7">
-</div><div id="outline-container-orgheadline73" class="outline-3">
+<p>
+Qu&rsquo;avons-nous vu?
+</p>
+
+<p>
+Nous avons décrit le problème que nous nous sommes posés: instrumenter et
+étendre des interpréteurs.  En particulier on cherchait à étendre l&rsquo;interpréteur
+Narcissus par de multiples analyses dynamiques, en minimisant les modifications
+au code source de l&rsquo;interpréteur lui-même.  On a vu que de nombreuses personnes
+se sont posé des problèmes similaires, pour des interpréteurs spécifiquement (le
+problème de l&rsquo;expression), mais aussi plus généralement pour n&rsquo;importe quel
+programme, et même, pour certains, pour la documentation et la spécification qui
+accompagnent le programme.  De toutes les solutions existantes, on a retenu que
+l&rsquo;indirection était un ingrédient majeur de l&rsquo;extensibilité, mais que le plus
+souvent cette extensibilité n&rsquo;était garantie que si le programme suivait une
+construction bien particulière, ce qui a motivé le besoin de détournement.  Nous
+avons ensuite vu comment utiliser l&rsquo;indirection en JavaScript pour construire
+des interpréteurs modifiables.  Puis nous avons vu comment modifier et étendre
+des interpréteurs existants par détournement, pour minimisant les changements de
+code.  Et enfin, dans le chapitre précédent, nous avons pu modifier Narcissus en
+utilisant ces mêmes techniques pour qu&rsquo;il puisse accueillir quatre analyses
+différentes.
+</p>
+
+<p>
+Que faut-il retenir?
+</p>
+</div>
+
+
+
+
+<div id="outline-container-orgheadline73" class="outline-3">
 <h3 id="orgheadline73"><span class="section-number-3">7.1</span> Séparation des préoccupations: pourquoi?</h3>
 <div class="outline-text-3" id="text-7-1">
 <ul class="org-ul">
@@ -12246,7 +12294,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-16 mar. 16:16 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-18 jeu. 18:57 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
