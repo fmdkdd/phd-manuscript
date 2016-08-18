@@ -7770,6 +7770,31 @@ sûreté du code; le mode strict offre davantage de garanties pour le programmeu
 d'appliquer la technique de ce chapitre.
 
 * UNWRITTEN Synthèse
+Qu'avons-nous vu?
+
+Nous avons décrit le problème que nous nous sommes posés: instrumenter et
+étendre des interpréteurs.  En particulier on cherchait à étendre l'interpréteur
+Narcissus par de multiples analyses dynamiques, en minimisant les modifications
+au code source de l'interpréteur lui-même.  On a vu que de nombreuses personnes
+se sont posé des problèmes similaires, pour des interpréteurs spécifiquement (le
+problème de l'expression), mais aussi plus généralement pour n'importe quel
+programme, et même, pour certains, pour la documentation et la spécification qui
+accompagnent le programme.  De toutes les solutions existantes, on a retenu que
+l'indirection était un ingrédient majeur de l'extensibilité, mais que le plus
+souvent cette extensibilité n'était garantie que si le programme suivait une
+construction bien particulière, ce qui a motivé le besoin de détournement.  Nous
+avons ensuite vu comment utiliser l'indirection en JavaScript pour construire
+des interpréteurs modifiables.  Puis nous avons vu comment modifier et étendre
+des interpréteurs existants par détournement, pour minimisant les changements de
+code.  Et enfin, dans le chapitre précédent, nous avons pu modifier Narcissus en
+utilisant ces mêmes techniques pour qu'il puisse accueillir quatre analyses
+différentes.
+
+Que faut-il retenir?
+
+
+
+
 ** Séparation des préoccupations: pourquoi?
 - Séparation difficile à obtenir
 - Difficile de définir les frontières
