@@ -4835,9 +4835,21 @@ l'utilisation des variables libres, qui sont elles-mêmes des indirections.
 
 Il apparaît donc que l'indirection, sous toutes ces formes, est l'ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
-particulier.  En conséquence, il convient de privilégier l'indirection pour
-modifier le comportement d'un programme, pour le détourner.  C'est ce que l'on
-va faire dans les chapitres suivants.
+particulier.  Le chapitre [[#foal]] montre comment utiliser des mécanismes
+d'indirection de JavaScript pour construire des interpréteurs de façon
+incrémentale.
+
+On observe que la plupart des solutions exposées ici proposent de rendre les
+programmes extensibles par /construction/.  Si les programmes suivent le
+paradigme proposé, alors il sera plus facile de les étendre par la suite.  Mais
+lorsque le programme est déjà écrit, et qu'il ne suit pas une solution
+extensible, que faire?  On peut le réecrire, pour adapoter l'un des paradigmes
+mentionné.  L'alternative, c'est de le détourner.  Le chapitre [[#variations]]
+montre comment utiliser l'indirection dans différents langages afin de détourner
+des interpréteurs existants.
+
+Enfin, le chapitre [[#dls]] montre comment appliquer l'indirection en JavaScript
+pour détourner l'interpréteur Narcissus.
 
 * UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible
 :PROPERTIES:
