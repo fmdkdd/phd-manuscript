@@ -68,17 +68,12 @@ different person then.'
    - [[#ouvrir-le-motif-module-en-javascript][Ouvrir le motif module en JavaScript]]
    - [[#Étendre-narcissus-par-manipulation-de-portée][Étendre Narcissus par manipulation de portée]]
    - [[#discussion][Discussion]]
- - [[#unwritten-synthèse][UNWRITTEN Synthèse]]
-   - [[#séparation-des-préoccupations-pourquoi][Séparation des préoccupations: pourquoi?]]
-   - [[#locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][Locality of concerns and locality of execution are irreconciable in the source text]]
-   - [[#late-binding-is-the-common-ingredient-to-all-modular-mechanisms][Late binding is the common ingredient to all modular mechanisms]]
-   - [[#this-could-be-done-with-git][This could be done with Git]]
-   - [[#perspectives-if-automated-programming-is-the-future-this-is-mostly-usesless][Perspectives: if automated programming is the future, this is mostly usesless]]
-   - [[#perspectives-performance][Perspectives: performance]]
+ - [[#unread-conclusion][UNREAD Conclusion]]
  - [[#chutes][Chutes]]
    - [[#construire-un-interpréteur-extensible][Construire un interpréteur extensible]]
    - [[#the-stakes-of-targeting-modularity-and-extensibility][The stakes of targeting modularity and extensibility]]
-   - [[#goto-is-indirection-indirection-is-goto][GOTO is indirection; indirection is GOTO?]]
+   - [[#locality-of-concerns-and-locality-of-execution-are-irreconciable-in-the-source-text][Locality of concerns and locality of execution are irreconciable in the source text]]
+   - [[#this-could-be-done-with-git][This could be done with Git]]
  - [[#appendices][Appendices]]
    - [[#construire-un-interpréteur-par-modules-1][Construire un interpréteur par modules]]
  - [[#références][Références]]
@@ -7789,8 +7784,16 @@ sûreté du code; le mode strict offre davantage de garanties pour le programmeu
 (en particulier, l'absence de ~with~), et en échange il perd la possibilité
 d'appliquer la technique de ce chapitre.
 
-* UNWRITTEN Synthèse
-Qu'avons-nous vu?
+* UNREAD Conclusion
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+#+BEGIN_epig
+And how many times must a man look up {{{br}}}
+Before he can see the sky?
+
+— "Blowing in the Wind", Bob Dylan
+#+END_epig
 
 Nous avons décrit le problème que nous nous sommes posés: instrumenter et
 étendre des interpréteurs.  En particulier on cherchait à étendre l'interpréteur
@@ -7810,119 +7813,102 @@ code.  Et enfin, dans le chapitre précédent, nous avons pu modifier Narcissus 
 utilisant ces mêmes techniques pour qu'il puisse accueillir quatre analyses
 différentes.
 
-Que faut-il retenir?
+Que faut-il en retenir?  Que le détournement est une façon légitime de modifier
+et d'étendre des interpréteurs.  Réécrire un interpréteur ou le refactoriser
+sont des solutions alternatives, mais qui demandent un effort initial plus
+important.  En détournant l'interpréteur, un programmeur peut rapidement
+prototyper des analyses, des variantes d'interprétation, sans avoir à maîtriser
+un code étranger.  Le détournement est une alternative pragmatique à la
+refactorisation.
 
+L'indirection est l'ingrédient clé qui permet le détournement.  Pour détourner
+Narcissus, on a utilisé la construction ~with~ parce qu'elle permettait
+d'appliquer une forme de portée dynamique aux variables internes au module.  Le
+~with~ en soit n'est pas important, c'est juste le moyen le plus direct pour
+obtenir de l'indirection dans le cas présent.  Même si la plupart des exemples
+de ce document ont utilisé le langage JavaScript, le langage même importe peu,
+tant que des mécanismes d'indirection sont présents.  Pour détourner un
+programme, il faut introduire de l'indirection.  Et de façon générale, cette
+morale vaut aussi pour étendre un programme.  Si les références et les appels de
+méthodes sont indirects, ils seront plus faciles à changer.
 
+La mise en garde de Dijkstra contre ~GOTO~ s'applique tout aussi bien à tout
+mécanisme d'indirection.  Comme ~GOTO~, une indirection rend le programme plus
+difficile à comprendre, à prédire.  On ne peut plus garantir le comportement
+d'une fonction en isolation, il faut prendre en compte toutes les extensions que
+ces indirections rendent possibles.  Même dans un simple patron observateur, on
+ne peut pas prédire ce que que le programme fera sans connaître tous les
+observateurs enregistrés auprès d'un sujet.  Et potentiellement l'ensemble de
+ces observateurs ne pourra être déterminé qu'à l'exécution du programme.  Le
+détournement a le même inconvénient.  Il y a donc un compromis: plus le
+programme est facile à étendre ou détourner, et moins il sera facile d'en
+prédire son comportement en le lisant ou l'analysant.  Le détournement n'est pas
+une balle en argent; pas plus que la refactorisation.  L'enseignement ici est
+qu'il faut être conscient des conséquences de ces compromis lors de la
+conception et tout au long de l'évolution du programme.
 
+L'extensibilité est une propriété désirable dans un programme, mais à l'évidence
+elle est rarement primordiale.  Avant toute chose, un programme doit être
+correct.  Puis, suivant le sens des priorités du programmeur, ou les réalités
+économiques, on peut l'optimiser, lui ajouter des fonctionnalités, le rendre
+compatible avec davantage de matériel, etc.  Le programme est plus utile à ses
+utilisateurs qu'au programmeur.  Les utilisateurs ne sont pas impactés par une
+refactorisation ou un détournement, donc n'en voient pas la nécessité.  Mais ce
+ne sont pas les utilisateurs qui vivent avec le code source.  Le programmeur
+souhaite aussi simplifier son travail, à rendre le code plus facile à maintenir,
+à corriger, et à étendre.  Non seulement une meilleure structure de code
+contribue à son confort, mais elle peut aussi lui permettre d'améliorer le
+programme avec plus d'efficacité.  Alors, savoir détourner un programme n'est
+certainement pas une priorité, mais les techniques que l'on a exploré dans ce
+document ont de l'intérêt pour tout programmeur soucieux de l'organisation de
+leur code.  Au mieux, ce document leur aura apporté des réponses, au minimum, il
+aura fait naître d'autres interrogations.
 
-** Séparation des préoccupations: pourquoi?
-- Séparation difficile à obtenir
-- Difficile de définir les frontières
-  - une préoccupation est rarement isolée du reste du programme
-- Cause d'autres problèmes
-  - appels implicites, perte de compréhension du flot de contrôle
-- Pointcut ~ dynamic scoping ~ COMEFROM
-  - mécanismes puissants mais peu connus
-  - usage difficile à justifier hors cas vraiment spécifiques
-- Mauvais sens des priorités
-  - Un programme doit d'abord être correct.
-  - Puis il doit être maintenable -> bonne documentation des choix de structure
-  - Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?
+*** Perspectives
+Pour le détournement de Narcissus spécifiquement, on pourrait s'intéresser à
+améliorer la performance de ~with~.  Que ce soit en optimisant cette
+construction dans les moteurs d'exécution de JavaScript communs, ou bien en
+trouvant une alternative qui a moins d'impact sur le temps d'exécution.  Une
+façon potentielle serait d'évaluer partiellement le module détourné et ses
+extensions, afin de déterminer les variables et fonctions qui sont étendues, et
+de résoudre toutes les références en avance.  Cette passe pourrait même être
+faite par transformation de code, sans avoir à modifier les moteurs
+d'exécution.  De façon générale, les mécanismes d'indirection posent
+d'intéressants problèmes d'optimisation.
 
-** Locality of concerns and locality of execution are irreconciable in the source text
-Is AOP useful for the instrumentation problem?  First, the initial use case of
-AOP, like open implementation, is tangential concerns: algorithmic complexity,
-choice of data representation, optimizations, etc.  Post-hoc extension is not
-exactly a tangential concern: changing the behavior of the interpreter is a
-primary concern.
+On pourrait également s'intéresser à la détection de conflits entre extensions.
+Dans le détournement de Narcissus il est possible d'activer plusieurs analyses
+en même temps, mais sans aucune garantie que le résultat fonctionne correctement
+si deux analyses redéfinissent la même fonction de manière incompatible.
+Peut-être qu'en multipliant les analyses, découvrir et résoudre ces conflits
+manuellement deviendra trop difficile.  Il faut commencer par collecter ces
+scénarios où les conflits entre analyses posent un réel problème.  Puis on peut
+s'intéresser à les détecter, voire aider à les résoudre automatiquement.  Au
+minimum, on pourrait détecter ces conflits à l'exécution quand les analyses
+détournent l'interpréteur, et signaler un potentiel conflit.  Dans certains cas,
+il serait même possible de détecter ces conflits potentiels statiquement.
 
-Second, we have to consider separately the usefulness of the AOP methodology,
-and of the AOP mechanisms.
-
-The methodology of separating components from aspects is applicable if our
-analyses are tangential.  They are not.  The problem we deal with is that
-extensibility was not considered when designing the interpreter, and solutions
-must be built on the implementation.
-
-Preserving locality is a guiding tenet of the AOP methodology (avoiding
-tangling).  It is also a motivation for writing modular analyses: we want the
-analysis code to be in one place.  However, by regrouping the analysis code, we
-are sacrificing locality of code execution: statements executed at runtime are
-not next to each other in the source code.  Satisfying both notions of locality
-would lead to duplication in the code, which is a worse state of affairs.
-Solutions to this duplication must come from the tools used to write and browse
-code, since the textual format we use offer none.  An editor can maintain two
-views of the same unit of code: changes in one view will affect both places.
-That way, both notions of locality can coexist.
-
-The second notion of locality, the one from [[cite:FF-04][FF-04]], is one manifestation of the
-more general need of a match between runtime behavior and static program
-description.  The program source should tell readers what it does, and
-navigating through dynamically-bound method calls and oblivious advices hinders
-the reading.
-
-Organization of the code should reflect the design decisions: what is primary is
-explained first, then exceptions or tangential concerns are relegated to
-appendices.  Literate programming [[cite:Knu-84][Knu-84]] can help organize the code in a such
-way.
-
-The mechanisms of AOP may serve to extend the interpreter with analyses, without
-necessarily obeying the component/aspect decomposition.  Though without editor
-support, using AOP mechanisms will only satisfy one notion of locality.
-
-** Late binding is the common ingredient to all modular mechanisms
-#+BEGIN_QUOTE
-'When /I/ use a word,' Humpty Dumpty said in rather a scornful tone, 'it means
-just what I choose it to mean—neither more nor less.'
-
-'The question is,' said Alice, 'whether you /can/ make words mean so many
-different things.'
-
-— [[cite:Car-72][Car-72]]
-#+END_QUOTE
-
-That is going against the trend.  The trend is securing, statically analysing
-programs.  Late binding hampers static verification.  We cannot know what the
-program does if what the program does can change at runtime.  Static analysis
-can catch bugs, can help in refactoring, can help assert the code is correct for
-all cases.
-
-However, we have to be aware of the tradeoffs we are making.  Security is not
-free.  If, to make a language more amenable to static analysis we remove
-late-binding features (like ~with~ in strict mode, or push for ~lexical binding~
-as default for elisp [check]), then we are removing flexibility as well.  Unless
-this flexibility is reinstated in a way that is compatible with static safety,
-we are at a loss on that front.
-
-** This could be done with Git
-Using a VCS could also work: use a branch per extension, and create multiple
-folders to view into each branch.  Now you have access to all variations, but
-they are synced by the VCS system.  Main contributors can work on the main
-branch, without caring about experimental branches.  Experimenters on the other
-hand can keep hacking on their branch, merging the main patches as they see
-fit.  The process is analogous to diverting, but diverting happens at runtime,
-whereas this happens statically.  Give git example (in appendix?)
-
-** Perspectives: if automated programming is the future, this is mostly usesless
-programming automation will probably not care about any of this.  If in the
-future, computers are able to generate programs based on an informal
-specification, or by having a discussion with humans, then modularity
-consideration will change.  Modularity is rarely a concern for generated code.
-But as long as there are humans who read programs, they will appreciate
-clarification.
-
-** Perspectives: performance
-Binding manipulation may go against performance.  We are violating static
-assumptions.  An identifier may now refer to many different things at runtime,
-which does not map neatly to the machine.
-
-In JS engines, prototype mutations and ~with~ are notorious performance
-killers.  They go against the assumptions made by the optimizer.
-
-Reconciling performance and late binding is an interesting challenge.  Garbage
-collection was also deemed too costly to ever be practical.  But, years of
-research and engineering have proved that it can be.  Don't discount late
-binding yet.
+Plus largement, je pense que l'on peut continuer de chercher de meilleures
+façons d'écrire, d'organiser, et de maintenir des programmes.  En particulier,
+il est toujours intéressant de découvrir de nouvelles façons de résoudre des
+problèmes existants, afin d'en mesurer les différents compromis.  La recherche
+en langages de programmation est vive, en particulier dans les domaines de la
+sûreté et la sécurité des programmes à travers l'analyse statique, les systèmes
+de types, ou la vérification formelle.  Ces outils sont certes efficaces pour
+s'assurer de la correction des programmes, mais ils ne participent que peu à
+enrichir la compréhension du programme par le programmeur.  Il me semble tout
+aussi important de favoriser la recherche de nouvelles façons d'explorer et de
+visualiser les programmes.  D'un côté, il semble que ce ne soit pas un problème
+majeur: après tout, il y a des millions de programmeurs qui écrivent des
+millions de programmes, qui s'exécutent très bien sur une quantité grandissante
+de machines.  N'est-ce pas la preuve que nos outils sont suffisants?  D'un autre
+côté, on pourrait appliquer le même argument dix ans, vingt ans, ou cinquante
+ans en arrière (en ajustant les nombres); voire le pousser à l'extrême: pourquoi
+inventer l'ordinateur?  Pourquoi le métier à tisser?  Pourquoi la roue?  À
+l'évidence, nous ne sommes pas faits pour nous contenter des outils que nous
+avons entre les mains.  Il semble donc inéluctable que nous continuerons de
+trouver de meilleures façons de programmer, jusqu'à ce que, éventuellement, on
+se passe de programmes pour ordonner la machine.
 
 * Chutes                                                           :noexport:
 ** Construire un interpréteur extensible
@@ -9947,37 +9933,56 @@ Code complexity may also have an impact on program performance.  Fancy
 constructs and indirection may defeat compiler optimizations, leading to slower
 code and larger binaries.
 
-** GOTO is indirection; indirection is GOTO?
-Observer pattern defeats Dijkstra's compass.  How do you know what code is
-executed when you arrive at the line: ~observers.forEach(call)~?  "The code of
-each subscribed observer."  But how do you know what the subscribed observers
-are?  "You don't, they subscribe at runtime."
+** Locality of concerns and locality of execution are irreconciable in the source text
+Is AOP useful for the instrumentation problem?  First, the initial use case of
+AOP, like open implementation, is tangential concerns: algorithmic complexity,
+choice of data representation, optimizations, etc.  Post-hoc extension is not
+exactly a tangential concern: changing the behavior of the interpreter is a
+primary concern.
 
-Same story with ~eval~, ~with~, or even ~obj[p.toString()]~.  Mechanisms that
-allow the control flow to be determined dynamically.  Late binding of function
-and variable identifiers, even of /code/.
+Second, we have to consider separately the usefulness of the AOP methodology,
+and of the AOP mechanisms.
 
-Dijkstra's argument for structured programming was that you could easily keep
-track of the control flow.  Think flowchart: the control flows from one box to
-the next; there are no arbitrary jumps.  GOTO destroyed that.
+The methodology of separating components from aspects is applicable if our
+analyses are tangential.  They are not.  The problem we deal with is that
+extensibility was not considered when designing the interpreter, and solutions
+must be built on the implementation.
 
-#+BEGIN_aside
-One could also argue that GOTO destroys the membrane of procedures.  Procedures
-are /units/ of functionality, black-boxes. Membranes are there to manage
-all interactions with the outside world.  Without the membrane, the procedure
-constituents might as well float from one to the other; no guarantees.
+Preserving locality is a guiding tenet of the AOP methodology (avoiding
+tangling).  It is also a motivation for writing modular analyses: we want the
+analysis code to be in one place.  However, by regrouping the analysis code, we
+are sacrificing locality of code execution: statements executed at runtime are
+not next to each other in the source code.  Satisfying both notions of locality
+would lead to duplication in the code, which is a worse state of affairs.
+Solutions to this duplication must come from the tools used to write and browse
+code, since the textual format we use offer none.  An editor can maintain two
+views of the same unit of code: changes in one view will affect both places.
+That way, both notions of locality can coexist.
 
-GOTO can jump in and out of procedures, disregarding their membranes.  That's
-treating the code like assembly: no boundaries, just memory offsets.  On the one
-hand, it's flexible and true to the machine.  But on the other hand, it destroys
-one of the benefits of having a procedure in the first place.
+The second notion of locality, the one from [[cite:FF-04][FF-04]], is one manifestation of the
+more general need of a match between runtime behavior and static program
+description.  The program source should tell readers what it does, and
+navigating through dynamically-bound method calls and oblivious advices hinders
+the reading.
 
-That's also true of AOP languages that allow you to break the class or method
-boundaries.  And of Open Scope, that breaks the module.
-#+END_aside
+Organization of the code should reflect the design decisions: what is primary is
+explained first, then exceptions or tangential concerns are relegated to
+appendices.  Literate programming [[cite:Knu-84][Knu-84]] can help organize the code in a such
+way.
 
-/Any/ late binding mechanism has the same property.  If parts of the control
-flow are decided dynamically, Dijsktra's compass is defeated.
+The mechanisms of AOP may serve to extend the interpreter with analyses, without
+necessarily obeying the component/aspect decomposition.  Though without editor
+support, using AOP mechanisms will only satisfy one notion of locality.
+
+** This could be done with Git
+Using a VCS could also work: use a branch per extension, and create multiple
+folders to view into each branch.  Now you have access to all variations, but
+they are synced by the VCS system.  Main contributors can work on the main
+branch, without caring about experimental branches.  Experimenters on the other
+hand can keep hacking on their branch, merging the main patches as they see
+fit.  The process is analogous to diverting, but diverting happens at runtime,
+whereas this happens statically.  Give git example (in appendix?)
+
 
 * Appendices
 ** Construire un interpréteur par modules
