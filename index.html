@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-18 jeu. 18:57 -->
+<!-- 2016-08-19 ven. 19:25 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -198,22 +198,13 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline71">6.4. Discussion</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline79">7. <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</a>
+<li><a href="#orgheadline73"><span class="todo UNREAD">UNREAD</span> Conclusion</a></li>
+<li><a href="#orgheadline80">7. Appendices</a>
 <ul>
-<li><a href="#orgheadline73">7.1. Séparation des préoccupations: pourquoi?</a></li>
-<li><a href="#orgheadline74">7.2. Locality of concerns and locality of execution are irreconciable in the source text</a></li>
-<li><a href="#orgheadline75">7.3. Late binding is the common ingredient to all modular mechanisms</a></li>
-<li><a href="#orgheadline76">7.4. This could be done with Git</a></li>
-<li><a href="#orgheadline77">7.5. Perspectives: if automated programming is the future, this is mostly usesless</a></li>
-<li><a href="#orgheadline78">7.6. Perspectives: performance</a></li>
+<li><a href="#foal-extra">7.1. Construire un interpréteur par modules</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline85">8. Appendices</a>
-<ul>
-<li><a href="#foal-extra">8.1. Construire un interpréteur par modules</a></li>
-</ul>
-</li>
-<li><a href="#orgheadline86">Références</a></li>
+<li><a href="#orgheadline81">Références</a></li>
 </ul>
 </div>
 </nav>
@@ -6342,6 +6333,37 @@ pour détourner l&rsquo;interpréteur Narcissus.
 <div id="outline-container-orgheadline46" class="outline-2">
 <h2 id="variations"><a id="orgheadline46"></a><span class="section-number-2">4</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
 <div class="outline-text-2" id="text-variations">
+<div class="epig">
+<p>
+&rsquo;When <i>I</i> use a word,&rsquo; Humpty Dumpty said in rather a scornful tone, &rsquo;it means
+just what I choose it to mean—neither more nor less.&rsquo;
+</p>
+
+<p>
+&rsquo;The question is,&rsquo; said Alice, &rsquo;whether you <i>can</i> make words mean so many
+different things.&rsquo;
+</p>
+
+<p>
+— Through the Looking Glass, Lewis Caroll
+</p>
+
+</div>
+
+<p>
+Traditionnellement, on retrouve ces mécanismes plus facilement dans des langages
+dynamiques comme JavaScript, Python, ou Lisp, que dans des langages statiquement
+typés comme Java ou Haskell.  Intuitivement,
+</p>
+
+<p>
+We can observe that dynamic languages as a whole have more mecanisms for
+indirection.  But that maybe because these mecanisms are more difficult to
+statically type, and that they may not be that more useful.
+</p>
+
+<hr >
+
 <p>
 Essayons d&rsquo;abord d&rsquo;écrire un interpréteur pour chaque sémantique de &lambda;<sup>facet</sup>, sans
 anticiper l&rsquo;instrumentation; c&rsquo;est-à-dire sans se préoccuper de pouvoir étendre
@@ -10158,12 +10180,20 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 </div>
 
-<div id="outline-container-orgheadline79" class="outline-2">
-<h2 id="orgheadline79"><span class="section-number-2">7</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Synthèse</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-orgheadline73" class="outline-2">
+<h2 id="orgheadline73"><span class="todo UNREAD">UNREAD</span> Conclusion</h2>
+<div class="outline-text-2" id="text-orgheadline73">
+<div class="epig">
 <p>
-Qu&rsquo;avons-nous vu?
+And how many times must a man look up  <br/>
+Before he can see the sky?
 </p>
+
+<p>
+— &laquo;&nbsp;Blowing in the Wind&nbsp;&raquo;, Bob Dylan
+</p>
+
+</div>
 
 <p>
 Nous avons décrit le problème que nous nous sommes posés: instrumenter et
@@ -10186,199 +10216,131 @@ différentes.
 </p>
 
 <p>
-Que faut-il retenir?
+Que faut-il en retenir?  Que le détournement est une façon légitime de modifier
+et d&rsquo;étendre des interpréteurs.  Réécrire un interpréteur ou le refactoriser
+sont des solutions alternatives, mais qui demandent un effort initial plus
+important.  En détournant l&rsquo;interpréteur, un programmeur peut rapidement
+prototyper des analyses, des variantes d&rsquo;interprétation, sans avoir à maîtriser
+un code étranger.  Le détournement est une alternative pragmatique à la
+refactorisation.
+</p>
+
+<p>
+L&rsquo;indirection est l&rsquo;ingrédient clé qui permet le détournement.  Pour détourner
+Narcissus, on a utilisé la construction <code>with</code> parce qu&rsquo;elle permettait
+d&rsquo;appliquer une forme de portée dynamique aux variables internes au module.  Le
+<code>with</code> en soit n&rsquo;est pas important, c&rsquo;est juste le moyen le plus direct pour
+obtenir de l&rsquo;indirection dans le cas présent.  Même si la plupart des exemples
+de ce document ont utilisé le langage JavaScript, le langage même importe peu,
+tant que des mécanismes d&rsquo;indirection sont présents.  Pour détourner un
+programme, il faut introduire de l&rsquo;indirection.  Et de façon générale, cette
+morale vaut aussi pour étendre un programme.  Si les références et les appels de
+méthodes sont indirects, ils seront plus faciles à changer.
+</p>
+
+<p>
+La mise en garde de Dijkstra contre <code>GOTO</code> s&rsquo;applique tout aussi bien à tout
+mécanisme d&rsquo;indirection.  Comme <code>GOTO</code>, une indirection rend le programme plus
+difficile à comprendre, à prédire.  On ne peut plus garantir le comportement
+d&rsquo;une fonction en isolation, il faut prendre en compte toutes les extensions que
+ces indirections rendent possibles.  Même dans un simple patron observateur, on
+ne peut pas prédire ce que que le programme fera sans connaître tous les
+observateurs enregistrés auprès d&rsquo;un sujet.  Et potentiellement l&rsquo;ensemble de
+ces observateurs ne pourra être déterminé qu&rsquo;à l&rsquo;exécution du programme.  Le
+détournement a le même inconvénient.  Il y a donc un compromis: plus le
+programme est facile à étendre ou détourner, et moins il sera facile d&rsquo;en
+prédire son comportement en le lisant ou l&rsquo;analysant.  Le détournement n&rsquo;est pas
+une balle en argent; pas plus que la refactorisation.  L&rsquo;enseignement ici est
+qu&rsquo;il faut être conscient des conséquences de ces compromis lors de la
+conception et tout au long de l&rsquo;évolution du programme.
+</p>
+
+<p>
+L&rsquo;extensibilité est une propriété désirable dans un programme, mais à l&rsquo;évidence
+elle est rarement primordiale.  Avant toute chose, un programme doit être
+correct.  Puis, suivant le sens des priorités du programmeur, ou les réalités
+économiques, on peut l&rsquo;optimiser, lui ajouter des fonctionnalités, le rendre
+compatible avec davantage de matériel, etc.  Le programme est plus utile à ses
+utilisateurs qu&rsquo;au programmeur.  Les utilisateurs ne sont pas impactés par une
+refactorisation ou un détournement, donc n&rsquo;en voient pas la nécessité.  Mais ce
+ne sont pas les utilisateurs qui vivent avec le code source.  Le programmeur
+souhaite aussi simplifier son travail, à rendre le code plus facile à maintenir,
+à corriger, et à étendre.  Non seulement une meilleure structure de code
+contribue à son confort, mais elle peut aussi lui permettre d&rsquo;améliorer le
+programme avec plus d&rsquo;efficacité.  Alors, savoir détourner un programme n&rsquo;est
+certainement pas une priorité, mais les techniques que l&rsquo;on a exploré dans ce
+document ont de l&rsquo;intérêt pour tout programmeur soucieux de l&rsquo;organisation de
+leur code.  Au mieux, ce document leur aura apporté des réponses, au minimum, il
+aura fait naître d&rsquo;autres interrogations.
 </p>
 </div>
 
-
-
-
-<div id="outline-container-orgheadline73" class="outline-3">
-<h3 id="orgheadline73"><span class="section-number-3">7.1</span> Séparation des préoccupations: pourquoi?</h3>
-<div class="outline-text-3" id="text-7-1">
-<ul class="org-ul">
-<li>Séparation difficile à obtenir</li>
-<li>Difficile de définir les frontières
-<ul class="org-ul">
-<li>une préoccupation est rarement isolée du reste du programme</li>
-</ul></li>
-<li>Cause d&rsquo;autres problèmes
-<ul class="org-ul">
-<li>appels implicites, perte de compréhension du flot de contrôle</li>
-</ul></li>
-<li>Pointcut ~ dynamic scoping ~ COMEFROM
-<ul class="org-ul">
-<li>mécanismes puissants mais peu connus</li>
-<li>usage difficile à justifier hors cas vraiment spécifiques</li>
-</ul></li>
-<li>Mauvais sens des priorités
-<ul class="org-ul">
-<li>Un programme doit d&rsquo;abord être correct.</li>
-<li>Puis il doit être maintenable -&gt; bonne documentation des choix de structure</li>
-<li>Séparation des préoccupations = cerise sur le gâteau.  Mais où est le gâteau?</li>
-</ul></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgheadline74" class="outline-3">
-<h3 id="orgheadline74"><span class="section-number-3">7.2</span> Locality of concerns and locality of execution are irreconciable in the source text</h3>
-<div class="outline-text-3" id="text-7-2">
+<div id="outline-container-orgheadline74" class="outline-4">
+<h4 id="orgheadline74">Perspectives</h4>
+<div class="outline-text-4" id="text-orgheadline74">
 <p>
-Is AOP useful for the instrumentation problem?  First, the initial use case of
-AOP, like open implementation, is tangential concerns: algorithmic complexity,
-choice of data representation, optimizations, etc.  Post-hoc extension is not
-exactly a tangential concern: changing the behavior of the interpreter is a
-primary concern.
+Pour le détournement de Narcissus spécifiquement, on pourrait s&rsquo;intéresser à
+améliorer la performance de <code>with</code>.  Que ce soit en optimisant cette
+construction dans les moteurs d&rsquo;exécution de JavaScript communs, ou bien en
+trouvant une alternative qui a moins d&rsquo;impact sur le temps d&rsquo;exécution.  Une
+façon potentielle serait d&rsquo;évaluer partiellement le module détourné et ses
+extensions, afin de déterminer les variables et fonctions qui sont étendues, et
+de résoudre toutes les références en avance.  Cette passe pourrait même être
+faite par transformation de code, sans avoir à modifier les moteurs
+d&rsquo;exécution.  De façon générale, les mécanismes d&rsquo;indirection posent
+d&rsquo;intéressants problèmes d&rsquo;optimisation.
 </p>
 
 <p>
-Second, we have to consider separately the usefulness of the AOP methodology,
-and of the AOP mechanisms.
+On pourrait également s&rsquo;intéresser à la détection de conflits entre extensions.
+Dans le détournement de Narcissus il est possible d&rsquo;activer plusieurs analyses
+en même temps, mais sans aucune garantie que le résultat fonctionne correctement
+si deux analyses redéfinissent la même fonction de manière incompatible.
+Peut-être qu&rsquo;en multipliant les analyses, découvrir et résoudre ces conflits
+manuellement deviendra trop difficile.  Il faut commencer par collecter ces
+scénarios où les conflits entre analyses posent un réel problème.  Puis on peut
+s&rsquo;intéresser à les détecter, voire aider à les résoudre automatiquement.  Au
+minimum, on pourrait détecter ces conflits à l&rsquo;exécution quand les analyses
+détournent l&rsquo;interpréteur, et signaler un potentiel conflit.  Dans certains cas,
+il serait même possible de détecter ces conflits potentiels statiquement.
 </p>
 
 <p>
-The methodology of separating components from aspects is applicable if our
-analyses are tangential.  They are not.  The problem we deal with is that
-extensibility was not considered when designing the interpreter, and solutions
-must be built on the implementation.
-</p>
-
-<p>
-Preserving locality is a guiding tenet of the AOP methodology (avoiding
-tangling).  It is also a motivation for writing modular analyses: we want the
-analysis code to be in one place.  However, by regrouping the analysis code, we
-are sacrificing locality of code execution: statements executed at runtime are
-not next to each other in the source code.  Satisfying both notions of locality
-would lead to duplication in the code, which is a worse state of affairs.
-Solutions to this duplication must come from the tools used to write and browse
-code, since the textual format we use offer none.  An editor can maintain two
-views of the same unit of code: changes in one view will affect both places.
-That way, both notions of locality can coexist.
-</p>
-
-<p>
-The second notion of locality, the one from [<a href="#FF-04">FF04</a>], is one manifestation of the
-more general need of a match between runtime behavior and static program
-description.  The program source should tell readers what it does, and
-navigating through dynamically-bound method calls and oblivious advices hinders
-the reading.
-</p>
-
-<p>
-Organization of the code should reflect the design decisions: what is primary is
-explained first, then exceptions or tangential concerns are relegated to
-appendices.  Literate programming [<a href="#Knu-84">Knu84</a>] can help organize the code in a such
-way.
-</p>
-
-<p>
-The mechanisms of AOP may serve to extend the interpreter with analyses, without
-necessarily obeying the component/aspect decomposition.  Though without editor
-support, using AOP mechanisms will only satisfy one notion of locality.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline75" class="outline-3">
-<h3 id="orgheadline75"><span class="section-number-3">7.3</span> Late binding is the common ingredient to all modular mechanisms</h3>
-<div class="outline-text-3" id="text-7-3">
-<blockquote>
-<p>
-&rsquo;When <i>I</i> use a word,&rsquo; Humpty Dumpty said in rather a scornful tone, &rsquo;it means
-just what I choose it to mean—neither more nor less.&rsquo;
-</p>
-
-<p>
-&rsquo;The question is,&rsquo; said Alice, &rsquo;whether you <i>can</i> make words mean so many
-different things.&rsquo;
-</p>
-
-<p>
-— [<a href="#Car-72">Car72</a>]</p>
-</blockquote>
-
-<p>
-That is going against the trend.  The trend is securing, statically analysing
-programs.  Late binding hampers static verification.  We cannot know what the
-program does if what the program does can change at runtime.  Static analysis
-can catch bugs, can help in refactoring, can help assert the code is correct for
-all cases.
-</p>
-
-<p>
-However, we have to be aware of the tradeoffs we are making.  Security is not
-free.  If, to make a language more amenable to static analysis we remove
-late-binding features (like <code>with</code> in strict mode, or push for <code>lexical binding</code>
-as default for elisp [check]), then we are removing flexibility as well.  Unless
-this flexibility is reinstated in a way that is compatible with static safety,
-we are at a loss on that front.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline76" class="outline-3">
-<h3 id="orgheadline76"><span class="section-number-3">7.4</span> This could be done with Git</h3>
-<div class="outline-text-3" id="text-7-4">
-<p>
-Using a VCS could also work: use a branch per extension, and create multiple
-folders to view into each branch.  Now you have access to all variations, but
-they are synced by the VCS system.  Main contributors can work on the main
-branch, without caring about experimental branches.  Experimenters on the other
-hand can keep hacking on their branch, merging the main patches as they see
-fit.  The process is analogous to diverting, but diverting happens at runtime,
-whereas this happens statically.  Give git example (in appendix?)
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline77" class="outline-3">
-<h3 id="orgheadline77"><span class="section-number-3">7.5</span> Perspectives: if automated programming is the future, this is mostly usesless</h3>
-<div class="outline-text-3" id="text-7-5">
-<p>
-programming automation will probably not care about any of this.  If in the
-future, computers are able to generate programs based on an informal
-specification, or by having a discussion with humans, then modularity
-consideration will change.  Modularity is rarely a concern for generated code.
-But as long as there are humans who read programs, they will appreciate
-clarification.
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgheadline78" class="outline-3">
-<h3 id="orgheadline78"><span class="section-number-3">7.6</span> Perspectives: performance</h3>
-<div class="outline-text-3" id="text-7-6">
-<p>
-Binding manipulation may go against performance.  We are violating static
-assumptions.  An identifier may now refer to many different things at runtime,
-which does not map neatly to the machine.
-</p>
-
-<p>
-In JS engines, prototype mutations and <code>with</code> are notorious performance
-killers.  They go against the assumptions made by the optimizer.
-</p>
-
-<p>
-Reconciling performance and late binding is an interesting challenge.  Garbage
-collection was also deemed too costly to ever be practical.  But, years of
-research and engineering have proved that it can be.  Don&rsquo;t discount late
-binding yet.
+Plus largement, je pense que l&rsquo;on peut continuer de chercher de meilleures
+façons d&rsquo;écrire, d&rsquo;organiser, et de maintenir des programmes.  En particulier,
+il est toujours intéressant de découvrir de nouvelles façons de résoudre des
+problèmes existants, afin d&rsquo;en mesurer les différents compromis.  La recherche
+en langages de programmation est vive, en particulier dans les domaines de la
+sûreté et la sécurité des programmes à travers l&rsquo;analyse statique, les systèmes
+de types, ou la vérification formelle.  Ces outils sont certes efficaces pour
+s&rsquo;assurer de la correction des programmes, mais ils ne participent que peu à
+enrichir la compréhension du programme par le programmeur.  Il me semble tout
+aussi important de favoriser la recherche de nouvelles façons d&rsquo;explorer et de
+visualiser les programmes.  D&rsquo;un côté, il semble que ce ne soit pas un problème
+majeur: après tout, il y a des millions de programmeurs qui écrivent des
+millions de programmes, qui s&rsquo;exécutent très bien sur une quantité grandissante
+de machines.  N&rsquo;est-ce pas la preuve que nos outils sont suffisants?  D&rsquo;un autre
+côté, on pourrait appliquer le même argument dix ans, vingt ans, ou cinquante
+ans en arrière (en ajustant les nombres); voire le pousser à l&rsquo;extrême: pourquoi
+inventer l&rsquo;ordinateur?  Pourquoi le métier à tisser?  Pourquoi la roue?  À
+l&rsquo;évidence, nous ne sommes pas faits pour nous contenter des outils que nous
+avons entre les mains.  Il semble donc inéluctable que nous continuerons de
+trouver de meilleures façons de programmer, jusqu&rsquo;à ce que, éventuellement, on
+se passe de programmes pour ordonner la machine.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgheadline85" class="outline-2">
-<h2 id="orgheadline85"><span class="section-number-2">8</span> Appendices</h2>
-<div class="outline-text-2" id="text-8">
-</div><div id="outline-container-orgheadline84" class="outline-3">
-<h3 id="foal-extra"><a id="orgheadline84"></a><span class="section-number-3">8.1</span> Construire un interpréteur par modules</h3>
+<div id="outline-container-orgheadline80" class="outline-2">
+<h2 id="orgheadline80"><span class="section-number-2">7</span> Appendices</h2>
+<div class="outline-text-2" id="text-7">
+</div><div id="outline-container-orgheadline79" class="outline-3">
+<h3 id="foal-extra"><a id="orgheadline79"></a><span class="section-number-3">7.1</span> Construire un interpréteur par modules</h3>
 <div class="outline-text-3" id="text-foal-extra">
 </div>
-<div id="outline-container-orgheadline80" class="outline-4">
-<h4 id="foal-extra-full"><a id="orgheadline80"></a>Code complet du chapitre</h4>
+<div id="outline-container-orgheadline75" class="outline-4">
+<h4 id="foal-extra-full"><a id="orgheadline75"></a>Code complet du chapitre</h4>
 <div class="outline-text-4" id="text-foal-extra-full">
 <p>
 Le code complet du chapitre <a href="#foal">5</a>, en un seul programme.
@@ -10614,8 +10576,8 @@ p2(show(state(<span class="org-type">double</span>({num, plus}))))
 </div>
 </div>
 
-<div id="outline-container-orgheadline81" class="outline-4">
-<h4 id="foal-extra-rust"><a id="orgheadline81"></a>Code complet de l&rsquo;exemple en Rust</h4>
+<div id="outline-container-orgheadline76" class="outline-4">
+<h4 id="foal-extra-rust"><a id="orgheadline76"></a>Code complet de l&rsquo;exemple en Rust</h4>
 <div class="outline-text-4" id="text-foal-extra-rust">
 <p>
 Le code de l&rsquo;exemple en Rust était abrégé pour épargner les détails.  Voici le
@@ -10708,8 +10670,8 @@ code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
 </div>
 </div>
 
-<div id="outline-container-orgheadline82" class="outline-4">
-<h4 id="foal-extra-subtle"><a id="orgheadline82"></a><span class="todo UNREAD">UNREAD</span> La différence subtile</h4>
+<div id="outline-container-orgheadline77" class="outline-4">
+<h4 id="foal-extra-subtle"><a id="orgheadline77"></a><span class="todo UNREAD">UNREAD</span> La différence subtile</h4>
 <div class="outline-text-4" id="text-foal-extra-subtle">
 <p>
 Pour pouvoir activer plusieurs extensions de l&rsquo;interpréteur en même temps, on a
@@ -10778,9 +10740,9 @@ que l&rsquo;on rajoute le <code>__proto__: base</code> dans l&rsquo;objet retour
 </div>
 </div>
 
-<div id="outline-container-orgheadline83" class="outline-4">
-<h4 id="orgheadline83"><span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</h4>
-<div class="outline-text-4" id="text-orgheadline83">
+<div id="outline-container-orgheadline78" class="outline-4">
+<h4 id="orgheadline78"><span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</h4>
+<div class="outline-text-4" id="text-orgheadline78">
 <p>
 Les termes du langages sont représentés par des objets.  Il n&rsquo;y a pas de
 constructeurs d&rsquo;objets en JavaScript, puisque c&rsquo;est un langage à prototypes.
@@ -10881,9 +10843,9 @@ extension.
 </div>
 </div>
 
-<div id="outline-container-orgheadline86" class="outline-2">
-<h2 id="orgheadline86">Références</h2>
-<div class="outline-text-2" id="text-orgheadline86">
+<div id="outline-container-orgheadline81" class="outline-2">
+<h2 id="orgheadline81">Références</h2>
+<div class="outline-text-2" id="text-orgheadline81">
 <div id="bibliography">
 
 <table>
@@ -11028,20 +10990,6 @@ Lewis Carroll.
  <em>Alice's Adventures in Wonderland</em>.
  MacMillan and Co., 1866.
 [&nbsp;<a href="https://en.wikisource.org/wiki/Alice's_Adventures_in_Wonderland_(1866)">http</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="Car-72">Car72</a>]
-</td>
-<td class="bibtexitem">
-Lewis Carroll.
- <em>Through the Looking Glass</em>.
- MacMillan and Co., 1872.
-[&nbsp;<a href="https://en.wikisource.org/wiki/Through_the_Looking-Glass,_and_What_Alice_Found_There">http</a>&nbsp;]
 
 </td>
 </tr>
@@ -11257,21 +11205,6 @@ Robert&nbsp;Bruce Findler and Matthew Flatt.
   Conference on Functional Programming (ICFP '98), Baltimore, Maryland, USA,
   September 27-29, 1998.</em>, pages 94--104, 1998.
 [&nbsp;<a href="http://dx.doi.org/10.1145/289423.289432">DOI</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="FF-04">FF04</a>]
-</td>
-<td class="bibtexitem">
-Robert&nbsp;E. Filman and Daniel&nbsp;P. Friedman.
- Aspect-oriented programming is quantification and obliviousness.
- In Mehmet Akşit, Siobhan Clarke, Tzilla Elrad, and Robert&nbsp;E. Filman,
-  editors, <em>Aspect-Oriented Software Development</em>. Addison-Wesley, 2004.
- Revision of [?].
 
 </td>
 </tr>
@@ -12294,7 +12227,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-18 jeu. 18:57 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-19 ven. 19:25 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
