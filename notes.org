@@ -4344,6 +4344,232 @@ Bummed that I did not realize this sooner.  Because that's actually how,
 sometimes consciously, how I wrote the thesis!  By answering implicit and hidden
 questions.  Maybe for the defense?
 
+** [2016-08-22 lun.]
+*** Open recursion in OCaml
+PIM mentioned "open recursion", a pattern for writing several walkers of an AST
+without repeating the boilerplate.
+
+[[https://realworldocaml.org/v1/en/html/classes.html#open-recursion][This book]] has an example.  Specifically, here is the AST walker, ~folder~:
+
+#+BEGIN_SRC ocaml
+open Core.Std
+
+class ['a] folder = object(self)
+  method doc acc = function
+  | Heading _ -> acc
+  | Paragraph text -> List.fold ~f:self#text_item ~init:acc text
+  | Definition list -> List.fold ~f:self#list_item ~init:acc list
+
+  method list_item: 'b. 'a -> 'b list_item -> 'a =
+    fun acc {tag; text} ->
+      List.fold ~f:self#text_item ~init:acc text
+
+  method text_item acc = function
+  | Raw _ -> acc
+  | Bold text -> List.fold ~f:self#text_item ~init:acc text
+  | Enumerate list -> List.fold ~f:self#list_item ~init:acc list
+  | Quote doc -> self#doc acc doc
+end
+#+END_SRC
+
+And then one specific walker would be:
+
+#+BEGIN_SRC ocaml
+class counter = object
+  inherit [int] folder as super
+
+  method list_item acc li = acc
+
+  method text_item acc ti =
+    let acc = super#text_item acc ti in
+    match ti with
+    | Bold _ -> acc + 1
+    | _ -> acc
+end
+
+let count_doc = (new counter)#doc
+#+END_SRC
+
+It counts bold tags within text items, but not when the text items are in a
+list.  Hence it redefines ~list_item~ to skip the list altogether, and
+~text_item~ to actually count the bold tags.
+
+It furiously looks like an object algebra, or visitor.  The interface is defined
+by the object: these three methods.  Any alternative walker inherits from this
+object and reuses the base functionality through calls to ~super~.  Crucially,
+adding a variant to the ~doc~ datatype can be absorbed by the ~folder~ class.
+
+It might even just be an abstract class.  Here is how I think about it in JS:
+
+#+BEGIN_SRC js
+var folder = {
+  doc(acc, arg) {
+    switch (arg.type) {
+      case 'Heading':
+        return acc
+
+      case 'Paragraph': let {text} = arg
+        return text.reduce(this.text_item, acc)
+
+      case 'Definition': let {list} = arg
+        return list.reduce(this.list_item, acc)
+
+      default:
+        throw `Unknown type: {arg.type}`
+    }
+  },
+
+  list_item(acc, {tag, text}) {
+    return text.reduce(this.text_item, acc)
+  },
+
+  text_item(acc, arg) {
+    switch (arg.type) {
+      case 'Raw':
+        return acc
+
+      case 'Bold': let {text} = arg
+        return text.reduce(this.text_item, acc)
+
+      case 'Enumerate': let {list} = arg
+        return list.reduce(this.list_item, acc)
+
+      case 'Quote': let {doc} = arg
+        return this.doc(acc, doc)
+
+      default:
+        throw `Unknown type: {arg.type}`
+    }
+  }
+}
+
+var counter = {
+  __proto__: folder,
+
+  list_item(acc, li) { return acc },
+
+  text_item(acc, ti) {
+    ti //: Object {type:"Raw",a:"Raw text"}
+    let acc2 = this.__proto__.text_item.call(this, acc, ti)
+    if (acc2.type === 'Bold') {
+      return acc2 + 1
+    } else {
+      return acc2
+    }
+  }
+}
+
+var test_doc = {
+  type: 'Heading',
+  a: "I'm a heading",
+}
+counter.doc(0, test_doc) //: 0
+
+var test_doc2 = {
+  type: 'Paragraph',
+  text: [
+    {type: 'Raw', a: "Raw text"},
+    {type: 'Bold', text: "bold text"},
+  ]
+}
+counter.doc(0, test_doc2) //: TypeError: this.__proto__.text_item is undefined
+#+END_SRC
+
+Now, it shows I do not quite understand what is going on behind the scenes of
+this OCaml snippet.  Unfortunately it does not work because ~this~ is not bound
+to ~text_item~ when calling ~reduce~.
+
+Well, then we can easily just use ~bind~:
+
+#+BEGIN_SRC js
+var folder = {
+  doc(acc, arg) {
+    switch (arg.type) {
+      case 'Heading':
+        return acc
+
+      case 'Paragraph': let {text} = arg
+        return text.reduce(this.text_item.bind(this), acc)
+
+      case 'Definition': let {list} = arg
+        return list.reduce(this.list_item.bind(this), acc)
+
+      default:
+        throw `Unknown type: {arg.type}`
+    }
+  },
+
+  list_item(acc, {tag, text}) {
+    return text.reduce(this.text_item, acc)
+  },
+
+  text_item(acc, arg) {
+    switch (arg.type) {
+      case 'Raw':
+        return acc
+
+      case 'Bold': let {text} = arg
+        text //: [Object {type:"Raw",a:"bold text"}]
+        return text.reduce(this.text_item.bind(this), acc)
+
+      case 'Enumerate': let {list} = arg
+        return list.reduce(this.list_item.bind(this), acc)
+
+      case 'Quote': let {doc} = arg
+        return this.doc(acc, doc)
+
+      default:
+        throw `Unknown type: {arg.type}`
+    }
+  }
+}
+
+var counter = {
+  __proto__: folder,
+
+  list_item(acc, li) { return acc },
+
+  text_item(acc, ti) {
+    ti //: Object {type:"Raw",a:"bold text"}"}]}
+    let acc2 = this.__proto__.text_item.call(this, acc, ti)
+    if (ti.type === 'Bold') {
+      return acc2 + 1
+    } else {
+      return acc2
+    }
+  }
+}
+
+var test_doc = {
+  type: 'Heading',
+  a: "I'm a heading",
+}
+counter.doc(0, test_doc) //: 0
+
+var test_doc2 = {
+  type: 'Paragraph',
+  text: [
+    {type: 'Raw', a: "Raw text"},
+    {type: 'Bold', text: [{type: 'Raw', a: "bold text"}]},
+  ]
+}
+counter.doc(0, test_doc2) //: 1
+#+END_SRC
+
+Then it works.  So yes, open recursion in this example can be understood as
+defining a list of methods that can call themselves back.  That's the "mutual
+recursion" part.
+
+#+BEGIN_EXAMPLE
+folder o =
+ doc { ... o.list_item ... }
+ list_item { ... o.text_item ... }
+ text_item { ... o.doc ... }
+#+END_EXAMPLE
+
+And then you can plug a more specific ~o~ into it, so it will take advantage of
+the recursion already in place and ride along.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
