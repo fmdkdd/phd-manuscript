@@ -2004,6 +2004,9 @@ référence à ces parties directement, mais indirectement, ce qui permet de les
 changer plus facilement.
 
 ** READ Le programme reflète le processus: la programmation structurée
+:PROPERTIES:
+:CUSTOM_ID: dijkstra
+:END:
 #+BEGIN_epig
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
 Japan, who cheerfully complained that he was always being eliminated.
@@ -4863,6 +4866,65 @@ Obladi, Oblada
 
 — The Beatles
 #+END_epig
+
+Dans ce chapitre, on s'intéresse spécifiquement à comprendre comment les
+techniques du chapitre précédent peuvent s'appliquer pour détourner un
+interpréteur, et en particulier un interpréteur écrit en JavaScript.  Pour ce
+faire, on va illustrer ces techniques sur un interpréteur minimal.
+
+*** Programmation structurée
+On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
+~COMEFROM~ ensembles de cette façon:
+
+[[file:img/cometo.svg]]
+
+Lorsque le programme arrive au point de redirection, le flot de contrôle est
+capturé par ~COMEFROM~ qui le passe au code de l'extension.  Une fois le code de
+l'extension exécuté, celui-ci rend le contrôle au code initial par le ~GOTO~
+final.  De cette façon, on peut modifier le comportement du programme simplement
+en rajoutant du code, et sans modifier le code du programme d'origine.  On
+pourrait ainsi rajouter autant d'extensions que l'on souhaite, et cela
+fonctionnerait pour n'importe quel programme.
+
+Les problèmes apparaissent quand on s'intéresse aux détails.  D'abord, quels
+arguments ~COMEFROM~ et ~GOTO~ prennent?  Si ce sont des numéros de lignes, ou
+des adresses mémoires, l'approche est évidemment fragile.  Ajouter ou retirer
+une ligne du programme va nécessairement modifier ces indices.  Toutes les
+extensions devraient alors être modifiées en conséquence.  Une solution à ce
+problème est d'utiliser des étiquettes (/labels/).  Une étiquette est associée à
+une ligne, et ~GOTO~ accepte l'étiquette en argument.  Quelques soient les
+bouleversements dans le programme, l'étiquette fera toujours référence à la même
+ligne.  Et les étiquettes sont applicables dans des langages où les instructions
+ne sont pas numérotées.  C'est le cas dans le langage C, où les lignes ne sont
+pas numérotées mais ~GOTO~ est utilisable avec des étiquettes.  Mais le plus
+grand problème demeure que peu de langages proposent le mot-clé ~COMEFROM~
+(autre que comme une blague), et qu'il semble peu probable qu'ils aient
+l'intention de l'ajouter.
+
+Quand on utilise des étiquettes, on peut considérer que l'on vient modifier le
+code ciblé.  Techniquement il s'agit bien d'une modification, mais on peut aussi
+le voir comme une simple annotation.  L'ajout d'une étiquette ne change pas la
+sémantique du code, tant que cette étiquette n'est pas utilisée.
+
+On peut se passer de ~COMEFROM~, et à la place utiliser un autre ~GOTO~, mais
+cette fois dans le code que l'on cherche à détourner.  Plutôt que de détourner
+le flot de contrôle à distance, on vient explicitement ajouter une seule ligne
+qui envoie dans les extensions.
+
+
+
+-----
+
+Structured programming:
+- using GOTO and COMEFROM to change a block of code at a distance without
+  touching that code.
+- without COMEFROM, can use two GOTOs to patch a routine, but need to insert a
+  GOTO in the routine.
+-> Interpreter in a language that has GOTO
+- GOTO available only in a restricted form in JavaScript however
+
+
+-----
 
 Traditionnellement, on retrouve ces mécanismes plus facilement dans des langages
 dynamiques comme JavaScript, Python, ou Lisp, que dans des langages statiquement

@@ -4587,6 +4587,27 @@ This is best done with a running example of a toy interpreter.
 And it's okay if I am not exhaustive and just abruptly say "Well, here it's
 unclear how it can applied, any pointers appreciated".
 
+** [2016-08-23 mar.]
+*** Full-power GOTO in JavaScript
+Is there any way to simulate an arbitrary GOTO using the restricted version of
+labels that JavaScript has?  [[https://alexsexton.com/blog/2009/07/goto-dot-js/][GOTO.js]] does it by rewriting, but it does not work
+across functions.
+
+*** Q: can you easily divert other interpreters?
+The methodology (I have in mind) in chapter 4 is to show off diverting
+mechanisms for interpreters I have also built.  Since I build them, why not
+build them to be extensible?  Well, I try to build them /without/ considering
+extensions first.  The simplest way possible.  Then, I show off how we can
+divert them.
+
+While I'm honest, it can be a useful inquiry.
+
+But still, doubt can remain on whether there is value to the approach in a more
+general context.  You know, outside of /me/.
+
+One way to squelch this doubt would be to just take random interpreters and try
+to modify them at a distance, and see how that works.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
