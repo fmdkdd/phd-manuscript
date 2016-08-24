@@ -4909,20 +4909,72 @@ sémantique du code, tant que cette étiquette n'est pas utilisée.
 On peut se passer de ~COMEFROM~, et à la place utiliser un autre ~GOTO~, mais
 cette fois dans le code que l'on cherche à détourner.  Plutôt que de détourner
 le flot de contrôle à distance, on vient explicitement ajouter une seule ligne
-qui envoie dans les extensions.
+qui envoie dans les extensions:
 
+[[file:img/gotocomeback.svg]]
+
+Et le second ~GOTO~ retourne le flot de contrôle au code initial.  Cette fois on
+vient modifier le code ciblé explicitement en rajoutant un ~GOTO~, et pas
+seulement un label, ce qui rend l'approche moins attractive.
+
+Qui plus est, l'attrait de ~GOTO~ est limité dans les langages qui l'offrent
+comme mot-clé.  En C, ~GOTO~ ne peut pas faire référence à une étiquette définie
+dans une autre fonction.  En JavaScript, il n'y a pas de ~GOTO~; seuls les
+mots-clés ~continue~ et ~break~ peuvent accepter des étiquettes. Mais ces
+mots-clés ne peuvent apparaître qu'à l'intérieur de boucles ~for~ ou ~while~, ce
+qui réduit davantage leur portée.  On cherche à détourner le programme à
+distance: le code de l'extension ne vient pas modifier le code détourné.  Mais
+avec ces mots-clés restreints le code de l'extension doit être placé dans le
+corps de la fonction détournée.  Et si on peut modifier la fonction directement,
+il y a certainement plus simple que d'utiliser un ~GOTO~.
+
+Dans la pratique, ~GOTO~ et ~COMEFROM~ ne sont pas applicables pour détourner un
+interpréteur, et certainement pas en JavaScript.  Néanmoins, l'/idée/ de
+capturer le flot de contrôle et de retourner au code détourné n'est pas remise
+en cause.  Il faut juste trouver d'autres mécanismes pour la réaliser.
+
+*** Programmation littéraire
 
 
 -----
 
-Structured programming:
-- using GOTO and COMEFROM to change a block of code at a distance without
-  touching that code.
-- without COMEFROM, can use two GOTOs to patch a routine, but need to insert a
-  GOTO in the routine.
--> Interpreter in a language that has GOTO
-- GOTO available only in a restricted form in JavaScript however
+Literate programming:
+- org mode example
+- still need explicit labels at places where we want to insert code later
+- diverting happens statically, when code is tangled
 
+OOP:
+- As Kay noted, message passing is already flexible because of inheritance.  So
+  if we define an interpreter as having an ~eval~ method, we can inherit and
+  override this behavior later.
+- Use inheritance to override code: works but of limited use?
+- Mostly the solutions in \sect Expression Problem cover this well.
+- But here we are diverting, not constructing.  How do they apply?
+- Downside is that the interpreter might not have an ~eval~ method at all.  Very
+  dependent on the interpreter structure.
+
+Prototypes:
+- more suited to JavaScript
+- delegation in place of inheritance
+- also depends on the program structure
+
+Reflection:
+- template Haskell
+- lisp?
+- Downsides: basically writing your own language at this point, which is costly
+  in time, and very specific for your problem.
+
+AOP:
+- Java
+- JS with AspectScript
+- Downside: language extension.  More general than a DSL, but still not built-in
+  to the language.  Also unfortunately very slow in JS.
+
+
+- Dynamic scoping
+- lisp
+- haskell?
+- great, but not supported by many languages.
 
 -----
 
