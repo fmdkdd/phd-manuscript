@@ -54,7 +54,7 @@ different person then.'
    - [[#read-réifier-le-langage-métaprogrammation-et-réflexion][READ Réifier le langage: métaprogrammation et réflexion]]
    - [[#read-séparer-les-préoccupations-la-programmation-par-aspects][READ Séparer les préoccupations: la programmation par aspects]]
    - [[#read-le-problème-de-lexpression][READ Le problème de l'expression]]
-   - [[#unread-autres-mécanismes-de-détournement][UNREAD Autres mécanismes de détournement]]
+   - [[#read-autres-mécanismes-de-détournement][READ Autres mécanismes de détournement]]
    - [[#unread-récapitulatif][UNREAD Récapitulatif]]
  - [[#unwritten-variations-sur-un-interpréteur-de-lambda-calcul-extensible][UNWRITTEN Variations sur un interpréteur de lambda-calcul extensible]]
  - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
@@ -4550,13 +4550,13 @@ modifications de son code source trop importantes.
 Néanmoins, ces solutions restent applicables au problème plus large, qui est de
 construire des interpréteurs extensibles.
 
-** UNREAD Autres mécanismes de détournement
+** READ Autres mécanismes de détournement
 *** La superposition
 La superposition regroupe un ensemble de techniques qui visent à étendre le
 programme au niveau du code source plutôt qu'au niveau du langage.
 
-Hyper/J est un système pour séparation pluridimensionnelle des préoccupations
-pour Java [[cite:TOH+99][TOH+99]] [[cite:TO-00][TO-00]].  C'est un paradigme qui permet de séparer les
+Hyper/J est un système pour le séparation pluridimensionnelle des préoccupations
+en Java [[cite:TOH+99][TOH+99]] [[cite:TO-00][TO-00]].  C'est un paradigme qui permet de séparer les
 préoccupations d'un système selon plusieurs axes, en regroupant tous les
 artefacts liés à une préoccupation: le code source, mais aussi la documentation,
 et les documents de conception.  Le but de cette séparation et de minimiser
@@ -4585,7 +4585,7 @@ l'expression est l'/hypercoupe/.
 
 Séparation des préoccupations dans le problème de l'expression en utilisant des
 hypercoupes.  Chaque hypercoupe correspond à une opération, et les classes qui
-représentent les termes apparaissent toutes les hypercoupes.
+représentent les termes apparaissent dans toutes les hypercoupes.
 #+END_side-figure
 
 L'hypercoupe regroupe tous les artefacts liés à la préoccupation.  Pour le
@@ -4597,7 +4597,7 @@ apparaissent dans toutes les hypercoupes.  Les hypercoupes sont simplement des
 vues différentes d'un même système.
 
 Dans Hyper/J, la superposition intervient lorsqu'il s'agit de composer les
-hypercoupe pour synthétiser le programme.  Composer le code source se fait à
+hypercoupes pour synthétiser le programme.  Composer le code source se fait à
 partir des noms de classes et des méthodes: deux classes homonymes dans deux
 hypercoupes différentes combineront leurs méthodes.  Dans les hypercoupes de
 l'exemple, on obtient une seule classe ~Term~ qui aura trois méthodes: ~eval~,
@@ -4620,7 +4620,7 @@ et comme Hyper/J, est essentiellement indépendant du langage de programmation.
 
 De la même manière, les /patches sémantiques/ [[cite:PLM-07][PLM-07]] reconnaissent des arbres
 syntaxiques partiels afin de répliquer des changements automatiquement.
-L'application principale est de pouvoir modifier des drivers lorsque l'interface
+L'application principale est de pouvoir modifier des pilotes lorsque l'interface
 du noyau Linux change.  Dans un patch sémantique, on décrit le motif général du
 changement à l'aide d'ellipses:
 
@@ -4683,7 +4683,7 @@ qu'il faudra adapter pour les programmes Ada.
 TODO: add Eclipse ref
 #+END_aside
 
-Ce principe s'applique pas seulement au code.  Une pratique courante est
+Ce principe ne s'applique pas seulement au code.  Une pratique courante est
 d'inclure les mots ~TODO~, ~FIXME~ ou ~REFACTOR~ dans les commentaires d'un code
 source pour indiquer un problème que l'auteur note dans le feu de l'action, dans
 l'intention de le résoudre ultérieurement.  On peut ensuite facilement obtenir
@@ -4694,25 +4694,25 @@ d'un projet à partir de ces mots-clés.
 L'information transparente a l'avantage de pouvoir s'appliquer à n'importe quel
 programme, puisqu'elle ne repose que sur des conventions.  Elle n'impose pas de
 changements structurels, ce qui la rend plus économique à adopter qu'un nouveau
-paradigme.  En contrepartie, elle n'offre aucune garantie.  Si l'on malpelle
-~TODO~ en ~TOOD~, la note ne sera peut être oubliée à jamais.
+paradigme.  En contrepartie, elle n'offre aucune garantie.  Si l'on écrit ~TOOD~
+plutôt que ~TODO~, la note sera peut être oubliée à jamais.
 
 *** Les valeurs virtuelles et les mandataires
 Austin, Disney et Flanagan proposent d'étendre les langages à l'aide de /valeurs
 virtuelles/ [[cite:ADF-11][ADF-11]].  Une valeur virtuelle est une valeur dont le comportement
-peut être redéfinit par le programmeur.  Par exemple, lorsqu'une valeur
+peut être redéfinie par le programmeur.  Par exemple, lorsqu'une valeur
 virtuelle est utilisée comme indice dans un tableau, ou dans un test d'égalité,
 ou invoquée comme une fonction, le programmeur peut intercepter cet usage et y
 substituer son propre comportement.
 
 Avec les valeurs virtuelles, on peut par exemple implémenter la /mémorisation/
-de valeurs.  Ils donnent l'exemple d'une fonction ~delay~ qui prend comme
-argument une fonction qui représente le calcul à mémoriser.  La valeur retournée
-par ~delay~ est une valeur virtuelle, qui se comporte comme une valeur
+de valeurs.  Les auteurs donnent l'exemple d'une fonction ~delay~ qui prend
+comme argument une fonction qui représente le calcul à mémoriser.  La valeur
+retournée par ~delay~ est une valeur virtuelle, qui se comporte comme une valeur
 primitive: pour le reste du programme, ce n'est plus une fonction.  La première
 fois que le programme utilise cette valeur virtuelle, le calcul sera exécuté et
-mémorisé.  Le calcul est donc effectué au plus seule fois, de façon transparente
-pour le programme.
+mémorisé.  Le calcul est donc effectué au plus une seule fois, de façon
+transparente pour le programme.
 
 #+BEGIN_aside
 Un calcul coûteux qui retourne un entier, mais retardé par une fonction, peut
@@ -4733,8 +4733,8 @@ point semblables aux valeurs primitives, mais elles propagent leur couleur.
 
 L'intention des valeurs virtuelles est d'implémenter des stratégies
 d'interprétation alternatives, sans avoir à modifier l'interpréteur.  Il faut
-néanmoins que l'interpréteur supporte les valeurs virtuelles dans un premier
-temps.  Mais une fois cette modification effectuée, les différentes stratégies
+néanmoins que l'interpréteur gère les valeurs virtuelles dans un premier temps.
+Mais une fois cette modification effectuée, les différentes stratégies
 d'interprétation peuvent se faire à travers les valeurs virtuelles directement.
 
 Un inconvénient potentiel de cette approche est qu'il faut implémenter la
@@ -4745,14 +4745,23 @@ Suivant la stratégie d'interprétation, modifier l'interpréteur peut être plu
 direct.
 
 Mais plus important, toutes les modifications de l'interpréteur ne sont pas
-réalisables à travers les valeurs virtuelles.  Comme une valeur virtuelle est
+réalisables à l'aide des valeurs virtuelles.  Comme une valeur virtuelle est
 toujours créée explicitement à partir d'une valeur primitive, on ne peut pas
 capturer toutes les valeurs primitives du programme pour tracer l'interprétation
 par exemple.  Intuitivement, les valeurs virtuelles sont plus adaptées pour des
 stratégies d'interprétations qui n'affectent que certaines valeurs, et non tout
-le comportement du programme.  Par exemple, la mémorisation est utile pour des
-valeurs ponctuelles, mais les valeurs virtuelles ne permettent pas de
-transformer tout le langage en langage à évaluation paresseuse.
+le comportement du programme.  Par exemple, la mémorisation est utile pour
+retarder l'évaluation d'une valeur ponctuelle, mais les valeurs virtuelles ne
+transforment pas pour autant les expressions qui les contiennent en expressions
+paresseuses.  Si l'on souhaitait changer évaluer /tout un programme/
+paresseusement avec les valeurs virtuelles, il faudrait manuellement rajouter
+des appels à ~delay~ absolument partout.  Modifier l'interpréteur directement
+serait alors bien plus simple.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Anything relevant from Ducasse on proxies in this setting?
+#+END_aside
 
 Une valeur virtuelle est essentiellement un /mandataire/ (/proxy/) autour d'une
 valeur primitive.  Les auteurs baptisent d'ailleurs leur langage \lambda_proxy.  Un
@@ -4760,15 +4769,15 @@ mandataire s'intercale entre le reste du programme et la valeur primitive, et
 permet de redéfinir comment cette valeur réagit aux opérations usuelles du
 langage qui d'habitude échappent au contrôle du programmeur.  Les valeurs
 virtuelles ont inspiré l'implémentation des mandataires en JavaScript [[cite:CM-13][CM-13]], qui
-n'est cependant pas aussi riche des raisons de compatibilité.  Néanmoins, Keil
-et Thiemann ont utilisé ces mandataires avec succès pour améliorer leur moniteur
-d'effets JSConTest qui était précédemment basé sur de la transformation de code
-[[cite:KT-13][KT-13]].
+n'est cependant pas aussi riche pour des raisons de compatibilité.  Néanmoins,
+Keil et Thiemann ont utilisé ces mandataires avec succès pour améliorer leur
+moniteur d'effets JSConTest qui était précédemment basé sur de la transformation
+de code [[cite:KT-13][KT-13]].
 
 *** La portée dynamique
 La portée dynamique est aussi un moyen de détourner des programmes.  C'est un
 des ingrédients de l'extensibilité de l'éditeur de texte Emacs [[cite:Sta-81][Sta-81]].  Stallman
-prend l'exemple d'associer temporairement une séquence de touche à une action,
+prend l'exemple de l'association temporaire d'une séquence de touche à une action,
 tant qu'un mode d'édition spécifique est actif.  Si le mode fait référence à la
 table des raccourcis ~bind-map~, on peut, par portée dynamique, redéfinir
 temporairement ~bind-map~ lors de l'activation de ce mode:
@@ -4779,20 +4788,27 @@ temporairement ~bind-map~ lors de l'activation de ce mode:
 #+END_SRC
 
 Et ce, sans besoin de modifier la façon dont le mode accède à ~bind-map~.  De
-façon générale, la portée dynamique permet à l'appelant de surcharger les
+façon générale, la portée dynamique permet à l'appelant de redéfinir les
 variables libres d'une fonction.
+
+#+BEGIN_aside
+Queinnec montre que l'on peut émuler la portée dynamique dans une fonction en
+lui passant un argument supplémentaire qui agit comme l'environnement courant
+[[cite:Que-03][Que-03]].
+#+END_aside
 
 Historiquement, la portée dynamique est d'abord une erreur de programmation dans
 les premières implémentations de Lisp [[cite:McC-81][McC-81]], ce qui a été rectifié par l'ajout
 de l'opérateur ~FUNCTION~ [[cite:Mos-70][Mos-70]].  Un Lisp traditionnel peut donc comporter des
-variables à portée dynamique, et d'autres à portée lexicale.  Moreau note que la
-portée dynamique apporte de l'expressivité à un langage purement fonctionnel
-[[cite:Mor-98][Mor-98]], mais que la plupart des langages courants n'offrent que la portée
-lexicale.  Il donne l'exemple de Perl, TeX, CommonLisp et Bash comme langages
-majeurs à portée dynamique.  Comme Queinnec le montre, on peut émuler la portée
-dynamique dans une fonction en lui passant un argument supplémentaire d'où
-retirer ses variables [[cite:Que-03][Que-03]].  Néanmoins, le langage Haskell implémente tout de
-même la portée dynamique à travers l'extension des paramètres implicites [[cite:LLM+00][LLM+00]].
+variables à portée dynamique, et d'autres à portée lexicale.  C'est un avantage,
+car en plus du scénario mentionné ci-dessus, Moreau note que la portée dynamique
+apporte de l'expressivité à un langage purement fonctionnel [[cite:Mor-98][Mor-98]].  Il remarque
+que la plupart des langages courants n'offrent que la portée lexicale; Perl,
+TeX, CommonLisp et Bash sont des langages où la portée dynamique est encore
+présente.  La raison étant que la portée lexicale est bien moins surprenante; la
+portée dynamique peut modifier le comportement des fonctions appelées par
+inadvertance.  Néanmoins, le langage Haskell propose tout de même la portée
+dynamique dans une extension, sous la forme de paramètres implicites [[cite:LLM+00][LLM+00]].
 
 ** UNREAD Récapitulatif
 Dans tous les travaux que l'on a étudié dans ce chapitre il y a un thème qui
