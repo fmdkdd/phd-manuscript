@@ -8271,24 +8271,36 @@ d'appliquer une forme de portée dynamique aux variables internes au module.  Le
 obtenir de l'indirection dans le cas présent.  Même si la plupart des exemples
 de ce document ont utilisé le langage JavaScript, le langage même importe peu,
 tant que des mécanismes d'indirection sont présents.  Pour détourner un
-programme, il faut introduire de l'indirection.  Et de façon générale, cette
-morale vaut aussi pour étendre un programme.  Si les références et les appels de
-méthodes sont indirects, ils seront plus faciles à changer.
+programme, il faut introduire de l'indirection.  Et de façon générale, ce
+principe vaut aussi pour étendre un programme.  Si les références et les appels
+de méthodes sont indirects, ils seront plus faciles à changer.
+
+Tous les mécanismes d'indirection s'apparentent à de la portée dynamique.
+Détourner un programme c'est modifier le comportement d'un code appelé sans
+changer la définition de ce code.  La portée dynamique permet de changer la
+valeur des variables libres d'un code appelé.  À chaque fois que l'on cherche à
+détourner un programme, on cherche un mécanisme de portée dynamique.  Il s'agit
+de rendre le comportement du code dépendant de la pile d'appel, plutôt que de
+son environnement lexical.  Même pour les mécanismes statiques d'indirection,
+comme la programmation littéraire, ou la superposition, on cherche à obtenir
+cette portée dynamique lors de la compilation.
 
 La mise en garde de Dijkstra contre ~GOTO~ s'applique tout aussi bien à tout
 mécanisme d'indirection.  Comme ~GOTO~, une indirection rend le programme plus
-difficile à comprendre, à prédire.  On ne peut plus garantir le comportement
-d'une fonction en isolation, il faut prendre en compte toutes les extensions que
-ces indirections rendent possibles.  Même dans un simple patron observateur, on
-ne peut pas prédire ce que que le programme fera sans connaître tous les
-observateurs enregistrés auprès d'un sujet.  Et potentiellement l'ensemble de
-ces observateurs ne pourra être déterminé qu'à l'exécution du programme.  Le
-détournement a le même inconvénient.  Il y a donc un compromis: plus le
-programme est facile à étendre ou détourner, et moins il sera facile d'en
-prédire son comportement en le lisant ou l'analysant.  Le détournement n'est pas
-une balle en argent; pas plus que la refactorisation.  L'enseignement ici est
-qu'il faut être conscient des conséquences de ces compromis lors de la
-conception et tout au long de l'évolution du programme.
+difficile à comprendre, à prédire.  Par définition, la portée dynamique rend le
+comportement du code appelé dépendant de l'appelant.  On ne peut plus garantir
+le comportement d'une fonction en isolation, il faut prendre en compte tous les
+appelants, toutes les extensions que ces indirections rendent possibles.  Même
+dans un simple patron observateur, on ne peut pas prédire ce que que le
+programme fera sans connaître tous les observateurs enregistrés auprès d'un
+sujet.  Et potentiellement l'ensemble de ces observateurs ne pourra être
+déterminé qu'à l'exécution du programme.  Le détournement a le même
+inconvénient.  Il y a donc un compromis: plus le programme est facile à étendre
+ou détourner, et moins il sera facile d'en prédire son comportement en le lisant
+ou l'analysant.  L'un ne va pas sans l'autre.  Le détournement n'est pas une
+balle en argent; pas plus que la refactorisation.  L'enseignement ici est qu'il
+faut être conscient des conséquences de ces compromis lors de la conception et
+tout au long de l'évolution du programme.
 
 L'extensibilité est une propriété désirable dans un programme, mais à l'évidence
 elle est rarement primordiale.  Avant toute chose, un programme doit être
