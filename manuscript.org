@@ -4890,7 +4890,7 @@ faire, on va illustrer ces techniques sur un interpréteur minimal.
 
 *** Programmation structurée
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
-~COMEFROM~ ensembles de cette façon:
+~COMEFROM~ ensemble de cette façon:
 
 [[file:img/cometo.svg]]
 
@@ -4950,14 +4950,323 @@ capturer le flot de contrôle et de retourner au code détourné n'est pas remis
 en cause.  Il faut juste trouver d'autres mécanismes pour la réaliser.
 
 *** Programmation littéraire
+Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
+nommer des blocs de code pour les définir à un autre moment.
 
+Par exemple, on peut écrire un interpréteur minimal en JavaScript ainsi:
+
+#+BEGIN_aside
+On utilise la syntaxe de noweb [[cite:Noweb][Noweb]], un système de programmation littéraire
+indépendant du langage de programmation.  Dans ces exemples, un bloc est défini
+par ~<<nom>>=~, et comprend tout le code jusqu'à la prochaine ligne vide.  La
+syntaxe ~<<nom>>~ fait référence au bloc: celui-ci sera inséré à cet endroit
+lors de l'entrelacement.
+#+END_aside
+
+#+BEGIN_SRC js
+<<terms>>=
+let num = (n) => ({type: 'num', n})
+let plus = (a, b) => ({type: 'plus', a, b})
+
+<<interp>>=
+function interp(n) {
+  switch (n.type) {
+  case 'num':
+    <<interp-num>>
+    break
+
+  case 'plus':
+    <<interp-plus>>
+    break
+  }
+}
+#+END_SRC
+
+La fonction d'évaluation ~interp~ ne fait que déléguer l'évaluation aux
+fonctions spécifiques des termes ~num~ et ~plus~.  Ces fonctions ne sont pas
+encore définies, mais on peut les définir plus loin en utilisant la syntaxe de
+WEB:
+
+#+BEGIN_SRC js
+<<interp-num>>=
+return n.n
+
+<<interp-plus>>=
+return interp(n.a) + interp(n.b)
+#+END_SRC
+
+Ici on sait que ces bouts de code vont être injectés dans un ~case~, donc on
+retourne directement le résultat suivant le type du terme.  Pour tester le
+programme, on pourra définir l'extrait suivant comme point d'entrée:
+
+#+BEGIN_SRC js
+<<terms>>
+<<interp>>
+
+let e1 = plus(num(1), num(2))
+
+interp(e1) //:
+#+END_SRC
+
+Pour pouvoir exécuter ce programme, on engendre le fichier JavaScript entrelacé
+par ~TANGLE~:
+
+#+BEGIN_SRC js
+let num = (n) => ({type: 'num', n})
+let plus = (a, b) => ({type: 'plus', a, b})
+function interp(n) {
+  switch (n.type) {
+  case 'num':
+    return n.n
+    break
+
+  case 'plus':
+    return interp(n.a) + interp(n.b)
+    break
+  }
+}
+
+let e1 = plus(num(1), num(2))
+
+interp(e1) //: 3
+#+END_SRC
+
+Cette approche fonctionne pour construire l'interpréteur, comme si on avait
+écrit le programme directement.
+
+Maintenant, on souhaite détourner cet interpréteur.  Par exemple, on souhaite
+modifier la fonction d'évaluation de ~num~.  Intuitivement, on aurait envie de
+redéfinir le bloc ~interp-num~, peut-être ainsi:
+
+#+BEGIN_SRC js
+<<terms>>
+<<interp>>
+<<interp-plus>>=
+return n.n * 2
+
+let e1 = plus(num(1), num(2))
+
+interp(e1) //:
+#+END_SRC
+
+Mais malheureusement, en noweb, ceci ne redéfinit pas le bloc ~interp-plus~,
+mais /ajoute/ du code à ce bloc.  Si bien qu'après l'entrelacement, on obtient:
+
+#+BEGIN_SRC js
+...
+function interp(n) {
+  switch (n.type) {
+  case 'num':
+    return n.n
+    return n.n * 2  // code mort
+    break
+
+...
+#+END_SRC
+
+Notre redéfinition n'est pas utilisée.
+
+Il n'y a pas de syntaxe en noweb pour exprimer cette redéfinition.
+Généralement, si on a un bloc ~X~ qui fait référence à un bloc ~Y~:
+
+: <<X>>= ... <<Y>> ...
+
+Le bloc ~Y~ est défini ailleurs dans le document littéraire:
+
+: <<Y>>= ...
+
+Et on dispose d'une définition alternative de ~Y~, ~Y'~:
+
+: <<Y'>>= ...
+
+Le problème est que l'on souhaite pouvoir dire, pendant l'entrelacement du bloc
+~X~, d'utiliser soit ~Y~ soit ~Y'~.  Ce n'est pas possible directement en noweb.
+
+On pourrait imaginer une extension.  Par exemple, dire:
+
+: <<X with Y=Y'>>
+
+pour signifier que l'on souhaite inclure le contenu du bloc ~X~, mais utiliser
+le contenu du bloc ~Y'~ à chaque référence faite au bloc ~Y~.  De cette façon,
+on peut facilement modifier le contenu du bloc ~X~ lors de son inclusion, sans
+avoir à toucher sa définition.  Donc, de le détourner.
+
+Essentiellement, ce serait implémenter la portée dynamique pour les noms de
+blocs.  Dans le bloc ~X~, ~Y~ est une variable libre.  Par défaut en noweb, ~Y~
+fera référence au bloc ~Y~ s'il est défini.  En ajoutant la construction ~with~,
+la résolution de la référence ~Y~ dépend de l'appelant: si l'environnement
+dynamique de l'appelant contient une redéfinition de ~Y~, ce sera ce bloc qui
+sera utilisé.
+
+Cette solution permettrait de détourner des programmes, quelque soit le langage
+de programmation utilisé.  Mais suivant le langage, on peut contourner le
+problème.
+
+En JavaScript, on peut définir l'interpréteur ainsi:
+
+#+BEGIN_SRC js
+<<inrep>>=
+function interp(n) {
+  switch (n.type) {
+  case 'num':
+    return interp_num(n)
+
+  case 'plus':
+    return interp_plus(n)
+  }
+}
+#+END_SRC
+
+Cette fois on n'utilise plus noweb pour faire référence au code qui va évaluer
+chaque terme, mais simplement des fonctions.  On va tout de même définir ces
+fonctions dans des blocs:
+
+#+BEGIN_SRC js
+<<interp-num>>=
+function interp_num({n}) { return n }
+
+<<interp-plus>>=
+function interp_plus({a,b}) {
+  return interp(a) + interp(b)
+}
+#+END_SRC
+
+Ce qui nous donne le point d'entrée suivant:
+
+#+BEGIN_SRC js
+<<terms>>
+<<interp>>
+<<interp-num>>
+<<interp-plus>>
+
+let e1 = plus(num(1), num(2))
+
+interp(e1) //:
+#+END_SRC
+
+La différence avec le précédent point d'entrée c'est que l'on déclare
+explicitement les blocs qui contiennent les définitions des fonctions
+~interp_num~ et ~interp_plus~.  Notons au passage qu'en JavaScript, les
+fonctions peuvent être définies après ~interp~, même si cette dernière y fait
+référence.
+
+Le programme entrelacé nous donne donc:
+
+#+BEGIN_SRC js
+let num = (n) => ({type: 'num', n})
+let plus = (a, b) => ({type: 'plus', a, b})
+function interp(n) {
+  switch (n.type) {
+  case 'num':
+    return interp_num(n)
+
+  case 'plus':
+    return interp_plus(n)
+  }
+}
+function interp_num({n}) { return n }
+function interp_plus({a,b}) {
+  return interp(a) + interp(b)
+}
+
+let e1 = plus(num(1), num(2))
+
+interp(e1) //: 3
+#+END_SRC
+
+Soit, le même résultat que précédemment.
+
+Mais cette fois, on peut définir une fonction d'évaluation alternative pour
+~num~:
+
+#+BEGIN_SRC js
+<<interp-num-double>>
+function interp_num({n}) { return n * 2 }
+#+END_SRC
+
+Et si l'on modifie le point d'entrée:
+
+#+BEGIN_SRC js
+<<terms>>
+<<interp>>
+<<interp-num-double>> // num -> num-double
+<<interp-plus>>
+
+let e1 = plus(num(1), num(2))
+
+interp(e1) //: 6
+#+END_SRC
+
+On parvient à redéfinir l'évaluation, sans avoir changé le code de
+l'interpréteur, uniquement en modifiant le code du point d'entrée.  Dans
+l'entrelacement, on substitue simplement la définition de la fonction
+~interp_num~ pour une autre.
+
+En supposant qu'un interpréteur réalise comporte plusieurs dizaines, voire
+centaines de fonctions d'interprétations, on voudra raccourcir le point d'entrée
+avec ce bloc:
+
+#+BEGIN_SRC js
+<<std-interp>>=
+<<terms>>
+<<interp>>
+<<interp-num>>
+<<interp-plus>>
+#+END_SRC
+
+#+BEGIN_SRC js
+<<std-interp>>
+
+let e1 = ...
+#+END_SRC
+
+Mais là encore, le détournement est encore possible, car il suffit d'ajouter
+notre redéfinition:
+
+#+BEGIN_SRC js
+<<std-interp>>
+<<interp-num-double>>
+
+let e1 = ...
+#+END_SRC
+
+Lors de l'entrelacement, la fonction ~interp_num~ sera définie deux fois: une
+fois par le bloc ~interp-num~ inclus par ~std-interp~, et une fois par le bloc
+~interp-num-double~.  Mais en JavaScript, cela ne pose pas de problème: c'est la
+dernière définition rencontrée par l'interpréteur qui fait foi.  On peut donc
+empiler les définitions de la sorte sans avoir à se préoccuper de retirer les
+précédentes.
+
+Mais dans ce cas, la programmation littéraire ne nous apporte plus grand chose.
+Il suffit de définir une fonction pour chaque morceau de code qui pourra être
+détourné, et juste redéfinir cette fonction avant d'interpréter un programme.
+
+#+BEGIN_SRC js
+function interp() { ... }
+function interp_num() { ... }
+function interp_plus() { ... }
+
+
+function interp_num() { ... } // détournement
+
+let e1 = ...
+#+END_SRC
+
+Mais même si l'on ajoutait la résolution dynamique des noms de blocs, il y a au
+moins deux inconvénients à utiliser la programmation littéraire ainsi pour
+détourner un interpréteur.  Le premier, c'est que l'on doit tout de même
+découper l'interpréteur en blocs, et ajouter des références aux blocs de code
+qui sont susceptibles d'être détournés.  Le second c'est que ce détournement est
+uniquement /statique/.  En plus de rajouter une étape de compilation, on doit
+choisir, dans le point d'entrée, quelle version de l'interpréteur on souhaite
+engendrer.  On peut imaginer avoir plusieurs points d'entrées, qui correspondent
+à des fichiers différents.  L'entrelacement engendrera autant de programmes
+qu'il y a de points d'entrée.  Mais une fois que l'un de ces programme est
+exécuté, on ne peut plus changer le comportement de l'interprétation.
+
+*** OOP
 
 -----
-
-Literate programming:
-- org mode example
-- still need explicit labels at places where we want to insert code later
-- diverting happens statically, when code is tangled
 
 OOP:
 - As Kay noted, message passing is already flexible because of inheritance.  So
