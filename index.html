@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-25 jeu. 18:23 -->
+<!-- 2016-08-26 ven. 18:24 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -6278,9 +6278,16 @@ dynamique dans une extension, sous la forme de paramètres implicites [<a href="
 <h3 id="orgheadline44"><span class="section-number-3">3.8</span> <span class="todo UNREAD">UNREAD</span> Récapitulatif</h3>
 <div class="outline-text-3" id="text-3-8">
 <p>
-Dans tous les travaux que l&rsquo;on a étudié dans ce chapitre il y a un thème qui
+Dans tous les travaux que l&rsquo;on a étudiés dans ce chapitre il y a un thème qui
 résonne: l&rsquo;indirection.
 </p>
+
+<aside class="todo">
+<p>
+Add examples to make it clear what do we mean by indirection here (maybe also in
+the respective chapters)
+</p>
+</aside>
 
 <p>
 D&rsquo;abord, la programmation structurée nous met en garde <i>contre</i> l&rsquo;indirection.
@@ -6323,6 +6330,12 @@ mandataires ne sont <i>que</i> de l&rsquo;indirection, et la portée dynamique r
 l&rsquo;utilisation des variables libres, qui sont elles-mêmes des indirections.
 </p>
 
+<aside class="todo">
+<p>
+Decide on the order of chapter 4 and 5
+</p>
+</aside>
+
 <p>
 Il apparaît donc que l&rsquo;indirection, sous toutes ces formes, est l&rsquo;ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
@@ -6336,7 +6349,7 @@ On observe que la plupart des solutions exposées ici proposent de rendre les
 programmes extensibles par <i>construction</i>.  Si les programmes suivent le
 paradigme proposé, alors il sera plus facile de les étendre par la suite.  Mais
 lorsque le programme est déjà écrit, et qu&rsquo;il ne suit pas une solution
-extensible, que faire?  On peut le réecrire, pour adapoter l&rsquo;un des paradigmes
+extensible, que faire?  On peut le réecrire, pour adapter l&rsquo;un des paradigmes
 mentionné.  L&rsquo;alternative, c&rsquo;est de le détourner.  Le chapitre <a href="#variations">4</a>
 montre comment utiliser l&rsquo;indirection dans différents langages afin de détourner
 des interpréteurs existants.
@@ -6394,17 +6407,17 @@ On a vu (&sect;<a href="#dijkstra">3.1</a>) que théoriquement l&rsquo;on pouvai
 <code>COMEFROM</code> ensemble de cette façon:
 </p>
 
-<aside class="todo">
-<p>
-Actually fill out these examples as code with ellisions.
-</p>
-</aside>
+<div class="org-src-container">
 
+<pre class="src src-asm"><span class="org-function-name">eval-num</span>: <span class="org-comment-delimiter">; </span><span class="org-comment">&#201;valuation des constantes</span>
+  ...
 
-<figure>
-<p><img src="img/cometo.svg" alt="cometo.svg">
-</p>
-</figure>
+<span class="org-function-name">eval-double</span>: <span class="org-comment-delimiter">; </span><span class="org-comment">&#201;valuation alternative</span>
+  <span class="org-keyword">COMEFROM</span> eval-num
+  ... <span class="org-comment-delimiter">; </span><span class="org-comment">code ex&#233;cut&#233; avant `eval-num`</span>
+  <span class="org-keyword">GOTO</span> eval-num
+</pre>
+</div>
 
 <p>
 Lorsque le programme arrive au point de redirection, le flot de contrôle est
@@ -6447,17 +6460,17 @@ le flot de contrôle à distance, on vient explicitement ajouter une seule ligne
 qui envoie dans les extensions:
 </p>
 
-<aside class="todo">
-<p>
-Actually fill out these examples as code with ellisions.
-</p>
-</aside>
+<div class="org-src-container">
 
+<pre class="src src-asm"><span class="org-function-name">eval-num</span>:
+  <span class="org-keyword">GOTO</span> eval-double
+  ...
 
-<figure>
-<p><img src="img/gotocomeback.svg" alt="gotocomeback.svg">
-</p>
-</figure>
+<span class="org-function-name">eval-double</span>:
+  ... <span class="org-comment-delimiter">; </span><span class="org-comment">code ex&#233;cut&#233; avant `eval-num`</span>
+  <span class="org-keyword">GOTO</span> eval-num + 1
+</pre>
+</div>
 
 <p>
 Et le second <code>GOTO</code> retourne le flot de contrôle au code initial.  Cette fois on
@@ -9873,7 +9886,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;67&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;65&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -12846,7 +12859,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-25 jeu. 18:23 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-26 ven. 18:24 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
 </div>
 </body>
 </html>
