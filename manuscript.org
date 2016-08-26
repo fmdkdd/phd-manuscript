@@ -4811,8 +4811,14 @@ inadvertance.  Néanmoins, le langage Haskell propose tout de même la portée
 dynamique dans une extension, sous la forme de paramètres implicites [[cite:LLM+00][LLM+00]].
 
 ** UNREAD Récapitulatif
-Dans tous les travaux que l'on a étudié dans ce chapitre il y a un thème qui
+Dans tous les travaux que l'on a étudiés dans ce chapitre il y a un thème qui
 résonne: l'indirection.
+
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Add examples to make it clear what do we mean by indirection here (maybe also in
+the respective chapters)
+#+END_aside
 
 D'abord, la programmation structurée nous met en garde /contre/ l'indirection.
 C'est parce que ~GOTO~ cause de l'indirection qu'il est jugé néfaste pour la
@@ -4847,6 +4853,11 @@ méthode /à travers/ un visiteur.  Enfin, les valeurs virtuelles et les
 mandataires ne sont /que/ de l'indirection, et la portée dynamique repose sur
 l'utilisation des variables libres, qui sont elles-mêmes des indirections.
 
+#+ATTR_HTML: :class todo
+#+BEGIN_aside
+Decide on the order of chapter 4 and 5
+#+END_aside
+
 Il apparaît donc que l'indirection, sous toutes ces formes, est l'ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
 particulier.  Le chapitre [[#foal]] montre comment utiliser des mécanismes
@@ -4857,7 +4868,7 @@ On observe que la plupart des solutions exposées ici proposent de rendre les
 programmes extensibles par /construction/.  Si les programmes suivent le
 paradigme proposé, alors il sera plus facile de les étendre par la suite.  Mais
 lorsque le programme est déjà écrit, et qu'il ne suit pas une solution
-extensible, que faire?  On peut le réecrire, pour adapoter l'un des paradigmes
+extensible, que faire?  On peut le réecrire, pour adapter l'un des paradigmes
 mentionné.  L'alternative, c'est de le détourner.  Le chapitre [[#variations]]
 montre comment utiliser l'indirection dans différents langages afin de détourner
 des interpréteurs existants.
