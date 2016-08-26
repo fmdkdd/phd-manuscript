@@ -4892,12 +4892,15 @@ faire, on va illustrer ces techniques sur un interpréteur minimal.
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 ~COMEFROM~ ensemble de cette façon:
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Actually fill out these examples as code with ellisions.
-#+END_aside
+#+BEGIN_SRC asm
+eval-num: ; Évaluation des constantes
+  ...
 
-[[file:img/cometo.svg]]
+eval-double: ; Évaluation alternative
+  COMEFROM eval-num
+  ... ; code exécuté avant `eval-num`
+  GOTO eval-num
+#+END_SRC
 
 Lorsque le programme arrive au point de redirection, le flot de contrôle est
 capturé par ~COMEFROM~ qui le passe au code de l'extension.  Une fois le code de
@@ -4932,12 +4935,15 @@ cette fois dans le code que l'on cherche à détourner.  Plutôt que de détourn
 le flot de contrôle à distance, on vient explicitement ajouter une seule ligne
 qui envoie dans les extensions:
 
-#+ATTR_HTML: :class todo
-#+BEGIN_aside
-Actually fill out these examples as code with ellisions.
-#+END_aside
+#+BEGIN_SRC asm
+eval-num:
+  GOTO eval-double
+  ...
 
-[[file:img/gotocomeback.svg]]
+eval-double:
+  ... ; code exécuté avant `eval-num`
+  GOTO eval-num + 1
+#+END_SRC
 
 Et le second ~GOTO~ retourne le flot de contrôle au code initial.  Cette fois on
 vient modifier le code ciblé explicitement en rajoutant un ~GOTO~, et pas
