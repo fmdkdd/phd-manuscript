@@ -294,7 +294,7 @@ une seule valeur binaire: 0 ou 1.
 #+END_aside
 
 #+BEGIN_EXAMPLE
-...00101011011100101011010101110101011111010100011101010010101011...
+...001010110111001010110101011101010111110101...
 #+END_EXAMPLE
 
 Le programme est alors exécuté instruction par instruction.  La machine lit une
@@ -382,9 +382,9 @@ peut manipuler des mots, la machine du binaire, et tous s'en trouvent
 contentés.
 
 #+ATTR_HTML: :style margin-top:-5rem
-#+BEGIN_aside
+#+BEGIN_side-figure
 [[file:img/problem5.svg]]
-#+END_aside
+#+END_side-figure
 
 Comme le compilateur, l'/interpréteur/ traduit le code source.  Mais plutôt que
 de produire un fichier exécutable, un interpréteur exécute directement le
@@ -405,7 +405,7 @@ Notons que la compilation n'attache aucun sens particulier aux noms qui
 importent au programmeur.  On aurait pu écrire le programme [[fib]] ainsi:
 
 #+BEGIN_SRC js
-function xx(x){return x<2?1:xx(x-1)+xx(x-2)}print(xx(10))
+xx=(x)=>x<2?1:xx(x-1)+xx(x-2);print(xx(10))
 #+END_SRC
 
 #+RESULTS:
@@ -424,8 +424,8 @@ Cet extrait vous est offert par JSFuck [[cite:jsfuck][jsfuck]].
 #+END_aside
 
 #+BEGIN_EXAMPLE
-[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]
-...28379 caractères plus loin...
+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(
+...28391 caractères plus loin...
 [+!+[]]])[!+[]+!+[]+[+[]]])()
 #+END_EXAMPLE
 
