@@ -272,7 +272,7 @@ used as a communication channel."
            ;; ATTR_LATEX line, and also via default variables.
            (width (cond ((plist-get attr :width))
                         ((plist-get attr :height) "")
-                        ((string= "side-figure" block-type) "\\marginparwidth")
+                        ((string= "side-figure" block-type) "\\maxwidth{\\marginparwidth}")
                         ((eq float 'wrap) "0.48\\textwidth")
                         (t (plist-get info :latex-image-default-width))))
            (height (cond ((plist-get attr :height))

@@ -199,6 +199,15 @@
 \definecolor{c2}{HTML}{FF6B6B}
 \definecolor{c3}{HTML}{C7F464}
 
+%% For including SVG (that are converted as PDF), and the JPEG illustrations.
+\usepackage{graphicx}
+%% This allows us to use width=\maxwidth{len} in \includegraphics to emulate the
+%% CSS property max-width used by the HTML output.
+%% Thanks: https://tex.stackexchange.com/questions/86350/includegraphics-maximum-width#86355
+\makeatletter
+\def\maxwidth#1{\ifdim\Gin@nat@width>#1 #1\else\Gin@nat@width\fi}
+\makeatother
+
 %% For color legend in diagrams
 \newcommand{\colorrule}[1]{\textcolor{#1}{\rule{8pt}{4pt}}}
 
