@@ -99,22 +99,20 @@
 %% For hyphenation in ragged text, which gives more even side notes.
 \usepackage{ragged2e}
 
-%% Margin notes using marginpar
-\setmpjustification{\RaggedLeft}{\RaggedRight}
+%% Marginpar is touchy to align vertically.  Marginnote is easier.
+\usepackage{marginnote}
+\renewcommand*{\raggedleftmarginnote}{\RaggedLeft}
+\renewcommand*{\raggedrightmarginnote}{\RaggedRight}
+\renewcommand*{\marginfont}{\small}
 
-\marginparmargin{outer}         % for \mpjustification
-\let\oldmarginpar\marginpar
-\renewcommand\marginpar[2][]{%
-  \oldmarginpar{\small\mpjustification #2}}
-
-%% To refer to the body text of an environment.
+%% To refer to the body text of an environment using \BODY.
 \usepackage{environ}
 
 %% Aside is for side commentary.  Like footnotes, but in the margin.
-\NewEnviron{aside}[1][0pt]{\marginpar{\BODY}}
+\NewEnviron{aside}[1][0pt]{\marginnote{\BODY}[#1]}
 
 %% Side figures are an image and a caption, both in the margin.
-\NewEnviron{side-figure}[1][0pt]{\marginpar{\BODY}}
+\NewEnviron{side-figure}[1][0pt]{\marginnote{\BODY}[#1]}
 
 %% Babel french puts it in small caps.  I don’t want that.
 %% Additionally, override figurename for listings.
