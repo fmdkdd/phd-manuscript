@@ -26,10 +26,11 @@ a:visited {color: hsl(3, 66%, 27%)}
   margin-top: 0.2rem;
 }
 
-.todo, .done { font-weight: bold }
+.todo, .done, .fixme { font-weight: bold }
 .todo.UNWRITTEN { color: #cb4b16 }
 .todo.UNREAD { color: #8e1cc9 }
 .todo.INPROGRESS { color: #b58900 }
+.fixme { color: red }
 
 .color.c0 { color: #556270 }
 .color.c1 { color: #4ecdc4 }
@@ -99,12 +100,12 @@ figure img { max-width: 35rem }
 .full-figure img { max-width: 58rem }
 figcaption img { max-width: 21rem }
 
-.side-figure, aside {
+.side-figure, aside, .fixme {
   position: absolute;
   left: 37rem;
 }
 
-.side-figure p, aside p {
+.side-figure p, aside p, .fixme p {
   text-align: left;
   font-size: 16px;
   line-height: 1.3;

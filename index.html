@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-26 ven. 18:24 -->
+<!-- 2016-08-29 lun. 19:21 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -177,10 +177,10 @@ for the JavaScript code in this tag.
 <li><a href="#aop">3.5. <span class="done READ">READ</span> Séparer les préoccupations: la programmation par aspects</a></li>
 <li><a href="#expr">3.6. <span class="done READ">READ</span> Le problème de l&rsquo;expression</a></li>
 <li><a href="#orgheadline43">3.7. <span class="done READ">READ</span> Autres mécanismes de détournement</a></li>
-<li><a href="#orgheadline44">3.8. <span class="todo UNREAD">UNREAD</span> Récapitulatif</a></li>
+<li><a href="#orgheadline44">3.8. <span class="done READ">READ</span> Récapitulatif</a></li>
 </ul>
 </li>
-<li><a href="#variations">4. <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
+<li><a href="#variations">4. <span class="todo INPROGRESS">INPROGRESS</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
 <li><a href="#foal">5. Construire un interpréteur par modules</a>
 <ul>
 <li><a href="#orgheadline50">5.1. <span class="done READ">READ</span> Ajouter des termes</a></li>
@@ -384,12 +384,13 @@ liaison dynamique, les variables à portée dynamique ou la métaprogrammation
 (chapitre <a href="#chrono">3</a>).
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-préciser quelles techniques pour le contenu des deux permiers chapitre de
+FIXME: préciser quelles techniques pour le contenu des deux permiers chapitre de
 contribution
 </p>
-</aside>
+
+</div>
 
 <p>
 Pour illustrer le détournement, on utilisera de simples interpréteurs que l&rsquo;on
@@ -448,7 +449,7 @@ une seule valeur binaire: 0 ou 1.
 </aside>
 
 <pre class="example">
-...00101011011100101011010101110101011111010100011101010010101011...
+...001010110111001010110101011101010111110101...
 </pre>
 
 <p>
@@ -545,13 +546,14 @@ peut manipuler des mots, la machine du binaire, et tous s&rsquo;en trouvent
 contentés.
 </p>
 
-<aside style="margin-top:-5rem">
+<div style="margin-top:-5rem" class="side-figure">
 
 <figure>
 <p><img src="img/problem5.svg" alt="problem5.svg">
 </p>
 </figure>
-</aside>
+
+</div>
 
 <p>
 Comme le compilateur, l&rsquo;<i>interpréteur</i> traduit le code source.  Mais plutôt que
@@ -577,7 +579,7 @@ importent au programmeur.  On aurait pu écrire le programme <a href="#orgsrcblo
 
 <div class="org-src-container">
 
-<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">xx</span>(<span class="org-variable-name">x</span>){<span class="org-keyword">return</span> x&lt;2?1:xx(x-1)+xx(x-2)}print(xx(10))
+<pre class="src src-js">xx=(x)=&gt;x&lt;2?1:xx(x-1)+xx(x-2);print(xx(10))
 </pre>
 </div>
 
@@ -600,8 +602,8 @@ Cet extrait vous est offert par JSFuck [<a href="#jsfuck">Kle16</a>].
 </aside>
 
 <pre class="example">
-[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]
-...28379 caractères plus loin...
+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(
+...28391 caractères plus loin...
 [+!+[]]])[!+[]+!+[]+[+[]]])()
 </pre>
 
@@ -3455,7 +3457,7 @@ L&rsquo;héritage permet aux classes <code>Integer</code> et <code>Float</code> 
 </div>
 
 <div class="org-src-container">
-<label class="org-src-name">Les comparaisons sur les nombres sont définiies dans la classe <code>Number</code> en termes de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78 [<a href="#Smalltalk78">IFK</a>].</label>
+<label class="org-src-name">Les comparaisons sur les nombres sont définies dans la classe <code>Number</code> en termes de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78 [<a href="#Smalltalk78">IFK</a>].</label>
 <pre class="src src-smalltalk">&lt; t1
   [⇑ self - t1 &lt; 0]
 &gt; t1
@@ -4517,11 +4519,12 @@ the &laquo;&nbsp;hooks&nbsp;&raquo; that the reflective system provides.  AOP is
 reflection is one powerful tool. — [<a href="#KLM+97">KLM+97</a>]</p>
 </blockquote>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Citer Dony?
+FIXME: Citer Dony?
 </p>
-</aside>
+
+</div>
 
 <p>
 Et il y a d&rsquo;autres mécanismes connus.  Le <code>try/catch</code>, ou le mécanisme
@@ -6202,11 +6205,12 @@ des appels à <code>delay</code> absolument partout.  Modifier l&rsquo;interpré
 serait alors bien plus simple.
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Anything relevant from Ducasse on proxies in this setting?
+FIXME: Anything relevant from Ducasse on proxies in this setting?
 </p>
-</aside>
+
+</div>
 
 <p>
 Une valeur virtuelle est essentiellement un <i>mandataire</i> (<i>proxy</i>) autour d&rsquo;une
@@ -6275,19 +6279,20 @@ dynamique dans une extension, sous la forme de paramètres implicites [<a href="
 </div>
 
 <div id="outline-container-orgheadline44" class="outline-3">
-<h3 id="orgheadline44"><span class="section-number-3">3.8</span> <span class="todo UNREAD">UNREAD</span> Récapitulatif</h3>
+<h3 id="orgheadline44"><span class="section-number-3">3.8</span> <span class="done READ">READ</span> Récapitulatif</h3>
 <div class="outline-text-3" id="text-3-8">
 <p>
 Dans tous les travaux que l&rsquo;on a étudiés dans ce chapitre il y a un thème qui
 résonne: l&rsquo;indirection.
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Add examples to make it clear what do we mean by indirection here (maybe also in
-the respective chapters)
+FIXME: Add examples to make it clear what do we mean by indirection here (maybe
+also in the respective chapters)
 </p>
-</aside>
+
+</div>
 
 <p>
 D&rsquo;abord, la programmation structurée nous met en garde <i>contre</i> l&rsquo;indirection.
@@ -6330,11 +6335,12 @@ mandataires ne sont <i>que</i> de l&rsquo;indirection, et la portée dynamique r
 l&rsquo;utilisation des variables libres, qui sont elles-mêmes des indirections.
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Decide on the order of chapter 4 and 5
+FIXME: Decide on the order of chapter 4 and 5
 </p>
-</aside>
+
+</div>
 
 <p>
 Il apparaît donc que l&rsquo;indirection, sous toutes ces formes, est l&rsquo;ingrédient
@@ -6364,7 +6370,7 @@ pour détourner l&rsquo;interpréteur Narcissus.
 </div>
 
 <div id="outline-container-orgheadline49" class="outline-2">
-<h2 id="variations"><a id="orgheadline49"></a><span class="section-number-2">4</span> <span class="todo UNWRITTEN">UNWRITTEN</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
+<h2 id="variations"><a id="orgheadline49"></a><span class="section-number-2">4</span> <span class="todo INPROGRESS">INPROGRESS</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
 <div class="outline-text-2" id="text-variations">
 <div class="epig">
 <p>
@@ -7152,12 +7158,13 @@ modifier le code</i> qui précède; chaque fonctionnalité ajoute du code, réut
 du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Expression problem <i>is</i> related here.  Either related work here or in context
-chapter.
+FIXME: Expression problem <i>is</i> related here.  Either related work here or in
+context chapter.
 </p>
-</aside>
+
+</div>
 
 <aside>
 <p>
@@ -7190,12 +7197,13 @@ qui correspond:
 eval : Term -&gt; Integer
 </pre>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Interpreter pattern referenced here.  Warrants a description (in solutions to
-the expression problem?)
+FIXME: Interpreter pattern referenced here.  Warrants a description (in
+solutions to the expression problem?)
 </p>
-</aside>
+
+</div>
 
 <p>
 L&rsquo;interpréteur doit représenter ces constantes et les évaluer.  Pour implémenter
@@ -8035,11 +8043,13 @@ Par exemple, dans le langage Rust, on pourrait obtenir un résultat semblable en
 utilisant les traits:
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-wait, you are changing eval, but not the term itself.  Is that really similar?
+FIXME: wait, you are changing eval, but not the term itself.  Is that really
+similar?
 </p>
-</aside>
+
+</div>
 
 <aside>
 <p>
@@ -10218,13 +10228,14 @@ de rompre la fonctionnalité offerte par le module dès lors que cette interface
 spéciale est offerte.
 </p>
 
-<aside class="todo">
+<div class="fixme">
 <p>
-Open scope makes it <i>extensible</i>, which it wasn&rsquo;t before.  The paradox is that
-module decomposition goes against extensibility instead of enabling it.
+FIXME: Open scope makes it <i>extensible</i>, which it wasn&rsquo;t before.  The paradox is
+that module decomposition goes against extensibility instead of enabling it.
 Hypothesis modularity =&gt; extensibility should be made clearer in Context.
 </p>
-</aside>
+
+</div>
 
 <p>
 On a alors une situation quelque peu paradoxale où le programmeur soucieux de
@@ -12859,7 +12870,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-26 ven. 18:24 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.4))</p>
+<p class="created">Crée: 2016-08-29 lun. 19:21 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
