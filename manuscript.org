@@ -2184,14 +2184,14 @@ Autre exemple: le ~COMEFROM~ [[cite:Cla-73][Cla-73]].  Le ~COMEFROM~ est le dual
 ~COMEFROM~ est le dual de ~GOTO~.
 #+END_side-figure
 
-#+BEGIN_EXAMPLE fortran
+#+BEGIN_SRC fortran
 10 J=1
 11 COME FROM 20
 12 WRITE (6,40) J STOP
 13 COME FROM 10
 20 J=J+2
 40 FORMAT (14)
-#+END_EXAMPLE
+#+END_SRC
 
 Dans cet exemple tiré de [[cite:Cla-73][Cla-73]], les lignes exécutées sont, dans l'ordre: 10,
 13, 20, 11, 12.  ~STOP~ termine le programme à la ligne 12, et la ligne 40 n'est
@@ -2200,11 +2200,11 @@ ligne, il faut regarder tout le programme pour voir s'il y a un ~COME FROM~ où
 poursuivre l'exécution.  Ici c'est assez simple de se débarrasser des ~COME
 FROM~ pour obtenir le programme équivalent:
 
-#+BEGIN_EXAMPLE fortran
+#+BEGIN_SRC fortran
 10 J=1
 20 J=J+2
 12 WRITE (6,40) J STOP
-#+END_EXAMPLE
+#+END_SRC
 
 Sans ~COME FROM~, le programme est limpide.  Ces deux exemples illustrent la
 correspondance entre le programme et le processus.  La correspondance est plus
@@ -2229,15 +2229,15 @@ Même s'il faut voir ~COME FROM~ comme une blague (aucun langage ne l'inclut),
 un tel mécanisme n'est pas totalement dénué d'intérêt.  Intuitivement, ~COME
 FROM~ peut remplacer un ~GOTO~:
 
-#+BEGIN_EXAMPLE fortran
+#+BEGIN_SRC fortran
 10 PRINT CHR$(205.5+RND(1))
 20 GOTO 10
-#+END_EXAMPLE
+#+END_SRC
 
-#+BEGIN_EXAMPLE fortran
+#+BEGIN_SRC fortran
 10 COME FROM 20
 20 PRINT CHR$(205.5+RND(1))
-#+END_EXAMPLE
+#+END_SRC
 
 Dans ces deux programmes, ~GOTO~ et ~COME FROM~ permettent tous deux de réaliser
 une la boucle infinie.  Mais il y a une différence notable: ~GOTO~ influe sur le
@@ -2248,7 +2248,7 @@ précède.  En combinant les deux, on pourrait modifier un programme à distance
 [[file:img/cometo.svg]]
 #+END_side-figure
 
-#+BEGIN_EXAMPLE fortran
+#+BEGIN_SRC fortran
 10 X=1
 20 PRINT X
 
@@ -2257,7 +2257,7 @@ précède.  En combinant les deux, on pourrait modifier un programme à distance
 4040 COME FROM 10
 4041 X=12
 4042 GOTO 20
-#+END_EXAMPLE
+#+END_SRC
 
 Dans cet exemple, le programme affiche 12.  Après l'affectation ligne 10,
 l'exécution est capturée par le ~COME FROM~ ligne 4040, puis on change la valeur
@@ -2374,7 +2374,7 @@ n'est pas nécessairement l'ordre d'exposition.  Un programme littéraire est
 organisé comme un manuel à destination du programmeur étranger.  Knuth donne un
 exemple de programme qui liste les 1000 premiers nombres premiers:
 
-#+BEGIN_EXAMPLE -n -r
+#+BEGIN_SRC none -n -r
 @* Printing primes: An example of \WEB.
 The following program is essentially the same as
 Edsger Dijkstra's "first example of step-wise
@@ -2387,7 +2387,7 @@ const @!m = 1000;
 var @<Variables of the program@>@;
 begin @<Print the first |m| prime numbers@>;
 end.
-#+END_EXAMPLE
+#+END_SRC
 
 Le premier paragraphe est écrit en TeX; le ~@*~ dénote une section.  Toutes les
 commande usuelles de TeX sont disponibles, ce qui permet en particulier d'écrire
