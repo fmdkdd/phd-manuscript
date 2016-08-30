@@ -344,7 +344,7 @@ familier avec le langage de programmation utilisé.  Les mots /évoquent/
 immédiatement du sens alors que le binaire en est dénué.
 
 #+ATTR_HTML: :style margin-top:-5rem
-#+ATTR_LATEX: :options [-5em]
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_aside
 Les mots peuvent également évoquer un contresens; une définition maladroite–ou
 intentionnelle–peut induire en erreur le lecteur.  Un ami m'a raconté avoir
@@ -382,6 +382,7 @@ peut manipuler des mots, la machine du binaire, et tous s'en trouvent
 contentés.
 
 #+ATTR_HTML: :style margin-top:-5rem
+#+ATTR_LATEX: :options [-4em]
 #+BEGIN_side-figure
 [[file:img/problem5.svg]]
 #+END_side-figure
@@ -411,6 +412,7 @@ xx=(x)=>x<2?1:xx(x-1)+xx(x-2);print(xx(10))
 #+RESULTS:
 
 #+ATTR_HTML: :style margin-top:-5rem
+#+ATTR_LATEX: :options [-5em]
 #+BEGIN_aside
 Les archives du concours international d'obfuscation de code C [[cite:IOCCC][IOCCC]] recèlent
 d'exemples à suivre pour mystifier tout collaborateur.  Le standard Unicode
@@ -718,6 +720,16 @@ B.b() //: 1
 B.a() //: 0
 #+END_SRC
 
+#+BEGIN_side-figure
+[[file:img/dls6.svg]]
+
+Exemple de recherches dans une chaîne de prototypes.  À gauche, on recherche la
+propriété ~a~.  Cette propriété existe sur le second objet dans la chaîne, donc
+la valeur retournée est 2.  À droite, on recherche ~g~ sur la même chaîne, mais
+cette fois ~g~ n'est présent dans aucun objet.  Le troisième objet n'a pas de
+parent, donc la recherche échoue et retourne ~undefined~.
+#+END_side-figure
+
 Ici on a deux objets, ~A~ et ~B~.  L'objet ~A~ contient une seule fonction, ~a~.
 L'objet ~B~ contient une seule fonction, ~b~, mais déclare ~A~ comme prototype à
 l'aide de la propriété spéciale ~__proto__~.  En conséquence, même si la
@@ -745,17 +757,6 @@ B.b = function() { return 1 }
 Object.setPrototypeOf(B, A)
 Object.getPrototypeOf(B) == A //: true
 #+END_SRC
-
-#+ATTR_HTML: :style margin-top:-16rem
-#+BEGIN_side-figure
-[[file:img/dls6.svg]]
-
-Exemple de recherches dans une chaîne de prototypes.  À gauche, on recherche la
-propriété ~a~.  Cette propriété existe sur le second objet dans la chaîne, donc
-la valeur retournée est 2.  À droite, on recherche ~g~ sur la même chaîne, mais
-cette fois ~g~ n'est présent dans aucun objet.  Le troisième objet n'a pas de
-parent, donc la recherche échoue et retourne ~undefined~.
-#+END_side-figure
 
 Dony, Malenfant et Bardou classifient les langages à prototypes [[cite:DMB-98][DMB-98]].  Selon
 cette classification, JavaScript a toutes les caractéristiques d'un langage à
@@ -831,6 +832,12 @@ d'un système, en particulier l'article "On the Critera to be Used In Decomposin
 Systems into Modules" [[cite:Par-72][Par-72]].  Mais Parnas s'intéresse davantage à la phase de
 /conception/ d'un système qu'à la phase d'implémentation.
 
+#+BEGIN_side-figure
+[[file:img/parnas-0.svg]]
+
+Dans le second design, les changements sont restreints à un seul module.
+#+END_side-figure
+
 Dans l'article, il décrit deux décompositions en modules d'un même système
 d'indexation ; un exemple didactique qui peut être implémenté "par un bon
 programmeur en une ou deux semaines".  La première décomposition comporte 5
@@ -848,15 +855,6 @@ changements sont restreints à un seul module dans la seconde décomposition.  L
 seconde décomposition est donc mieux adaptée aux changements potentiels
 anticipés par le concepteur.
 
-#+ATTR_HTML: :style margin-top:-11rem
-#+ATTR_LATEX: :options [-11em]
-#+BEGIN_side-figure
-[[file:img/parnas-0.svg]]
-
-Dans le second design, les changements sont restreints à un seul module.
-#+END_side-figure
-
-#+ATTR_HTML: :style margin-top:5rem
 #+BEGIN_side-figure
 [[file:img/flowchart.svg]]
 
@@ -865,7 +863,7 @@ Un organigramme.  Une façon courante de concevoir des programmes de 1950 à 197
 
 Le second design est aussi plus facile à développer et plus facile à comprendre.
 Les modules du premier design correspondent aux étapes de traitement du système:
-Parnas nous dit qu'il suffit de dessiner le logigramme pour obtenir les 5
+Parnas nous dit qu'il suffit de dessiner le organigramme pour obtenir les 5
 modules.  Le résultat c'est que tous ces modules ont de nombreuses dépendances
 entre eux, ce qui pousse les programmeurs à avoir une compréhension globale du
 système pour pouvoir le développer.  En revanche, il a élaboré le second design
@@ -873,18 +871,18 @@ en suivant le principe d'/encapsulation/: les modules ne correspondent plus à
 des étapes de traitement, mais plutôt à des décisions de design, des
 responsabilités:
 
-#+BEGIN_QUOTE
-Every module in the second decomposition is characterized by its knowledge of a
-design decision which it hides from all others.  Its interface or definition was
-chosen to reveal as little as possible about its inner workings.
-#+END_QUOTE
-
-#+ATTR_HTML: :style margin-top:-1rem
+#+ATTR_LATEX: :options [4em]
 #+BEGIN_aside
 Dans le même article, Parnas conseille aussi de mettre dans un même module une
 structure de données et ses procédures d'accès et de modification.  Une notion
 de type abstrait de donnée qu'il ne nomme pas comme telle.
 #+END_aside
+
+#+BEGIN_QUOTE
+Every module in the second decomposition is characterized by its knowledge of a
+design decision which it hides from all others.  Its interface or definition was
+chosen to reveal as little as possible about its inner workings.
+#+END_QUOTE
 
 Si l'on suit ce critère pour décomposer un système en modules, alors on peut
 qualifier le système de /modulaire/.  Parnas liste les trois avantages attendus
@@ -976,7 +974,7 @@ problème.  Si les machines possèdent deux fois plus de registres et sont deux
 fois plus rapides, alors on leur demandera de faire deux fois plus de calculs
 (ou de les faire deux fois plus rapidement).  Parnas le note:
 
-#+ATTR_HTML: :style margin-top:-5rem
+#+ATTR_LATEX: :options [2em]
 #+BEGIN_aside
 Phénomène relaté avec humour par Wirth [[cite:Wir-95][Wir-95]]: "Software expands to fill the
 available memory"; "Software is getting slower more rapidly than hardware
@@ -1025,10 +1023,11 @@ n'affranchit pas le concepteur d'avoir à se poser des questions difficiles sur
 la structure du système.  En 2003, Parnas déplore cette tendance [[cite:DBB+03][DBB+03]]:
 
 #+ATTR_HTML: :style margin-top:18rem
+#+ATTR_LATEX: :options [23em]
 #+BEGIN_aside
-Cette dernière phrase est cible directement les trois autres intervenants qui
-lui font face, qui sont les instigateurs respectifs de la programmation par
-aspects, de la programmation par fonctionnalités, et d'Hyper/J.
+Cette dernière phrase cible directement les trois autres intervenants qui lui
+font face, qui sont les instigateurs respectifs de la programmation par aspects,
+de la programmation par fonctionnalités, et d'Hyper/J.
 #+END_aside
 
 #+BEGIN_QUOTE
@@ -1118,6 +1117,14 @@ Et il s'intéresse également à la modification de programmes, aux difficultés
 apparaissent quand on essaye d'ajouter des fonctionnalités non prévues
 initialement.
 
+#+BEGIN_side-figure
+[[file:img/naur-theory.svg]]
+
+Pour Naur, le code source et la documentation ne sont que des produits
+secondaires de la programmation; mais l'activité principale du programmeur est
+de construire une connaissance du problème, une /théorie/.
+#+END_side-figure
+
 Pour Naur, la tâche principale du programmeur n'est pas de produire du code
 source.  Un programmeur avant tout construit une /théorie/ du problème que le
 programme doit résoudre.  Lors de la conception et de l'implémentation, le
@@ -1126,14 +1133,6 @@ des outils.  Cette connaissance est naturellement interne, et toute production
 externe (code source, documentation, diagrammes) ne fait la refléter qu'en
 partie.
 
-#+ATTR_HTML: :style margin-top:-10rem
-#+BEGIN_side-figure
-[[file:img/naur-theory.svg]]
-
-Pour Naur, le code source et la documentation ne sont que des produits
-secondaires de la programmation; mais l'activité principale du programmeur est
-de construire une connaissance du problème, une /théorie/.
-#+END_side-figure
 
 Ce point de vue, Naur le tire de sa propre expérience à construire de larges
 systèmes.  Il donne l'exemple d'un compilateur développé par un groupe A pour
@@ -1224,11 +1223,11 @@ théorie, il faut tenter de la recréer à partir de code source et de la
 documentation.  Naur appelle cela la "résurrection de programme".  À ses yeux,
 c'est un acte sans espoir:
 
-#+ATTR_HTML: :style margin-top: -4.5rem
+#+ATTR_HTML: :style margin-top: -2rem
 #+BEGIN_aside
 En filant la métaphore, l'ensemble des techniques qui permettent de modifier un
 programme abandonné sans se soucier de sa théorie pourrait s'appeler
-"nécromancie de programme".
+la "nécromancie de programme".
 #+END_aside
 
 #+BEGIN_QUOTE
@@ -1421,6 +1420,13 @@ n'est donc pas capable d'inférer la valeur privée de ~x~.  L'évaluation
 multi-facettes permet donc de protéger l'information de ~x~, même contre les
 flots indirects.
 
+#+ATTR_HTML: :style margin-top:5rem
+#+ATTR_LATEX: :options [7em]
+#+BEGIN_aside
+On compte les lignes de code physiques, commentaires inclus mais sans compter
+les lignes vides.
+#+END_aside
+
 Pour implémenter cette stratégie d'évaluation sur JavaScript, les auteurs ont
 choisi de modifier le code source de Narcissus directement.  Pour donner une
 idée de l'échelle de la tâche, Narcissus fait 6000 lignes de code, et les deux
@@ -1431,20 +1437,16 @@ l'environnement d'exécution des programmes clients.  Les changements effectués
 pour l'implémentation de l'évaluation multi-facettes sont restreints à ce
 fichier principal; 640 lignes sont affectées, soit la moitié.
 
-#+ATTR_HTML: :style margin-top:-6rem
 #+BEGIN_aside
-On compte les lignes de code physiques, commentaires inclus mais sans compter
-les lignes vides.
+Le /diff/ est extrait des branches principales (/HEAD/) de
+[[https://github.com/taustin/narcissus][github/taustin/narcissus]] et [[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
 #+END_aside
 
 On peut obtenir l'ensemble des changements requis pour l'évaluation
 multi-facettes en extrayant un /diff/ des deux versions.  La figure suivante
 donne une vue d'ensemble de ces changements:
 
-#+ATTR_HTML: :style margin-top:-5rem
 #+BEGIN_aside
-Le /diff/ est extrait des branches principales (/HEAD/) de [[https://github.com/taustin/narcissus][github/taustin/narcissus]]
-et [[https://github.com/taustin/ZaphodFacets][github/taustin/ZaphodFacets]].
 #+END_aside
 
 #+NAME: visual-narcissus-diff
@@ -1641,7 +1643,7 @@ I_4 = \delta_4 I_1 {{{br}}}
 Alors,
 
 #+BEGIN_aside
-où Id est la fonction identité.
+Id est la fonction identité
 #+END_aside
 
 (I_1, I_2, I_3, I_4) = (Id I_1, \delta_2 I_2, \delta_3 I_3, \delta_4 I_4) = (Id, \delta_2, \delta_3, \delta_4) I_1
@@ -1714,7 +1716,7 @@ concept éponyme de la spécification ECMAScript.
 
 #+ATTR_HTML: :style margin-top:-4rem
 #+BEGIN_aside
-Voir la section 10.3 de la spécification.
+Voir la section 10 de la spécification [[cite:ECM-99][ECM-99]].
 #+END_aside
 
 L'évaluation multi-facettes a besoin de suivre la valeur courante du /program
@@ -1776,7 +1778,7 @@ fonction qui opère sur une valeur simple (~v~), c'est-à-dire sans facettes.
 #+BEGIN_aside
 Il n'y a pas de sortie standard dans les programmes JavaScript exécutés par les
 navigateurs web.  La plupart des navigateurs en revanche disposent d'une console
-dans laquelle les programmes peuvent écrire via la fonction ~console.log~.
+dans laquelle les programmes peuvent écrire via ~console.log~.
 #+END_aside
 
 Quatrième et dernière catégorie: les changements effectués sur l'environnement
@@ -1936,6 +1938,7 @@ déterminent le processus.  Le code source seul ne donne aucune information si
 l'on ne connaît pas aussi l'interpréteur.  Seul, le code est inerte.  Voici un
 programme:
 
+# Hello world in Malbolge
 #+BEGIN_EXAMPLE
 (=<`#9]~6ZY32Vx/4Rs+0No-&Jk)"Fh}|Bcy?`=*z]Kw%oG4UUS0/@-ejc(:'8dc
 #+END_EXAMPLE
