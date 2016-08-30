@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-29 lun. 19:21 -->
+<!-- 2016-08-30 mar. 18:48 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -982,6 +982,23 @@ B.a() <span class="org-comment-delimiter">//</span><span class="org-comment">: 0
 </pre>
 </div>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls6.svg" alt="dls6.svg">
+</p>
+</figure>
+
+<p>
+Exemple de recherches dans une chaîne de prototypes.  À gauche, on recherche la
+propriété <code>a</code>.  Cette propriété existe sur le second objet dans la chaîne, donc
+la valeur retournée est 2.  À droite, on recherche <code>g</code> sur la même chaîne, mais
+cette fois <code>g</code> n&rsquo;est présent dans aucun objet.  Le troisième objet n&rsquo;a pas de
+parent, donc la recherche échoue et retourne <code>undefined</code>.
+</p>
+
+</div>
+
 <p>
 Ici on a deux objets, <code>A</code> et <code>B</code>.  L&rsquo;objet <code>A</code> contient une seule fonction, <code>a</code>.
 L&rsquo;objet <code>B</code> contient une seule fonction, <code>b</code>, mais déclare <code>A</code> comme prototype à
@@ -1018,23 +1035,6 @@ B.b = <span class="org-keyword">function</span>() { <span class="org-keyword">re
 Object.setPrototypeOf(B, A)
 Object.getPrototypeOf(B) == A <span class="org-comment-delimiter">//</span><span class="org-comment">: true</span>
 </pre>
-</div>
-
-<div style="margin-top:-16rem" class="side-figure">
-
-<figure>
-<p><img src="img/dls6.svg" alt="dls6.svg">
-</p>
-</figure>
-
-<p>
-Exemple de recherches dans une chaîne de prototypes.  À gauche, on recherche la
-propriété <code>a</code>.  Cette propriété existe sur le second objet dans la chaîne, donc
-la valeur retournée est 2.  À droite, on recherche <code>g</code> sur la même chaîne, mais
-cette fois <code>g</code> n&rsquo;est présent dans aucun objet.  Le troisième objet n&rsquo;a pas de
-parent, donc la recherche échoue et retourne <code>undefined</code>.
-</p>
-
 </div>
 
 <p>
@@ -1115,6 +1115,19 @@ Systems into Modules&nbsp;&raquo; [<a href="#Par-72">Par72</a>].  Mais Parnas s&
 <i>conception</i> d&rsquo;un système qu&rsquo;à la phase d&rsquo;implémentation.
 </p>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/parnas-0.svg" alt="parnas-0.svg">
+</p>
+</figure>
+
+<p>
+Dans le second design, les changements sont restreints à un seul module.
+</p>
+
+</div>
+
 <p>
 Dans l&rsquo;article, il décrit deux décompositions en modules d&rsquo;un même système
 d&rsquo;indexation ; un exemple didactique qui peut être implémenté &laquo;&nbsp;par un bon
@@ -1136,20 +1149,7 @@ seconde décomposition est donc mieux adaptée aux changements potentiels
 anticipés par le concepteur.
 </p>
 
-<div style="margin-top:-11rem" class="side-figure">
-
-<figure>
-<p><img src="img/parnas-0.svg" alt="parnas-0.svg">
-</p>
-</figure>
-
-<p>
-Dans le second design, les changements sont restreints à un seul module.
-</p>
-
-</div>
-
-<div style="margin-top:5rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/flowchart.svg" alt="flowchart.svg">
@@ -1165,7 +1165,7 @@ Un organigramme.  Une façon courante de concevoir des programmes de 1950 à 197
 <p>
 Le second design est aussi plus facile à développer et plus facile à comprendre.
 Les modules du premier design correspondent aux étapes de traitement du système:
-Parnas nous dit qu&rsquo;il suffit de dessiner le logigramme pour obtenir les 5
+Parnas nous dit qu&rsquo;il suffit de dessiner le organigramme pour obtenir les 5
 modules.  Le résultat c&rsquo;est que tous ces modules ont de nombreuses dépendances
 entre eux, ce qui pousse les programmeurs à avoir une compréhension globale du
 système pour pouvoir le développer.  En revanche, il a élaboré le second design
@@ -1174,6 +1174,14 @@ des étapes de traitement, mais plutôt à des décisions de design, des
 responsabilités:
 </p>
 
+<aside>
+<p>
+Dans le même article, Parnas conseille aussi de mettre dans un même module une
+structure de données et ses procédures d&rsquo;accès et de modification.  Une notion
+de type abstrait de donnée qu&rsquo;il ne nomme pas comme telle.
+</p>
+</aside>
+
 <blockquote>
 <p>
 Every module in the second decomposition is characterized by its knowledge of a
@@ -1181,14 +1189,6 @@ design decision which it hides from all others.  Its interface or definition was
 chosen to reveal as little as possible about its inner workings.
 </p>
 </blockquote>
-
-<aside style="margin-top:-1rem">
-<p>
-Dans le même article, Parnas conseille aussi de mettre dans un même module une
-structure de données et ses procédures d&rsquo;accès et de modification.  Une notion
-de type abstrait de donnée qu&rsquo;il ne nomme pas comme telle.
-</p>
-</aside>
 
 <p>
 Si l&rsquo;on suit ce critère pour décomposer un système en modules, alors on peut
@@ -1306,7 +1306,7 @@ fois plus rapides, alors on leur demandera de faire deux fois plus de calculs
 (ou de les faire deux fois plus rapidement).  Parnas le note:
 </p>
 
-<aside style="margin-top:-5rem">
+<aside>
 <p>
 Phénomène relaté avec humour par Wirth [<a href="#Wir-95">Wir95</a>]: &laquo;&nbsp;Software expands to fill the
 available memory&nbsp;&raquo;; &laquo;&nbsp;Software is getting slower more rapidly than hardware
@@ -1369,9 +1369,9 @@ la structure du système.  En 2003, Parnas déplore cette tendance [<a href="#DB
 
 <aside style="margin-top:18rem">
 <p>
-Cette dernière phrase est cible directement les trois autres intervenants qui
-lui font face, qui sont les instigateurs respectifs de la programmation par
-aspects, de la programmation par fonctionnalités, et d&rsquo;Hyper/J.
+Cette dernière phrase cible directement les trois autres intervenants qui lui
+font face, qui sont les instigateurs respectifs de la programmation par aspects,
+de la programmation par fonctionnalités, et d&rsquo;Hyper/J.
 </p>
 </aside>
 
@@ -1489,17 +1489,7 @@ apparaissent quand on essaye d&rsquo;ajouter des fonctionnalités non prévues
 initialement.
 </p>
 
-<p>
-Pour Naur, la tâche principale du programmeur n&rsquo;est pas de produire du code
-source.  Un programmeur avant tout construit une <i>théorie</i> du problème que le
-programme doit résoudre.  Lors de la conception et de l&rsquo;implémentation, le
-programmeur construit sa connaissance du problème, du domaine d&rsquo;application, et
-des outils.  Cette connaissance est naturellement interne, et toute production
-externe (code source, documentation, diagrammes) ne fait la refléter qu&rsquo;en
-partie.
-</p>
-
-<div style="margin-top:-10rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/naur-theory.svg" alt="naur-theory.svg">
@@ -1513,6 +1503,17 @@ de construire une connaissance du problème, une <i>théorie</i>.
 </p>
 
 </div>
+
+<p>
+Pour Naur, la tâche principale du programmeur n&rsquo;est pas de produire du code
+source.  Un programmeur avant tout construit une <i>théorie</i> du problème que le
+programme doit résoudre.  Lors de la conception et de l&rsquo;implémentation, le
+programmeur construit sa connaissance du problème, du domaine d&rsquo;application, et
+des outils.  Cette connaissance est naturellement interne, et toute production
+externe (code source, documentation, diagrammes) ne fait la refléter qu&rsquo;en
+partie.
+</p>
+
 
 <p>
 Ce point de vue, Naur le tire de sa propre expérience à construire de larges
@@ -1623,11 +1624,11 @@ documentation.  Naur appelle cela la &laquo;&nbsp;résurrection de programme&nbs
 c&rsquo;est un acte sans espoir:
 </p>
 
-<aside style="margin-top: -4.5rem">
+<aside style="margin-top: -2rem">
 <p>
 En filant la métaphore, l&rsquo;ensemble des techniques qui permettent de modifier un
 programme abandonné sans se soucier de sa théorie pourrait s&rsquo;appeler
-&laquo;&nbsp;nécromancie de programme&nbsp;&raquo;.
+la &laquo;&nbsp;nécromancie de programme&nbsp;&raquo;.
 </p>
 </aside>
 
@@ -1879,6 +1880,13 @@ multi-facettes permet donc de protéger l&rsquo;information de <code>x</code>, m
 flots indirects.
 </p>
 
+<aside style="margin-top:5rem">
+<p>
+On compte les lignes de code physiques, commentaires inclus mais sans compter
+les lignes vides.
+</p>
+</aside>
+
 <p>
 Pour implémenter cette stratégie d&rsquo;évaluation sur JavaScript, les auteurs ont
 choisi de modifier le code source de Narcissus directement.  Pour donner une
@@ -1891,10 +1899,10 @@ pour l&rsquo;implémentation de l&rsquo;évaluation multi-facettes sont restrein
 fichier principal; 640 lignes sont affectées, soit la moitié.
 </p>
 
-<aside style="margin-top:-6rem">
+<aside>
 <p>
-On compte les lignes de code physiques, commentaires inclus mais sans compter
-les lignes vides.
+Le <i>diff</i> est extrait des branches principales (<i>HEAD</i>) de
+<a href="https://github.com/taustin/narcissus">github/taustin/narcissus</a> et <a href="https://github.com/taustin/ZaphodFacets">github/taustin/ZaphodFacets</a>.
 </p>
 </aside>
 
@@ -1904,10 +1912,22 @@ multi-facettes en extrayant un <i>diff</i> des deux versions.  La figure suivant
 donne une vue d&rsquo;ensemble de ces changements:
 </p>
 
-<aside style="margin-top:-5rem">
+<aside>
 <p>
-Le <i>diff</i> est extrait des branches principales (<i>HEAD</i>) de <a href="https://github.com/taustin/narcissus">github/taustin/narcissus</a>
-et <a href="https://github.com/taustin/ZaphodFacets">github/taustin/ZaphodFacets</a>.
+Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus
+pour l&rsquo;évaluation multi-facettes.  Chaque ligne colorée correspond à une ligne
+du <i>diff</i>.  La couleur indique la catégorie du changement de la ligne, et les
+lignes grises ne sont pas affectées par l&rsquo;instrumentation.
+</p>
+
+
+<figure>
+<p><img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg">
+</p>
+</figure>
+
+<p>
+Ces catégories sont explicitées en <a href="#narcissus-categories">2.3</a>.
 </p>
 </aside>
 
@@ -1915,7 +1935,6 @@ et <a href="https://github.com/taustin/ZaphodFacets">github/taustin/ZaphodFacets
 <figure id="orgparagraph1">
 <p><img src="img/narcissus-diff.svg" alt="narcissus-diff.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;10&nbsp;:</span> Visualisation des modifications apportées par l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation multi-facettes.  Chaque ligne colorée correspond à une ligne du <i>diff</i>.  La couleur indique la catégorie du changement de la ligne, et les lignes grises ne sont pas affectées par l&rsquo;instrumentation.  <img src="img/narcissus-diff-legend.svg" alt="narcissus-diff-legend.svg"> Ces catégories sont explicitées en <a href="#narcissus-categories">2.3</a>.</figcaption>
 </figure>
 
 <p>
@@ -2155,7 +2174,7 @@ Alors,
 
 <aside>
 <p>
-où Id est la fonction identité.
+Id est la fonction identité
 </p>
 </aside>
 
@@ -2252,7 +2271,7 @@ concept éponyme de la spécification ECMAScript.
 
 <aside style="margin-top:-4rem">
 <p>
-Voir la section 10.3 de la spécification.
+Voir la section 10 de la spécification [<a href="#ECM-99">ECM99</a>].
 </p>
 </aside>
 
@@ -2332,7 +2351,7 @@ fonction qui opère sur une valeur simple (<code>v</code>), c&rsquo;est-à-dire 
 <p>
 Il n&rsquo;y a pas de sortie standard dans les programmes JavaScript exécutés par les
 navigateurs web.  La plupart des navigateurs en revanche disposent d&rsquo;une console
-dans laquelle les programmes peuvent écrire via la fonction <code>console.log</code>.
+dans laquelle les programmes peuvent écrire via <code>console.log</code>.
 </p>
 </aside>
 
@@ -2621,7 +2640,7 @@ Japan, who cheerfully complained that he was always being eliminated.
 <figure>
 <p><img src="img/goto.jpg" alt="goto.jpg" title="すみません、高橋さん。">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;16&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
 </figure>
 
 <p>
@@ -2839,14 +2858,16 @@ Autre exemple: le <code>COMEFROM</code> [<a href="#Cla-73">Cla73</a>].  Le <code
 
 </div>
 
-<pre class="example">
-10 J=1
-11 COME FROM 20
-12 WRITE (6,40) J STOP
-13 COME FROM 10
-20 J=J+2
-40 FORMAT (14)
+<div class="org-src-container">
+
+<pre class="src src-fortran"><span class="org-constant">10</span> J=1
+<span class="org-constant">11</span> COME FROM 20
+<span class="org-constant">12</span> <span class="org-keyword">WRITE</span> (6,40) J <span class="org-keyword">STOP</span>
+<span class="org-constant">13</span> COME FROM 10
+<span class="org-constant">20</span> J=J+2
+<span class="org-constant">40</span> <span class="org-keyword">FORMAT</span> (14)
 </pre>
+</div>
 
 <p>
 Dans cet exemple tiré de [<a href="#Cla-73">Cla73</a>], les lignes exécutées sont, dans l&rsquo;ordre: 10,
@@ -2857,11 +2878,13 @@ poursuivre l&rsquo;exécution.  Ici c&rsquo;est assez simple de se débarrasser 
 FROM</code> pour obtenir le programme équivalent:
 </p>
 
-<pre class="example">
-10 J=1
-20 J=J+2
-12 WRITE (6,40) J STOP
+<div class="org-src-container">
+
+<pre class="src src-fortran"><span class="org-constant">10</span> J=1
+<span class="org-constant">20</span> J=J+2
+<span class="org-constant">12</span> <span class="org-keyword">WRITE</span> (6,40) J <span class="org-keyword">STOP</span>
 </pre>
+</div>
 
 <p>
 Sans <code>COME FROM</code>, le programme est limpide.  Ces deux exemples illustrent la
@@ -2896,15 +2919,19 @@ un tel mécanisme n&rsquo;est pas totalement dénué d&rsquo;intérêt.  Intuiti
 FROM</code> peut remplacer un <code>GOTO</code>:
 </p>
 
-<pre class="example">
-10 PRINT CHR$(205.5+RND(1))
-20 GOTO 10
-</pre>
+<div class="org-src-container">
 
-<pre class="example">
-10 COME FROM 20
-20 PRINT CHR$(205.5+RND(1))
+<pre class="src src-fortran"><span class="org-constant">10</span> <span class="org-keyword">PRINT</span> CHR$(205.5+RND(1))
+<span class="org-constant">20</span> <span class="org-keyword">GOTO</span> <span class="org-constant">10</span>
 </pre>
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-fortran"><span class="org-constant">10</span> COME FROM 20
+<span class="org-constant">20</span> <span class="org-keyword">PRINT</span> CHR$(205.5+RND(1))
+</pre>
+</div>
 
 <p>
 Dans ces deux programmes, <code>GOTO</code> et <code>COME FROM</code> permettent tous deux de réaliser
@@ -2922,16 +2949,18 @@ précède.  En combinant les deux, on pourrait modifier un programme à distance
 
 </div>
 
-<pre class="example">
-10 X=1
-20 PRINT X
+<div class="org-src-container">
+
+<pre class="src src-fortran"><span class="org-constant">10</span> X=1
+<span class="org-constant">20</span> <span class="org-keyword">PRINT</span> X
 
 ... bien plus loin ...
 
-4040 COME FROM 10
-4041 X=12
-4042 GOTO 20
+<span class="org-constant">4040</span> COME FROM 10
+<span class="org-constant">4041</span> X=12
+<span class="org-constant">4042</span> <span class="org-keyword">GOTO</span> <span class="org-constant">20</span>
 </pre>
+</div>
 
 <p>
 Dans cet exemple, le programme affiche 12.  Après l&rsquo;affectation ligne 10,
@@ -3080,8 +3109,9 @@ organisé comme un manuel à destination du programmeur étranger.  Knuth donne 
 exemple de programme qui liste les 1000 premiers nombres premiers:
 </p>
 
-<pre class="example">
-<span class="linenr"> 1: </span>@* Printing primes: An example of \WEB.
+<div class="org-src-container">
+
+<pre class="src src-none"><span class="linenr"> 1: </span>@* Printing primes: An example of \WEB.
 <span class="linenr"> 2: </span>The following program is essentially the same as
 <span class="linenr"> 3: </span>Edsger Dijkstra's "first example of step-wise
 <span class="linenr"> 4: </span>program composition." [...]
@@ -3094,6 +3124,7 @@ exemple de programme qui liste les 1000 premiers nombres premiers:
 <span class="linenr">11: </span>begin @&lt;Print the first |m| prime numbers@&gt;;
 <span class="linenr">12: </span>end.
 </pre>
+</div>
 
 <p>
 Le premier paragraphe est écrit en TeX; le <code>@*</code> dénote une section.  Toutes les
@@ -3299,7 +3330,7 @@ revanche, propose un nouveau paradigme.
 <figure>
 <p><img src="img/scuola.jpg" alt="scuola.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;24&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;25&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
 </figure>
 
 </div>
@@ -3838,7 +3869,7 @@ langage.  Et ils sont sont aussi très utiles pour le détournement.
 <figure>
 <p><img src="img/münchhausen.jpg" alt="münchhausen.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;31&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;32&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
 
 <p>
@@ -4218,7 +4249,7 @@ envisageables.  Un autre bon candidat est la programmation par aspects.
 <figure>
 <p><img src="img/rug.jpg" alt="rug.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;34&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;35&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
 </figure>
 
 <p>
@@ -9896,7 +9927,7 @@ $ ./njs -l scope -f tests/with.js | dot -Tsvg
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;65&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
+<figcaption><span class="figure-number">Figure&nbsp;66&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
@@ -12870,7 +12901,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-29 lun. 19:21 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-08-30 mar. 18:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
