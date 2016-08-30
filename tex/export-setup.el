@@ -384,6 +384,32 @@ used as a communication channel."
                  (if caption-above-p "" caption)))
         (otherwise image-code)))))
 
+
+  ;; Examples are exported to a dumb listing, to get a consistent look.
+  (defun org-latex-example-block (example-block contents info)
+    "Transcode an EXAMPLE-BLOCK element from Org to LaTeX.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    (when (org-string-nw-p (org-element-property :value example-block))
+      (org-latex--wrap-label
+       example-block
+       (format "\\lstset{language=none,label= ,caption= }
+\\begin{lstlisting}\n%s\\end{lstlisting}"
+               (org-export-format-code-default example-block info))
+       info)))
+
+  ;; Small examples (lines beginning with `:') are exported to a dumb listing,
+  ;; to get a consistent look.
+  (defun org-latex-fixed-width (fixed-width contents info)
+    "Transcode a FIXED-WIDTH element from Org to LaTeX.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+    (org-latex--wrap-label
+     fixed-width
+     (format "\\lstset{language=none,label= ,caption= }
+\\begin{lstlisting}\n%s\\end{lstlisting}"
+             (org-remove-indentation
+              (org-element-property :value fixed-width)))
+     info))
   )
 
 ;; Allow Babel to execute source blocks in batch mode.
