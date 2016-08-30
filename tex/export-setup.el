@@ -223,14 +223,9 @@
      ((eq 'special-block (org-element-type elem)) elem)
      (t (fmdkdd/org-find-special-block (org-export-get-parent-element elem)))))
 
-  ;; Redefine this ox-latex function just to add a `\protect' in front of
-  ;; \includegraphics, so I can include images in figure captions.  A bit
-  ;; heavy-handed, and I'm not entirely sure the `\protect' is benign, but it
-  ;; works.  I also add a `margin' option to the `float' attribute passed by
-  ;; ATTR_LATEX in Org, to trigger the `marginfigure' environment of
-  ;; tufte-latex.
-  ;; Also adds a `:no-center' option to disable figure centering.
-  ;; Also, prevent wrapping images inside a side-figure special block.
+  ;; Add a "slightly" float parameter to add a sliver of space above an
+  ;; `includegraphics', without warping it in a figure.  Also deals with inline
+  ;; images in `aside' or `side-figure' blocks.
   (defun org-latex--inline-image (link info)
     "Return LaTeX code for an inline image.
 LINK is the link pointing to the inline image.  INFO is a plist
@@ -251,6 +246,7 @@ used as a communication channel."
                           ((string= float "sideways") 'sideways)
                           ((string= float "multicolumn") 'multicolumn)
                           ((string= float "margin") 'margin)
+                          ((string= float "slightly") 'slightly)
                           ((or float
                                (org-element-property :caption parent)
                                (org-string-nw-p (plist-get attr :caption)))
@@ -258,6 +254,8 @@ used as a communication channel."
                                'nonfloat
                              'figure))
                           ((and (not float) (plist-member attr :float)) nil))))
+           (in-aside (or (string= "side-figure" block-type)
+                         (string= "aside" block-type)))
            (placement
             (let ((place (plist-get attr :placement)))
               (cond
@@ -272,7 +270,7 @@ used as a communication channel."
            ;; ATTR_LATEX line, and also via default variables.
            (width (cond ((plist-get attr :width))
                         ((plist-get attr :height) "")
-                        ((string= "side-figure" block-type) "\\maxwidth{\\marginparwidth}")
+                        (in-aside "\\maxwidth{\\marginparwidth}")
                         ((eq float 'wrap) "0.48\\textwidth")
                         (t (plist-get info :latex-image-default-width))))
            (height (cond ((plist-get attr :height))
@@ -316,26 +314,34 @@ used as a communication channel."
                      (not (org-string-match-p "page=" options)))
             (setq options (concat options ",page=" search-option))))
         (setq image-code
-              (format "\\protect\\includegraphics%s{%s}"
+              (format "\\includegraphics%s{%s}"
                       (cond ((not (org-string-nw-p options)) "")
                             ((= (aref options 0) ?,)
                              (format "[%s]"(substring options 1)))
                             (t (format "[%s]" options)))
                       path))
         (when (equal filetype "svg")
-          (setq image-code (replace-regexp-in-string "^\\\\includegraphics"
-                                                     "\\includesvg"
-                                                     image-code
-                                                     nil t))
+          ;; No we don't want `includesvg'.  We'll do the conversion ourselves
+          ;; thankyouverymuch.
+          ;; (setq image-code (replace-regexp-in-string "^\\\\includegraphics"
+          ;;                                            "\\includesvg"
+          ;;                                            image-code
+          ;;                                            nil t))
           (setq image-code (replace-regexp-in-string "\\.svg}"
                                                      "}"
                                                      image-code
                                                      nil t))))
-      ;; If parent is side-figure, do not wrap
-      (if (string= "side-figure" block-type)
-        (format "%s\n%s" image-code caption)
+      ;; This was intended to avoid wrapping an `includegraphics' in any
+      ;; environment for an inline image inside a `side-figure' block.  But
+      ;; this is actually the default as long as we don't use set caption using
+      ;; #+CAPTION in org.
+      ;; (if (string= "side-figure" block-type)
+      ;;   (format "%s\n%s" image-code caption)
       ;; Return proper string, depending on FLOAT.
       (case float
+        ;; Raw `includegraphics', but with space above
+        (slightly (format "\\vspace{6pt}\\noindent\n%s\n%s"
+                          image-code caption))
         (wrap (format "\\begin{wrapfigure}%s
 %s%s%s%s
 %s\\end{wrapfigure}"
@@ -382,7 +388,7 @@ used as a communication channel."
                  (if caption-above-p caption "")
                  image-code
                  (if caption-above-p "" caption)))
-        (otherwise image-code)))))
+        (otherwise image-code))))
 
 
   ;; Examples are exported to a dumb listing, to get a consistent look.
