@@ -59,6 +59,17 @@
 %% powerful with XeLaTeX, as font information may be missing.
 \usepackage{microtype}
 
+%% A touch of color
+\usepackage{xcolor}
+\definecolor{rubric}{rgb}{0.65,0.12,0.09}
+\definecolor{azure}{rgb}{0.06,0.3,0.5}
+
+%% Diagram colors
+\definecolor{c0}{HTML}{556270}
+\definecolor{c1}{HTML}{4ECDC4}
+\definecolor{c2}{HTML}{FF6B6B}
+\definecolor{c3}{HTML}{C7F464}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Covers
 
@@ -136,7 +147,8 @@
 \usepackage{listings}
 \lstset{
   basicstyle=\ttfamily\small,
-  commentstyle=\ttfamily,
+  commentstyle=\ttfamily\color{rubric},
+  keywordstyle=,
   columns=fullflexible, keepspaces=true,
   breaklines=false, showstringspaces=false,
   escapeinside={//*}{\^^M},     % Escape to LaTeX between //* and line return
@@ -186,17 +198,6 @@
 
 %% Needed for the \text command in math-mode.
 \usepackage{amsmath}
-
-%% A touch of color
-\usepackage{xcolor}
-\definecolor{rubric}{rgb}{0.65,0.12,0.09}
-\definecolor{azure}{rgb}{0.06,0.3,0.5}
-
-%% Diagram colors
-\definecolor{c0}{HTML}{556270}
-\definecolor{c1}{HTML}{4ECDC4}
-\definecolor{c2}{HTML}{FF6B6B}
-\definecolor{c3}{HTML}{C7F464}
 
 %% For including SVG (that are converted as PDF), and the JPEG illustrations.
 \usepackage{graphicx}
