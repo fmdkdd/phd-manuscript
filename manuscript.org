@@ -314,8 +314,10 @@ il lui faut des repères, des unités plus digestibles par nos facultés
 organiques.  Un programmeur manipule rarement des bits afin de déclarer ses
 intentions à la machine; il utilise plutôt un langage de programmation.
 
-#+CAPTION: Un programme (point de vue d'un programmeur connaissant le langage
-#+CAPTION: JavaScript, vers 2015).
+#+BEGIN_aside
+Code [[fib]] --- Un programme (point de vue d'un programmeur connaissant le langage
+JavaScript, vers 2015).
+#+END_aside
 #+NAME: fib
 #+BEGIN_SRC js
 function fibonacci(n) {
@@ -2683,8 +2685,9 @@ Le passage de messages est une métaphore uniforme.  Pour additionner deux point
 l'objet qui le reçoit et l'interprète.  C'est le mécanisme de /liaison
 dynamique/.
 
-#+CAPTION: Ici, l'addition de deux points fait appel à l'addition des
-#+CAPTION: coordonnées.
+#+BEGIN_aside
+Ici, l'addition de deux points fait appel à l'addition des coordonnées.
+#+END_aside
 #+BEGIN_SRC smalltalk
 + t1
   [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
@@ -2716,9 +2719,11 @@ L'héritage permet aux classes ~Integer~ et ~Float~ de réutiliser les méthodes
 ~Number~.
 #+END_side-figure
 
-#+CAPTION: Les comparaisons sur les nombres sont définies dans la classe
-#+CAPTION: ~Number~ en termes de la soustraction.  Code source tiré de la
-#+CAPTION: machine virtuelle Smalltalk-78 [[cite:Smalltalk78][Smalltalk78]].
+#+BEGIN_aside
+Les comparaisons sur les nombres sont définies dans la classe ~Number~ en termes
+de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78
+[[cite:Smalltalk78][Smalltalk78]].
+#+END_aside
 #+BEGIN_SRC smalltalk
 < t1
   [⇑ self - t1 < 0]
@@ -3612,8 +3617,10 @@ est une unité de composition qui /traverse/ la composition des composants, et
 c'est donc naturel de permettre, dans un aspect, d'ajouter attributs et méthodes
 à plusieurs classes.  C'est une recomposition de la structure statique.
 
-#+CAPTION: Une déclaration inter-type qui ajoute un attribut et une méthode à
-#+CAPTION: la classe ~Point~.
+#+BEGIN_aside
+Une déclaration inter-type qui ajoute un attribut et une méthode à la classe
+~Point~.
+#+END_aside
 #+BEGIN_SRC java
 public int Point.x = 0;
 public int Point.getX() { return this.x; }
@@ -5413,8 +5420,10 @@ interpréteur extensible, mais d'identifier les points qui vont varier en
 définissant cette variation.  Pour cela, on s'intéresse surtout aux différences
 entre les deux versions.
 
-#+CAPTION: Diff simplifié qui illustre les modifications nécessaires pour
-#+CAPTION: l'interpréteur \lambda^{facet}.
+#+BEGIN_aside
+Diff simplifié qui illustre les modifications nécessaires pour l'interpréteur
+\lambda^{facet}.
+#+END_aside
 #+BEGIN_SRC diff
 + function Facet() {...}
 
@@ -8172,7 +8181,9 @@ Exemple de déviation de l'évaluation standard de JavaScript: AspectScript ne
 peut pas instrumenter du code qui contient ~with~.
 #+END_aside
 
-#+CAPTION: Le code invoqué dans AspectScript pour un appel réifié de fonction.
+#+BEGIN_aside
+Le code invoqué dans AspectScript pour un appel réifié de fonction.
+#+END_aside
 #+BEGIN_SRC js
 call: function (obj, fun, args, context){
   acChecker.checkCall(obj, fun);
