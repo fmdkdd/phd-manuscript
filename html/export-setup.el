@@ -144,7 +144,8 @@ Return new parse tree."
               (with-temp-buffer
                 (cond
                  ((org-export-derived-backend-p backend 'html)
-                  (insert "<div id=\"bibliography\">\n") ; #4
+                  (insert "<div id=\"bibliography\">\n<h2>Bibliographie</h2>\n")
+                  ;; (insert "<div id=\"bibliography\">\n") ; #4
                   (insert-file-contents (concat out-file ".html"))
                   (goto-char (point-max))
                   (insert "\n</div>")
