@@ -256,6 +256,7 @@ used as a communication channel."
                           ((and (not float) (plist-member attr :float)) nil))))
            (in-aside (or (string= "side-figure" block-type)
                          (string= "aside" block-type)))
+           (full-figure (string= "full-figure" block-type))
            (placement
             (let ((place (plist-get attr :placement)))
               (cond
@@ -271,6 +272,7 @@ used as a communication channel."
            (width (cond ((plist-get attr :width))
                         ((plist-get attr :height) "")
                         (in-aside "\\maxwidth{\\marginparwidth}")
+                        (full-figure "\\fullwidth")
                         ((eq float 'wrap) "0.48\\textwidth")
                         (t (plist-get info :latex-image-default-width))))
            (height (cond ((plist-get attr :height))
@@ -331,6 +333,9 @@ used as a communication channel."
                                                      "}"
                                                      image-code
                                                      nil t))))
+      (when full-figure
+        (setq image-code
+         (format "\\noindent\n%s" image-code)))
       ;; This was intended to avoid wrapping an `includegraphics' in any
       ;; environment for an inline image inside a `side-figure' block.  But
       ;; this is actually the default as long as we don't use set caption using
