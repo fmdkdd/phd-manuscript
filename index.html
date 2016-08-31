@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-08-30 mar. 18:48 -->
+<!-- 2016-08-31 mer. 19:40 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement</title>
@@ -180,7 +180,13 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline44">3.8. <span class="done READ">READ</span> Récapitulatif</a></li>
 </ul>
 </li>
-<li><a href="#variations">4. <span class="todo INPROGRESS">INPROGRESS</span> Variations sur un interpréteur de lambda-calcul extensible</a></li>
+<li><a href="#variations">4. <span class="todo INPROGRESS">INPROGRESS</span> Variations sur un interpréteur de lambda-calcul extensible</a>
+<ul>
+<li><a href="#orgheadline46">4.1. Programmation structurée</a></li>
+<li><a href="#orgheadline47">4.2. Programmation littéraire</a></li>
+<li><a href="#orgheadline48">4.3. OOP</a></li>
+</ul>
+</li>
 <li><a href="#foal">5. Construire un interpréteur par modules</a>
 <ul>
 <li><a href="#orgheadline50">5.1. <span class="done READ">READ</span> Ajouter des termes</a></li>
@@ -199,16 +205,18 @@ for the JavaScript code in this tag.
 </ul>
 </li>
 <li><a href="#orgheadline76"><span class="todo UNREAD">UNREAD</span> Conclusion</a></li>
-<li><a href="#orgheadline83">7. Appendices</a>
+<li><a href="#foal-extra">7. Extras: construire un interpréteur par modules</a>
 <ul>
-<li><a href="#foal-extra">7.1. Construire un interpréteur par modules</a></li>
+<li><a href="#foal-extra-full">7.1. Code complet du chapitre</a></li>
+<li><a href="#foal-extra-rust">7.2. Code complet de l&rsquo;exemple en Rust</a></li>
+<li><a href="#foal-extra-subtle">7.3. <span class="todo UNREAD">UNREAD</span> La différence subtile</a></li>
+<li><a href="#orgheadline81">7.4. <span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline84">Références</a></li>
 </ul>
 </div>
 </nav>
-<blockquote>
+<div class="epig">
 <p>
 &laquo;&nbsp;I could tell you my adventures&#x2013;beginning from this morning,&nbsp;&raquo; said Alice a
 little timidly: &laquo;&nbsp;but it&rsquo;s no use going back to yesterday, because I was a
@@ -222,9 +230,10 @@ different person then.&nbsp;&raquo;
 <p>
 &laquo;&nbsp;No, no! The adventures first,&nbsp;&raquo; said the Gryphon in an impatient tone:
 &laquo;&nbsp;explanations take such a dreadful time.&nbsp;&raquo;
-— Through the Looking Glass, Lewis Caroll
+<br>— Lewis Caroll, "Through the Looking Glass"
 </p>
-</blockquote>
+
+</div>
 
 <div id="outline-container-orgheadline1" class="outline-2">
 <h2 id="orgheadline1">Résumé</h2>
@@ -471,8 +480,14 @@ organiques.  Un programmeur manipule rarement des bits afin de déclarer ses
 intentions à la machine; il utilise plutôt un langage de programmation.
 </p>
 
+<aside>
+<p>
+Code <a href="#orgsrcblock1">1</a> &#x2014; Un programme (point de vue d&rsquo;un programmeur connaissant le langage
+JavaScript, vers 2015).
+</p>
+</aside>
 <div class="org-src-container">
-<label class="org-src-name">Un programme (point de vue d&rsquo;un programmeur connaissant le langage JavaScript, vers 2015).</label>
+
 <pre class="src src-js" id="orgsrcblock1"><span class="org-keyword">function</span> <span class="org-function-name">fibonacci</span>(<span class="org-variable-name">n</span>) {
   <span class="org-keyword">return</span> n &lt; 2 ? 1 : fibonacci(n-1) + fibonacci(n-2)
 }
@@ -2632,15 +2647,21 @@ changer plus facilement.
 <p>
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
 Japan, who cheerfully complained that he was always being eliminated.
-— Donald Knuth [<a href="#Knu-74">Knu74</a>]</p>
+<br>— Donald Knuth
+</p>
 
 </div>
+
+<aside>
+<p>
+Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.
+</p>
+</aside>
 
 
 <figure>
 <p><img src="img/goto.jpg" alt="goto.jpg" title="すみません、高橋さん。">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;17&nbsp;:</span> Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.</figcaption>
 </figure>
 
 <p>
@@ -3012,7 +3033,9 @@ façons d&rsquo;aborder ce but.
 <div class="epig">
 <p>
 [Literate programming] may be only for the subset of computer scientists who
-like to write and to explain what they are doing. — Donald Knuth [<a href="#Knu-84">Knu84</a>]</p>
+like to write and to explain what they are doing.
+<br>— Donald Knuth
+</p>
 
 </div>
 
@@ -3330,25 +3353,31 @@ revanche, propose un nouveau paradigme.
 <figure>
 <p><img src="img/scuola.jpg" alt="scuola.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;25&nbsp;:</span> L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.</figcaption>
 </figure>
 
 </div>
+<aside>
+<p>
+L&rsquo;École d&rsquo;Athènes. Raphaël, 1509&#x2013;1510.
+</p>
+</aside>
 </div>
 
 <div id="outline-container-orgheadline20" class="outline-4">
 <h4 id="Smalltalk"><a id="orgheadline20"></a>Classes et héritage: Smalltalk</h4>
 <div class="outline-text-4" id="text-Smalltalk">
-<div class="epig">
+<div class="epigraphs">
 <p>
-Classification is the objectification of  <i>ness</i>ness. — Dan
-Ingalls [<a href="#Ing-81">Ing81</a>]</p>
 
-</div>
+Classification is the objectification of <i>ness</i>ness.
+<br>— Dan Ingalls
+</p>
 
-<div class="epig">
 <p>
-Ah, voilà enfin le roi de la classe ! — José, /La Classe Américaine/ [<a href="#HM-93">HM93</a>]</p>
+
+Ah, voilà enfin le roi de la classe !
+<br>— José, "La Classe Américaine"
+</p>
 
 </div>
 
@@ -3445,8 +3474,13 @@ l&rsquo;objet qui le reçoit et l&rsquo;interprète.  C&rsquo;est le mécanisme 
 dynamique</i>.
 </p>
 
+<aside>
+<p>
+Ici, l&rsquo;addition de deux points fait appel à l&rsquo;addition des coordonnées.
+</p>
+</aside>
 <div class="org-src-container">
-<label class="org-src-name">Ici, l&rsquo;addition de deux points fait appel à l&rsquo;addition des coordonnées.</label>
+
 <pre class="src src-smalltalk">+ t1
   [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
 </pre>
@@ -3487,8 +3521,15 @@ L&rsquo;héritage permet aux classes <code>Integer</code> et <code>Float</code> 
 
 </div>
 
+<aside>
+<p>
+Les comparaisons sur les nombres sont définies dans la classe <code>Number</code> en termes
+de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78
+[<a href="#Smalltalk78">IFK</a>].
+</p>
+</aside>
 <div class="org-src-container">
-<label class="org-src-name">Les comparaisons sur les nombres sont définies dans la classe <code>Number</code> en termes de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78 [<a href="#Smalltalk78">IFK</a>].</label>
+
 <pre class="src src-smalltalk">&lt; t1
   [⇑ self - t1 &lt; 0]
 &gt; t1
@@ -3865,12 +3906,19 @@ langage.  Et ils sont sont aussi très utiles pour le détournement.
 <div id="outline-container-orgheadline24" class="outline-3">
 <h3 id="metaobj"><a id="orgheadline24"></a><span class="section-number-3">3.4</span> <span class="done READ">READ</span> Réifier le langage: métaprogrammation et réflexion</h3>
 <div class="outline-text-3" id="text-metaobj">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/münchhausen.jpg" alt="münchhausen.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;32&nbsp;:</span> Le baron de Münchhausen évite la noyade par capillotraction. Gustave Doré, 1862.</figcaption>
 </figure>
+
+<p>
+Le baron de Münchhausen évite la noyade par capillotraction.  Gustave
+Doré, 1862.
+</p>
+
+</div>
 
 <p>
 En programmation par objets, on cherche à établir une correspondance entre les
@@ -3887,13 +3935,6 @@ même à un programme d&rsquo;altérer sa structure, ou de modifier la sémantiq
 langage, pendant qu&rsquo;il s&rsquo;exécute.  Cette adaptation dynamique offre de nouvelles
 façons de modifier et d&rsquo;étendre des programmes.
 </p>
-
-<aside>
-<p>
-On peut parler ici plus précisément d&rsquo;introspection structurelle (voir par
-exemple la nomenclature de Tanter [<a href="#Tan-09">�T09</a>]).
-</p>
-</aside>
 
 <p>
 Un simple exemple de réflexion: être capable d&rsquo;inspecter une classe à
@@ -3945,6 +3986,13 @@ public static void A.main(java.lang.String[])
 
 A.m2(3) = 6
 </pre>
+
+<aside>
+<p>
+On peut parler ici plus précisément d&rsquo;introspection structurelle (voir par
+exemple la nomenclature de Tanter [<a href="#Tan-09">�T09</a>]).
+</p>
+</aside>
 
 <p>
 Ici on liste, à l&rsquo;exécution, l&rsquo;attribut <code>n</code> et les deux méthodes <code>m1</code> <code>m2</code> avec
@@ -4245,12 +4293,18 @@ envisageables.  Un autre bon candidat est la programmation par aspects.
 <div id="outline-container-orgheadline31" class="outline-3">
 <h3 id="aop"><a id="orgheadline31"></a><span class="section-number-3">3.5</span> <span class="done READ">READ</span> Séparer les préoccupations: la programmation par aspects</h3>
 <div class="outline-text-3" id="text-aop">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/rug.jpg" alt="rug.jpg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;35&nbsp;:</span> Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.</figcaption>
 </figure>
+
+<p>
+Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.
+</p>
+
+</div>
 
 <p>
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
@@ -4633,8 +4687,14 @@ c&rsquo;est donc naturel de permettre, dans un aspect, d&rsquo;ajouter attributs
 à plusieurs classes.  C&rsquo;est une recomposition de la structure statique.
 </p>
 
+<aside>
+<p>
+Une déclaration inter-type qui ajoute un attribut et une méthode à la classe
+<code>Point</code>.
+</p>
+</aside>
 <div class="org-src-container">
-<label class="org-src-name">Une déclaration inter-type qui ajoute un attribut et une méthode à la classe <code>Point</code>.</label>
+
 <pre class="src src-java"><span class="org-keyword">public</span> <span class="org-type">int</span> Point.<span class="org-variable-name">x</span> = 0;
 <span class="org-keyword">public</span> <span class="org-type">int</span> Point.<span class="org-function-name">getX</span>() { <span class="org-keyword">return</span> <span class="org-keyword">this</span>.x; }
 </pre>
@@ -6403,8 +6463,9 @@ pour détourner l&rsquo;interpréteur Narcissus.
 <div id="outline-container-orgheadline49" class="outline-2">
 <h2 id="variations"><a id="orgheadline49"></a><span class="section-number-2">4</span> <span class="todo INPROGRESS">INPROGRESS</span> Variations sur un interpréteur de lambda-calcul extensible</h2>
 <div class="outline-text-2" id="text-variations">
-<div class="epig">
+<div class="epigraphs">
 <p>
+
 &rsquo;When <i>I</i> use a word,&rsquo; Humpty Dumpty said in rather a scornful tone, &rsquo;it means
 just what I choose it to mean—neither more nor less.&rsquo;
 </p>
@@ -6412,18 +6473,13 @@ just what I choose it to mean—neither more nor less.&rsquo;
 <p>
 &rsquo;The question is,&rsquo; said Alice, &rsquo;whether you <i>can</i> make words mean so many
 different things.&rsquo;
+<br>— Lewis Caroll, "Through the Looking Glass"
 </p>
 
 <p>
-— Through the Looking Glass, Lewis Caroll
-</p>
 
-<p>
 Obladi, Oblada
-</p>
-
-<p>
-— The Beatles
+<br>— The Beatles
 </p>
 
 </div>
@@ -6436,9 +6492,9 @@ faire, on va illustrer ces techniques sur un interpréteur minimal.
 </p>
 </div>
 
-<div id="outline-container-orgheadline46" class="outline-4">
-<h4 id="orgheadline46">Programmation structurée</h4>
-<div class="outline-text-4" id="text-orgheadline46">
+<div id="outline-container-orgheadline46" class="outline-3">
+<h3 id="orgheadline46"><span class="section-number-3">4.1</span> Programmation structurée</h3>
+<div class="outline-text-3" id="text-4-1">
 <p>
 On a vu (&sect;<a href="#dijkstra">3.1</a>) que théoriquement l&rsquo;on pouvait utiliser <code>GOTO</code> et
 <code>COMEFROM</code> ensemble de cette façon:
@@ -6537,9 +6593,9 @@ en cause.  Il faut juste trouver d&rsquo;autres mécanismes pour la réaliser.
 </div>
 </div>
 
-<div id="outline-container-orgheadline47" class="outline-4">
-<h4 id="orgheadline47">Programmation littéraire</h4>
-<div class="outline-text-4" id="text-orgheadline47">
+<div id="outline-container-orgheadline47" class="outline-3">
+<h3 id="orgheadline47"><span class="section-number-3">4.2</span> Programmation littéraire</h3>
+<div class="outline-text-3" id="text-4-2">
 <p>
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
 nommer des blocs de code pour les définir à un autre moment.
@@ -6960,9 +7016,9 @@ exécuté, on ne peut plus changer le comportement de l&rsquo;interprétation.
 </div>
 </div>
 
-<div id="outline-container-orgheadline48" class="outline-4">
-<h4 id="orgheadline48">OOP</h4>
-<div class="outline-text-4" id="text-orgheadline48">
+<div id="outline-container-orgheadline48" class="outline-3">
+<h3 id="orgheadline48"><span class="section-number-3">4.3</span> OOP</h3>
+<div class="outline-text-3" id="text-4-3">
 <hr >
 
 <p>
@@ -7099,8 +7155,14 @@ définissant cette variation.  Pour cela, on s&rsquo;intéresse surtout aux diff
 entre les deux versions.
 </p>
 
+<aside>
+<p>
+Diff simplifié qui illustre les modifications nécessaires pour l&rsquo;interpréteur
+&lambda;<sup>facet</sup>.
+</p>
+</aside>
 <div class="org-src-container">
-<label class="org-src-name">Diff simplifié qui illustre les modifications nécessaires pour l&rsquo;interpréteur &lambda;<sup>facet</sup>.</label>
+
 <pre class="src src-diff"><span class="org-diff-indicator-added">+</span><span class="org-diff-added"> function Facet() {...}</span>
 
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added"> function evaluateEach() {...}</span>
@@ -7200,7 +7262,7 @@ context chapter.
 <aside>
 <p>
 Le code complet de ce chapitre est reproduit dans les appendices
-(<a href="#foal-extra-full">Code complet du chapitre</a>).
+(<a href="#foal-extra-full">7.1</a>).
 </p>
 </aside>
 </div>
@@ -7489,7 +7551,7 @@ enrichies de <code>num</code> et <code>plus</code> (ligne <a href="#coderef-foal
 <aside style="margin-top:-4rem">
 <p>
 Ce module hérite du module <code>base</code> passé en argument pour des raisons qui sont
-explicitées en appendices (<a href="#foal-extra-subtle">La différence subtile</a>).
+explicitées en appendices (<a href="#foal-extra-subtle">7.3</a>).
 </p>
 </aside>
 
@@ -7959,7 +8021,7 @@ plus.<span class="org-keyword">new</span>(d.num.<span class="org-keyword">new</s
 <p>
 Il y a une différence subtile entre composer les modules ainsi et les combiner
 via plusieurs blocs <code>with</code>; différence qui est discutée en appendice
-(<a href="#foal-extra-subtle">La différence subtile</a>).
+(<a href="#foal-extra-subtle">7.3</a>).
 </p>
 </aside>
 
@@ -8084,7 +8146,7 @@ similar?
 
 <aside>
 <p>
-Le code complet de cet exemple se trouve dans les appendices <a href="#foal-extra-rust">Code complet de l&rsquo;exemple en Rust</a>.
+Le code complet de cet exemple se trouve dans les appendices <a href="#foal-extra-rust">7.2</a>.
 </p>
 </aside>
 
@@ -8225,32 +8287,39 @@ détourner l&rsquo;interpréteur Narcissus.
 <i>Chapitre principalement tiré d&rsquo;un papier rejeté à DLS&rsquo;15 et à SAC&rsquo;16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
 </p>
 
-<div class="epig">
+<div class="epigraphs">
 <p>
+
 The whole purpose of this work is to be able to modify the original interpreter
 in the less possible intrusive way, and this appears to be the case, so I find
 this work interesting, and since it is self-contained and properly grounded into
-existing work, it is certainly worthy of publication. &#x2013; Relecteur DLS n°1
+existing work, it is certainly worthy of publication.
+<br>— Relecteur DLS n°1
 </p>
 
 <p>
+
 Readers not familiar with evaluation contexts and scoping will find that the
 paper provides a didactic introduction to the concepts, but familiarised readers
-will find the paper rather dull. &#x2013; Relecteur DLS n°2
+will find the paper rather dull.
+<br>— Relecteur DLS n°2
 </p>
 
 <p>
+
 The pattern is either elegant JavaScript hacking or severe abuse of
 modularity. I can&rsquo;t tell which! I guess I like it. It illustrates how using
 language constructs to implement your own module system, rather than having a
 built-in one, enables it to be modified to allow
-extensibility. &#x2013; Relecteur DLS n°3
+extensibility.
+<br>— Relecteur DLS n°3
 </p>
 
 <p>
+
 I like the simplicity of the approach and the clever use of the &laquo;&nbsp;with&nbsp;&raquo; statement
 semantics to achieve the dynamic extension of the scope from the outside code.
-&#x2013; Relecteur SAC n°1
+<br>— Relecteur SAC n°1
 </p>
 
 </div>
@@ -9923,18 +9992,26 @@ produire une image en invoquant <code>dot</code>:
 $ ./njs -l scope -f tests/with.js | dot -Tsvg
 </pre>
 
+<div class="side-figure">
 
 <figure>
 <p><img src="img/env-with.svg" alt="env-with.svg">
 </p>
-<figcaption><span class="figure-number">Figure&nbsp;66&nbsp;:</span> Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides sont des références.  On peut remarquer en haut à gauche les environnements, qui font référence aux objets créés par le code de l&rsquo;exemple.</figcaption>
 </figure>
 
 <p>
-Le rendu est un peu brouillon, mais toute l&rsquo;information est là.  On peut y
-retrouver l&rsquo;objet <code>E</code>, l&rsquo;objet d&rsquo;activation de la FIA, l&rsquo;environnement créé par
-<code>with</code>.  Et en faisant quelques simplifications, et en réorganisant les boîtes
-manuellement, on obtient les diagrammes du chapitre.
+Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides
+sont des références.  On peut remarquer en haut à gauche les environnements, qui
+font référence aux objets créés par le code de l&rsquo;exemple.
+</p>
+
+</div>
+
+<p>
+Le rendu, visible en marge, est un peu brouillon, mais toute l&rsquo;information est
+là.  On peut y retrouver l&rsquo;objet <code>E</code>, l&rsquo;objet d&rsquo;activation de la FIA,
+l&rsquo;environnement créé par <code>with</code>.  Et en faisant quelques simplifications, et en
+réorganisant les boîtes manuellement, on obtient les diagrammes du chapitre.
 </p>
 
 <p>
@@ -10130,7 +10207,7 @@ exécutés par le script <code>jstests.py</code> développé par Mozilla.
 <thead>
 <tr>
 <th scope="col" class="org-left">Interpréteur</th>
-<th scope="col" class="org-left">Temps moyen (secondes)</th>
+<th scope="col" class="org-left">Temps moyen (sec)</th>
 </tr>
 </thead>
 <tbody>
@@ -10150,7 +10227,7 @@ exécutés par le script <code>jstests.py</code> développé par Mozilla.
 </tr>
 
 <tr>
-<td class="org-left">Narcissus et multi-facettes (Austin et Flanagan)</td>
+<td class="org-left">Narcissus et multi-facettes [<a href="#AF-12">AF12</a>]</td>
 <td class="org-left">1215 (± 2)</td>
 </tr>
 
@@ -10714,8 +10791,13 @@ peut pas instrumenter du code qui contient <code>with</code>.
 </p>
 </aside>
 
+<aside>
+<p>
+Le code invoqué dans AspectScript pour un appel réifié de fonction.
+</p>
+</aside>
 <div class="org-src-container">
-<label class="org-src-name">Le code invoqué dans AspectScript pour un appel réifié de fonction.</label>
+
 <pre class="src src-js"><span class="org-function-name">call</span>: <span class="org-keyword">function</span> (<span class="org-variable-name">obj</span>, <span class="org-variable-name">fun</span>, <span class="org-variable-name">args</span>, <span class="org-variable-name">context</span>){
   acChecker.checkCall(obj, fun);
 
@@ -10861,10 +10943,7 @@ d&rsquo;appliquer la technique de ce chapitre.
 <p>
 And how many times must a man look up  <br/>
 Before he can see the sky?
-</p>
-
-<p>
-— &laquo;&nbsp;Blowing in the Wind&nbsp;&raquo;, Bob Dylan
+<br>— Bob Dylan, "Blowing in the Wind"
 </p>
 
 </div>
@@ -11020,16 +11099,13 @@ se passe de programmes pour ordonner la machine.
 </div>
 </div>
 
-<div id="outline-container-orgheadline83" class="outline-2">
-<h2 id="orgheadline83"><span class="section-number-2">7</span> Appendices</h2>
-<div class="outline-text-2" id="text-7">
-</div><div id="outline-container-orgheadline82" class="outline-3">
-<h3 id="foal-extra"><a id="orgheadline82"></a><span class="section-number-3">7.1</span> Construire un interpréteur par modules</h3>
-<div class="outline-text-3" id="text-foal-extra">
+<div id="outline-container-orgheadline82" class="outline-2">
+<h2 id="foal-extra"><a id="orgheadline82"></a><span class="section-number-2">7</span> Extras: construire un interpréteur par modules</h2>
+<div class="outline-text-2" id="text-foal-extra">
 </div>
-<div id="outline-container-orgheadline78" class="outline-4">
-<h4 id="foal-extra-full"><a id="orgheadline78"></a>Code complet du chapitre</h4>
-<div class="outline-text-4" id="text-foal-extra-full">
+<div id="outline-container-orgheadline78" class="outline-3">
+<h3 id="foal-extra-full"><a id="orgheadline78"></a><span class="section-number-3">7.1</span> Code complet du chapitre</h3>
+<div class="outline-text-3" id="text-foal-extra-full">
 <p>
 Le code complet du chapitre <a href="#foal">5</a>, en un seul programme.
 </p>
@@ -11264,9 +11340,9 @@ p2(show(state(<span class="org-type">double</span>({num, plus}))))
 </div>
 </div>
 
-<div id="outline-container-orgheadline79" class="outline-4">
-<h4 id="foal-extra-rust"><a id="orgheadline79"></a>Code complet de l&rsquo;exemple en Rust</h4>
-<div class="outline-text-4" id="text-foal-extra-rust">
+<div id="outline-container-orgheadline79" class="outline-3">
+<h3 id="foal-extra-rust"><a id="orgheadline79"></a><span class="section-number-3">7.2</span> Code complet de l&rsquo;exemple en Rust</h3>
+<div class="outline-text-3" id="text-foal-extra-rust">
 <p>
 Le code de l&rsquo;exemple en Rust était abrégé pour épargner les détails.  Voici le
 code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
@@ -11358,9 +11434,9 @@ code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
 </div>
 </div>
 
-<div id="outline-container-orgheadline80" class="outline-4">
-<h4 id="foal-extra-subtle"><a id="orgheadline80"></a><span class="todo UNREAD">UNREAD</span> La différence subtile</h4>
-<div class="outline-text-4" id="text-foal-extra-subtle">
+<div id="outline-container-orgheadline80" class="outline-3">
+<h3 id="foal-extra-subtle"><a id="orgheadline80"></a><span class="section-number-3">7.3</span> <span class="todo UNREAD">UNREAD</span> La différence subtile</h3>
+<div class="outline-text-3" id="text-foal-extra-subtle">
 <p>
 Pour pouvoir activer plusieurs extensions de l&rsquo;interpréteur en même temps, on a
 vu que l&rsquo;on pouvait combiner les appels à <code>with</code>:
@@ -11428,9 +11504,9 @@ que l&rsquo;on rajoute le <code>__proto__: base</code> dans l&rsquo;objet retour
 </div>
 </div>
 
-<div id="outline-container-orgheadline81" class="outline-4">
-<h4 id="orgheadline81"><span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</h4>
-<div class="outline-text-4" id="text-orgheadline81">
+<div id="outline-container-orgheadline81" class="outline-3">
+<h3 id="orgheadline81"><span class="section-number-3">7.4</span> <span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</h3>
+<div class="outline-text-3" id="text-7-4">
 <p>
 Les termes du langages sont représentés par des objets.  Il n&rsquo;y a pas de
 constructeurs d&rsquo;objets en JavaScript, puisque c&rsquo;est un langage à prototypes.
@@ -11526,15 +11602,9 @@ l&rsquo;on raffine.  Mais en utilisant le receveur <code>this</code> comme proto
 constructeur, on évite d&rsquo;avoir à redéfinir le constructeur dans chaque
 extension.
 </p>
-</div>
-</div>
-</div>
-</div>
 
-<div id="outline-container-orgheadline84" class="outline-2">
-<h2 id="orgheadline84">Références</h2>
-<div class="outline-text-2" id="text-orgheadline84">
 <div id="bibliography">
+<h2>Bibliographie</h2>
 
 <table>
 
@@ -11922,19 +11992,6 @@ William&nbsp;G. Griswold.
   Concerns, Third International Conference, REFLECTION 2001, Kyoto, Japan,
   September 25-28, 2001, Proceedings</em>, pages 250--265, 2001.
 [&nbsp;<a href="http://dx.doi.org/10.1007/3-540-45429-2_17">DOI</a>&nbsp;]
-
-</td>
-</tr>
-
-
-<tr valign="top">
-<td align="right" class="bibtexnumber">
-[<a name="HM-93">HM93</a>]
-</td>
-<td class="bibtexitem">
-Michel Hazanavicius and Dominique Mézerette.
- La classe américaine, 1993.
-[&nbsp;<a href="http://cyclim.se/script.html">.html</a>&nbsp;]
 
 </td>
 </tr>
@@ -12899,9 +12956,10 @@ Matthias Zenger and Martin Odersky.
 </div>
 </div>
 </div>
+</div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-08-30 mar. 18:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-08-31 mer. 19:40 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
