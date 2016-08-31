@@ -30,6 +30,12 @@
 
 \checkandfixthelayout
 
+%% Need this length for some full-width figures, and for headers
+\newlength{\fullwidth}
+\addtolength{\fullwidth}{\textwidth}
+\addtolength{\fullwidth}{\marginparsep}
+\addtolength{\fullwidth}{\marginparwidth}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% General typography
 
@@ -98,11 +104,40 @@
 \renewcommand{\chapnumfont}{\sffamily\itshape}
 
 %% Headers run into the margin
-\setlength{\headwidth}{\textwidth}
-\addtolength{\headwidth}{\marginparsep}
-\addtolength{\headwidth}{\marginparwidth}
+\setlength{\headwidth}{\fullwidth}
 \makerunningwidth{headings}{\headwidth}
 \makeheadposition{headings}{flushright}{flushleft}{}{}
+
+%% Section headings run into the margin
+\usepackage{calc}               % for widthof and minof
+
+%% Wrapper around the checkoddpage functionality provided by memoir.
+%% https://tex.stackexchange.com/questions/6143/if-then-else-for-odd-page-even-page
+\strictpagecheck
+\makeatletter
+\newcommand*\ifthispageodd{%
+  \checkoddpage
+  \ifoddpage
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+\makeatother
+
+%% On odd page we just have to put the heading text into a fullwidth parbox to
+%% let it run in the margin.  But on even pages, we want the /start/ of the
+%% heading text to overrun into the left margin only if it is larger than
+%% textwidth.
+\newlength{\headingoffset}
+\newcommand{\marginhead}[1]{%
+  \ifthispageodd{\setlength{\headingoffset}{0pt}}
+                {\setlength{\headingoffset}{%
+                    \minof{0pt}{\textwidth-\widthof{#1}}}}
+  \noindent\hspace{\headingoffset}
+  \parbox{\fullwidth}{#1}}
+%% This command overrides the font style, we restore the default
+\setsecheadstyle{\Large\bfseries\marginhead}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Side notes (in the outer margin)
