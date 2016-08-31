@@ -59,6 +59,9 @@ different person then.'
    - [[#read-autres-mécanismes-de-détournement][READ Autres mécanismes de détournement]]
    - [[#read-récapitulatif][READ Récapitulatif]]
  - [[#inprogress-variations-sur-un-interpréteur-de-lambda-calcul-extensible][INPROGRESS Variations sur un interpréteur de lambda-calcul extensible]]
+   - [[#programmation-structurée][Programmation structurée]]
+   - [[#programmation-littéraire][Programmation littéraire]]
+   - [[#oop][OOP]]
  - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
    - [[#read-ajouter-des-termes][READ Ajouter des termes]]
    - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
@@ -4925,7 +4928,7 @@ techniques du chapitre précédent peuvent s'appliquer pour détourner un
 interpréteur, et en particulier un interpréteur écrit en JavaScript.  Pour ce
 faire, on va illustrer ces techniques sur un interpréteur minimal.
 
-*** Programmation structurée
+** Programmation structurée
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 ~COMEFROM~ ensemble de cette façon:
 
@@ -5002,7 +5005,7 @@ interpréteur, et certainement pas en JavaScript.  Néanmoins, l'/idée/ de
 capturer le flot de contrôle et de retourner au code détourné n'est pas remise
 en cause.  Il faut juste trouver d'autres mécanismes pour la réaliser.
 
-*** Programmation littéraire
+** Programmation littéraire
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
 nommer des blocs de code pour les définir à un autre moment.
 
@@ -5317,7 +5320,7 @@ engendrer.  On peut imaginer avoir plusieurs points d'entrées, qui corresponden
 qu'il y a de points d'entrée.  Mais une fois que l'un de ces programme est
 exécuté, on ne peut plus changer le comportement de l'interprétation.
 
-*** OOP
+** OOP
 
 -----
 
