@@ -2588,9 +2588,11 @@ revanche, propose un nouveau paradigme.
 
 ** READ Modéliser le monde: la programmation par objets
 #+BEGIN_full-figure
-#+CAPTION: L'École d'Athènes. Raphaël, 1509--1510.
 [[file:img/scuola.jpg]]
 #+END_full-figure
+#+BEGIN_aside
+L'École d'Athènes. Raphaël, 1509--1510.
+#+END_aside
 
 *** Classes et héritage: Smalltalk
 :PROPERTIES:
@@ -3009,9 +3011,12 @@ langage.  Et ils sont sont aussi très utiles pour le détournement.
 :PROPERTIES:
 :CUSTOM_ID: metaobj
 :END:
-#+CAPTION: Le baron de Münchhausen évite la noyade par capillotraction.
-#+CAPTION: Gustave Doré, 1862.
+#+BEGIN_side-figure
 [[file:img/münchhausen.jpg]]
+
+Le baron de Münchhausen évite la noyade par capillotraction.  Gustave
+Doré, 1862.
+#+END_side-figure
 
 En programmation par objets, on cherche à établir une correspondance entre les
 objets que l'on modélise et les objets que l'on programme.  Dans la simulation
@@ -3024,11 +3029,6 @@ objets de la sémantique; on parle alors de /réflexion/.  La réflexion permet
 même à un programme d'altérer sa structure, ou de modifier la sémantique du
 langage, pendant qu'il s'exécute.  Cette adaptation dynamique offre de nouvelles
 façons de modifier et d'étendre des programmes.
-
-#+BEGIN_aside
-On peut parler ici plus précisément d'introspection structurelle (voir par
-exemple la nomenclature de Tanter [[cite:Tan-09][Tan-09]]).
-#+END_aside
 
 Un simple exemple de réflexion: être capable d'inspecter une classe à
 l'exécution, ainsi que ses méthodes et attributs.  L'API de réflexion du langage
@@ -3075,6 +3075,11 @@ class A {
 : public static void A.main(java.lang.String[])
 :
 : A.m2(3) = 6
+
+#+BEGIN_aside
+On peut parler ici plus précisément d'introspection structurelle (voir par
+exemple la nomenclature de Tanter [[cite:Tan-09][Tan-09]]).
+#+END_aside
 
 Ici on liste, à l'exécution, l'attribut ~n~ et les deux méthodes ~m1~ ~m2~ avec
 leurs signatures complètes.  On voit que l'API de réflexion réifie les objets de
@@ -3315,8 +3320,11 @@ envisageables.  Un autre bon candidat est la programmation par aspects.
 :PROPERTIES:
 :CUSTOM_ID: aop
 :END:
-#+CAPTION: Tapis turc "Holbein", fin du XVe siècle.
+#+BEGIN_side-figure
 [[file:img/rug.jpg]]
+
+Tapis turc "Holbein", fin du XVe siècle.
+#+END_side-figure
 
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
@@ -7565,16 +7573,18 @@ produire une image en invoquant ~dot~:
 $ ./njs -l scope -f tests/with.js | dot -Tsvg
 #+END_EXAMPLE
 
-#+CAPTION: Les flêches en pointillés indiquent les liens de prototype.  Les
-#+CAPTION: flêches solides sont des références.  On peut remarquer en haut à
-#+CAPTION: gauche les environnements, qui font référence aux objets créés par
-#+CAPTION: le code de l'exemple.
+#+BEGIN_side-figure
 [[file:img/env-with.svg]]
 
-Le rendu est un peu brouillon, mais toute l'information est là.  On peut y
-retrouver l'objet ~E~, l'objet d'activation de la FIA, l'environnement créé par
-~with~.  Et en faisant quelques simplifications, et en réorganisant les boîtes
-manuellement, on obtient les diagrammes du chapitre.
+Les flêches en pointillés indiquent les liens de prototype.  Les flêches solides
+sont des références.  On peut remarquer en haut à gauche les environnements, qui
+font référence aux objets créés par le code de l'exemple.
+#+END_side-figure
+
+Le rendu, visible en marge, est un peu brouillon, mais toute l'information est
+là.  On peut y retrouver l'objet ~E~, l'objet d'activation de la FIA,
+l'environnement créé par ~with~.  Et en faisant quelques simplifications, et en
+réorganisant les boîtes manuellement, on obtient les diagrammes du chapitre.
 
 Pour collecter les environnements, il suffit de se greffer dans la fonction
 ~execute~ de l'interpréteur, et de conserver les environnements dans un
@@ -7721,14 +7731,14 @@ proviennent de la version de développement de [[https://mxr.mozilla.org/mozilla
 exécutés par le script ~jstests.py~ développé par Mozilla.
 #+END_aside
 
-| Interpréteur                                     | Temps moyen (secondes) |
-|--------------------------------------------------+------------------------|
-| SpiderMonkey                                     | 89 (± 1)               |
-| Narcissus original                               | 1040 (± 1)             |
-| Narcissus avec ~with~                            | 1218 (± 10)            |
-| Narcissus et multi-facettes (Austin et Flanagan) | 1215 (± 2)             |
-| Narcissus et multi-facettes avec ~with~          | 1301 (± 1)             |
-|--------------------------------------------------+------------------------|
+| Interpréteur                            | Temps moyen (sec) |
+|-----------------------------------------+-------------------|
+| SpiderMonkey                            | 89 (± 1)          |
+| Narcissus original                      | 1040 (± 1)        |
+| Narcissus avec ~with~                   | 1218 (± 10)       |
+| Narcissus et multi-facettes [[cite:AF-12][AF-12]]       | 1215 (± 2)        |
+| Narcissus et multi-facettes avec ~with~ | 1301 (± 1)        |
+|-----------------------------------------+-------------------|
 
 #+BEGIN_aside
 En moyenne, un test prend donc environ 0.5 seconde à s'exécuter.  Comme
