@@ -13,13 +13,15 @@
 #+MACRO: adt type algébrique de données
 #+MACRO: br @@latex:\\@@ @@html:<br/>@@
 #+MACRO: etal /et al./
+#+MACRO: author @@html:<br>— $1@@@@latex:}{$1}@@
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
 
 #+TODO: UNWRITTEN(w) UNREAD INPROGRESS | READ
 
-#+BEGIN_QUOTE
+#+ATTR_LATEX: :options [Lewis Caroll, "Through the Looking Glass"]
+#+BEGIN_epig
 "I could tell you my adventures--beginning from this morning," said Alice a
 little timidly: "but it's no use going back to yesterday, because I was a
 different person then.'
@@ -28,8 +30,8 @@ different person then.'
 
 "No, no! The adventures first," said the Gryphon in an impatient tone:
 "explanations take such a dreadful time."
-— Through the Looking Glass, Lewis Caroll
-#+END_QUOTE
+@@html:<br>— Lewis Caroll, "Through the Looking Glass"@@
+#+END_epig
 
 * Contents                                                   :TOC@2:noexport:
  - [[#acknowledgements][Acknowledgements]]
@@ -2012,13 +2014,17 @@ changer plus facilement.
 :PROPERTIES:
 :CUSTOM_ID: dijkstra
 :END:
+#+ATTR_LATEX: :options [Donald Knuth]
 #+BEGIN_epig
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
 Japan, who cheerfully complained that he was always being eliminated.
-— Donald Knuth [[cite:Knu-74][Knu-74]]
+@@html:<br>— Donald Knuth@@
 #+END_epig
 
-#+CAPTION: Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.
+#+BEGIN_aside
+Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.
+#+END_aside
+
 #+ATTR_HTML: :title すみません、高橋さん。
 [[file:img/goto.jpg]]
 
@@ -2307,10 +2313,11 @@ façons d'aborder ce but.
 :PROPERTIES:
 :CUSTOM_ID: proglit
 :END:
-
+#+ATTR_LATEX: :options [Donald Knuth]
 #+BEGIN_epig
 [Literate programming] may be only for the subset of computer scientists who
-like to write and to explain what they are doing. — Donald Knuth [[cite:Knu-84][Knu-84]]
+like to write and to explain what they are doing.
+@@html:<br>— Donald Knuth@@
 #+END_epig
 
 La programmation structurée recommande une discipline de construction du
@@ -2589,14 +2596,15 @@ revanche, propose un nouveau paradigme.
 :PROPERTIES:
 :CUSTOM_ID: Smalltalk
 :END:
-#+BEGIN_epig
-Classification is the objectification of {{{emph(ness)}}}ness. — Dan
-Ingalls [[cite:Ing-81][Ing-81]]
-#+END_epig
+#+BEGIN_epigraphs
+@@latex:\qitem{%@@
+Classification is the objectification of {{{emph(ness)}}}ness.
+{{{author(Dan Ingalls)}}}
 
-#+BEGIN_epig
-Ah, voilà enfin le roi de la classe ! — José, /La Classe Américaine/ [[cite:HM-93][HM-93]]
-#+END_epig
+@@latex:\qitem{%@@
+Ah, voilà enfin le roi de la classe !
+{{{author(José\, "La Classe Américaine")}}}
+#+END_epigraphs
 
 C'est avec le langage Smalltalk qui débute la programmation par objets [[cite:Ing-78][Ing-78]]
 [[cite:Ing-81][Ing-81]] [[cite:Kay-93][Kay-93]].  Alan Kay, alors employé au laboratoire de recherche de Xerox à
@@ -4881,19 +4889,19 @@ pour détourner l'interpréteur Narcissus.
 :PROPERTIES:
 :CUSTOM_ID: variations
 :END:
-#+BEGIN_epig
+#+BEGIN_epigraphs
+@@latex:\qitem{%@@
 'When /I/ use a word,' Humpty Dumpty said in rather a scornful tone, 'it means
 just what I choose it to mean—neither more nor less.'
 
 'The question is,' said Alice, 'whether you /can/ make words mean so many
 different things.'
+{{{author(Lewis Caroll\, "Through the Looking Glass")}}}
 
-— Through the Looking Glass, Lewis Caroll
-
+@@latex:\qitem{%@@
 Obladi, Oblada
-
-— The Beatles
-#+END_epig
+{{{author(The Beatles)}}}
+#+END_epigraphs
 
 Dans ce chapitre, on s'intéresse spécifiquement à comprendre comment les
 techniques du chapitre précédent peuvent s'appliquer pour détourner un
@@ -6208,26 +6216,33 @@ détourner l'interpréteur Narcissus.
 :END:
 /Chapitre principalement tiré d'un papier rejeté à DLS'15 et à SAC'16 [[cite:KNS-15b][KNS-15b]]/.
 
-#+BEGIN_epig
+#+BEGIN_epigraphs
+@@latex:\qitem{%@@
 The whole purpose of this work is to be able to modify the original interpreter
 in the less possible intrusive way, and this appears to be the case, so I find
 this work interesting, and since it is self-contained and properly grounded into
-existing work, it is certainly worthy of publication. -- Relecteur DLS n°1
+existing work, it is certainly worthy of publication.
+{{{author(Relecteur DLS n°1)}}}
 
+@@latex:\qitem{%@@
 Readers not familiar with evaluation contexts and scoping will find that the
 paper provides a didactic introduction to the concepts, but familiarised readers
-will find the paper rather dull. -- Relecteur DLS n°2
+will find the paper rather dull.
+{{{author(Relecteur DLS n°2)}}}
 
+@@latex:\qitem{%@@
 The pattern is either elegant JavaScript hacking or severe abuse of
 modularity. I can't tell which! I guess I like it. It illustrates how using
 language constructs to implement your own module system, rather than having a
 built-in one, enables it to be modified to allow
-extensibility. -- Relecteur DLS n°3
+extensibility.
+{{{author(Relecteur DLS n°3)}}}
 
+@@latex:\qitem{%@@
 I like the simplicity of the approach and the clever use of the "with" statement
 semantics to achieve the dynamic extension of the scope from the outside code.
--- Relecteur SAC n°1
-#+END_epig
+{{{author(Relecteur SAC n°1)}}}
+#+END_epigraphs
 
 Nous avons vu dans l'étude de cas que Narcissus n'était pas étendu de façon
 modulaire.  Dans ce chapitre, on propose une façon simple d'étendre cet
@@ -8256,11 +8271,11 @@ d'appliquer la technique de ce chapitre.
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
+#+ATTR_LATEX: :options [Bob Dylan, "Blowing in the Wind"]
 #+BEGIN_epig
 And how many times must a man look up {{{br}}}
 Before he can see the sky?
-
-— "Blowing in the Wind", Bob Dylan
+@@html:<br>— Bob Dylan, "Blowing in the Wind"@@
 #+END_epig
 
 Nous avons décrit le problème que nous nous sommes posés: instrumenter et
