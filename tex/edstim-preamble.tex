@@ -1,0 +1,276 @@
+\definecolor{@verticalgreen}{RGB}{238, 238, 238}
+\definecolor{@horizontalgray}{gray}{0.97265}
+\definecolor{@textgray}{gray}{1}
+\definecolor{@bandeaucolor}{RGB}{190, 190, 190}
+\definecolor{@titlecolor}{RGB}{116, 116, 116}
+\newcommand{\Hugecover}{\fontsize{25}{30}\selectfont}
+\newcommand{\hugecover}{\fontsize{25}{30}\selectfont}
+\newcommand{\LARGEcover}{\fontsize{20}{25}\selectfont}
+\newcommand{\Largecover}{\fontsize{17}{22}\selectfont}
+\newcommand{\normalsizecover}{\fontsize{12}{14.5}\selectfont}
+\newcommand{\smallcover}{\fontsize{11}{13.6}\selectfont}
+\newcommand{\footnotesizecover}{\fontsize{10}{12}\selectfont}
+\newcommand{\scriptsizecover}{\fontsize{8}{9.5}\selectfont}
+\newcommand{\tinysizecover}{\fontsize{6}{7}\selectfont}
+
+\DisemulatePackage{setspace}
+\usepackage{setspace}
+
+\makeatletter
+\newcommand{\@drawbackground}
+   { % Horizontal grey-green box
+   \noindent\raisebox{0pt}[0pt][0pt]
+                     {\colorbox{@verticalgreen}
+                               {\makebox[0.5\textwidth]
+                                        {\raisebox{-\textheight}
+                                                  {~}}}}
+
+   \vspace{4\baselineskip}
+
+   {
+   \noindent\hspace{0.45\textwidth}
+            \raisebox{0pt}[0pt][0pt]
+                     {\color{@horizontalgray}
+                      \rule{0.55\textwidth}
+                           {2.5\baselineskip}}
+            \hspace{-0.45\textwidth}
+   }
+
+   \sffamily
+   \fontsize{12pt}{14pt}
+   \selectfont
+
+   \noindent\makebox[0.55\textwidth][r]
+                    {\Hugecover\textbf{Thèse de Doctorat}}
+
+   {
+   \noindent\color{@bandeaucolor}
+            \rule{0.55\textwidth}
+                 {2.5\baselineskip}
+            \color{@horizontalgray}
+            \rule{0.45\textwidth}
+                 {2.5\baselineskip}
+   }
+
+   \vspace{3\baselineskip}
+
+   {
+   \noindent\hspace{0.45\textwidth}
+            \raisebox{0pt}[0pt][0pt]
+                     {\color{@horizontalgray}
+                      \rule{0.55\textwidth}
+                           {2.5\baselineskip}}
+            \hspace{-0.45\textwidth}
+   }
+
+   \vspace{-15\baselineskip}
+   \includegraphics[width=4.5cm]{img/LUNAM-CUE}
+   \hfill
+   \hfill
+   \hfill
+   \ifx\@cosupervisingforeigninstitution\@empty
+   \else
+   %    \raisebox{\@cosupervisingforeigninstitutionlogovoffset}[0pt][0pt]{\includegraphics[width=\@cosupervisingforeigninstitutionlogowidth]{logos/\@cosupervisingforeigninstitutionlogo}}~
+   %    \hfill
+   % \fi
+   % \ifx\@coinstitution\@empty
+   % \else
+   % \global\let\@coinstitutionlogovoffset{10pt}
+   % \raisebox{\@coinstitutionlogovoffset}[0pt][0pt]{\includegraphics[width=\@coinstitutionlogowidth]{logos/MinesNantes}}~
+   % \hfill
+   % \fi
+   \raisebox{0pt}[0pt][0pt]{\includegraphics[width=2.4cm]{img/MinesNantes}}~
+   \vspace{11\baselineskip}
+ }
+\makeatother
+
+\makeatletter
+\newcommand{\@committee}{%
+  \noindent
+  \begin{tabular}{ll}
+    \footnotesizecover%
+    Rapporteurs  &  M. Christophe \textsc{Dony}, professeur, université de Montpellier \\
+                 &  M. Stéphane \textsc{Ducasse}, directeur de recherche, Inria Lille \\
+    Examinateur  &  M. Guillaume \textsc{Hiet}, maître asssistant, Centralesupélec \\
+    Co-encadrant de thèse & M. Jacques \textsc{Noyé}, maître assistant, Mines Nantes\\
+    Directeur de thèse & M. Mario \textsc{Südholt}, professeur, Mines Nantes
+   \end{tabular}}
+\makeatother
+
+
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% R'esum'e en franc,ais
+%
+
+\newsavebox{\@resumeBox}
+\newbox{\@resumeBoxGlobal}
+
+\newenvironment{resume}
+   {
+   \newgeometry{margin=1.5cm}
+   \begin{lrbox}{\@resumeBox}%
+      \smallcover\sffamily
+      \begin{minipage}{0.47\textwidth}
+         \begin{flushleft}
+            \selectlanguage{french}
+            \textbf{R\'esum\'e}\par
+   }
+   {
+         \end{flushleft}
+      \end{minipage}
+   \end{lrbox}
+   \restoregeometry
+   \global\setbox\@resumeBoxGlobal=\vbox{\copy\@resumeBox}
+   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% R'esum'e en anglais
+%
+
+\newsavebox{\@abstractBox}
+\newbox{\@abstractBoxGlobal}
+
+\newenvironment{abstract_}
+   {
+   \newgeometry{margin=1.5cm}
+   \begin{lrbox}{\@abstractBox}%
+      \smallcover\sffamily
+      \begin{minipage}{0.47\textwidth}
+         \begin{flushleft}
+            \selectlanguage{english}
+            \textbf{Abstract}\par
+   }
+   {
+         \end{flushleft}
+      \end{minipage}
+   \end{lrbox}
+   \restoregeometry
+   \global\setbox\@abstractBoxGlobal=\vbox{\copy\@abstractBox}
+   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mots cl'es en franc,ais
+%
+
+\newsavebox{\@keywordsBox}
+\newbox{\@keywordsBoxGlobal}
+
+\newenvironment{keywords}
+   {
+   \newgeometry{margin=1.5cm}
+   \begin{lrbox}{\@keywordsBox}%
+      \smallcover\sffamily
+      \begin{minipage}{0.47\textwidth}
+         \begin{flushleft}
+            \selectlanguage{english}
+            \textbf{Key Words}\par
+   }
+   {
+         \end{flushleft}
+      \end{minipage}
+   \end{lrbox}
+   \restoregeometry
+   \global\setbox\@keywordsBoxGlobal=\vbox{\copy\@keywordsBox}
+   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mots cl'es en anglais
+%
+
+\newsavebox{\@motsclesBox}
+\newbox{\@motsclesBoxGlobal}
+
+\newenvironment{motscles}
+   {
+   \newgeometry{margin=1.5cm}
+   \begin{lrbox}{\@motsclesBox}%
+      \smallcover\sffamily
+      \begin{minipage}{0.47\textwidth}
+         \begin{flushleft}
+            \selectlanguage{french}
+            \textbf{Mots cl\'es}\par
+   }
+   {
+         \end{flushleft}
+      \end{minipage}
+   \end{lrbox}
+   \restoregeometry
+   \global\setbox\@motsclesBoxGlobal=\vbox{\copy\@motsclesBox}
+   }
+
+\global\newcount\@startingPage
+
+\newcommand{\makecover}{%
+   \singlespacing
+   \cleardoublepage % go to odd page
+   \thispagestyle{empty} % no numbering
+   \phantom{placeholder} % doesn't appear on page
+   \newpage % on even page
+   \newgeometry{margin=1.5cm}
+   \thispagestyle{empty} % no numbering
+   \@startingPage\thepage\relax
+      {
+      \@drawbackground
+      \vspace{-5.5\baselineskip}
+      \sffamily
+      \fontsize{12pt}{14pt}
+      \selectfont
+      \begin{quote}
+         \begin{flushleft}
+            \textbf{\Largecover Florent \textsc{Marchand de Kerchove}}
+         \end{flushleft}
+
+         \begin{flushleft}
+            \textbf{Étendre des interpréteurs par détournement}
+         \end{flushleft}
+         \begin{flushleft}
+            \textbf{Extending interpreters by diversion}
+         \end{flushleft}
+      \end{quote}
+
+      \vfill
+
+      \noindent
+      \hfill\parbox[t][][b]
+            {0.47\textwidth}
+            {\makebox[0.47\textwidth]{\usebox{\@resumeBoxGlobal}}}
+      \hfill
+      \hfill\parbox[t][][b]
+            {0.47\textwidth}
+            {\makebox[0.47\textwidth]{\usebox{\@abstractBoxGlobal}}}
+      \hfill
+
+      \vfill
+
+      \noindent
+      \hfill\parbox[t][][b]
+            {0.47\textwidth}
+            {\makebox[0.47\textwidth]{\usebox{\@motsclesBoxGlobal}}}
+      \hfill
+      \hfill\parbox[t][][b]
+            {0.47\textwidth}
+            {\makebox[0.47\textwidth]{\usebox{\@keywordsBoxGlobal}}}
+      \hfill
+
+      \vfill
+
+      \hspace{0.45\textwidth}\raisebox{-2.2\baselineskip}
+                                      [0pt][0pt]
+                                      {\colorbox{@bandeaucolor}
+                                                {\parbox[s]
+                                                        [2\baselineskip]
+                                                        [c]
+                                                        {0.55\textwidth}
+                                                        {~\hfill
+                                                         \textcolor{white}
+                                                                   {L'UNIVERSIT\'E NANTES ANGERS LE MANS}
+                                                         \hfill~}}}%
+      }%
+   \restoregeometry%
+} % \makecover
+\makeatother
+
+\AtEndDocument{\makecover}

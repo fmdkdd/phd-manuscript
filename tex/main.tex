@@ -7,56 +7,23 @@
 \title{\titlefr}
 \author{fmdkdd}
 
+%% Setup title, abstract, keywords used for the front and back covers.
+\input{edstim-preamble}
+
 \begin{document}
+
+%% Mandatory cover.  Not my fault!
+\input{edstim-cover}
+
 %% Background image, per StackOverflow wisdom:
 %% https://tex.stackexchange.com/questions/46280/how-to-create-a-background-image-on-title-page-with-latex
-\AddToShipoutPicture*{\BackgroundPic}
+%% \AddToShipoutPicture*{\BackgroundPic}
 
 %% Insert title, TOC, and acknowledgments.  The Org document must not insert
 %% title or TOC itself, otherwise they will appear before the frontmatter
 %% command.
 
 \frontmatter
-
-\begin{titlingpage}
-\raggedright
-\newgeometry{left=2cm,right=6cm,top=3cm,bottom=2cm}
-\sffamily
-
-{\noindent\Huge\titlefr}
-
-\vspace{1.5cm}
-
-\LARGE
-\noindent
-Florent \textsc{Marchand de Kerchove}
-
-\vfill
-
-{\rmfamily\normalsize
-\itshape
-Thèse de doctorat présentée en vue de l'obtention du
-grade de docteur de l'université de Nantes
-sous le label de l'université de Nantes, Angers, Le Mans.
-
-\vspace{1em}
-École doctorale: sciences et technologies de l'information et mathématiques\\
-Discipline: informatique, section CNU 27\\
-Unité de recherche: laboratoire d'informatique de Nantes-Atlantique (LINA)\\
-
-\vspace{1em}
-Soutenue le 27 octobre 2016, devant le jury composé de:
-
-\vspace{0.5em}
-M. Hulu Berlu, professeur, Tartifrice, rapporteur;\\
-M. Ali Barli, professeur, Hamilcar, rapporteur;\\
-M. Po Nan, professeur, Asifond, examinateur;\\
-M. Jacques Noyé, maître-assistant, Mines Nantes, encadrant de thèse;\\
-M. Mario Südholt, professeur, Mines Nantes, directeur de thèse.\\
-}
-\restoregeometry
-\end{titlingpage}
-
 \newgeometry{left=3cm,right=4.4cm}
 \pagestyle{empty}
 \tableofcontents*
@@ -82,38 +49,10 @@ M. Mario Südholt, professeur, Mines Nantes, directeur de thèse.\\
 \restoregeometry
 
 %% Back cover
-\newcommand{\heading}[1]{{\sffamily\textbf{#1}\vspace{4pt}}}
+%% Extensibilité, modularité, interpréteurs, instrumentation, patrons de
+%% conception, programmation par objets, programmation par aspects, JavaScript,
+%% langages de programmation.
 
-\pagestyle{empty}
-\newgeometry{left=1cm,right=1cm,top=2cm}
-\begin{flushright}
-\sffamily\LARGE\titleen
-\end{flushright}
-\vfill
-\noindent
-\begin{minipage}[t]{9cm}
-\heading{Résumé}\\
-\input{abstract-fr}
-\end{minipage}%
-\hspace{1cm}%
-\begin{minipage}[t]{9cm}
-\heading{Abstract}\\
-\input{abstract-en}
-\end{minipage}
-
-\vfill
-\noindent
-\begin{minipage}[t]{9cm}
-\heading{Mots-clés}\\
-Extensibilité, modularité, interpréteurs, instrumentation, patrons de
-conception, programmation par objets, programmation par aspects, JavaScript,
-langages de programmation.
-\end{minipage}%
-\hspace{1cm}
-\begin{minipage}[t]{9cm}
-\heading{Keywords}\\
-Extensibility, modularity, interpreters, instrumentation, Design Patterns,
-Object-Oriented Programming, Aspect-Oriented Programming, JavaScript,
-programming languages.
-\end{minipage}
+%% Extensibility, modularity, interpreters, instrumentation, Design Patterns,
+%% Object-Oriented Programming, Aspect-Oriented Programming, JavaScript,
 \end{document}

@@ -24,6 +24,8 @@ latex: dirs $(PDF_OUT)/main.pdf
 $(PDF_OUT)/main.pdf: refs.bib \
                      $(TEX)/main.tex \
                      $(TEX)/preamble.tex \
+                     $(TEX)/edstim-preamble.tex \
+                     $(TEX)/edstim-cover.tex \
 	                   $(SVG_DST) \
                      $(OUT)/acks.tex \
                      $(OUT)/abstract-en.tex \
@@ -108,3 +110,7 @@ clean:
              $(OUT)/manuscript.tex \
              $(OUT)/acks.tex \
              $(IMG_OUT)/*.pdf
+
+# Local Variables:
+# mode: makefile
+# End:

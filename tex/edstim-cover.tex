@@ -1,0 +1,78 @@
+\newgeometry{margin=1.5cm}
+\begin{titlingpage}
+  {
+    \singlespacing
+    \makeatletter
+    \@drawbackground
+    \fontsize{12pt}{14pt}
+    \sffamily
+    \selectfont
+
+    \vspace{-3.25\baselineskip}
+    \hspace{0.425\textwidth}
+    \raisebox{0pt}
+    [0pt]
+    [2\baselineskip]
+    {\parbox[t][][c]
+      {0.7\textwidth}
+      {\raggedright{\begin{spacing}{0.75}\LARGEcover{Florent \textsc{Marchand de Kerchove}}\end{spacing}}}}
+    %% {\parbox[t][][c]
+    %%   {0.7\textwidth}
+    %%   {\raggedright{\begin{spacing}{0.75}\LARGEcover Florent \textsc{Marchand de Kerchove}}\end{spacing}}
+
+    \smallcover
+    \vspace{\baselineskip}
+
+    \noindent{Mémoire présenté en vue de l'obtention du}\par
+    \noindent{grade de docteur
+        de \parbox[t]{0.79\textwidth}{l'école nationale supérieure
+          des Mines de Nantes}}\par
+    %% \noindent\textsl{\textbf{\phantom{grade de }Label européen}}\par
+    \noindent{sous le label de l'universit\'e de Nantes Angers Le Mans}\par
+
+    \vspace{\baselineskip}
+
+    \footnotesizecover
+    \noindent{École doctorale : sciences et technologies dE
+      l'information, et mathématiques}\par
+
+    \vspace{\baselineskip}
+
+    \footnotesizecover
+    \noindent{Discipline : informatique, section CNU 27}\par
+    \noindent{Unité de recherche
+      : \parbox[t]{0.8\textwidth}{laboratoire d'informatique de
+        Nantes-Atlantique (LINA)}}\par
+
+    \vspace{\baselineskip}
+
+    \footnotesizecover
+    \noindent{Soutenue le 18 novembre 2016}\par
+    \noindent{Thèse n\textdegree\ : ???}\par
+
+    \vfill
+
+    \hfill
+    \parbox{0.75\textwidth}
+    {\begin{flushright}
+        \Largecover{\textbf{Étendre des interpréteurs par
+    détournement}}\\
+      \end{flushright}}
+
+    \vfill
+    \vfill
+    \vfill
+
+    \newsavebox{\@committeebox}
+    \sbox{\@committeebox}{\@committee}
+    \newlength{\committeeboxwidth}
+    \settowidth{\committeeboxwidth}{\usebox{\@committeebox}}
+    \begin{center}
+      {\textbf{\smallcover JURY}}\par
+      \vspace{1em}
+      {\centering\usebox{\@committeebox}}%
+    \end{center}
+  }
+\end{titlingpage}%
+\makeatother
+\restoregeometry
