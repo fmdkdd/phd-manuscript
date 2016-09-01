@@ -1951,7 +1951,8 @@ programme:
 
 # Hello world in Malbolge
 #+BEGIN_EXAMPLE
-(=<`#9]~6ZY32Vx/4Rs+0No-&Jk)"Fh}|Bcy?`=*z]Kw%oG4UUS0/@-ejc(:'8dc
+(=<`#9]~6ZY32Vx/4Rs+0No-&Jk)"Fh}|Bcy?`=*z]Kw%oG4UUS0
+/@-ejc(:'8dc
 #+END_EXAMPLE
 
 Mais je ne vous dis pas de quel langage il s'agit.  Que fait-il?
@@ -3977,7 +3978,8 @@ langage aussi simple que celui-ci exhibe cette récursion.
 
 On peut maintenant évaluer l'expression 2 + 5 * 3:
 
-: > eval (Plus (Constant 2) (Mult (Constant 5) (Constant 3)))
+: > eval (Plus (Constant 2)
+:              (Mult (Constant 5) (Constant 3)))
 : 17
 
 #+BEGIN_aside
@@ -4003,7 +4005,8 @@ pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
 
 Si on affiche ainsi l'arbre syntaxique de l'expression 2 + 5 * 3, on obtient:
 
-: > pp (Plus (Constant 2) (Mult (Constant 5) (Constant 3)))
+: > pp (Plus (Constant 2)
+:            (Mult (Constant 5) (Constant 3)))
 : 2 + 5 * 3
 
 L'implémentation de l'affichage a la même structure que de l'implémentation de
@@ -4098,7 +4101,7 @@ est de suivre le patron Interpréteur [[cite:GHJ+94][GHJ+94]].  Dans ce patron, 
 langage est représenté par une classe, et chaque classe possède une méthode par
 opération.
 
-#+BEGIN_SRC java :classname Test :results verbatim :exports both :eval no-export
+#+BEGIN_SRC java :classname Test :results verbatim :exports code :eval no-export
 abstract class Term { abstract int eval(); }
 
 class Constant extends Term {
@@ -4122,8 +4125,9 @@ class Plus extends Term {
 
 class Test {
   public static void main(String[] args) {
-    Term e1 = new Plus(new Constant(1), new Constant(2));
-    System.out.println(e1.eval());
+    Term e1 = new Plus(new Constant(1),
+                       new Constant(2));
+    System.out.println(e1.eval()); //: 3
   }
 }
 #+END_SRC
@@ -4309,7 +4313,8 @@ constructeur ~Either~ en Haskell).
 
 #+BEGIN_SRC haskell
 e1 :: Term (Constant :+: Plus)
-e1 = plus (plus (constant 1) (constant 2)) (constant 3)
+e1 = plus (plus (constant 1) (constant 2))
+          (constant 3)
 #+END_SRC
 
 Précédemment, le type était lié à l'arbre syntaxique de l'expression.  Ici, ce
@@ -4330,18 +4335,23 @@ visiteur, les classes qui représentent les termes n'ont plus qu'une seule
 méthode: ~accept(Visitor)~:
 
 #+BEGIN_SRC java
-abstract class Term { abstract <T> T accept(Visitor<T> v); }
+abstract class Term {
+  abstract <T> T accept(Visitor<T> v); }
 
 class Constant extends Term {
   int n;
   Constant(int n) { this.n = n; }
-  <T> T accept(Visitor<T> v) { return v.forConstant(this); }
+  <T> T accept(Visitor<T> v) {
+    return v.forConstant(this); }
 }
 
 class Plus extends Term {
   Term a, b;
-  Plus(Term a, Term b) { this.a = a; this.b = b; }
-  <T> T accept(Visitor<T> v) { return v.forPlus(this); }
+  Plus(Term a, Term b) {
+    this.a = a; this.b = b; }
+
+  <T> T accept(Visitor<T> v) {
+    return v.forPlus(this); }
 }
 #+END_SRC
 
@@ -4424,7 +4434,9 @@ On ne modifie par ~Visitor~; on ajoute seulement une interface pour ~Mult~.
 De même, pour étendre l'opération ~Eval~:
 
 #+BEGIN_SRC java
-class EvalForMult extends Eval implements VisitorForMult<Integer> {
+class EvalForMult extends Eval
+  implements VisitorForMult<Integer>
+{
   public Integer forMult(Mult m) {
     return m.a.accept(this) * m.b.accept(this);
   }
@@ -4774,7 +4786,7 @@ Un calcul coûteux qui retourne un entier, mais retardé par une fonction, peut
 #+END_aside
 
 #+BEGIN_SRC js
-var v = delay(() => large_computation_returns_an_int())
+var v = delay(() => large_computation_to_int())
 return Math.max(v, threshold)
 #+END_SRC
 
@@ -5155,19 +5167,19 @@ Le bloc ~Y~ est défini ailleurs dans le document littéraire:
 
 : <<Y>>= ...
 
-Et on dispose d'une définition alternative de ~Y~, ~Y'~:
+Et on dispose d'une définition alternative de ~Y~, ~Y2~:
 
-: <<Y'>>= ...
+: <<Y2>>= ...
 
 Le problème est que l'on souhaite pouvoir dire, pendant l'entrelacement du bloc
-~X~, d'utiliser soit ~Y~ soit ~Y'~.  Ce n'est pas possible directement en noweb.
+~X~, d'utiliser soit ~Y~ soit ~Y2~.  Ce n'est pas possible directement en noweb.
 
 On pourrait imaginer une extension.  Par exemple, dire:
 
-: <<X with Y=Y'>>
+: <<X with Y=Y2>>
 
 pour signifier que l'on souhaite inclure le contenu du bloc ~X~, mais utiliser
-le contenu du bloc ~Y'~ à chaque référence faite au bloc ~Y~.  De cette façon,
+le contenu du bloc ~Y2~ à chaque référence faite au bloc ~Y~.  De cette façon,
 on peut facilement modifier le contenu du bloc ~X~ lors de son inclusion, sans
 avoir à toucher sa définition.  Donc, de le détourner.
 
@@ -5710,7 +5722,9 @@ var show = function(base) {                       (ref:foal-ex4)
     show() { return this.n.toString() }}
 
   var plus = {__proto__: base.plus,               (ref:foal-ex6)
-    show() { return this.l.show() + '+' + this.r.show() }}
+    show() {
+      return this.l.show() + '+' + this.r.show()
+    }}
 
   return {__proto__: base, num, plus}             (ref:foal-ex7)
 }
@@ -5769,7 +5783,7 @@ base:
 
 mais la définition de ~s.plus.show~ implique en réalité le type:
 
-: s.plus.new : Term with Show -> Term with Show -> Term with Show
+: Term with Show -> Term with Show -> Term with Show
 
 où ~with Show~ indique qu'il s'agit d'un terme qui supporte l'opération ~show~.
 
@@ -5960,10 +5974,14 @@ var state = function(base) {
   var count = 0
 
   var num = {__proto__: base.num,
-    eval() { count++; return base.num.eval.call(this) }}
+    eval() {
+      count++
+      return base.num.eval.call(this) }}
 
   var plus = {__proto__: base.plus,
-    eval() { count++; return base.plus.eval.call(this) }}
+    eval() {
+      count++
+      return base.plus.eval.call(this) }}
 
   var getCount = function() { return count }
 
@@ -6214,7 +6232,7 @@ directement: ils ont déjà été utilisés à la construction ligne [[(foal-ex1
 On peut simuler une réutilisation du même arbre syntaxique; il suffit d'en faire
 une fonction:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js -n -r
 var p1 = function(m = {}) {
   with (m) {
     return plus.new(num.new(1), num.new(2))      (ref:foal-ex15)
@@ -6771,7 +6789,8 @@ var m = (function() { ... }())
 
 m.g(0) //: 1
 
-var e1 = { a:2, f: function(x) { return x + 2 * m.E.a }}
+var e1 = { a:2, f: function(x) {
+  return x + 2 * m.E.a }}
 pushEnv(e1, m.E)                                          (ref:ex6-push1)
 m.g(0) //: 4
 
@@ -7013,7 +7032,7 @@ var m = (function(){
     function g(x) { return f(x) }
 
     Object.setPrototypeOf(E,
-      { a: a, f: f, g: g }                       (ref:ex9-parent)
+      { a: a, f: f, g: g }               (ref:ex9-parent)
     )
     return { g: g, E: E }
   }
@@ -7021,7 +7040,8 @@ var m = (function(){
 
 m.g(0) //: 1
 
-m.E.f = function(x) { return x + 2 * m.E.a }     (ref:ex9-f)
+m.E.f = function(x) {                    (ref:ex9-f)
+  return x + 2 * m.E.a }
 m.g(0) //: 2
 
 m.E.a = 2
@@ -7078,7 +7098,8 @@ dynamiquement.
 var m = (function(){ ... }())
 
 function pushEnv(e, head) {
-  Object.setPrototypeOf(e, Object.getPrototypeOf(head))
+  Object.setPrototypeOf(
+    e, Object.getPrototypeOf(head))
   Object.setPrototypeOf(head, e)
 }
 
@@ -7088,14 +7109,16 @@ function removeEnv(e, head) {
     head = Object.getPrototypeOf(head)
 
   if (Object.getPrototypeOf(head) === e) {
-    Object.setPrototypeOf(head, Object.getPrototypeOf(e))
+    Object.setPrototypeOf(
+      head, Object.getPrototypeOf(e))
     Object.setPrototypeOf(e, null)
   }
 }
 
 m.g(0) //: 1
 
-var e1 = { a: 2, f: function(x) { return x + 2 * m.E.a }}
+var e1 = { a: 2, f: function(x) {
+  return x + 2 * m.E.a }}
 pushEnv(e1, m.E)
 m.g(0) //: 4
 
@@ -7224,10 +7247,13 @@ var EX = N.execute
 function execute(n.x) {
   switch (n.type) {
     case IF:
-      var cond = N.getValue(N.execute(n.condition, x), x.pc)
+      var cond = N.getValue(
+        N.execute(n.condition, x), x.pc)
       evaluateEach(cond, function(v, x) {
-        if (v) N.execute(n.thenPart, x)
-        else if (n.elsePart) N.execute(n.elsePart, x)
+        if (v)
+          N.execute(n.thenPart, x)
+        else if (n.elsePart)
+          N.execute(n.elsePart, x)
       }, x)
     break
 
@@ -7482,11 +7508,12 @@ de l'objet ~FunctionObject~.  On remplace la fonction ~__call__~ par notre
 propre version, qui exécute l'algorithme de FlowR.  Voici notre version:
 
 #+BEGIN_SRC js
-function flowrCall(__call__, receiver, args, caller) {
-
+function flowrCall(__call__, receiver, args, caller)
+{
   // [...] check send labels
 
-  let ret = __call__.call(this, receiver, args, caller);
+  let ret = __call__.call(this, receiver,
+                          args, caller);
 
   // [...] propagate labels to return value
 
@@ -7636,8 +7663,10 @@ function harvestScopeObject(n, x) {
 }
 
 i13n.pushLayer(_env, {
-  execute: i13n.before(_env.execute, harvestScopeObject),
-  globalBase: i13n.delegate(_env.globalBase, {printScope}),
+  execute: i13n.before(_env.execute,
+                       harvestScopeObject),
+  globalBase: i13n.delegate(_env.globalBase,
+                            {printScope}),
 });
 #+END_SRC
 
@@ -8518,7 +8547,9 @@ var show = function(base) {
     show() { return this.n.toString() }}
 
   var plus = {__proto__: base.plus,
-    show() { return this.l.show() + '+' + this.r.show() }}
+    show() {
+      return this.l.show() + '+' + this.r.show()
+    }}
 
   return {__proto__: base, num, plus}
 }
@@ -8534,11 +8565,13 @@ s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
 // and `eval` is still supported
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3
 
-// But wait, now we have a type problem if we are not careful
+// But wait, now we have a type problem if
+// we are not careful
 s.plus.new(num.new(1), s.num.new(2)).show()
 //! TypeError: this.l.show is not a function
 
-// We can force the creation of expressions that support `show`
+// We can force the creation of
+// expressions that support `show`
 with (show({num,plus})) {
   plus.new(num.new(1), num.new(2)).show() //: "1+2"
 }
@@ -8548,8 +8581,8 @@ with (show({num,plus})) {
   num.new(1).show() //: "1"
 }(show({num,plus})))
 
-// but that requires stating explicitly what terms we want
-// `with is more convenient
+// but that requires stating explicitly what
+// terms we want. `with is more convenient
 
 // Now we modify `eval` with `double`
 num.eval = function() { return this.n * 2 }
@@ -8564,7 +8597,9 @@ num.eval = function() { return this.n }
 
 // Alternate version: reuse the base `eval`
 ;(function(previous_eval) {
-  num.eval = function() { return previous_eval.call(this) * 2 }
+  num.eval = function() {
+    return previous_eval.call(this) * 2
+  }
 }(num.eval))
 
 num.new(1).eval() //: 2
