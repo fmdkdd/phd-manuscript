@@ -42,21 +42,28 @@ Object-Oriented Programming, Aspect-Oriented Programming, JavaScript
 %% command.
 
 \frontmatter
-\newgeometry{left=3cm,right=4.4cm}
 \pagestyle{empty}
-\tableofcontents*
-\clearpage
-\restoregeometry
 
 %% \chapter*{Remerciements}
 %% %% Fix heading mark showing “Contents”
 %% %% as suggested here:
 %% %% https://en.wikibooks.org/wiki/LaTeX/Document_Structure#The_document_environment
 %% \markboth{\MakeUppercase{Remerciements}}{}
+%% \cleardoublepage
+%% \section*{Acknowledgements}
 %% \input{acks}
 
-\pagestyle{headings}
+\cleardoublepage
+\section*{Résumé}
+\input{abstract-fr}
+
+\newgeometry{left=3cm,right=4.4cm,textheight=636pt}
+\clearpage
+\tableofcontents*
+\restoregeometry
+
 \mainmatter
+\pagestyle{headings}
 \input{manuscript}
 
 %% Back matter for bibliography, eventual index.
