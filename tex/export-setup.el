@@ -404,7 +404,7 @@ information."
     (when (org-string-nw-p (org-element-property :value example-block))
       (org-latex--wrap-label
        example-block
-       (format "\\lstset{language=none,label= ,caption= }
+       (format "\\lstset{language=none,label= ,caption= ,numbers=none}
 \\begin{lstlisting}\n%s\\end{lstlisting}"
                (org-export-format-code-default example-block info))
        info)))
@@ -416,7 +416,7 @@ information."
 CONTENTS is nil.  INFO is a plist holding contextual information."
     (org-latex--wrap-label
      fixed-width
-     (format "\\lstset{language=none,label= ,caption= }
+     (format "\\lstset{language=none,label= ,caption= ,numbers=none}
 \\begin{lstlisting}\n%s\\end{lstlisting}"
              (org-remove-indentation
               (org-element-property :value fixed-width)))
