@@ -2068,7 +2068,7 @@ comprendre le processus engendré par le programme, lorsque l'on écrit et relit
 le code, il faut que le programme reflète au mieux ce processus.  Dijkstra
 cherche donc à établir une correspondance claire entre les instructions
 exécutées par la machine (la dimension temporelle) et les instructions dictées
-par le programme (la dimension spatiale).  Et pour lui, ~goto~ est une
+par le programme (la dimension spatiale).  Et pour lui, ~GOTO~ est une
 construction qui va à l'encontre de cette correspondance.
 
 #+ATTR_HTML: :style margin-top:-8rem
@@ -2113,7 +2113,7 @@ dans ce système de coordonnées.  Et à un point d'exécution du processus on p
 rattacher un invariant, ce qui permet de s'assurer de la correction du
 programme.
 
-Et c'est là que ~goto~ pose problème.  En utilisant un ~goto~, le processus peut
+Et c'est là que ~GOTO~ pose problème.  En utilisant un ~GOTO~, le processus peut
 continuer l'exécution vers n'importe quelle ligne du programme: même au beau
 milieu d'une procédure, ou d'une boucle.  Le système de coordonnée n'est plus
 suffisant pour connaître avec certitude l'état du processus, les valeurs des
@@ -2122,13 +2122,13 @@ emprunté par le processus.  Mais ce n'est plus un système de coordonnées: on 
 peut plus raisonner /localement/ dans une boucle ou une procédure, il faut
 considérer l'intégralité du programme.
 
-C'est pourquoi, d'après Dijkstra, ~goto~ est une construction qui permet trop
+C'est pourquoi, d'après Dijkstra, ~GOTO~ est une construction qui permet trop
 facilement de transformer le programme en véritable labyrinthe; d'obscurcir la
 correspondance entre le programme et le processus.  C'est une construction qui
 va à l'encontre du but qu'il a énoncé en commençant la lettre.
 
-La programmation structurée ne se réduit pas à l'abolition des ~goto~ dans un
-programme.  Au contraire, se concentrer sur le ~goto~ serait passer complètement
+La programmation structurée ne se réduit pas à l'abolition des ~GOTO~ dans un
+programme.  Au contraire, se concentrer sur le ~GOTO~ serait passer complètement
 à côté du message initial; Knuth le remarque très justement [[cite:Knu-74][Knu-74]]:
 
 #+BEGIN_QUOTE
@@ -2184,7 +2184,7 @@ implications.
 La programmation structurée prône donc l'utilisation des langages qui
 maintiennent le système implicite de coordonnés de Dijkstra.  Des langages comme
 ALGOL et Pascal, dans lesquels les procédures n'ont qu'un seul point d'entrée et
-un seul point de sortie, et où les ~goto~ et autres sauts arbitraires sont
+un seul point de sortie, et où les ~GOTO~ et autres sauts arbitraires sont
 proscrits.
 
 Seulement, en voulant reléguer l'efficacité à la seconde place, et avec elle les
@@ -2192,7 +2192,7 @@ langages et constructions non structurés, on perd aussi en flexibilité.
 L'assembleur est un langage malléable, qui offre notamment la possibilité de
 changer le programme chargé en mémoire pendant son exécution (/self-modifying
 code/).  Modifier le code du programme de cette façon va à l'encontre des
-principes de la programmation structurée.  De même, le ~goto~ décrié par
+principes de la programmation structurée.  De même, le ~GOTO~ décrié par
 Dijkstra a des avantages qui ne sont pas couverts par les constructions
 de boucles usuelles [[cite:Knu-74][Knu-74]].
 
@@ -2219,7 +2219,7 @@ Autre exemple: le ~COMEFROM~ [[cite:Cla-73][Cla-73]].  Le ~COMEFROM~ est le dual
 Dans cet exemple tiré de [[cite:Cla-73][Cla-73]], les lignes exécutées sont, dans l'ordre: 10,
 13, 20, 11, 12.  ~STOP~ termine le programme à la ligne 12, et la ligne 40 n'est
 jamais exécutée.  Le flot de contrôle n'est pas évident à suivre.  Après chaque
-ligne, il faut regarder tout le programme pour voir s'il y a un ~COME FROM~ où
+ligne, il faut regarder tout le programme pour voir s'il y a un ~COMEFROM~ où
 poursuivre l'exécution.  Ici c'est assez simple de se débarrasser des ~COME
 FROM~ pour obtenir le programme équivalent:
 
@@ -2229,7 +2229,7 @@ FROM~ pour obtenir le programme équivalent:
 12 WRITE (6,40) J STOP
 #+END_SRC
 
-Sans ~COME FROM~, le programme est limpide.  Ces deux exemples illustrent la
+Sans ~COMEFROM~, le programme est limpide.  Ces deux exemples illustrent la
 correspondance entre le programme et le processus.  La correspondance est plus
 directe dans le second programme; ce programme est donc plus clair.  ~COMEFROM~
 rend le code encore plus difficile à suivre qu'un ~GOTO~, et c'est bien
@@ -2245,11 +2245,11 @@ the pro- and the anti-GOTO factions can agree.
 #+END_QUOTE
 
 #+BEGIN_aside
-L'idée du ~COME FROM~ n'est pas éloignée du mécanisme de méthode d'aspects
+L'idée du ~COMEFROM~ n'est pas éloignée du mécanisme de méthode d'aspects
 ([[#aop]]).
 #+END_aside
 
-Même s'il faut voir ~COME FROM~ comme une blague (aucun langage ne l'inclut),
+Même s'il faut voir ~COMEFROM~ comme une blague (aucun langage ne l'inclut),
 un tel mécanisme n'est pas totalement dénué d'intérêt.  Intuitivement, ~COME
 FROM~ peut remplacer un ~GOTO~:
 
@@ -2263,9 +2263,9 @@ FROM~ peut remplacer un ~GOTO~:
 20 PRINT CHR$(205.5+RND(1))
 #+END_SRC
 
-Dans ces deux programmes, ~GOTO~ et ~COME FROM~ permettent tous deux de réaliser
+Dans ces deux programmes, ~GOTO~ et ~COMEFROM~ permettent tous deux de réaliser
 une la boucle infinie.  Mais il y a une différence notable: ~GOTO~ influe sur le
-flot d'exécution qui le suit, tandis que ~COME FROM~ capture l'exécution qui le
+flot d'exécution qui le suit, tandis que ~COMEFROM~ capture l'exécution qui le
 précède.  En combinant les deux, on pourrait modifier un programme à distance:
 
 #+BEGIN_side-figure
@@ -2284,7 +2284,7 @@ précède.  En combinant les deux, on pourrait modifier un programme à distance
 #+END_SRC
 
 Dans cet exemple, le programme affiche 12.  Après l'affectation ligne 10,
-l'exécution est capturée par le ~COME FROM~ ligne 4040, puis on change la valeur
+l'exécution est capturée par le ~COMEFROM~ ligne 4040, puis on change la valeur
 de ~X~ avant de retourner à l'affichage ligne 20.
 
 #+BEGIN_aside
@@ -2521,7 +2521,7 @@ détournement.  Une section du programme peut être simplement nommée, et on pe
 lui ajouter du code de n'importe quel autre point du programme.  Knuth l'utilise
 pour regrouper les définitions de variables dispersées dans le document, mais on
 peut imaginer d'autres applications.  La différence avec l'utilisation couplée
-de ~GOTO~ et ~COME FROM~ de la section précédente c'est que l'opérateur ~+=~ ne
+de ~GOTO~ et ~COMEFROM~ de la section précédente c'est que l'opérateur ~+=~ ne
 nous permet que d'ajouter du code à un section existante, pas le remplacer.
 Mais l'idée est similaire, et n'est pas restreinte à Pascal.  WEB est lié au
 langage Pascal, mais d'autres implémentations de la programmation littéraire
