@@ -93,76 +93,56 @@ Bret Victor for the realization of the dissonance between textual programming
 languages and the dynamic processes they describe.  Also, for inspiration.
 
 * Abstract                                                         :noexport:
-Programs are hard to write, and harder to maintain.  Programs often are part of
-an /ongoing/ development process: they evolve as requirements change, as new
-features are added, and as defects are uncovered and fixed.  The main way to
-deal with these constant changes is by /refactoring/.
+For securing web applications, we were interested in applying dynamic security
+analyses to JavaScript programs.  In this context, the ability to quickly modify
+the interpreter and to compose analyses at runtime is paramount.  One way to
+effect these changes would have been through /refactoring/.  But refactoring can
+be tricky and time-consuming, as it entails to rewrite parts of the source code,
+and even to reorganize the program's whole architecture.  Refactoring is too
+costly when rapid iteration is preferred.
 
-But refactoring can be tricky and time-consuming.  Refactoring entails to
-rewrite parts of the source code, but may also require to reorganize the
-program's whole architecture.  Refactoring may just be too costly in a context
-where rapid iteration is required.
+We explore a lightweight alternative to refactoring: /diverting/.  To divert a
+program is to change its results without directly modifying its source code.  To
+divert a program, we leverage indirection techniques such as dynamic scoping and
+metaprogramming.
 
-For the purposes of securing web applications, we were interested in applying
-dynamic security analyses to JavaScript programs.  In this context, the ability
-to quickly modify the interpreter and to compose analyses at runtime is
-paramount.
-
-For this scenario, we found a lightweight alternative to refactoring:
-/diverting/.  Diverting a program is to change its results without directly
-modifying its source code.  To divert a program, we leverage late-binding
-mechanisms such as dynamic scoping and metaprogramming.
-
-To illustrate diverting, we start with an interpreter for arithmetic
-expressions, and review the techniques used to divert the interpreter to support
-new terms and operations; a setting reminiscent of the Expression Problem.  We
-show how diverting can help build interpreters incrementally in layers, allowing
-dynamic activation of alternative behavior.
-
-Finally, we apply those techniques to divert a full-blown JavaScript interpreter
-with multiple dynamic security analyses.  We find that diverting is both faster
-and more flexible than rewriting the interpreter, but bears potential costs in
-efficiency and program safety.  Diverting is thus a legitimate alternative to
-refactoring for this realistic use-case.
+We first review the techniques used in related extensibility problems, like the
+Expression Problem, and apply these techniques to divert simple interpreters.
+We then show how diverting can help build interpreters incrementally in layers,
+allowing dynamic activation of alternative behavior.  Finally, we apply those
+techniques to divert a full-blown JavaScript interpreter with multiple dynamic
+security analyses.  We find that, with potential costs in efficiency and program
+safety, diverting is both faster and more flexible than rewriting the
+interpreter, thus making diverting a legitimate alternative to refactoring.
 
 * Résumé
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-Il est difficile d'écrire un programme, mais il l'est encore plus de le
-maintenir.  Les programmes sont souvent en développement /continu/: ils évoluent
-quand les besoins changent, quand de nouvelles fonctionnalités sont ajoutées, et
-quand leurs malfaçons sont découvertes et corrigées.  Le moyen principal de
-gérer ces changements récurrents est la /refactorisation/.
+Afin de sécuriser les applications web, nous nous sommes intéressés à appliquer
+des analyses dynamiques de sécurité à des programmes JavaScript.  Dans ce
+contexte, pouvoir rapidement modifier l'interpréteur et composer des analyses à
+l'exécution est primordial.  Une façon d'effectuer ces changements aurait été
+par /refactorisation/.  Mais la refactorisation peut être délicate et
+chronophage, car elle implique de réécrire des parties du code source, voire de
+réorganiser toute l'architecture du programme.  La refactorisation est trop
+coûteuse lorsque prime la vitesse d'itération.
 
-Mais la refactorisation peut être délicate et chronophage.  Refactoriser
-implique de réécrire des parties du code source, mais peut aussi requérir de
-réorganiser toute l'architecture du programme.  La refactorisation est peut-être
-bien trop coûteuse dans un contexte où prime la vitesse d'itération.
+Nous explorons une alternative économe à la refactorisation: le /détournement/.
+Détourner un programme c'est changer ses résultats sans directement modifier son
+code source.  Pour détourner un programme, on exploite des techniques
+d'indirection, tels que la portée dynamique et la métaprogrammation.
 
-Dans un but de sécuriser les applications web, nous nous sommes intéressés à
-appliquer des analyses dynamiques de sécurité à des programmes JavaScript.  Dans
-ce contexte, pouvoir rapidement modifier l'interpréteur, et pouvoir composer des
-analyses à l'exécution est primordial.
-
-Pour ce scénario, nous avons trouvé une alternative économe à la
-refactorisation: le /détournement/.  Détourner un programme c'est changer ses
-résultats sans directement modifier son code source.  Pour détourner un
-programme, on exploite des mécanismes de résolution tardive, tels que la portée
-dynamique et la métaprogrammation.
-
-Pour illustrer le détournement, on commence par un interpréteur d'expressions
-arithmétiques, et l'on passe en revue les techniques utilisables pour détourner
-l'interpréteur afin qu'il supporte de nouveaux termes et opérations; un scénario
-similaire au problème de l'expression.  On montre comment le détournement peut
-aider à construire des interpréteurs par incréments, en couches successives, ce
-qui permet de dynamiquement activer des comportements alternatifs.
-
-Enfin, on applique ces techniques pour détourner un véritable interpréteur
-JavaScript par de multiples analyses dynamiques de sécurité.  Détourner
-l'interpréteur est à la fois plus rapide et plus flexible que de le réécrire,
-mais a un impact potentiel sur son efficacité et sa sûreté.  Le détournement est
-donc une alternative légitime à la refactorisation dans ce scénario réaliste.
+On commence par passer en revue les techniques utilisées pour des problèmes
+connexes d'extensibilité, et on applique ces techniques pour détourner des
+interpréteurs simples.  Puis, on montre comment le détournement peut aider à
+construire un interpréteur par incréments, pour permettre d'activer
+dynamiquement des comportements alternatifs.  Enfin, on applique ces techniques
+pour détourner un véritable interpréteur JavaScript par de multiples analyses
+dynamiques de sécurité.  Au prix d'un potentiel impact en efficacité et en
+sûreté, détourner l'interpréteur est à la fois plus rapide et plus flexible que
+de le réécrire, ce qui fait du détournement une alternative légitime à la
+refactorisation.
 
 * READ Introduction
 :PROPERTIES:
