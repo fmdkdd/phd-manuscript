@@ -14,14 +14,16 @@
 #+MACRO: br @@latex:\\@@ @@html:<br/>@@
 #+MACRO: etal /et al./
 #+MACRO: author @@html:<br>— $1@@@@latex:}{$1}@@
+#+MACRO: authorsource @@html:<br>— $1, <i>$2</i>@@@@latex:}{$1, \emph{$2}}@@
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
 
 #+TODO: UNWRITTEN(w) UNREAD INPROGRESS | READ
 
-#+ATTR_LATEX: :options [Lewis Caroll, "Through the Looking Glass"]
+#+ATTR_LATEX: :options [Lewis Caroll, \emph{Alice in Wonderland}]
 #+BEGIN_epig
+#+LATEX: \selectlanguage{english}
 "I could tell you my adventures--beginning from this morning," said Alice a
 little timidly: "but it's no use going back to yesterday, because I was a
 different person then.'
@@ -30,7 +32,7 @@ different person then.'
 
 "No, no! The adventures first," said the Gryphon in an impatient tone:
 "explanations take such a dreadful time."
-@@html:<br>— Lewis Caroll, "Through the Looking Glass"@@
+@@html:<br>— Lewis Caroll, <i>Alice in Wonderland</i>@@
 #+END_epig
 
 * Contents                                                   :TOC@2:noexport:
@@ -868,6 +870,7 @@ de type abstrait de donnée qu'il ne nomme pas comme telle.
 #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Every module in the second decomposition is characterized by its knowledge of a
 design decision which it hides from all others.  Its interface or definition was
 chosen to reveal as little as possible about its inner workings.
@@ -878,6 +881,7 @@ qualifier le système de /modulaire/.  Parnas liste les trois avantages attendus
 d'un système modulaire:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 (1) managerial—development time should be shortened because separate groups
 would work on each module with little need for communication: (2) product
 flexibility—it should be possible to make drastic changes to one module without
@@ -949,6 +953,7 @@ optimisation manuelle de l'utilisation des registres, mais Parnas et son équipe
 désiraient s'abstraire de ces détails matériels:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Near-optimal register allocation was essential to fitting the program into a
 very small memory.  One of our design goals had been to achieve hardware
 independence for most of our code.  To achieve hardware independence on the
@@ -971,6 +976,7 @@ becomes faster".
 #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Although today's machines are far better than the one we were using, goals have
 expanded and competitive pressures often limit the resources available.  Few of
 today's designers are free to ignore performance requirements and hardware
@@ -980,6 +986,7 @@ limitations.
 Mais surtout, il faut se méfier des marchands de panacée:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Sometimes new languages are used in the design of jewels, and authors may
 attribute a product's success to the use of a particular language or type of
 language.  Here, I have grave doubts.  I have lost count of the number of
@@ -1020,6 +1027,7 @@ de la programmation par fonctionnalités, et d'Hyper/J.
 #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 To a man with a hammer, everything looks like a nail.  To a Computer Scientist,
 everything looks like a language design problem.  Languages and compilers are,
 in their opinion, the only way to drive an idea into practice.
@@ -1048,6 +1056,7 @@ sur la phase de conception du système; c'est là où les limites entre modules
 apparaissent, et là où les décisions d'architecture doivent être prises:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 My engineering teacher laid down some basic rules:
 
 1. Design before implementing.
@@ -1132,6 +1141,7 @@ changements à apporter au compilateur après avoir étudié sa structure, et
 vient discuter des changements avec le groupe A qui offre son soutient:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 In several major cases it turned out that the solutions suggested by group B
 were found by group A to make no use of the facilities that were not only
 inherent in the structure of the existing compiler but were discussed at length
@@ -1157,6 +1167,7 @@ une connaissance /pratique/, et être capable d'appliquer cette connaissance à
 d'autres problème connexes:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 The notion of theory employed here is explicitly /not/ confined to what may be
 called the most general or abstract part of the insight.  For example, to have
 Newton's theory of mechanics as understood here it is not enough to understand
@@ -1181,6 +1192,7 @@ tout une théorie — on ne peut pas modifier le programme sans prendre en compt
 la théorie sous-jacente:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 What is needed in a modification, first of all, is a confrontation of the
 existing solution with the demands called for by the desired modification.  In
 this confrontation the degree and kind of similarity between the capabilities of
@@ -1196,6 +1208,7 @@ retrouve dans le cas du groupe B; à étendre le compilateur de façon
 tarabiscotée, sans tirer partie de sa structure:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 For a program to retain its quality it is mandatory that each modification is
 firmly grounded in the theory of it.  Indeed, the very notion of qualities such
 as simplicity and good structure can only be understood in terms of the theory
@@ -1220,6 +1233,7 @@ la "nécromancie de programme".
 #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 A very important consequence of the Theory Building View is that program
 revival, that is re-establishing the theory of a program merely from the
 documentation, is strictly impossible.
@@ -1239,6 +1253,7 @@ fournir pour obtenir un résultat probablement de qualité inférieure.
 L'alternative qu'il conseille, est de toujours recréer le programme:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 In preference to program revival, the existing program text should be discarded
 and the new-formed programmer team should be given the opportunity to solve the
 given problem afresh.  Such a procedure is more likely to produce a viable
@@ -1260,6 +1275,7 @@ importe c'est le développement de la théorie du programme, et aucune méthode 
 peut garantir une construction correcte:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 A method implies a claim that program development can and should proceed as a
 sequence of actions of certain kinds, each action leading to a particular kind
 of documented result.  In the Theory Buiding View what matters most is the
@@ -1275,6 +1291,7 @@ Pour les mêmes raisons, le choix du langage de programmation, ou d'un formalism
 particulier ne peut remplacer la construction de la théorie:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 As to the use of particular kinds of notation or formalization, again this can
 only be a secondary issue since the primary item, the theory, is not, and cannot
 be, expressed, and so no question of the form of its expression arises.
@@ -1287,6 +1304,7 @@ de façon organique: en travaillant avec des programmeurs chevronnés, ils
 absorberont les connaissances nécessaires par osmose.
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 What remains is the effect of methods in the education of programmers.  Indeed,
 on this view the quality of the theory built by the programmer will depend to a
 large extent on the programmer's familiarity with model solutions of typical
@@ -1330,6 +1348,7 @@ enseignée principalement aux novices.  En cela, la programmation n'est pas
 différente d'autres activités:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 This problem of education of new programmers in an existing theory of a program
 is quite similar to that of the educational problem of other activities where
 the knowledge of how to do certain things dominates over the knowledge that
@@ -2003,6 +2022,7 @@ changer plus facilement.
 :END:
 #+ATTR_LATEX: :options [Donald Knuth]
 #+BEGIN_epig
+#+LATEX: \selectlanguage{english}
 At the IFIP Congress in 1971 I had the pleasure of meeting Dr. Eiichi Goto of
 Japan, who cheerfully complained that he was always being eliminated.
 @@html:<br>— Donald Knuth@@
@@ -2021,6 +2041,7 @@ l'éditeur des communications de l'ACM, "Go To Statement Considered Harmful"
 [[cite:Dij-68][Dij-68]], Dijkstra décrit ce but:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Our intellectual powers are rather geared to master static relations and
 our powers to visualize processes evolving in time are relatively poorly
 developed.  For that reason we should do (as wise programmers aware of our
@@ -2111,6 +2132,7 @@ programme.  Au contraire, se concentrer sur le ~goto~ serait passer complètemen
 à côté du message initial; Knuth le remarque très justement [[cite:Knu-74][Knu-74]]:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 There has been far too much emphasis on GO TO elimination instead of the really
 important issues; people have a natural tendency to set up an easily understood
 quantitative goal like the abolition of jumps, instead of working directly for a
@@ -2129,6 +2151,7 @@ comprendre et gérer de larges programmes écrits dans des langages de plus haut
 niveau.  Wirth [[cite:Wir-74a][Wir-74a]] relate ce changement de contraintes:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 As the power of computers on the one side, and the complexity and size of the
 programmer's task on the other continued to grow with a speed unmatched by any
 other technological venture, it was gradually recognized that the true challenge
@@ -2146,6 +2169,7 @@ limites de nos capacités cognitives.  Wirth parle d'un mouvement, une attitude
 plutôt qu'une liste de règles à suivre:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 [Structured programming] is the expression of a conviction that the programmer's
 knowledge must not consist of a bag of tricks and trade secrets, but of a
 general intellectual ability to tackle problems systematically, and that
@@ -2212,6 +2236,7 @@ rend le code encore plus difficile à suivre qu'un ~GOTO~, et c'est bien
 l'intention de son auteur, qui voit le débat autour du ~GOTO~ avec humour:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Nearly six years after publication of Dijkstra's now-famous letter, the subject
 of GOTO-less programming still stirs considerable controversy.
 
@@ -2302,6 +2327,7 @@ façons d'aborder ce but.
 :END:
 #+ATTR_LATEX: :options [Donald Knuth]
 #+BEGIN_epig
+#+LATEX: \selectlanguage{english}
 [Literate programming] may be only for the subset of computer scientists who
 like to write and to explain what they are doing.
 @@html:<br>— Donald Knuth@@
@@ -2318,6 +2344,7 @@ afin d'élaborer un ensemble cohérent.
 Knuth [[cite:Knu-84][Knu-84]] confesse qu'il préfère la seconde méthode:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 I knew that I often created major parts of programs in a "bottom-up" fashion,
 starting with the definitions of basic procedures and data structures and
 gradually building more and more powerful subroutines.  I had the feeling that
@@ -2333,6 +2360,7 @@ que l'on peut voir un programme comme un réseau, comme une /toile d'araignée/.
 Ce qui importe, c'est d'exprimer les relations qui forment ce réseau:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 A complex piece of software consists of simple parts and simple relations
 between those parts; the programmer's task is to state those parts and those
 relationships, in whatever order is best for human comprehension – not in some
@@ -2359,6 +2387,7 @@ people to read, and only incidentally for machines to execute" [[cite:AS-96][AS-
 #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Instead of imagining that our main task is to instruct a /computer/ what to do,
 let us concentrate rather on explaining to /human beings/ what we want to do.
 #+END_QUOTE
@@ -2586,13 +2615,14 @@ L'École d'Athènes. Raphaël, 1509--1510.
 :CUSTOM_ID: Smalltalk
 :END:
 #+BEGIN_epigraphs
+#+LATEX: \selectlanguage{english}
 @@latex:\qitem{%@@
 Classification is the objectification of {{{emph(ness)}}}ness.
 {{{author(Dan Ingalls)}}}
 
 @@latex:\qitem{%@@
 Ah, voilà enfin le roi de la classe !
-{{{author(José\, "La Classe Américaine")}}}
+{{{authorsource(José, La Classe Américaine)}}}
 #+END_epigraphs
 
 C'est avec le langage Smalltalk qui débute la programmation par objets [[cite:Ing-78][Ing-78]]
@@ -2628,6 +2658,7 @@ Pour Kay, les /objets/ de Smalltalk sont comme des cellules: des constituants
 quasi-autonomes, capables de se répliquer:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 For the first time I thought of the whole as the entire computer and wondered
 why anyone would want to divide it up into weaker things called data structures
 and procedures.  Why not divide it up into little computers, as time-sharing was
@@ -2657,6 +2688,7 @@ objet: ~5~.  On ne pense plus alors en termes d'opérateur (~+~) et d'opérandes
 changement de paradigme majeur de la programmation par objets:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 On the one hand, the act of assembling expressions into statements and then into
 methods is not very different from conventional programming.  On the other hand,
 the experience is totally different, for the objects which populate and traverse
@@ -2729,6 +2761,7 @@ c'est de ne jamais dépendre des détails internes d'un autre objet.  Les classe
 et le passage de message contribuent à forcer cette barrière:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Objects are created and manipulated by sending messages.  The communication
 metaphor supports the principle of modularity, since any attempt to examine or
 alter the state of an object is sent as a message to that object, and the sender
@@ -2941,6 +2974,7 @@ de développement interactif: on peut raffiner les objets à l'exécution.  Mais
 pour ses auteurs, c'est aussi un inconvénient en pratique:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Reducing the number of basic concepts in a language can make the language easier
 to explain, understand, and use.  However, there is a tension between making the
 language simpler and making the organization of a system manifest.  As the
@@ -3333,6 +3367,7 @@ dimension de composition.
 
 *** La distinction entre composants et aspects
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
 cleanly support the kinds of units the design process breaks the system into.
@@ -3442,6 +3477,7 @@ fonctionnalités:
 #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 The goal of AOP is to support the programmer in cleanly separating components
 and aspects from each other, by providing mechanisms that make it possible to
 abstract and compose them to produce the overall system.  This is in contrast to
@@ -3531,6 +3567,7 @@ programmation par aspects.  Les auteurs, certainement familiers avec le concept,
 le notent:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 A reflective system provides the base language and (one or more) meta-languages
 that provide control over the base language's semantics and implementation.  In
 AOP terms, meta-languages are lower-level aspect languages whose join points are
@@ -3561,6 +3598,7 @@ programmeur d'exprimer cette intention est un des buts de la programmation par
 aspects:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 When we say "separation of concerns" we mean the idea that it should be possible
 to work with the design or implementation of a system in the natural units of
 concern – concept, goal, team structure etc. – rather than in units imposed on
@@ -3855,6 +3893,7 @@ Wadler définit le problème ainsi [[cite:Wad-98][Wad-98]]:
 # #+END_aside
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 The Expression Problem is a new name for an old problem.  The goal is to define
 a datatype by cases, where one can add new cases to the datatype and new
 functions over the datatype, without recompiling existing code, and while
@@ -4577,6 +4616,7 @@ l'expression, où, on l'a vu, ajouter un terme ou une opération n'est pas
 équivalent.
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 The goal of low impact of changes requires /additive/, rather than /invasive/,
 change.  Yet conceptually simple changes, like those in the expression system,
 often have widespread and invasive effects, both within the modified artifact
@@ -4669,6 +4709,7 @@ d'exploiter les similarités du code, et en particulier les similarités
 /cohérentes/:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 Code elements likely to be changed together as part of a complete, consistent
 change should look similar, and code elements unlikely to be changed together
 should look different.
@@ -4848,6 +4889,7 @@ On peut même voir dans ce bref historique émerger une tendance vers davantage
 d'indirection, ce que remarquent Malenfant {{{etal}}} [[cite:MJD-96][MJD-96]]:
 
 #+BEGIN_QUOTE
+#+LATEX: \selectlanguage{english}
 The general trend in the evolution of programming languages has been to postpone
 formal binding times towards the running of programs, but to use more and more
 sophisticated analysis and implementation techniques to bring actual times back
@@ -4890,13 +4932,14 @@ pour détourner l'interpréteur Narcissus.
 :CUSTOM_ID: variations
 :END:
 #+BEGIN_epigraphs
+#+LATEX: \selectlanguage{english}
 @@latex:\qitem{%@@
-'When /I/ use a word,' Humpty Dumpty said in rather a scornful tone, 'it means
-just what I choose it to mean—neither more nor less.'
+"When /I/ use a word," Humpty Dumpty said in rather a scornful tone, "it means
+just what I choose it to mean—neither more nor less."
 
-'The question is,' said Alice, 'whether you /can/ make words mean so many
-different things.'
-{{{author(Lewis Caroll\, "Through the Looking Glass")}}}
+"The question is," said Alice, "whether you /can/ make words mean so many
+different things."
+{{{authorsource(Lewis Caroll, Through the Looking Glass)}}}
 
 @@latex:\qitem{%@@
 Obladi, Oblada
@@ -6219,6 +6262,7 @@ détourner l'interpréteur Narcissus.
 /Chapitre principalement tiré d'un papier rejeté à DLS'15 et à SAC'16 [[cite:KNS-15b][KNS-15b]]/.
 
 #+BEGIN_epigraphs
+#+LATEX: \selectlanguage{english}
 @@latex:\qitem{%@@
 The whole purpose of this work is to be able to modify the original interpreter
 in the less possible intrusive way, and this appears to be the case, so I find
@@ -8277,11 +8321,12 @@ d'appliquer la technique de ce chapitre.
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+ATTR_LATEX: :options [Bob Dylan, "Blowing in the Wind"]
+#+ATTR_LATEX: :options [Bob Dylan, \emph{Blowing in the Wind}]
 #+BEGIN_epig
+#+LATEX: \selectlanguage{english}
 And how many times must a man look up {{{br}}}
 Before he can see the sky?
-@@html:<br>— Bob Dylan, "Blowing in the Wind"@@
+@@html:<br>— Bob Dylan, <i>Blowing in the Wind</i>@@
 #+END_epig
 
 Nous avons décrit le problème que nous nous sommes posés: instrumenter et
