@@ -4972,44 +4972,47 @@ On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 eval-num: ; Évaluation des constantes
   ...
 
-eval-double: ; Évaluation alternative
+eval-double: ; Extension
   COMEFROM eval-num
   ... ; code exécuté avant `eval-num`
   GOTO eval-num
 #+END_SRC
 
-Lorsque le programme arrive au point de redirection, le flot de contrôle est
-capturé par ~COMEFROM~ qui le passe au code de l'extension.  Une fois le code de
-l'extension exécuté, celui-ci rend le contrôle au code initial par le ~GOTO~
-final.  De cette façon, on peut modifier le comportement du programme simplement
-en rajoutant du code, et sans modifier le code du programme d'origine.  On
-pourrait ainsi rajouter autant d'extensions que l'on souhaite, et cela
-fonctionnerait pour n'importe quel programme.
+Lorsque le programme arrive au point de redirection (~eval-num~), le flot de
+contrôle est capturé par ~COMEFROM~ qui le passe au code de l'extension (~eval
+double~).  Une fois le code de l'extension exécuté, celui-ci rend le contrôle au
+code initial par le ~GOTO~ final.  De cette façon, on peut modifier le
+comportement du programme simplement en rajoutant du code, et sans modifier le
+code du programme d'origine.  On pourrait ainsi rajouter autant d'extensions que
+l'on souhaite, et cela fonctionnerait pour n'importe quel programme.
 
 Les problèmes apparaissent quand on s'intéresse aux détails.  D'abord, quels
 arguments ~COMEFROM~ et ~GOTO~ prennent?  Si ce sont des numéros de lignes, ou
 des adresses mémoires, l'approche est évidemment fragile.  Ajouter ou retirer
 une ligne du programme va nécessairement modifier ces indices.  Toutes les
 extensions devraient alors être modifiées en conséquence.  Une solution à ce
-problème est d'utiliser des étiquettes (/labels/).  Une étiquette est associée à
-une ligne, et ~GOTO~ accepte l'étiquette en argument.  Quelques soient les
-bouleversements dans le programme, l'étiquette fera toujours référence à la même
-ligne.  Et les étiquettes sont applicables dans des langages où les instructions
-ne sont pas numérotées.  C'est le cas dans le langage C, où les lignes ne sont
-pas numérotées mais ~GOTO~ est utilisable avec des étiquettes.  Mais le plus
-grand problème demeure que peu de langages proposent le mot-clé ~COMEFROM~
-(autre que comme une blague), et qu'il semble peu probable qu'ils aient
-l'intention de l'ajouter.
+problème est d'utiliser, comme ici, des étiquettes (/labels/).  Une étiquette
+est associée à une ligne, et ~GOTO~ accepte l'étiquette en argument.  Quelques
+soient les bouleversements dans le programme, l'étiquette fera toujours
+référence à la même ligne.  Et les étiquettes sont applicables dans des langages
+où les instructions ne sont pas numérotées.  C'est le cas dans le langage C, où
+les lignes ne sont pas numérotées mais ~GOTO~ est utilisable avec des
+étiquettes.
 
-Quand on utilise des étiquettes, on peut considérer que l'on vient modifier le
-code ciblé.  Techniquement il s'agit bien d'une modification, mais on peut aussi
-le voir comme une simple annotation.  L'ajout d'une étiquette ne change pas la
-sémantique du code, tant que cette étiquette n'est pas utilisée.
+Pour pouvoir cibler le code par une étiquette, il faut que l'étiquette soit
+présente, ou bien l'ajouter.  Si on ajoute une étiquette à un code ciblé, on
+peut considérer cela comme une modification du code, mais on peut aussi le voir
+comme une simple annotation.  L'ajout d'une étiquette ne change pas la
+sémantique du code, tant que cette étiquette n'est pas référencée ailleurs.
 
-On peut se passer de ~COMEFROM~, et à la place utiliser un autre ~GOTO~, mais
-cette fois dans le code que l'on cherche à détourner.  Plutôt que de détourner
-le flot de contrôle à distance, on vient explicitement ajouter une seule ligne
-qui envoie dans les extensions:
+Mais le plus grand problème de cette approche demeure que peu de langages
+proposent le mot-clé ~COMEFROM~ , et que compte tenu de la nature dérisoire de
+cette construction, il semble peu probable qu'elle soit ajoutée.
+
+On peut se passer de ~COMEFROM~, et à la place utiliser un autre ~GOTO~ dans le
+code que l'on cherche à détourner.  Plutôt que de détourner le flot de contrôle
+à distance, on vient explicitement ajouter une seule ligne qui passe le contrôle
+à l'extension:
 
 #+BEGIN_SRC asm
 eval-num:
@@ -5021,38 +5024,39 @@ eval-double:
   GOTO eval-num + 1
 #+END_SRC
 
-Et le second ~GOTO~ retourne le flot de contrôle au code initial.  Cette fois on
+Le second ~GOTO~ retourne le flot de contrôle au code initial.  Cette fois on
 vient modifier le code ciblé explicitement en rajoutant un ~GOTO~, et pas
-seulement un label, ce qui rend l'approche moins attractive.
+seulement une étiquette, ce qui rend l'approche moins attractive.
 
 Qui plus est, l'attrait de ~GOTO~ est limité dans les langages qui l'offrent
 comme mot-clé.  En C, ~GOTO~ ne peut pas faire référence à une étiquette définie
 dans une autre fonction.  En JavaScript, il n'y a pas de ~GOTO~; seuls les
-mots-clés ~continue~ et ~break~ peuvent accepter des étiquettes. Mais ces
-mots-clés ne peuvent apparaître qu'à l'intérieur de boucles ~for~ ou ~while~, ce
-qui réduit davantage leur portée.  On cherche à détourner le programme à
-distance: le code de l'extension ne vient pas modifier le code détourné.  Mais
+mots-clés ~continue~ et ~break~ peuvent accepter des étiquettes, mais ces
+mots-clés ne peuvent apparaître qu'à l'intérieur de boucles ~for~ ou ~while~,
+réduisant davantage leur portée.  On cherche à détourner le programme à
+distance: le code de l'extension ne devrait pas modifier le code détourné.  Mais
 avec ces mots-clés restreints le code de l'extension doit être placé dans le
 corps de la fonction détournée.  Et si on peut modifier la fonction directement,
 il y a certainement plus simple que d'utiliser un ~GOTO~.
 
-Dans la pratique, ~GOTO~ et ~COMEFROM~ ne sont pas applicables pour détourner un
-interpréteur, et certainement pas en JavaScript.  Néanmoins, l'/idée/ de
-capturer le flot de contrôle et de retourner au code détourné n'est pas remise
-en cause.  Il faut juste trouver d'autres mécanismes pour la réaliser.
+Pour ces raisons, ~GOTO~ et ~COMEFROM~ ne sont pas applicables en pratique pour
+détourner un interpréteur, et certainement pas en JavaScript.  Néanmoins,
+l'/idée/ de capturer le flot de contrôle et de retourner au code détourné n'est
+pas remise en cause.  Il faut juste trouver d'autres mécanismes pour la
+réaliser.
 
 ** Programmation littéraire
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
-nommer des blocs de code pour les définir à un autre moment.
-
-Par exemple, on peut écrire un interpréteur minimal en JavaScript ainsi:
+nommer des blocs de code pour les définir à un autre moment.  Par exemple, on
+peut écrire un interpréteur minimal en JavaScript ainsi:
 
 #+BEGIN_aside
 On utilise la syntaxe de noweb [[cite:Noweb][Noweb]], un système de programmation littéraire
 indépendant du langage de programmation.  Dans ces exemples, un bloc est défini
 par ~<<nom>>=~, et comprend tout le code jusqu'à la prochaine ligne vide.  La
-syntaxe ~<<nom>>~ fait référence au bloc: celui-ci sera inséré à cet endroit
-lors de l'entrelacement.
+syntaxe ~<<nom>>~ fait référence au bloc: lorsque cette référence apparaît dans
+le code, tout le code associé au bloc ~nom~ sera inséré à cet endroit lors de
+l'entrelacement.
 #+END_aside
 
 #+BEGIN_SRC js
@@ -5074,10 +5078,10 @@ function interp(n) {
 }
 #+END_SRC
 
-La fonction d'évaluation ~interp~ ne fait que déléguer l'évaluation aux
-fonctions spécifiques des termes ~num~ et ~plus~.  Ces fonctions ne sont pas
-encore définies, mais on peut les définir plus loin en utilisant la syntaxe de
-WEB:
+La fonction d'évaluation ~interp~ ne fait que déléguer l'évaluation aux cas
+spécifiques des termes ~num~ et ~plus~.  Ces cas ne sont pas encore définis:
+pour l'instant ce sont des références à des blocs de code qui seront inclus lors
+de l'entrelacement.  Plus loin, on peut rajouter leurs définitions:
 
 #+BEGIN_SRC js
 <<interp-num>>=
@@ -5099,6 +5103,10 @@ let e1 = plus(num(1), num(2))
 
 interp(e1) //:
 #+END_SRC
+
+C'est le programme principal qui inclut les blocs ~term~ et ~interp~.  Notons
+que l'on inclut pas explicitement les blocs ~interp-num~ et ~interp-plus~, car
+ils seront inclus récursivement par ~interp~.
 
 Pour pouvoir exécuter ce programme, on engendre le fichier JavaScript entrelacé
 par ~TANGLE~:
@@ -5123,12 +5131,13 @@ let e1 = plus(num(1), num(2))
 interp(e1) //: 3
 #+END_SRC
 
-Cette approche fonctionne pour construire l'interpréteur, comme si on avait
-écrit le programme directement.
+On obtient un programme qu'on aurait très bien pu écrire manuellement.  La
+différence est qu'on a pu organiser les différentes parties dans l'ordre qui
+nous intéresse.
 
 Maintenant, on souhaite détourner cet interpréteur.  Par exemple, on souhaite
 modifier la fonction d'évaluation de ~num~.  Intuitivement, on aurait envie de
-redéfinir le bloc ~interp-num~, peut-être ainsi:
+redéfinir juste le bloc ~interp-num~, peut-être ainsi:
 
 #+BEGIN_SRC js
 <<terms>>
@@ -5163,41 +5172,43 @@ Généralement, si on a un bloc ~X~ qui fait référence à un bloc ~Y~:
 
 : <<X>>= ... <<Y>> ...
 
-Le bloc ~Y~ est défini ailleurs dans le document littéraire:
+et que le bloc ~Y~ est défini ailleurs dans le document littéraire:
 
 : <<Y>>= ...
 
-Et on dispose d'une définition alternative de ~Y~, ~Y2~:
+et si l'on dispose d'une définition alternative de ~Y~, ~Y2~:
 
 : <<Y2>>= ...
 
-Le problème est que l'on souhaite pouvoir dire, pendant l'entrelacement du bloc
-~X~, d'utiliser soit ~Y~ soit ~Y2~.  Ce n'est pas possible directement en noweb.
+alors le problème est que l'on souhaite pouvoir dire, pendant l'entrelacement du
+bloc ~X~, d'utiliser soit ~Y~, soit ~Y2~.  Ce n'est pas possible directement en
+noweb.
 
 On pourrait imaginer une extension.  Par exemple, dire:
 
 : <<X with Y=Y2>>
 
-pour signifier que l'on souhaite inclure le contenu du bloc ~X~, mais utiliser
-le contenu du bloc ~Y2~ à chaque référence faite au bloc ~Y~.  De cette façon,
-on peut facilement modifier le contenu du bloc ~X~ lors de son inclusion, sans
-avoir à toucher sa définition.  Donc, de le détourner.
+pour signifier que l'on souhaite inclure à cet endroit le contenu du bloc ~X~,
+mais utiliser le contenu du bloc ~Y2~ pour chaque référence interne à ~X~ faite
+au bloc ~Y~.  De cette façon, on peut facilement modifier le contenu du bloc ~X~
+lors de son inclusion, sans avoir à toucher sa définition; c'est à dire, de le
+détourner.
 
-Essentiellement, ce serait implémenter la portée dynamique pour les noms de
-blocs.  Dans le bloc ~X~, ~Y~ est une variable libre.  Par défaut en noweb, ~Y~
-fera référence au bloc ~Y~ s'il est défini.  En ajoutant la construction ~with~,
-la résolution de la référence ~Y~ dépend de l'appelant: si l'environnement
-dynamique de l'appelant contient une redéfinition de ~Y~, ce sera ce bloc qui
-sera utilisé.
+Essentiellement, une telle extension de noweb revient à implémenter la portée
+dynamique pour les noms de blocs.  Dans le bloc ~X~, ~Y~ est une variable libre
+qui, par défaut en noweb, fait référence au bloc ~Y~ s'il est défini.  On peut
+considérer que les noms de blocs résident tous dans un environnement global
+unique.  En ajoutant la construction ~with~, la résolution de la référence ~Y~
+dépend de l'appelant: si l'environnement dynamique de l'appelant contient une
+redéfinition de ~Y~, ce sera ce bloc qui sera utilisé.
 
-Cette solution permettrait de détourner des programmes, quelque soit le langage
-de programmation utilisé.  Mais suivant le langage, on peut contourner le
-problème.
-
-En JavaScript, on peut définir l'interpréteur ainsi:
+Cette extension à noweb permettrait de détourner des programmes, quelque soit le
+langage de programmation utilisé.  Mais en l'absence de cette extension, on peut
+tout de même contourner le problème dans des langages spécifiques.  En
+JavaScript, on peut définir l'interpréteur ainsi:
 
 #+BEGIN_SRC js
-<<inrep>>=
+<<interp>>=
 function interp(n) {
   switch (n.type) {
   case 'num':
@@ -5210,8 +5221,9 @@ function interp(n) {
 #+END_SRC
 
 Cette fois on n'utilise plus noweb pour faire référence au code qui va évaluer
-chaque terme, mais simplement des fonctions.  On va tout de même définir ces
-fonctions dans des blocs:
+chaque terme, mais simplement des fonctions ~interp_num~ et ~interp_plus~.  On
+pourrait définir ces fonctions dans le même bloc, mais on va les définir dans
+leurs propres blocs:
 
 #+BEGIN_SRC js
 <<interp-num>>=
@@ -5223,7 +5235,7 @@ function interp_plus({a,b}) {
 }
 #+END_SRC
 
-Ce qui nous donne le point d'entrée suivant:
+Le point d'entrée du programme est alors le suivant:
 
 #+BEGIN_SRC js
 <<terms>>
@@ -5238,11 +5250,7 @@ interp(e1) //:
 
 La différence avec le précédent point d'entrée c'est que l'on déclare
 explicitement les blocs qui contiennent les définitions des fonctions
-~interp_num~ et ~interp_plus~.  Notons au passage qu'en JavaScript, les
-fonctions peuvent être définies après ~interp~, même si cette dernière y fait
-référence.
-
-Le programme entrelacé nous donne donc:
+~interp_num~ et ~interp_plus~. Le programme entrelacé nous donne donc:
 
 #+BEGIN_SRC js
 let num = (n) => ({type: 'num', n})
@@ -5266,17 +5274,21 @@ let e1 = plus(num(1), num(2))
 interp(e1) //: 3
 #+END_SRC
 
-Soit, le même résultat que précédemment.
+Notons que les définitions de ~interp_num~ et ~interp_plus~ apparaissent après
+leur utilisation dans ~interp~.  En JavaScript, ce n'est pas un problème tant
+que les fonctions sont définies avant que ~interp~ ne soit appelée.
 
-Mais cette fois, on peut définir une fonction d'évaluation alternative pour
-~num~:
+Le résultat d'~interp(e1)~ est le même que précédemment, donc l'interpréteur
+fonctionne de la même façon.  Mais cette fois, on peut définir une fonction
+d'évaluation alternative pour ~num~, dans son propre bloc:
 
 #+BEGIN_SRC js
 <<interp-num-double>>
 function interp_num({n}) { return n * 2 }
 #+END_SRC
 
-Et si l'on modifie le point d'entrée:
+Notons que l'on /redéfinit/ ~interp_num~.  Il suffit alors de modifier le point
+d'entrée:
 
 #+BEGIN_SRC js
 <<terms>>
@@ -5289,14 +5301,14 @@ let e1 = plus(num(1), num(2))
 interp(e1) //: 6
 #+END_SRC
 
-On parvient à redéfinir l'évaluation, sans avoir changé le code de
-l'interpréteur, uniquement en modifiant le code du point d'entrée.  Dans
-l'entrelacement, on substitue simplement la définition de la fonction
-~interp_num~ pour une autre.
+et on parvient à redéfinir l'évaluation de ~e1~, sans avoir changé le code de
+l'interpréteur, mais uniquement en modifiant le code du point d'entrée.  Dans
+l'entrelacement, on a juste remplacé la définition de la fonction ~interp_num~
+pour une autre.
 
-En supposant qu'un interpréteur réalise comporte plusieurs dizaines, voire
+En supposant qu'un interpréteur réaliste comporte plusieurs dizaines, voire
 centaines de fonctions d'interprétations, on voudra raccourcir le point d'entrée
-avec ce bloc:
+avec ce bloc qui les déclare toutes:
 
 #+BEGIN_SRC js
 <<std-interp>>=
@@ -5304,12 +5316,17 @@ avec ce bloc:
 <<interp>>
 <<interp-num>>
 <<interp-plus>>
+...
 #+END_SRC
+
+Alors on pourra utiliser un interpréteur en incluant simplement ce bloc:
 
 #+BEGIN_SRC js
 <<std-interp>>
 
 let e1 = ...
+
+interp(e1) //: 3
 #+END_SRC
 
 Mais là encore, le détournement est encore possible, car il suffit d'ajouter
@@ -5320,6 +5337,8 @@ notre redéfinition:
 <<interp-num-double>>
 
 let e1 = ...
+
+interp(e1) //: 6
 #+END_SRC
 
 Lors de l'entrelacement, la fonction ~interp_num~ sera définie deux fois: une
@@ -5329,9 +5348,12 @@ dernière définition rencontrée par l'interpréteur qui fait foi.  On peut don
 empiler les définitions de la sorte sans avoir à se préoccuper de retirer les
 précédentes.
 
-Mais dans ce cas, la programmation littéraire ne nous apporte plus grand chose.
+Le détournement est rendu possible ici par le langage JavaScript qui permet la
+redéfinition d'une fonction.  La programmation littéraire nous donne la
+possibilité de générer plusieurs programmes à partir de différents blocs, comme
+des pièces à assembler, mais elle n'est pas déterminante pour le détournement.
 Il suffit de définir une fonction pour chaque morceau de code qui pourra être
-détourné, et juste redéfinir cette fonction avant d'interpréter un programme.
+détourné, et de juste redéfinir cette fonction avant d'interpréter un programme.
 
 #+BEGIN_SRC js
 function interp() { ... }
@@ -5344,19 +5366,19 @@ function interp_num() { ... } // détournement
 let e1 = ...
 #+END_SRC
 
-Mais même si l'on ajoutait la résolution dynamique des noms de blocs, il y a au
-moins deux inconvénients à utiliser la programmation littéraire ainsi pour
-détourner un interpréteur.  Le premier, c'est que l'on doit tout de même
+Mais même si l'on ajoutait la résolution dynamique des noms de blocs à noweb, il
+y a au moins deux inconvénients à utiliser la programmation littéraire ainsi
+pour détourner un interpréteur.  Le premier, c'est que l'on doit tout de même
 découper l'interpréteur en blocs, et ajouter des références aux blocs de code
-qui sont susceptibles d'être détournés.  Le second c'est que ce détournement est
-uniquement /statique/.  En plus de rajouter une étape de compilation, on doit
-choisir, dans le point d'entrée, quelle version de l'interpréteur on souhaite
-engendrer.  On peut imaginer avoir plusieurs points d'entrées, qui correspondent
-à des fichiers différents.  L'entrelacement engendrera autant de programmes
-qu'il y a de points d'entrée.  Mais une fois que l'un de ces programme est
-exécuté, on ne peut plus changer le comportement de l'interprétation.
+qui sont susceptibles d'être détournés.  Il faut donc modifier le code source,
+le réorganiser.  Le second c'est que ce détournement est uniquement /statique/.
+En plus de rajouter une étape de compilation, on doit choisir, dans le point
+d'entrée, quelle version de l'interpréteur on souhaite engendrer.  On peut
+imaginer avoir plusieurs points d'entrées, qui correspondent à des fichiers
+différents, où l'entrelacement engendrera autant de programmes qu'il y a de
+points d'entrée.  Mais on ne peut pas changer de la sorte le comportement de
+l'interprétation à l'exécution.
 
-** OOP
 
 -----
 
