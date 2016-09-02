@@ -49,7 +49,7 @@
  - [[#inprogress-variations-sur-un-interpréteur-de-lambda-calcul-extensible][INPROGRESS Variations sur un interpréteur de lambda-calcul extensible]]
    - [[#programmation-structurée][Programmation structurée]]
    - [[#programmation-littéraire][Programmation littéraire]]
-   - [[#oop][OOP]]
+   - [[#programmation-par-objets][Programmation par objets]]
  - [[#construire-un-interpréteur-par-modules][Construire un interpréteur par modules]]
    - [[#read-ajouter-des-termes][READ Ajouter des termes]]
    - [[#read-ajouter-des-opérations][READ Ajouter des opérations]]
@@ -5379,23 +5379,143 @@ différents, où l'entrelacement engendrera autant de programmes qu'il y a de
 points d'entrée.  Mais on ne peut pas changer de la sorte le comportement de
 l'interprétation à l'exécution.
 
+** Programmation par objets
+L'héritage et la liaison dynamique sont deux mécanismes de la programmation par
+objets qui sont utiles pour le détournement.  Si l'on écrit un interpréteur en
+suivant le patron /interpréteur/ en Java, où chaque terme du langage est
+représenté par une classe qui comporte une méthode ~eval~:
+
+#+BEGIN_SRC java
+interface Term { int eval(); }
+
+class Num implements Term {
+  int n;
+  Num(int n) { this.n = n; }
+  int eval() { return this.n; }
+}
+
+class Plus implements Term {
+  Term a, b;
+  Plus(Term a, Term b) {
+    this.a = a; this.b = b; }
+  int eval() {
+    return this.a.eval() + this.b.eval(); }
+}
+#+END_SRC
+
+Alors on peut facilement réutiliser cette classe pour créer une variante:
+
+#+BEGIN_SRC java
+class NumDouble extends Num {
+  int eval() { return this.n * 2; }
+}
+#+END_SRC
+
+Il suffit d'hériter de ~Num~, et de surcharger la méthode ~eval~.  Ensuite, il
+faut remplacer les instances de ~Num~ par des instances de ~NumDouble~.  Une
+façon de faire cela de manière transparente est d'utiliser un constructeur
+virtuel qui serait un argument du programme principal:
+
+#+BEGIN_SRC java
+main(NumFactory num) {
+  Term e1 = new Plus(nf.new(1), nf.new(2));
+  e1.eval();
+}
+#+END_SRC
+
+L'exécution de ~e1.eval()~ invoque la méthode ~Plus.eval~, qui récursivement
+invoque les méthodes ~eval~ de ses termes membres ~a~ et ~b~.  Par liaison
+dynamique, l'évaluation de ces termes pourra faire appel à la méthode ~Num.eval~
+ou ~NumDouble.eval~, suivant les instances retournées par le constructeur
+virtuel ~NumFactory~.  On peut donc facilement substituer un code par un autre
+simplement en contrôlant le constructeur virtuel, mais sans avoir à modifier le
+code existant de l'interpréteur.  Cette construction rappelle d'ailleurs des
+solutions déjà décrites en \sect[[#expr]], comme le visiteur extensible ou les algèbres
+d'objets.  Leur point commun est qu'elles reposent toutes sur l'indirection
+créée par la liaison dynamique: un même appel comme ~nf.new~ ou ~e1.eval~ pourra
+invoquer des codes différents suivant les receveurs.  Ces mécanismes de la
+programmation par objets sont donc tout à fait adéquats pour détourner des
+interpréteurs, et plus généralement des programmes.
+
+Un inconvénient de ces solutions est qu'elles sont dépendantes de la structure
+du programme.  Si l'interpréteur n'utilise de constructeurs virtuels, il n'est
+plus aussi facile d'insérer notre évaluation alternative ~NumDouble~; il faudra
+modifier l'interpréteur.  De même, dans un l'interpréteur plus complexe que
+celui de l'exemple, la fonctionnalité d'évaluation pourra être répartie sur
+plusieurs classes, potentiellement sur plusieurs méthodes; il faudra alors
+hériter de toutes ces classes pour surcharger toutes les méthodes pertinentes,
+et trouver le moyen de remplacer les instances originales par les instances de
+l'extension.  L'héritage et la liaison dynamique ne sont pas suffisants pour
+détourner un programme quelconque sans y apporter un minimum de modifications au
+préalable.
+
+*** En JavaScript
+En JavaScript, l'héritage est réalisé par la délégation.  Ce n'est pas très
+différent de la situation en Java, si bien que les mêmes remarques s'y
+appliquent.  JavaScript permet cependant de /modifier/ le lien de délégation
+après la création de l'objet, ce qui ouvre des possibilités intéressantes pour
+le détournement.
+
+Pour un simple objet qui représente une constante dans le langage, on a
+plusieurs façons de modifier son évaluation après sa définition:
+
+#+BEGIN_SRC js
+var num = {
+  new(n) { return {__proto__: this, n }},
+  eval() { return this.n }
+}
+
+var n1 = num.new(2)
+n1.eval() //: 2
+#+END_SRC
+
+On peut surcharger la fonction sur l'objet lui-même:
+
+#+BEGIN_SRC js
+n1.eval = function() { return this.n * 2 }
+n1.eval() //: 4
+#+END_SRC
+
+Cette modification n'affecte que l'objet ~n1~, et aucune autre instance dérivée
+de ~num~, existante ou future.
+
+Alternativement, on peut directement changer la fonction ~eval~ de ~num~:
+
+#+BEGIN_SRC js
+n1.eval() //: 2
+num.eval = function() { return this.n * 4 }
+n1.eval() //: 8
+#+END_SRC
+
+Cette fois, tous les objets qui délèguent leur fonction ~eval~ à ~num~
+utiliseront cette nouvelle version.
+
+Mais on peut aussi ne pas toucher à ~num~, mais proposer un ~num_triple~ qui
+servira de prototype alternatif pour ~n1~:
+
+#+BEGIN_aside
+Au passage, ~num_triple~ réutilise ~num.new~ par délégation en ayant ~num~ comme
+prototype.
+#+END_aside
+
+#+BEGIN_SRC js
+var num_triple = {
+   __proto__: num,
+   eval() { return this.n * 3 }
+}
+
+Object.setPrototypeOf(n1, num_triple)
+n1.eval() //: 6
+#+END_SRC
+
+En redéfinissant le prototype de ~n1~ de ~num~ à ~num_triple~, la fonction
+~eval~ qui est utilisée lors de l'appel ~n1.eval~ est maintenant celle de
+~num_triple~.
 
 -----
 
-OOP:
-- As Kay noted, message passing is already flexible because of inheritance.  So
-  if we define an interpreter as having an ~eval~ method, we can inherit and
-  override this behavior later.
-- Use inheritance to override code: works but of limited use?
-- Mostly the solutions in \sect Expression Problem cover this well.
-- But here we are diverting, not constructing.  How do they apply?
-- Downside is that the interpreter might not have an ~eval~ method at all.  Very
-  dependent on the interpreter structure.
-
 Prototypes:
-- more suited to JavaScript
-- delegation in place of inheritance
-- also depends on the program structure
+- mode-switching interp?
 
 Reflection:
 - template Haskell
@@ -5409,8 +5529,7 @@ AOP:
 - Downside: language extension.  More general than a DSL, but still not built-in
   to the language.  Also unfortunately very slow in JS.
 
-
-- Dynamic scoping
+Dynamic scoping:
 - lisp
 - haskell?
 - great, but not supported by many languages.
