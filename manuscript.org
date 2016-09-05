@@ -5479,7 +5479,8 @@ n1.eval() //: 4
 Cette modification n'affecte que l'objet ~n1~, et aucune autre instance dérivée
 de ~num~, existante ou future.
 
-Alternativement, on peut directement changer la fonction ~eval~ de ~num~:
+Alternativement, on peut directement changer la fonction ~eval~ du prototype
+~num~:
 
 #+BEGIN_SRC js
 n1.eval() //: 2
@@ -5490,7 +5491,7 @@ n1.eval() //: 8
 Cette fois, tous les objets qui délèguent leur fonction ~eval~ à ~num~
 utiliseront cette nouvelle version.
 
-Mais on peut aussi ne pas toucher à ~num~, mais proposer un ~num_triple~ qui
+Mais on peut aussi ne pas toucher à ~num~, et proposer un ~num_triple~ qui
 servira de prototype alternatif pour ~n1~:
 
 #+BEGIN_aside
@@ -5510,7 +5511,11 @@ n1.eval() //: 6
 
 En redéfinissant le prototype de ~n1~ de ~num~ à ~num_triple~, la fonction
 ~eval~ qui est utilisée lors de l'appel ~n1.eval~ est maintenant celle de
-~num_triple~.
+~num_triple~.  On a changé le prototype de ~n1~ dynamiquement, et de cette façon
+on n'a pas besoin de modifier le code existant de ~num~.  La modification
+n'affecte que ~n1~.
+
+
 
 -----
 
