@@ -5533,7 +5533,9 @@ var plus = (a, b) => ({type: 'plus', a, b })
 var interp = {
   rules: {
     num(num) { return num.n },
-    plus(plus) { return this.eval(plus.a) + this.eval(plus.b) },
+    plus(plus) {
+      return this.eval(plus.a) + this.eval(plus.b)
+    },
   },
 
   eval(node) {
