@@ -5515,12 +5515,244 @@ En redéfinissant le prototype de ~n1~ de ~num~ à ~num_triple~, la fonction
 on n'a pas besoin de modifier le code existant de ~num~.  La modification
 n'affecte que ~n1~.
 
+La modification dynamique de prototype peut donc être utilisée pour détourner un
+interpréteur.  Un exemple crédible serait d'avoir un interpréteur capable de
+changer de mode de fonctionnement pendant l'exécution d'un programme.  Par
+exemple, un interpréteur qui rentrerait dans un mode où toutes les évaluations
+sont consignées.
 
+*** Un interpréteur qui change de mode
+La forme minimale de cet interpréteur est la suivante:
+
+#+BEGIN_SRC js
+// Terms
+var num = (n) => ({type: 'num', n })
+var plus = (a, b) => ({type: 'plus', a, b })
+
+// Standard interpretation
+var interp = {
+  rules: {
+    num(num) { return num.n },
+    plus(plus) { return this.eval(plus.a) + this.eval(plus.b) },
+  },
+
+  eval(node) {
+    return this.rules[node.type].call(this, node)
+  },
+}
+
+var e1 = num(2)
+interp.eval(e1) //: 2
+
+var e2 = plus(num(1), num(2))
+interp.eval(e2) //: 3
+#+END_SRC
+
+Les termes cette fois ne sont plus des objets qui portent leur évaluation, mais
+de simples structures de données qui contiennent une étiquette de ~type~ pour
+les distinguer, analogues à un ~enum~ ou aux variantes d'un type algébrique.
+
+L'interpréteur contient une méthode ~eval~ qui prend un nœud de l'arbre de
+syntaxe en argument, et qui appelle la fonction d'évaluation adéquate pour le
+type de ce nœud.  Les fonctions d'évaluations sont dans l'objet ~rules~, interne
+à ~interp~; on peut voir cet objet comme un visiteur de l'arbre syntaxique.
+
+Pour évaluer les programmes ~e1~ ou ~e2~, il suffit de les passer en paramètre
+à la méthode ~interp.eval~.
+
+Avec cette structure, on peut créer un interpréteur alternatif par simple
+délégation.  Un interpréteur qui double les constantes aura juste besoin de
+redéfinir la règle d'évaluation des constantes, de la sorte:
+
+#+BEGIN_SRC js
+var interp_double = derive(interp, {
+  num(num) { return interp.eval(num) * 2 },
+})
+
+interp_double.eval(e1) //: 4
+interp_double.eval(e2) //: 6
+#+END_SRC
+
+La fonction ~num~ d'~interp_double~ réutilise l'évaluation de ~num~ de
+l'interpréteur précédent ~interp~, comme un appel via ~super~ en Java à la
+méthode de classe parente.  En JavaScript, il n'y a pas de structure de classe,
+mais la fonction ~derive~ nous permet tout de même de partager le code par
+délégation.  En l'occurrence, elle ne fait qu'établir deux liens de prototype:
+un pour l'objet ~interp_double~ lui-même (qui délègue à ~interp~), et l'autre
+pour l'objet interne ~interp_double.rules~ (vers ~interp.rules~).
+
+#+BEGIN_SRC js
+function derive(interp, rules) {
+  Object.setPrototypeOf(rules, interp.rules)
+  return {__proto__: interp, rules }
+}
+#+END_SRC
+
+De la même façon, on peut dériver un interpréteur qui consigne sur la sortie
+standard chaque fonction d'évaluation utilisée:
+
+#+BEGIN_SRC js
+var interp_log = {__proto: interp,
+  eval(node) {
+    console.log(`eval ${node.type}`)
+    return interp.eval.call(this, node)
+  }
+}
+
+interp_log.eval(e2) //: 3
+#+END_SRC
+
+L'évaluation de ~e2~ affichera:
+
+#+BEGIN_EXAMPLE
+eval plus
+eval num
+eval num
+#+END_EXAMPLE
+
+Cette fois on n'utilise pas ~derive~, car plutôt que de changer chaque règle, on
+change directement la fonction d'évaluation ~eval~ pour introduire l'instruction
+~console.log~.
+
+Maintenant, le but est d'avoir un interpréteur capable de changer de mode
+d'évaluation: par défaut, il ne consigne rien sur la sortie standard, mais en
+réponse à l'instruction ~start_trace~, il bascule vers le mode d'évaluation
+d'~interp_log~.  Puis, lorsqu'il rencontre l'instruction ~end_trace~, il bascule
+à nouveau vers l'évaluation standard.
+
+Pour commencer, il faut ajouter les termes pour ~start_trace~ et ~end_trace~:
+
+#+BEGIN_SRC js
+var start_trace = () => ({type: 'start_trace'})
+var end_trace = () => ({type: 'end_trace'})
+#+END_SRC
+
+Ces termes ne prennent aucun argument, et contiennent juste une étiquette qui
+permet de les distinguer.
+
+Pour écrire un programme avec ces termes, il nous faut un autre terme qui
+représente des séquences d'instruction.  On l'appellera ~progn~:
+
+#+BEGIN_SRC js
+var progn = (...stmts) => ({type: 'progn', stmts })
+#+END_SRC
+
+Ce terme accepte /n/ arguments qui sont des sous-termes.  Il faut donner un sens
+à ce terme dans l'interpréteur standard, donc on rajoute une règle pour ~progn~
+directement dans l'objet ~interp.rules~:
+
+#+BEGIN_SRC js
+interp.rules.progn = function(progn) {
+  var result
+  progn.stmts.forEach(s => { result = this.eval(s) })
+  return result
+}
+#+END_SRC
+
+Pour évaluer un ~progn~, on évalue récursivement et dans l'ordre chacun de ses
+sous-termes, puis on retourne le résultat du dernier sous-terme.  Notons qu'en
+ajoutant la règle pour ~progn~ ainsi sur l'objet ~interp.rules~, les
+interpréteurs dérivés ~interp_double~ et ~interp_log~ sont aussi enrichis de
+cette fonctionnalité.
+
+Voici un simple programme qui utilise ~progn~:
+
+#+BEGIN_SRC js
+var e3 = progn(
+  num(1),
+  plus(num(3), num(4))
+)
+
+interp_log.eval(e3) //: 7
+#+END_SRC
+
+Évaluer ce programme avec ~interp_log~ affiche sur la console:
+
+#+BEGIN_EXAMPLE
+eval num
+eval plus
+eval num
+eval num
+#+END_EXAMPLE
+
+Ce qui indique que tous les sous-termes sont bien évalués par la fonction ~eval~
+redéfinie par ~interp_log~.
+
+Maintenant, on dérive un interpréteur capable d'évaluer l'instruction
+~start_trace~:
+
+#+BEGIN_SRC js
+var interp_traceable = derive(interp, {
+  start_trace() {
+    Object.setPrototypeOf(this, interp_log)
+  },
+})
+#+END_SRC
+
+Le seul effet d'une instruction ~start_trace~ est de remplacer le prototype de
+l'interpréteur par ~interp_log~.  Quand l'interpréteur arrive sur cette
+instruction, il change de prototype, ce qui aura pour effet de consigner les
+évaluations ultérieures jusqu'à la fin du programme, ou jusqu'à la prochaine
+instruction ~end_trace~.  Cette instruction ~end_trace~ doit donc être
+interprétable par ~interp_log~:
+
+#+BEGIN_SRC js
+interp_log.rules.end_trace = function() {
+  Object.setPrototypeOf(this, interp_traceable)
+}
+#+END_SRC
+
+Intuitivement, évaluer cette instruction a l'effet inverse de ~start_trace~: on
+rétablit le prototype de l'interpréteur vers ~interp_traceable~.  On ne souhaite
+pas modifier les prototypes des objets ~interp_traceable~ ou ~interp_log~ en
+revanche, donc on utilisera un objet ~interp_model~ dont le seul but est de
+contenir le pointeur vers le prototype du mode courant d'évaluation.
+
+Le mode par défaut est ~traceable~, soit:
+
+#+BEGIN_SRC js
+var interp_modal = Object.create(interp_traceable)
+#+END_SRC
+
+Et ainsi, cet interpréteur pourra évaluer le programme ~e4~:
+
+#+BEGIN_SRC js
+var e4 = progn(
+  plus(num(1), num(2)),
+  start_trace(),
+  plus(num(3), num(4)),
+  end_trace(),
+  num(42)
+)
+
+interp_modal.eval(e4) //: 42
+#+END_SRC
+
+L'affichage sur la sortie standard est le suivant:
+
+#+BEGIN_EXAMPLE
+eval plus
+eval num
+eval num
+eval end_trace
+#+END_EXAMPLE
+
+La sortie est restreinte aux instructions évaluées entre les instructions
+~start_trace~ et ~end_trace~.  L'interpréteur ~interp_modal~ a changé de mode
+d'évaluation dynamiquement, pendant l'exécution d'un programme, et ce sans que
+le code source des interpréteurs précédents n'aie été modifié.  C'est le
+changement dynamique du lien de délégation par prototype, autorisé par le
+langage, qui nous permet ce détournement.
+
+Le détournement de cet exemple est rendu possible en partie parce que l'on a un
+contrôle total sur la structure de l'interpréteur: on a profité du fait que
+toutes les fonctions d'évaluation étaient regroupées dans un même objet ~rules~.
+Dans Narcissus, ce n'est pas le cas: l'évaluation de chaque terme se fait au
+sein d'une même fonction.  Donc le changement dynamique de prototype peut
+permettre le détournement, tant que les pièces du programme que l'on cherche à
+détourner sont regroupées au sein d'un même objet.
 
 -----
-
-Prototypes:
-- mode-switching interp?
 
 Reflection:
 - template Haskell
