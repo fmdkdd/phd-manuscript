@@ -37,6 +37,14 @@
   ;; Use the listings package for exporting source blocks.
   (setq org-latex-listings t)
 
+  (setq org-latex-text-markup-alist
+        '((bold . "\\textbf{%s}")
+          (code . "\\lstinline|%s|")
+          (italic . "\\emph{%s}")
+          (strike-through . "\\sout{%s}")
+          (underline . "\\uline{%s}")
+          (verbatim . protectedtexttt)))
+
   ;; Redefine `org-latex-src-block' with an advice to override the way BEGIN_SRC
   ;; blocks are exported.  I need listings wrapped in a figure environment for
   ;; captions in the margin to work.  And I need to use the caption and label

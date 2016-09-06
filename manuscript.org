@@ -4503,8 +4503,8 @@ on utilise les constructeurs virtuels ~constant~ et ~plus~:
 
 Ces constructeurs virtuels sont des méthodes d'un visiteur qui représente
 l'algèbre d'objet.  C'est le visiteur qui détermine le type de retour de cette
-fonction.  L'expression ~e2~ ne fait que décrire la structure ~plus(constant,
-constant)~.
+fonction.  L'expression ~e2~ ne fait que décrire la structure
+~plus(constant, constant)~.
 
 L'interface ~Visitor~ est similaire à celle du visiteur extensible; une méthode
 pour chaque terme:
@@ -4979,12 +4979,12 @@ eval-double: ; Extension
 #+END_SRC
 
 Lorsque le programme arrive au point de redirection (~eval-num~), le flot de
-contrôle est capturé par ~COMEFROM~ qui le passe au code de l'extension (~eval
-double~).  Une fois le code de l'extension exécuté, celui-ci rend le contrôle au
-code initial par le ~GOTO~ final.  De cette façon, on peut modifier le
-comportement du programme simplement en rajoutant du code, et sans modifier le
-code du programme d'origine.  On pourrait ainsi rajouter autant d'extensions que
-l'on souhaite, et cela fonctionnerait pour n'importe quel programme.
+contrôle est capturé par ~COMEFROM~ qui le passe au code de l'extension
+(~eval-double~).  Une fois le code de l'extension exécuté, celui-ci rend le
+contrôle au code initial par le ~GOTO~ final.  De cette façon, on peut modifier
+le comportement du programme simplement en rajoutant du code, et sans modifier
+le code du programme d'origine.  On pourrait ainsi rajouter autant d'extensions
+que l'on souhaite, et cela fonctionnerait pour n'importe quel programme.
 
 Les problèmes apparaissent quand on s'intéresse aux détails.  D'abord, quels
 arguments ~COMEFROM~ et ~GOTO~ prennent?  Si ce sont des numéros de lignes, ou
@@ -7159,10 +7159,10 @@ puisqu'on peut modifier le parent d'un environnement, on peut insérer de
 nouveaux environnements à n'importe quel point dans cette chaîne.
 
 Le plus utile pour nos besoins est d'insérer un environnement juste après
-l'environnement frontal.  Supposons que l'on dispose d'une fonction ~pushEnv(e,
-chain)~ qui insère l'environnement ~e~ en tête de la chaîne; et une fonction
-~removeEnv(e, chain)~ qui retire l'environnement de la chaîne (quelque soit sa
-position).  Alors on peut écrire:
+l'environnement frontal.  Supposons que l'on dispose d'une fonction
+~pushEnv(e, chain)~ qui insère l'environnement ~e~ en tête de la chaîne; et une
+fonction ~removeEnv(e, chain)~ qui retire l'environnement de la chaîne (quelque
+soit sa position).  Alors on peut écrire:
 
 #+BEGIN_SRC js -n -r
 var m = (function() { ... }())
