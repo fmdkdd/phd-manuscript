@@ -6187,7 +6187,7 @@ with (show({num,plus})) {
 #+END_SRC
 
 L'expression construite à l'intérieur du bloc délimité par ~with~ fait référence
-simplement à ~num~ et ~plus~.  Mais ici, comme nous somme dans le corps du
+simplement à ~num~ et ~plus~.  Mais ici, comme nous sommes dans le corps du
 ~with~, ~num~ et ~plus~ font référence aux objets retournés par l'appel de
 ~show~, pas aux objets originaux.  Les originaux sont inaccessibles car masqués
 par les noms des dérivés dans l'environnement du bloc.  Par construction, les
@@ -6380,7 +6380,7 @@ with (state({num,plus})) {
 
 Dans ces redéfinitions de ~num~ et ~plus~, on retourne finalement la valeur de
 ~eval~ de base après l'incrémentation.  La valeur du compteur est accessible via
-la fonction ~getCount~, qui sera exposé au code à l'intérieur du bloc ~with~.
+la fonction ~getCount~, qui sera exposée au code à l'intérieur du bloc ~with~.
 
 Lors du premier appel à ~getCount~, le compteur est bien à zéro, puisqu'aucune
 instruction n'a été évaluée.  Le second appel retourne 3, après l'évaluation de
@@ -6552,8 +6552,8 @@ dans de nombreux langages (en Python, ou en Scheme par exemple).  Les analogues
 de la création d'environnements sont moins évidents, mais on peut y substituer
 des mécanismes qui désambiguïse les noms.
 
-Par exemple, dans le langage Rust, on pourrait obtenir un résultat semblable en
-utilisant les traits:
+Par exemple, dans le langage Rust [[cite:Rust][Rust]], on pourrait obtenir un résultat
+semblable en utilisant les traits:
 
 #+BEGIN_fixme
 FIXME: wait, you are changing eval, but not the term itself.  Is that really
@@ -6591,14 +6591,14 @@ activé, le résultat de cette invocation est différent, car l'implémentation 
 trait diffère.
 
 *** Manipuler la portée suffit pour détourner le programme
-Dans tous les exemples que l'on a donné, on a pu voir qu'enrober le code d'un
+Dans tous les exemples que l'on a donnés, on a pu voir qu'enrober le code d'un
 ~with~ nous permettait de modifier son résultat.  Avec un ~with(double)~ on
 activait l'évaluation qui double les valeurs des nombres, avec ~with(show)~ on
 permettait d'utiliser l'opération ~show~ sur les arbres syntaxiques, etc.
 
 Un inconvénient, c'est que l'on doit construire l'arbre syntaxique à l'intérieur
 du ~with~.  On ne peut pas construire l'arbre une seule fois, et réutiliser sa
-valeur pour différentes évaluations.  C'est à dire, on voudrait écrire:
+valeur pour différentes évaluations.  Autrement dit, on voudrait écrire:
 
 #+BEGIN_SRC js -n -r
 var t = plus.new(num.new(1), num.new(2))       (ref:foal-ex14)
@@ -6615,6 +6615,11 @@ directement: ils ont déjà été utilisés à la construction ligne [[(foal-ex1
 
 On peut simuler une réutilisation du même arbre syntaxique; il suffit d'en faire
 une fonction:
+
+#+BEGIN_aside
+Ce qui revient à retarder la construction de cet arbre, ou le construire de
+façon paresseuse.
+#+END_aside
 
 #+BEGIN_SRC js -n -r
 var p1 = function(m = {}) {
@@ -6648,7 +6653,7 @@ On a alors une fonction, ~p1~, dont le résultat est entièrement déterminé pa
 l'argument qu'on lui passe.  Cette fonction en réalité appelle les ~plus~ et
 ~num~ passés en argument à travers ~with~.  C'est une inversion de contrôle:
 la fonction ~p1~ définit la structure du programme, mais le code exécuté est
-fournit par l'appelant.  Et cette inversion est rendue possible par
+fourni par l'appelant.  Et cette inversion est rendue possible par
 l'utilisation du ~with~ à l'intérieur de la fonction qui vient manipuler les
 références ~plus~ et ~num~.  Autrement dit, la manipulation de la portée suffit
 pour détourner le programme.
