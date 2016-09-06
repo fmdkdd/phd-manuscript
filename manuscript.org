@@ -2221,8 +2221,8 @@ Dans cet exemple tiré de [[cite:Cla-73][Cla-73]], les lignes exécutées sont, 
 13, 20, 11, 12.  ~STOP~ termine le programme à la ligne 12, et la ligne 40 n'est
 jamais exécutée.  Le flot de contrôle n'est pas évident à suivre.  Après chaque
 ligne, il faut regarder tout le programme pour voir s'il y a un ~COMEFROM~ où
-poursuivre l'exécution.  Ici c'est assez simple de se débarrasser des ~COME
-FROM~ pour obtenir le programme équivalent:
+poursuivre l'exécution.  Ici c'est assez simple de se débarrasser des ~COMEFROM~
+pour obtenir le programme équivalent:
 
 #+BEGIN_SRC fortran
 10 J=1
@@ -2250,9 +2250,9 @@ L'idée du ~COMEFROM~ n'est pas éloignée du mécanisme de méthode d'aspects
 ([[#aop]]).
 #+END_aside
 
-Même s'il faut voir ~COMEFROM~ comme une blague (aucun langage ne l'inclut),
-un tel mécanisme n'est pas totalement dénué d'intérêt.  Intuitivement, ~COME
-FROM~ peut remplacer un ~GOTO~:
+Même s'il faut voir ~COMEFROM~ comme une blague (aucun langage ne l'inclut), un
+tel mécanisme n'est pas totalement dénué d'intérêt.  Intuitivement, ~COMEFROM~
+peut remplacer un ~GOTO~:
 
 #+BEGIN_SRC fortran
 10 PRINT CHR$(205.5+RND(1))
