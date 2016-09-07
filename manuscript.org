@@ -5704,6 +5704,96 @@ sein d'une même fonction.  Donc le changement dynamique de prototype peut
 permettre le détournement, tant que les pièces du programme que l'on cherche à
 détourner sont regroupées au sein d'un même objet.
 
+** Portée dynamique
+La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
+portée dynamique, les variables libres d'une fonction peuvent être redéfinies
+par l'appelant.  Dans le Lisp intégré à Emacs (Elisp [[cite:Elisp][Elisp]]), la portée dynamique
+est le comportement par défaut:
+
+#+BEGIN_SRC elisp -n -r :exports code
+(defun f ()
+  x)
+
+(f) ; Error: Symbol's value as a variable is void   (ref:elisp-err)
+
+(defvar x 1)                                        (ref:elisp-global)
+(f) ;: 1
+
+(let ((x 2))
+  (f)) ;: 2                                         (ref:elisp-dynamic)
+
+(f) ;: 1
+x ;: 1
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+Dans le corps de la fonction ~f~, la variable ~x~ est libre.  Appeler la
+fonction ~f~ sans définir ~x~ échoue (ligne [[(elisp-err)]]).  Si l'on donne une
+définition globale à ~x~ (ligne [[(elisp-global)]]), alors l'appel de ~f~ réussit et
+retourne cette valeur.  Avec une définition globale de ~x~, tous les appels à
+~f~, quelle que soit la profondeur de la pile d'appels, auront accès à cette
+valeur.  Mais on peut également changer cette valeur temporairement, sans
+affecter la définition de la variable globale ~x~.  Ligne [[(elisp-dynamic)]],
+l'appel de ~f~ retourne 2, qui est la valeur associée à ~x~ pour cet appel, mais
+les appels ultérieurs à ~f~ et à ~x~ montrent que la valeur globale de ~x~ est
+inchangée.
+
+La portée dynamique nous permet donc de modifier le comportement d'une fonction
+sans avoir à modifier son code, de la détourner.  On peut facilement tirer
+partie de ce mécanisme sur un interpréteur analogue à l'interpréteur JavaScript
+précédent:
+
+#+BEGIN_SRC elisp :exports code
+(defun make-interp ()
+  (defun eval-num (num)
+    (nth 1 num))
+
+  (defun eval-plus (plus)
+    (+ (eval-run (nth 1 plus))
+       (eval-run (nth 2 plus))))
+
+  (defun eval-run (node)
+    (let ((f (intern (format "eval-%s" (nth 0 node)))))
+      (when (functionp f)
+        (funcall f node))))
+
+  #'eval-run)
+
+(defvar interp)
+(fset 'interp (make-interp))
+
+(interp '(num 1)) ;: 1
+(interp '(plus (num 1) (num 2))) ;: 3
+#+END_SRC
+
+#+RESULTS:
+: 3
+
+Un programme pour notre interpréteur sera donné sous forme de liste, la façon
+canonique de représenter un arbre syntaxique en Lisp.  La fonction ~interp~
+prend cet arbre syntaxique et retourne la valeur du programme, comme on peut le
+voir à la fin de cet extrait.  On a toujours le même langage arithmétique
+minimal construit des termes ~num~ et ~plus~.  L'évaluation de chaque terme est
+déléguée à une fonction nommée ~eval-TERM~.  La fonction principale ~eval-run~
+ne fait que construire le nom de cette fonction pour l'invoquer sur le nœud de
+l'arbre syntaxique passé en paramètre.
+
+Toutes ces définitions sont faites à l'intérieur d'une fonction ~make-interp~,
+dans l'intention de répliquer la structure de Narcissus.  Dans Narcissus, les
+fonctions d'interprétation sont internes, et la seule fonction exportée est
+~eval~ pour évaluer des programmes.  Un programme qui importe Narcissus n'a pas
+de référence aux fonctions internes de l'interpréteur.  En Elisp, les fonctions
+définies par ~defun~ sont globales, donc seront accessibles en dehors.  Mais
+dans l'esprit de répliquer le comportement de Narcissus, on ne fera comme si ces
+références étaient inaccessibles.  La seule fonction exportée est donc
+~eval-run~, que l'on capture dans la variable ~interp~.
+
+[actually need to go back to an object rules that contains lambdas, because
+function cells are not dynamically scoped.  Using flet is cheating because it
+just temporarily swaps a global variable]
+
 -----
 
 Reflection:
