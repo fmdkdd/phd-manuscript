@@ -8699,32 +8699,32 @@ souvent cette extensibilité n'était garantie que si le programme suivait une
 construction bien particulière, ce qui a motivé le besoin de détournement.  Nous
 avons ensuite vu comment utiliser l'indirection en JavaScript pour construire
 des interpréteurs modifiables.  Puis nous avons vu comment modifier et étendre
-des interpréteurs existants par détournement, pour minimisant les changements de
+des interpréteurs existants par détournement, en minimisant les changements de
 code.  Et enfin, dans le chapitre précédent, nous avons pu modifier Narcissus en
 utilisant ces mêmes techniques pour qu'il puisse accueillir quatre analyses
 différentes.
 
-Que faut-il en retenir?  Que le détournement est une façon légitime de modifier
+Que faut-il en retenir?  Que le détournement est une façon viable de modifier
 et d'étendre des interpréteurs.  Réécrire un interpréteur ou le refactoriser
 sont des solutions alternatives, mais qui demandent un effort initial plus
 important.  En détournant l'interpréteur, un programmeur peut rapidement
-prototyper des analyses, des variantes d'interprétation, sans avoir à maîtriser
+prototyper des analyses, des variantes d'interprétation, sans avoir à modifier
 un code étranger.  Le détournement est une alternative pragmatique à la
 refactorisation.
 
 L'indirection est l'ingrédient clé qui permet le détournement.  Pour détourner
 Narcissus, on a utilisé la construction ~with~ parce qu'elle permettait
-d'appliquer une forme de portée dynamique aux variables internes au module.  Le
-~with~ en soit n'est pas important, c'est juste le moyen le plus direct pour
-obtenir de l'indirection dans le cas présent.  Même si la plupart des exemples
-de ce document ont utilisé le langage JavaScript, le langage même importe peu,
-tant que des mécanismes d'indirection sont présents.  Pour détourner un
-programme, il faut introduire de l'indirection.  Et de façon générale, ce
-principe vaut aussi pour étendre un programme.  Si les références et les appels
-de méthodes sont indirects, ils seront plus faciles à changer.
+d'appliquer une forme de portée dynamique aux variables internes au module.
+Cette construction, controversée, n'est soit n'est pas importante, c'est juste
+le moyen le plus direct pour obtenir de l'indirection dans le cas présent.  Même
+si la plupart des exemples de ce document ont utilisé le langage JavaScript, le
+langage même importe peu, tant que des mécanismes d'indirection sont présents.
+Pour détourner un programme, il faut introduire de l'indirection.  Et de façon
+générale, ce principe vaut aussi pour étendre un programme.  Si les références
+et les appels de méthodes sont indirects, ils seront plus faciles à changer.
 
 Tous les mécanismes d'indirection s'apparentent à de la portée dynamique.
-Détourner un programme c'est modifier le comportement d'un code appelé sans
+Détourner un programme, c'est modifier le comportement d'un code appelé sans
 changer la définition de ce code.  La portée dynamique permet de changer la
 valeur des variables libres d'un code appelé.  À chaque fois que l'on cherche à
 détourner un programme, on cherche un mécanisme de portée dynamique.  Il s'agit
@@ -8750,33 +8750,33 @@ balle en argent; pas plus que la refactorisation.  L'enseignement ici est qu'il
 faut être conscient des conséquences de ces compromis lors de la conception et
 tout au long de l'évolution du programme.
 
-L'extensibilité est une propriété désirable dans un programme, mais à l'évidence
-elle est rarement primordiale.  Avant toute chose, un programme doit être
-correct.  Puis, suivant le sens des priorités du programmeur, ou les réalités
-économiques, on peut l'optimiser, lui ajouter des fonctionnalités, le rendre
-compatible avec davantage de matériel, etc.  Le programme est plus utile à ses
-utilisateurs qu'au programmeur.  Les utilisateurs ne sont pas impactés par une
+L'extensibilité est une propriété désirable dans un programme, mais elle est
+rarement primordiale.  Avant toute chose, un programme doit être correct.  Puis,
+suivant le sens des priorités du programmeur, ou les réalités économiques, on
+peut l'optimiser, lui ajouter des fonctionnalités, le rendre compatible avec
+davantage de matériel, etc.  Le programme est plus utile à ses utilisateurs
+qu'au programmeur.  Les utilisateurs ne sont pas impactés par une
 refactorisation ou un détournement, donc n'en voient pas la nécessité.  Mais ce
 ne sont pas les utilisateurs qui vivent avec le code source.  Le programmeur
 souhaite aussi simplifier son travail, à rendre le code plus facile à maintenir,
 à corriger, et à étendre.  Non seulement une meilleure structure de code
 contribue à son confort, mais elle peut aussi lui permettre d'améliorer le
 programme avec plus d'efficacité.  Alors, savoir détourner un programme n'est
-certainement pas une priorité, mais les techniques que l'on a exploré dans ce
+certainement pas une priorité, mais les techniques que l'on a explorées dans ce
 document ont de l'intérêt pour tout programmeur soucieux de l'organisation de
-leur code.  Au mieux, ce document leur aura apporté des réponses, au minimum, il
+son code.  Au mieux, ce document lui aura apporté des réponses, au minimum, il
 aura fait naître d'autres interrogations.
 
 *** Perspectives
 Pour le détournement de Narcissus spécifiquement, on pourrait s'intéresser à
-améliorer la performance de ~with~.  Que ce soit en optimisant cette
-construction dans les moteurs d'exécution de JavaScript communs, ou bien en
-trouvant une alternative qui a moins d'impact sur le temps d'exécution.  Une
-façon potentielle serait d'évaluer partiellement le module détourné et ses
-extensions, afin de déterminer les variables et fonctions qui sont étendues, et
-de résoudre toutes les références en avance.  Cette passe pourrait même être
-faite par transformation de code, sans avoir à modifier les moteurs
-d'exécution.  De façon générale, les mécanismes d'indirection posent
+améliorer la performance de ~with~.  Soit en optimisant cette construction dans
+les moteurs d'exécution de JavaScript communs, ou bien en trouvant un mécanisme
+d'indirection alternatif qui a moins d'impact sur le temps d'exécution.  Dans le
+second cas, un gain potentiel serait d'évaluer partiellement le module détourné
+et ses extensions, afin de déterminer les variables et fonctions qui sont
+étendues, et de résoudre toutes les références en avance.  Cette transformation
+pourrait même être faite par transformation de code, sans avoir à modifier les
+moteurs d'exécution.  De façon générale, les mécanismes d'indirection posent
 d'intéressants problèmes d'optimisation.
 
 On pourrait également s'intéresser à la détection de conflits entre extensions.
