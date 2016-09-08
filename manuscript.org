@@ -5745,199 +5745,97 @@ sans avoir à modifier son code, de la détourner.  On peut facilement tirer
 partie de ce mécanisme sur un interpréteur analogue à l'interpréteur JavaScript
 précédent:
 
-#+BEGIN_SRC elisp :exports code
-(defun make-interp ()
-  (defun eval-num (num)
-    (nth 1 num))
+#+BEGIN_SRC elisp :results output :exports code
+(defvar eval-rules
+  `((num . ,(lambda (num)
+              (nth 1 num)))
+    (plus . ,(lambda (plus)
+               (+ (interp (nth 1 plus))
+                  (interp (nth 2 plus)))))))
 
-  (defun eval-plus (plus)
-    (+ (eval-run (nth 1 plus))
-       (eval-run (nth 2 plus))))
-
-  (defun eval-run (node)
-    (let ((f (intern (format "eval-%s" (nth 0 node)))))
-      (when (functionp f)
-        (funcall f node))))
-
-  #'eval-run)
-
-(defvar interp)
-(fset 'interp (make-interp))
+(defun interp (node)
+  (let ((f (lookup (nth 0 node) eval-rules)))
+    (when (functionp f)
+      (funcall f node))))
 
 (interp '(num 1)) ;: 1
 (interp '(plus (num 1) (num 2))) ;: 3
 #+END_SRC
-
-#+RESULTS:
-: 3
 
 Un programme pour notre interpréteur sera donné sous forme de liste, la façon
 canonique de représenter un arbre syntaxique en Lisp.  La fonction ~interp~
 prend cet arbre syntaxique et retourne la valeur du programme, comme on peut le
 voir à la fin de cet extrait.  On a toujours le même langage arithmétique
 minimal construit des termes ~num~ et ~plus~.  L'évaluation de chaque terme est
-déléguée à une fonction nommée ~eval-TERM~.  La fonction principale ~eval-run~
-ne fait que construire le nom de cette fonction pour l'invoquer sur le nœud de
-l'arbre syntaxique passé en paramètre.
+déléguée à une lambda associée au type du terme dans la liste associative
+~eval-rules~.  Cette liste est une variable que l'on va pouvoir modifier par
+portée dynamique:
 
-Toutes ces définitions sont faites à l'intérieur d'une fonction ~make-interp~,
-dans l'intention de répliquer la structure de Narcissus.  Dans Narcissus, les
-fonctions d'interprétation sont internes, et la seule fonction exportée est
-~eval~ pour évaluer des programmes.  Un programme qui importe Narcissus n'a pas
-de référence aux fonctions internes de l'interpréteur.  En Elisp, les fonctions
-définies par ~defun~ sont globales, donc seront accessibles en dehors.  Mais
-dans l'esprit de répliquer le comportement de Narcissus, on ne fera comme si ces
-références étaient inaccessibles.  La seule fonction exportée est donc
-~eval-run~, que l'on capture dans la variable ~interp~.
+#+BEGIN_SRC elisp -n -r
+(defun eval-num-double (num)
+  (* 2 (nth 1 num)))
 
-[actually need to go back to an object rules that contains lambdas, because
-function cells are not dynamically scoped.  Using flet is cheating because it
-just temporarily swaps a global variable]
+(let ((eval-rules
+       (append
+        `((num . ,#'eval-num-double))
+        eval-rules)))
+  (interp '(plus (num 1) (num 2)))) ;: 6           (ref:elisp-override)
+
+(interp '(plus (num 1) (num 2))) ;: 3
+#+END_SRC
+
+La fonction ~eval-num-double~ est une variante d'interprétation du terme ~num~.
+Lors de l'appel à ~interp~ ligne [[(elisp-override)]], c'est cette variante qui est
+utilisée pour évaluer les ~num~, car on change temporairement la valeur de
+l'objet ~eval-rules~ par portée dynamique.  Après le ~let~, cette variante est
+désactivée, car le seul objet ~eval-rules~ trouvé par l'appel à ~interp~ est
+celui défini initialement par ~defvar~.
+
+Une limite de la portée dynamique dans cet exemple est qu'elle ne s'applique
+pas directement aux fonctions.  Intuitivement, on voudrait écrire:
+
+#+BEGIN_SRC elisp
+(defun eval-num (num)
+  (nth 1 num))
+
+(defun interp (node)
+  (eval-num node))
+
+(interp '(num 1)) ;: 1
+
+(defun eval-num-double (num)
+  (* 2 (nth 1 num)))
+
+(let ((eval-num #'eval-num-double))
+  (interp '(num 1))) ;: 1
+#+END_SRC
+
+L'intention ici est que le second appel à ~interp~ retourne 2, car la fonction
+~eval-num~ est remplacée dynamiquement par ~eval-num-double~.  Mais en Emacs
+Lisp on obtient 1, indiquant que la fonction ~eval-num~ n'a pas été changée par
+le ~let~.  La cause de ce comportement est la séparation des espaces de noms
+entre les fonctions et les valeurs; c'est la différence entre les dialectes
+Lisp_1 et Lisp_2 décrite par Gabriel et Pitman [[cite:GP-88][GP-88]].  Dans un Lisp_1, l'espace de
+noms est commun aux fonctions et aux valeurs, ce qui résoudrait le problème.
+Sauf que les Lisp_1, comme Scheme ou Racket, n'ont pas de portée dynamique par
+défaut: pour qu'une variable bénéficie de portée dynamique, il faut la déclarer
+comme telle (un /parameter/ en Racket par exemple).
+
+Le mécanisme de portée dynamique est le mécanisme plus simple pour détourner un
+interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
+langages proposent la portée dynamique des variables [[cite:Mor-98][Mor-98]], et ceux qui le font
+ont des restrictions supplémentaires (Lisp_2 contre Lisp_1) qui demandent des
+contorsions (mettre les fonctions d'évaluation dans une variable ~eval-rules~),
+ce qui réduit l'applicabilité de détournement.  De plus, la portée dynamique
+n'est pas disponible en JavaScript.
 
 -----
-
-Reflection:
-- template Haskell
-- lisp?
-- Downsides: basically writing your own language at this point, which is costly
-  in time, and very specific for your problem.
 
 AOP:
 - Java
 - JS with AspectScript
 - Downside: language extension.  More general than a DSL, but still not built-in
   to the language.  Also unfortunately very slow in JS.
-
-Dynamic scoping:
-- lisp
-- haskell?
-- great, but not supported by many languages.
-
------
-
-Traditionnellement, on retrouve ces mécanismes plus facilement dans des langages
-dynamiques comme JavaScript, Python, ou Lisp, que dans des langages statiquement
-typés comme Java ou Haskell.  Intuitivement,
-
-We can observe that dynamic languages as a whole have more mecanisms for
-indirection.  But that maybe because these mecanisms are more difficult to
-statically type, and that they may not be that more useful.
-
------
-
-Essayons d'abord d'écrire un interpréteur pour chaque sémantique de \lambda^{facet}, sans
-anticiper l'instrumentation; c'est-à-dire sans se préoccuper de pouvoir étendre
-l'interpréteur facilement.
-
-Nous appellerons \lambda^{standard} le langage décrit par la première sémantique d'Austin
-et Flanagan, qui correspond à un lambda-calcul avec références, et \lambda^{facet} le
-langage étendu pour l'évaluation multi-facettes.
-
-Puisque Narcissus est en JavaScript, et suit le patron /module/, écrivons un
-interpréteur de \lambda^{standard} dans le même style.
-
-# From [[file:~/Archim%C3%A8de/Th%C3%A8se/lab/lamfa/js/lab/lamfa-narcissus-style.org][lamfa/js/lamfa-narcissus-style.org]]
-#+BEGIN_SRC js
-var interpreter = (function(){
-  var bottom = {...}
-  function Address() {...}
-  function FunctionObject() {...}
-
-  function ExecutionContext(parent) {
-    ...
-    this.scope = {}
-    this.store = new Store()
-  }
-
-  function execute(node, context) {
-    switch (node.type) {
-    case 'CONST':  ...
-    case 'VAR':    ...
-    case 'FUN':    ...
-    case 'APP':    ...
-    ...
-    }
-  }
-
-  return {
-    run: run,
-  }
-}())
-#+END_SRC
-
-Ce simple interpréteur reflète la structure de Narcissus, mais est bien plus
-succinct.  Comme dans Narcissus, le gros de la logique de l'interpréteur réside
-dans la fonction ~execute~.  Les définitions qui précèdent réifient des objets
-de la spécification: ~Address~, ~bottom~, ~FunctionObject~.  On réutilise le nom
-~ExecutionContext~ pour indiquer l'objet qui contient l'environnement de
-variable et qui est passé au fil des appels récursifs à ~execute~.  En bas ce
-sont les fonctions exportées par le module.
-
-On peut maintenant modifier cet interpréteur pour implémenter la seconde
-sémantique de \lambda^{facet}.  Comme pour l'instrumentation de Narcissus, on part de
-l'interpréteur du langage standard, qu'on modifie par endroits suivant les
-besoins de la nouvelle sémantique.  L'idée ici n'est pas de construire un
-interpréteur extensible, mais d'identifier les points qui vont varier en
-définissant cette variation.  Pour cela, on s'intéresse surtout aux différences
-entre les deux versions.
-
-#+BEGIN_aside
-Diff simplifié qui illustre les modifications nécessaires pour l'interpréteur
-\lambda^{facet}.
-#+END_aside
-#+BEGIN_SRC diff
-+ function Facet() {...}
-
-+ function evaluateEach() {...}
-
-  function ExecutionContext() {
-+   this.pc = []
-  }
-
-  function execute(...) {
-    ...
-    case CALL:
--     v = f._call(a, context)
-+     v = evaluateEach(f, context, (f, x) => f._call(a, x))
-
-    case REF:
-+     v = constructFacet(context.pc, v, bottom)
-
-    case DEREF:
--     v = a.deref(context)
-+     v = evaluateEach(a, context, (a, x) => a.deref(x))
-  ...
-  }
-
-  return {
-    ...
-+   runWithPC: runWithPC,
-  }
-#+END_SRC
-
-Il y a moins de différences que pour l'instrumentation de Narcissus, mais on
-retrouve trois des mêmes catégories.  D'abord, il y a de nouvelles définitions
-pour les valeurs à facettes et leur évaluation (~Facet~ et ~evaluateEach~).  La
-fonction ~evaluateEach~ est utilisée, comme dans l'instrumentation de Narcissus,
-pour évaluer les deux parties d'une valeur à facettes récursivement.  Le program
-counter est présent, et rajouté à l'objet ~ExecutionContext~ pour pouvoir être
-utilisé dans ~execute~.  Enfin, une nouvelle fonction est exportée par le
-module.  La seule catégorie non représentée est l'extension de l'objet client
-global, car il n'y a pas d'équivalent à l'objet global dans \lambda^{facet}.
-
-Puisqu'on retrouve les mêmes catégories de changement sur cet exemple plus
-restreint, on peut supposer que si l'on trouve des moyens d'instrumenter
-l'interpréteur de \lambda^{standard} pour l'évaluation à facettes sans duplication de
-code, ces moyens seront applicables à Narcissus également.
-
-Il est clair que les choix d'implémentation de l'interpréteur standard sont la
-cause de la duplication de code dans l'instrumentation.  Si l'interpréteur
-possédait une interface pour être étendu, nous n'aurions pas besoin de dupliquer
-le code pour changer ces quelques lignes.  Comment aurions nous dû /construire/
-l'interpréteur pour que l'extension requise par \lambda^{facet} puisse être écrite en
-minimisant le code dupliqué ?  Ou encore, est-il possible de /modifier/
-l'interpréteur standard pour le rendre extensible ?  Ce sont les deux questions
-que nous explorons par la suite.
 
 * Construire un interpréteur par modules
 :PROPERTIES:
