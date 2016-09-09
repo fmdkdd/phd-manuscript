@@ -4909,6 +4909,11 @@ Obladi, Oblada
 {{{author(The Beatles)}}}
 #+END_epigraphs
 
+#+BEGIN_fixme
+Rework titles.  Add diagrams.  State here that these are preliminary
+explorations.   Add takeaway and transition into next chapter.
+#+END_fixme
+
 Dans ce chapitre, on s'intéresse spécifiquement à comprendre comment les
 techniques du chapitre précédent peuvent s'appliquer pour détourner un
 interpréteur, et en particulier un interpréteur écrit en JavaScript.  Pour ce
@@ -5828,6 +5833,59 @@ ont des restrictions supplémentaires (Lisp_2 contre Lisp_1) qui demandent des
 contorsions (mettre les fonctions d'évaluation dans une variable ~eval-rules~),
 ce qui réduit l'applicabilité de détournement.  De plus, la portée dynamique
 n'est pas disponible en JavaScript.
+
+** Programmation par aspects
+La programmation par aspects est un mécanisme de détournement tout trouvé.  Avec
+AspectJ, on peut potentiellement modifier n'importe quel interpréteur en Java à
+la compilation, et sans avoir à directement modifier le code de la classe.
+
+Par exemple, pour l'interpréteur arithmétique que l'on a déjà vu en Java:
+
+#+BEGIN_SRC java
+interface Term { int eval(); }
+
+class Num implements Term {
+  int n;
+  Num(int n) { this.n = n; }
+  int eval() { return this.n; }
+}
+
+class Plus implements Term {
+  Term a, b;
+  Plus(Term a, Term b) {
+    this.a = a; this.b = b; }
+  int eval() {
+    return this.a.eval() + this.b.eval(); }
+}
+#+END_SRC
+
+On peut ajouter l'évaluation alternative de ~Num~ par un aspect:
+
+#+BEGIN_SRC java
+aspect NumDouble {
+  pointcut eval(Num num): call(int eval() && target(num));
+
+  int around(Num num): eval(num) {
+    return 2 * proceed(num);
+  }
+}
+#+END_SRC
+
+En compilant l'aspect ~NumDouble~, on obtient l'interpréteur modifié pour
+lequel toutes les évaluations de termes ~Num~ ont une valeur doublée.
+
+L'aspect est défini dans une classe à part entière, séparée du code de
+l'interpréteur.  La modification du code est effectuée par le tisseur d'aspects,
+lorsque l'on invoque la compilation de l'aspect par ~ajc~, le compilateur
+d'AspectJ.  On peut aussi compiler le programme sans l'aspect, avec le
+compilateur ~javac~, et on obtient l'interpréteur au comportement standard.
+Deux compilateurs pour deux programmes, mais un seul code source.  La
+programmation par aspects permet donc le détournement de cet interpréteur, mais
+dans cet exemple le détournement est statique: il se fait à la compilation.
+
+[example using cflow to toggle behavior]
+
+
 
 -----
 
