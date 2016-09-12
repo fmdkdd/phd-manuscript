@@ -6255,9 +6255,57 @@ de n'autoriser qu'un seul module de termes à la fois, en masquant les référen
 vers les ~num~ et ~plus~ originaux.  C'est possible avec la construction ~with~
 de JavaScript.
 
-#+BEGIN_fixme
-FIXME: spend more time to explain what ~with~ does exactly
-#+END_fixme
+La construction ~with~ en JavaScript a pour but de réduire le bruit syntaxique
+d'un code qui fait référence plusieurs fois aux propriétés d'un même objet.
+Dans la situation suivante:
+
+#+BEGIN_SRC js
+canvas.begin()
+canvas.setColor(...)
+canvas.drawRectangle(...)
+canvas.setColor(...)
+canvas.drawCircle(...)
+canvas.finish()
+#+END_SRC
+
+On peut utiliser ~with~ pour écrire plutôt:
+
+#+BEGIN_SRC js
+with (canvas) {
+  begin()
+  setColor(...)
+  drawRectangle(...)
+  setColor(...)
+  drawCircle(...)
+  finish()
+}
+#+END_SRC
+
+La sémantique de ~with~ est de prendre l'objet passé en argument (~canvas~) et
+d'en faire un environnement qui sera utilisé pour résoudre les noms de variables
+du corps du ~with~.  Dans l'exemple, le nom ~begin~ est résolu en examinant
+d'abord l'environnement créé par ~with~.  Or ~canvas~ contient bien une
+propriété ~begin~, associée à une fonction, donc c'est cette fonction qui sera
+invoquée pour l'appel ~begin()~.
+
+L'environnement créé par ~with~ hérite de l'environnement courant.  Dans
+l'exemple suivant:
+
+#+BEGIN_SRC js
+var a = 1
+with ({b: 2}) {
+  b //: 2
+  a //: 1
+}
+#+END_SRC
+
+La variable ~b~ est résolue comme précédemment, en utilisant l'environnement
+créé par ~with~.  Mais la variable ~a~, qui n'est pas présente dans l'objet
+passé à ~with~, est bien résolue en utilisant l'environnement parent qui existe
+autour de ~with~; ici c'est l'environnement global.
+
+Donc, pour restreindre le module utilisé pour la construction d'un arbre de
+syntaxe, on utilise ~with~ ainsi:
 
 #+BEGIN_side-figure
 [[file:img/foal-5.svg]]
