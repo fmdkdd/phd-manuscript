@@ -180,21 +180,23 @@ pragmatique pour modifier et étendre des interpréteurs par de multiples analys
 (chapitre [[#idea]]).  Détourner un interpréteur repose sur l'utilisation de
 mécanismes linguistiques qui nous permettent de modifier le comportement d'un
 programme sans modifier directement son code source: des mécanismes tels que le
-liaison dynamique, les variables à portée dynamique ou la métaprogrammation
-(chapitre [[#chrono]]).
+liaison dynamique, les variables à portée dynamique ou la métaprogrammation.  On
+passe en revue ces mécanismes dans le chapitre [[#chrono]].
 
-#+BEGIN_fixme
-FIXME: préciser quelles techniques pour le contenu des deux permiers chapitre de
-contribution
-#+END_fixme
-
-Pour illustrer le détournement, on utilisera de simples interpréteurs que l'on
-modifiera en utilisant différentes techniques (chapitres [[#variations]] et [[#foal]]).
-Puis, pour démontrer l'utilité du détournement sur un interpréteur réaliste, on
-appliquera ces techniques à Narcissus (chapitre [[#dls]]), un interpréteur de
-JavaScript.  On montrera comment, grâce au détournement, on peut facilement
-ajouter des analyses dynamiques de programmes sans impacter le code source de
-l'interpréteur.
+Pour illustrer le détournement, on commence par appliquer ces mécanismes à de
+simples interpréteurs arithmétiques (chapitre [[#variations]]).  On étudie en
+particulier si ces mécanismes sont capables de détournement, quels sont les
+compromis en performance ou en facilité d'utilisation qu'ils imposent, et
+surtout si ces mécanismes sont transposables à JavaScript.  Une conclusion est
+que la portée dynamique est un mécanisme simple et générique pour effectuer le
+détournement, mais qu'elle est absente en JavaScript.  On montre alors comment,
+en utilisant des constructions existantes au langage, on peut simuler une forme
+de portée dynamique afin de construire un interpréteur extensible (chapitre
+[[#foal]]).  Enfin, pour démontrer l'utilité du détournement sur un interpréteur
+réaliste, on applique une forme de portée dynamique à Narcissus (chapitre [[#dls]]),
+un interpréteur de JavaScript.  On montre comment, grâce au détournement, on
+peut facilement ajouter des analyses dynamiques de programmes sans impacter le
+code source de l'interpréteur.
 
 Mais avant de voir tout cela, il faut commencer par quelques définitions.
 
