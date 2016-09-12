@@ -5346,7 +5346,7 @@ interface Term { int eval(); }
 class Num implements Term {
   int n;
   Num(int n) { this.n = n; }
-  int eval() { return this.n; }
+  int eval() { return n; }
 }
 
 class Plus implements Term {
@@ -5354,7 +5354,7 @@ class Plus implements Term {
   Plus(Term a, Term b) {
     this.a = a; this.b = b; }
   int eval() {
-    return this.a.eval() + this.b.eval(); }
+    return a.eval() + b.eval(); }
 }
 #+END_SRC
 
@@ -5362,7 +5362,7 @@ Alors on peut facilement réutiliser cette classe pour créer une variante:
 
 #+BEGIN_SRC java
 class NumDouble extends Num {
-  int eval() { return this.n * 2; }
+  int eval() { return n * 2; }
 }
 #+END_SRC
 
@@ -5847,7 +5847,7 @@ interface Term { int eval(); }
 class Num implements Term {
   int n;
   Num(int n) { this.n = n; }
-  int eval() { return this.n; }
+  int eval() { return n; }
 }
 
 class Plus implements Term {
@@ -5855,7 +5855,7 @@ class Plus implements Term {
   Plus(Term a, Term b) {
     this.a = a; this.b = b; }
   int eval() {
-    return this.a.eval() + this.b.eval(); }
+    return a.eval() + b.eval(); }
 }
 #+END_SRC
 
