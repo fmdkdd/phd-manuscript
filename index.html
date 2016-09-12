@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-09-12 lun. 15:46 -->
+<!-- 2016-09-12 lun. 18:04 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -320,26 +320,25 @@ pragmatique pour modifier et étendre des interpréteurs par de multiples analys
 (chapitre <a href="#idea">2.5</a>).  Détourner un interpréteur repose sur l&rsquo;utilisation de
 mécanismes linguistiques qui nous permettent de modifier le comportement d&rsquo;un
 programme sans modifier directement son code source: des mécanismes tels que le
-liaison dynamique, les variables à portée dynamique ou la métaprogrammation
-(chapitre <a href="#chrono">3</a>).
+liaison dynamique, les variables à portée dynamique ou la métaprogrammation.  On
+passe en revue ces mécanismes dans le chapitre <a href="#chrono">3</a>.
 </p>
 
-<div class="fixme">
 <p>
-FIXME: préciser quelles techniques pour le contenu des deux permiers chapitre de
-contribution
-</p>
-
-</div>
-
-<p>
-Pour illustrer le détournement, on utilisera de simples interpréteurs que l&rsquo;on
-modifiera en utilisant différentes techniques (chapitres <a href="#variations">4</a> et <a href="#foal">5</a>).
-Puis, pour démontrer l&rsquo;utilité du détournement sur un interpréteur réaliste, on
-appliquera ces techniques à Narcissus (chapitre <a href="#dls">6</a>), un interpréteur de
-JavaScript.  On montrera comment, grâce au détournement, on peut facilement
-ajouter des analyses dynamiques de programmes sans impacter le code source de
-l&rsquo;interpréteur.
+Pour illustrer le détournement, on commence par appliquer ces mécanismes à de
+simples interpréteurs arithmétiques (chapitre <a href="#variations">4</a>).  On étudie en
+particulier si ces mécanismes sont capables de détournement, quels sont les
+compromis en performance ou en facilité d&rsquo;utilisation qu&rsquo;ils imposent, et
+surtout si ces mécanismes sont transposables à JavaScript.  Une conclusion est
+que la portée dynamique est un mécanisme simple et générique pour effectuer le
+détournement, mais qu&rsquo;elle est absente en JavaScript.  On montre alors comment,
+en utilisant des constructions existantes au langage, on peut simuler une forme
+de portée dynamique afin de construire un interpréteur extensible (chapitre
+<a href="#foal">5</a>).  Enfin, pour démontrer l&rsquo;utilité du détournement sur un interpréteur
+réaliste, on applique une forme de portée dynamique à Narcissus (chapitre <a href="#dls">6</a>),
+un interpréteur de JavaScript.  On montre comment, grâce au détournement, on
+peut facilement ajouter des analyses dynamiques de programmes sans impacter le
+code source de l&rsquo;interpréteur.
 </p>
 
 <p>
@@ -4537,13 +4536,6 @@ the &laquo;&nbsp;hooks&nbsp;&raquo; that the reflective system provides.  AOP is
 reflection is one powerful tool. [<a href="#KLM+97">KLM+97</a>]</p>
 </blockquote>
 
-<div class="fixme">
-<p>
-FIXME: Citer Dony?
-</p>
-
-</div>
-
 <p>
 Et il y a d&rsquo;autres mécanismes connus.  Le <code>try/catch</code>, ou le mécanisme
 d&rsquo;exceptions, transcende la frontière des procédures.  Les exceptions ne sont
@@ -6236,13 +6228,6 @@ des appels à <code>delay</code> absolument partout.  Modifier l&rsquo;interpré
 serait alors bien plus simple.
 </p>
 
-<div class="fixme">
-<p>
-FIXME: Anything relevant from Ducasse on proxies in this setting?
-</p>
-
-</div>
-
 <p>
 Une valeur virtuelle est essentiellement un <i>mandataire</i> (<i>proxy</i>) autour d&rsquo;une
 valeur primitive.  Les auteurs baptisent d&rsquo;ailleurs leur langage &lambda;<sub>proxy</sub>.  Un
@@ -6366,35 +6351,16 @@ mandataires ne sont <i>que</i> de l&rsquo;indirection, et la portée dynamique r
 l&rsquo;utilisation des variables libres, qui sont elles-mêmes des indirections.
 </p>
 
-<div class="fixme">
-<p>
-FIXME: Decide on the order of chapter 4 and 5
-</p>
-
-</div>
-
 <p>
 Il apparaît donc que l&rsquo;indirection, sous toutes ces formes, est l&rsquo;ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
-particulier.  Le chapitre <a href="#foal">5</a> montre comment utiliser des mécanismes
-d&rsquo;indirection de JavaScript pour construire des interpréteurs de façon
-incrémentale.
-</p>
-
-<p>
-On observe que la plupart des solutions exposées ici proposent de rendre les
-programmes extensibles par <i>construction</i>.  Si les programmes suivent le
-paradigme proposé, alors il sera plus facile de les étendre par la suite.  Mais
-lorsque le programme est déjà écrit, et qu&rsquo;il ne suit pas une solution
-extensible, que faire?  On peut le réecrire, pour adapter l&rsquo;un des paradigmes
-mentionné.  L&rsquo;alternative, c&rsquo;est de le détourner.  Le chapitre <a href="#variations">4</a>
-montre comment utiliser l&rsquo;indirection dans différents langages afin de détourner
-des interpréteurs existants.
-</p>
-
-<p>
-Enfin, le chapitre <a href="#dls">6</a> montre comment appliquer l&rsquo;indirection en JavaScript
-pour détourner l&rsquo;interpréteur Narcissus.
+particulier.  Mais cette étude ne nous dit pas comment utiliser l&rsquo;indirection
+pour détourner des interpréteurs.  Le chapitre suivant (&sect;<a href="#variations">4</a>) montre
+comment utiliser certains des mécanismes que l&rsquo;on a étudiés ici afin de
+détourner un interpréteur minimal.  Le chapitre <a href="#foal">5</a> montre comment utiliser
+l&rsquo;indirection en JavaScript, à travers une forme de portée dynamique, afin de
+construire des interpréteurs de façon incrémentale.  Enfin, ce mécanisme sera
+réemployé dans le chapitre <a href="#dls">6</a> pour détourner l&rsquo;interpréteur Narcissus.
 </p>
 </div>
 </div>
@@ -6426,8 +6392,8 @@ Obladi, Oblada
 
 <div class="fixme">
 <p>
-Add diagrams.  State here that these are preliminary explorations.  Add takeaway
-and transition into next chapter.
+FIXME: Add diagrams.  State here that these are preliminary explorations.  Add
+takeaway and transition into next chapter.
 </p>
 
 </div>
@@ -7899,14 +7865,6 @@ modifier le code</i> qui précède; chaque fonctionnalité ajoute du code, réut
 du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
 </p>
 
-<div class="fixme">
-<p>
-FIXME: Expression problem <i>is</i> related here.  Either related work here or in
-context chapter.
-</p>
-
-</div>
-
 <aside>
 <p>
 Le code complet de ce chapitre est reproduit dans les appendices
@@ -7937,14 +7895,6 @@ qui correspond:
 <pre class="example">
 eval : Term -&gt; Integer
 </pre>
-
-<div class="fixme">
-<p>
-FIXME: Interpreter pattern referenced here.  Warrants a description (in
-solutions to the expression problem?)
-</p>
-
-</div>
 
 <p>
 L&rsquo;interpréteur doit représenter ces constantes et les évaluer.  Pour implémenter
@@ -8266,12 +8216,75 @@ vers les <code>num</code> et <code>plus</code> originaux.  C&rsquo;est possible 
 de JavaScript.
 </p>
 
-<div class="fixme">
 <p>
-FIXME: spend more time to explain what <code>with</code> does exactly
+La construction <code>with</code> en JavaScript a pour but de réduire le bruit syntaxique
+d&rsquo;un code qui fait référence plusieurs fois aux propriétés d&rsquo;un même objet.
+Dans la situation suivante:
 </p>
 
+<div class="org-src-container">
+
+<pre class="src src-js">canvas.begin()
+canvas.setColor(...)
+canvas.drawRectangle(...)
+canvas.setColor(...)
+canvas.drawCircle(...)
+canvas.finish()
+</pre>
 </div>
+
+<p>
+On peut utiliser <code>with</code> pour écrire plutôt:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">with</span> (canvas) {
+  begin()
+  setColor(...)
+  drawRectangle(...)
+  setColor(...)
+  drawCircle(...)
+  finish()
+}
+</pre>
+</div>
+
+<p>
+La sémantique de <code>with</code> est de prendre l&rsquo;objet passé en argument (<code>canvas</code>) et
+d&rsquo;en faire un environnement qui sera utilisé pour résoudre les noms de variables
+du corps du <code>with</code>.  Dans l&rsquo;exemple, le nom <code>begin</code> est résolu en examinant
+d&rsquo;abord l&rsquo;environnement créé par <code>with</code>.  Or <code>canvas</code> contient bien une
+propriété <code>begin</code>, associée à une fonction, donc c&rsquo;est cette fonction qui sera
+invoquée pour l&rsquo;appel <code>begin()</code>.
+</p>
+
+<p>
+L&rsquo;environnement créé par <code>with</code> hérite de l&rsquo;environnement courant.  Dans
+l&rsquo;exemple suivant:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">a</span> = 1
+<span class="org-keyword">with</span> ({b: 2}) {
+  b <span class="org-comment-delimiter">//</span><span class="org-comment">: 2</span>
+  a <span class="org-comment-delimiter">//</span><span class="org-comment">: 1</span>
+}
+</pre>
+</div>
+
+<p>
+La variable <code>b</code> est résolue comme précédemment, en utilisant l&rsquo;environnement
+créé par <code>with</code>.  Mais la variable <code>a</code>, qui n&rsquo;est pas présente dans l&rsquo;objet
+passé à <code>with</code>, est bien résolue en utilisant l&rsquo;environnement parent qui existe
+autour de <code>with</code>; ici c&rsquo;est l&rsquo;environnement global.
+</p>
+
+<p>
+Donc, pour restreindre le module utilisé pour la construction d&rsquo;un arbre de
+syntaxe, on utilise <code>with</code> ainsi:
+</p>
 
 <div class="side-figure">
 
@@ -8797,14 +8810,6 @@ Par exemple, dans le langage Rust [<a href="#Rust">Rus</a>], on pourrait obtenir
 semblable en utilisant les traits:
 </p>
 
-<div class="fixme">
-<p>
-FIXME: wait, you are changing eval, but not the term itself.  Is that really
-similar?
-</p>
-
-</div>
-
 <aside>
 <p>
 Le code complet de cet exemple se trouve dans les appendices <a href="#foal-extra-rust">7.2</a>.
@@ -8813,32 +8818,50 @@ Le code complet de cet exemple se trouve dans les appendices <a href="#foal-extr
 
 <div class="org-src-container">
 
-<pre class="src src-rust"><span class="linenr"> 1: </span><span class="org-keyword">enum</span> <span class="org-type">Term</span> {
-<span class="linenr"> 2: </span>  <span class="org-type">Num</span>(<span class="org-type">u64</span>),
-<span class="linenr"> 3: </span>  <span class="org-type">Plus</span>(<span class="org-type">Term</span>, <span class="org-type">Term</span>),
-<span class="linenr"> 4: </span>}
-<span class="linenr"> 5: </span>
-<span id="coderef-foal-ex13" class="coderef-off"><span class="linenr"> 6: </span><span class="org-keyword">trait</span> <span class="org-type">Eval</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span> }</span>
-<span class="linenr"> 7: </span>
-<span class="linenr"> 8: </span><span class="org-keyword">mod</span> <span class="org-constant">base</span>   { <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) {}}}
-<span class="linenr"> 9: </span><span class="org-keyword">mod</span> <span class="org-constant">double</span> { <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) {}}}
-<span class="linenr">10: </span>
-<span class="linenr">11: </span><span class="org-keyword">fn</span> <span class="org-function-name">main</span>() {
-<span class="linenr">12: </span>  <span class="org-keyword">let</span> t = <span class="org-type">Term</span>(..)
-<span class="linenr">13: </span>  { <span class="org-keyword">use</span> <span class="org-constant">base</span>::<span class="org-type">Eval</span>;   t.eval(); } <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
-<span class="linenr">14: </span>  { <span class="org-keyword">use</span> <span class="org-constant">double</span>::<span class="org-type">Eval</span>; t.eval(); } <span class="org-comment-delimiter">//</span><span class="org-comment">: 6</span>
-<span class="linenr">15: </span>}
+<pre class="src src-rust"><span class="org-keyword">enum</span> <span class="org-type">Term</span> {
+  <span class="org-type">Num</span>(<span class="org-type">u64</span>),
+  <span class="org-type">Plus</span>(<span class="org-type">Term</span>, <span class="org-type">Term</span>),
+}
+
+<span class="org-keyword">fn</span> <span class="org-function-name">num</span>(<span class="org-type">u64</span>) -&gt; <span class="org-type">Term</span> { ... }
+<span class="org-keyword">fn</span> <span class="org-function-name">plus</span>(<span class="org-type">Term</span>, <span class="org-type">Term</span>) -&gt; <span class="org-type">Term</span> { ... }
+
+<span class="org-keyword">mod</span> <span class="org-constant">base</span>   { <span class="org-keyword">trait</span> <span class="org-type">Eval</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) }
+             <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) {}}}
+<span class="org-keyword">mod</span> <span class="org-constant">double</span> { <span class="org-keyword">trait</span> <span class="org-type">Eval</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) }
+             <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) {}}}
+
+<span class="org-keyword">fn</span> <span class="org-function-name">main</span>() {
+  { <span class="org-keyword">use</span> <span class="org-constant">base</span>::<span class="org-type">Eval</span>;   num(3).eval(); } <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
+  { <span class="org-keyword">use</span> <span class="org-constant">double</span>::<span class="org-type">Eval</span>; num(3).eval(); } <span class="org-comment-delimiter">//</span><span class="org-comment">: 6</span>
+}
 </pre>
 </div>
 
 <p>
-La ligne <a href="#coderef-foal-ex13"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex13');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex13');">1</a> définit un trait <code>Eval</code> qui requiert une fonction <code>eval</code>.
-Les deux modules <code>base</code> et <code>double</code> fournissent des implémentations de ce trait
-pour la structure <code>Term</code>, qui représente les termes du langage.  Le programme
-construit ensuite un seul terme <code>t</code> et l&rsquo;évalue de deux façons différentes, mais
-toujours avec la même invocation: <code>t.eval()</code>.  Pourtant, suivant le module
-activé, le résultat de cette invocation est différent, car l&rsquo;implémentation du
-trait diffère.
+Ici les termes sont représentés par un type algébrique à deux variantes.  On
+ajoute des fonctions de constructions de ces termes <code>num</code> et <code>plus</code>.  Les deux
+modules <code>base</code> et <code>double</code> définissent le trait d&rsquo;évaluation <code>Eval</code> et
+fournissent chacun une implémentation de ce trait pour <code>Term</code>.  On voit ensuite
+que dans la fonction <code>main</code>, on construit et évalue le même terme <code>num(3)</code>, mais
+suivant le module importé localement par <code>use</code>, le résultat est différent.  La
+même instruction <code>num(3).eval()</code> donne 3 quand on importe le trait <code>base::Eval</code>
+et 6 quand on importe le trait <code>double::Eval</code>.  Ces deux appels à <code>eval</code> sur
+<code>num</code> sont équivalents aux appels suivants:
+</p>
+
+<pre class="example">
+base::Eval::eval(num(3))
+double::Eval::eval(num(3))
+</pre>
+
+<p>
+On voit alors qu&rsquo;on invoque deux fonctions <code>eval</code> différentes.  Le mécanisme
+d&rsquo;import du module ne fait que fournir un sucre syntaxique pour évoquer la
+syntaxe de la liaison dynamique, mais il n&rsquo;y a aucune liaison ici, simplement
+des appels de fonctions.  De façon analogue, notre utilisation de <code>with</code> en
+JavaScript revient à camoufler les appels aux constructeurs fournis par chaque
+module sous une seule et même syntaxe.
 </p>
 </div>
 </div>
@@ -11632,8 +11655,8 @@ Before he can see the sky?
 
 <div class="fixme">
 <p>
-Make answers to research questions more proeminent; more precise.  Make bolder
-distinction between &laquo;&nbsp;small&nbsp;&raquo; and &laquo;&nbsp;up there&nbsp;&raquo; perspectives.
+FIXME: Make answers to research questions more proeminent; more precise.  Make
+bolder distinction between &laquo;&nbsp;small&nbsp;&raquo; and &laquo;&nbsp;up there&nbsp;&raquo; perspectives.
 </p>
 
 </div>
@@ -12052,25 +12075,31 @@ code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
   <span class="org-type">Plus</span>(<span class="org-type">Box</span>&lt;<span class="org-type">Term</span>&gt;, <span class="org-type">Box</span>&lt;<span class="org-type">Term</span>&gt;),
 }
 
+<span class="org-keyword">fn</span> <span class="org-function-name">num</span>(<span class="org-variable-name">n</span>: <span class="org-type">u64</span>) -&gt; <span class="org-type">Term</span> {
+  <span class="org-type">Term</span>::<span class="org-type">Num</span>(n)
+}
+
+<span class="org-keyword">fn</span> <span class="org-function-name">plus</span>(<span class="org-variable-name">a</span>: <span class="org-type">Term</span>, <span class="org-variable-name">b</span>: <span class="org-type">Term</span>) -&gt; <span class="org-type">Term</span> {
+  <span class="org-type">Term</span>::<span class="org-type">Plus</span>(<span class="org-type">Box</span>::new(a), <span class="org-type">Box</span>::new(b))
+}
 
 <span class="org-keyword">fn</span> <span class="org-function-name">main</span>() {
-  <span class="org-keyword">let</span> e1 = <span class="org-type">Term</span>::<span class="org-type">Num</span>(3);
-  <span class="org-keyword">let</span> e2 = <span class="org-type">Term</span>::<span class="org-type">Plus</span>(<span class="org-type">Box</span>::new(<span class="org-type">Term</span>::<span class="org-type">Num</span>(1)),
-                      <span class="org-type">Box</span>::new(<span class="org-type">Term</span>::<span class="org-type">Num</span>(2)));
-
   {
     <span class="org-keyword">use</span> <span class="org-constant">eval1</span>::<span class="org-type">Eval</span>;
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} {}"</span>, e1.clone().eval(), e2.clone().eval());
+    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, num(3).eval());
+    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, plus(num(1), num(2)).eval());
   }
 
   {
     <span class="org-keyword">use</span> <span class="org-constant">eval2</span>::<span class="org-type">Eval</span>;
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} {}"</span>, e1.clone().eval(), e2.clone().eval());
+    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, num(3).eval());
+    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, plus(num(1), num(2)).eval());
   }
 
   {
     <span class="org-keyword">use</span> <span class="org-constant">eval3</span>::<span class="org-type">Eval</span>;
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} {}"</span>, e1.clone().eval(), e2.clone().eval());
+    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, num(3).eval());
+    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, plus(num(1), num(2)).eval());
   }
 }
 
@@ -13693,7 +13722,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-09-12 lun. 15:46 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-09-12 lun. 18:04 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
