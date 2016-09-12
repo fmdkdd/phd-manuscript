@@ -3574,6 +3574,9 @@ aspects.  Ce sont les raisons qui vraisemblablement motivent le développement
 d'AspectJ.
 
 *** AspectJ: jonctions, coupes, et méthodes d'aspect
+:PROPERTIES:
+:CUSTOM_ID: aspectj
+:END:
 AspectJ est un langage d'aspects pour Java [[cite:KHH+01][KHH+01]].  Dans un système par aspects,
 il y a un langage d'aspects, ici AspectJ, et un langage de composants, ici ce
 sera Java.  AspectJ est un langage d'aspect /général/, qui fournit des
@@ -5883,17 +5886,129 @@ Deux compilateurs pour deux programmes, mais un seul code source.  La
 programmation par aspects permet donc le détournement de cet interpréteur, mais
 dans cet exemple le détournement est statique: il se fait à la compilation.
 
-[example using cflow to toggle behavior]
+On peut répliquer l'exemple d'activation dynamique de la trace d'évaluation
+développé en JavaScript.  À l'interpréteur des ~Num~ et des ~Plus~ précédent, on
+rajoute l'évaluation du terme ~Trace~:
 
+#+BEGIN_SRC java
+class Trace implements Term {
+  Term e;
 
+  Trace(Term e) { this.e = e; }
 
------
+  public int eval() { return e.eval(); }
+}
+#+END_SRC
 
-AOP:
-- Java
-- JS with AspectScript
-- Downside: language extension.  More general than a DSL, but still not built-in
-  to the language.  Also unfortunately very slow in JS.
+Le terme ~Trace~ ne fait que retourner l'évaluation du terme qu'il contient.  On
+peut construire un programme ~e2~ qui l'utilise:
+
+#+BEGIN_aside
+On fait du terme ~Trace~ une expression plutôt qu'une déclaration (/statement/)
+comme dans l'exemple JavaScript, mais les deux formes sont réalisables en
+programmation par aspects.
+#+END_aside
+
+#+BEGIN_SRC java
+main() {
+  Term e2 = new Plus(
+       new Trace(new Plus(new Num(1), new Num(2))),
+       new Num(3));
+  e2.eval(); //: 6
+}
+#+END_SRC
+
+Pour l'instant, le terme ~Trace~ ne consigne rien sur la sortie standard.  C'est
+le rôle de l'aspect ~DynamicTrace~:
+
+#+BEGIN_SRC java -n -r
+aspect DynamicTrace {
+  pointcut tracedEval(Term t):
+  call(int eval()) && target(t)
+    && cflow(call(int eval()) && target(Trace));
+
+  before(Term t): tracedEval(t) {
+    System.out.println("eval " + t);              (ref:aj-trace)
+  }
+}
+#+END_SRC
+
+La coupe ~tracedEval~ intercepte tous les appels de ~eval~ qui sont dans
+l'étendue d'un appel à ~Trace.eval~.  La coupe ~cflow~ (cf. \sect[[#aspectj]]) inspecte
+la pile d'appels, et on s'intéresse uniquement aux appels à ~eval~ qui sont
+faits lorsque ~Trace.eval~ est déjà présente sur la pile.  Pour tous les appels
+qui correspondent, on exécute l'affichage ligne [[(aj-trace)]] dans la méthode
+d'aspect ~before~.  La sortie standard de l'évaluation du programme ~e2~ est
+donc:
+
+#+BEGIN_EXAMPLE
+eval Trace@7f31245a
+eval Plus@6d6f6e28
+eval Num@135fbaa4
+eval Num@45ee12a7
+#+END_EXAMPLE
+
+Il y a quatre lignes, qui correspondent aux trois termes évalués à l'intérieur
+du ~Trace~, ainsi que l'évaluation du ~Trace~.  Les deux autres termes ~Plus~ et
+~Num~ sont bien évalués, mais pas consignés.  L'activation de la trace est donc
+limitée par le programme évalué, et non plus incluse statiquement pour tout
+l'interpréteur.  La programmation par aspects permet donc le détournement
+dynamique de l'interpréteur.
+
+*** En JavaScript
+Malheureusement, les outils de programmation par aspects en JavaScript sont
+moins développés qu'AspectJ.  La solution la plus flexible est certainement
+AspectScript [[cite:TLT-10][TLT-10]], qui permet d'insérer des aspects dynamiquement, et même de
+capturer les affectations aux variables à l'intérieur des appels de fonction.
+
+Pour le module JavaScript suivant:
+
+#+BEGIN_SRC js
+var m = (function() {
+  var a = 1;
+  function f(x) { return x + a; }
+  function g(x) { return f(x); }
+  return {g: g, f: f};
+}());
+#+END_SRC
+
+On peut intercepter les appels à ~f~, ou les lectures de ~a~ dans la fonction
+~f~ en utilisant AspectScript ainsi:
+
+#+BEGIN_SRC js
+AspectScript.around(
+  AspectScript.Pointcuts.exec(m.f),
+  function (jp) {
+	  return 2 * jp.proceed()
+  })
+
+AspectScript.around(
+  AspectScript.Pointcuts.get('a'),
+  function(jp) {
+    return 2
+  })
+#+END_SRC
+
+Le premier aspect capture les exécutions de la fonction ~f~ du module ~m~ pour
+en doubler le résultat.  Le second aspect capture la référence faite à ~a~ dans
+le corps de ~f~ pour modifier la valeur retournée: sans l'aspect, ~a~ vaut 1 à
+l'intérieur du module car c'est une variable capturée lexicalement.  Avec
+l'aspect, on peut modifier la valeur de cette variable lexicale, et donc simuler
+une portée dynamique.
+
+#+BEGIN_aside
+La section [[#why-no-aop]] contient davantage de détails sur le fonctionnement
+d'AspectScript et ses inconvénients pour détourner Narcissus.
+#+END_aside
+
+Mais AspectScript a deux inconvénients majeurs qui sont la performance et la
+compatibilité avec le standard JavaScript.  Pour capturer et redéfinir les
+évaluations, AspectScript définit son propre analyseur de syntaxe, et réécrit le
+programme ciblé pour ensuite le réinterpréter.  Ce procédé, qui donne à
+AspectScript sa flexibilité, rend le programme 5 à 15 fois plus lent.  Puisque
+AspectScript réinterprète le programme ciblé, il introduit également des
+variations indésirables avec le comportement d'un interpréteur standard.  Par
+exemple, la construction ~with~ n'est pas supportée.
 
 * Construire un interpréteur par modules
 :PROPERTIES:
@@ -8516,6 +8631,9 @@ greffer, il n'a pas à s'en soucier, d'où moins de code à maintenir.
 # export c,d,f         (extension)
 
 *** Pourquoi ne pas utiliser la programmation par aspects?
+:PROPERTIES:
+:CUSTOM_ID: why-no-aop
+:END:
 Étendre un module par du code extérieur sans que le code du module n'expose
 d'interface pour, activer et désactiver les extensions dynamiquement, les
 combiner ... ces objectifs rappellent fortement la programmation par aspects.
