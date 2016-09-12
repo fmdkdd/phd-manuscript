@@ -4865,27 +4865,15 @@ méthode /à travers/ un visiteur.  Enfin, les valeurs virtuelles et les
 mandataires ne sont /que/ de l'indirection, et la portée dynamique repose sur
 l'utilisation des variables libres, qui sont elles-mêmes des indirections.
 
-#+BEGIN_fixme
-FIXME: Decide on the order of chapter 4 and 5
-#+END_fixme
-
 Il apparaît donc que l'indirection, sous toutes ces formes, est l'ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
-particulier.  Le chapitre [[#foal]] montre comment utiliser des mécanismes
-d'indirection de JavaScript pour construire des interpréteurs de façon
-incrémentale.
-
-On observe que la plupart des solutions exposées ici proposent de rendre les
-programmes extensibles par /construction/.  Si les programmes suivent le
-paradigme proposé, alors il sera plus facile de les étendre par la suite.  Mais
-lorsque le programme est déjà écrit, et qu'il ne suit pas une solution
-extensible, que faire?  On peut le réecrire, pour adapter l'un des paradigmes
-mentionné.  L'alternative, c'est de le détourner.  Le chapitre [[#variations]]
-montre comment utiliser l'indirection dans différents langages afin de détourner
-des interpréteurs existants.
-
-Enfin, le chapitre [[#dls]] montre comment appliquer l'indirection en JavaScript
-pour détourner l'interpréteur Narcissus.
+particulier.  Mais cette étude ne nous dit pas comment utiliser l'indirection
+pour détourner des interpréteurs.  Le chapitre suivant (\sect[[#variations]]) montre
+comment utiliser certains des mécanismes que l'on a étudiés ici afin de
+détourner un interpréteur minimal.  Le chapitre [[#foal]] montre comment utiliser
+l'indirection en JavaScript, à travers une forme de portée dynamique, afin de
+construire des interpréteurs de façon incrémentale.  Enfin, ce mécanisme sera
+réemployé dans le chapitre [[#dls]] pour détourner l'interpréteur Narcissus.
 
 * Variations de détournement sur un interpréteur minimal
 :PROPERTIES:
