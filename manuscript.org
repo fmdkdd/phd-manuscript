@@ -4893,7 +4893,7 @@ des interpréteurs existants.
 Enfin, le chapitre [[#dls]] montre comment appliquer l'indirection en JavaScript
 pour détourner l'interpréteur Narcissus.
 
-* INPROGRESS Variations sur un interpréteur de lambda-calcul extensible
+* Variations de détournement sur un interpréteur minimal
 :PROPERTIES:
 :CUSTOM_ID: variations
 :END:
@@ -4913,8 +4913,8 @@ Obladi, Oblada
 #+END_epigraphs
 
 #+BEGIN_fixme
-Rework titles.  Add diagrams.  State here that these are preliminary
-explorations.   Add takeaway and transition into next chapter.
+Add diagrams.  State here that these are preliminary explorations.  Add takeaway
+and transition into next chapter.
 #+END_fixme
 
 Dans ce chapitre, on s'intéresse spécifiquement à comprendre comment les
@@ -4922,7 +4922,7 @@ techniques du chapitre précédent peuvent s'appliquer pour détourner un
 interpréteur, et en particulier un interpréteur écrit en JavaScript.  Pour ce
 faire, on va illustrer ces techniques sur un interpréteur minimal.
 
-** Programmation structurée
+** UNREAD Avec ~GOTO~ et ~COMEFROM~
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 ~COMEFROM~ ensemble de cette façon:
 
@@ -5003,7 +5003,7 @@ l'/idée/ de capturer le flot de contrôle et de retourner au code détourné n'
 pas remise en cause.  Il faut juste trouver d'autres mécanismes pour la
 réaliser.
 
-** Programmation littéraire
+** UNREAD En programmation littéraire
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
 nommer des blocs de code pour les définir à un autre moment.  Par exemple, on
 peut écrire un interpréteur minimal en JavaScript ainsi:
@@ -5337,7 +5337,7 @@ différents, où l'entrelacement engendrera autant de programmes qu'il y a de
 points d'entrée.  Mais on ne peut pas changer de la sorte le comportement de
 l'interprétation à l'exécution.
 
-** Programmation par objets
+** UNREAD En programmation par objets
 L'héritage et la liaison dynamique sont deux mécanismes de la programmation par
 objets qui sont utiles pour le détournement.  Si l'on écrit un interpréteur en
 suivant le patron /interpréteur/ en Java, où chaque terme du langage est
@@ -5712,132 +5712,7 @@ sein d'une même fonction.  Donc le changement dynamique de prototype peut
 permettre le détournement, tant que les pièces du programme que l'on cherche à
 détourner sont regroupées au sein d'un même objet.
 
-** Portée dynamique
-La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
-portée dynamique, les variables libres d'une fonction peuvent être redéfinies
-par l'appelant.  Dans le Lisp intégré à Emacs (Elisp [[cite:Elisp][Elisp]]), la portée dynamique
-est le comportement par défaut:
-
-#+BEGIN_SRC elisp -n -r :exports code
-(defun f ()
-  x)
-
-(f) ; Error: Symbol's value as a variable is void   (ref:elisp-err)
-
-(defvar x 1)                                        (ref:elisp-global)
-(f) ;: 1
-
-(let ((x 2))
-  (f)) ;: 2                                         (ref:elisp-dynamic)
-
-(f) ;: 1
-x ;: 1
-#+END_SRC
-
-#+RESULTS:
-: 1
-
-Dans le corps de la fonction ~f~, la variable ~x~ est libre.  Appeler la
-fonction ~f~ sans définir ~x~ échoue (ligne [[(elisp-err)]]).  Si l'on donne une
-définition globale à ~x~ (ligne [[(elisp-global)]]), alors l'appel de ~f~ réussit et
-retourne cette valeur.  Avec une définition globale de ~x~, tous les appels à
-~f~, quelle que soit la profondeur de la pile d'appels, auront accès à cette
-valeur.  Mais on peut également changer cette valeur temporairement, sans
-affecter la définition de la variable globale ~x~.  Ligne [[(elisp-dynamic)]],
-l'appel de ~f~ retourne 2, qui est la valeur associée à ~x~ pour cet appel, mais
-les appels ultérieurs à ~f~ et à ~x~ montrent que la valeur globale de ~x~ est
-inchangée.
-
-La portée dynamique nous permet donc de modifier le comportement d'une fonction
-sans avoir à modifier son code, de la détourner.  On peut facilement tirer
-partie de ce mécanisme sur un interpréteur analogue à l'interpréteur JavaScript
-précédent:
-
-#+BEGIN_SRC elisp :results output :exports code
-(defvar eval-rules
-  `((num . ,(lambda (num)
-              (nth 1 num)))
-    (plus . ,(lambda (plus)
-               (+ (interp (nth 1 plus))
-                  (interp (nth 2 plus)))))))
-
-(defun interp (node)
-  (let ((f (lookup (nth 0 node) eval-rules)))
-    (when (functionp f)
-      (funcall f node))))
-
-(interp '(num 1)) ;: 1
-(interp '(plus (num 1) (num 2))) ;: 3
-#+END_SRC
-
-Un programme pour notre interpréteur sera donné sous forme de liste, la façon
-canonique de représenter un arbre syntaxique en Lisp.  La fonction ~interp~
-prend cet arbre syntaxique et retourne la valeur du programme, comme on peut le
-voir à la fin de cet extrait.  On a toujours le même langage arithmétique
-minimal construit des termes ~num~ et ~plus~.  L'évaluation de chaque terme est
-déléguée à une lambda associée au type du terme dans la liste associative
-~eval-rules~.  Cette liste est une variable que l'on va pouvoir modifier par
-portée dynamique:
-
-#+BEGIN_SRC elisp -n -r
-(defun eval-num-double (num)
-  (* 2 (nth 1 num)))
-
-(let ((eval-rules
-       (append
-        `((num . ,#'eval-num-double))
-        eval-rules)))
-  (interp '(plus (num 1) (num 2)))) ;: 6           (ref:elisp-override)
-
-(interp '(plus (num 1) (num 2))) ;: 3
-#+END_SRC
-
-La fonction ~eval-num-double~ est une variante d'interprétation du terme ~num~.
-Lors de l'appel à ~interp~ ligne [[(elisp-override)]], c'est cette variante qui est
-utilisée pour évaluer les ~num~, car on change temporairement la valeur de
-l'objet ~eval-rules~ par portée dynamique.  Après le ~let~, cette variante est
-désactivée, car le seul objet ~eval-rules~ trouvé par l'appel à ~interp~ est
-celui défini initialement par ~defvar~.
-
-Une limite de la portée dynamique dans cet exemple est qu'elle ne s'applique
-pas directement aux fonctions.  Intuitivement, on voudrait écrire:
-
-#+BEGIN_SRC elisp
-(defun eval-num (num)
-  (nth 1 num))
-
-(defun interp (node)
-  (eval-num node))
-
-(interp '(num 1)) ;: 1
-
-(defun eval-num-double (num)
-  (* 2 (nth 1 num)))
-
-(let ((eval-num #'eval-num-double))
-  (interp '(num 1))) ;: 1
-#+END_SRC
-
-L'intention ici est que le second appel à ~interp~ retourne 2, car la fonction
-~eval-num~ est remplacée dynamiquement par ~eval-num-double~.  Mais en Emacs
-Lisp on obtient 1, indiquant que la fonction ~eval-num~ n'a pas été changée par
-le ~let~.  La cause de ce comportement est la séparation des espaces de noms
-entre les fonctions et les valeurs; c'est la différence entre les dialectes
-Lisp_1 et Lisp_2 décrite par Gabriel et Pitman [[cite:GP-88][GP-88]].  Dans un Lisp_1, l'espace de
-noms est commun aux fonctions et aux valeurs, ce qui résoudrait le problème.
-Sauf que les Lisp_1, comme Scheme ou Racket, n'ont pas de portée dynamique par
-défaut: pour qu'une variable bénéficie de portée dynamique, il faut la déclarer
-comme telle (un /parameter/ en Racket par exemple).
-
-Le mécanisme de portée dynamique est le mécanisme plus simple pour détourner un
-interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
-langages proposent la portée dynamique des variables [[cite:Mor-98][Mor-98]], et ceux qui le font
-ont des restrictions supplémentaires (Lisp_2 contre Lisp_1) qui demandent des
-contorsions (mettre les fonctions d'évaluation dans une variable ~eval-rules~),
-ce qui réduit l'applicabilité de détournement.  De plus, la portée dynamique
-n'est pas disponible en JavaScript.
-
-** Programmation par aspects
+** UNREAD En programmation par aspects
 La programmation par aspects est un mécanisme de détournement tout trouvé.  Avec
 AspectJ, on peut potentiellement modifier n'importe quel interpréteur en Java à
 la compilation, et sans avoir à directement modifier le code de la classe.
@@ -6009,6 +5884,131 @@ AspectScript sa flexibilité, rend le programme 5 à 15 fois plus lent.  Puisque
 AspectScript réinterprète le programme ciblé, il introduit également des
 variations indésirables avec le comportement d'un interpréteur standard.  Par
 exemple, la construction ~with~ n'est pas supportée.
+
+** UNREAD Par portée dynamique
+La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
+portée dynamique, les variables libres d'une fonction peuvent être redéfinies
+par l'appelant.  Dans le Lisp intégré à Emacs (Elisp [[cite:Elisp][Elisp]]), la portée dynamique
+est le comportement par défaut:
+
+#+BEGIN_SRC elisp -n -r :exports code
+(defun f ()
+  x)
+
+(f) ; Error: Symbol's value as a variable is void   (ref:elisp-err)
+
+(defvar x 1)                                        (ref:elisp-global)
+(f) ;: 1
+
+(let ((x 2))
+  (f)) ;: 2                                         (ref:elisp-dynamic)
+
+(f) ;: 1
+x ;: 1
+#+END_SRC
+
+#+RESULTS:
+: 1
+
+Dans le corps de la fonction ~f~, la variable ~x~ est libre.  Appeler la
+fonction ~f~ sans définir ~x~ échoue (ligne [[(elisp-err)]]).  Si l'on donne une
+définition globale à ~x~ (ligne [[(elisp-global)]]), alors l'appel de ~f~ réussit et
+retourne cette valeur.  Avec une définition globale de ~x~, tous les appels à
+~f~, quelle que soit la profondeur de la pile d'appels, auront accès à cette
+valeur.  Mais on peut également changer cette valeur temporairement, sans
+affecter la définition de la variable globale ~x~.  Ligne [[(elisp-dynamic)]],
+l'appel de ~f~ retourne 2, qui est la valeur associée à ~x~ pour cet appel, mais
+les appels ultérieurs à ~f~ et à ~x~ montrent que la valeur globale de ~x~ est
+inchangée.
+
+La portée dynamique nous permet donc de modifier le comportement d'une fonction
+sans avoir à modifier son code, de la détourner.  On peut facilement tirer
+partie de ce mécanisme sur un interpréteur analogue à l'interpréteur JavaScript
+précédent:
+
+#+BEGIN_SRC elisp :results output :exports code
+(defvar eval-rules
+  `((num . ,(lambda (num)
+              (nth 1 num)))
+    (plus . ,(lambda (plus)
+               (+ (interp (nth 1 plus))
+                  (interp (nth 2 plus)))))))
+
+(defun interp (node)
+  (let ((f (lookup (nth 0 node) eval-rules)))
+    (when (functionp f)
+      (funcall f node))))
+
+(interp '(num 1)) ;: 1
+(interp '(plus (num 1) (num 2))) ;: 3
+#+END_SRC
+
+Un programme pour notre interpréteur sera donné sous forme de liste, la façon
+canonique de représenter un arbre syntaxique en Lisp.  La fonction ~interp~
+prend cet arbre syntaxique et retourne la valeur du programme, comme on peut le
+voir à la fin de cet extrait.  On a toujours le même langage arithmétique
+minimal construit des termes ~num~ et ~plus~.  L'évaluation de chaque terme est
+déléguée à une lambda associée au type du terme dans la liste associative
+~eval-rules~.  Cette liste est une variable que l'on va pouvoir modifier par
+portée dynamique:
+
+#+BEGIN_SRC elisp -n -r
+(defun eval-num-double (num)
+  (* 2 (nth 1 num)))
+
+(let ((eval-rules
+       (append
+        `((num . ,#'eval-num-double))
+        eval-rules)))
+  (interp '(plus (num 1) (num 2)))) ;: 6           (ref:elisp-override)
+
+(interp '(plus (num 1) (num 2))) ;: 3
+#+END_SRC
+
+La fonction ~eval-num-double~ est une variante d'interprétation du terme ~num~.
+Lors de l'appel à ~interp~ ligne [[(elisp-override)]], c'est cette variante qui est
+utilisée pour évaluer les ~num~, car on change temporairement la valeur de
+l'objet ~eval-rules~ par portée dynamique.  Après le ~let~, cette variante est
+désactivée, car le seul objet ~eval-rules~ trouvé par l'appel à ~interp~ est
+celui défini initialement par ~defvar~.
+
+Une limite de la portée dynamique dans cet exemple est qu'elle ne s'applique
+pas directement aux fonctions.  Intuitivement, on voudrait écrire:
+
+#+BEGIN_SRC elisp
+(defun eval-num (num)
+  (nth 1 num))
+
+(defun interp (node)
+  (eval-num node))
+
+(interp '(num 1)) ;: 1
+
+(defun eval-num-double (num)
+  (* 2 (nth 1 num)))
+
+(let ((eval-num #'eval-num-double))
+  (interp '(num 1))) ;: 1
+#+END_SRC
+
+L'intention ici est que le second appel à ~interp~ retourne 2, car la fonction
+~eval-num~ est remplacée dynamiquement par ~eval-num-double~.  Mais en Emacs
+Lisp on obtient 1, indiquant que la fonction ~eval-num~ n'a pas été changée par
+le ~let~.  La cause de ce comportement est la séparation des espaces de noms
+entre les fonctions et les valeurs; c'est la différence entre les dialectes
+Lisp_1 et Lisp_2 décrite par Gabriel et Pitman [[cite:GP-88][GP-88]].  Dans un Lisp_1, l'espace de
+noms est commun aux fonctions et aux valeurs, ce qui résoudrait le problème.
+Sauf que les Lisp_1, comme Scheme ou Racket, n'ont pas de portée dynamique par
+défaut: pour qu'une variable bénéficie de portée dynamique, il faut la déclarer
+comme telle (un /parameter/ en Racket par exemple).
+
+Le mécanisme de portée dynamique est le mécanisme plus simple pour détourner un
+interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
+langages proposent la portée dynamique des variables [[cite:Mor-98][Mor-98]], et ceux qui le font
+ont des restrictions supplémentaires (Lisp_2 contre Lisp_1) qui demandent des
+contorsions (mettre les fonctions d'évaluation dans une variable ~eval-rules~),
+ce qui réduit l'applicabilité de détournement.  De plus, la portée dynamique
+n'est pas disponible en JavaScript.
 
 * Construire un interpréteur par modules
 :PROPERTIES:
