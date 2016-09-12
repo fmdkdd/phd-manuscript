@@ -6686,40 +6686,49 @@ des mécanismes qui désambiguïse les noms.
 Par exemple, dans le langage Rust [[cite:Rust][Rust]], on pourrait obtenir un résultat
 semblable en utilisant les traits:
 
-#+BEGIN_fixme
-FIXME: wait, you are changing eval, but not the term itself.  Is that really
-similar?
-#+END_fixme
-
 #+BEGIN_aside
 Le code complet de cet exemple se trouve dans les appendices [[#foal-extra-rust]].
 #+END_aside
 
-#+BEGIN_SRC rust -n -r
+#+BEGIN_SRC rust
 enum Term {
   Num(u64),
   Plus(Term, Term),
 }
 
-trait Eval { fn eval(self) -> u64 }        (ref:foal-ex13)
+fn num(u64) -> Term { ... }
+fn plus(Term, Term) -> Term { ... }
 
-mod base   { impl Eval for Term { fn eval(..) {}}}
-mod double { impl Eval for Term { fn eval(..) {}}}
+mod base   { trait Eval { fn eval(..) }
+             impl Eval for Term { fn eval(..) {}}}
+mod double { trait Eval { fn eval(..) }
+             impl Eval for Term { fn eval(..) {}}}
 
 fn main() {
-  let t = Term(..)
-  { use base::Eval;   t.eval(); } //: 3
-  { use double::Eval; t.eval(); } //: 6
+  { use base::Eval;   num(3).eval(); } //: 3
+  { use double::Eval; num(3).eval(); } //: 6
 }
 #+END_SRC
 
-La ligne [[(foal-ex13)]] définit un trait ~Eval~ qui requiert une fonction ~eval~.
-Les deux modules ~base~ et ~double~ fournissent des implémentations de ce trait
-pour la structure ~Term~, qui représente les termes du langage.  Le programme
-construit ensuite un seul terme ~t~ et l'évalue de deux façons différentes, mais
-toujours avec la même invocation: ~t.eval()~.  Pourtant, suivant le module
-activé, le résultat de cette invocation est différent, car l'implémentation du
-trait diffère.
+Ici les termes sont représentés par un type algébrique à deux variantes.  On
+ajoute des fonctions de constructions de ces termes ~num~ et ~plus~.  Les deux
+modules ~base~ et ~double~ définissent le trait d'évaluation ~Eval~ et
+fournissent chacun une implémentation de ce trait pour ~Term~.  On voit ensuite
+que dans la fonction ~main~, on construit et évalue le même terme ~num(3)~, mais
+suivant le module importé localement par ~use~, le résultat est différent.  La
+même instruction ~num(3).eval()~ donne 3 quand on importe le trait ~base::Eval~
+et 6 quand on importe le trait ~double::Eval~.  Ces deux appels à ~eval~ sur
+~num~ sont équivalents aux appels suivants:
+
+: base::Eval::eval(num(3))
+: double::Eval::eval(num(3))
+
+On voit alors qu'on invoque deux fonctions ~eval~ différentes.  Le mécanisme
+d'import du module ne fait que fournir un sucre syntaxique pour évoquer la
+syntaxe de la liaison dynamique, mais il n'y a aucune liaison ici, simplement
+des appels de fonctions.  De façon analogue, notre utilisation de ~with~ en
+JavaScript revient à camoufler les appels aux constructeurs fournis par chaque
+module sous une seule et même syntaxe.
 
 *** Manipuler la portée suffit pour détourner le programme
 Dans tous les exemples que l'on a donnés, on a pu voir qu'enrober le code d'un
@@ -9272,25 +9281,31 @@ enum Term {
   Plus(Box<Term>, Box<Term>),
 }
 
+fn num(n: u64) -> Term {
+  Term::Num(n)
+}
+
+fn plus(a: Term, b: Term) -> Term {
+  Term::Plus(Box::new(a), Box::new(b))
+}
 
 fn main() {
-  let e1 = Term::Num(3);
-  let e2 = Term::Plus(Box::new(Term::Num(1)),
-                      Box::new(Term::Num(2)));
-
   {
     use eval1::Eval;
-    println!("{} {}", e1.clone().eval(), e2.clone().eval());
+    println!("{} ", num(3).eval());
+    println!("{} ", plus(num(1), num(2)).eval());
   }
 
   {
     use eval2::Eval;
-    println!("{} {}", e1.clone().eval(), e2.clone().eval());
+    println!("{} ", num(3).eval());
+    println!("{} ", plus(num(1), num(2)).eval());
   }
 
   {
     use eval3::Eval;
-    println!("{} {}", e1.clone().eval(), e2.clone().eval());
+    println!("{} ", num(3).eval());
+    println!("{} ", plus(num(1), num(2)).eval());
   }
 }
 
@@ -9345,7 +9360,6 @@ mod eval3 {
     }
   }
 }
-
 #+END_SRC
 
 ** UNREAD La différence subtile
