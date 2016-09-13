@@ -4894,15 +4894,18 @@ Obladi, Oblada
 {{{author(The Beatles)}}}
 #+END_epigraphs
 
-#+BEGIN_fixme
-FIXME: State here that these are preliminary explorations.  Add
-takeaway and transition into next chapter.
-#+END_fixme
+#+BEGIN_aside
+Cette exploration, qui correspond à des travaux réalisés en début de thèse,
+n'est d'ailleurs pas exhaustive par rapport aux mécanismes étudiés dans le
+chapitre précédent.
+#+END_aside
 
 Dans ce chapitre, on s'intéresse spécifiquement à comprendre comment les
-techniques du chapitre précédent peuvent s'appliquer pour détourner un
+mécanismes du chapitre précédent peuvent s'appliquer pour détourner un
 interpréteur, et en particulier un interpréteur écrit en JavaScript.  Pour ce
-faire, on va illustrer ces techniques sur un interpréteur minimal.
+faire, on va illustrer ces mécanismes en détournant des interpréteurs minimaux.
+Le but n'est pas de tant de trouver une solution pour détourner Narcissus, que
+d'explorer les mécanismes disponibles et de comparer leurs applicabilité.
 
 ** UNREAD Avec ~GOTO~ et ~COMEFROM~
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
@@ -6054,6 +6057,21 @@ ont des restrictions supplémentaires (Lisp_2 contre Lisp_1) qui demandent des
 contorsions (mettre les fonctions d'évaluation dans une variable ~eval-rules~),
 ce qui réduit l'applicabilité de détournement.  De plus, la portée dynamique
 n'est pas disponible en JavaScript.
+
+*** Conclusions
+On a exploré différentes façons de détourner un interpréteur minimal.  Bien que
+dans plusieurs cas on a réussi à modifier le comportement de l'interpréteur sans
+en modifier le code, aucune de ces solutions ne peut s'appliquer directement à
+Narcissus.  Il ne se dégage pas de moyen générique de détourner un interpréteur;
+pour trouver la méthode la plus adéquate il faut étudier l'interpréteur ciblé
+afin de déterminer les endroits où introduire de l'indirection.  Par exemple,
+savoir quelles fonctions sont en charge de l'évaluation de tel terme, etc.
+
+Un mécanisme simple pour introduire de l'indirection est la portée dynamique.
+La portée dynamique n'est pas disponible en JavaScript, mais dans les chapitres
+suivants, on va montrer comment répliquer une forme de portée dynamique en
+utilisant des constructions JavaScript standards, afin de détourner un
+interpréteur simplement, et ultimement, de détourner Narcissus.
 
 * Construire un interpréteur par modules
 :PROPERTIES:
