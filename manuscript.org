@@ -4826,27 +4826,29 @@ dynamique dans une extension, sous la forme de paramètres implicites [[cite:LLM
 Dans tous les travaux que l'on a étudiés dans ce chapitre il y a un thème qui
 résonne: l'indirection.
 
-#+BEGIN_fixme
-FIXME: Add examples to make it clear what do we mean by indirection here (maybe
-also in the respective chapters)
-#+END_fixme
-
 D'abord, la programmation structurée nous met en garde /contre/ l'indirection.
-C'est parce que ~GOTO~ cause de l'indirection qu'il est jugé néfaste pour la
-compréhension des programmes.  La programmation littéraire met au centre la
-compréhension du programme: le programme est avant tout écrit pour l'humain.  Le
-programme littéraire est composé par morceaux, des extraits liés entre eux par
-des liens, des indirections qui permettent de tisser le programme final et sa
-documentation.  Dans la programmation par objets, les mécanismes d'héritage, de
-délégation, de liaison dynamique et de traits sont tous des exemples
-d'indirection au service de l'extensibilité.  La réflexion, la métaprogrammation
-et l'implémentation ouverte poussent l'indirection à l'extrême: le programme
-observe et modifie sa propre interprétation.  Dans une moindre mesure, les
-aspects interceptent les appels de méthodes pour modifier les programmes à
-distance.
+~GOTO~ cause une indirection entre le code écrit et le code exécuté: quand
+l'humain lit un ~GOTO~, il doit suivre l'étiquette pour savoir quel code sera
+exécuté par la suite.  Lorsque cette étiquette est déterminée dynamiquement, il
+faut alors déterminer quelle valeur elle prend.  C'est à cause de cette
+indirection que Dijkstra le juge néfaste pour la compréhension des programmes.
+La programmation littéraire met au centre la compréhension du programme: le
+programme est avant tout écrit pour l'humain.  Mais le programme littéraire est
+composé par morceaux, des extraits liés entre eux par des liens, qui sont des
+indirections qui permettent de tisser le programme final et sa documentation.
+Dans la programmation par objets, les mécanismes d'héritage, de délégation, de
+liaison dynamique et de traits sont tous des exemples d'indirection au service
+de l'extensibilité.  À la place du code d'une fonction, on fait référence à une
+méthode virtuelle, dont le code exact sera déterminé dynamiquement, d'où
+l'indirection.  La réflexion, la métaprogrammation et l'implémentation ouverte
+poussent l'indirection à l'extrême: le programme observe et modifie sa propre
+interprétation.  On ne sait plus quel code est exécuté car il est synthétisé de
+toute pièce.  Dans une moindre mesure, les aspects introduisent de l'indirection
+en interceptant les jonctions qui correspondent aux coupes activées.  Pour
+savoir si le code d'une méthode sera exécuté ou non il faut déterminer quels
+aspects sont activés, statiquement comme dynamiquement.
 
-On peut même voir dans ce bref historique émerger une tendance vers davantage
-d'indirection, ce que remarquent Malenfant {{{etal}}} [[cite:MJD-96][MJD-96]]:
+Ces observations font écho à Malenfant {{{etal}}} [[cite:MJD-96][MJD-96]]:
 
 #+BEGIN_QUOTE
 #+LATEX: \selectlanguage{english}
@@ -4856,14 +4858,21 @@ sophisticated analysis and implementation techniques to bring actual times back
 to the earlier stages.
 #+END_QUOTE
 
+Si l'indirection est si présente, c'est parce que retarder le moment de la
+liaison des noms dans le programme permet aux programmes d'être plus
+extensibles.  Mais en même temps, ce retard rend les programmes moins
+prévisibles, et potentiellement moins performants.  Améliorer l'analyse faite
+par les compilateurs permet de regagner en prévisibilité et en performance.
+
 L'indirection est aussi présente dans les différentes solutions au problème de
 l'expression, qui est un problème d'extensibilité des interpréteurs.  Les
 fonctions ouvertes et les classes types sont similaires à la liaison dynamique
-de la programmation par objets, un exemple d'indirection.  Le patron visiteur
-est une inversion de contrôle qui introduit une indirection: on appelle une
-méthode /à travers/ un visiteur.  Enfin, les valeurs virtuelles et les
-mandataires ne sont /que/ de l'indirection, et la portée dynamique repose sur
-l'utilisation des variables libres, qui sont elles-mêmes des indirections.
+de la programmation par objets, encore un exemple d'indirection.  Le patron
+visiteur est une inversion de contrôle qui introduit une indirection: on appelle
+une méthode /à travers/ un visiteur plutôt que d'appeler la méthode directement.
+Enfin, les valeurs virtuelles et les mandataires sont /par définition/ de
+l'indirection, et la portée dynamique repose sur l'utilisation des variables
+libres, qui sont elles-mêmes des indirections.
 
 Il apparaît donc que l'indirection, sous toutes ces formes, est l'ingrédient
 principal pour étendre des programmes en général, et des interpréteurs en
