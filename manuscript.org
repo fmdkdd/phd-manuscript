@@ -4895,7 +4895,7 @@ Obladi, Oblada
 #+END_epigraphs
 
 #+BEGIN_fixme
-FIXME: Add diagrams.  State here that these are preliminary explorations.  Add
+FIXME: State here that these are preliminary explorations.  Add
 takeaway and transition into next chapter.
 #+END_fixme
 
@@ -4907,6 +4907,10 @@ faire, on va illustrer ces techniques sur un interpréteur minimal.
 ** UNREAD Avec ~GOTO~ et ~COMEFROM~
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 ~COMEFROM~ ensemble de cette façon:
+
+#+BEGIN_side-figure
+[[file:img/cometo.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC asm
 eval-num: ; Évaluation des constantes
@@ -4953,6 +4957,10 @@ On peut se passer de ~COMEFROM~, et à la place utiliser un autre ~GOTO~ dans le
 code que l'on cherche à détourner.  Plutôt que de détourner le flot de contrôle
 à distance, on vient explicitement ajouter une seule ligne qui passe le contrôle
 à l'extension:
+
+#+BEGIN_side-figure
+[[file:img/gotogoto.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC asm
 eval-num:
@@ -5041,7 +5049,7 @@ programme, on pourra définir l'extrait suivant comme point d'entrée:
 
 let e1 = plus(num(1), num(2))
 
-interp(e1) //:
+interp(e1)
 #+END_SRC
 
 C'est le programme principal qui inclut les blocs ~term~ et ~interp~.  Notons
@@ -5358,7 +5366,7 @@ virtuel qui serait un argument du programme principal:
 
 #+BEGIN_SRC java
 main(NumFactory num) {
-  Term e1 = new Plus(nf.new(1), nf.new(2));
+  Term e1 = new Plus(num.new(1), num.new(2));
   e1.eval();
 }
 #+END_SRC
@@ -5399,6 +5407,10 @@ le détournement.
 Pour un simple objet qui représente une constante dans le langage, on a
 plusieurs façons de modifier son évaluation après sa définition:
 
+#+BEGIN_side-figure
+[[file:img/variations-0.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 var num = {
   new(n) { return {__proto__: this, n }},
@@ -5411,16 +5423,24 @@ n1.eval() //: 2
 
 On peut surcharger la fonction sur l'objet lui-même:
 
+#+BEGIN_side-figure
+[[file:img/variations-1.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 n1.eval = function() { return this.n * 2 }
 n1.eval() //: 4
 #+END_SRC
 
-Cette modification n'affecte que l'objet ~n1~, et aucune autre instance dérivée
-de ~num~, existante ou future.
+On voit sur le diagramme correspondant que cette nouvelle fonction n'existe que
+sur l'objet ~n1~.  Cette modification n'affecte donc que l'objet ~n1~, et aucune
+autre instance dérivée de ~num~, existante ou future.
 
-Alternativement, on peut directement changer la fonction ~eval~ du prototype
-~num~:
+Alternativement, on peut changer la fonction ~eval~ du prototype ~num~:
+
+#+BEGIN_side-figure
+[[file:img/variations-2.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC js
 n1.eval() //: 2
@@ -5429,31 +5449,34 @@ n1.eval() //: 8
 #+END_SRC
 
 Cette fois, tous les objets qui délèguent leur fonction ~eval~ à ~num~
-utiliseront cette nouvelle version.
+utiliseront cette nouvelle version.  L'objet ~n1~ est affecté, ainsi que toutes
+les instances de ~num~ que l'on pourrait créer en appelant ~num.new~.
 
-Mais on peut aussi ne pas toucher à ~num~, et proposer un ~num_triple~ qui
+Si l'on souhaite éviter de toucher à ~num~, on peut proposer un objet ~num3~ qui
 servira de prototype alternatif pour ~n1~:
 
-#+BEGIN_aside
-Au passage, ~num_triple~ réutilise ~num.new~ par délégation en ayant ~num~ comme
-prototype.
-#+END_aside
+#+BEGIN_side-figure
+[[file:img/variations-3.svg]]
+
+Au passage, on voit que ~num3~ réutilise ~num.new~ par délégation en ayant ~num~
+comme prototype.
+#+END_side-figure
 
 #+BEGIN_SRC js
-var num_triple = {
+var num3 = {
    __proto__: num,
    eval() { return this.n * 3 }
 }
 
-Object.setPrototypeOf(n1, num_triple)
+Object.setPrototypeOf(n1, num3)
 n1.eval() //: 6
 #+END_SRC
 
-En redéfinissant le prototype de ~n1~ de ~num~ à ~num_triple~, la fonction
-~eval~ qui est utilisée lors de l'appel ~n1.eval~ est maintenant celle de
-~num_triple~.  On a changé le prototype de ~n1~ dynamiquement, et de cette façon
-on n'a pas besoin de modifier le code existant de ~num~.  La modification
-n'affecte que ~n1~.
+En redéfinissant le prototype de ~n1~ de ~num~ à ~num3~, la fonction ~eval~ qui
+est utilisée lors de l'appel ~n1.eval~ est maintenant celle de ~num3~.  On a
+changé le prototype de ~n1~ dynamiquement, et de cette façon on n'a pas besoin
+de modifier le code existant de ~num~.  La modification n'affecte que ~n1~, mais
+on pourra créer d'autres instances de ~num3~ en appelant ~num3.new~.
 
 La modification dynamique de prototype peut donc être utilisée pour détourner un
 interpréteur.  Un exemple crédible serait d'avoir un interpréteur capable de
@@ -5463,6 +5486,12 @@ sont consignées.
 
 *** Un interpréteur qui change de mode
 La forme minimale de cet interpréteur est la suivante:
+
+#+BEGIN_side-figure
+[[file:img/variations-5.svg]]
+
+L'objet ~interp~ a une fonction ~eval~ et deux règles ~num~ et ~plus~.
+#+END_side-figure
 
 #+BEGIN_SRC js
 // Terms
@@ -5506,6 +5535,10 @@ Avec cette structure, on peut créer un interpréteur alternatif par simple
 délégation.  Un interpréteur qui double les constantes aura juste besoin de
 redéfinir la règle d'évaluation des constantes, de la sorte:
 
+#+BEGIN_side-figure
+[[file:img/variations-6.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 var interp_double = derive(interp, {
   num(num) { return interp.eval(num) * 2 },
@@ -5533,6 +5566,10 @@ function derive(interp, rules) {
 De la même façon, on peut dériver un interpréteur qui consigne sur la sortie
 standard chaque fonction d'évaluation utilisée:
 
+#+BEGIN_side-figure
+[[file:img/variations-7.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 var interp_log = {__proto: interp,
   eval(node) {
@@ -5555,6 +5592,10 @@ eval num
 Cette fois on n'utilise pas ~derive~, car plutôt que de changer chaque règle, on
 change directement la fonction d'évaluation ~eval~ pour introduire l'instruction
 ~console.log~.
+
+#+BEGIN_side-figure
+[[file:img/variations-4.svg]]
+#+END_side-figure
 
 Maintenant, le but est d'avoir un interpréteur capable de changer de mode
 d'évaluation: par défaut, il ne consigne rien sur la sortie standard, mais en
@@ -5582,6 +5623,10 @@ var progn = (...stmts) => ({type: 'progn', stmts })
 Ce terme accepte /n/ arguments qui sont des sous-termes.  Il faut donner un sens
 à ce terme dans l'interpréteur standard, donc on rajoute une règle pour ~progn~
 directement dans l'objet ~interp.rules~:
+
+#+BEGIN_side-figure
+[[file:img/variations-8.svg]]
+#+END_side-figure
 
 #+BEGIN_SRC js
 interp.rules.progn = function(progn) {
@@ -5623,6 +5668,10 @@ redéfinie par ~interp_log~.
 Maintenant, on dérive un interpréteur capable d'évaluer l'instruction
 ~start_trace~:
 
+#+BEGIN_side-figure
+[[file:img/variations-9.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 var interp_traceable = derive(interp, {
   start_trace() {
@@ -5638,6 +5687,10 @@ instruction, il change de prototype, ce qui aura pour effet de consigner les
 instruction ~end_trace~.  Cette instruction ~end_trace~ doit donc être
 interprétable par ~interp_log~:
 
+#+BEGIN_side-figure
+[[file:img/variations-10.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 interp_log.rules.end_trace = function() {
   Object.setPrototypeOf(this, interp_traceable)
@@ -5651,6 +5704,16 @@ revanche, donc on utilisera un objet ~interp_model~ dont le seul but est de
 contenir le pointeur vers le prototype du mode courant d'évaluation.
 
 Le mode par défaut est ~traceable~, soit:
+
+#+BEGIN_side-figure
+[[file:img/variations-11.svg]]
+
+L'objet ~interp_modal~ est change de prototype suivant l'évaluation du
+programme.  Au début, son prototype est ~interp_traceable~, puis après
+l'évaluation d'une instruction ~start_trace~, son prototype devient
+~interp_log~.  Dans cet état, évaluer l'instruction ~end_trace~ restaure le
+prototype initial d'~interp_modal~.
+#+END_side-figure
 
 #+BEGIN_SRC js
 var interp_modal = Object.create(interp_traceable)
