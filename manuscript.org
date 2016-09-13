@@ -8410,22 +8410,15 @@ exception.  Pas très utile dans notre cas, mais ça montre qu'il est très faci
 de rompre la fonctionnalité offerte par le module dès lors que cette interface
 spéciale est offerte.
 
-#+BEGIN_fixme
-FIXME: Open scope makes it /extensible/, which it wasn't before.  The paradox is
-that module decomposition goes against extensibility instead of enabling it.
-Hypothesis modularity => extensibility should be made clearer in Context.
-#+END_fixme
-
 On a alors une situation quelque peu paradoxale où le programmeur soucieux de
 l'intégrité de son code le ficelle dans un module, mais ce faisant empêche tout
 autre programmeur d'étendre son code dynamiquement.  Le code a beau utiliser un
-module, il ne peut être étendu; il n'est donc pas /modulaire/ par rapport aux
-changements que l'on souhaite y apporter, car il faut modifier le code source à
-l'intérieur du module pour effectuer ces changements.  Et à l'inverse, la
-solution proposée ici casse la protection offerte par le module, mais ce faisant
-permet d'étendre le code en écrivant les changements et fonctionnalités
-supplémentaires dans des fichiers distincts; une situation que l'on peut
-qualifier de /modulaire/.
+module, il ne peut être étendu; il est modulaire, sans être extensible, car il
+faut modifier le code source à l'intérieur du module pour pouvoir y effectuer
+des changements.  Et à l'inverse, la solution proposée ici casse la protection
+offerte par le module, mais ce faisant permet d'étendre le code en écrivant les
+changements et fonctionnalités supplémentaires dans des fichiers distincts;
+l'interpréteur devient extensible, mais perd l'encapsulation du module.
 
 La version originale du module, et notre version modifiable dynamiquement sont
 deux points opposés sur un même axe.  D'un côté, un programme prévisible, sur
@@ -8837,7 +8830,7 @@ sont triviales, définies en 3 lignes.
 Le seul mécanisme dont on a eu besoin existait déjà en JavaScript: la
 possibilité d'intercepter la résolution d'un nom (de variable ou de fonction)
 via ~with~.  Autrement dit, la manipulation de la portée des variables suffit
-pour instrumenter Narcissus de façon modulaire.
+pour détourner Narcissus.
 
 Et la portée est un concept qui se retrouve dans de nombreux langages de
 programmation, pas seulement en JavaScript.  Ce qui veut dire que la
