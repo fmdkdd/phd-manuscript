@@ -8974,47 +8974,58 @@ Before he can see the sky?
 @@html:<br>— Bob Dylan, <i>Blowing in the Wind</i>@@
 #+END_epig
 
-#+BEGIN_fixme
-FIXME: Make answers to research questions more proeminent; more precise.  Make
-bolder distinction between "small" and "up there" perspectives.
-#+END_fixme
-
 Nous avons décrit le problème que nous nous sommes posés: instrumenter et
 étendre des interpréteurs.  En particulier on cherchait à étendre l'interpréteur
 Narcissus par de multiples analyses dynamiques, en minimisant les modifications
-au code source de l'interpréteur lui-même.  On a vu que de nombreuses personnes
-se sont posé des problèmes similaires, pour des interpréteurs spécifiquement (le
-problème de l'expression), mais aussi plus généralement pour n'importe quel
-programme, et même, pour certains, pour la documentation et la spécification qui
-accompagnent le programme.  De toutes les solutions existantes, on a retenu que
-l'indirection était un ingrédient majeur de l'extensibilité, mais que le plus
-souvent cette extensibilité n'était garantie que si le programme suivait une
-construction bien particulière, ce qui a motivé le besoin de détournement.  Nous
-avons ensuite vu comment utiliser l'indirection en JavaScript pour construire
-des interpréteurs modifiables.  Puis nous avons vu comment modifier et étendre
-des interpréteurs existants par détournement, en minimisant les changements de
-code.  Et enfin, dans le chapitre précédent, nous avons pu modifier Narcissus en
-utilisant ces mêmes techniques pour qu'il puisse accueillir quatre analyses
-différentes.
+au code source de l'interpréteur lui-même (chapitre [[#problem]]).  On a vu dans le
+chapitre [[#chrono]] qu'étendre des interpréteurs était un problème qui avait fait
+l'objet de nombreuses recherches (le problème de l'expression), mais aussi plus
+généralement qu'étendre n'importe quel programme était un problème récurrent.
+De toutes les solutions existantes, on a retenu un thème majeur: l'indirection
+permet l'extensibilité.  Plutôt que de faire une référence directe à une
+fonction, ou à une valeur, une référence indirecte est plus facilement
+changeable.  Et l'indirection permet également le détournement.  Dans le
+chapitre [[#variations]], on a montré comment détourner des interpréteurs minimaux
+avec différents mécanismes d'indirection comme la programmation par aspects ou
+la portée dynamique.  Le plus souvent le détournement n'était possible que si le
+programme suivait une construction bien particulière: si le programme utilise
+une inversion de contrôle, un patron /visiteur/, une algèbre d'objets, ou même
+de la programmation littéraire.  Un des enseignements du chapitre [[#variations]]
+est qu'il n'y a pas de mécanisme de détournement générique, qui peut être
+utilisé pour détourner n'importe quel programme.  En revanche, la portée
+dynamique est un mécanisme qui s'en approche.  Dans le chapitre [[#foal]], nous
+avons vu comment répliquer une forme de portée dynamique en JavaScript pour
+construire des interpréteurs modifiables.  Enfin, dans le chapitre [[#dls]], nous
+avons pu modifier Narcissus en utilisant cette même technique pour qu'il puisse
+accueillir quatre analyses dynamiques différentes.
 
-Que faut-il en retenir?  Que le détournement est une façon viable de modifier
-et d'étendre des interpréteurs.  Réécrire un interpréteur ou le refactoriser
-sont des solutions alternatives, mais qui demandent un effort initial plus
-important.  En détournant l'interpréteur, un programmeur peut rapidement
-prototyper des analyses, des variantes d'interprétation, sans avoir à modifier
-un code étranger.  Le détournement est une alternative pragmatique à la
-refactorisation.
+Que faut-il en retenir?  Que le détournement est une façon viable de modifier et
+d'étendre des interpréteurs.  Réécrire un interpréteur ou le refactoriser sont
+des solutions alternatives, mais qui demandent un effort initial plus important.
+En détournant l'interpréteur, un programmeur peut rapidement prototyper des
+analyses, des variantes d'interprétation, sans avoir à modifier un code
+étranger, ou du moins en minimisant ces modifications.  Notons que dans le
+détournement de Narcissus, nous avons tout de même apporté quelques
+modifications au code de l'interpréteur.  Dans Narcissus, le motif module de
+JavaScript ne permettait aucune extension.  Ces modifications sont mineures
+quand on les compare aux modifications de l'instrumentation initiale d'Austin et
+Flanagan [[#narc]], mais elles indiquent qu'il faut une certaine adéquation entre le
+programme que l'on souhaite détourner et le code que l'on rajoute.  Lorsque le
+but est d'étendre un code étranger tout en minimisant les modifications à ce
+code, le détournement est une alternative pragmatique à la refactorisation.
 
 L'indirection est l'ingrédient clé qui permet le détournement.  Pour détourner
 Narcissus, on a utilisé la construction ~with~ parce qu'elle permettait
 d'appliquer une forme de portée dynamique aux variables internes au module.
-Cette construction, controversée, n'est soit n'est pas importante, c'est juste
-le moyen le plus direct pour obtenir de l'indirection dans le cas présent.  Même
-si la plupart des exemples de ce document ont utilisé le langage JavaScript, le
-langage même importe peu, tant que des mécanismes d'indirection sont présents.
-Pour détourner un programme, il faut introduire de l'indirection.  Et de façon
-générale, ce principe vaut aussi pour étendre un programme.  Si les références
-et les appels de méthodes sont indirects, ils seront plus faciles à changer.
+Cette construction, au demeurant controversée, n'est en soi pas importante; elle
+est juste le moyen le plus direct pour obtenir de l'indirection dans le cas
+concerné.  De la même manière, bien que la plupart des exemples de ce document
+ont utilisé le langage JavaScript, le choix du langage importe peu, tant que des
+mécanismes d'indirection sont présents; mécanismes que nous avons illustrés tout
+au long de ce document.  Ce qu'il faut retenir, c'est que pour détourner un
+programme, il faut introduire de l'indirection.  Et de façon générale, ce
+principe vaut aussi pour étendre un programme.  Si les références et les appels
+de méthodes sont indirects, ils seront plus faciles à changer par la suite.
 
 Tous les mécanismes d'indirection s'apparentent à de la portée dynamique.
 Détourner un programme, c'est modifier le comportement d'un code appelé sans
@@ -9024,24 +9035,25 @@ détourner un programme, on cherche un mécanisme de portée dynamique.  Il s'ag
 de rendre le comportement du code dépendant de la pile d'appel, plutôt que de
 son environnement lexical.  Même pour les mécanismes statiques d'indirection,
 comme la programmation littéraire, ou la superposition, on cherche à obtenir
-cette portée dynamique lors de la compilation.
+une forme de portée dynamique lors de la compilation.
 
 La mise en garde de Dijkstra contre ~GOTO~ s'applique tout aussi bien à tout
 mécanisme d'indirection.  Comme ~GOTO~, une indirection rend le programme plus
 difficile à comprendre, à prédire.  Par définition, la portée dynamique rend le
 comportement du code appelé dépendant de l'appelant.  On ne peut plus garantir
-le comportement d'une fonction en isolation, il faut prendre en compte tous les
-appelants, toutes les extensions que ces indirections rendent possibles.  Même
-dans un simple patron observateur, on ne peut pas prédire ce que que le
+le comportement d'une fonction en isolation car il faut prendre en compte tous
+les appelants, toutes les extensions que ces indirections rendent possibles.
+Même dans un simple patron observateur, on ne peut pas prédire ce que que le
 programme fera sans connaître tous les observateurs enregistrés auprès d'un
 sujet.  Et potentiellement l'ensemble de ces observateurs ne pourra être
 déterminé qu'à l'exécution du programme.  Le détournement a le même
 inconvénient.  Il y a donc un compromis: plus le programme est facile à étendre
-ou détourner, et moins il sera facile d'en prédire son comportement en le lisant
-ou l'analysant.  L'un ne va pas sans l'autre.  Le détournement n'est pas une
-balle en argent; pas plus que la refactorisation.  L'enseignement ici est qu'il
-faut être conscient des conséquences de ces compromis lors de la conception et
-tout au long de l'évolution du programme.
+ou à détourner, et moins il sera facile d'en prédire son comportement en le
+lisant ou l'analysant.  L'un ne va pas sans l'autre.  Le détournement n'est pas
+une balle en argent, pas plus que la refactorisation; ce sont des outils
+alternatifs qui doivent être choisis en fonction des besoins en cours.
+L'enseignement ici est qu'il faut être conscient des conséquences de ces
+compromis lors de la conception et tout au long de l'évolution du programme.
 
 L'extensibilité est une propriété désirable dans un programme, mais elle est
 rarement primordiale.  Avant toute chose, un programme doit être correct.  Puis,
@@ -9051,38 +9063,71 @@ davantage de matériel, etc.  Le programme est plus utile à ses utilisateurs
 qu'au programmeur.  Les utilisateurs ne sont pas impactés par une
 refactorisation ou un détournement, donc n'en voient pas la nécessité.  Mais ce
 ne sont pas les utilisateurs qui vivent avec le code source.  Le programmeur
-souhaite aussi simplifier son travail, à rendre le code plus facile à maintenir,
-à corriger, et à étendre.  Non seulement une meilleure structure de code
-contribue à son confort, mais elle peut aussi lui permettre d'améliorer le
+souhaite aussi simplifier son travail, il souhaite rendre le code plus facile à
+maintenir, à corriger, et à étendre.  Non seulement une meilleure structure de
+code contribue à son confort, mais elle peut aussi lui permettre d'améliorer le
 programme avec plus d'efficacité.  Alors, savoir détourner un programme n'est
 certainement pas une priorité, mais les techniques que l'on a explorées dans ce
 document ont de l'intérêt pour tout programmeur soucieux de l'organisation de
 son code.  Au mieux, ce document lui aura apporté des réponses, au minimum, il
 aura fait naître d'autres interrogations.
 
+# To the researcher in programming languages, what is the takeaway?  I don't
+# know.  Why don't you figure things out for yourself?  I don't have any
+# grandiose claims.  I'm just a guy who builds stuff and follows questions I ask
+# myself.
+
+# One of my questions was (actually suggested by J): Hey, how could you modify
+# Narcissus without touching its code?  AOP sorta does that, but I wonder if
+# there's another way.  Then the answer is: yes, you can.  You don't even need
+# AOP.  But it's not magic, and not particularly elegant.
+
+# Another was: Hey, actually there is all this litterature on extending
+# programs, can we find a unifying theme?  To which I would answer: indirection.
+# Indirection is the key.  But I can only describe it by showing examples of it,
+# which can be unsatisfying for the researcher who wants refutable claims.
+
+# These are not exciting questions.  The answers are not very exciting either.
+# It might have been better described as an engineering puzzle.  Maybe it's not
+# worthwhile research.  A decade or two ago, it might have been.  But I've never
+# been bothered by asking questions others have already answered, because it's
+# not the answers that count, but the process of finding them.
+
 *** Perspectives
-Pour le détournement de Narcissus spécifiquement, on pourrait s'intéresser à
-améliorer la performance de ~with~.  Soit en optimisant cette construction dans
-les moteurs d'exécution de JavaScript communs, ou bien en trouvant un mécanisme
-d'indirection alternatif qui a moins d'impact sur le temps d'exécution.  Dans le
-second cas, un gain potentiel serait d'évaluer partiellement le module détourné
-et ses extensions, afin de déterminer les variables et fonctions qui sont
-étendues, et de résoudre toutes les références en avance.  Cette transformation
-pourrait même être faite par transformation de code, sans avoir à modifier les
-moteurs d'exécution.  De façon générale, les mécanismes d'indirection posent
+Pour le détournement de Narcissus du chapitre [[#dls]] spécifiquement, on pourrait
+s'intéresser à améliorer la performance de ~with~.  Soit en optimisant cette
+construction dans les moteurs d'exécution de JavaScript communs (SpiderMonkey ou
+V8), ou bien en trouvant un mécanisme d'indirection alternatif qui a moins
+d'impact sur le temps d'exécution.  Dans le premier cas, un gain potentiel
+serait d'évaluer partiellement Narcissus et ses extensions, afin de déterminer
+les variables et fonctions qui sont étendues, et de résoudre toutes les
+références en avance.  Cette évaluation partielle pourrait même être faite par
+transformation de code, sans avoir à modifier les moteurs d'exécution.  On
+pourrait écrire un interpréteur partiel qui se chargerait tout simplement de
+remplacer, dans le corps d'un ~with(o)~, toutes les références ~a~, ~b~, ~c~ par
+~o.a~, ~o.b~, ~o.c~.  On pourrait ainsi mesurer l'impact de l'indirection sur la
+performance sans passer par ~with~.  De façon générale, les mécanismes
+d'indirection (liaison dynamique, portée dynamique, traits, ...) posent
 d'intéressants problèmes d'optimisation.
 
 On pourrait également s'intéresser à la détection de conflits entre extensions.
 Dans le détournement de Narcissus il est possible d'activer plusieurs analyses
-en même temps, mais sans aucune garantie que le résultat fonctionne correctement
-si deux analyses redéfinissent la même fonction de manière incompatible.
-Peut-être qu'en multipliant les analyses, découvrir et résoudre ces conflits
-manuellement deviendra trop difficile.  Il faut commencer par collecter ces
-scénarios où les conflits entre analyses posent un réel problème.  Puis on peut
-s'intéresser à les détecter, voire aider à les résoudre automatiquement.  Au
-minimum, on pourrait détecter ces conflits à l'exécution quand les analyses
-détournent l'interpréteur, et signaler un potentiel conflit.  Dans certains cas,
-il serait même possible de détecter ces conflits potentiels statiquement.
+en même temps, mais sans aucune garantie que le résultat ne fonctionne
+correctement si deux analyses redéfinissent la même fonction de manière
+incompatible.  Peut-être qu'en multipliant les analyses, il deviendra trop
+difficile de découvrir et résoudre ces conflits manuellement.  Il faut commencer
+par collecter ces scénarios où les conflits entre analyses posent un réel
+problème.  Puis on peut s'intéresser à leur détection, voire à leur résolution
+automatique.  Au minimum, on pourrait détecter ces conflits à l'exécution quand
+les analyses détournent l'interpréteur, et signaler un potentiel conflit.  Dans
+Narcissus, on peut rajouter une telle logique en inspectant les couches
+(/layers/) activées à l'exécution.  Il serait également intéressant de chercher
+à détecter statiquement ces conflits potentiels.
+
+#+ATTR_HTML: :style margin-top:12rem
+#+BEGIN_aside
+D'où les nombreuses illustrations qui parsèment ce document.
+#+END_aside
 
 Plus largement, je pense que l'on peut continuer de chercher de meilleures
 façons d'écrire, d'organiser, et de maintenir des programmes.  En particulier,
@@ -9104,7 +9149,7 @@ inventer l'ordinateur?  Pourquoi le métier à tisser?  Pourquoi la roue?  À
 l'évidence, nous ne sommes pas faits pour nous contenter des outils que nous
 avons entre les mains.  Il semble donc inéluctable que nous continuerons de
 trouver de meilleures façons de programmer, jusqu'à ce que, éventuellement, on
-se passe de programmes pour ordonner la machine.
+trouve le moyen d'ordonner la machine en se passant complètement de programmes.
 
 #+LATEX: \appendix
 
