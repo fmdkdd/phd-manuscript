@@ -15,6 +15,7 @@
 #+MACRO: etal /et al./
 #+MACRO: author @@html:<br>— $1@@@@latex:}{$1}@@
 #+MACRO: authorsource @@html:<br>— $1, <i>$2</i>@@@@latex:}{$1, \emph{$2}}@@
+#+MACRO: authormaybe @@html:<br>— $1 (peut-être)@@@@latex:}{$1 (peut-être)}@@
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
@@ -208,6 +209,12 @@ Mais avant de voir tout cela, il faut commencer par quelques définitions.
 :PROPERTIES:
 :CUSTOM_ID: defs
 :END:
+#+ATTR_LATEX: :options [Vannevar Bush, \emph{As We May Think}]
+#+BEGIN_epig
+Whenever logical processes of thought are employed—that is, whenever thought for
+a time runs along an accepted groove—there is an opportunity for the machine.
+@@html: <br>— Vannevar Bush, <i>As We May Think</i>@@
+#+END_epig
 
 #+BEGIN_aside
 Par anthropomorphisme, on parle aussi de /comportement/ du programme pour
@@ -504,6 +511,14 @@ donnée.  Et l'application qui va nous intéresser, c'est l'interpréteur
 Narcissus.
 
 ** Une présentation du langage JavaScript
+#+ATTR_LATEX: :options [Jeff Atwood, Shriram Krishnamurthi, Jan Vitek, et d'autres]
+#+BEGIN_epig
+#+LATEX: \selectlanguage{english}
+JavaScript is the lingua franca of the Web
+@@html:<br>— Jeff Atwood, Shriram Krishnamurthi, Jan Vitek, et d'autres@@
+#+END_epig
+
+
 *** Genèse chez Netscape
 #+BEGIN_aside
 Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
@@ -1319,6 +1334,16 @@ real world matters dealt with by the program.
 :PROPERTIES:
 :CUSTOM_ID: problem
 :END:
+#+ATTR_LATEX: :options [Marijn Haverbeke, \emph{Eloquent JavaScript}]
+#+BEGIN_epig
+#+LATEX: \selectlanguage{english}
+Programming, it turns out, is hard. The fundamental rules are typically simple
+and clear. But programs, built on top of these basic rules, tend to become
+complex enough to introduce their own rules and complexity. You're building your
+own maze, in a way, and might just get lost in it.
+@@html:<br>— Marijn Haverbeke, <i>Eloquent JavaScript</i>@@
+#+END_epig
+
 ** READ Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
 :CUSTOM_ID: narc
@@ -2995,6 +3020,13 @@ Le baron de Münchhausen évite la noyade par capillotraction.  Gustave
 Doré, 1862.
 #+END_side-figure
 
+#+ATTR_LATEX: :options [Bard Bloom, Martin Hinzel \cite{BH-12}]
+#+BEGIN_epig
+#+LATEX: \selectlanguage{english}
+With great power comes great uncomputability.
+@@html: <br>— Bard Bloom, Martin Hinzel <a href="#BH-12">BH-12</a>@@
+#+END_epig
+
 En programmation par objets, on cherche à établir une correspondance entre les
 objets que l'on modélise et les objets que l'on programme.  Dans la simulation
 d'un écosystème qui comprend de l'herbe, des moutons et des loups, on trouve des
@@ -3308,7 +3340,7 @@ Tapis turc "Holbein", fin du XVe siècle.
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
 cleanly support the kinds of units the design process breaks the system into.
-@@html: Kiczales <i>et al.</i>, <a href="#KLM+97">KLM+97</a>@@
+@@html: <br>— Kiczales <i>et al.</i>, <a href="#KLM+97">KLM+97</a>@@
 #+END_epig
 
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
@@ -6087,6 +6119,16 @@ interpréteur simplement, et ultimement, de détourner Narcissus.
 :CUSTOM_ID: foal
 :END:
 /Contenu tiré en partie d'un papier présenté à l'atelier FOAL'15 [[cite:KNS-15][KNS-15]]/.
+
+#+ATTR_LATEX: :options [Leigh Brackett, \emph{The Sorcerer of Rhiannon}]
+#+BEGIN_epig
+#+LATEX: \selectlanguage{english}
+"That's witchcraft," said Brandon curtly, "and that's madness."
+
+"Witchcraft to the ignorant," murmured the voice coolly. "Simple science to the
+learned."
+@@html:<br>— Leigh Brackett, <i>The Sorcerer of Rhiannon</i>@@
+#+END_epig
 
 Ce chapitre présente une façon de construire un interpréteur extensible en
 JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
@@ -8966,13 +9008,17 @@ d'appliquer la technique de ce chapitre.
 :UNNUMBERED: t
 :END:
 #+LATEX: \addcontentsline{toc}{chapter}{Conclusion}
-#+ATTR_LATEX: :options [Bob Dylan, \emph{Blowing in the Wind}]
-#+BEGIN_epig
+#+BEGIN_epigraphs
 #+LATEX: \selectlanguage{english}
+@@latex:\qitem{%@@
+The true delight is in the finding out rather than in the knowing.
+{{{authormaybe(Isaac Asimov)}}}
+
+@@latex:\qitem{%@@
 And how many times must a man look up {{{br}}}
 Before he can see the sky?
-@@html:<br>— Bob Dylan, <i>Blowing in the Wind</i>@@
-#+END_epig
+{{{authorsource(Bob Dylan, Blowing in the Wind)}}}
+#+END_epigraphs
 
 Nous avons décrit le problème que nous nous sommes posés: instrumenter et
 étendre des interpréteurs.  En particulier on cherchait à étendre l'interpréteur
