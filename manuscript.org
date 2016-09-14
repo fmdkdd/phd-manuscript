@@ -7605,13 +7605,13 @@ nom lors de l'exécution de ~f~.
 En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
 capturer la fonction dans ce cas; c'est laissé à la discrétion du moteur
 d'exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comportement
-décrit ici.  Mais V8, utilisé par Chrome, suit des règles différentes, et pour
-pouvoir répliquer l'exemple, il faut déclarer les fonctions par des expressions
-(~var f = function...~).  Le créateur de JavaScript, Brendan Eich, [[https://bugs.chromium.org/p/v8/issues/detail?id=686][indique]] que
-le comportement de Firefox dans ce cas est compatible avec la prochaine version
-du standard.  N'ayant pas encore accès à une implémentation complète de ce
-standard, j'invite donc le lecteur du futur à tester si ce comportement est
-effectivement standard.
+décrit ici.  Mais V8, utilisé par Chromium, suivait des règles différentes
+encore récemment, et pour pouvoir répliquer l'exemple il fallait déclarer les
+fonctions par des expressions (~var f = function...~).  Le créateur de
+JavaScript, Brendan Eich, [[https://bugs.chromium.org/p/v8/issues/detail?id=686][a indiqué]] que le comportement de Firefox était en
+accord avec la prochaine version du standard (EcmaScript 2015).  À l'heure où
+j'écris, la dernière version de Chromium (53) a maintenant le même comportement
+que Firefox.
 #+END_aside
 
 D'après le diagramme, il est clair que si l'objet de liaison est vide, le module
