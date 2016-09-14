@@ -114,15 +114,18 @@
 %% Convenience to replace \thepage occurrences
 \newcommand{\thepageword}{\pageword{\value{page}}}
 
+%% Not settled yet, so might as well use a variable definition
+\newcommand{\pagewordfont}{\sffamily\small}
+
 %% Insert page words in the ToC by redefining these functions provided by
 %% memoir.
 \let\oldchapterfpnum\cftchapterformatpnum
 \renewcommand*{\cftchapterformatpnum}[1]{%
-  \oldchapterfpnum{\pageword{#1}}}
+  \oldchapterfpnum{\pagewordfont\pageword{#1}}}
 
 \let\oldsectionfpnum\cftsectionformatpnum
 \renewcommand*{\cftsectionformatpnum}[1]{%
-  \oldsectionfpnum{\pageword{#1}}}
+  \oldsectionfpnum{\pagewordfont\pageword{#1}}}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Headings
@@ -138,11 +141,11 @@
 %% Headers run into the margin thanks to the companion style of memoir.  I just
 %% don't like the bold, so I redefine the font.
 \makeevenhead{companion}%
-             {\normalfont\thepageword}{}{%
+             {\pagewordfont\thepageword}{}{%
                \normalfont\leftmark}
 \makeoddhead{companion}%
             {\normalfont\rightmark}{}{%
-              \normalfont\thepageword}
+              \pagewordfont\thepageword}
 
 %% Don't use page words for front matter
 %% FIXME: maybe for 3 pages of front matter we can just get rid of it
@@ -151,7 +154,7 @@
 \makeoddfoot{front}{}{\thepage}{}
 
 %% Chapters use the plain pagestyle, and we want page words here as well
-\makeoddfoot{plain}{}{\thepageword}{}
+\makeoddfoot{plain}{}{\pagewordfont\thepageword}{}
 
 %% For some reason, I can't get the ToC to use anything other than the plain
 %% pagestyle.  Luckily, it's the only chapter that opens on an even page.
