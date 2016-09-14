@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-09-13 mar. 18:26 -->
+<!-- 2016-09-14 mer. 18:11 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -354,6 +354,15 @@ Mais avant de voir tout cela, il faut commencer par quelques définitions.
 <div id="outline-container-orgheadline2" class="outline-3">
 <h3 id="defs"><a id="orgheadline2"></a><span class="section-number-3">1.1</span> Code source, processus, et spécification</h3>
 <div class="outline-text-3" id="text-defs">
+<div class="epig">
+<p>
+Whenever logical processes of thought are employed—that is, whenever thought for
+a time runs along an accepted groove—there is an opportunity for the machine.
+ <br>— Vannevar Bush, <i>As We May Think</i>
+</p>
+
+</div>
+
 <aside>
 <p>
 Par anthropomorphisme, on parle aussi de <i>comportement</i> du programme pour
@@ -716,7 +725,17 @@ Narcissus.
 <div id="outline-container-orgheadline5" class="outline-3">
 <h3 id="orgheadline5"><span class="section-number-3">1.2</span> Une présentation du langage JavaScript</h3>
 <div class="outline-text-3" id="text-1-2">
-</div><div id="outline-container-orgheadline3" class="outline-4">
+<div class="epig">
+<p>
+JavaScript is the lingua franca of the Web
+<br>— Jeff Atwood, Shriram Krishnamurthi, Jan Vitek, et d'autres
+</p>
+
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline3" class="outline-4">
 <h4 id="orgheadline3">Genèse chez Netscape</h4>
 <div class="outline-text-4" id="text-orgheadline3">
 <aside>
@@ -1743,7 +1762,18 @@ real world matters dealt with by the program.
 <div id="outline-container-orgheadline16" class="outline-2">
 <h2 id="problem"><a id="orgheadline16"></a><span class="section-number-2">2</span> Le problème: instrumenter et étendre des interpréteurs</h2>
 <div class="outline-text-2" id="text-problem">
+<div class="epig">
+<p>
+Programming, it turns out, is hard. The fundamental rules are typically simple
+and clear. But programs, built on top of these basic rules, tend to become
+complex enough to introduce their own rules and complexity. You&rsquo;re building your
+own maze, in a way, and might just get lost in it.
+<br>— Marijn Haverbeke, <i>Eloquent JavaScript</i>
+</p>
+
 </div>
+</div>
+
 <div id="outline-container-orgheadline11" class="outline-3">
 <h3 id="narc"><a id="orgheadline11"></a><span class="section-number-3">2.1</span> <span class="done READ">READ</span> Étude de cas: instrumentation ad-hoc de Narcissus</h3>
 <div class="outline-text-3" id="text-narc">
@@ -3851,6 +3881,14 @@ Doré, 1862.
 
 </div>
 
+<div class="epig">
+<p>
+With great power comes great uncomputability.
+ <br>— Bard Bloom, Martin Hinzel <a href="#BH-12">BH-12</a>
+</p>
+
+</div>
+
 <p>
 En programmation par objets, on cherche à établir une correspondance entre les
 objets que l&rsquo;on modélise et les objets que l&rsquo;on programme.  Dans la simulation
@@ -4241,7 +4279,7 @@ Tapis turc &laquo;&nbsp;Holbein&nbsp;&raquo;, fin du XVe siècle.
 A design process and a programming language work well together when the
 programming language provides abstraction and composition mechanisms that
 cleanly support the kinds of units the design process breaks the system into.
- Kiczales <i>et al.</i>, <a href="#KLM+97">KLM+97</a>
+ <br>— Kiczales <i>et al.</i>, <a href="#KLM+97">KLM+97</a>
 </p>
 
 </div>
@@ -8017,6 +8055,19 @@ interpréteur simplement, et ultimement, de détourner Narcissus.
 <i>Contenu tiré en partie d&rsquo;un papier présenté à l&rsquo;atelier FOAL&rsquo;15 [<a href="#KNS-15">MdKNS15b</a>]</i>.
 </p>
 
+<div class="epig">
+<p>
+&laquo;&nbsp;That&rsquo;s witchcraft,&nbsp;&raquo; said Brandon curtly, &laquo;&nbsp;and that&rsquo;s madness.&nbsp;&raquo;
+</p>
+
+<p>
+&laquo;&nbsp;Witchcraft to the ignorant,&nbsp;&raquo; murmured the voice coolly. &laquo;&nbsp;Simple science to the
+learned.&nbsp;&raquo;
+<br>— Leigh Brackett, <i>The Sorcerer of Rhiannon</i>
+</p>
+
+</div>
+
 <p>
 Ce chapitre présente une façon de construire un interpréteur extensible en
 JavaScript, par couches successives.  Chaque couche ajoutée vient enrichir la
@@ -10058,13 +10109,13 @@ nom lors de l&rsquo;exécution de <code>f</code>.
 En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
 capturer la fonction dans ce cas; c&rsquo;est laissé à la discrétion du moteur
 d&rsquo;exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comportement
-décrit ici.  Mais V8, utilisé par Chrome, suit des règles différentes, et pour
-pouvoir répliquer l&rsquo;exemple, il faut déclarer les fonctions par des expressions
-(<code>var f = function...</code>).  Le créateur de JavaScript, Brendan Eich, <a href="https://bugs.chromium.org/p/v8/issues/detail?id=686">indique</a> que
-le comportement de Firefox dans ce cas est compatible avec la prochaine version
-du standard.  N&rsquo;ayant pas encore accès à une implémentation complète de ce
-standard, j&rsquo;invite donc le lecteur du futur à tester si ce comportement est
-effectivement standard.
+décrit ici.  Mais V8, utilisé par Chromium, suivait des règles différentes
+encore récemment, et pour pouvoir répliquer l&rsquo;exemple il fallait déclarer les
+fonctions par des expressions (<code>var f = function...</code>).  Le créateur de
+JavaScript, Brendan Eich, <a href="https://bugs.chromium.org/p/v8/issues/detail?id=686">a indiqué</a> que le comportement de Firefox était en
+accord avec la prochaine version du standard (EcmaScript 2015).  À l&rsquo;heure où
+j&rsquo;écris, la dernière version de Chromium (53) a maintenant le même comportement
+que Firefox.
 </p>
 </aside>
 
@@ -11804,11 +11855,18 @@ d&rsquo;appliquer la technique de ce chapitre.
 <div id="outline-container-orgheadline82" class="outline-2">
 <h2 id="orgheadline82"><span class="done READ">READ</span> Conclusion</h2>
 <div class="outline-text-2" id="text-orgheadline82">
-<div class="epig">
+<div class="epigraphs">
 <p>
+
+The true delight is in the finding out rather than in the knowing.
+<br>— Isaac Asimov (peut-être)
+</p>
+
+<p>
+
 And how many times must a man look up  <br/>
 Before he can see the sky?
-<br>— Bob Dylan, <i>Blowing in the Wind</i>
+<br>— Bob Dylan, <i> Blowing in the Wind</i>
 </p>
 
 </div>
@@ -13904,7 +13962,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-09-13 mar. 18:26 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-09-14 mer. 18:11 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
