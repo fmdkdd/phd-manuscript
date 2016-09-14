@@ -103,10 +103,14 @@
 \renewcommand{\chaptitlefont}{\Huge\sffamily}
 \renewcommand{\chapnumfont}{\sffamily\itshape}
 
-%% Headers run into the margin
-\setlength{\headwidth}{\fullwidth}
-\makerunningwidth{headings}{\headwidth}
-\makeheadposition{headings}{flushright}{flushleft}{}{}
+%% Headers run into the margin thanks to the companion style of memoir.  I just
+%% don't like the bold, so I redefine the font.
+\makeevenhead{companion}%
+             {\normalfont\thepage}{}{%
+              \normalfont\leftmark}
+\makeoddhead{companion}%
+            {\normalfont\rightmark}{}{%
+              \normalfont\thepage}
 
 %% Section headings run into the margin
 \usepackage{calc}               % for widthof and minof
