@@ -93,6 +93,38 @@
 }}}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Page words (words instead of page numbers)
+
+%% First read the leftover-words file that contains all the words.  The plan is
+%% to map the page number N to the word at line N.  Thanks to:
+%% https://tex.stackexchange.com/questions/17664/read-arbitrary-lines-from-file#17674
+\makeatletter
+\newread\myread
+\newcount\linecnt
+\openin\myread=leftover-words
+\@whilesw\unless\ifeof\myread\fi{%
+  \advance\linecnt by \@ne
+  \readline\myread t\expandafter o\csname line-\number\linecnt\endcsname
+}
+\makeatother
+
+%% Get the page word that corresponds to the given page number
+\newcommand{\pageword}[1]{\csname line-\number#1\endcsname}
+
+%% Convenience to replace \thepage occurrences
+\newcommand{\thepageword}{\pageword{\value{page}}}
+
+%% Insert page words in the ToC by redefining these functions provided by
+%% memoir.
+\let\oldchapterfpnum\cftchapterformatpnum
+\renewcommand*{\cftchapterformatpnum}[1]{%
+  \oldchapterfpnum{\pageword{#1}}}
+
+\let\oldsectionfpnum\cftsectionformatpnum
+\renewcommand*{\cftsectionformatpnum}[1]{%
+  \oldsectionfpnum{\pageword{#1}}}
+
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Headings
 
 %% Sans-serif headings
@@ -106,11 +138,24 @@
 %% Headers run into the margin thanks to the companion style of memoir.  I just
 %% don't like the bold, so I redefine the font.
 \makeevenhead{companion}%
-             {\normalfont\thepage}{}{%
-              \normalfont\leftmark}
+             {\normalfont\thepageword}{}{%
+               \normalfont\leftmark}
 \makeoddhead{companion}%
             {\normalfont\rightmark}{}{%
-              \normalfont\thepage}
+              \normalfont\thepageword}
+
+%% Don't use page words for front matter
+%% FIXME: maybe for 3 pages of front matter we can just get rid of it
+\makepagestyle{front}
+\makeevenfoot{front}{}{\thepage}{}
+\makeoddfoot{front}{}{\thepage}{}
+
+%% Chapters use the plain pagestyle, and we want page words here as well
+\makeoddfoot{plain}{}{\thepageword}{}
+
+%% For some reason, I can't get the ToC to use anything other than the plain
+%% pagestyle.  Luckily, it's the only chapter that opens on an even page.
+\makeevenfoot{plain}{}{\thepage}{}
 
 %% Section headings run into the margin
 \usepackage{calc}               % for widthof and minof
