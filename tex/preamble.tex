@@ -109,7 +109,9 @@
 \makeatother
 
 %% Get the page word that corresponds to the given page number
-\newcommand{\pageword}[1]{\csname line-\number#1\endcsname}
+%% For some reason (maybe readline?) there is an extra space at the end, hence
+%% the final \hspace.
+\newcommand{\pageword}[1]{\csname line-\number#1\endcsname\hspace{-3pt}}
 
 %% Convenience to replace \thepage occurrences
 \newcommand{\thepageword}{\pageword{\value{page}}}
