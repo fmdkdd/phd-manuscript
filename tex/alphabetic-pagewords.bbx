@@ -18,7 +18,7 @@
        {\usebibmacro{pageref:dump}}
        {}}}
 
-\newbibmacro*{pageref:comp}[1]{%
+\renewbibmacro*{pageref:comp}[1]{%
   \numdef\abx@range@prev{\abx@range@prev+1}%
   \ifinteger{#1}
     {\def\abx@range@num{#1}%
@@ -57,7 +57,7 @@
      \def\abx@range@prev{-1}}%
   \edef\abx@range@last{\abx@range@this}}
 
-\newbibmacro*{pageref:dump}{%
+\renewbibmacro*{pageref:dump}{%
   \ifnumgreater{\abx@range@diff}{0}
     {\ifcase\abx@pagerefstyle\relax % two
        \bibrangedash
