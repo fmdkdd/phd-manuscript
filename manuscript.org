@@ -16,6 +16,8 @@
 #+MACRO: author @@html:<br>— $1@@@@latex:}{$1}@@
 #+MACRO: authorsource @@html:<br>— $1, <i>$2</i>@@@@latex:}{$1, \emph{$2}}@@
 #+MACRO: authormaybe @@html:<br>— $1 (peut-être)@@@@latex:}{$1 (peut-être)}@@
+#+MACRO: label @@html:<div id="$1" class="anchor"></div>@@@@latex:\label{$1}@@
+#+MACRO: ref @@html:<a href="#$1">$2</a>@@@@latex:$1@@
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
@@ -200,7 +202,7 @@ un interpréteur de JavaScript.  On montre comment, grâce au détournement, on
 peut facilement ajouter des analyses dynamiques de programmes sans impacter le
 code source de l'interpréteur.
 
-Mais avant de voir tout cela, il faut commencer par quelques définitions.
+Mais avant tout cela, commençons par quelques définitions.
 
 * READ Préliminaires
 :PROPERTIES:
@@ -268,9 +270,7 @@ JavaScript, vers 2015).
 #+NAME: fib
 #+BEGIN_SRC js
 function fibonacci(n) {
-  return n < 2 ? 1 : fibonacci(n-1) + fibonacci(n-2)
-}
-
+  return n < 2 ? 1 : fibonacci(n-1) + fibonacci(n-2) }
 print(fibonacci(10))
 #+END_SRC
 
@@ -356,22 +356,23 @@ traducteurs, on obtient:
 Notons que la compilation n'attache aucun sens particulier aux noms qui
 importent au programmeur.  On aurait pu écrire le programme [[fib]] ainsi:
 
-#+BEGIN_SRC js
-xx=(x)=>x<2?1:xx(x-1)+xx(x-2);print(xx(10))
-#+END_SRC
-
-#+RESULTS:
-
 #+ATTR_HTML: :style margin-top:-5rem
-#+ATTR_LATEX: :options [-5em]
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_aside
 Les archives du concours international d'obfuscation de code C [[cite:IOCCC][IOCCC]] recèlent
 d'exemples à suivre pour mystifier tout collaborateur.  Le standard Unicode
 offre également de nouvelles opportunités (cf. Mimic [[cite:Mimic][Mimic]]).
 #+END_aside
 
+#+BEGIN_SRC js
+xx=(x)=>x<2?1:xx(x-1)+xx(x-2);print(xx(10))
+#+END_SRC
+
+#+RESULTS:
+
 Ou, à l'extrême:
 
+#+ATTR_LATEX: :options [2em]
 #+BEGIN_aside
 Cet extrait vous est offert par JSFuck [[cite:jsfuck][jsfuck]].
 #+END_aside
@@ -383,6 +384,7 @@ Cet extrait vous est offert par JSFuck [[cite:jsfuck][jsfuck]].
 #+END_EXAMPLE
 
 #+ATTR_HTML: :style margin-top:10rem
+#+ATTR_LATEX: :options [10em]
 #+BEGIN_aside
 Le programme ~print(89)~ est aussi équivalent, et ne calcule même pas les
 nombres de la suite de Fibonnacci!
@@ -401,6 +403,8 @@ l'utilisateur, quand on exécute chacun des trois programmes, l'interpréteur
 JavaScript affiche 89; les programmes sont donc équivalents quand on considère
 le résultat.
 
+#+ATTR_HTML: :style margin-top:6rem
+#+ATTR_LATEX: :options [6em]
 #+BEGIN_aside
 Si deux personnes partent de Nantes à Cherbourg et arrivent toutes les deux
 avant dimanche, peu importe si la première a fait le trajet à pieds, et la
@@ -419,6 +423,8 @@ utilisée.  L'efficacité du programme reflète /comment/ le programme calcule s
 résultat; la machine peut avoir une grande influence sur l'efficacité.  Du point
 de vue de l'efficacité, les trois programmes ne sont pas équivalents.
 
+#+ATTR_HTML: :style margin-top:2rem
+#+ATTR_LATEX: :options [2em]
 #+BEGIN_aside
 Sans intention, c'est de l'improvisation.  Mais on improvise plus difficilement
 un programme qu'un morceau de guitare, bien qu'il existe aujourd'hui des
@@ -521,6 +527,8 @@ JavaScript is the lingua franca of the Web
 
 
 *** Genèse chez Netscape
+#+ATTR_HTML: :style margin-top:2rem
+#+ATTR_LATEX: :options [3em]
 #+BEGIN_aside
 Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
 permettent d'évaluer des programmes JavaScript dans une page web.
@@ -544,6 +552,8 @@ HTML et son style, mais on peut tout aussi aisément capturer le pointeur de la
 souris, redimensionner la fenêtre du navigateur, ou accéder à la caméra de
 l'ordinateur.
 
+#+ATTR_HTML: :style margin-top:1rem
+#+ATTR_LATEX: :options [2em]
 #+BEGIN_aside
 On utilise ici "interpréteurs" dans le sens d'exécuteurs de code, quelle que
 soit la méthode exacte d'exécution (interprétation, compilation, mixte...).
@@ -575,7 +585,7 @@ Internet Explorer.  Les deux versions cohabitent avec de légères différences,
 qui conduit à la standardisation du langage sous le nom d'ECMAScript en
 juin 1997.
 
-*** Un langage à prototypes qui doit ressembler à Java
+*** Un langage à prototypes qui devait ressembler à Java
 Sous ses allures de langage impératif, Eich dit s'être principalement inspiré de
 Self (pour les prototypes) et Scheme (pour les fonctions de première classe)
 [[cite:js-history][js-history]].  Contrairement à Java, JavaScript n'est pas un langage à classes.
@@ -679,6 +689,7 @@ B.b() //: 1
 B.a() //: 0
 #+END_SRC
 
+#+ATTR_LATEX: :options [-16em]
 #+BEGIN_side-figure
 [[file:img/dls6.svg]]
 
@@ -728,8 +739,8 @@ des objets:
   valeurs ne sont pas des objets: la distinction avec les types "primitifs"
   (entiers, booléens...) est due à la proximité avec Java voulue par Sun;
 - les objets peuvent être créés vides (syntaxe ~{}~), ou en étendant un autre
-  objet (~Object.create~ ou syntaxe ~{__proto__: parent}~), mais il n'y a pas de
-  mécanisme pour cloner un objet;
+  objet (via ~Object.create~ ou via la syntaxe ~{__proto__: parent}~), mais il
+  n'y a pas de mécanisme pour cloner un objet;
 - le mécanisme des prototypes réalise la notion "est-extension-de", et le lien
   parent est matérialisé par la propriété ~__proto__~ (ou la fonction
   ~Object.getPrototypeOf~);
@@ -754,11 +765,8 @@ var point = {
   moveTo: function(x, y) {
     this.x = x
     this.y = y
-  },
-}
-
+  }}
 var p1 = Object.create(point)
-
 p1.moveTo(1,2)
 p1 //: Object {x:1,y:2}
 point //: Object {x:0,y:0,moveTo:function}
@@ -830,13 +838,6 @@ en suivant le principe d'/encapsulation/: les modules ne correspondent plus à
 des étapes de traitement, mais plutôt à des décisions de design, des
 responsabilités:
 
-#+ATTR_LATEX: :options [4em]
-#+BEGIN_aside
-Dans le même article, Parnas conseille aussi de mettre dans un même module une
-structure de données et ses procédures d'accès et de modification.  Une notion
-de type abstrait de donnée qu'il ne nomme pas comme telle.
-#+END_aside
-
 #+BEGIN_QUOTE
 #+LATEX: \selectlanguage{english}
 Every module in the second decomposition is characterized by its knowledge of a
@@ -844,6 +845,12 @@ design decision which it hides from all others.  Its interface or definition was
 chosen to reveal as little as possible about its inner workings.
 #+END_QUOTE
 
+#+ATTR_LATEX: :options [-2em]
+#+BEGIN_aside
+Dans le même article, Parnas conseille aussi de mettre dans un même module une
+structure de données et ses procédures d'accès et de modification.  Une notion
+de type abstrait de donnée qu'il ne nomme pas comme telle.
+#+END_aside
 Si l'on suit ce critère pour décomposer un système en modules, alors on peut
 qualifier le système de /modulaire/.  Parnas liste les trois avantages attendus
 d'un système modulaire:
@@ -865,12 +872,12 @@ les étapes de traitement.  Un interpréteur et un compilateur résolvent en par
 les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 /réutiliser/ les modules d'un système à l'autre.
 
-#+BEGIN_side-figure
-[[file:img/parnas-overhead.svg]]
-
+#+ATTR_HTML: :style margin-top:2rem
+#+ATTR_LATEX: :options [3em]
+#+BEGIN_aside
 L'encapsulation cause de l'indirection, ce qui peut réduire l'efficacité du
 programme en augmentant les appels de procédures sur la pile.
-#+END_side-figure
+#+END_aside
 
 Néanmoins, il y a un obstacle à utiliser une décomposition dont les modules
 adhèrent strictement à l'encapsulation: l'efficacité du système.  Dans une telle
@@ -884,6 +891,14 @@ vérifications sur leurs paramètres, qui ne sont peut-être pas nécessaires da
 tous les cas, ce qui rajoute encore des instructions que la machine devra
 effectuer.
 
+#+ATTR_HTML: :style margin-top:5rem
+#+ATTR_LATEX: :options [6em]
+#+BEGIN_aside
+Ce ne sont que des suggestions, et l'article ne dit pas comment réaliser ces
+transformations.  On trouve des mises en œuvre de ces idées dans la
+programmation littéraire ([[#proglit]]) et dans la programmation par aspects ([[#aop]]).
+#+END_aside
+
 Parnas reconnaît ce problème d'efficacité, et suggère de concevoir un outil qui
 transforme le code de la décomposition modulaire en code qui suit davantage le
 fil d'exécution.  Le concepteur peut travailler sur la représentation modulaire,
@@ -892,13 +907,6 @@ outil, les appels de procédures inutiles sont supprimés, et l'efficacité n'es
 pas sacrifiée.  En revanche, la décomposition modulaire ne serait plus
 apparente.  Il propose donc de conserver le programme sous ses plusieurs formes
 et de développer des outils pour passer d'une forme à l'autre.
-
-#+ATTR_HTML: :style margin-top:-8rem
-#+BEGIN_aside
-Ce ne sont que des suggestions, et l'article ne dit pas comment réaliser ces
-transformations.  On trouve des mises en œuvre de ces idées dans la
-programmation littéraire ([[#proglit]]) et dans la programmation par aspects ([[#aop]]).
-#+END_aside
 
 Parnas met donc en avant le critère d'encapsulation pour concevoir un système
 modulaire.  Mais surtout, il insiste sur l'importance de la phase de conception
@@ -986,14 +994,6 @@ est le plus à même de résoudre le problème qu'il a en vue.  Choisir un langa
 n'affranchit pas le concepteur d'avoir à se poser des questions difficiles sur
 la structure du système.  En 2003, Parnas déplore cette tendance [[cite:DBB+03][DBB+03]]:
 
-#+ATTR_HTML: :style margin-top:18rem
-#+ATTR_LATEX: :options [23em]
-#+BEGIN_aside
-Cette dernière phrase cible directement les trois autres intervenants qui lui
-font face, qui sont les instigateurs respectifs de la programmation par aspects,
-de la programmation par fonctionnalités, et d'Hyper/J.
-#+END_aside
-
 #+BEGIN_QUOTE
 #+LATEX: \selectlanguage{english}
 To a man with a hammer, everything looks like a nail.  To a Computer Scientist,
@@ -1012,6 +1012,14 @@ document.  We are still trying to undo the damage caused by the early treatment
 of modularity as a language issue and, sadly, we still try to do it by inventing
 languages and tools.
 #+END_QUOTE
+
+#+ATTR_HTML: :style margin-top:-3rem
+#+ATTR_LATEX: :options [-2em]
+#+BEGIN_aside
+Cette dernière phrase cible directement les trois autres intervenants qui lui
+font face, qui sont les instigateurs respectifs de la programmation par aspects,
+de la programmation par fonctionnalités, et d'Hyper/J.
+#+END_aside
 
 Parnas réitère: le langage de programmation seul ne rend pas le programme
 modulaire.  Il est aussi facile de créer un programme non-modulaire dans un
@@ -1083,6 +1091,7 @@ Et il s'intéresse également à la modification de programmes, aux difficultés
 apparaissent quand on essaye d'ajouter des fonctionnalités non prévues
 initialement.
 
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_side-figure
 [[file:img/naur-theory.svg]]
 
@@ -1194,6 +1203,7 @@ documentation.  Naur appelle cela la "résurrection de programme".  À ses yeux,
 c'est un acte sans espoir:
 
 #+ATTR_HTML: :style margin-top: -2rem
+#+ATTR_LATEX: :options [-1em]
 #+BEGIN_aside
 En filant la métaphore, l'ensemble des techniques qui permettent de modifier un
 programme abandonné sans se soucier de sa théorie pourrait s'appeler
@@ -1350,6 +1360,8 @@ own maze, in a way, and might just get lost in it.
 :CUSTOM_ID: narc
 :END:
 
+#+ATTR_HTML: :style margin-top: 2rem
+#+ATTR_LATEX: :options [3em]
 #+BEGIN_aside
 L'hôte est le moteur d'exécution de JavaScript qui exécute le code de Narcissus,
 tandis que le code client est le code JavaScript exécuté par Narcissus.
@@ -1364,6 +1376,8 @@ est une implémentation relativement légère (environ 6000 lignes de code) du
 standard ECMAScript [[cite:ECM-99][ECM-99]], qui permet de rapidement prototyper des
 fonctionnalités expérimentales pour le langage.
 
+#+ATTR_HTML: :style margin-top: 6rem
+#+ATTR_LATEX: :options [7em]
 #+BEGIN_side-figure
 [[file:img/a-facet.svg]]
 
@@ -1385,6 +1399,7 @@ tour pour produire les deux facettes du résultat.  Afin de suivre les
 multi-facettes maintient une liste des embranchements suivis lors de
 l'exécution; cette liste est appelée /program counter/ (PC).
 
+#+ATTR_LATEX: :options [-5em]
 #+BEGIN_side-figure
 [[file:img/fenton-example.svg]]
 #+END_side-figure
@@ -1406,8 +1421,8 @@ n'est donc pas capable d'inférer la valeur privée de ~x~.  L'évaluation
 multi-facettes permet donc de protéger l'information de ~x~, même contre les
 flots indirects.
 
-#+ATTR_HTML: :style margin-top:5rem
-#+ATTR_LATEX: :options [7em]
+#+ATTR_HTML: :style margin-top:4rem
+#+ATTR_LATEX: :options [5em]
 #+BEGIN_aside
 On compte les lignes de code physiques, commentaires inclus mais sans compter
 les lignes vides.
@@ -1452,7 +1467,7 @@ touchent de nombreuses parties du code de l'interpréteur, sans être restreints
 une ou deux régions particulières.  Les changements sont /éparpillés/ dans le
 code.  De plus, des changements de catégories différentes sont /entremêlés/:
 certaines fonctions sont affectées par les changements ~evaluateEach~ et
-~ProgramCounter~.  Résultat, il devient difficile de comprendre les effets de
+~Program~ ~Counter~.  Résultat, il devient difficile de comprendre les effets de
 l'instrumentation en lisant le code à l'œil nu, ou de s'assurer de sa justesse
 par rapport à une spécification.  Il devient difficile également, sans
 connaissances avancées de Narcissus et de l'évaluation multi-facettes, de savoir
@@ -1517,7 +1532,7 @@ mathématique qui associe un code source à un processus:
 : spec_1: source -interpréteur-> processus
 
 La définition exacte de cette fonction correspond à une spécification de
-l'interpréteur (voir [[#defs]]).
+l'interpréteur (voir \sect[[#defs]]).
 
 L'instrumentation de la section précédente correspond à une modification de
 cette spécification.  Et à cette nouvelle spécification correspond à une
@@ -1568,7 +1583,7 @@ Rappelons nous que le processus de développement est le suivant:
 Bien que le véritable objet du programmeur est de faire concorder le processus
 avec les résultats attendus, le programmeur ne manipule pas directement le
 processus, mais seulement le code qui le décrit.  La boucle
-correction/observation permet de rectifier les imprécisions causées par cette
+observation/rectification permet de rectifier les imprécisions causées par cette
 indirection.
 #+END_aside
 
@@ -1621,25 +1636,23 @@ Narcissus, on n'a pas à dupliquer le code de l'interpréteur quatre fois, mais
 juste à décrire les quatre deltas requis par les analyses.
 
 Cette factorisation correspond directement à une factorisation algébrique.  Si
-I_1 est l'interpréteur d'origine et I_2 l'interpréteur modifié, on note \delta_2 le
-delta qui transforme I_1 en I_2 (\delta_2 est une fonction).  On a I_2 = \delta_2 I_1.  Soient
-deux autres interpréteurs: I_3 et I_4, et leurs deltas respectifs \delta_3 et \delta_4.  On a:
+$I_1$ est l'interpréteur d'origine et $I_2$ l'interpréteur modifié, on note $\delta_2$
+le delta qui transforme $I_1$ en $I_2$ ($\delta_2$ est une fonction).  On a $I_2 = \delta_2
+I_1$.  Soient deux autres interpréteurs: $I_3$ et $I_4$, et leurs deltas respectifs
+$\delta_3$ et $\delta_4$.  On a $I_2 = \delta_2 I_1$, $I_3 = \delta_3 I_1$ et $I_4 = \delta_4 I_1$.  Alors,
 
-I_2 = \delta_2 I_1 {{{br}}}
-I_3 = \delta_3 I_1 {{{br}}}
-I_4 = \delta_4 I_1 {{{br}}}
-
-Alors,
-
+#+ATTR_LATEX: :options [2.5em]
 #+BEGIN_aside
 Id est la fonction identité
 #+END_aside
 
+\[
 (I_1, I_2, I_3, I_4) = (Id I_1, \delta_2 I_2, \delta_3 I_3, \delta_4 I_4) = (Id, \delta_2, \delta_3, \delta_4) I_1
+\]
 
 Au lieu d'avoir quatre interpréteurs différents, on peut juste conserver les
 l'interpréteur de base et les quatre deltas.  C'est une factorisation qui
-élimine la redondance de I_1.
+élimine la redondance de $I_1$.
 
 Mais si intuitivement une telle factorisation semble possible, les questions
 naturelles qui suivent sont: comment réaliser cette factorisation dans le code
@@ -1704,6 +1717,7 @@ exécuté par ce contexte.  L'objet ~ExecutionContext~ est une réification du
 concept éponyme de la spécification ECMAScript.
 
 #+ATTR_HTML: :style margin-top:-4rem
+#+ATTR_LATEX: :options [-2em]
 #+BEGIN_aside
 Voir la section 10 de la spécification [[cite:ECM-99][ECM-99]].
 #+END_aside
@@ -1764,6 +1778,8 @@ récupère la même valeur, mais cette fois on /distribue/ l'évaluation en appe
 ~evaluateEach~ avec cette valeur comme premier argument, et comme second une
 fonction qui opère sur une valeur simple (~v~), c'est-à-dire sans facettes.
 
+#+ATTR_HTML: :style margin-top:10rem
+#+ATTR_LATEX: :options [12em]
 #+BEGIN_aside
 Il n'y a pas de sortie standard dans les programmes JavaScript exécutés par les
 navigateurs web.  La plupart des navigateurs en revanche disposent d'une console
@@ -1885,14 +1901,9 @@ convaincre (ou d'observer) qu'ils ne changent pas le comportement du programme.
 À l'inverse, si on restructure le programme entier ou de grandes parties d'un
 seul tenant, on fait plutôt de la /réécriture/, ce qui est plus risqué.
 
-#+BEGIN_aside
-La section [[#variations]] explore différentes pistes de refactorisation à travers
-un exemple simplifié d'interpréteur.
-#+END_aside
-
 Puisqu'on souhaite factoriser Narcissus suivant les quatre axes de la section
 précédente, la refactorisation est une solution légitime.  On pourra choisir
-différentes structures (patron visiteur, /hooks/...), qui nous conduiront à
+différentes structures (patron visiteur, /hooks/, ...), qui nous conduiront à
 intégrer plus facilement l'évaluation multi-facettes à l'interpréteur d'origine,
 sans avoir à en modifier la moitié du code source.
 
@@ -1985,6 +1996,7 @@ Dans ce chapitre, on s'intéresse aux travaux qui cherchent à étendre des
 interpréteurs, ou à étendre des programmes en général.  Si le problème est
 similaire, la solution proposée pourra peut être s'appliquer à notre problème.
 
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_side-figure
 [[file:img/sota3.svg]]
 #+END_side-figure
@@ -2030,7 +2042,7 @@ out in text space) and the process (spread out in time) as trivial as possible.
 #+END_QUOTE
 
 #+ATTR_HTML: :style margin-top:-18rem
-#+ATTR_LATEX: :options [-18em]
+#+ATTR_LATEX: :options [-16em]
 #+BEGIN_side-figure
 [[file:img/dijkstra-process-program.svg]]
 
@@ -2180,6 +2192,7 @@ Autre exemple: le ~COMEFROM~ [[cite:Cla-73][Cla-73]].  Le ~COMEFROM~ est le dual
 /capture/ le contrôle après l'exécution de la ligne 10.
 
 #+ATTR_HTML: :style margin-top:-3rem
+#+ATTR_LATEX: :options [-11em]
 #+BEGIN_side-figure
 [[file:img/aop5.svg]]
 
@@ -2225,7 +2238,7 @@ the pro- and the anti-GOTO factions can agree.
 
 #+BEGIN_aside
 L'idée du ~COMEFROM~ n'est pas éloignée du mécanisme de méthode d'aspects
-([[#aop]]).
+(voir \sect[[#aop]]).
 #+END_aside
 
 Même s'il faut voir ~COMEFROM~ comme une blague (aucun langage ne l'inclut), un
@@ -2247,6 +2260,7 @@ une la boucle infinie.  Mais il y a une différence notable: ~GOTO~ influe sur l
 flot d'exécution qui le suit, tandis que ~COMEFROM~ capture l'exécution qui le
 précède.  En combinant les deux, on pourrait modifier un programme à distance:
 
+#+ATTR_LATEX: :options [-5em]
 #+BEGIN_side-figure
 [[file:img/cometo.svg]]
 #+END_side-figure
@@ -2347,6 +2361,7 @@ rigidly determined order like top-down or bottom-up.
 #+END_QUOTE
 
 #+ATTR_HTML: :style margin-top:-7rem
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_side-figure
 [[file:img/knuth0.svg]]
 
@@ -2360,6 +2375,7 @@ des commentaires en TeX autour d'un programme Pascal, ou même d'insérer des
 programmes Pascal dans un document TeX.  Knuth souhaite que le programme soit
 destiné /avant tout/ au lecteur humain, et en second lieu à la machine:
 
+#+ATTR_LATEX: :options [3em]
 #+BEGIN_aside
 Un sentiment partagé par Abelson et Sussman: "Programs must be written for
 people to read, and only incidentally for machines to execute" [[cite:AS-96][AS-96]].
@@ -2472,6 +2488,7 @@ structurée du programme, qui contient à la fois tout le code source, et des
 explications pour chaque partie, dans un ordre naturel d'exposition.
 
 #+ATTR_HTML: :style margin-top:-15rem
+#+ATTR_LATEX: :options [-15em]
 #+BEGIN_side-figure
 [[file:img/knuth1.svg]]
 
@@ -2490,10 +2507,6 @@ discours, l'explication de la fonctionnalité.  La structure d'un programme
 littéraire est donc complètement renversée: l'explication domine, et le
 programme est secondaire; il découle de l'explication.
 
-#+BEGIN_side-figure
-[[file:img/knuth2.svg]]
-#+END_side-figure
-
 Et pour permettre au programmeur de composer le programme dans l'ordre de
 l'explication, la programmation littéraire offre un mécanisme pertinent pour le
 détournement.  Une section du programme peut être simplement nommée, et on peut
@@ -2506,6 +2519,11 @@ Mais l'idée est similaire, et n'est pas restreinte à Pascal.  WEB est lié au
 langage Pascal, mais d'autres implémentations de la programmation littéraire
 peuvent s'appliquer à tous les langages: Noweb [[cite:Noweb][Noweb]] et Org mode [[cite:Orgmode][Orgmode]] sont
 deux exemples.
+
+#+ATTR_LATEX: :options [-10em]
+#+BEGIN_side-figure
+[[file:img/knuth2.svg]]
+#+END_side-figure
 
 # Et à l'inverse,
 # une même section peut être incluses à plusieurs endroits.  Si plusieurs
@@ -2686,7 +2704,7 @@ Ici, l'addition de deux points fait appel à l'addition des coordonnées.
 #+END_aside
 #+BEGIN_SRC smalltalk
 + t1
-  [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
+  [^ Point new x: x + t1 as PtX y: y + t1 as PtY]
 #+END_SRC
 
 Le programmeur ne crée pas des objets directement.  Il décrit des /classes/.
@@ -2707,7 +2725,7 @@ comportement de la classe ~Number~, ce qui permet de réutiliser les
 comportements, et de factoriser le code.
 
 #+ATTR_HTML: :style margin-top:-16rem
-#+ATTR_LATEX: :options [-26em]
+#+ATTR_LATEX: :options [-19em]
 #+BEGIN_side-figure
 [[file:img/smalltalk0.svg]]
 
@@ -2722,11 +2740,11 @@ de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78
 #+END_aside
 #+BEGIN_SRC smalltalk
 < t1
-  [⇑ self - t1 < 0]
+  [^ self - t1 < 0]
 > t1
-  [⇑ self - t1 > 0]
+  [^ self - t1 > 0]
 = t1
-  [⇑ self - t1 = 0]
+  [^ self - t1 = 0]
 #+END_SRC
 
 #+BEGIN_aside
@@ -2786,7 +2804,7 @@ pour l'ordinateur STAR de Xerox permet à une classe de réutiliser les méthode
 de plusieurs classes à la fois par le mécanisme des /traits/ [[cite:CBL+82][CBL+82]].
 
 #+ATTR_HTML: :style margin-top:-11rem
-#+ATTR_LATEX: :options [-11em]
+#+ATTR_LATEX: :options [-15em]
 #+BEGIN_side-figure
 [[file:img/smalltalk1.svg]]
 
@@ -2803,6 +2821,7 @@ peut en outre implémenter des traits à son tour, ce qui permet de regrouper de
 traits souvent utilisés ensemble.
 
 #+ATTR_HTML: :style margin-top:-9rem
+#+ATTR_LATEX: :options [-12em]
 #+BEGIN_side-figure
 [[file:img/smalltalk2.svg]]
 
@@ -2867,6 +2886,7 @@ De cette distinction philosophique, Taivalsaari tire trois conclusions:
   hautes sont trop abstraites pour être utiles, et les classes les plus basses
   trop spécifiques pour être réutilisables.
 
+#+ATTR_LATEX: :options [1em]
 #+BEGIN_aside
 C'est le point de vue constructiviste popularisé par Piaget.
 #+END_aside
@@ -2981,6 +3001,7 @@ prototype.  Cette structure permet de séparer les méthodes (le comportement) d
 attributs (l'état).
 
 #+ATTR_HTML: :style margin-top:-13rem
+#+ATTR_LATEX: :options [-10em]
 #+BEGIN_side-figure
 [[file:img/self2.svg]]
 #+END_side-figure
@@ -3097,6 +3118,7 @@ la programmation par objets: on a une classe ~Field~ pour les attributs, une
 classe ~Method~, une classe ~Object~, et une classe ~Class~.
 
 #+ATTR_HTML: :style margin-top:7rem
+#+ATTR_LATEX: :options [8em]
 #+BEGIN_aside
 /RPC: Remote Procedure Call/
 #+END_aside
@@ -3112,10 +3134,12 @@ pour écrire des objets qui font la passerelle avec des bases de données
 relationnelles (/ORM/).
 
 #+ATTR_HTML: :style margin-top:-2rem
+#+ATTR_LATEX: :options [-1em]
 #+BEGIN_aside
 /ORM: Object-Relational Mapping/
 #+END_aside
 
+#+ATTR_LATEX: :options [2em]
 #+BEGIN_aside
 On peut néanmoins synthétiser des classes en Java en utilisant un chargeur de
 classes personnalisé, en utilisant des outils comme Javassist.
@@ -3223,7 +3247,7 @@ has been credited, since Aristotle, with our success in adapting to new
 situations and mastering our environment.  Naturally, it was widely conjectured
 in the artificial intelligence community that by providing reflective
 capabilities to computational systems, we would obtain systems with greater
-plasticity and consequently, enhanced functionality. — [[cite:Rao-91][Rao-91]]
+plasticity and consequently, enhanced functionality. [[cite:Rao-91][Rao-91]]
 #+end_quote
 
 [[cite:Rao-91][Rao-91]] commence par remarquer que tout système définit une /interface/ qui peut
@@ -3240,6 +3264,7 @@ de base, qui est l'interface classique associée au système, et l'interface de
 métaniveau, qui révèle en partie l'implémentation de l'interface de base.
 
 #+ATTR_HTML: :style margin-top:-8rem
+#+ATTR_LATEX: :options [-9em]
 #+BEGIN_side-figure
 [[file:img/sota1.svg]]
 
@@ -3280,6 +3305,7 @@ par le client de l'interface (comment redessiner une fenêtre, comment rapporter
 les événements souris, comment gérer les sous-fenêtres, ...).
 
 #+ATTR_HTML: :style margin-top:-10rem
+#+ATTR_LATEX: :options [-10em]
 #+BEGIN_side-figure
 [[file:img/sota2.svg]]
 
@@ -3429,6 +3455,14 @@ plus dommage que les versions optimisées suivent toujours le même motif:
 fusionner les boucles, pour combiner les opérations à l'intérieur des boucles
 plutôt qu'à l'extérieur.
 
+#+BEGIN_side-figure
+[[file:img/aop2.svg]]
+
+Dans ~Remove~, on ne peut pas fusionner les boucles de ~And~ et de ~Not~ sans
+outrepasser les frontières imposées par les fonctions ({{{color(c0)}}}).  Il
+faut un nouvel axe ({{{color(c1)}}}) de composition.
+#+END_side-figure
+
 Alors, peut-on réconcilier l'efficacité avec la simplicité de la composition des
 filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
 buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
@@ -3441,15 +3475,6 @@ réalisée par la composition des procédures du langage de programmation, mais 
 seconde composition, qui dépasse l'unité de la procédure, n'est pas supportée
 par le langage, et doit être réalisée manuellement.
 
-#+ATTR_HTML: :style margin-top:-15rem
-#+BEGIN_side-figure
-[[file:img/aop2.svg]]
-
-Dans ~Remove~, on ne peut pas fusionner les boucles de ~And~ et de ~Not~ sans
-outrepasser les frontières imposées par les fonctions ({{{color(c0)}}}).  Il
-faut un nouvel axe ({{{color(c1)}}}) de composition.
-#+END_side-figure
-
 C'est la distinction que les auteurs font entre /composants/ et /aspects/.  Si
 une fonctionnalité du système peut être implémentée par une procédure (ou une
 méthode, un objet, une API), alors c'est un composant; sinon, c'est un aspect.
@@ -3459,6 +3484,7 @@ comme la performance, ou la gestion d'erreurs.  Le but de la programmation par
 aspects est de pouvoir exprimer clairement ces deux catégories de
 fonctionnalités:
 
+#+ATTR_LATEX: :options [2em]
 #+BEGIN_aside
 /AOP: Aspect-Oriented Programming/
 #+END_aside
@@ -3592,6 +3618,7 @@ credited with this idea. [[cite:KHH+01][KHH+01]]
 #+END_QUOTE
 
 #+ATTR_HTML: :style margin-top:-10rem
+#+ATTR_LATEX: :options [-10em]
 #+BEGIN_aside
 On retrouve ce souci dans l'implémentation ouverte; les auteurs préfèrent une
 interface d'implémentation où le programmeur déclare l'optimisation souhaitée
@@ -3750,9 +3777,9 @@ aspect SimpleErrorLogging {
 }
 #+END_SRC
 
-Cet aspect est équivalent à enrober chaque appel dans un ~try/catch~ et appeler
-~log.write~ sur l'erreur levée.  Mais ici c'est fait en 8 lignes, pour toutes
-les classes du package, même les classes futures.
+Cet aspect est équivalent à enrober chaque appel dans un bloc ~try/catch~ et
+appeler ~log.write~ sur l'erreur levée.  Mais ici c'est fait en 8 lignes, pour
+toutes les classes du package, même les classes futures.
 
 Un désavantage du langage spécifique est qu'il faut réécrire le programme des
 composants dans le nouveau langage à composants.  Ici, le langage d'aspects
@@ -3771,6 +3798,13 @@ programme: dans les filtres d'images, la modification est /explicite/, car il
 faut réécrire les filtres pour expliciter quel type de boucle est utilisé; mais
 dans AspectJ, le programme est modifié /implicitement/ par les aspects.
 
+#+BEGIN_side-figure
+[[file:img/aop4.svg]]
+
+Le programme peut être compilé avec ou sans les aspects, et engendrer deux
+exécutables différents.
+#+END_side-figure
+
 En revanche, dans les deux cas, les programmes des composants /ne dépendent pas
 des programmes d'aspects/ pour fonctionner.  Dans l'exemple de l'aspect de
 journalisation des erreurs, on pourrait compiler le programme sans cet aspect
@@ -3782,14 +3816,6 @@ fonctionnalités du programme final.  De même, dans les filtres d'image, ne pas
 inclure les programmes d'aspects n'impacte que l'efficacité du programme, mais
 pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
 /oubliables/ (/obliviousness property/).
-
-#+ATTR_HTML: :style margin-top:-18rem
-#+BEGIN_side-figure
-[[file:img/aop4.svg]]
-
-Le programme peut être compilé avec ou sans les aspects, et engendrer deux
-exécutables différents.
-#+END_side-figure
 
 *** Les limites de la programmation par aspects
 Le but de la programmation par aspects est louable: distinguer les composants
@@ -4061,7 +4087,7 @@ nécessite de modifier toutes les opérations.
 #+END_SRC
 
 Au total, si on a ~p~ opérations dans l'interpréteur, le changement a une
-complexité de ~O(p).
+complexité de ~O(/p/).
 
 Les deux changements sont linéaires en lignes de code ajoutées.  Mais ajouter
 une opération et ajouter un terme ne sont pas des changements similaires pour
@@ -4316,7 +4342,7 @@ Dans la décomposition objet qui suit le patron interpréteur, ajouter des
 opérations requiert de modifier toutes les classes.  Gamma {{{etal}}} notent que
 pour y remédier, on peut utiliser le patron visiteur [[cite:GHJ+94][GHJ+94]].  Dans le patron
 visiteur, les classes qui représentent les termes n'ont plus qu'une seule
-méthode: ~accept(Visitor)~:
+méthode ~accept(Visitor)~:
 
 #+BEGIN_SRC java
 abstract class Term {
@@ -4395,6 +4421,8 @@ class Mult extends Term {
 }
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:4rem
+#+ATTR_LATEX: :options [5em]
 #+BEGIN_aside
 On pourrait capturer cette erreur et notifier le visiteur par un protocole
 spécifique; une méthode ~unknownTerm~ dans ~Visitor~ par exemple.  Ou bien
@@ -4649,8 +4677,8 @@ Dans Hyper/J, la superposition intervient lorsqu'il s'agit de composer les
 hypercoupes pour synthétiser le programme.  Composer le code source se fait à
 partir des noms de classes et des méthodes: deux classes homonymes dans deux
 hypercoupes différentes combineront leurs méthodes.  Dans les hypercoupes de
-l'exemple, on obtient une seule classe ~Term~ qui aura trois méthodes: ~eval~,
-~display~, et ~check~.  La superposition s'applique aussi aux méthodes
+l'exemple, on obtient une seule classe ~Term~ qui comportera trois méthodes:
+~eval~, ~display~, et ~check~.  La superposition s'applique aussi aux méthodes
 homonymes, mais on peut en plus préciser de quelle façon combiner comme en
 programmation par aspects (~after~, ~before~, ~around~).
 
@@ -4713,6 +4741,7 @@ should look different.
 #+END_QUOTE
 
 #+ATTR_HTML: :style margin-top:-7rem
+#+ATTR_LATEX: :options [-13em]
 #+BEGIN_side-figure
 [[file:img/griswold0.svg]]
 
@@ -4729,6 +4758,7 @@ fichiers du projet, avec ~grep~ par exemple, pour trouver tous les endroits
 qu'il faudra adapter pour les programmes Ada.
 
 #+ATTR_HTML: :style margin-top:7rem
+#+ATTR_LATEX: :options [8em]
 #+BEGIN_aside
 TODO: add Eclipse ref
 #+END_aside
@@ -4936,6 +4966,8 @@ Obladi, Oblada
 {{{author(The Beatles)}}}
 #+END_epigraphs
 
+#+ATTR_HTML: :style margin-top:5rem
+#+ATTR_LATEX: :options [7em]
 #+BEGIN_aside
 Cette exploration, qui correspond à des travaux réalisés en début de thèse,
 n'est d'ailleurs pas exhaustive par rapport aux mécanismes étudiés dans le
@@ -5147,15 +5179,12 @@ Mais malheureusement, en noweb, ceci ne redéfinit pas le bloc ~interp-plus~,
 mais /ajoute/ du code à ce bloc.  Si bien qu'après l'entrelacement, on obtient:
 
 #+BEGIN_SRC js
-...
 function interp(n) {
   switch (n.type) {
   case 'num':
     return n.n
     return n.n * 2  // code mort
     break
-
-...
 #+END_SRC
 
 Notre redéfinition n'est pas utilisée.
@@ -5500,6 +5529,7 @@ les instances de ~num~ que l'on pourrait créer en appelant ~num.new~.
 Si l'on souhaite éviter de toucher à ~num~, on peut proposer un objet ~num3~ qui
 servira de prototype alternatif pour ~n1~:
 
+#+ATTR_LATEX: :options [-4em]
 #+BEGIN_side-figure
 [[file:img/variations-3.svg]]
 
@@ -5638,6 +5668,7 @@ Cette fois on n'utilise pas ~derive~, car plutôt que de changer chaque règle, 
 change directement la fonction d'évaluation ~eval~ pour introduire l'instruction
 ~console.log~.
 
+#+ATTR_LATEX: :options [-4em]
 #+BEGIN_side-figure
 [[file:img/variations-4.svg]]
 #+END_side-figure
@@ -5742,29 +5773,28 @@ interp_log.rules.end_trace = function() {
 }
 #+END_SRC
 
-Intuitivement, évaluer cette instruction a l'effet inverse de ~start_trace~: on
-rétablit le prototype de l'interpréteur vers ~interp_traceable~.  On ne souhaite
-pas modifier les prototypes des objets ~interp_traceable~ ou ~interp_log~ en
-revanche, donc on utilisera un objet ~interp_model~ dont le seul but est de
-contenir le pointeur vers le prototype du mode courant d'évaluation.
+Intuitivement, évaluer cette instruction a l'effet inverse d'évaluer
+~start_trace~: on rétablit le prototype de l'interpréteur vers
+~interp_traceable~.  On ne souhaite pas modifier les prototypes des objets
+~interp_traceable~ ou ~interp_log~ en revanche, donc on utilisera un objet
+~interp_model~ dont le seul but est de contenir le pointeur vers le prototype du
+mode courant d'évaluation.
 
 Le mode par défaut est ~traceable~, soit:
 
 #+BEGIN_side-figure
 [[file:img/variations-11.svg]]
-
-L'objet ~interp_modal~ est change de prototype suivant l'évaluation du
-programme.  Au début, son prototype est ~interp_traceable~, puis après
-l'évaluation d'une instruction ~start_trace~, son prototype devient
-~interp_log~.  Dans cet état, évaluer l'instruction ~end_trace~ restaure le
-prototype initial d'~interp_modal~.
 #+END_side-figure
 
 #+BEGIN_SRC js
 var interp_modal = Object.create(interp_traceable)
 #+END_SRC
 
-Et ainsi, cet interpréteur pourra évaluer le programme ~e4~:
+L'objet ~interp_modal~ change de prototype suivant l'évaluation du programme.
+Son prototype initial est ~interp_traceable~, mais après l'évaluation d'une
+instruction ~start_trace~, son prototype devient ~interp_log~.  Dans cet état,
+évaluer l'instruction ~end_trace~ restaure le prototype initial,
+~interp_traceable~.  Ainsi, cet interpréteur pourra évaluer le programme ~e4~:
 
 #+BEGIN_SRC js
 var e4 = progn(
@@ -5831,7 +5861,8 @@ On peut ajouter l'évaluation alternative de ~Num~ par un aspect:
 
 #+BEGIN_SRC java
 aspect NumDouble {
-  pointcut eval(Num num): call(int eval() && target(num));
+  pointcut eval(Num num):
+    call(int eval() && target(num));
 
   int around(Num num): eval(num) {
     return 2 * proceed(num);
@@ -5870,7 +5901,7 @@ peut construire un programme ~e2~ qui l'utilise:
 
 #+BEGIN_aside
 On fait du terme ~Trace~ une expression plutôt qu'une déclaration (/statement/)
-comme dans l'exemple JavaScript, mais les deux formes sont réalisables en
+à l'inverse de l'exemple JavaScript, mais les deux formes sont réalisables en
 programmation par aspects.
 #+END_aside
 
@@ -5889,8 +5920,8 @@ le rôle de l'aspect ~DynamicTrace~:
 #+BEGIN_SRC java -n -r
 aspect DynamicTrace {
   pointcut tracedEval(Term t):
-  call(int eval()) && target(t)
-    && cflow(call(int eval()) && target(Trace));
+    call(int eval()) && target(t)
+      && cflow(call(int eval()) && target(Trace));
 
   before(Term t): tracedEval(t) {
     System.out.println("eval " + t);              (ref:aj-trace)
