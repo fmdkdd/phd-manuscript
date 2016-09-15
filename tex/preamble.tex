@@ -119,6 +119,10 @@
 %% Not settled yet, so might as well use a variable definition
 \newcommand{\pagewordfont}{\sffamily\small}
 
+%% Useful for swapping page words in \pageref.  See the ref macro in the Org
+%% document.
+\usepackage{refcount}
+
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Table of contents
 
@@ -313,7 +317,8 @@
 %% For color legend in diagrams
 \newcommand{\colorrule}[1]{\textcolor{#1}{\rule{8pt}{4pt}}}
 
-%% Hyperlinks for citations and external links.
+%% Hyperlinks for citations and external links.  Hyperref is always the last
+%% package for compatibility reasons.
 \usepackage{hyperref}
 \hypersetup{
   unicode,                      % Always a good idea?

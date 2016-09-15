@@ -17,7 +17,7 @@
 #+MACRO: authorsource @@html:<br>— $1, <i>$2</i>@@@@latex:}{$1, \emph{$2}}@@
 #+MACRO: authormaybe @@html:<br>— $1 (peut-être)@@@@latex:}{$1 (peut-être)}@@
 #+MACRO: label @@html:<div id="$1" class="anchor"></div>@@@@latex:\label{$1}@@
-#+MACRO: ref @@html:<a href="#$1">$2</a>@@@@latex:$1@@
+#+MACRO: ref @@html:<a href="#$1">$2</a>@@@@latex:p. \hyperref[$1]{\pageword{\getpagerefnumber{$1}}}@@
 
 #+HTML_DOCTYPE: html5
 #+HTML_HEAD: <link rel="stylesheet" href="style.css">
@@ -3061,6 +3061,12 @@ même à un programme d'altérer sa structure, ou de modifier la sémantique du
 langage, pendant qu'il s'exécute.  Cette adaptation dynamique offre de nouvelles
 façons de modifier et d'étendre des programmes.
 
+#+ATTR_HTML: :style margin-top:15rem
+#+ATTR_LATEX: :options [6em]
+#+BEGIN_aside
+/API: Application Programmer Interface/
+#+END_aside
+
 Un simple exemple de réflexion: être capable d'inspecter une classe à
 l'exécution, ainsi que ses méthodes et attributs.  L'API de réflexion du langage
 Java nous le permet:
@@ -3734,6 +3740,7 @@ Là on capture uniquement les appels récursifs directs de ~m~.  Inversement, si
 l'on souhaite capturer les appels /non/ récursifs à ~m~, on peut utiliser
 ~cflow~:
 
+{{{label(cflow)}}}
 #+BEGIN_SRC java
 call(void m()) && !cflow(call(void m()))
 #+END_SRC
@@ -5929,13 +5936,18 @@ aspect DynamicTrace {
 }
 #+END_SRC
 
+#+ATTR_HTML: :style margin-top:1rem
+#+ATTR_LATEX: :options [1em]
+#+BEGIN_aside
+Voir {{{ref(cflow,cflow)}}} pour une explication de la couple ~cflow~.
+#+END_aside
+
 La coupe ~tracedEval~ intercepte tous les appels de ~eval~ qui sont dans
-l'étendue d'un appel à ~Trace.eval~.  La coupe ~cflow~ (cf. \sect[[#aspectj]]) inspecte
-la pile d'appels, et on s'intéresse uniquement aux appels à ~eval~ qui sont
-faits lorsque ~Trace.eval~ est déjà présente sur la pile.  Pour tous les appels
-qui correspondent, on exécute l'affichage ligne [[(aj-trace)]] dans la méthode
-d'aspect ~before~.  La sortie standard de l'évaluation du programme ~e2~ est
-donc:
+l'étendue d'un appel à ~Trace.eval~.  La coupe ~cflow~ inspecte la pile
+d'appels, et on s'intéresse uniquement aux appels à ~eval~ qui sont faits
+lorsque ~Trace.eval~ est déjà présente sur la pile.  Pour tous les appels qui
+correspondent, on exécute l'affichage ligne [[(aj-trace)]] dans la méthode d'aspect
+~before~.  La sortie standard de l'évaluation du programme ~e2~ est donc:
 
 #+BEGIN_EXAMPLE
 eval Trace@7f31245a
@@ -5993,8 +6005,8 @@ l'aspect, on peut modifier la valeur de cette variable lexicale, et donc simuler
 une portée dynamique.
 
 #+BEGIN_aside
-La section [[#why-no-aop]] contient davantage de détails sur le fonctionnement
-d'AspectScript et ses inconvénients pour détourner Narcissus.
+Voir {{{ref(why-no-aop, cette section)}}} pour davantage de détails sur le
+fonctionnement d'AspectScript et ses inconvénients pour détourner Narcissus.
 #+END_aside
 
 Mais AspectScript a deux inconvénients majeurs qui sont la performance et la
@@ -6009,7 +6021,7 @@ exemple, la construction ~with~ n'est pas supportée.
 ** UNREAD Par portée dynamique
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
 portée dynamique, les variables libres d'une fonction peuvent être redéfinies
-par l'appelant.  Dans le Lisp intégré à Emacs (Elisp [[cite:Elisp][Elisp]]), la portée dynamique
+par l'appelant.  Dans le Lisp intégré à Emacs ([[cite:Elisp][Elisp]]), la portée dynamique
 est le comportement par défaut:
 
 #+BEGIN_SRC elisp -n -r :exports code
@@ -6113,15 +6125,15 @@ pas directement aux fonctions.  Intuitivement, on voudrait écrire:
 #+END_SRC
 
 L'intention ici est que le second appel à ~interp~ retourne 2, car la fonction
-~eval-num~ est remplacée dynamiquement par ~eval-num-double~.  Mais en Emacs
-Lisp on obtient 1, indiquant que la fonction ~eval-num~ n'a pas été changée par
-le ~let~.  La cause de ce comportement est la séparation des espaces de noms
-entre les fonctions et les valeurs; c'est la différence entre les dialectes
-Lisp_1 et Lisp_2 décrite par Gabriel et Pitman [[cite:GP-88][GP-88]].  Dans un Lisp_1, l'espace de
-noms est commun aux fonctions et aux valeurs, ce qui résoudrait le problème.
-Sauf que les Lisp_1, comme Scheme ou Racket, n'ont pas de portée dynamique par
-défaut: pour qu'une variable bénéficie de portée dynamique, il faut la déclarer
-comme telle (un /parameter/ en Racket par exemple).
+~eval-num~ est remplacée dynamiquement par la fonction ~eval-num-double~.  Mais
+en Emacs Lisp on obtient 1, indiquant que la fonction ~eval-num~ n'a pas été
+changée par le ~let~.  La cause de ce comportement est la séparation des espaces
+de noms entre les fonctions et les valeurs; c'est la différence entre les
+dialectes Lisp_1 et Lisp_2 décrite par Gabriel et Pitman [[cite:GP-88][GP-88]].  Dans un Lisp_1,
+l'espace de noms est commun aux fonctions et aux valeurs, ce qui résoudrait le
+problème.  Sauf que les Lisp_1, comme Scheme ou Racket, n'ont pas de portée
+dynamique par défaut: pour qu'une variable bénéficie de portée dynamique, il
+faut la déclarer comme telle (un /parameter/ en Racket par exemple).
 
 Le mécanisme de portée dynamique est le mécanisme plus simple pour détourner un
 interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
@@ -6176,12 +6188,12 @@ fonctionnalité de l'interpréteur.  Mais le but est de réaliser ces ajouts /sa
 modifier le code/ qui précède; chaque fonctionnalité ajoute du code, réutilise
 du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
 
+** READ Ajouter des termes
 #+BEGIN_aside
 Le code complet de ce chapitre est reproduit dans les appendices
 ([[#foal-extra-full]]).
 #+END_aside
 
-** READ Ajouter des termes
 Avant l'interpréteur, on commence par définir le langage.  Dans le langage de
 base, on veut juste représenter des nombres entiers:
 
@@ -6373,9 +6385,10 @@ fonction ~show~ retourne un nouveau module (un objet) qui contient les versions
 enrichies de ~num~ et ~plus~ (ligne [[(foal-ex7)]]).
 
 #+ATTR_HTML: :style margin-top:-4rem
+#+ATTR_LATEX: :options [-2em]
 #+BEGIN_aside
 Ce module hérite du module ~base~ passé en argument pour des raisons qui sont
-explicitées en appendices ([[#foal-extra-subtle]]).
+explicitées en [[#foal-extra-subtle]].
 #+END_aside
 
 Une fois cette fonction définie, on peut instancier le module ~show~ dans la
@@ -6770,8 +6783,7 @@ plus.new(d.num.new(1), d.num.new(2)).eval() //: 6
 
 #+BEGIN_aside
 Il y a une différence subtile entre composer les modules ainsi et les combiner
-via plusieurs blocs ~with~; différence qui est discutée en appendice
-([[#foal-extra-subtle]]).
+via plusieurs blocs ~with~; différence qui est discutée en [[#foal-extra-subtle]].
 #+END_aside
 
 On voit qu'en réalité, on ne fait que composer des fonctions qui retournent des
@@ -6851,7 +6863,7 @@ Par exemple, dans le langage Rust [[cite:Rust][Rust]], on pourrait obtenir un r�
 semblable en utilisant les traits:
 
 #+BEGIN_aside
-Le code complet de cet exemple se trouve dans les appendices [[#foal-extra-rust]].
+Le code complet de cet exemple se trouve en [[#foal-extra-rust]].
 #+END_aside
 
 #+BEGIN_SRC rust
@@ -7063,11 +7075,6 @@ var Narcissus = (function(){                        (ref:ex0-iife-start)
 }())                                                (ref:ex0-iife-end)
 #+END_SRC
 
-#+ATTR_HTML: :style margin-top:12rem
-#+BEGIN_aside
-/API: Application Programmer Interface/
-#+END_aside
-
 Le but de ce motif est de créer un environnement pour toutes les définitions du
 module.  En JavaScript, une définition faite à la racine d'un fichier (une
 déclaration de variable avec ~var~ ou une définition de ~function~) créée une
@@ -7269,6 +7276,7 @@ environnement se comporte comme un objet JavaScript régulier; on peut lire et
 changer ses propriétés.
 
 #+ATTR_HTML: :style margin-top:-4rem
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_aside
 La section suivante montre comment retrouver cette fonctionnalité dans le
 langage standard.
@@ -7288,7 +7296,7 @@ m.g(0) //: 2                             (ref:ex3-test2)
 #+END_SRC
 
 #+ATTR_HTML: :style margin-top:-6rem
-#+ATTR_LATEX: :options [-8em]
+#+ATTR_LATEX: :options [-10em]
 #+BEGIN_side-figure
 [[file:img/dls4.svg]]
 #+END_side-figure
@@ -7390,6 +7398,9 @@ plus élégante qui tire partie du mécanisme de résolution des noms de variabl
 dans une chaîne d'environnements.
 
 *** Disposer les environnements en couches
+:PROPERTIES:
+:CUSTOM_ID: layers
+:END:
 On a vu que tout environnement a un environnement parent.  Si un nom n'est pas
 trouvé dans un environnement, la recherche se poursuit dans l'environnement
 parent.  La recherche continue ainsi jusqu'à ce que le nom soit trouvé, ou que
@@ -7398,7 +7409,7 @@ la chaîne d'environnement s'arrête car le lien vers l'environnement parent est
 de changer les définitions internes au module.
 
 #+ATTR_HTML: :style margin-top:-16rem
-#+ATTR_LATEX: :options [-30em]
+#+ATTR_LATEX: :options [-25em]
 #+BEGIN_side-figure
 [[file:img/dls6.svg]]
 
@@ -7418,7 +7429,6 @@ propriété ~m.E~ est modifiée également pour pointer vers cet environnement
 frontal.
 
 #+ATTR_HTML: :style margin-top:12rem
-#+ATTR_LATEX: :options [-12em]
 #+BEGIN_side-figure
 [[file:img/dls7.svg]]
 #+END_side-figure
@@ -7471,6 +7481,7 @@ résolution de noms (~m.E~), la chaîne d'environnement a une structure similair
 puisqu'on peut modifier le parent d'un environnement, on peut insérer de
 nouveaux environnements à n'importe quel point dans cette chaîne.
 
+{{{label(pushenv)}}}
 Le plus utile pour nos besoins est d'insérer un environnement juste après
 l'environnement frontal.  Supposons que l'on dispose d'une fonction
 ~pushEnv(e, chain)~ qui insère l'environnement ~e~ en tête de la chaîne; et une
@@ -7505,6 +7516,7 @@ l'environnement ~e2~ qu'on insère dans le module grâce au second appel à
 de ~a~ est la valeur initiale du module, ~1~.
 
 #+ATTR_HTML: :style margin-top:-10rem
+#+ATTR_LATEX: :options [-5em]
 #+BEGIN_side-figure
 [[file:img/dls8.svg]]
 #+END_side-figure
@@ -7544,22 +7556,29 @@ de réaliser ce modèle en utilisant des constructions standards de JavaScript.
 C'est l'objet de la section suivante.
 
 ** Ouvrir le motif module en JavaScript
+#+BEGIN_aside
+Tous les exemples de cette section sont exécutables sur un interpréteur
+JavaScript qui suit le standard ECMAScript 5.1.
+#+END_aside
+
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
 partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
 répliquer les exemples de composition d'environnement par couches grâce aux
 prototypes.
 
-#+ATTR_HTML: :style margin-top:-7rem
-#+BEGIN_aside
-Tous les exemples de cette section sont exécutables sur un interpréteur
-JavaScript qui suit le standard ECMAScript 5.1.
-#+END_aside
-
 L'expression ~with~ est grammaticalement similaire à un ~if~.  Elle prend une
 expression entre parenthèses, qui est évaluée pour constituer son /objet de
 liaison/, et un bloc de code entre accolades.  Voici un exemple d'utilisation de
 ~with~:
+
+#+BEGIN_side-figure
+[[file:img/dls9.svg]]
+
+L'environnement crée par ~with~ entoure l'objet de liaison.  Notons que
+l'environnement est distinct du l'objet de liaison: ~o~ pointe vers l'objet de
+liaison, tandis que ~f.env~ pointe vers l'environnement.
+#+END_side-figure
 
 #+BEGIN_SRC js -n -r
 var o = { a: 42 }
@@ -7568,15 +7587,6 @@ with (o) {
 }
 f() //: 42                        (ref:ex7-call)
 #+END_SRC
-
-#+ATTR_HTML: :style margin-top:-8rem
-#+BEGIN_side-figure
-[[file:img/dls9.svg]]
-
-L'environnement crée par ~with~ entoure l'objet de liaison.  Notons que
-l'environnement est distinct du l'objet de liaison: ~o~ pointe vers l'objet de
-liaison, tandis que ~f.env~ pointe vers l'environnement.
-#+END_side-figure
 
 On définit une fonction ~f~ dans le corps de ~with~ à la ligne [[(ex7-f)]].  La
 fonction va simplement retourner la valeur de la variable ~a~.  Notons que ~a~
@@ -7597,16 +7607,16 @@ pile lorsque ~f~ est appelée.  L'appel échoue, car la résolution de noms ne
 trouve aucune occurrence de ~a~.  La fonction ~f~ n'est donc pas dynamiquement
 liée si elle est appelée dans un ~with~.
 
+#+ATTR_LATEX: :options [-7em]
+#+BEGIN_side-figure
+[[file:img/dls10.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js
 function f() { return a }
 var o = { a: 42 }
 with (o) { f() } //: ReferenceError: a is undefined
 #+END_SRC
-
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_side-figure
-[[file:img/dls10.svg]]
-#+END_side-figure
 
 Ce qui se passe dans le premier exemple, c'est que lorsque la fonction ~f~ est
 définie dans ~with~ elle capture l'environnement lexical crée par ~with~; ~f~
@@ -7634,6 +7644,10 @@ retourne une propriété supplémentaire: l'objet ~E~.  Le premier appel ~m.g(0)
 retourne encore 1, indiquant que ~g~ appelle bien ~f~, qui fait bien référence
 au ~a~ défini dans le module.
 
+#+BEGIN_side-figure
+[[file:img/dls11.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js -n -r
 var m = (function(){
   var E = Object.create(null)       (ref:ex8-create)
@@ -7655,11 +7669,6 @@ Comme on a une référence vers l'objet de liaison ~E~, on redéfinit la valeur 
 ~a~ ligne [[(ex8-a)]].  L'appel ~m.g(0)~ qui suit retourne 2, ce qui montre que la
 fonction ~f~ va bien prendre la valeur de ~a~ dans l'objet ~E~.
 
-#+ATTR_HTML: :style margin-top:-20rem
-#+BEGIN_side-figure
-[[file:img/dls11.svg]]
-#+END_side-figure
-
 On peut se demander pourquoi la valeur de ~m.E.a~ est préférée à la déclaration
 de ~a~, alors que cette dernière est /plus proche/ lexicalement de la fonction
 ~f~.  On a vu que ~with~ crée un environnement pour le code qu'il entoure, mais
@@ -7675,6 +7684,7 @@ C'est pourquoi la valeur de ~m.E.a~ est trouvée en premier par la résolution d
 nom lors de l'exécution de ~f~.
 
 #+ATTR_HTML: :style margin-top:-14rem
+#+ATTR_LATEX: :options [-12em]
 #+BEGIN_aside
 En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
 capturer la fonction dans ce cas; c'est laissé à la discrétion du moteur
@@ -7682,10 +7692,10 @@ d'exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comportement
 décrit ici.  Mais V8, utilisé par Chromium, suivait des règles différentes
 encore récemment, et pour pouvoir répliquer l'exemple il fallait déclarer les
 fonctions par des expressions (~var f = function...~).  Le créateur de
-JavaScript, Brendan Eich, [[https://bugs.chromium.org/p/v8/issues/detail?id=686][a indiqué]] que le comportement de Firefox était en
-accord avec la prochaine version du standard (EcmaScript 2015).  À l'heure où
-j'écris, la dernière version de Chromium (53) a maintenant le même comportement
-que Firefox.
+JavaScript, Brendan Eich, a indiqué [[cite:issue686][issue686]] que le comportement de Firefox
+était en accord avec la prochaine version du standard (EcmaScript 2015).  À
+l'heure où j'écris, la dernière version de Chromium (53) a maintenant le même
+comportement que Firefox.
 #+END_aside
 
 D'après le diagramme, il est clair que si l'objet de liaison est vide, le module
@@ -7813,13 +7823,16 @@ m.g(0) //: 1
 var e1 = { a: 2, f: function(x) {
   return x + 2 * m.E.a }}
 pushEnv(e1, m.E)
+
 m.g(0) //: 4
 
 var e2 = { f: function() { return -m.E.a }}
 pushEnv(e2, m.E)
+
 m.g(0) //: -2
 
 removeEnv(e1, m.E)
+
 m.g(0) //: -1
 #+END_SRC
 
@@ -7844,6 +7857,7 @@ l'objet ~parent~:
 #+BEGIN_SRC diff
 Narcissus.interpreter = (function() {
 +  var _env = Object.create(null);
++
 +  with (_env) {
    ...
    // 1500 lines later
@@ -7854,6 +7868,7 @@ Narcissus.interpreter = (function() {
 +    getValue: getValue,
 +    ...
 +  };
++
 +  Object.setPrototypeOf(_env, _parent);
    return {
      evaluate: evaluate,
@@ -8084,6 +8099,12 @@ Comme l'insertion est systématique pour définir une analyse, on a défini une
 interface d'instrumentation légère, qui permet de masquer les détails de la
 manipulation des environnements, et de donner du code plus déclaratif:
 
+#+BEGIN_aside
+‘i13n' est le numéronyme d'"instrumentation", comme ‘i18n' est le numéronyme
+d'"internationalisation"; c'est aussi la convention déjà suivie par
+AspectScript.
+#+END_aside
+
 #+BEGIN_SRC js
 i13n.pushLayer(_env, {
   execute: i13n.around(_env.execute, execute),
@@ -8092,19 +8113,18 @@ i13n.pushLayer(_env, {
 });
 #+END_SRC
 
-#+ATTR_HTML: :style margin-top:-7rem
-#+BEGIN_aside
-‘i13n' est le numéronyme d'"instrumentation", comme ‘i18n' est le numéronyme
-d'"internationalisation"; c'est aussi la convention déjà suivie par
-AspectScript.
-#+END_aside
-
-La fonction ~i13n.pushLayer~ est un alias de la fonction ~pushEnv~ définie dans
-la section [[*Disposer les environnements en couches]].
+La fonction ~i13n.pushLayer~ est un alias de la fonction ~pushEnv~
+(cf. {{{ref(pushenv, précedemment)}}}).
 
 La fonction ~i13n.around(fn, a)~ retourne simplement une nouvelle fonction qui
 appelle la fonction ~a~ en lui passant ~fn~, la fonction d'origine, en premier
 argument:
+
+#+BEGIN_aside
+Après un remplacement de la fonction ~f~ par ~i13n.around(f, g)~ dans un module,
+tous les appels à ~f~ dans le module feront appel à ~g~.  L'effet est équivalent
+à la réécriture: f(a, b, ...) => g(f, a, b, ...)
+#+END_aside
 
 #+BEGIN_SRC js
 function around(fn, a) {
@@ -8113,13 +8133,6 @@ function around(fn, a) {
   }
 }
 #+END_SRC
-
-#+ATTR_HTML: :style margin-top:-8rem
-#+BEGIN_aside
-Après un remplacement de la fonction ~f~ par ~i13n.around(f, g)~ dans un module,
-tous les appels à ~f~ dans le module feront appel à ~g~.  L'effet est équivalent
-à la réécriture: f(a, b, ...) => g(f, a, b, ...)
-#+END_aside
 
 Le nom évoque le /pointcut/ d'AspectJ éponyme; l'effet est proche.  Cependant
 ici aucun tissage ne prend place: le code de ~fn~ n'est pas modifié.  On
@@ -8136,15 +8149,6 @@ même principe que pour ~around~, mais appliqué aux objets.
 Et en JavaScript, il suffit d'utiliser la délégation par prototype pour réaliser
 ce motif d'extension:
 
-#+BEGIN_SRC js
-function delegate(o, r) {
-  var n = Object.create(o)
-  Object.assign(n, r)
-  return n
-}
-#+END_SRC
-
-#+ATTR_HTML: :style margin-top:-18rem
 #+BEGIN_side-figure
 [[file:img/dls13.svg]]
 
@@ -8152,6 +8156,14 @@ function delegate(o, r) {
 propriétés de ~r~, et délègue les autres à ~o~.  C'est ce nouvel objet qu'on
 insère dans l'environnement du module.
 #+END_side-figure
+
+#+BEGIN_SRC js
+function delegate(o, r) {
+  var n = Object.create(o)
+  Object.assign(n, r)
+  return n
+}
+#+END_SRC
 
 *** Ajouter l'analyse FlowR
 Le principe de l'analyse FlowR est d'empêcher des flots de données illicites
@@ -8221,7 +8233,7 @@ comme premier argument.  Donc notre ~flowrCall~ pourra être installé sur
 ~FunctionObjet~ en utilisant la fonction ~i13n.around~ définie plus haut.
 
 L'objet ~FunctionObject~ est l'objet à partir duquel toutes les fonctions du
-code client sont instanciées—leur objet /prototype/.  Lorsque l'interpréteur
+code client sont créées—leur objet /prototype/.  Lorsque l'interpréteur
 exécute un appel de fonction, il délègue le travail à la propriété ~__call__~ de
 la fonction en question.  Si on installe notre version ~flowrCall~ sur cet
 objet, on remplace donc la fonction ~__call__~ sur toutes les instances de
@@ -8324,13 +8336,14 @@ m.E.a = 2;
 printScope(2, whitelist, blacklist);
 #+END_EXAMPLE
 
-L'analyse produit un graphe au format [[https://en.wikipedia.org/wiki/DOT_(graph_description_language)][DOT]] utilisé par GraphViz.  On peut donc
-produire une image en invoquant ~dot~:
+L'analyse produit un graphe au format DOT [[cite:dot][dot]] utilisé par GraphViz.  On peut
+donc produire une image en invoquant ~dot~:
 
 #+BEGIN_EXAMPLE
 $ ./njs -l scope -f tests/with.js | dot -Tsvg
 #+END_EXAMPLE
 
+#+ATTR_LATEX: :options [-8em]
 #+BEGIN_side-figure
 [[file:img/env-with.svg]]
 
@@ -8391,6 +8404,7 @@ changements, même mineurs, ont nécessité d'inspecter et de comprendre les
 différentes étapes de construction de l'interpréteur.
 
 #+ATTR_HTML: :style margin-top:-4rem
+#+ATTR_LATEX: :options [-5em]
 #+BEGIN_aside
 Bien sûr, on aurait pu écrire un outil pour modifier automatiquement les lignes
 de Narcissus qui nous intéressent, et considérer ainsi qu'aucune ligne de
@@ -8408,9 +8422,9 @@ modifier le code de l'interpréteur.  Qui plus est, on a pu extraire des motifs
 communs d'instrumentation de fonctions (~around~, ~before~), d'objets
 (~delegate~), ou les deux (~override~).
 
-En utilisant la technique de disposition en couches de la section [[*Disposer
-les environnements en couches]], on peut activer plusieurs analyses à
-l'exécution avec des options de lancement.  Par exemple:
+En utilisant la technique de disposition en couches (cf. {{{ref(layers,
+précedemment)}}}), on peut activer plusieurs analyses à l'exécution avec des
+options de lancement.  Par exemple:
 
 : ./njs -l flowr -l trace -f tests/flowr.js
 
@@ -8453,6 +8467,7 @@ que le résultat n'a de sens que si ces modifications n'interfèrent pas entre
 elles.
 
 #+ATTR_HTML: :style margin-top:-4rem
+#+ATTR_LATEX: :options [-2em]
 #+BEGIN_aside
 Comment détecter et résoudre ces interférences reste un problème ouvert.
 #+END_aside
@@ -8749,16 +8764,6 @@ utiliser des /hooks/, ou le patron Observateur, ou encore accepter un Visiteur;
 les trois méthodes permettent d'appeler du code extérieur au module à un moment
 précis du flot d'exécution.
 
-#+BEGIN_side-figure
-[[file:img/dls15.svg]]
-
-Un /hook/ est une liste de fonctions associée à un moment précis du flot de
-contrôle d'un module.  Le code extérieur au module ajoute des fonctions dans
-cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
-fonctions du /hook/.  C'est une façon courante d'injecter du code dans la
-configuration d'Emacs [ref-emacs-hooks] et de LaTeX [ref-latex-hooks].
-#+END_side-figure
-
 Avec des /hooks/, ou un Observateur, il faut rajouter du code à l'intérieur du
 module à tous les endroits où le programmeur d'un module externe voudrait
 injecter du code, pour appeler /explicitement/ soit une liste de fonctions, soit
@@ -8769,6 +8774,18 @@ l'interpréteur pour voir les appels à des /hooks/, ou une levée d'événement
 pour des observateurs.  L'inconvénient est d'avoir à identifier les endroits qui
 peuvent intéresser du code externe, et d'ajouter des /hooks/ explicitement dans
 le code pour chacun d'eux.
+
+#+ATTR_HTML: :style margin-top:-13rem
+#+ATTR_LATEX: :options [-8em]
+#+BEGIN_side-figure
+[[file:img/dls15.svg]]
+
+Un /hook/ est une liste de fonctions associée à un moment précis du flot de
+contrôle d'un module.  Le code extérieur au module ajoute des fonctions dans
+cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
+fonctions du /hook/.  C'est une façon courante d'injecter du code dans la
+configuration d'Emacs et de LaTeX.
+#+END_side-figure
 
 On utilise généralement ces techniques pour appeler du code qui /ne change pas/
 le flot de contrôle du module.  Une fonction appelée par un /hook/ n'effectue
@@ -8910,6 +8927,13 @@ moteur d'exécution sous-jacent.  Au passage, il émet des /joinpoint/ pour chaq
 construction, teste les /pointcut/ pour tous les /advice/ enregistrés, et
 exécute le code si le /pointcut/ correspond.
 
+#+ATTR_HTML: :style margin-top:6rem
+#+ATTR_LATEX: :options [7em]
+#+BEGIN_aside
+Exemple de déviation de l'évaluation standard de JavaScript: AspectScript ne
+peut pas instrumenter du code qui contient ~with~.
+#+END_aside
+
 Ce mode de fonctionnement a deux inconvénients.  D'abord, AspectScript duplique
 évidemment le travail du moteur d'exécution de JavaScript, ce qui est
 inefficace, mais surtout qui peut changer la sémantique du programme
@@ -8922,15 +8946,10 @@ maîtrise pas.  Mais comme AspectScript ajoute une étape d'interprétation
 supplémentaire, si on cherche à comprendre un bogue de Narcissus il faut aussi
 prendre en compte l'implémentation d'AspectScript.
 
-#+ATTR_HTML: :style margin-top:-6rem
-#+BEGIN_aside
-Exemple de déviation de l'évaluation standard de JavaScript: AspectScript ne
-peut pas instrumenter du code qui contient ~with~.
-#+END_aside
-
 #+BEGIN_aside
 Le code invoqué dans AspectScript pour un appel réifié de fonction.
 #+END_aside
+
 #+BEGIN_SRC js
 call: function (obj, fun, args, context){
   acChecker.checkCall(obj, fun);
@@ -9022,6 +9041,7 @@ pas modifier les objets du module, seulement changer les références pour point
 vers de nouvelles variantes.  Enfin, les fonctions anonymes ne peuvent pas être
 instrumentées, n'ayant de nom pour pouvoir les référencer.
 
+#+ATTR_LATEX: :options [-1em]
 #+BEGIN_aside
 En ECMAScript 6, le mode strict est activé /par défaut/ dans les modules et dans
 les classes.
@@ -9204,6 +9224,7 @@ Narcissus, on peut rajouter une telle logique en inspectant les couches
 à détecter statiquement ces conflits potentiels.
 
 #+ATTR_HTML: :style margin-top:12rem
+#+ATTR_LATEX: :options [14em]
 #+BEGIN_aside
 D'où les nombreuses illustrations qui parsèment ce document.
 #+END_aside
@@ -9604,6 +9625,7 @@ with (m) {
 #+END_SRC
 
 #+ATTR_HTML: :style margin-top:-5rem
+#+ATTR_LATEX: :options [-4em]
 #+BEGIN_side-figure
 [[file:img/foal-9.svg]]
 #+END_side-figure
