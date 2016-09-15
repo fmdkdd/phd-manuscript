@@ -1,0 +1,117 @@
+\ProvidesFile{alphabetic-pagewords.bbx}[2016/09/15]
+
+\RequireBibliographyStyle{alphabetic}
+
+%% This is the same as the alphabetic style, except I've added \pagewords calls
+%% where pageref appear.
+\DeclareListFormat{pageref}{%
+  \ifnumless{\abx@pagerefstyle}{0}
+    {\usebibmacro{list:plain}%
+     \ifhyperref
+       {\hyperlink{page.#1}{\pageword{#1}}}
+       {\pageword{#1}}}
+    {\ifnumequal{\value{listcount}}{1}
+       {\usebibmacro{pageref:init}}
+       {}%
+     \usebibmacro{pageref:comp}{#1}%
+     \ifnumequal{\value{listcount}}{\value{liststop}}
+       {\usebibmacro{pageref:dump}}
+       {}}}
+
+\newbibmacro*{pageref:comp}[1]{%
+  \numdef\abx@range@prev{\abx@range@prev+1}%
+  \ifinteger{#1}
+    {\def\abx@range@num{#1}%
+     \def\abx@range@this{1}%
+     \ifnumequal{\abx@range@this}{\abx@range@last}
+       {}
+       {\def\abx@range@prev{-1}}}
+    {\ifrmnum{#1}
+       {\numdef\abx@range@num{\rmntonum{#1}}%
+        \def\abx@range@this{2}%
+        \ifnumequal{\abx@range@this}{\abx@range@last}
+          {}
+          {\def\abx@range@prev{-1}}}
+       {\undef\abx@range@num
+        \def\abx@range@this{0}%
+        \def\abx@range@prev{-1}}}%
+  \ifdef\abx@range@num
+    {\ifnumequal{\abx@range@num}{\abx@range@prev}
+       {\def\abx@range@hold{#1}%
+        \numdef\abx@range@diff{\abx@range@diff+1}}
+       {\usebibmacro{pageref:dump}%
+        \ifnumgreater{\abx@range@last}{-1}
+          {\multilistdelim}
+          {}%
+        \ifhyperref
+          {\hyperlink{page.#1}{\pageword{#1}}}
+          {\pageword{#1}}}%
+     \edef\abx@range@prev{\abx@range@num}}
+    {\usebibmacro{pageref:dump}%
+     \ifnumgreater{\abx@range@last}{-1}
+       {\multilistdelim}
+       {}%
+     \ifhyperref
+       {\hyperlink{page.#1}{\pageword{#1}}}
+       {\pageword{#1}}%
+     \def\abx@range@prev{-1}}%
+  \edef\abx@range@last{\abx@range@this}}
+
+\newbibmacro*{pageref:dump}{%
+  \ifnumgreater{\abx@range@diff}{0}
+    {\ifcase\abx@pagerefstyle\relax % two
+       \bibrangedash
+       \ifhyperref
+         {\hyperlink{page.\abx@range@hold}{\pageword{\abx@range@hold}}}
+         {\pageword{\abx@range@hold}}%
+     \or % three
+       \ifnumless{\abx@range@diff}{2}
+         {\multilistdelim}
+         {\bibrangedash}%
+       \ifhyperref
+         {\hyperlink{page.\abx@range@hold}{\pageword{\abx@range@hold}}}
+         {\pageword{\abx@range@hold}}%
+     \or % two+
+       \ifnumless{\abx@range@diff}{2}
+         {\sqspace
+          \ifhyperref
+            {\hyperlink{page.\abx@range@hold}{\pageword{\bibstring{sequens}}}}
+            {\pageword{\bibstring{sequens}}}}
+         {\bibrangedash
+          \ifhyperref
+            {\hyperlink{page.\abx@range@hold}{\pageword{\abx@range@hold}}}
+            {\pageword{\abx@range@hold}}}%
+     \or % three+
+       \ifnumless{\abx@range@diff}{2}
+         {\sqspace
+          \ifhyperref
+            {\hyperlink{page.\abx@range@hold}{\pageword{\bibstring{sequens}}}}
+            {\pageword{\bibstring{sequens}}}}
+         {\ifnumless{\abx@range@diff}{3}
+            {\sqspace
+             \ifhyperref
+               {\hyperlink{page.\abx@range@hold}{\pageword{\bibstring{sequentes}}}}
+               {\pageword{\bibstring{sequentes}}}}
+            {\bibrangedash
+             \ifhyperref
+               {\hyperlink{page.\abx@range@hold}{\pageword{\abx@range@hold}}}
+               {\pageword{\abx@range@hold}}}}%
+     \else % all+
+       \ifnumless{\abx@range@diff}{2}
+         {\sqspace
+          \ifhyperref
+            {\hyperlink{page.\abx@range@hold}{\pageword{\bibstring{sequens}}}}
+            {\pageword{\bibstring{sequens}}}}
+         {\sqspace
+          \ifhyperref
+            {\hyperlink{page.\abx@range@hold}{\pageword{\bibstring{sequentes}}}}
+            {\pageword{\bibstring{sequentes}}}}%
+     \fi
+     \def\abx@range@diff{0}}
+    {}}
+
+\endinput
+
+%% Local Variables:
+%% mode: latex
+%% End:
