@@ -25,7 +25,7 @@
            "<p class=\"author\">Auteur: %a</p>\n<p class=\"created\">Crée: %T (%c)</p>")))
 
   ;; MathJax is not needed.  No need to ping the CDN.
-  (setq org-html-mathjax-template "")
+  ;; (setq org-html-mathjax-template "")
 
   ;; When exporting SRC blocks, put CSS classes for syntax highlighting, but do
   ;; not set any style inline.  We can do that in style.css if needed.
