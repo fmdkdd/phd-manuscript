@@ -117,6 +117,9 @@
 %% Not settled yet, so might as well use a variable definition
 \newcommand{\pagewordfont}{\sffamily\small}
 
+%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%% Table of contents
+
 %% Insert page words in the ToC by redefining these functions provided by
 %% memoir.
 \let\oldchapterfpnum\cftchapterformatpnum
@@ -126,6 +129,10 @@
 \let\oldsectionfpnum\cftsectionformatpnum
 \renewcommand*{\cftsectionformatpnum}[1]{%
   \oldsectionfpnum{\pagewordfont\pageword{#1}}}
+
+%% Sans-serif headings
+\renewcommand*{\cftchapterfont}{\sffamily\bfseries}
+\renewcommand*{\cftsectionfont}{\sffamily}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Headings
@@ -142,9 +149,9 @@
 %% don't like the bold, so I redefine the font.
 \makeevenhead{companion}%
              {\pagewordfont\thepageword}{}{%
-               \normalfont\leftmark}
+               \sffamily\leftmark}
 \makeoddhead{companion}%
-            {\normalfont\rightmark}{}{%
+            {\sffamily\rightmark}{}{%
               \pagewordfont\thepageword}
 
 %% Don't use page words for front matter
@@ -188,8 +195,8 @@
                     \minof{0pt}{\textwidth-\widthof{#1}}}}
   \noindent\hspace{\headingoffset}
   \parbox{\fullwidth}{#1}}
-%% This command overrides the font style, we restore the default
-\setsecheadstyle{\Large\bfseries\marginhead}
+%% This command overrides the font style, but here we just add the \marginhead
+\setsecheadstyle{\sffamily\Large\bfseries\marginhead}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Side notes (in the outer margin)
