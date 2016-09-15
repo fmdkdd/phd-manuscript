@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-09-14 mer. 18:11 -->
+<!-- 2016-09-15 jeu. 19:57 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -139,6 +139,28 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <div id="content">
@@ -342,7 +364,7 @@ code source de l&rsquo;interpréteur.
 </p>
 
 <p>
-Mais avant de voir tout cela, il faut commencer par quelques définitions.
+Mais avant tout cela, commençons par quelques définitions.
 </p>
 </div>
 </div>
@@ -428,9 +450,7 @@ JavaScript, vers 2015).
 <div class="org-src-container">
 
 <pre class="src src-js" id="orgsrcblock1"><span class="org-keyword">function</span> <span class="org-function-name">fibonacci</span>(<span class="org-variable-name">n</span>) {
-  <span class="org-keyword">return</span> n &lt; 2 ? 1 : fibonacci(n-1) + fibonacci(n-2)
-}
-
+  <span class="org-keyword">return</span> n &lt; 2 ? 1 : fibonacci(n-1) + fibonacci(n-2) }
 print(fibonacci(10))
 </pre>
 </div>
@@ -531,12 +551,6 @@ Notons que la compilation n&rsquo;attache aucun sens particulier aux noms qui
 importent au programmeur.  On aurait pu écrire le programme <a href="#orgsrcblock1">1</a> ainsi:
 </p>
 
-<div class="org-src-container">
-
-<pre class="src src-js">xx=(x)=&gt;x&lt;2?1:xx(x-1)+xx(x-2);print(xx(10))
-</pre>
-</div>
-
 <aside style="margin-top:-5rem">
 <p>
 Les archives du concours international d&rsquo;obfuscation de code C [<a href="#IOCCC">IOC</a>] recèlent
@@ -544,6 +558,12 @@ d&rsquo;exemples à suivre pour mystifier tout collaborateur.  Le standard Unico
 offre également de nouvelles opportunités (cf. Mimic [<a href="#Mimic">Too16</a>]).
 </p>
 </aside>
+
+<div class="org-src-container">
+
+<pre class="src src-js">xx=(x)=&gt;x&lt;2?1:xx(x-1)+xx(x-2);print(xx(10))
+</pre>
+</div>
 
 <p>
 Ou, à l&rsquo;extrême:
@@ -583,7 +603,7 @@ JavaScript affiche 89; les programmes sont donc équivalents quand on considère
 le résultat.
 </p>
 
-<aside>
+<aside style="margin-top:6rem">
 <p>
 Si deux personnes partent de Nantes à Cherbourg et arrivent toutes les deux
 avant dimanche, peu importe si la première a fait le trajet à pieds, et la
@@ -605,7 +625,7 @@ résultat; la machine peut avoir une grande influence sur l&rsquo;efficacité.  
 de vue de l&rsquo;efficacité, les trois programmes ne sont pas équivalents.
 </p>
 
-<aside>
+<aside style="margin-top:2rem">
 <p>
 Sans intention, c&rsquo;est de l&rsquo;improvisation.  Mais on improvise plus difficilement
 un programme qu&rsquo;un morceau de guitare, bien qu&rsquo;il existe aujourd&rsquo;hui des
@@ -738,7 +758,7 @@ JavaScript is the lingua franca of the Web
 <div id="outline-container-orgheadline3" class="outline-4">
 <h4 id="orgheadline3">Genèse chez Netscape</h4>
 <div class="outline-text-4" id="text-orgheadline3">
-<aside>
+<aside style="margin-top:2rem">
 <p>
 Navigateurs majeurs: Chrome, Firefox, Safari, Internet Explorer et Opera.  Tous
 permettent d&rsquo;évaluer des programmes JavaScript dans une page web.
@@ -767,7 +787,7 @@ souris, redimensionner la fenêtre du navigateur, ou accéder à la caméra de
 l&rsquo;ordinateur.
 </p>
 
-<aside>
+<aside style="margin-top:1rem">
 <p>
 On utilise ici &laquo;&nbsp;interpréteurs&nbsp;&raquo; dans le sens d&rsquo;exécuteurs de code, quelle que
 soit la méthode exacte d&rsquo;exécution (interprétation, compilation, mixte&#x2026;).
@@ -809,7 +829,7 @@ juin 1997.
 </div>
 
 <div id="outline-container-orgheadline4" class="outline-4">
-<h4 id="orgheadline4">Un langage à prototypes qui doit ressembler à Java</h4>
+<h4 id="orgheadline4">Un langage à prototypes qui devait ressembler à Java</h4>
 <div class="outline-text-4" id="text-orgheadline4">
 <p>
 Sous ses allures de langage impératif, Eich dit s&rsquo;être principalement inspiré de
@@ -1015,8 +1035,8 @@ des objets:
 valeurs ne sont pas des objets: la distinction avec les types &laquo;&nbsp;primitifs&nbsp;&raquo;
 (entiers, booléens&#x2026;) est due à la proximité avec Java voulue par Sun;</li>
 <li>les objets peuvent être créés vides (syntaxe <code>{}</code>), ou en étendant un autre
-objet (<code>Object.create</code> ou syntaxe <code>{__proto__: parent}</code>), mais il n&rsquo;y a pas de
-mécanisme pour cloner un objet;</li>
+objet (via <code>Object.create</code> ou via la syntaxe <code>{__proto__: parent}</code>), mais il
+n&rsquo;y a pas de mécanisme pour cloner un objet;</li>
 <li>le mécanisme des prototypes réalise la notion &laquo;&nbsp;est-extension-de&nbsp;&raquo;, et le lien
 parent est matérialisé par la propriété <code>__proto__</code> (ou la fonction
 <code>Object.getPrototypeOf</code>);</li>
@@ -1046,11 +1066,8 @@ Voici un exemple d&rsquo;utilisation de <code>this</code>:
   <span class="org-function-name">moveTo</span>: <span class="org-keyword">function</span>(<span class="org-variable-name">x</span>, <span class="org-variable-name">y</span>) {
     <span class="org-constant">this</span>.x = x
     <span class="org-constant">this</span>.y = y
-  },
-}
-
+  }}
 <span class="org-keyword">var</span> <span class="org-variable-name">p1</span> = Object.create(point)
-
 p1.moveTo(1,2)
 p1 <span class="org-comment-delimiter">//</span><span class="org-comment">: Object {x:1,y:2}</span>
 point <span class="org-comment-delimiter">//</span><span class="org-comment">: Object {x:0,y:0,moveTo:function}</span>
@@ -1138,14 +1155,6 @@ des étapes de traitement, mais plutôt à des décisions de design, des
 responsabilités:
 </p>
 
-<aside>
-<p>
-Dans le même article, Parnas conseille aussi de mettre dans un même module une
-structure de données et ses procédures d&rsquo;accès et de modification.  Une notion
-de type abstrait de donnée qu&rsquo;il ne nomme pas comme telle.
-</p>
-</aside>
-
 <blockquote>
 <p>
 Every module in the second decomposition is characterized by its knowledge of a
@@ -1154,6 +1163,13 @@ chosen to reveal as little as possible about its inner workings.
 </p>
 </blockquote>
 
+<aside>
+<p>
+Dans le même article, Parnas conseille aussi de mettre dans un même module une
+structure de données et ses procédures d&rsquo;accès et de modification.  Une notion
+de type abstrait de donnée qu&rsquo;il ne nomme pas comme telle.
+</p>
+</aside>
 <p>
 Si l&rsquo;on suit ce critère pour décomposer un système en modules, alors on peut
 qualifier le système de <i>modulaire</i>.  Parnas liste les trois avantages attendus
@@ -1180,19 +1196,12 @@ les mêmes problèmes, et la décomposition préconisée par Parnas permet de
 <i>réutiliser</i> les modules d&rsquo;un système à l&rsquo;autre.
 </p>
 
-<div class="side-figure">
-
-<figure>
-<p><img src="img/parnas-overhead.svg" alt="parnas-overhead.svg">
-</p>
-</figure>
-
+<aside style="margin-top:2rem">
 <p>
 L&rsquo;encapsulation cause de l&rsquo;indirection, ce qui peut réduire l&rsquo;efficacité du
 programme en augmentant les appels de procédures sur la pile.
 </p>
-
-</div>
+</aside>
 
 <p>
 Néanmoins, il y a un obstacle à utiliser une décomposition dont les modules
@@ -1208,6 +1217,14 @@ tous les cas, ce qui rajoute encore des instructions que la machine devra
 effectuer.
 </p>
 
+<aside style="margin-top:5rem">
+<p>
+Ce ne sont que des suggestions, et l&rsquo;article ne dit pas comment réaliser ces
+transformations.  On trouve des mises en œuvre de ces idées dans la
+programmation littéraire (<a href="#proglit">3.2</a>) et dans la programmation par aspects (<a href="#aop">3.5</a>).
+</p>
+</aside>
+
 <p>
 Parnas reconnaît ce problème d&rsquo;efficacité, et suggère de concevoir un outil qui
 transforme le code de la décomposition modulaire en code qui suit davantage le
@@ -1218,14 +1235,6 @@ pas sacrifiée.  En revanche, la décomposition modulaire ne serait plus
 apparente.  Il propose donc de conserver le programme sous ses plusieurs formes
 et de développer des outils pour passer d&rsquo;une forme à l&rsquo;autre.
 </p>
-
-<aside style="margin-top:-8rem">
-<p>
-Ce ne sont que des suggestions, et l&rsquo;article ne dit pas comment réaliser ces
-transformations.  On trouve des mises en œuvre de ces idées dans la
-programmation littéraire (<a href="#proglit">3.2</a>) et dans la programmation par aspects (<a href="#aop">3.5</a>).
-</p>
-</aside>
 
 <p>
 Parnas met donc en avant le critère d&rsquo;encapsulation pour concevoir un système
@@ -1331,14 +1340,6 @@ n&rsquo;affranchit pas le concepteur d&rsquo;avoir à se poser des questions dif
 la structure du système.  En 2003, Parnas déplore cette tendance [<a href="#DBB+03">DBB+03</a>]:
 </p>
 
-<aside style="margin-top:18rem">
-<p>
-Cette dernière phrase cible directement les trois autres intervenants qui lui
-font face, qui sont les instigateurs respectifs de la programmation par aspects,
-de la programmation par fonctionnalités, et d&rsquo;Hyper/J.
-</p>
-</aside>
-
 <blockquote>
 <p>
 To a man with a hammer, everything looks like a nail.  To a Computer Scientist,
@@ -1360,6 +1361,14 @@ of modularity as a language issue and, sadly, we still try to do it by inventing
 languages and tools.
 </p>
 </blockquote>
+
+<aside style="margin-top:-3rem">
+<p>
+Cette dernière phrase cible directement les trois autres intervenants qui lui
+font face, qui sont les instigateurs respectifs de la programmation par aspects,
+de la programmation par fonctionnalités, et d&rsquo;Hyper/J.
+</p>
+</aside>
 
 <p>
 Parnas réitère: le langage de programmation seul ne rend pas le programme
@@ -1777,7 +1786,7 @@ own maze, in a way, and might just get lost in it.
 <div id="outline-container-orgheadline11" class="outline-3">
 <h3 id="narc"><a id="orgheadline11"></a><span class="section-number-3">2.1</span> <span class="done READ">READ</span> Étude de cas: instrumentation ad-hoc de Narcissus</h3>
 <div class="outline-text-3" id="text-narc">
-<aside>
+<aside style="margin-top: 2rem">
 <p>
 L&rsquo;hôte est le moteur d&rsquo;exécution de JavaScript qui exécute le code de Narcissus,
 tandis que le code client est le code JavaScript exécuté par Narcissus.
@@ -1795,7 +1804,7 @@ standard ECMAScript [<a href="#ECM-99">ECM99</a>], qui permet de rapidement prot
 fonctionnalités expérimentales pour le langage.
 </p>
 
-<div class="side-figure">
+<div style="margin-top: 6rem" class="side-figure">
 
 <figure>
 <p><img src="img/a-facet.svg" alt="a-facet.svg">
@@ -1855,7 +1864,7 @@ multi-facettes permet donc de protéger l&rsquo;information de <code>x</code>, m
 flots indirects.
 </p>
 
-<aside style="margin-top:5rem">
+<aside style="margin-top:4rem">
 <p>
 On compte les lignes de code physiques, commentaires inclus mais sans compter
 les lignes vides.
@@ -1918,7 +1927,7 @@ touchent de nombreuses parties du code de l&rsquo;interpréteur, sans être rest
 une ou deux régions particulières.  Les changements sont <i>éparpillés</i> dans le
 code.  De plus, des changements de catégories différentes sont <i>entremêlés</i>:
 certaines fonctions sont affectées par les changements <code>evaluateEach</code> et
-<code>ProgramCounter</code>.  Résultat, il devient difficile de comprendre les effets de
+<code>Program</code> <code>Counter</code>.  Résultat, il devient difficile de comprendre les effets de
 l&rsquo;instrumentation en lisant le code à l&rsquo;œil nu, ou de s&rsquo;assurer de sa justesse
 par rapport à une spécification.  Il devient difficile également, sans
 connaissances avancées de Narcissus et de l&rsquo;évaluation multi-facettes, de savoir
@@ -1975,7 +1984,7 @@ spec_1: source -interpréteur-&gt; processus
 
 <p>
 La définition exacte de cette fonction correspond à une spécification de
-l&rsquo;interpréteur (voir <a href="#defs">1.1</a>).
+l&rsquo;interpréteur (voir &sect;<a href="#defs">1.1</a>).
 </p>
 
 <p>
@@ -2057,7 +2066,7 @@ Rappelons nous que le processus de développement est le suivant:
 Bien que le véritable objet du programmeur est de faire concorder le processus
 avec les résultats attendus, le programmeur ne manipule pas directement le
 processus, mais seulement le code qui le décrit.  La boucle
-correction/observation permet de rectifier les imprécisions causées par cette
+observation/rectification permet de rectifier les imprécisions causées par cette
 indirection.
 </p>
 </aside>
@@ -2132,19 +2141,10 @@ juste à décrire les quatre deltas requis par les analyses.
 
 <p>
 Cette factorisation correspond directement à une factorisation algébrique.  Si
-I<sub>1</sub> est l&rsquo;interpréteur d&rsquo;origine et I<sub>2</sub> l&rsquo;interpréteur modifié, on note &delta;<sub>2</sub> le
-delta qui transforme I<sub>1</sub> en I<sub>2</sub> (&delta;<sub>2</sub> est une fonction).  On a I<sub>2</sub> = &delta;<sub>2</sub> I<sub>1</sub>.  Soient
-deux autres interpréteurs: I<sub>3</sub> et I<sub>4</sub>, et leurs deltas respectifs &delta;<sub>3</sub> et &delta;<sub>4</sub>.  On a:
-</p>
-
-<p>
-I<sub>2</sub> = &delta;<sub>2</sub> I<sub>1</sub>  <br/>
-I<sub>3</sub> = &delta;<sub>3</sub> I<sub>1</sub>  <br/>
-I<sub>4</sub> = &delta;<sub>4</sub> I<sub>1</sub>  <br/>
-</p>
-
-<p>
-Alors,
+\(I_1\) est l&rsquo;interpréteur d&rsquo;origine et \(I_2\) l&rsquo;interpréteur modifié, on note \(\delta_2\)
+le delta qui transforme \(I_1\) en \(I_2\) (\(\delta_2\) est une fonction).  On a \(I_2 = \delta_2
+I_1\).  Soient deux autres interpréteurs: \(I_3\) et \(I_4\), et leurs deltas respectifs
+\(\delta_3\) et \(\delta_4\).  On a \(I_2 = \delta_2 I_1\), \(I_3 = \delta_3 I_1\) et \(I_4 = \delta_4 I_1\).  Alors,
 </p>
 
 <aside>
@@ -2154,13 +2154,15 @@ Id est la fonction identité
 </aside>
 
 <p>
-(I<sub>1</sub>, I<sub>2</sub>, I<sub>3</sub>, I<sub>4</sub>) = (Id I<sub>1</sub>, &delta;<sub>2</sub> I<sub>2</sub>, &delta;<sub>3</sub> I<sub>3</sub>, &delta;<sub>4</sub> I<sub>4</sub>) = (Id, &delta;<sub>2</sub>, &delta;<sub>3</sub>, &delta;<sub>4</sub>) I<sub>1</sub>
+\[
+(I_1, I_2, I_3, I_4) = (Id I_1, \delta_2 I_2, \delta_3 I_3, \delta_4 I_4) = (Id, \delta_2, \delta_3, \delta_4) I_1
+\]
 </p>
 
 <p>
 Au lieu d&rsquo;avoir quatre interpréteurs différents, on peut juste conserver les
 l&rsquo;interpréteur de base et les quatre deltas.  C&rsquo;est une factorisation qui
-élimine la redondance de I<sub>1</sub>.
+élimine la redondance de \(I_1\).
 </p>
 
 <p>
@@ -2322,7 +2324,7 @@ récupère la même valeur, mais cette fois on <i>distribue</i> l&rsquo;évaluat
 fonction qui opère sur une valeur simple (<code>v</code>), c&rsquo;est-à-dire sans facettes.
 </p>
 
-<aside>
+<aside style="margin-top:10rem">
 <p>
 Il n&rsquo;y a pas de sortie standard dans les programmes JavaScript exécutés par les
 navigateurs web.  La plupart des navigateurs en revanche disposent d&rsquo;une console
@@ -2447,17 +2449,10 @@ convaincre (ou d&rsquo;observer) qu&rsquo;ils ne changent pas le comportement du
 seul tenant, on fait plutôt de la <i>réécriture</i>, ce qui est plus risqué.
 </p>
 
-<aside>
-<p>
-La section <a href="#variations">4</a> explore différentes pistes de refactorisation à travers
-un exemple simplifié d&rsquo;interpréteur.
-</p>
-</aside>
-
 <p>
 Puisqu&rsquo;on souhaite factoriser Narcissus suivant les quatre axes de la section
 précédente, la refactorisation est une solution légitime.  On pourra choisir
-différentes structures (patron visiteur, <i>hooks</i>&#x2026;), qui nous conduiront à
+différentes structures (patron visiteur, <i>hooks</i>, &#x2026;), qui nous conduiront à
 intégrer plus facilement l&rsquo;évaluation multi-facettes à l&rsquo;interpréteur d&rsquo;origine,
 sans avoir à en modifier la moitié du code source.
 </p>
@@ -2891,7 +2886,7 @@ the pro- and the anti-GOTO factions can agree.
 <aside>
 <p>
 L&rsquo;idée du <code>COMEFROM</code> n&rsquo;est pas éloignée du mécanisme de méthode d&rsquo;aspects
-(<a href="#aop">3.5</a>).
+(voir &sect;<a href="#aop">3.5</a>).
 </p>
 </aside>
 
@@ -3233,15 +3228,6 @@ littéraire est donc complètement renversée: l&rsquo;explication domine, et le
 programme est secondaire; il découle de l&rsquo;explication.
 </p>
 
-<div class="side-figure">
-
-<figure>
-<p><img src="img/knuth2.svg" alt="knuth2.svg">
-</p>
-</figure>
-
-</div>
-
 <p>
 Et pour permettre au programmeur de composer le programme dans l&rsquo;ordre de
 l&rsquo;explication, la programmation littéraire offre un mécanisme pertinent pour le
@@ -3256,6 +3242,15 @@ langage Pascal, mais d&rsquo;autres implémentations de la programmation littér
 peuvent s&rsquo;appliquer à tous les langages: Noweb [<a href="#Noweb">Now</a>] et Org mode [<a href="#Orgmode">Org</a>] sont
 deux exemples.
 </p>
+
+<div class="side-figure">
+
+<figure>
+<p><img src="img/knuth2.svg" alt="knuth2.svg">
+</p>
+</figure>
+
+</div>
 
 <p>
 La programmation littéraire permet de séparer et regrouper les préoccupations.
@@ -3443,7 +3438,7 @@ Ici, l&rsquo;addition de deux points fait appel à l&rsquo;addition des coordonn
 <div class="org-src-container">
 
 <pre class="src src-smalltalk">+ t1
-  [⇑ Point new x: x + t1 as PtX y: y + t1 as PtY]
+  [^ Point new x: x + t1 as PtX y: y + t1 as PtY]
 </pre>
 </div>
 
@@ -3492,11 +3487,11 @@ de la soustraction.  Code source tiré de la machine virtuelle Smalltalk-78
 <div class="org-src-container">
 
 <pre class="src src-smalltalk">&lt; t1
-  [⇑ self - t1 &lt; 0]
+  [^ self - t1 &lt; 0]
 &gt; t1
-  [⇑ self - t1 &gt; 0]
+  [^ self - t1 &gt; 0]
 = t1
-  [⇑ self - t1 = 0]
+  [^ self - t1 = 0]
 </pre>
 </div>
 
@@ -4117,7 +4112,7 @@ has been credited, since Aristotle, with our success in adapting to new
 situations and mastering our environment.  Naturally, it was widely conjectured
 in the artificial intelligence community that by providing reflective
 capabilities to computational systems, we would obtain systems with greater
-plasticity and consequently, enhanced functionality. — [<a href="#Rao-91">Rao91</a>]</p>
+plasticity and consequently, enhanced functionality. [<a href="#Rao-91">Rao91</a>]</p>
 </blockquote>
 
 <p>
@@ -4396,21 +4391,7 @@ fusionner les boucles, pour combiner les opérations à l&rsquo;intérieur des b
 plutôt qu&rsquo;à l&rsquo;extérieur.
 </p>
 
-<p>
-Alors, peut-on réconcilier l&rsquo;efficacité avec la simplicité de la composition des
-filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
-buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
-filtres est incompatible avec la composition nécessaire pour optimiser les
-boucles.  Composer les filtres hiérarchiquement c&rsquo;est composer les
-<i>fonctionnalités</i> offertes par les filtres, de façon simple et homogène.  Mais
-pour optimiser ces filtres complexes, il faut fusionner les boucles qui
-appartiennent à des procédures différentes.  La composition hiérarchique est
-réalisée par la composition des procédures du langage de programmation, mais la
-seconde composition, qui dépasse l&rsquo;unité de la procédure, n&rsquo;est pas supportée
-par le langage, et doit être réalisée manuellement.
-</p>
-
-<div style="margin-top:-15rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/aop2.svg" alt="aop2.svg">
@@ -4424,6 +4405,20 @@ faut un nouvel axe (<span class="color c1">▬</span> ) de composition.
 </p>
 
 </div>
+
+<p>
+Alors, peut-on réconcilier l&rsquo;efficacité avec la simplicité de la composition des
+filtres?  Peut-on arranger les procédures différemment, pour satisfaire les deux
+buts à la fois?  Les auteurs pensent que non.  La composition hiérarchique des
+filtres est incompatible avec la composition nécessaire pour optimiser les
+boucles.  Composer les filtres hiérarchiquement c&rsquo;est composer les
+<i>fonctionnalités</i> offertes par les filtres, de façon simple et homogène.  Mais
+pour optimiser ces filtres complexes, il faut fusionner les boucles qui
+appartiennent à des procédures différentes.  La composition hiérarchique est
+réalisée par la composition des procédures du langage de programmation, mais la
+seconde composition, qui dépasse l&rsquo;unité de la procédure, n&rsquo;est pas supportée
+par le langage, et doit être réalisée manuellement.
+</p>
 
 <p>
 C&rsquo;est la distinction que les auteurs font entre <i>composants</i> et <i>aspects</i>.  Si
@@ -4821,9 +4816,9 @@ levées par toutes les méthodes publiques d&rsquo;un package:
 </div>
 
 <p>
-Cet aspect est équivalent à enrober chaque appel dans un <code>try/catch</code> et appeler
-<code>log.write</code> sur l&rsquo;erreur levée.  Mais ici c&rsquo;est fait en 8 lignes, pour toutes
-les classes du package, même les classes futures.
+Cet aspect est équivalent à enrober chaque appel dans un bloc <code>try/catch</code> et
+appeler <code>log.write</code> sur l&rsquo;erreur levée.  Mais ici c&rsquo;est fait en 8 lignes, pour
+toutes les classes du package, même les classes futures.
 </p>
 
 <p>
@@ -4847,6 +4842,20 @@ faut réécrire les filtres pour expliciter quel type de boucle est utilisé; ma
 dans AspectJ, le programme est modifié <i>implicitement</i> par les aspects.
 </p>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/aop4.svg" alt="aop4.svg">
+</p>
+</figure>
+
+<p>
+Le programme peut être compilé avec ou sans les aspects, et engendrer deux
+exécutables différents.
+</p>
+
+</div>
+
 <p>
 En revanche, dans les deux cas, les programmes des composants <i>ne dépendent pas
 des programmes d&rsquo;aspects</i> pour fonctionner.  Dans l&rsquo;exemple de l&rsquo;aspect de
@@ -4860,20 +4869,6 @@ inclure les programmes d&rsquo;aspects n&rsquo;impacte que l&rsquo;efficacité d
 pas son résultat.  On dira alors que, dans ces deux cas, les aspects sont
 <i>oubliables</i> (<i>obliviousness property</i>).
 </p>
-
-<div style="margin-top:-18rem" class="side-figure">
-
-<figure>
-<p><img src="img/aop4.svg" alt="aop4.svg">
-</p>
-</figure>
-
-<p>
-Le programme peut être compilé avec ou sans les aspects, et engendrer deux
-exécutables différents.
-</p>
-
-</div>
 </div>
 </div>
 
@@ -5245,7 +5240,7 @@ nécessite de modifier toutes les opérations.
 
 <p>
 Au total, si on a <code>p</code> opérations dans l&rsquo;interpréteur, le changement a une
-complexité de ~O(p).
+complexité de ~O(<i>p</i>).
 </p>
 
 <p>
@@ -5600,7 +5595,7 @@ Dans la décomposition objet qui suit le patron interpréteur, ajouter des
 opérations requiert de modifier toutes les classes.  Gamma <i>et al.</i> notent que
 pour y remédier, on peut utiliser le patron visiteur [<a href="#GHJ+94">GHJ+94</a>].  Dans le patron
 visiteur, les classes qui représentent les termes n&rsquo;ont plus qu&rsquo;une seule
-méthode: <code>accept(Visitor)</code>:
+méthode <code>accept(Visitor)</code>:
 </p>
 
 <div class="org-src-container">
@@ -5697,7 +5692,7 @@ une classe qui représente ce terme:
 </pre>
 </div>
 
-<aside>
+<aside style="margin-top:4rem">
 <p>
 On pourrait capturer cette erreur et notifier le visiteur par un protocole
 spécifique; une méthode <code>unknownTerm</code> dans <code>Visitor</code> par exemple.  Ou bien
@@ -6062,8 +6057,8 @@ Dans Hyper/J, la superposition intervient lorsqu&rsquo;il s&rsquo;agit de compos
 hypercoupes pour synthétiser le programme.  Composer le code source se fait à
 partir des noms de classes et des méthodes: deux classes homonymes dans deux
 hypercoupes différentes combineront leurs méthodes.  Dans les hypercoupes de
-l&rsquo;exemple, on obtient une seule classe <code>Term</code> qui aura trois méthodes: <code>eval</code>,
-<code>display</code>, et <code>check</code>.  La superposition s&rsquo;applique aussi aux méthodes
+l&rsquo;exemple, on obtient une seule classe <code>Term</code> qui comportera trois méthodes:
+<code>eval</code>, <code>display</code>, et <code>check</code>.  La superposition s&rsquo;applique aussi aux méthodes
 homonymes, mais on peut en plus préciser de quelle façon combiner comme en
 programmation par aspects (<code>after</code>, <code>before</code>, <code>around</code>).
 </p>
@@ -6436,7 +6431,7 @@ Obladi, Oblada
 
 </div>
 
-<aside>
+<aside style="margin-top:5rem">
 <p>
 Cette exploration, qui correspond à des travaux réalisés en début de thèse,
 n&rsquo;est d&rsquo;ailleurs pas exhaustive par rapport aux mécanismes étudiés dans le
@@ -6719,15 +6714,12 @@ mais <i>ajoute</i> du code à ce bloc.  Si bien qu&rsquo;après l&rsquo;entrelac
 
 <div class="org-src-container">
 
-<pre class="src src-js">...
-<span class="org-keyword">function</span> <span class="org-function-name">interp</span>(<span class="org-variable-name">n</span>) {
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">interp</span>(<span class="org-variable-name">n</span>) {
   <span class="org-keyword">switch</span> (n.type) {
   <span class="org-keyword">case</span> <span class="org-string">'num'</span>:
     <span class="org-keyword">return</span> n.n
     <span class="org-keyword">return</span> n.n * 2  <span class="org-comment-delimiter">// </span><span class="org-comment">code mort</span>
     <span class="org-keyword">break</span>
-
-...
 </pre>
 </div>
 
@@ -7560,11 +7552,12 @@ interprétable par <code>interp_log</code>:
 </div>
 
 <p>
-Intuitivement, évaluer cette instruction a l&rsquo;effet inverse de <code>start_trace</code>: on
-rétablit le prototype de l&rsquo;interpréteur vers <code>interp_traceable</code>.  On ne souhaite
-pas modifier les prototypes des objets <code>interp_traceable</code> ou <code>interp_log</code> en
-revanche, donc on utilisera un objet <code>interp_model</code> dont le seul but est de
-contenir le pointeur vers le prototype du mode courant d&rsquo;évaluation.
+Intuitivement, évaluer cette instruction a l&rsquo;effet inverse d&rsquo;évaluer
+<code>start_trace</code>: on rétablit le prototype de l&rsquo;interpréteur vers
+<code>interp_traceable</code>.  On ne souhaite pas modifier les prototypes des objets
+<code>interp_traceable</code> ou <code>interp_log</code> en revanche, donc on utilisera un objet
+<code>interp_model</code> dont le seul but est de contenir le pointeur vers le prototype du
+mode courant d&rsquo;évaluation.
 </p>
 
 <p>
@@ -7578,14 +7571,6 @@ Le mode par défaut est <code>traceable</code>, soit:
 </p>
 </figure>
 
-<p>
-L&rsquo;objet <code>interp_modal</code> est change de prototype suivant l&rsquo;évaluation du
-programme.  Au début, son prototype est <code>interp_traceable</code>, puis après
-l&rsquo;évaluation d&rsquo;une instruction <code>start_trace</code>, son prototype devient
-<code>interp_log</code>.  Dans cet état, évaluer l&rsquo;instruction <code>end_trace</code> restaure le
-prototype initial d&rsquo;<code>interp_modal</code>.
-</p>
-
 </div>
 
 <div class="org-src-container">
@@ -7595,7 +7580,11 @@ prototype initial d&rsquo;<code>interp_modal</code>.
 </div>
 
 <p>
-Et ainsi, cet interpréteur pourra évaluer le programme <code>e4</code>:
+L&rsquo;objet <code>interp_modal</code> change de prototype suivant l&rsquo;évaluation du programme.
+Son prototype initial est <code>interp_traceable</code>, mais après l&rsquo;évaluation d&rsquo;une
+instruction <code>start_trace</code>, son prototype devient <code>interp_log</code>.  Dans cet état,
+évaluer l&rsquo;instruction <code>end_trace</code> restaure le prototype initial,
+<code>interp_traceable</code>.  Ainsi, cet interpréteur pourra évaluer le programme <code>e4</code>:
 </p>
 
 <div class="org-src-container">
@@ -7685,7 +7674,8 @@ On peut ajouter l&rsquo;évaluation alternative de <code>Num</code> par un aspec
 <div class="org-src-container">
 
 <pre class="src src-java"><span class="org-type">aspect</span> <span class="org-variable-name">NumDouble</span> {
-  <span class="org-type">pointcut</span> <span class="org-variable-name">eval</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>): call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>() &amp;&amp; target(num));
+  <span class="org-type">pointcut</span> <span class="org-variable-name">eval</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>):
+    call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>() &amp;&amp; target(num));
 
   <span class="org-type">int</span> <span class="org-variable-name">around</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>): eval(num) {
     <span class="org-keyword">return</span> 2 * proceed(num);
@@ -7736,7 +7726,7 @@ peut construire un programme <code>e2</code> qui l&rsquo;utilise:
 <aside>
 <p>
 On fait du terme <code>Trace</code> une expression plutôt qu&rsquo;une déclaration (<i>statement</i>)
-comme dans l&rsquo;exemple JavaScript, mais les deux formes sont réalisables en
+à l&rsquo;inverse de l&rsquo;exemple JavaScript, mais les deux formes sont réalisables en
 programmation par aspects.
 </p>
 </aside>
@@ -7761,8 +7751,8 @@ le rôle de l&rsquo;aspect <code>DynamicTrace</code>:
 
 <pre class="src src-java"><span class="linenr">1: </span><span class="org-type">aspect</span> <span class="org-variable-name">DynamicTrace</span> {
 <span class="linenr">2: </span>  <span class="org-type">pointcut</span> <span class="org-variable-name">tracedEval</span>(<span class="org-type">Term</span> <span class="org-variable-name">t</span>):
-<span class="linenr">3: </span>  call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>()) &amp;&amp; target(t)
-<span class="linenr">4: </span>    &amp;&amp; cflow(call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>()) &amp;&amp; target(Trace));
+<span class="linenr">3: </span>    call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>()) &amp;&amp; target(t)
+<span class="linenr">4: </span>      &amp;&amp; cflow(call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>()) &amp;&amp; target(Trace));
 <span class="linenr">5: </span>
 <span class="linenr">6: </span>  before(<span class="org-type">Term</span> <span class="org-constant">t</span>): <span class="org-variable-name">tracedEval</span>(<span class="org-type">t</span>) {
 <span id="coderef-aj-trace" class="coderef-off"><span class="linenr">7: </span>    System.out.println(<span class="org-string">"eval "</span> + t);</span>
@@ -13962,7 +13952,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-09-14 mer. 18:11 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-09-15 jeu. 19:57 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
