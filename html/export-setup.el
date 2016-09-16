@@ -24,8 +24,17 @@
         '(("fr"
            "<p class=\"author\">Auteur: %a</p>\n<p class=\"created\">Crée: %T (%c)</p>")))
 
-  ;; MathJax is not needed.  No need to ping the CDN.
-  ;; (setq org-html-mathjax-template "")
+  ;; Minimal MathJax.
+  (setq org-html-mathjax-template
+        "<script type=\"text/x-mathjax-config\">
+  MathJax.Hub.Config({
+    jax: [\"input/TeX\",\"output/SVG\", \"output/PreviewHTML\"],
+    extensions: [\"tex2jax.js\",\"AssistiveMML.js\"],
+    positionToHash: false,
+  });
+</script>
+<script type=\"text/javascript\" async
+        src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js\"></script>")
 
   ;; When exporting SRC blocks, put CSS classes for syntax highlighting, but do
   ;; not set any style inline.  We can do that in style.css if needed.
