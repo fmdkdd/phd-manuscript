@@ -2476,7 +2476,7 @@ préoccupations.
 Le document source contient du TeX et du Pascal, mais c'est un document peu
 digeste pour un lecteur humain, et inexécutable par la machine car dans le
 désordre.  À partir de ce source, deux documents sont générés par deux
-programmes différents: TANGLE et WEAVE.  TANGLE reconstruit le programme Pascal
+programmes différents: TANGLE et WEAVE.  TANGLE /entrelace/ le programme Pascal
 monolithique; il parcourt les sections et remplace les références par leur
 contenu afin d'émettre du code qui pourra être accepté par un compilateur
 Pascal.  WEAVE produit une source compatible TeX, qui pourra engendrer le
@@ -5015,9 +5015,9 @@ le code du programme d'origine.  On pourrait ainsi rajouter autant d'extensions
 que l'on souhaite, et cela fonctionnerait pour n'importe quel programme.
 
 Les problèmes apparaissent quand on s'intéresse aux détails.  D'abord, quels
-arguments ~COMEFROM~ et ~GOTO~ prennent?  Si ce sont des numéros de lignes, ou
-des adresses mémoires, l'approche est évidemment fragile.  Ajouter ou retirer
-une ligne du programme va nécessairement modifier ces indices.  Toutes les
+arguments prennent ~COMEFROM~ et ~GOTO~?  Si ce sont des numéros de lignes, ou
+des adresses mémoire, l'approche est évidemment fragile.  Ajouter ou retirer une
+ligne du programme va nécessairement modifier ces indices.  Toutes les
 extensions devraient alors être modifiées en conséquence.  Une solution à ce
 problème est d'utiliser, comme ici, des étiquettes (/labels/).  Une étiquette
 est associée à une ligne, et ~GOTO~ accepte l'étiquette en argument.  Quelques
@@ -5034,8 +5034,8 @@ comme une simple annotation.  L'ajout d'une étiquette ne change pas la
 sémantique du code, tant que cette étiquette n'est pas référencée ailleurs.
 
 Mais le plus grand problème de cette approche demeure que peu de langages
-proposent le mot-clé ~COMEFROM~ , et que compte tenu de la nature dérisoire de
-cette construction, il semble peu probable qu'elle soit ajoutée.
+proposent le mot-clé ~COMEFROM~ , et que compte tenu de la nature apparemment
+dérisoire de cette construction, il semble peu probable qu'elle soit ajoutée.
 
 On peut se passer de ~COMEFROM~, et à la place utiliser un autre ~GOTO~ dans le
 code que l'on cherche à détourner.  Plutôt que de détourner le flot de contrôle
@@ -5083,7 +5083,7 @@ nommer des blocs de code pour les définir à un autre moment.  Par exemple, on
 peut écrire un interpréteur minimal en JavaScript ainsi:
 
 #+BEGIN_aside
-On utilise la syntaxe de noweb [[cite:Noweb][Noweb]], un système de programmation littéraire
+On utilise ici la syntaxe de noweb [[cite:Noweb][Noweb]], un système de programmation littéraire
 indépendant du langage de programmation.  Dans ces exemples, un bloc est défini
 par ~<<nom>>=~, et comprend tout le code jusqu'à la prochaine ligne vide.  La
 syntaxe ~<<nom>>~ fait référence au bloc: lorsque cette référence apparaît dans
@@ -5110,10 +5110,12 @@ function interp(n) {
 }
 #+END_SRC
 
-La fonction d'évaluation ~interp~ ne fait que déléguer l'évaluation aux cas
-spécifiques des termes ~num~ et ~plus~.  Ces cas ne sont pas encore définis:
-pour l'instant ce sont des références à des blocs de code qui seront inclus lors
-de l'entrelacement.  Plus loin, on peut rajouter leurs définitions:
+Les termes sont représentés par de simples objets indiquant le type du nœud de
+l'arbre de syntaxe.  La fonction d'évaluation ~interp~ ne fait que déléguer
+l'évaluation aux cas spécifiques des termes ~num~ et ~plus~.  Ces cas ne sont
+pas encore définis: pour l'instant ce sont des références à des blocs de code
+qui seront inclus lors de l'entrelacement.  Plus loin, on peut rajouter leurs
+définitions:
 
 #+BEGIN_SRC js
 <<interp-num>>=
@@ -5137,11 +5139,11 @@ interp(e1)
 #+END_SRC
 
 C'est le programme principal qui inclut les blocs ~term~ et ~interp~.  Notons
-que l'on inclut pas explicitement les blocs ~interp-num~ et ~interp-plus~, car
+que l'on n'inclut pas explicitement les blocs ~interp-num~ et ~interp-plus~, car
 ils seront inclus récursivement par ~interp~.
 
 Pour pouvoir exécuter ce programme, on engendre le fichier JavaScript entrelacé
-par ~TANGLE~:
+à l'aide de ~TANGLE~:
 
 #+BEGIN_SRC js
 let num = (n) => ({type: 'num', n})
@@ -5220,7 +5222,7 @@ On pourrait imaginer une extension.  Par exemple, dire:
 pour signifier que l'on souhaite inclure à cet endroit le contenu du bloc ~X~,
 mais utiliser le contenu du bloc ~Y2~ pour chaque référence interne à ~X~ faite
 au bloc ~Y~.  De cette façon, on peut facilement modifier le contenu du bloc ~X~
-lors de son inclusion, sans avoir à toucher sa définition; c'est à dire, de le
+lors de son inclusion, sans avoir à toucher sa définition; c'est-à-dire, le
 détourner.
 
 Essentiellement, une telle extension de noweb revient à implémenter la portée
@@ -5231,9 +5233,9 @@ unique.  En ajoutant la construction ~with~, la résolution de la référence ~Y
 dépend de l'appelant: si l'environnement dynamique de l'appelant contient une
 redéfinition de ~Y~, ce sera ce bloc qui sera utilisé.
 
-Cette extension à noweb permettrait de détourner des programmes, quelque soit le
-langage de programmation utilisé.  Mais en l'absence de cette extension, on peut
-tout de même contourner le problème dans des langages spécifiques.  En
+Cette extension de noweb permettrait de détourner des programmes, quel que soit
+le langage de programmation utilisé.  Mais en l'absence de cette extension, on
+peut tout de même contourner le problème dans des langages spécifiques.  En
 JavaScript, on peut définir l'interpréteur ainsi:
 
 #+BEGIN_SRC js
@@ -5252,7 +5254,7 @@ function interp(n) {
 Cette fois on n'utilise plus noweb pour faire référence au code qui va évaluer
 chaque terme, mais simplement des fonctions ~interp_num~ et ~interp_plus~.  On
 pourrait définir ces fonctions dans le même bloc, mais on va les définir dans
-leurs propres blocs:
+leur propre bloc:
 
 #+BEGIN_SRC js
 <<interp-num>>=
@@ -5333,7 +5335,7 @@ interp(e1) //: 6
 et on parvient à redéfinir l'évaluation de ~e1~, sans avoir changé le code de
 l'interpréteur, mais uniquement en modifiant le code du point d'entrée.  Dans
 l'entrelacement, on a juste remplacé la définition de la fonction ~interp_num~
-pour une autre.
+par une autre.
 
 En supposant qu'un interpréteur réaliste comporte plusieurs dizaines, voire
 centaines de fonctions d'interprétations, on voudra raccourcir le point d'entrée
@@ -5397,13 +5399,13 @@ let e1 = ...
 
 Mais même si l'on ajoutait la résolution dynamique des noms de blocs à noweb, il
 y a au moins deux inconvénients à utiliser la programmation littéraire ainsi
-pour détourner un interpréteur.  Le premier, c'est que l'on doit tout de même
+pour détourner un interpréteur.  Le premier est que l'on doit tout de même
 découper l'interpréteur en blocs, et ajouter des références aux blocs de code
 qui sont susceptibles d'être détournés.  Il faut donc modifier le code source,
-le réorganiser.  Le second c'est que ce détournement est uniquement /statique/.
-En plus de rajouter une étape de compilation, on doit choisir, dans le point
-d'entrée, quelle version de l'interpréteur on souhaite engendrer.  On peut
-imaginer avoir plusieurs points d'entrées, qui correspondent à des fichiers
+le réorganiser.  Le second inconvénient est que ce détournement est uniquement
+/statique/.  En plus de rajouter une étape de compilation, on doit choisir, dans
+le point d'entrée, quelle version de l'interpréteur on souhaite engendrer.  On
+peut imaginer avoir plusieurs points d'entrées, qui correspondent à des fichiers
 différents, où l'entrelacement engendrera autant de programmes qu'il y a de
 points d'entrée.  Mais on ne peut pas changer de la sorte le comportement de
 l'interprétation à l'exécution.
