@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-09-15 jeu. 19:57 -->
+<!-- 2016-09-16 ven. 15:28 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -140,27 +140,14 @@ for the JavaScript code in this tag.
 /*]]>*///-->
 </script>
 <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        displayAlign: "center",
-        displayIndent: "0em",
-
-        "HTML-CSS": { scale: 100,
-                        linebreaks: { automatic: "false" },
-                        webFont: "TeX"
-                       },
-        SVG: {scale: 100,
-              linebreaks: { automatic: "false" },
-              font: "TeX"},
-        NativeMML: {scale: 100},
-        TeX: { equationNumbers: {autoNumber: "AMS"},
-               MultLineWidth: "85%",
-               TagSide: "right",
-               TagIndent: ".8em"
-             }
-});
+  MathJax.Hub.Config({
+    jax: ["input/TeX","output/SVG", "output/PreviewHTML"],
+    extensions: ["tex2jax.js","AssistiveMML.js"],
+    positionToHash: false,
+  });
 </script>
-<script type="text/javascript"
-        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+<script type="text/javascript" async
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 </head>
 <body>
 <div id="content">
@@ -3189,7 +3176,7 @@ préoccupations.
 Le document source contient du TeX et du Pascal, mais c&rsquo;est un document peu
 digeste pour un lecteur humain, et inexécutable par la machine car dans le
 désordre.  À partir de ce source, deux documents sont générés par deux
-programmes différents: TANGLE et WEAVE.  TANGLE reconstruit le programme Pascal
+programmes différents: TANGLE et WEAVE.  TANGLE <i>entrelace</i> le programme Pascal
 monolithique; il parcourt les sections et remplace les références par leur
 contenu afin d&rsquo;émettre du code qui pourra être accepté par un compilateur
 Pascal.  WEAVE produit une source compatible TeX, qui pourra engendrer le
@@ -3899,6 +3886,12 @@ même à un programme d&rsquo;altérer sa structure, ou de modifier la sémantiq
 langage, pendant qu&rsquo;il s&rsquo;exécute.  Cette adaptation dynamique offre de nouvelles
 façons de modifier et d&rsquo;étendre des programmes.
 </p>
+
+<aside style="margin-top:15rem">
+<p>
+<i>API: Application Programmer Interface</i>
+</p>
+</aside>
 
 <p>
 Un simple exemple de réflexion: être capable d&rsquo;inspecter une classe à
@@ -4756,6 +4749,9 @@ l&rsquo;on souhaite capturer les appels <i>non</i> récursifs à <code>m</code>,
 <code>cflow</code>:
 </p>
 
+<p>
+<div id="cflow" class="anchor"></div>
+</p>
 <div class="org-src-container">
 
 <pre class="src src-java">call(<span class="org-type">void</span> <span class="org-variable-name">m</span>()) &amp;&amp; <span class="org-negation-char">!</span>cflow(call(<span class="org-type">void</span> <span class="org-variable-name">m</span>()))
@@ -6490,9 +6486,9 @@ que l&rsquo;on souhaite, et cela fonctionnerait pour n&rsquo;importe quel progra
 
 <p>
 Les problèmes apparaissent quand on s&rsquo;intéresse aux détails.  D&rsquo;abord, quels
-arguments <code>COMEFROM</code> et <code>GOTO</code> prennent?  Si ce sont des numéros de lignes, ou
-des adresses mémoires, l&rsquo;approche est évidemment fragile.  Ajouter ou retirer
-une ligne du programme va nécessairement modifier ces indices.  Toutes les
+arguments prennent <code>COMEFROM</code> et <code>GOTO</code>?  Si ce sont des numéros de lignes, ou
+des adresses mémoire, l&rsquo;approche est évidemment fragile.  Ajouter ou retirer une
+ligne du programme va nécessairement modifier ces indices.  Toutes les
 extensions devraient alors être modifiées en conséquence.  Une solution à ce
 problème est d&rsquo;utiliser, comme ici, des étiquettes (<i>labels</i>).  Une étiquette
 est associée à une ligne, et <code>GOTO</code> accepte l&rsquo;étiquette en argument.  Quelques
@@ -6513,8 +6509,8 @@ sémantique du code, tant que cette étiquette n&rsquo;est pas référencée ail
 
 <p>
 Mais le plus grand problème de cette approche demeure que peu de langages
-proposent le mot-clé <code>COMEFROM</code> , et que compte tenu de la nature dérisoire de
-cette construction, il semble peu probable qu&rsquo;elle soit ajoutée.
+proposent le mot-clé <code>COMEFROM</code> , et que compte tenu de la nature apparemment
+dérisoire de cette construction, il semble peu probable qu&rsquo;elle soit ajoutée.
 </p>
 
 <p>
@@ -6585,7 +6581,7 @@ peut écrire un interpréteur minimal en JavaScript ainsi:
 
 <aside>
 <p>
-On utilise la syntaxe de noweb [<a href="#Noweb">Now</a>], un système de programmation littéraire
+On utilise ici la syntaxe de noweb [<a href="#Noweb">Now</a>], un système de programmation littéraire
 indépendant du langage de programmation.  Dans ces exemples, un bloc est défini
 par <code>&lt;&lt;nom&gt;&gt;=</code>, et comprend tout le code jusqu&rsquo;à la prochaine ligne vide.  La
 syntaxe <code>&lt;&lt;nom&gt;&gt;</code> fait référence au bloc: lorsque cette référence apparaît dans
@@ -6616,10 +6612,12 @@ l&rsquo;entrelacement.
 </div>
 
 <p>
-La fonction d&rsquo;évaluation <code>interp</code> ne fait que déléguer l&rsquo;évaluation aux cas
-spécifiques des termes <code>num</code> et <code>plus</code>.  Ces cas ne sont pas encore définis:
-pour l&rsquo;instant ce sont des références à des blocs de code qui seront inclus lors
-de l&rsquo;entrelacement.  Plus loin, on peut rajouter leurs définitions:
+Les termes sont représentés par de simples objets indiquant le type du nœud de
+l&rsquo;arbre de syntaxe.  La fonction d&rsquo;évaluation <code>interp</code> ne fait que déléguer
+l&rsquo;évaluation aux cas spécifiques des termes <code>num</code> et <code>plus</code>.  Ces cas ne sont
+pas encore définis: pour l&rsquo;instant ce sont des références à des blocs de code
+qui seront inclus lors de l&rsquo;entrelacement.  Plus loin, on peut rajouter leurs
+définitions:
 </p>
 
 <div class="org-src-container">
@@ -6651,13 +6649,13 @@ interp(e1)
 
 <p>
 C&rsquo;est le programme principal qui inclut les blocs <code>term</code> et <code>interp</code>.  Notons
-que l&rsquo;on inclut pas explicitement les blocs <code>interp-num</code> et <code>interp-plus</code>, car
+que l&rsquo;on n&rsquo;inclut pas explicitement les blocs <code>interp-num</code> et <code>interp-plus</code>, car
 ils seront inclus récursivement par <code>interp</code>.
 </p>
 
 <p>
 Pour pouvoir exécuter ce programme, on engendre le fichier JavaScript entrelacé
-par <code>TANGLE</code>:
+à l&rsquo;aide de <code>TANGLE</code>:
 </p>
 
 <div class="org-src-container">
@@ -6770,7 +6768,7 @@ On pourrait imaginer une extension.  Par exemple, dire:
 pour signifier que l&rsquo;on souhaite inclure à cet endroit le contenu du bloc <code>X</code>,
 mais utiliser le contenu du bloc <code>Y2</code> pour chaque référence interne à <code>X</code> faite
 au bloc <code>Y</code>.  De cette façon, on peut facilement modifier le contenu du bloc <code>X</code>
-lors de son inclusion, sans avoir à toucher sa définition; c&rsquo;est à dire, de le
+lors de son inclusion, sans avoir à toucher sa définition; c&rsquo;est-à-dire, le
 détourner.
 </p>
 
@@ -6785,9 +6783,9 @@ redéfinition de <code>Y</code>, ce sera ce bloc qui sera utilisé.
 </p>
 
 <p>
-Cette extension à noweb permettrait de détourner des programmes, quelque soit le
-langage de programmation utilisé.  Mais en l&rsquo;absence de cette extension, on peut
-tout de même contourner le problème dans des langages spécifiques.  En
+Cette extension de noweb permettrait de détourner des programmes, quel que soit
+le langage de programmation utilisé.  Mais en l&rsquo;absence de cette extension, on
+peut tout de même contourner le problème dans des langages spécifiques.  En
 JavaScript, on peut définir l&rsquo;interpréteur ainsi:
 </p>
 
@@ -6810,7 +6808,7 @@ JavaScript, on peut définir l&rsquo;interpréteur ainsi:
 Cette fois on n&rsquo;utilise plus noweb pour faire référence au code qui va évaluer
 chaque terme, mais simplement des fonctions <code>interp_num</code> et <code>interp_plus</code>.  On
 pourrait définir ces fonctions dans le même bloc, mais on va les définir dans
-leurs propres blocs:
+leur propre bloc:
 </p>
 
 <div class="org-src-container">
@@ -6913,7 +6911,7 @@ interp(e1) <span class="org-comment-delimiter">//</span><span class="org-comment
 et on parvient à redéfinir l&rsquo;évaluation de <code>e1</code>, sans avoir changé le code de
 l&rsquo;interpréteur, mais uniquement en modifiant le code du point d&rsquo;entrée.  Dans
 l&rsquo;entrelacement, on a juste remplacé la définition de la fonction <code>interp_num</code>
-pour une autre.
+par une autre.
 </p>
 
 <p>
@@ -6997,13 +6995,13 @@ détourné, et de juste redéfinir cette fonction avant d&rsquo;interpréter un 
 <p>
 Mais même si l&rsquo;on ajoutait la résolution dynamique des noms de blocs à noweb, il
 y a au moins deux inconvénients à utiliser la programmation littéraire ainsi
-pour détourner un interpréteur.  Le premier, c&rsquo;est que l&rsquo;on doit tout de même
+pour détourner un interpréteur.  Le premier est que l&rsquo;on doit tout de même
 découper l&rsquo;interpréteur en blocs, et ajouter des références aux blocs de code
 qui sont susceptibles d&rsquo;être détournés.  Il faut donc modifier le code source,
-le réorganiser.  Le second c&rsquo;est que ce détournement est uniquement <i>statique</i>.
-En plus de rajouter une étape de compilation, on doit choisir, dans le point
-d&rsquo;entrée, quelle version de l&rsquo;interpréteur on souhaite engendrer.  On peut
-imaginer avoir plusieurs points d&rsquo;entrées, qui correspondent à des fichiers
+le réorganiser.  Le second inconvénient est que ce détournement est uniquement
+<i>statique</i>.  En plus de rajouter une étape de compilation, on doit choisir, dans
+le point d&rsquo;entrée, quelle version de l&rsquo;interpréteur on souhaite engendrer.  On
+peut imaginer avoir plusieurs points d&rsquo;entrées, qui correspondent à des fichiers
 différents, où l&rsquo;entrelacement engendrera autant de programmes qu&rsquo;il y a de
 points d&rsquo;entrée.  Mais on ne peut pas changer de la sorte le comportement de
 l&rsquo;interprétation à l&rsquo;exécution.
@@ -7761,14 +7759,19 @@ le rôle de l&rsquo;aspect <code>DynamicTrace</code>:
 </pre>
 </div>
 
+<aside style="margin-top:1rem">
+<p>
+Voir <a href="#cflow">cflow</a> pour une explication de la couple <code>cflow</code>.
+</p>
+</aside>
+
 <p>
 La coupe <code>tracedEval</code> intercepte tous les appels de <code>eval</code> qui sont dans
-l&rsquo;étendue d&rsquo;un appel à <code>Trace.eval</code>.  La coupe <code>cflow</code> (cf. &sect;<a href="#aspectj">AspectJ: jonctions, coupes, et méthodes d&rsquo;aspect</a>) inspecte
-la pile d&rsquo;appels, et on s&rsquo;intéresse uniquement aux appels à <code>eval</code> qui sont
-faits lorsque <code>Trace.eval</code> est déjà présente sur la pile.  Pour tous les appels
-qui correspondent, on exécute l&rsquo;affichage ligne <a href="#coderef-aj-trace"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-aj-trace');" onmouseout="CodeHighlightOff(this, 'coderef-aj-trace');">7</a> dans la méthode
-d&rsquo;aspect <code>before</code>.  La sortie standard de l&rsquo;évaluation du programme <code>e2</code> est
-donc:
+l&rsquo;étendue d&rsquo;un appel à <code>Trace.eval</code>.  La coupe <code>cflow</code> inspecte la pile
+d&rsquo;appels, et on s&rsquo;intéresse uniquement aux appels à <code>eval</code> qui sont faits
+lorsque <code>Trace.eval</code> est déjà présente sur la pile.  Pour tous les appels qui
+correspondent, on exécute l&rsquo;affichage ligne <a href="#coderef-aj-trace"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-aj-trace');" onmouseout="CodeHighlightOff(this, 'coderef-aj-trace');">7</a> dans la méthode d&rsquo;aspect
+<code>before</code>.  La sortie standard de l&rsquo;évaluation du programme <code>e2</code> est donc:
 </p>
 
 <pre class="example">
@@ -7845,8 +7848,8 @@ une portée dynamique.
 
 <aside>
 <p>
-La section <a href="#why-no-aop">Pourquoi ne pas utiliser la programmation par aspects?</a> contient davantage de détails sur le fonctionnement
-d&rsquo;AspectScript et ses inconvénients pour détourner Narcissus.
+Voir <a href="#why-no-aop"> cette section</a> pour davantage de détails sur le
+fonctionnement d&rsquo;AspectScript et ses inconvénients pour détourner Narcissus.
 </p>
 </aside>
 
@@ -7870,7 +7873,7 @@ exemple, la construction <code>with</code> n&rsquo;est pas supportée.
 <p>
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
 portée dynamique, les variables libres d&rsquo;une fonction peuvent être redéfinies
-par l&rsquo;appelant.  Dans le Lisp intégré à Emacs (Elisp [<a href="#Elisp">Eli</a>]), la portée dynamique
+par l&rsquo;appelant.  Dans le Lisp intégré à Emacs ([<a href="#Elisp">Eli</a>]), la portée dynamique
 est le comportement par défaut:
 </p>
 
@@ -7991,15 +7994,15 @@ pas directement aux fonctions.  Intuitivement, on voudrait écrire:
 
 <p>
 L&rsquo;intention ici est que le second appel à <code>interp</code> retourne 2, car la fonction
-<code>eval-num</code> est remplacée dynamiquement par <code>eval-num-double</code>.  Mais en Emacs
-Lisp on obtient 1, indiquant que la fonction <code>eval-num</code> n&rsquo;a pas été changée par
-le <code>let</code>.  La cause de ce comportement est la séparation des espaces de noms
-entre les fonctions et les valeurs; c&rsquo;est la différence entre les dialectes
-Lisp<sub>1</sub> et Lisp<sub>2</sub> décrite par Gabriel et Pitman [<a href="#GP-88">GP88</a>].  Dans un Lisp<sub>1</sub>, l&rsquo;espace de
-noms est commun aux fonctions et aux valeurs, ce qui résoudrait le problème.
-Sauf que les Lisp<sub>1</sub>, comme Scheme ou Racket, n&rsquo;ont pas de portée dynamique par
-défaut: pour qu&rsquo;une variable bénéficie de portée dynamique, il faut la déclarer
-comme telle (un <i>parameter</i> en Racket par exemple).
+<code>eval-num</code> est remplacée dynamiquement par la fonction <code>eval-num-double</code>.  Mais
+en Emacs Lisp on obtient 1, indiquant que la fonction <code>eval-num</code> n&rsquo;a pas été
+changée par le <code>let</code>.  La cause de ce comportement est la séparation des espaces
+de noms entre les fonctions et les valeurs; c&rsquo;est la différence entre les
+dialectes Lisp<sub>1</sub> et Lisp<sub>2</sub> décrite par Gabriel et Pitman [<a href="#GP-88">GP88</a>].  Dans un Lisp<sub>1</sub>,
+l&rsquo;espace de noms est commun aux fonctions et aux valeurs, ce qui résoudrait le
+problème.  Sauf que les Lisp<sub>1</sub>, comme Scheme ou Racket, n&rsquo;ont pas de portée
+dynamique par défaut: pour qu&rsquo;une variable bénéficie de portée dynamique, il
+faut la déclarer comme telle (un <i>parameter</i> en Racket par exemple).
 </p>
 
 <p>
@@ -8075,18 +8078,18 @@ fonctionnalité de l&rsquo;interpréteur.  Mais le but est de réaliser ces ajou
 modifier le code</i> qui précède; chaque fonctionnalité ajoute du code, réutilise
 du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
 </p>
+</div>
 
+<div id="outline-container-orgheadline55" class="outline-3">
+<h3 id="orgheadline55"><span class="section-number-3">5.1</span> <span class="done READ">READ</span> Ajouter des termes</h3>
+<div class="outline-text-3" id="text-5-1">
 <aside>
 <p>
 Le code complet de ce chapitre est reproduit dans les appendices
 (<a href="#foal-extra-full">7.1</a>).
 </p>
 </aside>
-</div>
 
-<div id="outline-container-orgheadline55" class="outline-3">
-<h3 id="orgheadline55"><span class="section-number-3">5.1</span> <span class="done READ">READ</span> Ajouter des termes</h3>
-<div class="outline-text-3" id="text-5-1">
 <p>
 Avant l&rsquo;interpréteur, on commence par définir le langage.  Dans le langage de
 base, on veut juste représenter des nombres entiers:
@@ -8362,7 +8365,7 @@ enrichies de <code>num</code> et <code>plus</code> (ligne <a href="#coderef-foal
 <aside style="margin-top:-4rem">
 <p>
 Ce module hérite du module <code>base</code> passé en argument pour des raisons qui sont
-explicitées en appendices (<a href="#foal-extra-subtle">7.3</a>).
+explicitées en <a href="#foal-extra-subtle">7.3</a>.
 </p>
 </aside>
 
@@ -8905,8 +8908,7 @@ plus.<span class="org-keyword">new</span>(d.num.<span class="org-keyword">new</s
 <aside>
 <p>
 Il y a une différence subtile entre composer les modules ainsi et les combiner
-via plusieurs blocs <code>with</code>; différence qui est discutée en appendice
-(<a href="#foal-extra-subtle">7.3</a>).
+via plusieurs blocs <code>with</code>; différence qui est discutée en <a href="#foal-extra-subtle">7.3</a>.
 </p>
 </aside>
 
@@ -9023,7 +9025,7 @@ semblable en utilisant les traits:
 
 <aside>
 <p>
-Le code complet de cet exemple se trouve dans les appendices <a href="#foal-extra-rust">7.2</a>.
+Le code complet de cet exemple se trouve en <a href="#foal-extra-rust">7.2</a>.
 </p>
 </aside>
 
@@ -9308,12 +9310,6 @@ dans la prochaine version.
 <span id="coderef-ex0-iife-end" class="coderef-off"><span class="linenr">14: </span>}())</span>
 </pre>
 </div>
-
-<aside style="margin-top:12rem">
-<p>
-<i>API: Application Programmer Interface</i>
-</p>
-</aside>
 
 <p>
 Le but de ce motif est de créer un environnement pour toutes les définitions du
@@ -9724,8 +9720,8 @@ dans une chaîne d&rsquo;environnements.
 </div>
 
 <div id="outline-container-orgheadline65" class="outline-4">
-<h4 id="orgheadline65">Disposer les environnements en couches</h4>
-<div class="outline-text-4" id="text-orgheadline65">
+<h4 id="layers"><a id="orgheadline65"></a>Disposer les environnements en couches</h4>
+<div class="outline-text-4" id="text-layers">
 <p>
 On a vu que tout environnement a un environnement parent.  Si un nom n&rsquo;est pas
 trouvé dans un environnement, la recherche se poursuit dans l&rsquo;environnement
@@ -9828,6 +9824,7 @@ nouveaux environnements à n&rsquo;importe quel point dans cette chaîne.
 </p>
 
 <p>
+<div id="pushenv" class="anchor"></div>
 Le plus utile pour nos besoins est d&rsquo;insérer un environnement juste après
 l&rsquo;environnement frontal.  Supposons que l&rsquo;on dispose d&rsquo;une fonction
 <code>pushEnv(e, chain)</code> qui insère l&rsquo;environnement <code>e</code> en tête de la chaîne; et une
@@ -9927,6 +9924,13 @@ C&rsquo;est l&rsquo;objet de la section suivante.
 <div id="outline-container-orgheadline68" class="outline-3">
 <h3 id="orgheadline68"><span class="section-number-3">6.2</span> Ouvrir le motif module en JavaScript</h3>
 <div class="outline-text-3" id="text-6-2">
+<aside>
+<p>
+Tous les exemples de cette section sont exécutables sur un interpréteur
+JavaScript qui suit le standard ECMAScript 5.1.
+</p>
+</aside>
+
 <p>
 Pour réaliser le modèle illustré dans la section précédente, on peut tirer
 partie de deux ingrédients de JavaScript que sont <code>with</code> et la délégation par
@@ -9935,13 +9939,6 @@ répliquer les exemples de composition d&rsquo;environnement par couches grâce 
 prototypes.
 </p>
 
-<aside style="margin-top:-7rem">
-<p>
-Tous les exemples de cette section sont exécutables sur un interpréteur
-JavaScript qui suit le standard ECMAScript 5.1.
-</p>
-</aside>
-
 <p>
 L&rsquo;expression <code>with</code> est grammaticalement similaire à un <code>if</code>.  Elle prend une
 expression entre parenthèses, qui est évaluée pour constituer son <i>objet de
@@ -9949,17 +9946,7 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d&rsquo;utili
 <code>with</code>:
 </p>
 
-<div class="org-src-container">
-
-<pre class="src src-js"><span class="linenr">1: </span><span class="org-keyword">var</span> <span class="org-variable-name">o</span> = { a: 42 }
-<span class="linenr">2: </span><span class="org-keyword">with</span> (o) {
-<span id="coderef-ex7-f" class="coderef-off"><span class="linenr">3: </span>  <span class="org-keyword">function</span> <span class="org-function-name">f</span>() { <span class="org-keyword">return</span> a }</span>
-<span class="linenr">4: </span>}
-<span id="coderef-ex7-call" class="coderef-off"><span class="linenr">5: </span>f() <span class="org-comment-delimiter">//</span><span class="org-comment">: 42</span></span>
-</pre>
-</div>
-
-<div style="margin-top:-8rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/dls9.svg" alt="dls9.svg">
@@ -9972,6 +9959,16 @@ l&rsquo;environnement est distinct du l&rsquo;objet de liaison: <code>o</code> p
 liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.
 </p>
 
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="linenr">1: </span><span class="org-keyword">var</span> <span class="org-variable-name">o</span> = { a: 42 }
+<span class="linenr">2: </span><span class="org-keyword">with</span> (o) {
+<span id="coderef-ex7-f" class="coderef-off"><span class="linenr">3: </span>  <span class="org-keyword">function</span> <span class="org-function-name">f</span>() { <span class="org-keyword">return</span> a }</span>
+<span class="linenr">4: </span>}
+<span id="coderef-ex7-call" class="coderef-off"><span class="linenr">5: </span>f() <span class="org-comment-delimiter">//</span><span class="org-comment">: 42</span></span>
+</pre>
 </div>
 
 <p>
@@ -9997,21 +9994,21 @@ trouve aucune occurrence de <code>a</code>.  La fonction <code>f</code> n&rsquo;
 liée si elle est appelée dans un <code>with</code>.
 </p>
 
-<div class="org-src-container">
-
-<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">f</span>() { <span class="org-keyword">return</span> a }
-<span class="org-keyword">var</span> <span class="org-variable-name">o</span> = { a: 42 }
-<span class="org-keyword">with</span> (o) { f() } <span class="org-comment-delimiter">//</span><span class="org-comment">: ReferenceError: a is undefined</span>
-</pre>
-</div>
-
-<div style="margin-top:-6rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/dls10.svg" alt="dls10.svg">
 </p>
 </figure>
 
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">f</span>() { <span class="org-keyword">return</span> a }
+<span class="org-keyword">var</span> <span class="org-variable-name">o</span> = { a: 42 }
+<span class="org-keyword">with</span> (o) { f() } <span class="org-comment-delimiter">//</span><span class="org-comment">: ReferenceError: a is undefined</span>
+</pre>
 </div>
 
 <p>
@@ -10044,6 +10041,15 @@ retourne encore 1, indiquant que <code>g</code> appelle bien <code>f</code>, qui
 au <code>a</code> défini dans le module.
 </p>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls11.svg" alt="dls11.svg">
+</p>
+</figure>
+
+</div>
+
 <div class="org-src-container">
 
 <pre class="src src-js"><span class="linenr"> 1: </span><span class="org-keyword">var</span> <span class="org-variable-name">m</span> = (<span class="org-keyword">function</span>(){
@@ -10069,15 +10075,6 @@ Comme on a une référence vers l&rsquo;objet de liaison <code>E</code>, on red�
 fonction <code>f</code> va bien prendre la valeur de <code>a</code> dans l&rsquo;objet <code>E</code>.
 </p>
 
-<div style="margin-top:-20rem" class="side-figure">
-
-<figure>
-<p><img src="img/dls11.svg" alt="dls11.svg">
-</p>
-</figure>
-
-</div>
-
 <p>
 On peut se demander pourquoi la valeur de <code>m.E.a</code> est préférée à la déclaration
 de <code>a</code>, alors que cette dernière est <i>plus proche</i> lexicalement de la fonction
@@ -10102,10 +10099,10 @@ d&rsquo;exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comporte
 décrit ici.  Mais V8, utilisé par Chromium, suivait des règles différentes
 encore récemment, et pour pouvoir répliquer l&rsquo;exemple il fallait déclarer les
 fonctions par des expressions (<code>var f = function...</code>).  Le créateur de
-JavaScript, Brendan Eich, <a href="https://bugs.chromium.org/p/v8/issues/detail?id=686">a indiqué</a> que le comportement de Firefox était en
-accord avec la prochaine version du standard (EcmaScript 2015).  À l&rsquo;heure où
-j&rsquo;écris, la dernière version de Chromium (53) a maintenant le même comportement
-que Firefox.
+JavaScript, Brendan Eich, a indiqué [<a href="#issue686">Eic10</a>] que le comportement de Firefox
+était en accord avec la prochaine version du standard (EcmaScript 2015).  À
+l&rsquo;heure où j&rsquo;écris, la dernière version de Chromium (53) a maintenant le même
+comportement que Firefox.
 </p>
 </aside>
 
@@ -10256,13 +10253,16 @@ m.g(0) <span class="org-comment-delimiter">//</span><span class="org-comment">: 
 <span class="org-keyword">var</span> <span class="org-variable-name">e1</span> = { a: 2, f: <span class="org-keyword">function</span>(<span class="org-variable-name">x</span>) {
   <span class="org-keyword">return</span> x + 2 * m.E.a }}
 pushEnv(e1, m.E)
+
 m.g(0) <span class="org-comment-delimiter">//</span><span class="org-comment">: 4</span>
 
 <span class="org-keyword">var</span> <span class="org-variable-name">e2</span> = { f: <span class="org-keyword">function</span>() { <span class="org-keyword">return</span> -m.E.a }}
 pushEnv(e2, m.E)
+
 m.g(0) <span class="org-comment-delimiter">//</span><span class="org-comment">: -2</span>
 
 removeEnv(e1, m.E)
+
 m.g(0) <span class="org-comment-delimiter">//</span><span class="org-comment">: -1</span>
 </pre>
 </div>
@@ -10299,6 +10299,7 @@ l&rsquo;objet <code>parent</code>:
 
 <pre class="src src-diff"><span class="org-diff-context">Narcissus.interpreter = (function() {</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added">  var _env = Object.create(null);</span>
+<span class="org-diff-indicator-added">+</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added">  with (_env) {</span>
 <span class="org-diff-context">   ...</span>
 <span class="org-diff-context">   // 1500 lines later</span>
@@ -10309,6 +10310,7 @@ l&rsquo;objet <code>parent</code>:
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added">    getValue: getValue,</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added">    ...</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added">  };</span>
+<span class="org-diff-indicator-added">+</span>
 <span class="org-diff-indicator-added">+</span><span class="org-diff-added">  Object.setPrototypeOf(_env, _parent);</span>
 <span class="org-diff-context">   return {</span>
 <span class="org-diff-context">     evaluate: evaluate,</span>
@@ -10589,6 +10591,14 @@ interface d&rsquo;instrumentation légère, qui permet de masquer les détails d
 manipulation des environnements, et de donner du code plus déclaratif:
 </p>
 
+<aside>
+<p>
+‘i13n&rsquo; est le numéronyme d&rsquo;&laquo;&nbsp;instrumentation&nbsp;&raquo;, comme ‘i18n&rsquo; est le numéronyme
+d&rsquo;&laquo;&nbsp;internationalisation&nbsp;&raquo;; c&rsquo;est aussi la convention déjà suivie par
+AspectScript.
+</p>
+</aside>
+
 <div class="org-src-container">
 
 <pre class="src src-js">i13n.pushLayer(_env, {
@@ -10599,17 +10609,9 @@ manipulation des environnements, et de donner du code plus déclaratif:
 </pre>
 </div>
 
-<aside style="margin-top:-7rem">
 <p>
-‘i13n&rsquo; est le numéronyme d&rsquo;&laquo;&nbsp;instrumentation&nbsp;&raquo;, comme ‘i18n&rsquo; est le numéronyme
-d&rsquo;&laquo;&nbsp;internationalisation&nbsp;&raquo;; c&rsquo;est aussi la convention déjà suivie par
-AspectScript.
-</p>
-</aside>
-
-<p>
-La fonction <code>i13n.pushLayer</code> est un alias de la fonction <code>pushEnv</code> définie dans
-la section <a href="#orgheadline65">Disposer les environnements en couches</a>.
+La fonction <code>i13n.pushLayer</code> est un alias de la fonction <code>pushEnv</code>
+(cf. <a href="#pushenv"> précedemment</a>).
 </p>
 
 <p>
@@ -10617,6 +10619,14 @@ La fonction <code>i13n.around(fn, a)</code> retourne simplement une nouvelle fon
 appelle la fonction <code>a</code> en lui passant <code>fn</code>, la fonction d&rsquo;origine, en premier
 argument:
 </p>
+
+<aside>
+<p>
+Après un remplacement de la fonction <code>f</code> par <code>i13n.around(f, g)</code> dans un module,
+tous les appels à <code>f</code> dans le module feront appel à <code>g</code>.  L&rsquo;effet est équivalent
+à la réécriture: f(a, b, &#x2026;) =&gt; g(f, a, b, &#x2026;)
+</p>
+</aside>
 
 <div class="org-src-container">
 
@@ -10627,14 +10637,6 @@ argument:
 }
 </pre>
 </div>
-
-<aside style="margin-top:-8rem">
-<p>
-Après un remplacement de la fonction <code>f</code> par <code>i13n.around(f, g)</code> dans un module,
-tous les appels à <code>f</code> dans le module feront appel à <code>g</code>.  L&rsquo;effet est équivalent
-à la réécriture: f(a, b, &#x2026;) =&gt; g(f, a, b, &#x2026;)
-</p>
-</aside>
 
 <p>
 Le nom évoque le <i>pointcut</i> d&rsquo;AspectJ éponyme; l&rsquo;effet est proche.  Cependant
@@ -10657,17 +10659,7 @@ Et en JavaScript, il suffit d&rsquo;utiliser la délégation par prototype pour 
 ce motif d&rsquo;extension:
 </p>
 
-<div class="org-src-container">
-
-<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">delegate</span>(<span class="org-variable-name">o</span>, <span class="org-variable-name">r</span>) {
-  <span class="org-keyword">var</span> <span class="org-variable-name">n</span> = Object.create(o)
-  Object.assign(n, r)
-  <span class="org-keyword">return</span> n
-}
-</pre>
-</div>
-
-<div style="margin-top:-18rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/dls13.svg" alt="dls13.svg">
@@ -10680,6 +10672,16 @@ propriétés de <code>r</code>, et délègue les autres à <code>o</code>.  C&rs
 insère dans l&rsquo;environnement du module.
 </p>
 
+</div>
+
+<div class="org-src-container">
+
+<pre class="src src-js"><span class="org-keyword">function</span> <span class="org-function-name">delegate</span>(<span class="org-variable-name">o</span>, <span class="org-variable-name">r</span>) {
+  <span class="org-keyword">var</span> <span class="org-variable-name">n</span> = Object.create(o)
+  Object.assign(n, r)
+  <span class="org-keyword">return</span> n
+}
+</pre>
 </div>
 </div>
 </div>
@@ -10767,7 +10769,7 @@ comme premier argument.  Donc notre <code>flowrCall</code> pourra être install�
 
 <p>
 L&rsquo;objet <code>FunctionObject</code> est l&rsquo;objet à partir duquel toutes les fonctions du
-code client sont instanciées—leur objet <i>prototype</i>.  Lorsque l&rsquo;interpréteur
+code client sont créées—leur objet <i>prototype</i>.  Lorsque l&rsquo;interpréteur
 exécute un appel de fonction, il délègue le travail à la propriété <code>__call__</code> de
 la fonction en question.  Si on installe notre version <code>flowrCall</code> sur cet
 objet, on remplace donc la fonction <code>__call__</code> sur toutes les instances de
@@ -10898,8 +10900,8 @@ printScope(2, whitelist, blacklist);
 </pre>
 
 <p>
-L&rsquo;analyse produit un graphe au format <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">DOT</a> utilisé par GraphViz.  On peut donc
-produire une image en invoquant <code>dot</code>:
+L&rsquo;analyse produit un graphe au format DOT [<a href="#dot">dot</a>] utilisé par GraphViz.  On peut
+donc produire une image en invoquant <code>dot</code>:
 </p>
 
 <pre class="example">
@@ -11012,8 +11014,9 @@ communs d&rsquo;instrumentation de fonctions (<code>around</code>, <code>before<
 </p>
 
 <p>
-En utilisant la technique de disposition en couches de la section <a href="#orgheadline65">Disposer les environnements en couches</a>, on peut activer plusieurs analyses à
-l&rsquo;exécution avec des options de lancement.  Par exemple:
+En utilisant la technique de disposition en couches (cf. <a href="#layers">
+précedemment</a>), on peut activer plusieurs analyses à l&rsquo;exécution avec des
+options de lancement.  Par exemple:
 </p>
 
 <pre class="example">
@@ -11479,23 +11482,6 @@ les trois méthodes permettent d&rsquo;appeler du code extérieur au module à u
 précis du flot d&rsquo;exécution.
 </p>
 
-<div class="side-figure">
-
-<figure>
-<p><img src="img/dls15.svg" alt="dls15.svg">
-</p>
-</figure>
-
-<p>
-Un <i>hook</i> est une liste de fonctions associée à un moment précis du flot de
-contrôle d&rsquo;un module.  Le code extérieur au module ajoute des fonctions dans
-cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
-fonctions du <i>hook</i>.  C&rsquo;est une façon courante d&rsquo;injecter du code dans la
-configuration d&rsquo;Emacs [ref-emacs-hooks] et de LaTeX [ref-latex-hooks].
-</p>
-
-</div>
-
 <p>
 Avec des <i>hooks</i>, ou un Observateur, il faut rajouter du code à l&rsquo;intérieur du
 module à tous les endroits où le programmeur d&rsquo;un module externe voudrait
@@ -11508,6 +11494,23 @@ pour des observateurs.  L&rsquo;inconvénient est d&rsquo;avoir à identifier le
 peuvent intéresser du code externe, et d&rsquo;ajouter des <i>hooks</i> explicitement dans
 le code pour chacun d&rsquo;eux.
 </p>
+
+<div style="margin-top:-13rem" class="side-figure">
+
+<figure>
+<p><img src="img/dls15.svg" alt="dls15.svg">
+</p>
+</figure>
+
+<p>
+Un <i>hook</i> est une liste de fonctions associée à un moment précis du flot de
+contrôle d&rsquo;un module.  Le code extérieur au module ajoute des fonctions dans
+cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
+fonctions du <i>hook</i>.  C&rsquo;est une façon courante d&rsquo;injecter du code dans la
+configuration d&rsquo;Emacs et de LaTeX.
+</p>
+
+</div>
 
 <p>
 On utilise généralement ces techniques pour appeler du code qui <i>ne change pas</i>
@@ -11676,6 +11679,13 @@ construction, teste les <i>pointcut</i> pour tous les <i>advice</i> enregistrés
 exécute le code si le <i>pointcut</i> correspond.
 </p>
 
+<aside style="margin-top:6rem">
+<p>
+Exemple de déviation de l&rsquo;évaluation standard de JavaScript: AspectScript ne
+peut pas instrumenter du code qui contient <code>with</code>.
+</p>
+</aside>
+
 <p>
 Ce mode de fonctionnement a deux inconvénients.  D&rsquo;abord, AspectScript duplique
 évidemment le travail du moteur d&rsquo;exécution de JavaScript, ce qui est
@@ -11690,18 +11700,12 @@ supplémentaire, si on cherche à comprendre un bogue de Narcissus il faut aussi
 prendre en compte l&rsquo;implémentation d&rsquo;AspectScript.
 </p>
 
-<aside style="margin-top:-6rem">
-<p>
-Exemple de déviation de l&rsquo;évaluation standard de JavaScript: AspectScript ne
-peut pas instrumenter du code qui contient <code>with</code>.
-</p>
-</aside>
-
 <aside>
 <p>
 Le code invoqué dans AspectScript pour un appel réifié de fonction.
 </p>
 </aside>
+
 <div class="org-src-container">
 
 <pre class="src src-js"><span class="org-function-name">call</span>: <span class="org-keyword">function</span> (<span class="org-variable-name">obj</span>, <span class="org-variable-name">fun</span>, <span class="org-variable-name">args</span>, <span class="org-variable-name">context</span>){
@@ -12795,6 +12799,18 @@ Ole-Johan Dahl and Kristen Nygaard.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="dot">dot</a>]
+</td>
+<td class="bibtexitem">
+Dot (graph description language).
+[&nbsp;<a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">http</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="OC-12">dSOC12</a>]
 </td>
 <td class="bibtexitem">
@@ -12849,6 +12865,19 @@ Douglas&nbsp;C. Engelbart and William&nbsp;K. English.
 Brendan Eich.
  Popularity, 2008.
 [&nbsp;<a href="https://brendaneich.com/2008/04/popularity/">http</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a name="issue686">Eic10</a>]
+</td>
+<td class="bibtexitem">
+Brendan Eich.
+ Issue 686 - v8 - "with" and function scope, 2010.
+[&nbsp;<a href="https://bugs.chromium.org/p/v8/issues/detail?id=686">http</a>&nbsp;]
 
 </td>
 </tr>
@@ -13952,7 +13981,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-09-15 jeu. 19:57 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-09-16 ven. 15:28 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
