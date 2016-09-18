@@ -33,16 +33,40 @@ Object-Oriented Programming, Aspect-Oriented Programming, JavaScript
 %% Mandatory cover.  Not my fault!
 \input{edstim-cover}
 
-%% Background image, per StackOverflow wisdom:
-%% https://tex.stackexchange.com/questions/46280/how-to-create-a-background-image-on-title-page-with-latex
-%% \AddToShipoutPicture*{\BackgroundPic}
-
 %% Insert title, TOC, and acknowledgments.  The Org document must not insert
 %% title or TOC itself, otherwise they will appear before the frontmatter
 %% command.
 
 \frontmatter
 \pagestyle{front}
+
+\newgeometry{left=3.5cm,right=3.5cm,textheight=666pt}
+\cleartorecto
+
+%% Background image, per StackOverflow wisdom:
+%% https://tex.stackexchange.com/questions/46280/how-to-create-a-background-image-on-title-page-with-latex
+%% \AddToShipoutPicture*{\BackgroundPic}
+
+\begin{flushleft}
+{\LARGE\titlefr}\\
+\vspace{\baselineskip}
+{\Large\subtitlefr}
+\end{flushleft}
+
+\vspace{3cm}
+\begin{flushright}
+{\large\theauthor}
+\end{flushright}
+
+\vfill
+\begin{center}
+\includegraphics[width=1cm]{img/logo}
+\end{center}
+
+\vfill
+\begin{center}
+Version 1.0 du \today
+\end{center}
 
 %% \chapter*{Remerciements}
 %% %% Fix heading mark showing “Contents”
@@ -54,9 +78,10 @@ Object-Oriented Programming, Aspect-Oriented Programming, JavaScript
 %% \input{acks}
 
 %% Colophon
-\cleartorecto
+\cleartoverso
 \phantom{a}                     % have to add phantom for \vspace to work
-\vspace{13cm}
+\vfill
+\begin{minipage}{26pc}
 \subsection*{Colophon}
 Ce document a été produit par \LaTeX{}, engendré par Org 8.3.5 sous GNU Emacs
 24.5.1.  La typographie est basée sur l'excellent paquet \texttt{memoir}; la
@@ -67,23 +92,25 @@ Inkscape 0.91.  Le code source complet est disponible sur
 
 \vfill
 \begin{center}
-Version 1.0 du \today
-\end{center}
-
-\vfill
-\begin{center}
-Ce document est placé dans le domaine public (license CC0).
+Ce document est placé dans le domaine public (license CC0).\\
+\vspace{4pt}
 \includegraphics[width=2cm]{img/cc-zero.png}
 \end{center}
+\end{minipage}
 
 %% Abstract
 \cleartorecto
+\phantom{a}
+\vfill
+\begin{minipage}{26pc}
 \section*{Résumé}
 \input{abstract-fr}
+\end{minipage}
+\vfill
+\phantom{a}
 
 %% Table of contents
 \cleartoverso
-\newgeometry{left=3.5cm,right=3.5cm,textheight=666pt}
 \tableofcontents*
 
 \vfill
