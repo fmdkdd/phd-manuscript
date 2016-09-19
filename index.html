@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-09-16 ven. 15:28 -->
+<!-- 2016-09-19 lun. 11:30 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -158,8 +158,8 @@ for the JavaScript code in this tag.
 <h2>Table des matières</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgheadline1"><span class="done READ">READ</span> Introduction</a></li>
-<li><a href="#prelims">1. <span class="done READ">READ</span> Préliminaires</a>
+<li><a href="#orgheadline1">Introduction</a></li>
+<li><a href="#prelims">1. Préliminaires</a>
 <ul>
 <li><a href="#defs">1.1. Code source, processus, et spécification</a></li>
 <li><a href="#orgheadline5">1.2. Une présentation du langage JavaScript</a></li>
@@ -169,44 +169,44 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#problem">2. Le problème: instrumenter et étendre des interpréteurs</a>
 <ul>
-<li><a href="#narc">2.1. <span class="done READ">READ</span> Étude de cas: instrumentation ad-hoc de Narcissus</a></li>
-<li><a href="#orgheadline12">2.2. <span class="done READ">READ</span> Le but: factoriser les changements</a></li>
-<li><a href="#narcissus-categories">2.3. <span class="done READ">READ</span> Quatre axes de factorisation pour l&rsquo;instrumentation</a></li>
-<li><a href="#orgheadline14">2.4. <span class="done READ">READ</span> Refactoriser Narcissus: une solution coûteuse</a></li>
-<li><a href="#idea">2.5. <span class="done READ">READ</span> L&rsquo;idée: le détournement de programme</a></li>
+<li><a href="#narc">2.1. Étude de cas: instrumentation ad-hoc de Narcissus</a></li>
+<li><a href="#orgheadline12">2.2. Le but: factoriser les changements</a></li>
+<li><a href="#narcissus-categories">2.3. Quatre axes de factorisation pour l&rsquo;instrumentation</a></li>
+<li><a href="#orgheadline14">2.4. Refactoriser Narcissus: une solution coûteuse</a></li>
+<li><a href="#idea">2.5. L&rsquo;idée: le détournement de programme</a></li>
 </ul>
 </li>
 <li><a href="#chrono">3. Le détournement à travers l&rsquo;histoire des langages de programmation</a>
 <ul>
-<li><a href="#dijkstra">3.1. <span class="done READ">READ</span> Le programme reflète le processus: la programmation structurée</a></li>
-<li><a href="#proglit">3.2. <span class="done READ">READ</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</a></li>
-<li><a href="#orgheadline21">3.3. <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</a></li>
-<li><a href="#metaobj">3.4. <span class="done READ">READ</span> Réifier le langage: métaprogrammation et réflexion</a></li>
-<li><a href="#aop">3.5. <span class="done READ">READ</span> Séparer les préoccupations: la programmation par aspects</a></li>
-<li><a href="#expr">3.6. <span class="done READ">READ</span> Le problème de l&rsquo;expression</a></li>
-<li><a href="#orgheadline42">3.7. <span class="done READ">READ</span> Autres mécanismes de détournement</a></li>
-<li><a href="#orgheadline43">3.8. <span class="done READ">READ</span> Récapitulatif</a></li>
+<li><a href="#dijkstra">3.1. Le programme reflète le processus: la programmation structurée</a></li>
+<li><a href="#proglit">3.2. L&rsquo;ordre psychologiquement correct: la programmation littéraire</a></li>
+<li><a href="#orgheadline21">3.3. Modéliser le monde: la programmation par objets</a></li>
+<li><a href="#metaobj">3.4. Réifier le langage: métaprogrammation et réflexion</a></li>
+<li><a href="#aop">3.5. Séparer les préoccupations: la programmation par aspects</a></li>
+<li><a href="#expr">3.6. Le problème de l&rsquo;expression</a></li>
+<li><a href="#orgheadline42">3.7. Autres mécanismes de détournement</a></li>
+<li><a href="#orgheadline43">3.8. Récapitulatif</a></li>
 </ul>
 </li>
 <li><a href="#variations">4. Variations de détournement sur un interpréteur minimal</a>
 <ul>
-<li><a href="#orgheadline45">4.1. <span class="todo UNREAD">UNREAD</span> Avec <code>GOTO</code> et <code>COMEFROM</code></a></li>
-<li><a href="#orgheadline46">4.2. <span class="todo UNREAD">UNREAD</span> En programmation littéraire</a></li>
-<li><a href="#orgheadline49">4.3. <span class="todo UNREAD">UNREAD</span> En programmation par objets</a></li>
-<li><a href="#orgheadline51">4.4. <span class="todo UNREAD">UNREAD</span> En programmation par aspects</a></li>
-<li><a href="#orgheadline53">4.5. <span class="todo UNREAD">UNREAD</span> Par portée dynamique</a></li>
+<li><a href="#orgheadline45">4.1. Avec <code>GOTO</code> et <code>COMEFROM</code></a></li>
+<li><a href="#orgheadline46">4.2. En programmation littéraire</a></li>
+<li><a href="#orgheadline49">4.3. En programmation par objets</a></li>
+<li><a href="#orgheadline51">4.4. En programmation par aspects</a></li>
+<li><a href="#orgheadline53">4.5. Par portée dynamique</a></li>
 </ul>
 </li>
 <li><a href="#foal">5. Construire un interpréteur par modules</a>
 <ul>
-<li><a href="#orgheadline55">5.1. <span class="done READ">READ</span> Ajouter des termes</a></li>
-<li><a href="#orgheadline56">5.2. <span class="done READ">READ</span> Ajouter des opérations</a></li>
-<li><a href="#orgheadline57">5.3. <span class="done READ">READ</span> Modifier des opérations</a></li>
-<li><a href="#orgheadline58">5.4. <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</a></li>
-<li><a href="#orgheadline61">5.5. <span class="todo UNREAD">UNREAD</span> Discussion</a></li>
+<li><a href="#orgheadline55">5.1. Ajouter des termes</a></li>
+<li><a href="#orgheadline56">5.2. Ajouter des opérations</a></li>
+<li><a href="#orgheadline57">5.3. Modifier des opérations</a></li>
+<li><a href="#orgheadline58">5.4. Passer de l&rsquo;état aux opérations</a></li>
+<li><a href="#orgheadline61">5.5. Discussion</a></li>
 </ul>
 </li>
-<li><a href="#dls">6. <span class="done READ">READ</span> Étendre un interpréteur par manipulation de portée</a>
+<li><a href="#dls">6. Étendre un interpréteur par manipulation de portée</a>
 <ul>
 <li><a href="#orgheadline67">6.1. Manipuler la portée des variables pour l&rsquo;instrumentation</a></li>
 <li><a href="#orgheadline68">6.2. Ouvrir le motif module en JavaScript</a></li>
@@ -214,13 +214,13 @@ for the JavaScript code in this tag.
 <li><a href="#orgheadline80">6.4. Discussion</a></li>
 </ul>
 </li>
-<li><a href="#orgheadline82"><span class="done READ">READ</span> Conclusion</a></li>
+<li><a href="#orgheadline82">Conclusion</a></li>
 <li><a href="#foal-extra">7. Extras: construire un interpréteur par modules</a>
 <ul>
 <li><a href="#foal-extra-full">7.1. Code complet du chapitre</a></li>
 <li><a href="#foal-extra-rust">7.2. Code complet de l&rsquo;exemple en Rust</a></li>
-<li><a href="#foal-extra-subtle">7.3. <span class="todo UNREAD">UNREAD</span> La différence subtile</a></li>
-<li><a href="#orgheadline87">7.4. <span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</a></li>
+<li><a href="#foal-extra-subtle">7.3. La différence subtile</a></li>
+<li><a href="#orgheadline87">7.4. Le receveur du constructeur est le prototype</a></li>
 </ul>
 </li>
 </ul>
@@ -228,7 +228,7 @@ for the JavaScript code in this tag.
 </nav>
 
 <div id="outline-container-orgheadline1" class="outline-2">
-<h2 id="orgheadline1"><span class="done READ">READ</span> Introduction</h2>
+<h2 id="orgheadline1">Introduction</h2>
 <div class="outline-text-2" id="text-orgheadline1">
 <p>
 JavaScript est le langage des programmes exécutés par les pages web.  Il est
@@ -357,7 +357,7 @@ Mais avant tout cela, commençons par quelques définitions.
 </div>
 
 <div id="outline-container-orgheadline10" class="outline-2">
-<h2 id="prelims"><a id="orgheadline10"></a><span class="section-number-2">1</span> <span class="done READ">READ</span> Préliminaires</h2>
+<h2 id="prelims"><a id="orgheadline10"></a><span class="section-number-2">1</span> Préliminaires</h2>
 <div class="outline-text-2" id="text-prelims">
 </div>
 <div id="outline-container-orgheadline2" class="outline-3">
@@ -740,7 +740,6 @@ JavaScript is the lingua franca of the Web
 
 </div>
 </div>
-
 
 <div id="outline-container-orgheadline3" class="outline-4">
 <h4 id="orgheadline3">Genèse chez Netscape</h4>
@@ -1560,7 +1559,7 @@ judge it cannot be formulated.
 <p>
 Si l&rsquo;on se contente de modifier le code source sans considérer la théorie, on se
 retrouve dans le cas du groupe B; à étendre le compilateur de façon
-tarabiscotée, sans tirer partie de sa structure:
+tarabiscotée, sans tirer parti de sa structure:
 </p>
 
 <blockquote>
@@ -1771,7 +1770,7 @@ own maze, in a way, and might just get lost in it.
 </div>
 
 <div id="outline-container-orgheadline11" class="outline-3">
-<h3 id="narc"><a id="orgheadline11"></a><span class="section-number-3">2.1</span> <span class="done READ">READ</span> Étude de cas: instrumentation ad-hoc de Narcissus</h3>
+<h3 id="narc"><a id="orgheadline11"></a><span class="section-number-3">2.1</span> Étude de cas: instrumentation ad-hoc de Narcissus</h3>
 <div class="outline-text-3" id="text-narc">
 <aside style="margin-top: 2rem">
 <p>
@@ -1958,7 +1957,7 @@ L&rsquo;instrumentation de Narcissus constitue un bon scénario pour tenter de r
 </div>
 
 <div id="outline-container-orgheadline12" class="outline-3">
-<h3 id="orgheadline12"><span class="section-number-3">2.2</span> <span class="done READ">READ</span> Le but: factoriser les changements</h3>
+<h3 id="orgheadline12"><span class="section-number-3">2.2</span> Le but: factoriser les changements</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 D&rsquo;un point de vue abstrait, on peut voir l&rsquo;interpréteur comme une fonction
@@ -2162,7 +2161,7 @@ ultimement, comment factoriser Narcissus?
 </div>
 
 <div id="outline-container-orgheadline13" class="outline-3">
-<h3 id="narcissus-categories"><a id="orgheadline13"></a><span class="section-number-3">2.3</span> <span class="done READ">READ</span> Quatre axes de factorisation pour l&rsquo;instrumentation</h3>
+<h3 id="narcissus-categories"><a id="orgheadline13"></a><span class="section-number-3">2.3</span> Quatre axes de factorisation pour l&rsquo;instrumentation</h3>
 <div class="outline-text-3" id="text-narcissus-categories">
 <p>
 En observant les modifications apportées par l&rsquo;instrumentation de Narcissus pour
@@ -2397,7 +2396,7 @@ réaliser cette factorisation?
 </div>
 
 <div id="outline-container-orgheadline14" class="outline-3">
-<h3 id="orgheadline14"><span class="section-number-3">2.4</span> <span class="done READ">READ</span> Refactoriser Narcissus: une solution coûteuse</h3>
+<h3 id="orgheadline14"><span class="section-number-3">2.4</span> Refactoriser Narcissus: une solution coûteuse</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Un moyen de modifier Narcissus serait de le <i>refactoriser</i>.  En programmation,
@@ -2469,7 +2468,7 @@ minimiser pour commencer.
 </div>
 
 <div id="outline-container-orgheadline15" class="outline-3">
-<h3 id="idea"><a id="orgheadline15"></a><span class="section-number-3">2.5</span> <span class="done READ">READ</span> L&rsquo;idée: le détournement de programme</h3>
+<h3 id="idea"><a id="orgheadline15"></a><span class="section-number-3">2.5</span> L&rsquo;idée: le détournement de programme</h3>
 <div class="outline-text-3" id="text-idea">
 <p>
 Il y a une alternative pragmatique à la refactorisation, que nous appellerons le
@@ -2584,7 +2583,7 @@ changer plus facilement.
 </div>
 
 <div id="outline-container-orgheadline17" class="outline-3">
-<h3 id="dijkstra"><a id="orgheadline17"></a><span class="section-number-3">3.1</span> <span class="done READ">READ</span> Le programme reflète le processus: la programmation structurée</h3>
+<h3 id="dijkstra"><a id="orgheadline17"></a><span class="section-number-3">3.1</span> Le programme reflète le processus: la programmation structurée</h3>
 <div class="outline-text-3" id="text-dijkstra">
 <div class="epig">
 <p>
@@ -2971,7 +2970,7 @@ façons d&rsquo;aborder ce but.
 </div>
 
 <div id="outline-container-orgheadline18" class="outline-3">
-<h3 id="proglit"><a id="orgheadline18"></a><span class="section-number-3">3.2</span> <span class="done READ">READ</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</h3>
+<h3 id="proglit"><a id="orgheadline18"></a><span class="section-number-3">3.2</span> L&rsquo;ordre psychologiquement correct: la programmation littéraire</h3>
 <div class="outline-text-3" id="text-proglit">
 <div class="epig">
 <p>
@@ -3289,7 +3288,7 @@ revanche, propose un nouveau paradigme.
 </div>
 
 <div id="outline-container-orgheadline21" class="outline-3">
-<h3 id="orgheadline21"><span class="section-number-3">3.3</span> <span class="done READ">READ</span> Modéliser le monde: la programmation par objets</h3>
+<h3 id="orgheadline21"><span class="section-number-3">3.3</span> Modéliser le monde: la programmation par objets</h3>
 <div class="outline-text-3" id="text-3-3">
 <div class="full-figure">
 
@@ -3360,7 +3359,7 @@ la relation symbiotique entre programme et structures de données.
 
 <p>
 Pour Kay, les <i>objets</i> de Smalltalk sont comme des cellules: des constituants
-quasi-autonomes, capables de se répliquer:
+quasi-autonomes, capables de se reproduire:
 </p>
 
 <blockquote>
@@ -3847,7 +3846,7 @@ langage.  Et ils sont sont aussi très utiles pour le détournement.
 </div>
 
 <div id="outline-container-orgheadline23" class="outline-3">
-<h3 id="metaobj"><a id="orgheadline23"></a><span class="section-number-3">3.4</span> <span class="done READ">READ</span> Réifier le langage: métaprogrammation et réflexion</h3>
+<h3 id="metaobj"><a id="orgheadline23"></a><span class="section-number-3">3.4</span> Réifier le langage: métaprogrammation et réflexion</h3>
 <div class="outline-text-3" id="text-metaobj">
 <div class="side-figure">
 
@@ -3913,11 +3912,11 @@ Java nous le permet:
 <span class="linenr">10: </span>    <span class="org-type">Class</span> <span class="org-variable-name">a</span> = A.<span class="org-keyword">class</span>;
 <span class="linenr">11: </span>
 <span class="linenr">12: </span>    System.out.println(<span class="org-string">"Fields:"</span>);
-<span class="linenr">13: </span>    <span class="org-keyword">for</span> (<span class="org-type">Field</span> <span class="org-variable-name">f</span>: a.getDeclaredFields())
+<span class="linenr">13: </span>    <span class="org-keyword">for</span> (<span class="org-type">Field</span> <span class="org-function-name">f</span>: a.getDeclaredFields())
 <span class="linenr">14: </span>      System.out.println(f);
 <span class="linenr">15: </span>
 <span class="linenr">16: </span>    System.out.println(<span class="org-string">"\nMethods:"</span>);
-<span class="linenr">17: </span>    <span class="org-keyword">for</span> (<span class="org-type">Method</span> <span class="org-variable-name">m</span>: a.getDeclaredMethods())
+<span class="linenr">17: </span>    <span class="org-keyword">for</span> (<span class="org-type">Method</span> <span class="org-function-name">m</span>: a.getDeclaredMethods())
 <span class="linenr">18: </span>      System.out.println(m);
 <span class="linenr">19: </span>
 <span class="linenr">20: </span>    System.out.print(<span class="org-string">"\nA.m2(3) = "</span>);
@@ -4086,7 +4085,7 @@ de métaprogrammation.
 </div>
 
 <div id="outline-container-orgheadline22" class="outline-4">
-<h4 id="orgheadline22"><span class="done READ">READ</span> L&rsquo;implémentation ouverte</h4>
+<h4 id="orgheadline22">L&rsquo;implémentation ouverte</h4>
 <div class="outline-text-4" id="text-orgheadline22">
 <p>
 La réflexion n&rsquo;est pas restreinte aux implémentations de langages à objets, ni
@@ -4248,7 +4247,7 @@ envisageables.  Un autre bon candidat est la programmation par aspects.
 </div>
 
 <div id="outline-container-orgheadline30" class="outline-3">
-<h3 id="aop"><a id="orgheadline30"></a><span class="section-number-3">3.5</span> <span class="done READ">READ</span> Séparer les préoccupations: la programmation par aspects</h3>
+<h3 id="aop"><a id="orgheadline30"></a><span class="section-number-3">3.5</span> Séparer les préoccupations: la programmation par aspects</h3>
 <div class="outline-text-3" id="text-aop">
 <div class="side-figure">
 
@@ -4677,7 +4676,7 @@ coupes pour les sélectionner dans des méthodes d&rsquo;aspect.  On pourra ains
 
 <div class="org-src-container">
 
-<pre class="src src-java"><span class="org-constant">after</span>(): <span class="org-function-name">call</span>(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>)) {
+<pre class="src src-java"><span class="org-constant">after</span>(): <span class="org-function-name">call</span>(<span class="org-type">void</span> Point.<span class="org-function-name">setX</span>(<span class="org-type">int</span>)) {
   System.out.println(<span class="org-string">"setX was called"</span>)
 }
 </pre>
@@ -4695,10 +4694,10 @@ booléens <code>&amp;&amp;</code>, <code>||</code>, et <code>!</code>:
 
 <div class="org-src-container">
 
-<pre class="src src-java">execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>))
-|| execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setY</span>(<span class="org-type">int</span>))
+<pre class="src src-java">execution(<span class="org-type">void</span> Point.<span class="org-function-name">setX</span>(<span class="org-type">int</span>))
+|| execution(<span class="org-type">void</span> Point.<span class="org-function-name">setY</span>(<span class="org-type">int</span>))
 
-call(<span class="org-type">void</span> FigureElement.<span class="org-variable-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
+call(<span class="org-type">void</span> FigureElement.<span class="org-function-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
 &amp;&amp; <span class="org-negation-char">!</span><span class="org-keyword">instanceof</span>(FigureElement)
 </pre>
 </div>
@@ -4712,9 +4711,9 @@ plus de clarté, et pour pouvoir les partager:
 <div class="org-src-container">
 
 <pre class="src src-java"><span class="org-type">pointcut</span> <span class="org-function-name">moves</span>():
-  execution(<span class="org-type">void</span> FigureElement.<span class="org-variable-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
-  || execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setX</span>(<span class="org-type">int</span>))
-  || execution(<span class="org-type">void</span> Point.<span class="org-variable-name">setY</span>(<span class="org-type">int</span>));
+  execution(<span class="org-type">void</span> FigureElement.<span class="org-function-name">incrXY</span>(<span class="org-type">int</span>, <span class="org-type">int</span>))
+  || execution(<span class="org-type">void</span> Point.<span class="org-function-name">setX</span>(<span class="org-type">int</span>))
+  || execution(<span class="org-type">void</span> Point.<span class="org-function-name">setY</span>(<span class="org-type">int</span>));
 
 <span class="org-constant">after</span>(): <span class="org-function-name">moves</span>() {
   ...
@@ -4739,7 +4738,7 @@ particulièrement utile associé à d&rsquo;autres coupes:
 
 <div class="org-src-container">
 
-<pre class="src src-java">call(<span class="org-type">void</span> <span class="org-variable-name">m</span>()) &amp;&amp; withincode(<span class="org-type">void</span> <span class="org-variable-name">m</span>())
+<pre class="src src-java">call(<span class="org-type">void</span> <span class="org-function-name">m</span>()) &amp;&amp; withincode(<span class="org-type">void</span> <span class="org-function-name">m</span>())
 </pre>
 </div>
 
@@ -4754,7 +4753,7 @@ l&rsquo;on souhaite capturer les appels <i>non</i> récursifs à <code>m</code>,
 </p>
 <div class="org-src-container">
 
-<pre class="src src-java">call(<span class="org-type">void</span> <span class="org-variable-name">m</span>()) &amp;&amp; <span class="org-negation-char">!</span>cflow(call(<span class="org-type">void</span> <span class="org-variable-name">m</span>()))
+<pre class="src src-java">call(<span class="org-type">void</span> <span class="org-function-name">m</span>()) &amp;&amp; <span class="org-negation-char">!</span>cflow(call(<span class="org-type">void</span> <span class="org-function-name">m</span>()))
 </pre>
 </div>
 
@@ -4801,7 +4800,7 @@ levées par toutes les méthodes publiques d&rsquo;un package:
 <pre class="src src-java"><span class="org-type">aspect</span> <span class="org-variable-name">SimpleErrorLogging</span> {
   <span class="org-type">Log</span> <span class="org-variable-name">log</span> = <span class="org-keyword">new</span> <span class="org-type">Log</span>();
 
-  <span class="org-type">pointcut</span> <span class="org-variable-name">publicEntries</span>():
+  <span class="org-type">pointcut</span> <span class="org-function-name">publicEntries</span>():
     execution(<span class="org-keyword">public</span> * <span class="org-constant">com</span>.<span class="org-constant">xerox</span>.<span class="org-constant">printers</span>.*.*(..));
 
   after() throwing(<span class="org-type">Error</span> <span class="org-variable-name">e</span>): publicEntries() {
@@ -4962,7 +4961,7 @@ système.
 </div>
 
 <div id="outline-container-orgheadline38" class="outline-3">
-<h3 id="expr"><a id="orgheadline38"></a><span class="section-number-3">3.6</span> <span class="done READ">READ</span> Le problème de l&rsquo;expression</h3>
+<h3 id="expr"><a id="orgheadline38"></a><span class="section-number-3">3.6</span> Le problème de l&rsquo;expression</h3>
 <div class="outline-text-3" id="text-expr">
 <p>
 Le problème de l&rsquo;expression est un problème proche du notre.  Le but est de
@@ -5602,7 +5601,7 @@ méthode <code>accept(Visitor)</code>:
 <span class="org-keyword">class</span> <span class="org-type">Constant</span> <span class="org-keyword">extends</span> <span class="org-type">Term</span> {
   <span class="org-type">int</span> <span class="org-variable-name">n</span>;
   <span class="org-function-name">Constant</span>(<span class="org-type">int</span> <span class="org-variable-name">n</span>) { <span class="org-keyword">this</span>.n = n; }
-  &lt;T&gt; T accept(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
+  &lt;<span class="org-type">T</span>&gt; T accept(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
     <span class="org-keyword">return</span> v.forConstant(<span class="org-keyword">this</span>); }
 }
 
@@ -5611,7 +5610,7 @@ méthode <code>accept(Visitor)</code>:
   <span class="org-function-name">Plus</span>(<span class="org-type">Term</span> <span class="org-variable-name">a</span>, <span class="org-type">Term</span> <span class="org-variable-name">b</span>) {
     <span class="org-keyword">this</span>.a = a; <span class="org-keyword">this</span>.b = b; }
 
-  &lt;T&gt; T accept(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
+  &lt;<span class="org-type">T</span>&gt; T accept(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
     <span class="org-keyword">return</span> v.forPlus(<span class="org-keyword">this</span>); }
 }
 </pre>
@@ -5681,7 +5680,7 @@ une classe qui représente ce terme:
 <pre class="src src-java"><span class="org-keyword">class</span> <span class="org-type">Mult</span> <span class="org-keyword">extends</span> <span class="org-type">Term</span> {
   <span class="org-type">Term</span> <span class="org-variable-name">a</span>, <span class="org-variable-name">b</span>;
   <span class="org-function-name">Mult</span>(<span class="org-type">Term</span> <span class="org-variable-name">a</span>, <span class="org-type">Term</span> <span class="org-variable-name">b</span>) { <span class="org-keyword">this</span>.a = a; <span class="org-keyword">this</span>.b = b; }
-  &lt;T&gt; T accept(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
+  &lt;<span class="org-type">T</span>&gt; T accept(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
     <span class="org-keyword">return</span> ((<span class="org-type">VisitorForMult</span>&lt;<span class="org-type">T</span>&gt;)v).forMult(<span class="org-keyword">this</span>);
   }
 }
@@ -5810,7 +5809,7 @@ on utilise les constructeurs virtuels <code>constant</code> et <code>plus</code>
 
 <div class="org-src-container">
 
-<pre class="src src-java">&lt;T&gt; T e2(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
+<pre class="src src-java">&lt;<span class="org-type">T</span>&gt; T e2(<span class="org-type">Visitor</span>&lt;<span class="org-type">T</span>&gt; <span class="org-variable-name">v</span>) {
   <span class="org-keyword">return</span> v.plus(v.constant(1), v.constant(2));
 }
 </pre>
@@ -5983,7 +5982,7 @@ construire des interpréteurs extensibles.
 </div>
 
 <div id="outline-container-orgheadline42" class="outline-3">
-<h3 id="orgheadline42"><span class="section-number-3">3.7</span> <span class="done READ">READ</span> Autres mécanismes de détournement</h3>
+<h3 id="orgheadline42"><span class="section-number-3">3.7</span> Autres mécanismes de détournement</h3>
 <div class="outline-text-3" id="text-3-7">
 </div><div id="outline-container-orgheadline39" class="outline-4">
 <h4 id="orgheadline39">La superposition</h4>
@@ -6078,7 +6077,7 @@ et comme Hyper/J, est essentiellement indépendant du langage de programmation.
 
 <p>
 De la même manière, les <i>patches sémantiques</i> [<a href="#PLM-07">PLM07</a>] reconnaissent des arbres
-syntaxiques partiels afin de répliquer des changements automatiquement.
+syntaxiques partiels afin de reproduire des changements automatiquement.
 L&rsquo;application principale est de pouvoir modifier des pilotes lorsque l&rsquo;interface
 du noyau Linux change.  Dans un patch sémantique, on décrit le motif général du
 changement à l&rsquo;aide d&rsquo;ellipses:
@@ -6324,7 +6323,7 @@ dynamique dans une extension, sous la forme de paramètres implicites [<a href="
 </div>
 
 <div id="outline-container-orgheadline43" class="outline-3">
-<h3 id="orgheadline43"><span class="section-number-3">3.8</span> <span class="done READ">READ</span> Récapitulatif</h3>
+<h3 id="orgheadline43"><span class="section-number-3">3.8</span> Récapitulatif</h3>
 <div class="outline-text-3" id="text-3-8">
 <p>
 Dans tous les travaux que l&rsquo;on a étudiés dans ce chapitre il y a un thème qui
@@ -6446,7 +6445,7 @@ d&rsquo;explorer les mécanismes disponibles et de comparer leurs applicabilité
 </div>
 
 <div id="outline-container-orgheadline45" class="outline-3">
-<h3 id="orgheadline45"><span class="section-number-3">4.1</span> <span class="todo UNREAD">UNREAD</span> Avec <code>GOTO</code> et <code>COMEFROM</code></h3>
+<h3 id="orgheadline45"><span class="section-number-3">4.1</span> Avec <code>GOTO</code> et <code>COMEFROM</code></h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 On a vu (&sect;<a href="#dijkstra">3.1</a>) que théoriquement l&rsquo;on pouvait utiliser <code>GOTO</code> et
@@ -6571,7 +6570,7 @@ réaliser.
 </div>
 
 <div id="outline-container-orgheadline46" class="outline-3">
-<h3 id="orgheadline46"><span class="section-number-3">4.2</span> <span class="todo UNREAD">UNREAD</span> En programmation littéraire</h3>
+<h3 id="orgheadline46"><span class="section-number-3">4.2</span> En programmation littéraire</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
@@ -7010,7 +7009,7 @@ l&rsquo;interprétation à l&rsquo;exécution.
 </div>
 
 <div id="outline-container-orgheadline49" class="outline-3">
-<h3 id="orgheadline49"><span class="section-number-3">4.3</span> <span class="todo UNREAD">UNREAD</span> En programmation par objets</h3>
+<h3 id="orgheadline49"><span class="section-number-3">4.3</span> En programmation par objets</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 L&rsquo;héritage et la liaison dynamique sont deux mécanismes de la programmation par
@@ -7085,12 +7084,12 @@ interpréteurs, et plus généralement des programmes.
 
 <p>
 Un inconvénient de ces solutions est qu&rsquo;elles sont dépendantes de la structure
-du programme.  Si l&rsquo;interpréteur n&rsquo;utilise de constructeurs virtuels, il n&rsquo;est
-plus aussi facile d&rsquo;insérer notre évaluation alternative <code>NumDouble</code>; il faudra
-modifier l&rsquo;interpréteur.  De même, dans un l&rsquo;interpréteur plus complexe que
+du programme.  Si l&rsquo;interpréteur n&rsquo;utilise pas de constructeurs virtuels, il
+n&rsquo;est plus aussi facile d&rsquo;insérer notre évaluation alternative <code>NumDouble</code>; il
+faudra modifier l&rsquo;interpréteur.  De même, dans un interpréteur plus complexe que
 celui de l&rsquo;exemple, la fonctionnalité d&rsquo;évaluation pourra être répartie sur
 plusieurs classes, potentiellement sur plusieurs méthodes; il faudra alors
-hériter de toutes ces classes pour surcharger toutes les méthodes pertinentes,
+hériter de toutes ces classes pour surcharger toutes les méthodes pertinentes
 et trouver le moyen de remplacer les instances originales par les instances de
 l&rsquo;extension.  L&rsquo;héritage et la liaison dynamique ne sont pas suffisants pour
 détourner un programme quelconque sans y apporter un minimum de modifications au
@@ -7183,7 +7182,7 @@ n1.eval() <span class="org-comment-delimiter">//</span><span class="org-comment"
 </div>
 
 <p>
-Cette fois, tous les objets qui délèguent leur fonction <code>eval</code> à <code>num</code>
+Cette fois, tous les objets qui délèguent l&rsquo;appel de la fonction <code>eval</code> à <code>num</code>
 utiliseront cette nouvelle version.  L&rsquo;objet <code>n1</code> est affecté, ainsi que toutes
 les instances de <code>num</code> que l&rsquo;on pourrait créer en appelant <code>num.new</code>.
 </p>
@@ -7366,7 +7365,7 @@ standard chaque fonction d&rsquo;évaluation utilisée:
 
 <pre class="src src-js"><span class="org-keyword">var</span> <span class="org-variable-name">interp_log</span> = {__proto: interp,
   eval(node) {
-    console.log(`eval ${node.type}`)
+    console.log(<span class="org-string">`eval ${node.type}`</span>)
     <span class="org-keyword">return</span> interp.eval.call(<span class="org-constant">this</span>, node)
   }
 }
@@ -7614,27 +7613,35 @@ eval end_trace
 La sortie est restreinte aux instructions évaluées entre les instructions
 <code>start_trace</code> et <code>end_trace</code>.  L&rsquo;interpréteur <code>interp_modal</code> a changé de mode
 d&rsquo;évaluation dynamiquement, pendant l&rsquo;exécution d&rsquo;un programme, et ce sans que
-le code source des interpréteurs précédents n&rsquo;aie été modifié.  C&rsquo;est le
+le code source des interpréteurs précédents n&rsquo;ait été modifié.  C&rsquo;est le
 changement dynamique du lien de délégation par prototype, autorisé par le
 langage, qui nous permet ce détournement.
 </p>
 
 <p>
-Le détournement de cet exemple est rendu possible en partie parce que l&rsquo;on a un
-contrôle total sur la structure de l&rsquo;interpréteur: on a profité du fait que
-toutes les fonctions d&rsquo;évaluation étaient regroupées dans un même objet <code>rules</code>.
-Dans Narcissus, ce n&rsquo;est pas le cas: l&rsquo;évaluation de chaque terme se fait au
-sein d&rsquo;une même fonction.  Donc le changement dynamique de prototype peut
-permettre le détournement, tant que les pièces du programme que l&rsquo;on cherche à
-détourner sont regroupées au sein d&rsquo;un même objet.
+Le détournement de cet exemple est rendu possible parce que l&rsquo;on a un contrôle
+total sur la structure de l&rsquo;interpréteur: on a profité du fait que toutes les
+fonctions d&rsquo;évaluation étaient regroupées dans un même objet <code>rules</code>.  Dans
+Narcissus, ce n&rsquo;est pas le cas: l&rsquo;évaluation de chaque terme se fait au sein
+d&rsquo;une même fonction.  Donc le changement dynamique de prototype peut permettre
+le détournement, tant que les pièces du programme que l&rsquo;on cherche à détourner
+sont regroupées au sein d&rsquo;un même objet.
 </p>
 </div>
 </div>
 </div>
 
 <div id="outline-container-orgheadline51" class="outline-3">
-<h3 id="orgheadline51"><span class="section-number-3">4.4</span> <span class="todo UNREAD">UNREAD</span> En programmation par aspects</h3>
+<h3 id="orgheadline51"><span class="section-number-3">4.4</span> En programmation par aspects</h3>
 <div class="outline-text-3" id="text-4-4">
+<aside style="margin-top:3rem">
+<p>
+AspectJ permet aussi de modifier une classe <i>pendant l&rsquo;exécution</i> du programme,
+mais avant que cette classe ne soit chargée dans la machine virtuelle.  Mais
+nous n&rsquo;utiliserons pas cette fonctionnalité.
+</p>
+</aside>
+
 <p>
 La programmation par aspects est un mécanisme de détournement tout trouvé.  Avec
 AspectJ, on peut potentiellement modifier n&rsquo;importe quel interpréteur en Java à
@@ -7672,10 +7679,10 @@ On peut ajouter l&rsquo;évaluation alternative de <code>Num</code> par un aspec
 <div class="org-src-container">
 
 <pre class="src src-java"><span class="org-type">aspect</span> <span class="org-variable-name">NumDouble</span> {
-  <span class="org-type">pointcut</span> <span class="org-variable-name">eval</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>):
-    call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>() &amp;&amp; target(num));
+  <span class="org-type">pointcut</span> <span class="org-function-name">eval</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>):
+    call(<span class="org-type">int</span> <span class="org-function-name">eval</span>()) &amp;&amp; target(num);
 
-  <span class="org-type">int</span> <span class="org-variable-name">around</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>): eval(num) {
+  <span class="org-type">int</span> <span class="org-function-name">around</span>(<span class="org-type">Num</span> <span class="org-variable-name">num</span>): eval(num) {
     <span class="org-keyword">return</span> 2 * proceed(num);
   }
 }
@@ -7683,23 +7690,23 @@ On peut ajouter l&rsquo;évaluation alternative de <code>Num</code> par un aspec
 </div>
 
 <p>
-En compilant l&rsquo;aspect <code>NumDouble</code>, on obtient l&rsquo;interpréteur modifié pour
-lequel toutes les évaluations de termes <code>Num</code> ont une valeur doublée.
+En compilant l&rsquo;aspect <code>NumDouble</code> avec l&rsquo;interpréteur de base, on obtient
+l&rsquo;interpréteur modifié pour lequel toutes les évaluations de termes <code>Num</code> ont
+une valeur doublée.
 </p>
 
 <p>
-L&rsquo;aspect est défini dans une classe à part entière, séparée du code de
-l&rsquo;interpréteur.  La modification du code est effectuée par le tisseur d&rsquo;aspects,
-lorsque l&rsquo;on invoque la compilation de l&rsquo;aspect par <code>ajc</code>, le compilateur
-d&rsquo;AspectJ.  On peut aussi compiler le programme sans l&rsquo;aspect, avec le
-compilateur <code>javac</code>, et on obtient l&rsquo;interpréteur au comportement standard.
-Deux compilateurs pour deux programmes, mais un seul code source.  La
-programmation par aspects permet donc le détournement de cet interpréteur, mais
-dans cet exemple le détournement est statique: il se fait à la compilation.
+L&rsquo;aspect est défini dans un fichier à part, séparé du code de l&rsquo;interpréteur.
+La modification du code est effectuée par le tisseur d&rsquo;aspects, lorsque l&rsquo;on
+invoque la compilation de l&rsquo;aspect par <code>ajc</code>, le compilateur d&rsquo;AspectJ.  On peut
+aussi compiler le programme sans l&rsquo;aspect, avec le compilateur <code>javac</code>, et on
+obtient l&rsquo;interpréteur au comportement standard.  La programmation par aspects
+permet donc le détournement de cet interpréteur, mais dans cet exemple le
+détournement est statique: il se fait à la compilation.
 </p>
 
 <p>
-On peut répliquer l&rsquo;exemple d&rsquo;activation dynamique de la trace d&rsquo;évaluation
+On peut reproduire l&rsquo;exemple d&rsquo;activation dynamique de la trace d&rsquo;évaluation
 développé en JavaScript.  À l&rsquo;interpréteur des <code>Num</code> et des <code>Plus</code> précédent, on
 rajoute l&rsquo;évaluation du terme <code>Trace</code>:
 </p>
@@ -7723,7 +7730,7 @@ peut construire un programme <code>e2</code> qui l&rsquo;utilise:
 
 <aside>
 <p>
-On fait du terme <code>Trace</code> une expression plutôt qu&rsquo;une déclaration (<i>statement</i>)
+On fait du terme <code>Trace</code> une expression plutôt qu&rsquo;une instruction (<i>statement</i>)
 à l&rsquo;inverse de l&rsquo;exemple JavaScript, mais les deux formes sont réalisables en
 programmation par aspects.
 </p>
@@ -7748,11 +7755,11 @@ le rôle de l&rsquo;aspect <code>DynamicTrace</code>:
 <div class="org-src-container">
 
 <pre class="src src-java"><span class="linenr">1: </span><span class="org-type">aspect</span> <span class="org-variable-name">DynamicTrace</span> {
-<span class="linenr">2: </span>  <span class="org-type">pointcut</span> <span class="org-variable-name">tracedEval</span>(<span class="org-type">Term</span> <span class="org-variable-name">t</span>):
-<span class="linenr">3: </span>    call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>()) &amp;&amp; target(t)
-<span class="linenr">4: </span>      &amp;&amp; cflow(call(<span class="org-type">int</span> <span class="org-variable-name">eval</span>()) &amp;&amp; target(Trace));
+<span class="linenr">2: </span>  <span class="org-type">pointcut</span> <span class="org-function-name">tracedEval</span>(<span class="org-type">Term</span> <span class="org-variable-name">t</span>):
+<span class="linenr">3: </span>    call(<span class="org-type">int</span> <span class="org-function-name">eval</span>()) &amp;&amp; target(t)
+<span class="linenr">4: </span>      &amp;&amp; cflow(call(<span class="org-type">int</span> <span class="org-function-name">eval</span>()) &amp;&amp; target(Trace));
 <span class="linenr">5: </span>
-<span class="linenr">6: </span>  before(<span class="org-type">Term</span> <span class="org-constant">t</span>): <span class="org-variable-name">tracedEval</span>(<span class="org-type">t</span>) {
+<span class="linenr">6: </span>  before(<span class="org-type">Term</span> <span class="org-constant">t</span>): <span class="org-function-name">tracedEval</span>(<span class="org-type">t</span>) {
 <span id="coderef-aj-trace" class="coderef-off"><span class="linenr">7: </span>    System.out.println(<span class="org-string">"eval "</span> + t);</span>
 <span class="linenr">8: </span>  }
 <span class="linenr">9: </span>}
@@ -7817,8 +7824,8 @@ Pour le module JavaScript suivant:
 </div>
 
 <p>
-On peut intercepter les appels à <code>f</code>, ou les lectures de <code>a</code> dans la fonction
-<code>f</code> en utilisant AspectScript ainsi:
+On peut intercepter les appels à <code>f</code> ou les lectures de <code>a</code> dans la fonction <code>f</code>
+en utilisant AspectScript ainsi:
 </p>
 
 <div class="org-src-container">
@@ -7868,7 +7875,7 @@ exemple, la construction <code>with</code> n&rsquo;est pas supportée.
 </div>
 
 <div id="outline-container-orgheadline53" class="outline-3">
-<h3 id="orgheadline53"><span class="section-number-3">4.5</span> <span class="todo UNREAD">UNREAD</span> Par portée dynamique</h3>
+<h3 id="orgheadline53"><span class="section-number-3">4.5</span> Par portée dynamique</h3>
 <div class="outline-text-3" id="text-4-5">
 <p>
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
@@ -7910,8 +7917,8 @@ inchangée.
 
 <p>
 La portée dynamique nous permet donc de modifier le comportement d&rsquo;une fonction
-sans avoir à modifier son code, de la détourner.  On peut facilement tirer
-partie de ce mécanisme sur un interpréteur analogue à l&rsquo;interpréteur JavaScript
+sans avoir à modifier son code, de la détourner.  On peut facilement tirer parti
+de ce mécanisme sur un interpréteur analogue à l&rsquo;interpréteur JavaScript
 précédent:
 </p>
 
@@ -7935,14 +7942,14 @@ précédent:
 </div>
 
 <p>
-Un programme pour notre interpréteur sera donné sous forme de liste, la façon
-canonique de représenter un arbre syntaxique en Lisp.  La fonction <code>interp</code>
-prend cet arbre syntaxique et retourne la valeur du programme, comme on peut le
-voir à la fin de cet extrait.  On a toujours le même langage arithmétique
-minimal construit des termes <code>num</code> et <code>plus</code>.  L&rsquo;évaluation de chaque terme est
-déléguée à une lambda associée au type du terme dans la liste associative
-<code>eval-rules</code>.  Cette liste est une variable que l&rsquo;on va pouvoir modifier par
-portée dynamique:
+Un programme pour notre interpréteur sera donné sous forme de S-expression, la
+façon canonique de représenter un arbre syntaxique en Lisp.  La fonction
+<code>interp</code> prend cet arbre syntaxique et retourne la valeur du programme, comme on
+peut le voir à la fin de cet extrait.  On a toujours le même langage
+arithmétique minimal construit des termes <code>num</code> et <code>plus</code>.  L&rsquo;évaluation de
+chaque terme est déléguée à une lambda associée au type du terme dans la liste
+associative <code>eval-rules</code>.  Cette liste est une variable que l&rsquo;on va pouvoir
+modifier par portée dynamique:
 </p>
 
 <div class="org-src-container">
@@ -8006,8 +8013,8 @@ faut la déclarer comme telle (un <i>parameter</i> en Racket par exemple).
 </p>
 
 <p>
-Le mécanisme de portée dynamique est le mécanisme plus simple pour détourner un
-interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
+Le mécanisme de portée dynamique est le mécanisme le plus simple pour détourner
+un interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
 langages proposent la portée dynamique des variables [<a href="#Mor-98">Mor98</a>], et ceux qui le font
 ont des restrictions supplémentaires (Lisp<sub>2</sub> contre Lisp<sub>1</sub>) qui demandent des
 contorsions (mettre les fonctions d&rsquo;évaluation dans une variable <code>eval-rules</code>),
@@ -8021,19 +8028,20 @@ n&rsquo;est pas disponible en JavaScript.
 <div class="outline-text-4" id="text-orgheadline52">
 <p>
 On a exploré différentes façons de détourner un interpréteur minimal.  Bien que
-dans plusieurs cas on a réussi à modifier le comportement de l&rsquo;interpréteur sans
+dans plusieurs cas on ait réussi à modifier le comportement de l&rsquo;interpréteur sans
 en modifier le code, aucune de ces solutions ne peut s&rsquo;appliquer directement à
 Narcissus.  Il ne se dégage pas de moyen générique de détourner un interpréteur;
 pour trouver la méthode la plus adéquate il faut étudier l&rsquo;interpréteur ciblé
 afin de déterminer les endroits où introduire de l&rsquo;indirection.  Par exemple,
-savoir quelles fonctions sont en charge de l&rsquo;évaluation de tel terme, etc.
+savoir quelles fonctions sont en charge de l&rsquo;évaluation de tel terme, et
+surtout, quel langage est utilisé pour l&rsquo;implémentation.
 </p>
 
 <p>
 Un mécanisme simple pour introduire de l&rsquo;indirection est la portée dynamique.
 La portée dynamique n&rsquo;est pas disponible en JavaScript, mais dans les chapitres
-suivants, on va montrer comment répliquer une forme de portée dynamique en
-utilisant des constructions JavaScript standards, afin de détourner un
+suivants, on va montrer comment reproduire une forme de portée dynamique en
+utilisant des constructions JavaScript standard, afin de détourner un
 interpréteur simplement, et ultimement, de détourner Narcissus.
 </p>
 </div>
@@ -8081,7 +8089,7 @@ du code existant, mais ne modifie pas le code des fonctionnalités précédentes
 </div>
 
 <div id="outline-container-orgheadline55" class="outline-3">
-<h3 id="orgheadline55"><span class="section-number-3">5.1</span> <span class="done READ">READ</span> Ajouter des termes</h3>
+<h3 id="orgheadline55"><span class="section-number-3">5.1</span> Ajouter des termes</h3>
 <div class="outline-text-3" id="text-5-1">
 <aside>
 <p>
@@ -8213,7 +8221,7 @@ d&rsquo;ajouter un objet, sans impacter le reste du programme.
 </div>
 
 <div id="outline-container-orgheadline56" class="outline-3">
-<h3 id="orgheadline56"><span class="section-number-3">5.2</span> <span class="done READ">READ</span> Ajouter des opérations</h3>
+<h3 id="orgheadline56"><span class="section-number-3">5.2</span> Ajouter des opérations</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
@@ -8592,7 +8600,7 @@ on peut modifier des opérations existantes, et composer les modifications.
 </div>
 
 <div id="outline-container-orgheadline57" class="outline-3">
-<h3 id="orgheadline57"><span class="section-number-3">5.3</span> <span class="done READ">READ</span> Modifier des opérations</h3>
+<h3 id="orgheadline57"><span class="section-number-3">5.3</span> Modifier des opérations</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 Essayons de changer le comportement de l&rsquo;opération <code>eval</code> pour doubler
@@ -8728,7 +8736,7 @@ appels à <code>with</code>, on peut octupler le résultat:
 </div>
 
 <div id="outline-container-orgheadline58" class="outline-3">
-<h3 id="orgheadline58"><span class="section-number-3">5.4</span> <span class="done READ">READ</span> Passer de l&rsquo;état aux opérations</h3>
+<h3 id="orgheadline58"><span class="section-number-3">5.4</span> Passer de l&rsquo;état aux opérations</h3>
 <div class="outline-text-3" id="text-5-4">
 <p>
 Dans l&rsquo;instrumentation de Narcissus pour l&rsquo;évaluation à facettes, une catégorie
@@ -8862,7 +8870,7 @@ résultat.
 </div>
 
 <div id="outline-container-orgheadline61" class="outline-3">
-<h3 id="orgheadline61"><span class="section-number-3">5.5</span> <span class="todo UNREAD">UNREAD</span> Discussion</h3>
+<h3 id="orgheadline61"><span class="section-number-3">5.5</span> Discussion</h3>
 <div class="outline-text-3" id="text-5-5">
 <p>
 On a montré comment étendre le langage, en lui ajoutant des nouveaux termes, et
@@ -9185,7 +9193,7 @@ détourner l&rsquo;interpréteur Narcissus.
 </div>
 
 <div id="outline-container-orgheadline81" class="outline-2">
-<h2 id="dls"><a id="orgheadline81"></a><span class="section-number-2">6</span> <span class="done READ">READ</span> Étendre un interpréteur par manipulation de portée</h2>
+<h2 id="dls"><a id="orgheadline81"></a><span class="section-number-2">6</span> Étendre un interpréteur par manipulation de portée</h2>
 <div class="outline-text-2" id="text-dls">
 <p>
 <i>Chapitre principalement tiré d&rsquo;un papier rejeté à DLS&rsquo;15 et à SAC&rsquo;16 [<a href="#KNS-15b">MdKNS15a</a>]</i>.
@@ -9932,10 +9940,10 @@ JavaScript qui suit le standard ECMAScript 5.1.
 </aside>
 
 <p>
-Pour réaliser le modèle illustré dans la section précédente, on peut tirer
-partie de deux ingrédients de JavaScript que sont <code>with</code> et la délégation par
+Pour réaliser le modèle illustré dans la section précédente, on peut tirer parti
+de deux ingrédients de JavaScript que sont <code>with</code> et la délégation par
 prototype.  On va utiliser <code>with</code> pour créer un environnement manipulable, puis
-répliquer les exemples de composition d&rsquo;environnement par couches grâce aux
+reproduire les exemples de composition d&rsquo;environnement par couches grâce aux
 prototypes.
 </p>
 
@@ -10097,7 +10105,7 @@ En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
 capturer la fonction dans ce cas; c&rsquo;est laissé à la discrétion du moteur
 d&rsquo;exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comportement
 décrit ici.  Mais V8, utilisé par Chromium, suivait des règles différentes
-encore récemment, et pour pouvoir répliquer l&rsquo;exemple il fallait déclarer les
+encore récemment, et pour pouvoir reproduire l&rsquo;exemple il fallait déclarer les
 fonctions par des expressions (<code>var f = function...</code>).  Le créateur de
 JavaScript, Brendan Eich, a indiqué [<a href="#issue686">Eic10</a>] que le comportement de Firefox
 était en accord avec la prochaine version du standard (EcmaScript 2015).  À
@@ -11847,7 +11855,7 @@ d&rsquo;appliquer la technique de ce chapitre.
 </div>
 
 <div id="outline-container-orgheadline82" class="outline-2">
-<h2 id="orgheadline82"><span class="done READ">READ</span> Conclusion</h2>
+<h2 id="orgheadline82">Conclusion</h2>
 <div class="outline-text-2" id="text-orgheadline82">
 <div class="epigraphs">
 <p>
@@ -11886,7 +11894,7 @@ de la programmation littéraire.  Un des enseignements du chapitre <a href="#var
 est qu&rsquo;il n&rsquo;y a pas de mécanisme de détournement générique, qui peut être
 utilisé pour détourner n&rsquo;importe quel programme.  En revanche, la portée
 dynamique est un mécanisme qui s&rsquo;en approche.  Dans le chapitre <a href="#foal">5</a>, nous
-avons vu comment répliquer une forme de portée dynamique en JavaScript pour
+avons vu comment reproduire une forme de portée dynamique en JavaScript pour
 construire des interpréteurs modifiables.  Enfin, dans le chapitre <a href="#dls">6</a>, nous
 avons pu modifier Narcissus en utilisant cette même technique pour qu&rsquo;il puisse
 accueillir quatre analyses dynamiques différentes.
@@ -12394,7 +12402,7 @@ code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
 </div>
 
 <div id="outline-container-orgheadline86" class="outline-3">
-<h3 id="foal-extra-subtle"><a id="orgheadline86"></a><span class="section-number-3">7.3</span> <span class="todo UNREAD">UNREAD</span> La différence subtile</h3>
+<h3 id="foal-extra-subtle"><a id="orgheadline86"></a><span class="section-number-3">7.3</span> La différence subtile</h3>
 <div class="outline-text-3" id="text-foal-extra-subtle">
 <p>
 Pour pouvoir activer plusieurs extensions de l&rsquo;interpréteur en même temps, on a
@@ -12464,7 +12472,7 @@ que l&rsquo;on rajoute le <code>__proto__: base</code> dans l&rsquo;objet retour
 </div>
 
 <div id="outline-container-orgheadline87" class="outline-3">
-<h3 id="orgheadline87"><span class="section-number-3">7.4</span> <span class="todo UNREAD">UNREAD</span> Le receveur du constructeur est le prototype</h3>
+<h3 id="orgheadline87"><span class="section-number-3">7.4</span> Le receveur du constructeur est le prototype</h3>
 <div class="outline-text-3" id="text-7-4">
 <p>
 Les termes du langages sont représentés par des objets.  Il n&rsquo;y a pas de
@@ -13981,7 +13989,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-09-16 ven. 15:28 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-09-19 lun. 11:30 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
