@@ -1182,7 +1182,7 @@ judge it cannot be formulated.
 
 Si l'on se contente de modifier le code source sans considérer la théorie, on se
 retrouve dans le cas du groupe B; à étendre le compilateur de façon
-tarabiscotée, sans tirer partie de sa structure:
+tarabiscotée, sans tirer parti de sa structure:
 
 #+BEGIN_QUOTE
 #+LATEX: \selectlanguage{english}
@@ -2652,7 +2652,7 @@ construction récursif, l'absence de gestion manuelle de la mémoire, et
 la relation symbiotique entre programme et structures de données.
 
 Pour Kay, les /objets/ de Smalltalk sont comme des cellules: des constituants
-quasi-autonomes, capables de se répliquer:
+quasi-autonomes, capables de se reproduire:
 
 #+BEGIN_QUOTE
 #+LATEX: \selectlanguage{english}
@@ -4703,7 +4703,7 @@ de version.  FeatureHouse se base sur un arbre syntaxique réduit du programme,
 et comme Hyper/J, est essentiellement indépendant du langage de programmation.
 
 De la même manière, les /patches sémantiques/ [[cite:PLM-07][PLM-07]] reconnaissent des arbres
-syntaxiques partiels afin de répliquer des changements automatiquement.
+syntaxiques partiels afin de reproduire des changements automatiquement.
 L'application principale est de pouvoir modifier des pilotes lorsque l'interface
 du noyau Linux change.  Dans un patch sémantique, on décrit le motif général du
 changement à l'aide d'ellipses:
@@ -4988,7 +4988,7 @@ faire, on va illustrer ces mécanismes en détournant des interpréteurs minimau
 Le but n'est pas de tant de trouver une solution pour détourner Narcissus, que
 d'explorer les mécanismes disponibles et de comparer leurs applicabilité.
 
-** UNREAD Avec ~GOTO~ et ~COMEFROM~
+** READ Avec ~GOTO~ et ~COMEFROM~
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 ~COMEFROM~ ensemble de cette façon:
 
@@ -5077,7 +5077,7 @@ l'/idée/ de capturer le flot de contrôle et de retourner au code détourné n'
 pas remise en cause.  Il faut juste trouver d'autres mécanismes pour la
 réaliser.
 
-** UNREAD En programmation littéraire
+** READ En programmation littéraire
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
 nommer des blocs de code pour les définir à un autre moment.  Par exemple, on
 peut écrire un interpréteur minimal en JavaScript ainsi:
@@ -5410,7 +5410,7 @@ différents, où l'entrelacement engendrera autant de programmes qu'il y a de
 points d'entrée.  Mais on ne peut pas changer de la sorte le comportement de
 l'interprétation à l'exécution.
 
-** UNREAD En programmation par objets
+** READ En programmation par objets
 L'héritage et la liaison dynamique sont deux mécanismes de la programmation par
 objets qui sont utiles pour le détournement.  Si l'on écrit un interpréteur en
 suivant le patron /interpréteur/ en Java, où chaque terme du langage est
@@ -5469,12 +5469,12 @@ programmation par objets sont donc tout à fait adéquats pour détourner des
 interpréteurs, et plus généralement des programmes.
 
 Un inconvénient de ces solutions est qu'elles sont dépendantes de la structure
-du programme.  Si l'interpréteur n'utilise de constructeurs virtuels, il n'est
-plus aussi facile d'insérer notre évaluation alternative ~NumDouble~; il faudra
-modifier l'interpréteur.  De même, dans un l'interpréteur plus complexe que
+du programme.  Si l'interpréteur n'utilise pas de constructeurs virtuels, il
+n'est plus aussi facile d'insérer notre évaluation alternative ~NumDouble~; il
+faudra modifier l'interpréteur.  De même, dans un interpréteur plus complexe que
 celui de l'exemple, la fonctionnalité d'évaluation pourra être répartie sur
 plusieurs classes, potentiellement sur plusieurs méthodes; il faudra alors
-hériter de toutes ces classes pour surcharger toutes les méthodes pertinentes,
+hériter de toutes ces classes pour surcharger toutes les méthodes pertinentes
 et trouver le moyen de remplacer les instances originales par les instances de
 l'extension.  L'héritage et la liaison dynamique ne sont pas suffisants pour
 détourner un programme quelconque sans y apporter un minimum de modifications au
@@ -5531,14 +5531,14 @@ num.eval = function() { return this.n * 4 }
 n1.eval() //: 8
 #+END_SRC
 
-Cette fois, tous les objets qui délèguent leur fonction ~eval~ à ~num~
+Cette fois, tous les objets qui délèguent l'appel de la fonction ~eval~ à ~num~
 utiliseront cette nouvelle version.  L'objet ~n1~ est affecté, ainsi que toutes
 les instances de ~num~ que l'on pourrait créer en appelant ~num.new~.
 
 Si l'on souhaite éviter de toucher à ~num~, on peut proposer un objet ~num3~ qui
 servira de prototype alternatif pour ~n1~:
 
-#+ATTR_LATEX: :options [-4em]
+#+ATTR_LATEX: :options [-3em]
 #+BEGIN_side-figure
 [[file:img/variations-3.svg]]
 
@@ -5829,19 +5829,27 @@ eval end_trace
 La sortie est restreinte aux instructions évaluées entre les instructions
 ~start_trace~ et ~end_trace~.  L'interpréteur ~interp_modal~ a changé de mode
 d'évaluation dynamiquement, pendant l'exécution d'un programme, et ce sans que
-le code source des interpréteurs précédents n'aie été modifié.  C'est le
+le code source des interpréteurs précédents n'ait été modifié.  C'est le
 changement dynamique du lien de délégation par prototype, autorisé par le
 langage, qui nous permet ce détournement.
 
-Le détournement de cet exemple est rendu possible en partie parce que l'on a un
-contrôle total sur la structure de l'interpréteur: on a profité du fait que
-toutes les fonctions d'évaluation étaient regroupées dans un même objet ~rules~.
-Dans Narcissus, ce n'est pas le cas: l'évaluation de chaque terme se fait au
-sein d'une même fonction.  Donc le changement dynamique de prototype peut
-permettre le détournement, tant que les pièces du programme que l'on cherche à
-détourner sont regroupées au sein d'un même objet.
+Le détournement de cet exemple est rendu possible parce que l'on a un contrôle
+total sur la structure de l'interpréteur: on a profité du fait que toutes les
+fonctions d'évaluation étaient regroupées dans un même objet ~rules~.  Dans
+Narcissus, ce n'est pas le cas: l'évaluation de chaque terme se fait au sein
+d'une même fonction.  Donc le changement dynamique de prototype peut permettre
+le détournement, tant que les pièces du programme que l'on cherche à détourner
+sont regroupées au sein d'un même objet.
 
-** UNREAD En programmation par aspects
+** READ En programmation par aspects
+#+ATTR_HTML: :style margin-top:3rem
+#+ATTR_LATEX: :options [4em]
+#+BEGIN_aside
+AspectJ permet aussi de modifier une classe /pendant l'exécution/ du programme,
+mais avant que cette classe ne soit chargée dans la machine virtuelle.  Mais
+nous n'utiliserons pas cette fonctionnalité.
+#+END_aside
+
 La programmation par aspects est un mécanisme de détournement tout trouvé.  Avec
 AspectJ, on peut potentiellement modifier n'importe quel interpréteur en Java à
 la compilation, et sans avoir à directement modifier le code de la classe.
@@ -5871,7 +5879,7 @@ On peut ajouter l'évaluation alternative de ~Num~ par un aspect:
 #+BEGIN_SRC java
 aspect NumDouble {
   pointcut eval(Num num):
-    call(int eval() && target(num));
+    call(int eval()) && target(num);
 
   int around(Num num): eval(num) {
     return 2 * proceed(num);
@@ -5879,19 +5887,19 @@ aspect NumDouble {
 }
 #+END_SRC
 
-En compilant l'aspect ~NumDouble~, on obtient l'interpréteur modifié pour
-lequel toutes les évaluations de termes ~Num~ ont une valeur doublée.
+En compilant l'aspect ~NumDouble~ avec l'interpréteur de base, on obtient
+l'interpréteur modifié pour lequel toutes les évaluations de termes ~Num~ ont
+une valeur doublée.
 
-L'aspect est défini dans une classe à part entière, séparée du code de
-l'interpréteur.  La modification du code est effectuée par le tisseur d'aspects,
-lorsque l'on invoque la compilation de l'aspect par ~ajc~, le compilateur
-d'AspectJ.  On peut aussi compiler le programme sans l'aspect, avec le
-compilateur ~javac~, et on obtient l'interpréteur au comportement standard.
-Deux compilateurs pour deux programmes, mais un seul code source.  La
-programmation par aspects permet donc le détournement de cet interpréteur, mais
-dans cet exemple le détournement est statique: il se fait à la compilation.
+L'aspect est défini dans un fichier à part, séparé du code de l'interpréteur.
+La modification du code est effectuée par le tisseur d'aspects, lorsque l'on
+invoque la compilation de l'aspect par ~ajc~, le compilateur d'AspectJ.  On peut
+aussi compiler le programme sans l'aspect, avec le compilateur ~javac~, et on
+obtient l'interpréteur au comportement standard.  La programmation par aspects
+permet donc le détournement de cet interpréteur, mais dans cet exemple le
+détournement est statique: il se fait à la compilation.
 
-On peut répliquer l'exemple d'activation dynamique de la trace d'évaluation
+On peut reproduire l'exemple d'activation dynamique de la trace d'évaluation
 développé en JavaScript.  À l'interpréteur des ~Num~ et des ~Plus~ précédent, on
 rajoute l'évaluation du terme ~Trace~:
 
@@ -5909,7 +5917,7 @@ Le terme ~Trace~ ne fait que retourner l'évaluation du terme qu'il contient.  O
 peut construire un programme ~e2~ qui l'utilise:
 
 #+BEGIN_aside
-On fait du terme ~Trace~ une expression plutôt qu'une déclaration (/statement/)
+On fait du terme ~Trace~ une expression plutôt qu'une instruction (/statement/)
 à l'inverse de l'exemple JavaScript, mais les deux formes sont réalisables en
 programmation par aspects.
 #+END_aside
@@ -5982,8 +5990,8 @@ var m = (function() {
 }());
 #+END_SRC
 
-On peut intercepter les appels à ~f~, ou les lectures de ~a~ dans la fonction
-~f~ en utilisant AspectScript ainsi:
+On peut intercepter les appels à ~f~ ou les lectures de ~a~ dans la fonction ~f~
+en utilisant AspectScript ainsi:
 
 #+BEGIN_SRC js
 AspectScript.around(
@@ -6020,7 +6028,7 @@ AspectScript réinterprète le programme ciblé, il introduit également des
 variations indésirables avec le comportement d'un interpréteur standard.  Par
 exemple, la construction ~with~ n'est pas supportée.
 
-** UNREAD Par portée dynamique
+** READ Par portée dynamique
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
 portée dynamique, les variables libres d'une fonction peuvent être redéfinies
 par l'appelant.  Dans le Lisp intégré à Emacs ([[cite:Elisp][Elisp]]), la portée dynamique
@@ -6057,8 +6065,8 @@ les appels ultérieurs à ~f~ et à ~x~ montrent que la valeur globale de ~x~ es
 inchangée.
 
 La portée dynamique nous permet donc de modifier le comportement d'une fonction
-sans avoir à modifier son code, de la détourner.  On peut facilement tirer
-partie de ce mécanisme sur un interpréteur analogue à l'interpréteur JavaScript
+sans avoir à modifier son code, de la détourner.  On peut facilement tirer parti
+de ce mécanisme sur un interpréteur analogue à l'interpréteur JavaScript
 précédent:
 
 #+BEGIN_SRC elisp :results output :exports code
@@ -6078,14 +6086,14 @@ précédent:
 (interp '(plus (num 1) (num 2))) ;: 3
 #+END_SRC
 
-Un programme pour notre interpréteur sera donné sous forme de liste, la façon
-canonique de représenter un arbre syntaxique en Lisp.  La fonction ~interp~
-prend cet arbre syntaxique et retourne la valeur du programme, comme on peut le
-voir à la fin de cet extrait.  On a toujours le même langage arithmétique
-minimal construit des termes ~num~ et ~plus~.  L'évaluation de chaque terme est
-déléguée à une lambda associée au type du terme dans la liste associative
-~eval-rules~.  Cette liste est une variable que l'on va pouvoir modifier par
-portée dynamique:
+Un programme pour notre interpréteur sera donné sous forme de S-expression, la
+façon canonique de représenter un arbre syntaxique en Lisp.  La fonction
+~interp~ prend cet arbre syntaxique et retourne la valeur du programme, comme on
+peut le voir à la fin de cet extrait.  On a toujours le même langage
+arithmétique minimal construit des termes ~num~ et ~plus~.  L'évaluation de
+chaque terme est déléguée à une lambda associée au type du terme dans la liste
+associative ~eval-rules~.  Cette liste est une variable que l'on va pouvoir
+modifier par portée dynamique:
 
 #+BEGIN_SRC elisp -n -r
 (defun eval-num-double (num)
@@ -6137,8 +6145,8 @@ problème.  Sauf que les Lisp_1, comme Scheme ou Racket, n'ont pas de portée
 dynamique par défaut: pour qu'une variable bénéficie de portée dynamique, il
 faut la déclarer comme telle (un /parameter/ en Racket par exemple).
 
-Le mécanisme de portée dynamique est le mécanisme plus simple pour détourner un
-interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
+Le mécanisme de portée dynamique est le mécanisme le plus simple pour détourner
+un interpréteur, mais seulement quand il est proposé par le langage.  Or, peu de
 langages proposent la portée dynamique des variables [[cite:Mor-98][Mor-98]], et ceux qui le font
 ont des restrictions supplémentaires (Lisp_2 contre Lisp_1) qui demandent des
 contorsions (mettre les fonctions d'évaluation dans une variable ~eval-rules~),
@@ -6147,17 +6155,18 @@ n'est pas disponible en JavaScript.
 
 *** Conclusions
 On a exploré différentes façons de détourner un interpréteur minimal.  Bien que
-dans plusieurs cas on a réussi à modifier le comportement de l'interpréteur sans
+dans plusieurs cas on ait réussi à modifier le comportement de l'interpréteur sans
 en modifier le code, aucune de ces solutions ne peut s'appliquer directement à
 Narcissus.  Il ne se dégage pas de moyen générique de détourner un interpréteur;
 pour trouver la méthode la plus adéquate il faut étudier l'interpréteur ciblé
 afin de déterminer les endroits où introduire de l'indirection.  Par exemple,
-savoir quelles fonctions sont en charge de l'évaluation de tel terme, etc.
+savoir quelles fonctions sont en charge de l'évaluation de tel terme, et
+surtout, quel langage est utilisé pour l'implémentation.
 
 Un mécanisme simple pour introduire de l'indirection est la portée dynamique.
 La portée dynamique n'est pas disponible en JavaScript, mais dans les chapitres
-suivants, on va montrer comment répliquer une forme de portée dynamique en
-utilisant des constructions JavaScript standards, afin de détourner un
+suivants, on va montrer comment reproduire une forme de portée dynamique en
+utilisant des constructions JavaScript standard, afin de détourner un
 interpréteur simplement, et ultimement, de détourner Narcissus.
 
 * Construire un interpréteur par modules
@@ -7563,10 +7572,10 @@ Tous les exemples de cette section sont exécutables sur un interpréteur
 JavaScript qui suit le standard ECMAScript 5.1.
 #+END_aside
 
-Pour réaliser le modèle illustré dans la section précédente, on peut tirer
-partie de deux ingrédients de JavaScript que sont ~with~ et la délégation par
+Pour réaliser le modèle illustré dans la section précédente, on peut tirer parti
+de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
-répliquer les exemples de composition d'environnement par couches grâce aux
+reproduire les exemples de composition d'environnement par couches grâce aux
 prototypes.
 
 L'expression ~with~ est grammaticalement similaire à un ~if~.  Elle prend une
@@ -7692,7 +7701,7 @@ En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
 capturer la fonction dans ce cas; c'est laissé à la discrétion du moteur
 d'exécution.  SpiderMonkey, le moteur utilisé par Firefox, a le comportement
 décrit ici.  Mais V8, utilisé par Chromium, suivait des règles différentes
-encore récemment, et pour pouvoir répliquer l'exemple il fallait déclarer les
+encore récemment, et pour pouvoir reproduire l'exemple il fallait déclarer les
 fonctions par des expressions (~var f = function...~).  Le créateur de
 JavaScript, Brendan Eich, a indiqué [[cite:issue686][issue686]] que le comportement de Firefox
 était en accord avec la prochaine version du standard (EcmaScript 2015).  À
@@ -9095,7 +9104,7 @@ de la programmation littéraire.  Un des enseignements du chapitre [[#variations
 est qu'il n'y a pas de mécanisme de détournement générique, qui peut être
 utilisé pour détourner n'importe quel programme.  En revanche, la portée
 dynamique est un mécanisme qui s'en approche.  Dans le chapitre [[#foal]], nous
-avons vu comment répliquer une forme de portée dynamique en JavaScript pour
+avons vu comment reproduire une forme de portée dynamique en JavaScript pour
 construire des interpréteurs modifiables.  Enfin, dans le chapitre [[#dls]], nous
 avons pu modifier Narcissus en utilisant cette même technique pour qu'il puisse
 accueillir quatre analyses dynamiques différentes.
