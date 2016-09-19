@@ -43,7 +43,7 @@
 \usepackage{fontspec}
 
 %% Charter is an amazing body font.
-\setromanfont{Charter}
+\setmainfont{XCharter}
 
 %% Fira Sans is nice for the titles.
 \setsansfont[
@@ -298,6 +298,9 @@
 
 %% Smaller URLs in bibliography.  URLs in the body text are still in serif.
 \renewcommand{\UrlFont}{\small\ttfamily}
+
+%% Better to forego justification here
+\renewcommand*{\bibfont}{\raggedright}
 
 %%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %% Others
