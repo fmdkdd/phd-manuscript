@@ -97,7 +97,7 @@ sûreté, détourner l'interpréteur est à la fois plus rapide et plus flexible
 de le réécrire, ce qui fait du détournement une alternative légitime à la
 refactorisation.
 
-* READ Introduction
+* Introduction
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
@@ -204,7 +204,7 @@ code source de l'interpréteur.
 
 Mais avant tout cela, commençons par quelques définitions.
 
-* READ Préliminaires
+* Préliminaires
 :PROPERTIES:
 :CUSTOM_ID: prelims
 :END:
@@ -524,7 +524,6 @@ Narcissus.
 JavaScript is the lingua franca of the Web
 @@html:<br>— Jeff Atwood, Shriram Krishnamurthi, Jan Vitek, et d'autres@@
 #+END_epig
-
 
 *** Genèse chez Netscape
 #+ATTR_HTML: :style margin-top:2rem
@@ -1355,7 +1354,7 @@ own maze, in a way, and might just get lost in it.
 @@html:<br>— Marijn Haverbeke, <i>Eloquent JavaScript</i>@@
 #+END_epig
 
-** READ Étude de cas: instrumentation ad-hoc de Narcissus
+** Étude de cas: instrumentation ad-hoc de Narcissus
 :PROPERTIES:
 :CUSTOM_ID: narc
 :END:
@@ -1525,7 +1524,7 @@ L'instrumentation de Narcissus constitue un bon scénario pour tenter de répond
 # interpréteur JavaScript complet, ce qui en fait un excellent choix pour tester
 # des mécanismes d'extensibilité.
 
-** READ Le but: factoriser les changements
+** Le but: factoriser les changements
 D'un point de vue abstrait, on peut voir l'interpréteur comme une fonction
 mathématique qui associe un code source à un processus:
 
@@ -1659,7 +1658,7 @@ naturelles qui suivent sont: comment réaliser cette factorisation dans le code
 source?  Par quels moyens?  À quoi ressemble un interpréteur factorisé?  Et
 ultimement, comment factoriser Narcissus?
 
-** READ Quatre axes de factorisation pour l'instrumentation
+** Quatre axes de factorisation pour l'instrumentation
 :PROPERTIES:
 :CUSTOM_ID: narcissus-categories
 :END:
@@ -1863,7 +1862,7 @@ Mais si on dispose de quatre axes de factorisation, une question demeure:
 comment utiliser ces axes pour effectivement factoriser Narcissus?  Comment
 réaliser cette factorisation?
 
-** READ Refactoriser Narcissus: une solution coûteuse
+** Refactoriser Narcissus: une solution coûteuse
 Un moyen de modifier Narcissus serait de le /refactoriser/.  En programmation,
 refactoriser c'est "changer la structure interne d'un programme pour le rendre
 plus simple et plus facile à modifier sans changer son résultat" [[cite:Fow-99][Fow-99]].  Par
@@ -1925,7 +1924,7 @@ souhaite ajouter à l'interpréteur, le coût de la refactorisation deviendrait
 plus important que le coût de la duplication de code que l'on essayait de
 minimiser pour commencer.
 
-** READ L'idée: le détournement de programme
+** L'idée: le détournement de programme
 :PROPERTIES:
 :CUSTOM_ID: idea
 :END:
@@ -2007,7 +2006,7 @@ parties que l'on souhaite modifier du reste du programme.  On ne fait plus
 référence à ces parties directement, mais indirectement, ce qui permet de les
 changer plus facilement.
 
-** READ Le programme reflète le processus: la programmation structurée
+** Le programme reflète le processus: la programmation structurée
 :PROPERTIES:
 :CUSTOM_ID: dijkstra
 :END:
@@ -2314,7 +2313,7 @@ façons d'aborder ce but.
 # Naur.  The dynamic process is what happens at runtime, while the theory is the
 # knowledge the programmer has of that process.
 
-** READ L'ordre psychologiquement correct: la programmation littéraire
+** L'ordre psychologiquement correct: la programmation littéraire
 :PROPERTIES:
 :CUSTOM_ID: proglit
 :END:
@@ -2599,7 +2598,7 @@ revanche, propose un nouveau paradigme.
 # traversent la source pour produire soit un document imprimable pour le lecteur,
 # soit un programme exécutable par la machine.
 
-** READ Modéliser le monde: la programmation par objets
+** Modéliser le monde: la programmation par objets
 #+BEGIN_full-figure
 [[file:img/scuola.jpg]]
 #+END_full-figure
@@ -3031,7 +3030,7 @@ Mais cette opposition n'est pas irréconciliable.  Les mécanismes réflexifs so
 capables de proposer aussi bien l'héritage que la délégation au sein d'un même
 langage.  Et ils sont sont aussi très utiles pour le détournement.
 
-** READ Réifier le langage: métaprogrammation et réflexion
+** Réifier le langage: métaprogrammation et réflexion
 :PROPERTIES:
 :CUSTOM_ID: metaobj
 :END:
@@ -3238,7 +3237,7 @@ programmeur ne programme plus seulement des applications, mais il programme en
 partie le langage.  Il programme l'/interprétation du programme/, d'où le terme
 de métaprogrammation.
 
-*** READ L'implémentation ouverte
+*** L'implémentation ouverte
 La réflexion n'est pas restreinte aux implémentations de langages à objets, ni
 aux langages de programmation.  Les membres de Xerox PARC se sont donc
 intéressés à appliquer la réflexion sur à d'autres systèmes, ce qu'ils appellent
@@ -3358,7 +3357,7 @@ utilisée, mais d'autres solutions sont envisageables suivant le système:
 l'inversion de contrôle, ou le patron de conception Stratégie seraient
 envisageables.  Un autre bon candidat est la programmation par aspects.
 
-** READ Séparer les préoccupations: la programmation par aspects
+** Séparer les préoccupations: la programmation par aspects
 :PROPERTIES:
 :CUSTOM_ID: aop
 :END:
@@ -3892,7 +3891,7 @@ compréhensible.  Tous ces mécanismes présentent donc des avantages et des
 inconvénients, et le choix du bon compromis est dans les mains du concepteur du
 système.
 
-** READ Le problème de l'expression
+** Le problème de l'expression
 :PROPERTIES:
 :CUSTOM_ID: expr
 :END:
@@ -4633,7 +4632,7 @@ modifications de son code source trop importantes.
 Néanmoins, ces solutions restent applicables au problème plus large, qui est de
 construire des interpréteurs extensibles.
 
-** READ Autres mécanismes de détournement
+** Autres mécanismes de détournement
 *** La superposition
 La superposition regroupe un ensemble de techniques qui visent à étendre le
 programme au niveau du code source plutôt qu'au niveau du langage.
@@ -4892,7 +4891,7 @@ portée dynamique peut modifier le comportement des fonctions appelées par
 inadvertance.  Néanmoins, le langage Haskell propose tout de même la portée
 dynamique dans une extension, sous la forme de paramètres implicites [[cite:LLM+00][LLM+00]].
 
-** READ Récapitulatif
+** Récapitulatif
 Dans tous les travaux que l'on a étudiés dans ce chapitre il y a un thème qui
 résonne: l'indirection.
 
@@ -4988,7 +4987,7 @@ faire, on va illustrer ces mécanismes en détournant des interpréteurs minimau
 Le but n'est pas de tant de trouver une solution pour détourner Narcissus, que
 d'explorer les mécanismes disponibles et de comparer leurs applicabilité.
 
-** READ Avec ~GOTO~ et ~COMEFROM~
+** Avec ~GOTO~ et ~COMEFROM~
 On a vu (\sect[[#dijkstra]]) que théoriquement l'on pouvait utiliser ~GOTO~ et
 ~COMEFROM~ ensemble de cette façon:
 
@@ -5077,7 +5076,7 @@ l'/idée/ de capturer le flot de contrôle et de retourner au code détourné n'
 pas remise en cause.  Il faut juste trouver d'autres mécanismes pour la
 réaliser.
 
-** READ En programmation littéraire
+** En programmation littéraire
 Dans la programmation littéraire, le mécanisme qui nous intéresse est de pouvoir
 nommer des blocs de code pour les définir à un autre moment.  Par exemple, on
 peut écrire un interpréteur minimal en JavaScript ainsi:
@@ -5410,7 +5409,7 @@ différents, où l'entrelacement engendrera autant de programmes qu'il y a de
 points d'entrée.  Mais on ne peut pas changer de la sorte le comportement de
 l'interprétation à l'exécution.
 
-** READ En programmation par objets
+** En programmation par objets
 L'héritage et la liaison dynamique sont deux mécanismes de la programmation par
 objets qui sont utiles pour le détournement.  Si l'on écrit un interpréteur en
 suivant le patron /interpréteur/ en Java, où chaque terme du langage est
@@ -5841,7 +5840,7 @@ d'une même fonction.  Donc le changement dynamique de prototype peut permettre
 le détournement, tant que les pièces du programme que l'on cherche à détourner
 sont regroupées au sein d'un même objet.
 
-** READ En programmation par aspects
+** En programmation par aspects
 #+ATTR_HTML: :style margin-top:3rem
 #+ATTR_LATEX: :options [4em]
 #+BEGIN_aside
@@ -6028,7 +6027,7 @@ AspectScript réinterprète le programme ciblé, il introduit également des
 variations indésirables avec le comportement d'un interpréteur standard.  Par
 exemple, la construction ~with~ n'est pas supportée.
 
-** READ Par portée dynamique
+** Par portée dynamique
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
 portée dynamique, les variables libres d'une fonction peuvent être redéfinies
 par l'appelant.  Dans le Lisp intégré à Emacs ([[cite:Elisp][Elisp]]), la portée dynamique
@@ -6199,7 +6198,7 @@ fonctionnalité de l'interpréteur.  Mais le but est de réaliser ces ajouts /sa
 modifier le code/ qui précède; chaque fonctionnalité ajoute du code, réutilise
 du code existant, mais ne modifie pas le code des fonctionnalités précédentes.
 
-** READ Ajouter des termes
+** Ajouter des termes
 #+BEGIN_aside
 Le code complet de ce chapitre est reproduit dans les appendices
 ([[#foal-extra-full]]).
@@ -6283,7 +6282,7 @@ L'expression ~e2~ utilise ~num~ sans avoir à modifier le code source.  C'est
 l'intérêt du patron interpréteur: pour ajouter un terme au langage, il suffit
 d'ajouter un objet, sans impacter le reste du programme.
 
-** READ Ajouter des opérations
+** Ajouter des opérations
 Maintenant on souhaite ajouter une seconde opération au langage: afficher une
 expression (/pretty-printing/).
 
@@ -6564,7 +6563,7 @@ on peut modifier des opérations existantes, et composer les modifications.
 # restreindre les termes utilisables dans un bloc de code en utilisant ~with~, ou
 # une fonction.
 
-** READ Modifier des opérations
+** Modifier des opérations
 Essayons de changer le comportement de l'opération ~eval~ pour doubler
 la valeur de la constante qu'elle renvoie.
 
@@ -6661,7 +6660,7 @@ with (double({num})) {
 }}}
 #+END_SRC
 
-** READ Passer de l'état aux opérations
+** Passer de l'état aux opérations
 Dans l'instrumentation de Narcissus pour l'évaluation à facettes, une catégorie
 de changements consistait à passer la valeur du /program counter/ dans les
 appels récursifs à ~execute~.  En s'inspirant de cette situation, on va ici
@@ -6761,7 +6760,7 @@ with (state({num, plus})) {
 Ici encore, l'ordre d'activation des modules n'a pas d'incidence sur le
 résultat.
 
-** UNREAD Discussion
+** Discussion
 On a montré comment étendre le langage, en lui ajoutant des nouveaux termes, et
 des nouvelles opérations, sans modifier le code source de l'interpréteur de
 base.  Les extensions peuvent se composer, sans avoir connaissance explicite ou
@@ -6990,7 +6989,7 @@ utiliser la manipulation de portée sur un programme existant.  Dans le chapitre
 suivant, on montre comment la manipulation de portée peut être employée pour
 détourner l'interpréteur Narcissus.
 
-* READ Étendre un interpréteur par manipulation de portée
+* Étendre un interpréteur par manipulation de portée
 :PROPERTIES:
 :CUSTOM_ID: dls
 :END:
@@ -9066,7 +9065,7 @@ sûreté du code; le mode strict offre davantage de garanties pour le programmeu
 (en particulier, l'absence de ~with~), et en échange il perd la possibilité
 d'appliquer la technique de ce chapitre.
 
-* READ Conclusion
+* Conclusion
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
@@ -9601,7 +9600,7 @@ mod eval3 {
 }
 #+END_SRC
 
-** UNREAD La différence subtile
+** La différence subtile
 :PROPERTIES:
 :CUSTOM_ID: foal-extra-subtle
 :END:
@@ -9650,7 +9649,7 @@ objets créés par les modules.  En utilisant un seul ~with~, on ne bénéficie 
 de cette délégation implicite.  Il faut la rendre explicite, et c'est pour cela
 que l'on rajoute le ~__proto__: base~ dans l'objet retourné par les modules.
 
-** UNREAD Le receveur du constructeur est le prototype
+** Le receveur du constructeur est le prototype
 Les termes du langages sont représentés par des objets.  Il n'y a pas de
 constructeurs d'objets en JavaScript, puisque c'est un langage à prototypes.
 Mais dans les exemples du chapitre, on utilise par convention la méthode ~new~
