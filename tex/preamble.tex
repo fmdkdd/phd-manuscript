@@ -104,7 +104,7 @@
 \openin\myread=leftover-words
 \@whilesw\unless\ifeof\myread\fi{%
   \advance\linecnt by \@ne
-  \readline\myread t\expandafter o\csname line-\number\linecnt\endcsname
+  \read\myread t\expandafter o\csname line-\number\linecnt\endcsname
 }
 \makeatother
 
