@@ -233,7 +233,7 @@ de cet ordre par la machine.  Le code source engendre le processus, mais ce sont
 deux aspects du même /programme/.  On emploiera donc le terme programme pour
 désigner le code source, le processus, ou les deux, suivant le contexte.
 
-Du point de vue de la machine, un programme est une simple liste d'instructions.
+Du point de vue de la machine, un programme est une liste d'instructions.
 Une séquence d'additions, de soustractions, d'écritures et lectures mémoire, de
 sauts conditionnels, et j'en passe.  Ces instructions sont présentées à la
 machine sous la seule forme que son processeur est capable de manipuler: le
@@ -743,7 +743,7 @@ des objets:
 - le mécanisme des prototypes réalise la notion "est-extension-de", et le lien
   parent est matérialisé par la propriété ~__proto__~ (ou la fonction
   ~Object.getPrototypeOf~);
-- pour activer une propriété héritée d'un objet (~B.a~ dans l'exemple
+- pour activer une propriété héritée d'un objet (comme ~B.a~ dans l'exemple
   ci-dessus), l'interpréteur cherche la propriété sur son parent et l'active
   s'il la trouve, sinon il continue jusqu'à ce que l'objet soit sans parent,
   auquel cas la propriété n'est pas définie sur le receveur;
@@ -771,7 +771,7 @@ p1 //: Object {x:1,y:2}
 point //: Object {x:0,y:0,moveTo:function}
 #+END_SRC
 
-L'objet ~point~ contient deux coordonnées, et une fonction ~moveTo~ qui remplace
+L'objet ~point~ contient deux coordonnées et une fonction ~moveTo~ qui remplace
 ces cordonnées.  L'objet ~p1~ a ~point~ comme parent, et peut donc répondre au
 message ~moveTo~.  Après cette invocation, on voit que ~p1~ a deux propriétés
 ~x~ et ~y~ qui correspondent aux valeurs passées à l'appel de ~moveTo~, tandis
@@ -856,10 +856,10 @@ d'un système modulaire:
 
 #+BEGIN_QUOTE
 #+LATEX: \selectlanguage{english}
-(1) managerial—development time should be shortened because separate groups
-would work on each module with little need for communication: (2) product
-flexibility—it should be possible to make drastic changes to one module without
-a need to change others; (3) comprehensibility—it should be possible to study
+(1) managerial: development time should be shortened because separate groups
+would work on each module with little need for communication; (2) product
+flexibility: it should be possible to make drastic changes to one module without
+a need to change others; (3) comprehensibility: it should be possible to study
 the system one module at a time.
 #+END_QUOTE
 
@@ -1411,14 +1411,13 @@ fonction retourne ~false~.  Un observateur du résultat de la fonction peut donc
 extraire toute l'information de ~x~ sans jamais directement accéder à sa valeur.
 
 En revanche, si on fait de ~x~ une valeur à facettes avec une valeur privée
-~true~ et une valeur publique ~false~ (qu'on écrit ~true:false~), alors le
-premier ~if~ sera exécuté deux fois: une fois pour chaque facette de la
-condition, ce qui fait de ~y~ une valeur à facettes ~false:true~.  Après le
-second ~if~, la fonction retourne la valeur ~true:false~.  Un observateur qui ne
-dispose pas de l'autorité ~a~ n'a accès qu'à la valeur publique du résultat, et
-n'est donc pas capable d'inférer la valeur privée de ~x~.  L'évaluation
-multi-facettes permet donc de protéger l'information de ~x~, même contre les
-flots indirects.
+~true~ et une valeur publique ~false~ (qu'on écrit ~T:F~), alors le premier ~if~
+sera exécuté deux fois: une fois pour chaque facette de la condition, ce qui
+fait de ~y~ une valeur à facettes ~F:T~.  Après le second ~if~, la fonction
+retourne la valeur ~T:F~.  Un observateur qui ne dispose pas de l'autorité ~a~
+n'a accès qu'à la valeur publique du résultat, et n'est donc pas capable
+d'inférer la valeur privée de ~x~.  L'évaluation multi-facettes permet donc de
+protéger l'information de ~x~, même contre les flots indirects.
 
 #+ATTR_HTML: :style margin-top:4rem
 #+ATTR_LATEX: :options [5em]
@@ -1576,6 +1575,7 @@ Mais quel est l'intérêt de cette représentation différentielle?
 
 Rappelons nous que le processus de développement est le suivant:
 
+#+LATEX: \noindent
 [[file:img/problem0.svg]]
 
 #+BEGIN_aside
@@ -1600,6 +1600,7 @@ Le changement décrit dans la section précédente correspond à une modificatio
 la spécification.  Dans le premier point de vue, cela entraîne deux codes
 sources, pour deux programmes, pour deux processus, bien distincts:
 
+#+LATEX: \noindent
 [[file:img/problem1.svg]]
 
 La spécification est modifiée: il y a des parties nouvelles ({{{color(c1)}}}),
@@ -1616,6 +1617,7 @@ Dans une représentation différentielle, le but est de /factoriser/ cette
 similarité.  Plutôt que d'avoir deux programmes, on a un programme et sa
 modification:
 
+#+ATTR_LATEX: :float slightly
 [[file:img/problem2.svg]]
 
 On a une spécification et son delta qui décrit une variante de comportement de
@@ -1709,11 +1711,11 @@ valeur courante du /program counter/, ~pc~:
 +   this.pc = pc;
 #+END_SRC
 
-Dans Narcissus, lorsque l'interpréteur doit exécuter une fonction, ou tout un
-fichier, il crée une instance de l'objet ~ExecutionContext~.  Cet objet contient
-l'environnement lexical utilisé pour résoudre les noms de variables du code
-exécuté par ce contexte.  L'objet ~ExecutionContext~ est une réification du
-concept éponyme de la spécification ECMAScript.
+Dans Narcissus, lorsque l'interpréteur doit exécuter une fonction, un appel à
+~eval~, ou tout un script, il crée une instance de l'objet ~ExecutionContext~.
+Cet objet contient l'environnement lexical utilisé pour résoudre les noms de
+variables du code exécuté par ce contexte.  L'objet ~ExecutionContext~ est une
+réification du concept éponyme de la spécification ECMAScript.
 
 #+ATTR_HTML: :style margin-top:-4rem
 #+ATTR_LATEX: :options [-2em]
@@ -2022,6 +2024,7 @@ Japan, who cheerfully complained that he was always being eliminated.
 Eiichi Goto (gauche) et Furomu Komo devant le PC-1, vers 1958.
 #+END_aside
 
+#+LATEX: \noindent
 #+ATTR_HTML: :title すみません、高橋さん。
 [[file:img/goto.jpg]]
 
@@ -2085,16 +2088,16 @@ le processus est directe.
 # is to ensure that a function computing factorials is correct.  An inductive
 # proof using the loop invariants can help prove correctness.
 
-On peut continuer de localiser ces invariants dans des programmes plus
-complexes.  Si l'on considère des conditions introduites par un ~if then else~
-ou un ~cond~, suivre le flot d'exécution est encore simple: il suffit de prendre
-la branche correspondante.  Pour les boucles (~while~, ~repeat A until B~), il
-faudra prendre en compte la valeur actuelle de l'indice de boucle pour savoir
-s'il faut répéter le corps de la boucle encore une fois, ou s'il faut sortir.
-Pour les appels de procédures, on ne peut plus se contenter d'utiliser un seul
-doigt pour suivre la ligne de code courante, il faut aussi tenir compte de la
-pile d'appels en cours, pour savoir où continuer l'exécution lorsque la
-procédure actuelle prend fin.
+On peut aussi localiser ces invariants dans des programmes plus complexes.  Si
+l'on considère des conditions introduites par un ~if then else~ ou un ~cond~,
+suivre le flot d'exécution est encore simple: il suffit de prendre la branche
+correspondante.  Pour les boucles (~while~, ~repeat A until B~), il faudra
+prendre en compte la valeur actuelle de l'indice de boucle pour savoir s'il faut
+répéter le corps de la boucle encore une fois, ou s'il faut sortir.  Pour les
+appels de procédures, on ne peut plus se contenter d'utiliser un seul doigt pour
+suivre la ligne de code courante, il faut aussi tenir compte de la pile d'appels
+en cours, pour savoir où continuer l'exécution lorsque la procédure actuelle
+prend fin.
 
 L'instruction courante, l'indice de boucle, et la pile d'appels forment ce que
 Dijkstra appelle un système de coordonnées de l'exécution du processus.  On peut
@@ -3129,7 +3132,7 @@ classe ~Method~, une classe ~Object~, et une classe ~Class~.
 #+END_aside
 
 On peut non seulement inspecter ces objets, mais aussi en synthétiser des
-instances, sans connaître leurs noms statiquement.  Ligne [[(synth)]] on crée une
+instances, sans connaître leurs noms statiquement.  En ligne [[(synth)]] on crée une
 instance de ~A~, ~anA~, et on invoque la méthode ~m2~ récupérée elle aussi par
 réflexion.  Invoquer une méthode dynamiquement à partir d'une chaîne qui
 contient son nom rend le programme plus flexible: ça permet par exemple
@@ -3377,19 +3380,17 @@ cleanly support the kinds of units the design process breaks the system into.
 
 Autre production du laboratoire PARC de Xerox, la programmation par aspects est
 une technique qui pourrait être utilisée pour fournir l'interface
-d'implémentation d'un système à implémentation ouverte [[cite:KLM+97][KLM+97]]
-[[cite:MKL-97][MKL-97]].
-
-La motivation derrière la programmation par aspects est d'ailleurs similaire:
-les deux approches proposent de nouvelles techniques pour organiser le code,
-pour qu'il soit à la fois simple à écrire, facile à maintenir, et ne sacrifie
-pas l'efficacité.  Dans l'implémentation ouverte l'idée est que le système
-expose une interface secondaire qui donne un accès direct à son fonctionnement
-interne, ce qui permet certaines optimisations.  Dans la programmation par
-aspects, l'idée est de reconnaître que la décomposition d'un programme selon
-l'axe classique des fonctions et des classes n'est pas suffisante pour maintenir
-ces trois qualités; les aspects y remédient en introduisant une nouvelle
-dimension de composition.
+d'implémentation d'un système à implémentation ouverte [[cite:KLM+97][KLM+97]] [[cite:MKL-97][MKL-97]].  La
+motivation derrière la programmation par aspects est d'ailleurs similaire: les
+deux approches proposent de nouvelles techniques pour organiser le code, pour
+qu'il soit à la fois simple à écrire, facile à maintenir, et ne sacrifie pas
+l'efficacité.  Dans l'implémentation ouverte l'idée est que le système expose
+une interface secondaire qui donne un accès direct à son fonctionnement interne,
+ce qui permet certaines optimisations.  Dans la programmation par aspects,
+l'idée est de reconnaître que la décomposition d'un programme selon l'axe
+classique des fonctions et des classes n'est pas suffisante pour maintenir ces
+trois qualités; les aspects y remédient en introduisant une nouvelle dimension
+de composition.
 
 *** La distinction entre composants et aspects
 Pour expliquer ce qu'est un aspect, [[cite:MKL-97][MKL-97]] part d'un exemple.  Le système qui
@@ -5251,7 +5252,7 @@ function interp(n) {
 #+END_SRC
 
 Cette fois on n'utilise plus noweb pour faire référence au code qui va évaluer
-chaque terme, mais simplement des fonctions ~interp_num~ et ~interp_plus~.  On
+chaque terme, mais de simples fonctions: ~interp_num~ et ~interp_plus~.  On
 pourrait définir ces fonctions dans le même bloc, mais on va les définir dans
 leur propre bloc:
 
@@ -7852,10 +7853,10 @@ environnements en couches.  Grâce à ces mécanismes, on parvient à ouvrir le
 motif module; on peut changer les définitions internes au module par du code
 écrit à l'extérieur.
 
-Cependant, les exemples que l'on a utilisés sont restés très simples.  Il serait
-plus intéressant de voir comment on peut ouvrir un module plus réaliste, et
-quels sont les problèmes qui apparaissent.  Dans la section suivante, on
-applique ces mécanismes à Narcissus.
+Cependant, les exemples que l'on a utilisés sont restés simples.  Il serait plus
+intéressant de voir comment on peut ouvrir un module plus réaliste, et quels
+sont les problèmes qui apparaissent.  Dans la section suivante, on applique ces
+mécanismes à Narcissus.
 
 ** Étendre Narcissus par manipulation de portée
 Dans cette section, on reprend une version non instrumentée de Narcissus, à
@@ -8395,8 +8396,8 @@ d'abord construire le graphe en parcourant tous les objets récoltés, puis
 produire le fichier au format DOT.
 
 *** Évaluation
-Notre instrumentation de Narcissus pour l'évaluation multi-facettes consiste en
-440 lignes de code, dans un seul fichier séparé de l'interpréteur;
+Notre instrumentation de Narcissus pour ajouter l'évaluation multi-facettes
+consiste en 440 lignes de code, dans un seul fichier séparé de l'interpréteur;
 l'instrumentation faite par Austin et Flanagan comportait 640 lignes mêlées au
 code de l'interpréteur.  Notre version factorise quelques changements, ce qui
 explique la différence.  L'intérêt d'avoir tous les changements dans un seul
@@ -8508,9 +8509,10 @@ version.  Pour chaque version, le jeu de test a été lancé dix fois, sur un se
 thread, toujours sur la même machine.  Le tableau donne la moyenne arithmétique
 du temps pour une exécution complète sur ces dix lancers.
 
+#+ATTR_LATEX: :options [-2em]
 #+BEGIN_aside
-Les tests ont été effectué sur un PC portable contenant un Intel i5-3320M
-2.60GHz et 4Gb de RAM.  Narcissus a été lancé à travers une [[https://ftp.mozilla.org/pub/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip][version de
+Ces tests ont été effectué sur un PC portable contenant un processeur Intel
+i5-3320M 2.60GHz et 4Gb de RAM.  Narcissus a été lancé à travers une [[https://ftp.mozilla.org/pub/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip][version de
 développement]] de SpiderMonkey (version JavaScript-C36.0a1).  Les tests
 proviennent de la version de développement de [[https://mxr.mozilla.org/mozilla-central/source/js/src/tests/][mozilla-central]] et ont été
 exécutés par le script ~jstests.py~ développé par Mozilla.
