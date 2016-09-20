@@ -741,7 +741,7 @@ des objets:
   objet (via ~Object.create~ ou via la syntaxe ~{__proto__: parent}~), mais il
   n'y a pas de mécanisme pour cloner un objet;
 - le mécanisme des prototypes réalise la notion "est-extension-de", et le lien
-  parent est matérialisé par la propriété ~__proto__~ (ou la fonction
+  parent est matérialisé par la propriété spéciale ~__proto__~ (ou la fonction
   ~Object.getPrototypeOf~);
 - pour activer une propriété héritée d'un objet (comme ~B.a~ dans l'exemple
   ci-dessus), l'interpréteur cherche la propriété sur son parent et l'active
