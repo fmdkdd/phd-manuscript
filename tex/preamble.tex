@@ -128,13 +128,13 @@
 
 %% Insert page words in the ToC by redefining these functions provided by
 %% memoir.
-\let\oldchapterfpnum\cftchapterformatpnum
-\renewcommand*{\cftchapterformatpnum}[1]{%
-  \oldchapterfpnum{\pagewordfont\pageword{#1}}}
+%% \let\oldchapterfpnum\cftchapterformatpnum
+%% \renewcommand*{\cftchapterformatpnum}[1]{%
+%%   \oldchapterfpnum{\pagewordfont\pageword{#1}}}
 
-\let\oldsectionfpnum\cftsectionformatpnum
-\renewcommand*{\cftsectionformatpnum}[1]{%
-  \oldsectionfpnum{\pagewordfont\pageword{#1}}}
+%% \let\oldsectionfpnum\cftsectionformatpnum
+%% \renewcommand*{\cftsectionformatpnum}[1]{%
+%%   \oldsectionfpnum{\pagewordfont\pageword{#1}}}
 
 %% Sans-serif headings
 \renewcommand*{\cftchapterfont}{\sffamily\bfseries}
@@ -153,12 +153,19 @@
 
 %% Headers run into the margin thanks to the companion style of memoir.  I just
 %% don't like the bold, so I redefine the font.
+%% \makeevenhead{companion}%
+%%              {\pagewordfont\thepageword}{}{%
+%%                \sffamily\leftmark}
+%% \makeoddhead{companion}%
+%%             {\sffamily\rightmark}{}{%
+%%               \pagewordfont\thepageword}
+
 \makeevenhead{companion}%
-             {\pagewordfont\thepageword}{}{%
+             {\sffamily\thepage}{}{%
                \sffamily\leftmark}
 \makeoddhead{companion}%
             {\sffamily\rightmark}{}{%
-              \pagewordfont\thepageword}
+              \sffamily\thepage}
 
 %% Don't use page words for front matter
 %% FIXME: maybe for 3 pages of front matter we can just get rid of it
@@ -167,7 +174,8 @@
 \makeoddfoot{front}{}{\thepage}{}
 
 %% Chapters use the plain pagestyle, and we want page words here as well
-\makeoddfoot{plain}{}{\pagewordfont\thepageword}{}
+%% \makeoddfoot{plain}{}{\pagewordfont\thepageword}{}
+\makeoddfoot{plain}{}{\pagewordfont\thepage}{}
 
 %% For some reason, I can't get the ToC to use anything other than the plain
 %% pagestyle.  Luckily, it's the only chapter that opens on an even page.
@@ -291,7 +299,7 @@
   sorting=nyt,                  % Sort by name, year, title
   backref=true,
   citestyle=alphabetic,
-  bibstyle=alphabetic-pagewords, % Custom Biblatex style that handles pagewords
+  %% bibstyle=alphabetic-pagewords, % Custom Biblatex style that handles pagewords
   maxbibnames=10
 ]{biblatex}
 \addbibresource{refs.bib}
