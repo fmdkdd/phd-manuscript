@@ -1,6 +1,6 @@
 % Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code
 % fmdkdd
-% Mines Nantes ~ 18 novembre 2016
+% Mines Nantes, 18 novembre 2016
 
 # Why JavaScript?
 
