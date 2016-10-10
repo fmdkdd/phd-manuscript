@@ -19,7 +19,3 @@
 - Dynamically typed
 - Prototype-based, or object-based, but not OO
 - Not from the same communities: Haskell, Scala from PL researchers, JS from industry
-
-<!-- Local Variables: -->
-<!-- compile-command: "pandoc -t dzslides -s defense.md -o defense.html --data-dir=data/" -->
-<!-- End: -->
