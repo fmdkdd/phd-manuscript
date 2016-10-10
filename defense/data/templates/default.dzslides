@@ -29,10 +29,31 @@ $else$
   html, .view body { background-color: black; counter-reset: slideidx; }
   body, .view section { background-color: white; border-radius: 12px }
   /* A section is a slide. It's size is 800x600, and this will never change */
+  @font-face {
+    font-family: "Open Sans";
+    src: url("fonts/OpenSans-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Open Sans";
+    src: url("fonts/OpenSans-Bold.ttf");
+    font-weight: bold;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: "Quando";
+    src: url("fonts/Quando-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+  }
+
   section, .view head > title {
       /* The font from Google */
-      font-family: 'Oswald', arial, serif;
-      font-size: 30px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 20px;
   }
 
   .view section:after {
@@ -49,9 +70,10 @@ $else$
   }
 
   h1, h2 {
+    font-family: 'Quando', serif;
     margin-top: 200px;
     text-align: center;
-    font-size: 80px;
+    font-size: 30px;
   }
   h3 {
     margin: 100px 0 50px 100px;
@@ -115,6 +137,10 @@ $else$
     border-top: 1px solid #CCC;
   }
 
+   footer .author {
+     font-weight: bold;
+   }
+
   /* Transition effect */
   /* Feel free to change the transition effect for original
      animations. See here:
@@ -167,7 +193,7 @@ $else$
  section.slide:not(.titleslide):after {
    counter-increment: slideidx;
    content: counter(slideidx);
-    position: absolute; bottom: 10px; right: 20px;
+   position: absolute; bottom: 10px; right: 20px;
  }
 
 </style>
