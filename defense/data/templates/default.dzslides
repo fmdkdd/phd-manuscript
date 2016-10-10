@@ -158,9 +158,18 @@ $else$
   /* The progressbar, at the bottom of the slides, show the global
      progress of the presentation. */
   #progress-bar {
+    display: none;
     height: 2px;
     background: #AAA;
   }
+
+ /* Slide number */
+ section.slide:not(.titleslide):after {
+   counter-increment: slideidx;
+   content: counter(slideidx);
+    position: absolute; bottom: 10px; right: 20px;
+ }
+
 </style>
 $endif$
 $if(math)$
