@@ -2,20 +2,24 @@
 % fmdkdd
 % Mines Nantes, 18 novembre 2016
 
-# Why JavaScript?
+# Le problème
 
-## “New generation languages”
-- 1972: C
-- 1990: Haskell
-- 1991: Python
-- 1995: JavaScript, Java, PHP
-- 2000: C#
-- 2004: Scala
+---
 
-### Release dates are irrelevant
+![](img/narcissus-diff-annotated.png)
 
-## Haskell != JS != Scala
-- Radically different from Haskell and Scala
-- Dynamically typed
-- Prototype-based, or object-based, but not OO
-- Not from the same communities: Haskell, Scala from PL researchers, JS from industry
+---
+
+![](img/narcissus-diff.svg)
+
+# Construire un interpréteur par modules
+
+## Utiliser `with`
+
+<img src="img/foal-5.svg">
+
+# Étendre Narcissus par manipulation de portée
+
+## Ouvrir le motif module
+
+<img src="img/dls12.svg">
