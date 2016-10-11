@@ -200,6 +200,9 @@ $else$
   /* The items to-be-selected */
   .incremental > *[aria-selected] ~ * { opacity: 0; }
 
+  .incremental.overlay > *[aria-selected] { display: block }
+  .incremental.overlay > * { display: none }
+
   /* The progressbar, at the bottom of the slides, show the global
      progress of the presentation. */
   #progress-bar {
