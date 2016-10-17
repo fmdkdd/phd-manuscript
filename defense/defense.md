@@ -29,22 +29,13 @@
 
 <img src="img/problem7d.svg">
 
-<div>
-<img src="img/problem7e.svg">
-<video src="img/visual-6502.mp4" style="width:62%" loop="true">
-</div>
-
 <div class="content">
 <img src="img/problem7e.svg">
-<pre style="margin-left:80px"><code>1 + 1 == 2 //: true
+<pre style="position:absolute; top: 450px; left: 350px"><code>1 + 1 == 2 //: true
 "12" == 12 //: true
 [] == "" //: true
-
-
-
-
-
 </pre></code>
+<video src="img/visual-6502.mp4" style="width:400px; position:absolute; left: 330px; top: 120px" loop="true">
 </div>
 
 </div>
