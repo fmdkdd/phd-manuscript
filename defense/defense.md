@@ -53,6 +53,107 @@
 - ECMA6: 566 pages
 </div>
 
+## La correspondance processus—programme
+
+Appuyer sur Ⓐ pour sauter
+
+<div class="content">
+<pre><code style="font-size: 16px">
+function loop() {
+  <span class="if jumping">if (jumping) {
+    y += 32
+    sprite_x = 160
+  }</span>
+
+  <span class="if positive-y">if (y > 0) {
+    y -= 12
+  }</span>
+  <span class="if touch-ground">else {
+    y = 0
+    sprite_x = 80
+  }</span>
+}
+</code></pre>
+
+<pre style="position:absolute; left: 300px; top: 300px;">
+<code>key: <span class="var key"></span>
+jumping: <span class="var jumping"></span>
+y: <span class="var y"></span>
+sprite_x: <span class="var sprite_x"></span>
+</code></pre>
+
+<canvas id="jumping-jack-canvas" style="position:absolute; right: 100px; bottom: 100px;" width="200px" height="550px"></canvas>
+
+<script>
+
+var sprites = new Image()
+sprites.src = 'img/mario-sprites.png'
+
+var canvas = document.getElementById('jumping-jack-canvas')
+var ctxt = canvas.getContext('2d')
+ctxt.mozImageSmoothingEnabled = false;
+var height = canvas.height
+var width = canvas.width
+var x = width / 2
+var y = 0
+var jumping = false
+var sprite_x = 80
+var last_key = null
+
+document.addEventListener('keydown', function(ev) {
+  if (ev.which === 65) {
+    jumping = true
+  }
+  last_key = ev.which
+})
+document.addEventListener('keyup', function(ev) {
+  if (ev.which === 65) {
+    jumping = false
+  }
+  last_key = null
+})
+
+function loop() {
+  // game logic
+  if (jumping) {
+    y += 32
+    sprite_x = 160
+  }
+
+  if (y > 0) {
+    y -= 12
+  }
+
+  else {
+    y = 0
+    sprite_x = 80
+  }
+
+  // canvas draw
+  ctxt.clearRect(0, 0, 1000, 1000)
+  ctxt.drawImage(sprites, sprite_x, 96, 16, 32, x - 32, height - y - 128, 64, 128)
+
+  // code viz
+  document.querySelector('.if.jumping').classList.toggle('active', jumping)
+  document.querySelector('.if.positive-y').classList.toggle('active', y > 0)
+  document.querySelector('.if.touch-ground').classList.toggle('active', y <= 0)
+  document.querySelector('.var.jumping').textContent = jumping
+  document.querySelector('.var.key').textContent = last_key
+  document.querySelector('.var.y').textContent = y
+  document.querySelector('.var.sprite_x').textContent = sprite_x
+
+  requestAnimationFrame(loop)
+}
+
+loop()
+</script>
+</div>
+
+<div role="note">
+- All are different views of the same thing
+- 3 states (ascent, descent, ground) for 3 "if" blocks
+</div>
+
 # Le problème
 
 ## Étendre des interpréteurs pour des analyses de sécurité
