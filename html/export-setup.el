@@ -34,7 +34,7 @@
   });
 </script>
 <script type=\"text/javascript\" async
-        src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js\"></script>")
+        src=\"https://cdn.mathjax.org/mathjax/latest/MathJax.js\"></script>")
 
   ;; When exporting SRC blocks, put CSS classes for syntax highlighting, but do
   ;; not set any style inline.  We can do that in style.css if needed.
