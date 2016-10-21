@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-09-20 mar. 11:21 -->
+<!-- 2016-10-21 ven. 12:48 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -255,7 +255,7 @@ programmes JavaScript sont exécutés par défaut et sans demande de confirmatio
 
 <p>
 Bien sûr, les navigateurs ont des mécanismes pour éviter que n&rsquo;importe quel
-programme JavaScript vienne effacer votre disque dur lorsque vous aller sur
+programme JavaScript vienne effacer votre disque dur lorsque vous allez sur
 Wikipédia.  Ces programmes sont exécutés dans ce qu&rsquo;on appelle une <i>machine
 virtuelle</i>: ils ont un accès restreint aux fonctionnalités du système
 d&rsquo;exploitation sous-jacent.  Par exemple, un programme JavaScript n&rsquo;a pas accès
@@ -291,16 +291,16 @@ L&rsquo;analyse peut considérer une exécution sur un jeu de données particuli
 </aside>
 
 <p>
-Analyser le programmer c&rsquo;est l&rsquo;exécuter afin d&rsquo;en observer son comportement.
+Analyser le programme c&rsquo;est l&rsquo;exécuter afin d&rsquo;en observer son comportement.
 L&rsquo;analyse n&rsquo;exécute le plus souvent qu&rsquo;une <i>partie</i> du programme; on pourra
 ainsi analyser le programme pour voir avec quels serveurs il tente de
 communiquer, mais sans réaliser cette communication.  De l&rsquo;analyse, on peut
 tirer de l&rsquo;information qui permettra de prendre une décision: est-ce que ce
 programme est malveillant ou bénin?  Les analyses de <i>flot d&rsquo;information</i> ont
-pour but de répondre à ce genre de questions [<a href="#SM-03">SM03</a>].  Mais il y a d&rsquo;autres
-analyses qui nous aident à améliorer le programme: Valgrind détecte les fuites
-de mémoire [<a href="#valgrind">val</a>], et les <i>profilers</i> recensent le temps d&rsquo;exécution de chaque
-fonction pour guider le programmeur lors d&rsquo;une optimisation.
+pour but de répondre à ce genre de questions [<a href="#SM-03">SM03</a>,<a href="#Bie-13">Bie13</a>,<a href="#SHB-16">SHB16</a>].  Mais il y a
+d&rsquo;autres analyses qui nous aident à améliorer le programme: Valgrind détecte les
+fuites de mémoire [<a href="#valgrind">val</a>], et les <i>profilers</i> recensent le temps d&rsquo;exécution de
+chaque fonction pour guider le programmeur lors d&rsquo;une optimisation.
 </p>
 
 <p>
@@ -4031,7 +4031,7 @@ Modifier une méthode existante est tout aussi anodin:
 <p>
 Un autre mécanisme intéressant est de donner la possibilité à une classe
 d&rsquo;intercepter les appels à une méthode qu&rsquo;elle ne définit pas.  C&rsquo;est déjà
-possible en Smalltalk, via la méthode spéciale <code>doesNotUnderstand</code>.  De façon
+possible en Smalltalk, via la méthode spéciale <code>doesNotUnderstand:</code>.  De façon
 analogue, en Python:
 </p>
 
@@ -4992,9 +4992,9 @@ suivant:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Constant</span> <span class="org-haskell-constructor">Int</span>
-          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Plus</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
-          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Mult</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+<pre class="src src-haskell">data Term = Constant Int
+	  | Plus Term Term
+	  | Mult Term Term
 </pre>
 </div>
 
@@ -5066,10 +5066,10 @@ matching</i>:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="linenr">1: </span><span class="org-haskell-definition">eval</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
-<span id="coderef-expr1" class="coderef-off"><span class="linenr">2: </span><span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Constant</span> n) <span class="org-haskell-operator">=</span> n</span>
-<span id="coderef-expr2" class="coderef-off"><span class="linenr">3: </span><span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Plus</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">+</span> eval t2</span>
-<span id="coderef-expr3" class="coderef-off"><span class="linenr">4: </span><span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Mult</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">*</span> eval t2</span>
+<pre class="src src-haskell"><span class="linenr">1: </span>eval :: Term -&gt; Int
+<span id="coderef-expr1" class="coderef-off"><span class="linenr">2: </span>eval (Constant n) = n</span>
+<span id="coderef-expr2" class="coderef-off"><span class="linenr">3: </span>eval (Plus t1 t2) = eval t1 + eval t2</span>
+<span id="coderef-expr3" class="coderef-off"><span class="linenr">4: </span>eval (Mult t1 t2) = eval t1 * eval t2</span>
 </pre>
 </div>
 
@@ -5118,10 +5118,10 @@ le <code>Plus</code>, qui est préfixe, en <code>+</code> infixe, et faire dispa
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-definition">pp</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">String</span>
-<span class="org-haskell-definition">pp</span> (<span class="org-haskell-constructor">Constant</span> n) <span class="org-haskell-operator">=</span> show n
-<span class="org-haskell-definition">pp</span> (<span class="org-haskell-constructor">Plus</span> t1 t2) <span class="org-haskell-operator">=</span> pp t1 <span class="org-haskell-operator">++</span> <span class="org-string">" + "</span> <span class="org-haskell-operator">++</span> pp t2
-<span class="org-haskell-definition">pp</span> (<span class="org-haskell-constructor">Mult</span> t1 t2) <span class="org-haskell-operator">=</span> pp t1 <span class="org-haskell-operator">++</span> <span class="org-string">" * "</span> <span class="org-haskell-operator">++</span> pp t2
+<pre class="src src-haskell">pp :: Term -&gt; String
+pp (Constant n) = show n
+pp (Plus t1 t2) = pp t1 ++ " + " ++ pp t2
+pp (Mult t1 t2) = pp t1 ++ " * " ++ pp t2
 </pre>
 </div>
 
@@ -5185,10 +5185,10 @@ terme pour la soustraction, il faut commencer par étendre le type algébrique
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Constant</span> <span class="org-haskell-constructor">Int</span>
-          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Plus</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
-          <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Mult</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
-<span class="org-haskell-operator">~</span>         <span class="org-haskell-operator">|</span> <span class="org-haskell-constructor">Minus</span> <span class="org-haskell-constructor">Term</span> <span class="org-haskell-constructor">Term</span>
+<pre class="src src-haskell">data Term = Constant Int
+	  | Plus Term Term
+	  | Mult Term Term
+~         | Minus Term Term
 </pre>
 </div>
 
@@ -5221,11 +5221,11 @@ nécessite de modifier toutes les opérations.
 
 <div class="org-src-container">
 
-<pre class="src src-haskell">  eval <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
-<span class="org-haskell-operator">~</span> eval (<span class="org-haskell-type">Minus</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">-</span> eval t2
+<pre class="src src-haskell">  eval :: Term -&gt; Int
+~ eval (Minus t1 t2) = eval t1 - eval t2
 
-  pp <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">String</span>
-<span class="org-haskell-operator">~</span> pp (<span class="org-haskell-type">Minus</span> t1 t2) <span class="org-haskell-operator">=</span> pp t1 <span class="org-haskell-operator">++</span> <span class="org-string">" - "</span> <span class="org-haskell-operator">++</span> pp t2
+  pp :: Term -&gt; String
+~ pp (Minus t1 t2) = pp t1 ++ " - " ++ pp t2
 </pre>
 </div>
 
@@ -5403,7 +5403,7 @@ façon:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-definition">open</span> <span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-operator">*</span>
+<pre class="src src-haskell">open data Term :: *
 </pre>
 </div>
 
@@ -5413,9 +5413,9 @@ Puis, chaque constructeur de terme sera donné par sa signature:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-constructor">Constant</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Int</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span>
-<span class="org-haskell-constructor">Plus</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span>
-<span class="org-haskell-constructor">Mult</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span>
+<pre class="src src-haskell">Constant :: Int -&gt; Term
+Plus :: Term -&gt; Term -&gt; Term
+Mult :: Term -&gt; Term -&gt; Term
 </pre>
 </div>
 
@@ -5430,7 +5430,7 @@ De même, les fonctions ouvertes se déclarent ainsi:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-definition">open</span> eval <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
+<pre class="src src-haskell">open eval :: Term -&gt; Int
 </pre>
 </div>
 
@@ -5441,8 +5441,8 @@ Et de nouveaux cas peuvent être rajoutés pour traiter de nouvelles variantes d
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-constructor">Plus</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span> <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Term</span>
-<span class="org-haskell-definition">eval</span> (<span class="org-haskell-constructor">Plus</span> t1 t2) <span class="org-haskell-operator">=</span> eval t1 <span class="org-haskell-operator">+</span> eval t2
+<pre class="src src-haskell">Plus :: Term -&gt; Term -&gt; Term
+eval (Plus t1 t2) = eval t1 + eval t2
 </pre>
 </div>
 
@@ -5469,18 +5469,18 @@ opérations deviennent des classes types avec une seule méthode:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Constant</span> <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Constant</span> <span class="org-haskell-constructor">Int</span>
+<pre class="src src-haskell">data Constant = Constant Int
 
-<span class="org-haskell-keyword">class</span> <span class="org-haskell-type">Eval</span> a <span class="org-haskell-keyword">where</span>
-  eval <span class="org-haskell-operator">::</span> a <span class="org-haskell-operator">-&gt;</span> <span class="org-haskell-type">Int</span>
+class Eval a where
+  eval :: a -&gt; Int
 
-<span class="org-haskell-keyword">instance</span> <span class="org-haskell-type">Eval</span> <span class="org-haskell-type">Constant</span> <span class="org-haskell-keyword">where</span>
-   eval (<span class="org-haskell-constructor">Constant</span> n) <span class="org-haskell-operator">=</span> n
+instance Eval Constant where
+   eval (Constant n) = n
 
-<span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Plus</span> a b <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">Plus</span> a b
+data Plus a b = Plus a b
 
-<span class="org-haskell-keyword">instance</span> (<span class="org-haskell-type">Eval</span> a, <span class="org-haskell-type">Eval</span> b) <span class="org-haskell-operator">=&gt;</span> <span class="org-haskell-type">Eval</span> (<span class="org-haskell-type">Plus</span> a b) <span class="org-haskell-keyword">where</span>
-  eval (<span class="org-haskell-constructor">Plus</span> a b) <span class="org-haskell-operator">=</span> eval a <span class="org-haskell-operator">+</span> eval b
+instance (Eval a, Eval b) =&gt; Eval (Plus a b) where
+  eval (Plus a b) = eval a + eval b
 </pre>
 </div>
 
@@ -5516,8 +5516,8 @@ commun:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-constructor">Plus</span> (<span class="org-haskell-constructor">Constant</span> 1) (<span class="org-haskell-constructor">Constant</span> 2) <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Plus</span> <span class="org-haskell-type">Constant</span> <span class="org-haskell-type">Constant</span>
-<span class="org-haskell-constructor">Constant</span> 1 <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Constant</span>
+<pre class="src src-haskell">Plus (Constant 1) (Constant 2) :: Plus Constant Constant
+Constant 1 :: Constant
 </pre>
 </div>
 
@@ -5538,7 +5538,7 @@ expressions ont le terme commun <code>Term</code>:
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-keyword">data</span> <span class="org-haskell-type">Term</span> f <span class="org-haskell-operator">=</span> <span class="org-haskell-constructor">In</span> (f (<span class="org-haskell-constructor">Term</span> f))
+<pre class="src src-haskell">data Term f = In (f (Term f))
 </pre>
 </div>
 
@@ -5556,9 +5556,9 @@ constructeur <code>Either</code> en Haskell).
 
 <div class="org-src-container">
 
-<pre class="src src-haskell"><span class="org-haskell-definition">e1</span> <span class="org-haskell-operator">::</span> <span class="org-haskell-type">Term</span> (<span class="org-haskell-type">Constant</span> <span class="org-haskell-type">:+:</span> <span class="org-haskell-type">Plus</span>)
-<span class="org-haskell-definition">e1</span> <span class="org-haskell-operator">=</span> plus (plus (constant 1) (constant 2))
-          (constant 3)
+<pre class="src src-haskell">e1 :: Term (Constant :+: Plus)
+e1 = plus (plus (constant 1) (constant 2))
+	  (constant 3)
 </pre>
 </div>
 
@@ -12705,6 +12705,20 @@ Sebastian Burckhardt, Manuel Fähndrich, Peli de&nbsp;Halleux, Sean McDirmid, Mi
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="Bie-13">Bie13</a>]
+</td>
+<td class="bibtexitem">
+Nataliia Bielova.
+ Survey on javascript security policies and their enforcement
+  mechanisms in a web browser.
+ <em>J. Log. Algebr. Program.</em>, 82(8):243--262, 2013.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="CBL+82">CBLL82</a>]
 </td>
 <td class="bibtexitem">
@@ -13678,6 +13692,23 @@ s3c - online javascript editor with code evaluation.
 
 <tr valign="top">
 <td align="right" class="bibtexnumber">
+[<a name="SHB-16">SHB16</a>]
+</td>
+<td class="bibtexitem">
+Deepak Subramanian, Guillaume Hiet, and Christophe Bidan.
+ Preventive information flow control through a mechanism of split
+  addresses.
+ In <em>Proceedings of the 9th International Conference on Security
+  of Information and Networks, Newark, NJ, USA, July 20-22, 2016</em>, pages 1--8,
+  2016.
+[&nbsp;<a href="http://dx.doi.org/10.1145/2947626.2947645">DOI</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
 [<a name="SM-03">SM03</a>]
 </td>
 <td class="bibtexitem">
@@ -13989,7 +14020,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-09-20 mar. 11:21 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
+<p class="created">Crée: 2016-10-21 ven. 12:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
 </div>
 </body>
 </html>
