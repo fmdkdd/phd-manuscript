@@ -4717,6 +4717,55 @@ to modify them at a distance, and see how that works.
 *** Reviewers comments
 Suggested refs: [[cite:VBG+10][VBG+10]] [[cite:MMC-95][MMC-95]] [[cite:JF-96][JF-96]] [[cite:ALM+09][ALM+09]]
 
+** [2016-10-21 ven.]
+*** Reading [[cite:JF-96][JF-96]]
+#+BEGIN_QUOTE
+We reject as too complicated and inelegant the possibility of dynamically
+modifying the procedure objects constituting I_exit.
+#+END_QUOTE
+
+Yes you can nicely extend interpreters with reflective towers, but you have to
+first build the tower.  The goal was to work with what was at hand; if we turn
+Narcissus into a reflective tower we can also refactor it in any way we see fit.
+
+The reflective tower argument can apply to chapter 5, but then again, we show a
+/different way/ to build extensible interpreters.  Just because there already
+exist solutions does not mean we should stop looking for others.
+
+In any case, reflective towers should appear in chapter 3.
+
+*** Reading [[cite:ALM+09][ALM+09]]
+Well, there's no code, so all I see is a vague discussion about the usability of
+reflexive systems.  Narcissus is not reflexive, only meta-circular, so while
+they cut the subject into nice little categories, I don't see how it applies.
+
+*** Reading [[cite:MMC-95][MMC-95]]
+Well, it says it deals with metaobjects composition, which I guess is kinda of
+related.  But you have to have a metaobject protocol in the first place.  We
+don't.  So I don't see how it applies.
+
+*** Reading [[cite:VBG+10][VBG+10]]
+This one is particularly relevant.  In section 4.2, they show how they can
+modify their interpreter to implement an Object Flow Analysis, which was
+previously implemented by hacking the Pharo VM.  Now, they built a reflexive and
+extensible interpreter on top of Pharo, so they don't have to keep hacking the
+VM.
+
+Extending the interpreter is pretty simple, it's a visitor over the AST:
+
+#+BEGIN_QUOTE
+To construct a new variant of the Pinocchio interpreter it suffices to subclass
+the Interpreter class and override a part of its interface.  The Interpreter
+class defines a meta-circular interpreter implemented as an AST visitor that
+manages its own environment but relies on recursion to automatically manage the
+runtime stack.
+#+END_QUOTE
+
+So our intents are very much alike.  But, they still built a brand new
+interpreter on top of Pharo to be able to extend it however they wanted.
+
+I took the interpreter as-is, and extended it.
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
