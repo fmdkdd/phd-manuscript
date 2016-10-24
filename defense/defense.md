@@ -2,9 +2,6 @@
 % fmdkdd
 % Mines Nantes, 18 novembre 2016
 
-<!-- TODO: fix slide numbers in overview -->
-<!-- TODO: incremental overlay should start with first item, not empty -->
-
 # Préliminaires
 
 ## Le cycle de vie d'un programme
