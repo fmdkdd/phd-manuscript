@@ -14,6 +14,10 @@
 
 </div>
 
+<div role="note">
+- How I see (my) the activity of a programmer
+</div>
+
 ## De la spécification au processus
 
 <div class="incremental overlay">
@@ -38,7 +42,11 @@
 </div>
 
 <div role="note">
-- ECMA6: 566 pages
+- ECMA6: 566 pages; spec rarely well-defined
+- spec -> code is wonky
+- code is what the programmer writes
+- but the process is what happens
+- the question is always: process == spec?
 </div>
 
 ## La correspondance processus—programme
@@ -142,9 +150,46 @@ loop()
 - 3 states (ascent, descent, ground) for 3 "if" blocks
 </div>
 
+## Les buts du programmeur
+
+**Correction:**
+
+Élaborer un programme conforme à la spécification
+
+**Clarté:**
+
+Établir une correspondance claire entre le programme et le processus
+
+<div role="note">
+- infinite number of correct programs
+- fewer canonical solutions, like fractions
+</div>
+
 # Le problème
 
-## Étendre des interpréteurs pour des analyses de sécurité
+## Étendre des interpréteurs pour sécuriser le nuage
+
+Projet **SecCloud** du labex CominLabs (2012–2016)
+
+<div class="content">
+<img src="img/chrome-logo.svg" style="width: 100px">
+<p style="display: inline-block; width: 440px">
+Sécuriser les applications web exécutées dans le navigateur...
+</p>
+</div>
+
+<div class="content">
+<p style="display: inline-block; width: 440px">
+Sécuriser les applications web exécutées dans les navigateurs...
+</p>
+<img src="img/v8_logo.jpg" style="width: 120px">
+</div>
+
+<img src="img/js.png" style="width: 100px">
+
+Nuage = navigateur
+
+Programmes du nuage =
 
 Context sécurité JS, SecCloud
 
@@ -207,14 +252,14 @@ Le motif module verrouille l'extension
 
 ## Évaluation
 
+- 4 analyses ajoutées
+- XX lignes modifiées (vizu du diff avant/après?)
+- spécifique à ce cas précis
+
 ---
 
 ![](img/narcissus-diff-after.svg)
 
-- 4 analyses ajoutées
-- XX lignes modifiées (vizu du diff avant/après?)
-
-- spécifique à ce cas précis
 
 # Conclusions
 
