@@ -1,8 +1,9 @@
-defense.html: defense.md \
-							data/templates/default.dzslides \
-              data/dzslides/template.html
-	pandoc -t dzslides -s $< -o $@ --data-dir=data/
+defense.html: defense.js \
+							defense-head.html \
+              dzslides-footer.html
+	node defense.js > body.html
+	cat defense-head.html body.html dzslides-footer.html > defense.html
 
 .PHONY: clean
 clean:
-	rm -f defense.html
+	rm -f defense.html body.html
