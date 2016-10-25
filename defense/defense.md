@@ -207,6 +207,10 @@ Le motif module verrouille l'extension
 
 ## Évaluation
 
+---
+
+![](img/narcissus-diff-after.svg)
+
 - 4 analyses ajoutées
 - XX lignes modifiées (vizu du diff avant/après?)
 
