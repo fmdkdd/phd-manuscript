@@ -55,7 +55,9 @@ console.log(
 
     title(`Étendre des interpréteurs par détournement
 <br><br>ou<br><br>
-Comment étendre des interpréteurs sans en modifier le code`),
+Comment étendre des interpréteurs sans en modifier le code`,
+          'fmdkdd',
+          'Mines Nantes, 18 novembre 2016'),
 
     sec('Préliminaires'),
 
