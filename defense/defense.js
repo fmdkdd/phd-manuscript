@@ -34,6 +34,11 @@ var pre     = content_tag.bind(null, 'pre')
 var code    = content_tag.bind(null, 'code')
 var b       = content_tag.bind(null, 'b')
 var figure  = content_tag.bind(null, 'figure')
+var script  = content_tag.bind(null, 'script')
+
+// I don't put any children in these, but they still need to be closed
+var video   = content_tag.bind(null, 'video', null)
+var canvas  = content_tag.bind(null, 'canvas', null)
 
 var img = childless_tag.bind(null, 'img')
 
@@ -74,9 +79,95 @@ Comment étendre des interpréteurs sans en modifier le code`,
         img({src: "img/problem4b.svg",
              class: 'center',
              style: 'width: 550px'})
+      ]),
+
+      note("How I see the activity of a programmer"),
+    ]),
+
+    slide([
+      h1("De la spécification au processus"),
+
+      content(
+      overlay([
+        img({src: 'img/problem7.svg'}),
+        img({src: 'img/problem7b.svg'}),
+        img({src: 'img/problem7c.svg'}),
+        img({src: 'img/problem7d.svg'}),
+
+        div([
+          img({src: 'img/problem7e.svg'}),
+          video({src: 'img/visual-6502.mp4',
+                 loop: true,
+                 style: `width: 400px;
+                         position: absolute;
+                         left: 330px;
+                         top: 120px;`}),
+
+          pre(code(`1 + 1 == 2 //: true
+"12" == 12 //: true
+[] == "" //: true
+`),
+              {style: `position: absolute;
+                       top: 450px;
+                       left: 350px`})
+        ])
+      ])),
+
+      note([
+        "ECMA6: 566 pages; spec rarely well-defined",
+        "spec -> code is wonky",
+        "code is what the programmer writes",
+        "but the process is what really happens",
+        "the question is always: process == spec?"
       ])
     ]),
 
+    slide([
+      h1("La correspondance processus-programme"),
+
+      p("Appuyer sur Ⓐ pour sauter"),
+
+      content([
+        pre(code(`
+function loop() {
+  <span class="if jumping">if (jumping) {
+    y += 32
+    sprite_x = 160
+  }</span>
+
+  <span class="if positive-y">if (y > 0) {
+    y -= 12
+  }</span>
+  <span class="if touch-ground">else {
+    y = 0
+    sprite_x = 80
+  }</span>
+}`, {style: 'font-size: 16px'})),
+
+        pre(code(`key: <span class="var key"></span>
+jumping: <span class="var jumping"></span>
+y: <span class="var y"></span>
+sprite_x: <span class="var sprite_x"></span>`),
+            {style: `position: absolute;
+                     left: 300px;
+                     top: 300px`}),
+
+        canvas({id: 'jumping-jack-canvas',
+                width: '200px',
+                height: '550px',
+                style: `position: absolute;
+                        right: 100px;
+                        bottom: 100px`}),
+
+        // Magic code injection
+        script(`${jumping_canvas}; jumping_canvas()`)
+      ]),
+
+      note([
+        "All are different views of the same thing",
+        "3 states (ascent, descent, ground) for 3 `if` blocks"
+      ])
+    ]),
 
     slide([
       h1("Les buts du programmeur"),
@@ -84,6 +175,14 @@ Comment étendre des interpréteurs sans en modifier le code`,
       p(b('Correction:')),
       p('Élaborer un programme conforme à la spécification'),
 
+      p(b('Clarté:')),
+      p(`Établir une correspondance claire entre le programme
+         et le processus`),
+
+      note([
+        "infinite number of correct programs",
+        "fewer canonical solutions, like fractions"
+      ])
     ]),
 
     sec('Le problème'),
@@ -161,7 +260,9 @@ les changements de code`),
                      vertical-align: top`}),
         img({src: 'img/problem2.svg',
              style: 'width: 350px'})
-      ])
+      ]),
+
+      note("clarity: matching code with intent")
     ]),
 
 
@@ -177,8 +278,132 @@ les changements de code`),
 
     sec("Étendre Narcissus par manipulation de portée"),
 
+    slide([
+      h1("Le motif module"),
+
+      p("Complexité supplémentaire de Narcissus"),
+      p("Verrouille l'extension")
+    ]),
+
+    slide([
+      h1("Ouvrir le motif module"),
+
+      p(img({src: 'img/dls12.svg'}))
+    ]),
+
+    slide([
+      h1("Évaluation"),
+
+      ul([
+        li("4 analyses ajoutées"),
+        li("XX lignes modifiées"),
+        li("spécifique à ce cas précis")
+      ])
+    ]),
+
+    slide(figure(img({src: 'img/narcissus-diff-after.svg'}))),
 
     sec("Conclusions"),
 
+    slide([
+      h1("Détourner pour étendre et modifier un programme"),
+
+      p(`Plus rapide et moins risqué que la refactorisation.
+         Choix pragmatique dans les circonstances adéquates`),
+
+      p(`Pas une balle en argent: spécifique à chaque scénario`)
+    ]),
+
+    slide([
+      h1("Indirection -> détournement"),
+
+      p(`N'importe quel mécanisme d'indirection suffit pour le détournement.`),
+
+      p(`${code('with')}, inversion of control, AspectJ, ...`)
+    ]),
+
+    slide([
+      h1("Détournement -> indirection"),
+
+      p(`Détourner c'est laisser un trou béant,
+         c'est casser la membrane du module`),
+
+      p(`L'un ne va pas sans l'autre`)
+    ]),
+
+    sec("Extra credit"),
+
+    slide([
+      h1("Contrôler le détournement"),
+
+      p(`Possible de retourner un proxy sur l'objet scope qui empêche
+         de modifier n'importe quelle référence, en utilisant une whitelist`),
+
+      p("Ou bien le symbole spécial `unscopables`")
+    ])
+
   ])
 )
+
+function jumping_canvas() {
+  var sprites = new Image()
+  sprites.src = 'img/mario-sprites.png'
+
+  var canvas = document.getElementById('jumping-jack-canvas')
+  var ctxt = canvas.getContext('2d')
+  ctxt.mozImageSmoothingEnabled = false;
+  var height = canvas.height
+  var width = canvas.width
+  var x = width / 2
+  var y = 0
+  var jumping = false
+  var sprite_x = 80
+  var last_key = null
+
+  document.addEventListener('keydown', function(ev) {
+    if (ev.which === 65) {
+      jumping = true
+    }
+    last_key = ev.which
+  })
+  document.addEventListener('keyup', function(ev) {
+    if (ev.which === 65) {
+      jumping = false
+    }
+    last_key = null
+  })
+
+  function loop() {
+    // game logic
+    if (jumping) {
+      y += 32
+      sprite_x = 160
+    }
+
+    if (y > 0) {
+      y -= 12
+    }
+
+    else {
+      y = 0
+      sprite_x = 80
+    }
+
+    // canvas draw
+    ctxt.clearRect(0, 0, 1000, 1000)
+    ctxt.drawImage(sprites, sprite_x, 96, 16, 32, x - 32, height - y - 128, 64, 128)
+
+    // code viz
+    document.querySelector('.if.jumping').classList.toggle('active', jumping)
+    document.querySelector('.if.positive-y').classList.toggle('active', y > 0)
+    document.querySelector('.if.touch-ground').classList.toggle('active', y <= 0)
+    document.querySelector('.var.jumping').textContent = jumping
+    document.querySelector('.var.key').textContent = last_key
+    document.querySelector('.var.y').textContent = y
+    document.querySelector('.var.sprite_x').textContent = sprite_x
+
+    requestAnimationFrame(loop)
+  }
+
+  loop()
+}
