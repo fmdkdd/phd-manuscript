@@ -18,6 +18,12 @@ function attr_string(attrs) {
     .join('')
 }
 
+function html_escape(str) {
+  return str
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
 // Raw HTML tags
 var body    = content_tag.bind(null, 'body')
 var head    = content_tag.bind(null, 'head')
@@ -267,6 +273,20 @@ les changements de code`),
 
 
     sec("Construire un interpréteur par modules"),
+
+    slide([
+      h1("Un simple langage arithmétique"),
+
+      content(pre(code(html_escape(`
+<term> ::= <num> | <term> + <term>
+<num>  ::= 0 | 1 | 2 | ...
+
+eval : Term -> Integer
+`)))),
+
+    ]),
+
+    // TODO: reuse slides from FOAL
 
     slide([
       h1(`Utiliser ${code('with')}`),
