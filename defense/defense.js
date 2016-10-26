@@ -67,10 +67,10 @@ Comment étendre des interpréteurs sans en modifier le code`,
       overlay([
         img({src: "img/problem4.svg",
              class: 'center',
-             style: 'width: 80%'}),
+             style: 'width: 550px'}),
         img({src: "img/problem4b.svg",
              class: 'center',
-             style: 'width: 80%'})
+             style: 'width: 550px'})
       ])
     ]),
   ])
