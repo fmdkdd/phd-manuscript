@@ -3,220 +3,224 @@
   <meta charset="utf-8">
   <meta name="author" content="fmdkdd">
   <title>Étendre des interpréteurs par détournement ou Comment étendre des interpréteurs sans en modifier le code</title>
-<style>
-  html, .view body { background-color: black; counter-reset: slideidx; }
-  body, .view section { background-color: white; border-radius: 12px }
-  /* A section is a slide. It's size is 800x600, and this will never change */
-  @font-face {
-    font-family: "Open Sans";
-    src: url("fonts/OpenSans-Regular.ttf");
-    font-weight: normal;
-    font-style: normal;
-  }
+  <style>
+   html, .view body { background-color: black; counter-reset: slideidx; }
+   body, .view section { background-color: white; border-radius: 12px }
+   /* A section is a slide. It's size is 800x600, and this will never change */
+   @font-face {
+     font-family: "Open Sans";
+     src: url("fonts/OpenSans-Regular.ttf");
+     font-weight: normal;
+     font-style: normal;
+   }
 
-  @font-face {
-    font-family: "Open Sans";
-    src: url("fonts/OpenSans-Bold.ttf");
-    font-weight: bold;
-    font-style: normal;
-  }
+   @font-face {
+     font-family: "Open Sans";
+     src: url("fonts/OpenSans-Bold.ttf");
+     font-weight: bold;
+     font-style: normal;
+   }
 
-  @font-face {
-    font-family: "Quando";
-    src: url("fonts/Quando-Regular.ttf");
-    font-weight: normal;
-    font-style: normal;
-  }
+   @font-face {
+     font-family: "Quando";
+     src: url("fonts/Quando-Regular.ttf");
+     font-weight: normal;
+     font-style: normal;
+   }
 
-  section, .view head > title {
-      /* The font from Google */
-      font-family: 'Open Sans', sans-serif;
-      font-size: 20px;
-  }
+   section, .view head > title {
+     /* The font from Google */
+     font-family: 'Open Sans', sans-serif;
+     font-size: 20px;
+   }
 
-  .view section:after {
-    counter-increment: slideidx;
-    content: counter(slideidx, decimal-leading-zero);
-    position: absolute; bottom: -80px; right: 100px;
-    color: white;
-    font-size: 60px;
-  }
+   .view section:after {
+     counter-increment: slideidx;
+     content: counter(slideidx, decimal-leading-zero);
+     position: absolute; bottom: -80px; right: 100px;
+     color: white;
+     font-size: 60px;
+   }
 
-  .view head > title {
-    color: white;
-    text-align: center;
-    margin: 1em 0 1em 0;
-  }
+   .view head > title {
+     color: white;
+     text-align: center;
+     margin: 1em 0 1em 0;
+   }
 
-  h1 {
-    font-family: 'Quando', serif;
-    margin-top: 250px;
-    text-align: center;
-    font-size: 30px;
-  }
+   h1 {
+     font-family: 'Quando', serif;
+     margin-top: 250px;
+     text-align: center;
+     font-size: 30px;
+   }
 
- .title h1 {
-   margin-top: 120px;
-   margin-right: 100px;
-   margin-left: 100px;
- }
+   .title h1 {
+     margin-top: 120px;
+     margin-right: 100px;
+     margin-left: 100px;
+   }
 
- .slide.level2 h1 {
-   font-size: 26px;
-   text-align: left;
-   margin: 50px 0 40px 50px;
- }
+   .slide.level2 h1 {
+     font-size: 26px;
+     text-align: left;
+     margin: 50px 0 40px 50px;
+   }
 
-  h3 {
-    margin: 100px 0 50px 100px;
-  }
+   h3 {
+     margin: 100px 0 50px 100px;
+   }
 
-  ul {
-      margin: 50px 200px;
-  }
-  li > ul {
-      margin: 15px 50px;
-  }
+   ul {
+     list-style: "•  " inside;
+     margin: 0 10px 10px 50px;
+   }
 
-  p {
-    margin: 20px 25px 20px 50px;
-    font-size: 20px;
-  }
+   li + li { margin-top: 10px; }
 
-  .content {
-    margin: 20px 75px 20px 75px;
-  }
+   li > ul {
+     margin: 15px 50px;
+   }
 
-  canvas {
-    image-rendering: -moz-crisp-edges;
-  }
+   p {
+     margin: 20px 25px 20px 50px;
+     font-size: 20px;
+   }
 
-  .if {
-    color: #aaa;
-  }
+   .content {
+     margin: 20px 75px 20px 75px;
+   }
 
-  .if.active {
+   canvas {
+     image-rendering: -moz-crisp-edges;
+   }
+
+   .if {
+     color: #aaa;
+   }
+
+   .if.active {
     color: black;
   }
 
-  blockquote {
-    height: 100%;
-    background-color: black;
-    color: white;
-    font-size: 60px;
-    padding: 50px;
-  }
-  blockquote:before {
-    content: open-quote;
-  }
-  blockquote:after {
-    content: close-quote;
-  }
+   blockquote {
+     height: 100%;
+     background-color: black;
+     color: white;
+     font-size: 60px;
+     padding: 50px;
+   }
+   blockquote:before {
+     content: open-quote;
+   }
+   blockquote:after {
+     content: close-quote;
+   }
 
-  pre {
-    display: inline-block;
-  }
+   pre {
+     display: inline-block;
+   }
 
-  code {
-    white-space: pre;
-    font-family: 'Fira Mono', monospace;
-  }
+   code {
+     white-space: pre;
+     font-family: 'Fira Mono', monospace;
+   }
 
-  /* Figures are displayed full-page, with the caption
-     on top of the image/video */
-  figure {
-    /* background-color: black; */
-    width: 100%;
-    height: 100%;
-  }
-  figure > * {
-    position: absolute;
-  }
-  figure > img, figure > video {
-    width: 100%; height: 100%;
-  }
-  figcaption {
-    margin: 70px;
-    font-size: 50px;
-  }
+   /* Figures are displayed full-page, with the caption
+      on top of the image/video */
+   figure {
+     /* background-color: black; */
+     width: 100%;
+     height: 100%;
+   }
+   figure > * {
+     position: absolute;
+   }
+   figure > img, figure > video {
+     width: 100%; height: 100%;
+   }
+   figcaption {
+     margin: 70px;
+     font-size: 50px;
+   }
 
- .center {
-   display: block;
-   margin: auto;
- }
+   .center {
+     display: block;
+     margin: auto;
+   }
 
-  footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 40px;
-    text-align: right;
-    background-color: #F3F4F8;
-    border-top: 1px solid #CCC;
-  }
+   footer {
+     position: absolute;
+     bottom: 0;
+     width: 100%;
+     padding: 40px;
+     text-align: right;
+     background-color: #F3F4F8;
+     border-top: 1px solid #CCC;
+   }
 
    footer .author {
      font-weight: bold;
      display: block;
    }
 
-  /* Transition effect */
-  /* Feel free to change the transition effect for original
-     animations. See here:
-     https://developer.mozilla.org/en/CSS/CSS_transitions
-     How to use CSS3 Transitions: */
-  section {
-    -moz-transition: left 400ms linear 0s;
-    -webkit-transition: left 400ms linear 0s;
-    -ms-transition: left 400ms linear 0s;
-    transition: left 400ms linear 0s;
-  }
-  .view section {
-    -moz-transition: none;
-    -webkit-transition: none;
-    -ms-transition: none;
-    transition: none;
-  }
+   /* Transition effect */
+   /* Feel free to change the transition effect for original
+      animations. See here:
+      https://developer.mozilla.org/en/CSS/CSS_transitions
+      How to use CSS3 Transitions: */
+   section {
+     -moz-transition: left 400ms linear 0s;
+     -webkit-transition: left 400ms linear 0s;
+     -ms-transition: left 400ms linear 0s;
+     transition: left 400ms linear 0s;
+   }
+   .view section {
+     -moz-transition: none;
+     -webkit-transition: none;
+     -ms-transition: none;
+     transition: none;
+   }
 
-  .view section[aria-selected] {
-    border: 5px red solid;
-  }
+   .view section[aria-selected] {
+     border: 5px red solid;
+   }
 
-  /* Before */
-  section { left: -150%; }
-  /* Now */
-  section[aria-selected] { left: 0; }
-  /* After */
-  section[aria-selected] ~ section { left: +150%; }
+   /* Before */
+   section { left: -150%; }
+   /* Now */
+   section[aria-selected] { left: 0; }
+   /* After */
+   section[aria-selected] ~ section { left: +150%; }
 
-  /* Incremental elements */
+   /* Incremental elements */
 
-  /* By default, visible */
-  .incremental > * { opacity: 1; }
+   /* By default, visible */
+   .incremental > * { opacity: 1; }
 
-  /* The current item */
-  .incremental > *[aria-selected] { opacity: 1; }
+   /* The current item */
+   .incremental > *[aria-selected] { opacity: 1; }
 
-  /* The items to-be-selected */
-  .incremental > *[aria-selected] ~ * { opacity: 0; }
+   /* The items to-be-selected */
+   .incremental > *[aria-selected] ~ * { opacity: 0; }
 
-  .incremental.overlay > *[aria-selected] { display: block }
-  .incremental.overlay > * { display: none }
+   .incremental.overlay > *[aria-selected] { display: block }
+   .incremental.overlay > * { display: none }
 
-  /* The progressbar, at the bottom of the slides, show the global
-     progress of the presentation. */
-  #progress-bar {
-    display: none;
-    height: 2px;
-    background: #AAA;
-  }
+   /* The progressbar, at the bottom of the slides, show the global
+      progress of the presentation. */
+   #progress-bar {
+     display: none;
+     height: 2px;
+     background: #AAA;
+   }
 
- /* Slide number */
- section.slide:not(.titleslide):after {
-   counter-increment: slideidx;
-   content: counter(slideidx);
-   position: absolute; bottom: 10px; right: 20px;
- }
+   /* Slide number */
+   section.slide:not(.titleslide):after {
+     counter-increment: slideidx;
+     content: counter(slideidx);
+     position: absolute; bottom: 10px; right: 20px;
+   }
 
-</style>
+  </style>
 </head>
