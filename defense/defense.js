@@ -743,7 +743,26 @@ function jumping_canvas() {
     document.querySelector('.var.y').textContent = y
     document.querySelector('.var.sprite_x').textContent = sprite_x
 
-    requestAnimationFrame(loop)
+    requestFrameIfSelected(loop)
+  }
+
+  // Find the parent slide
+  var slide = canvas.parentNode
+  while (slide && !slide.classList.contains('slide')) {
+    slide = slide.parentNode
+  }
+
+  var frameRequest
+  function requestFrameIfSelected(fn) {
+    if (slide.getAttribute('aria-selected')) {
+      frameRequest = requestAnimationFrame(fn)
+    } else {
+      cancelAnimationFrame(frameRequest)
+    }
+  }
+
+  window.afterHashChange = function() {
+    requestFrameIfSelected(loop)
   }
 
   loop()

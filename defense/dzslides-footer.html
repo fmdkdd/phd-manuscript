@@ -293,7 +293,11 @@
     for (var i = 0; i < this.remoteWindows.length; i++) {
       this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
     }
+
+    if (window.afterHashChange)
+      window.afterHashChange()
   }
+
 
   Dz.back = function() {
     if (this.idx == 1 && this.step == 0) {
