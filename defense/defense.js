@@ -34,11 +34,13 @@ var p       = content_tag.bind(null, 'p')
 var section = content_tag.bind(null, 'section')
 var footer  = content_tag.bind(null, 'footer')
 var ul      = content_tag.bind(null, 'ul')
+var ol      = content_tag.bind(null, 'ol')
 var li      = content_tag.bind(null, 'li')
 var span    = content_tag.bind(null, 'span')
 var pre     = content_tag.bind(null, 'pre')
 var code    = content_tag.bind(null, 'code')
 var b       = content_tag.bind(null, 'b')
+var em      = content_tag.bind(null, 'em')
 var figure  = content_tag.bind(null, 'figure')
 var script  = content_tag.bind(null, 'script')
 
@@ -67,132 +69,25 @@ var content = (c) => div(c, {class: 'content'})
 console.log(
   body([
 
-    title(`Étendre des interpréteurs par détournement
-<br><br>ou<br><br>
-Comment étendre des interpréteurs sans en modifier le code`,
+    title(`Étendre des interpréteurs par détournement`,
           'fmdkdd',
           'Mines Nantes, 18 novembre 2016'),
 
-    sec('Préliminaires'),
-
     slide([
-      h1("Le cycle de vie d'un programme"),
+      h1("Le plan"),
 
-      overlay([
-        img({src: "img/problem4.svg",
-             class: 'center',
-             style: 'width: 550px'}),
-        img({src: "img/problem4b.svg",
-             class: 'center',
-             style: 'width: 550px'})
-      ]),
-
-      note("How I see the activity of a programmer"),
-    ]),
-
-    slide([
-      h1("De la spécification au processus"),
-
-      content(
-      overlay([
-        img({src: 'img/problem7.svg'}),
-        img({src: 'img/problem7b.svg'}),
-        img({src: 'img/problem7c.svg'}),
-        img({src: 'img/problem7d.svg'}),
-
-        div([
-          img({src: 'img/problem7e.svg'}),
-          video({src: 'img/visual-6502.mp4',
-                 loop: true,
-                 style: `width: 400px;
-                         position: absolute;
-                         left: 330px;
-                         top: 120px;`}),
-
-          pre(code(`1 + 1 == 2 //: true
-"12" == 12 //: true
-[] == "" //: true
-`),
-              {style: `position: absolute;
-                       top: 450px;
-                       left: 350px`})
-        ])
-      ])),
-
-      note([
-        "ECMA6: 566 pages; spec rarely well-defined",
-        "spec -> code is wonky",
-        "code is what the programmer writes",
-        "but the process is what really happens",
-        "the question is always: process == spec?"
+      ol([
+        li("Contexte: sécuriser JavaScript"),
+        li("Problème: étendre des interpréteurs"),
+        li("Contributions: le détournement de programmes"),
+        ol([
+          li("Étendre des interpréteurs par module"),
+          li("Détourner Narcissus"),
+        ]),
       ])
     ]),
 
-    slide([
-      h1("La correspondance processus-programme"),
-
-      p("Appuyer sur Ⓐ pour sauter"),
-
-      content([
-        pre(code(`
-function loop() {
-  <span class="if jumping">if (jumping) {
-    y += 32
-    sprite_x = 160
-  }</span>
-
-  <span class="if positive-y">if (y > 0) {
-    y -= 12
-  }</span>
-  <span class="if touch-ground">else {
-    y = 0
-    sprite_x = 80
-  }</span>
-}`, {style: 'font-size: 16px'})),
-
-        pre(code(`key: <span class="var key"></span>
-jumping: <span class="var jumping"></span>
-y: <span class="var y"></span>
-sprite_x: <span class="var sprite_x"></span>`),
-            {style: `position: absolute;
-                     left: 300px;
-                     top: 300px`}),
-
-        canvas({id: 'jumping-jack-canvas',
-                width: '200px',
-                height: '550px',
-                style: `position: absolute;
-                        right: 100px;
-                        bottom: 100px`}),
-
-        // Magic code injection
-        script(`${jumping_canvas}; jumping_canvas()`)
-      ]),
-
-      note([
-        "All are different views of the same thing",
-        "3 states (ascent, descent, ground) for 3 `if` blocks"
-      ])
-    ]),
-
-    slide([
-      h1("Les buts du programmeur"),
-
-      p(b('Correction:')),
-      p('Élaborer un programme conforme à la spécification'),
-
-      p(b('Clarté:')),
-      p(`Établir une correspondance claire entre le programme
-         et le processus`),
-
-      note([
-        "infinite number of correct programs",
-        "fewer canonical solutions, like fractions"
-      ])
-    ]),
-
-    sec('Le problème'),
-
+    sec('Contexte: sécuriser JavaScript'),
 
     slide([
       h1('Étendre des interpréteurs pour sécuriser le nuage'),
@@ -202,7 +97,7 @@ sprite_x: <span class="var sprite_x"></span>`),
       content([
         img({src: 'img/chrome-logo.svg',
              style: 'width: 100px'}),
-        p('Sécuriser les applications web exécutées dans les navigateurs',
+        p('Sécuriser les applications web exécutées dans les navigateurs...',
           {style: `display: inline-block;
                    width: 440px;
                    margin: 80px 20px;
@@ -211,7 +106,7 @@ sprite_x: <span class="var sprite_x"></span>`),
 
         img({src: 'img/js.png',
              style: 'width: 100px'}),
-        p('en analysant les programmes JavaScript',
+        p('...en analysant les programmes JavaScript',
           {style: `display: inline-block;
                    width: 440px;
                    margin: 20px;
@@ -220,9 +115,73 @@ sprite_x: <span class="var sprite_x"></span>`),
       ])
     ]),
 
+    slide([
+      p(img({src: "img/interps.svg",
+             style: `width: 700px`})),
+
+      p("Autres interpréteurs JavaScript"),
+
+      ul([
+        li("Rhino (Java)"),
+        li(`${em('Narcissus')} (JavaScript)`)
+      ])
+    ]),
 
     slide([
-      h1('Analyser les programmes JavaScript'),
+      h1("Narcissus"),
+
+      p(img({src: "img/narcissus.jpg",
+             style: `width: 40%;
+                     float: left;
+                     margin-right: 20px;`})),
+
+      p("Interpréteur JavaScript meta-circulaire par Mozilla"),
+
+      p("Idéal pour prototyper des extensions au langage"),
+
+      p(`Utilisé par Austin et Flanagan pour implémenter
+         l'${em("analyse multi-facettes")}`)
+    ]),
+
+    slide([
+      h1("Analyses dynamiques de programme"),
+
+      p("Analyser le code source pour en déduire le comportement"),
+
+      p(`Analyse de ${b("flot d'information")}:`),
+
+      // TODO: arrows to indicate flow
+      pre(code(`var a = "1a2b4d"
+var b = "3f56e7"
+var c = a + b`)),
+
+      p("Flot indirect"),
+
+      pre(code(`var x = true
+if (x) {
+  y = false
+}
+`))
+
+
+    ]),
+
+    slide([
+      h1("Analyse multi-facettes"),
+
+      p("Analyse dynamique de flot d'information (Austin et Flanagan 2012)"),
+
+      p(img({src: "img/facettes.svg"})),
+
+      ul([
+        li("Chaque valeur a deux facettes"),
+        li("La facette privée est visible par le principal"),
+        li(`Le ${b("program counter")} suit les flots indirects`)
+      ])
+    ]),
+
+    slide([
+      h1('Analyse multi-facettes'),
 
       p("Analyse de flot d'information (Austin et Flanagan 2012)"),
 
@@ -235,6 +194,7 @@ sprite_x: <span class="var sprite_x"></span>`),
 
       p("Implémenter des analyses en modifiant l'interpréteur:"),
 
+      // TODO: simpler diagrams since the cycle was not presented
       p(img({src: 'img/problem1b.svg',
              style: 'margin: 20px 0'}))
     ]),
@@ -252,6 +212,22 @@ sprite_x: <span class="var sprite_x"></span>`),
       p("Prototyper rapidement les analyses"),
       p("Minimiser les changements de code"),
       p("Séparer le code des analyses pour pouvoir les auditer"),
+
+      note([
+        "infinite number of correct programs",
+        "fewer canonical solutions, like fractions"
+      ])
+    ]),
+
+    slide([
+      h1("Les approches existantes"),
+
+      p("AOP"),
+      p("Interpréteurs refléxifs"),
+
+      note([
+        "existing interpreters/constructed extensible"
+      ])
     ]),
 
     slide([
@@ -379,6 +355,11 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: "1+2"`))),
 plus.new: Term -> Term -> Term
 s.plus.new: Show -> Show -> Show
 `))),
+
+    ]),
+
+    slide([
+      h1(`La construction ${code('with')}`),
 
     ]),
 
@@ -672,6 +653,14 @@ m.g(0) //: -1`))),
       p(`L'un ne va pas sans l'autre`)
     ]),
 
+    slide([
+      h1("Perspectives"),
+
+      p("Comparaison d'analyses de flot"),
+
+      p("Application à V8/SpiderMonkey"),
+    ]),
+
     sec("Extra credit"),
 
     slide([
@@ -685,85 +674,3 @@ m.g(0) //: -1`))),
 
   ])
 )
-
-function jumping_canvas() {
-  var sprites = new Image()
-  sprites.src = 'img/mario-sprites.png'
-
-  var canvas = document.getElementById('jumping-jack-canvas')
-  var ctxt = canvas.getContext('2d')
-  ctxt.mozImageSmoothingEnabled = false;
-  var height = canvas.height
-  var width = canvas.width
-  var x = width / 2
-  var y = 0
-  var jumping = false
-  var sprite_x = 80
-  var last_key = null
-
-  document.addEventListener('keydown', function(ev) {
-    if (ev.which === 65) {
-      jumping = true
-    }
-    last_key = ev.which
-  })
-  document.addEventListener('keyup', function(ev) {
-    if (ev.which === 65) {
-      jumping = false
-    }
-    last_key = null
-  })
-
-  function loop() {
-    // game logic
-    if (jumping) {
-      y += 32
-      sprite_x = 160
-    }
-
-    if (y > 0) {
-      y -= 12
-    }
-
-    else {
-      y = 0
-      sprite_x = 80
-    }
-
-    // canvas draw
-    ctxt.clearRect(0, 0, 1000, 1000)
-    ctxt.drawImage(sprites, sprite_x, 96, 16, 32, x - 32, height - y - 128, 64, 128)
-
-    // code viz
-    document.querySelector('.if.jumping').classList.toggle('active', jumping)
-    document.querySelector('.if.positive-y').classList.toggle('active', y > 0)
-    document.querySelector('.if.touch-ground').classList.toggle('active', y <= 0)
-    document.querySelector('.var.jumping').textContent = jumping
-    document.querySelector('.var.key').textContent = last_key
-    document.querySelector('.var.y').textContent = y
-    document.querySelector('.var.sprite_x').textContent = sprite_x
-
-    requestFrameIfSelected(loop)
-  }
-
-  // Find the parent slide
-  var slide = canvas.parentNode
-  while (slide && !slide.classList.contains('slide')) {
-    slide = slide.parentNode
-  }
-
-  var frameRequest
-  function requestFrameIfSelected(fn) {
-    if (slide.getAttribute('aria-selected')) {
-      frameRequest = requestAnimationFrame(fn)
-    } else {
-      cancelAnimationFrame(frameRequest)
-    }
-  }
-
-  window.afterHashChange = function() {
-    requestFrameIfSelected(loop)
-  }
-
-  loop()
-}
