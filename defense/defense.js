@@ -64,6 +64,7 @@ var title = (text, author, date) =>
     ], {class: 'title'})
 var overlay = (c) => div(c, {class: 'incremental overlay'})
 var content = (c) => div(c, {class: 'content'})
+var vspace = (px) => div('', {style: `height: ${px}px`})
 
 // And here's the actual content
 console.log(
@@ -150,20 +151,11 @@ console.log(
 
       p(`Analyse de ${b("flot d'information")}:`),
 
-      // TODO: arrows to indicate flow
-      pre(code(`var a = "1a2b4d"
-var b = "3f56e7"
-var c = a + b`)),
+      p(img({src: 'img/facet-1.svg'})),
 
       p("Flot indirect"),
 
-      pre(code(`var x = true
-if (x) {
-  y = false
-}
-`))
-
-
+      p(img({src: 'img/facet-2.svg'})),
     ]),
 
     slide([
@@ -171,19 +163,19 @@ if (x) {
 
       p("Analyse dynamique de flot d'information (Austin et Flanagan 2012)"),
 
-      p(img({src: "img/facettes.svg"})),
+      p(img({src: "img/a-facet.svg"})),
 
       ul([
         li("Chaque valeur a deux facettes"),
-        li("La facette privée est visible par le principal"),
+        li("Seul l'autorité voit la facette privée"),
         li(`Le ${b("program counter")} suit les flots indirects`)
       ])
     ]),
 
     slide([
-      h1('Analyse multi-facettes'),
+      h1('Analyse multi-facettes: exemple'),
 
-      p("Analyse de flot d'information (Austin et Flanagan 2012)"),
+      p("Flot indirect (Austin et Flanagan 2012)"),
 
       p(img({src: 'img/fenton-example.svg',
              style: 'margin: 40px 0'})),
@@ -275,9 +267,9 @@ show : Term -> String
                   top: 125px;
                   right: 50px;`}),
 
-      img({src: 'img/foal-language.svg',
+      img({src: 'img/foal-lang-1.svg',
            style: `position: absolute;
-                   width: 300px;
+                   width: 250px;
                    left: 80px;
                    bottom: 50px;`}),
 
@@ -288,26 +280,61 @@ show : Term -> String
     slide([
       h1(`Le terme ${code('num')}`),
 
+      img({src: 'img/foal-lang-2.svg',
+           style: `position: absolute;
+                   width: 100px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      content(pre(code(`var num = {
+  new(n) { return {__proto__: this, n } },
+  eval() { return this.n }}`))),
+
+      p(img({src: 'img/foal-1a.svg',
+             style: `position: absolute;
+                     left: 75px;
+                      top: 350px;`}))
+    ]),
+
+    slide([
+      h1(`Le terme ${code('num')}`),
+
+      img({src: 'img/foal-lang-2.svg',
+           style: `position: absolute;
+                   width: 100px;
+                   right: 50px;
+                   top: 50px;`}),
+
       content(pre(code(`var num = {
   new(n) { return {__proto__: this, n } },
   eval() { return this.n }}
 
-var e1 = num.new(3)
-e1.eval() //: 3`))),
+<em>var e1 = num.new(3)
+e1.eval() //: 3</em>`))),
 
-      p(img({src: 'img/foal-1.svg'}))
+      p(img({src: 'img/foal-1b.svg',
+             style: `position: absolute;
+                     left: 75px;
+                      top: 350px;`}))
     ]),
 
     slide([
       h1(`Ajouter le terme ${code('plus')}`),
+
+      img({src: 'img/foal-lang-3.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
 
       content(pre(code(`var plus = {
   new(l, r) { return {__proto__: this, l, r } },
   eval() { return this.l.eval() + this.r.eval() }}
 
 var e2 = plus.new(num.new(1), num.new(2))
-e2.eval() //: 3
-e1.eval() //: 3`))),
+e2.eval() //: 3`))),
+
+      vspace(10),
 
       p(img({src: 'img/foal-2.svg'}))
 
@@ -316,8 +343,16 @@ e1.eval() //: 3`))),
     slide([
       h1("Ajouter une opération, rétroactivement"),
 
-      content(pre(code(`num.show = () => this.n.toString()
-plus.show = () => this.l.show() + '+' + this.r.show()
+      img({src: 'img/foal-lang-4.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      content(pre(code(`<em>num.show =</em> function() {
+  return this.n.toString() }
+<em>plus.show =</em> function() {
+  this.l.show() + '+' + this.r.show() }
 
 plus.new(num.new(1), num.new(2)).show() //: "1+2"
 e1.show() //: "3"
@@ -330,36 +365,114 @@ e2.show() //: "1+2"`))),
     slide([
       h1("Ajouter une opération comme module"),
 
-      content(pre(code(`var show = base => {
+      img({src: 'img/foal-lang-4.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      content(pre(code(`var show = function(base) {
   var num = {__proto__: base.num,
     show() { return this.n.toString() }}
   var plus = {...}
   return {num, plus}}
-
-var s = show({num, plus})
+<em>var s = show({num, plus})</em>
 e2.show() //: undefined
 
 s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
-s.plus.new(s.num.new(1), s.num.new(2)).eval() //: "1+2"`))),
+s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 
       p(img({src: 'img/foal-4.svg'}))
     ]),
 
     slide([
+      h1("Ajouter une opération comme module"),
+
+      img({src: 'img/foal-lang-4.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      content(pre(code(`var show = function(base) {
+  var num = {__proto__: base.num,
+    show() { return this.n.toString() }}
+  var plus = {...}
+  return {num, plus}}
+<em>var s = show({num, plus})</em>
+e2.show() //: undefined
+
+s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
+s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
+
+      p(img({src: 'img/foal-4.svg'})),
+
+      img({src: 'img/foal-3.svg',
+           style: `position: absolute;
+                   bottom: 5px;
+                   right: 75px;`}),
+    ]),
+
+    slide([
       h1("Problème: mixer les modules"),
 
-      content(pre(code(`s.plus.new(num.new(1), s.num.new(2)).show()
+      content(pre(code(`<em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
 
-//: TypeError: this.l.show is not a function
+//: TypeError: this.l.show is not a function`))),
 
-plus.new: Term -> Term -> Term
+      p("Problème de types:"),
+
+      content(pre(code(`plus.new: Term -> Term -> Term
 s.plus.new: Show -> Show -> Show
 `))),
 
     ]),
 
     slide([
-      h1(`La construction ${code('with')}`),
+      h1(`${code('with')} en JavaScript`),
+
+      p("Intention: réduire le bruit syntaxique"),
+
+      pre(code(`canvas.begin()
+canvas.setColor(...)
+canvas.drawRectangle(...)
+canvas.setColor(...)
+canvas.drawCircle(...)
+canvas.finish()`),
+          {style: `position: absolute;
+                   left: 50px;
+                   top: 200px;`}),
+
+      img({src: 'img/right-arrow.svg',
+           style: `position: absolute;
+                   height: 100px;
+                   left: 390px;
+                   top: 230px`}),
+
+      pre(code(`with (canvas) {
+  begin()
+  setColor(...)
+  drawRectangle(...)
+  setColor(...)
+  drawCircle(...)
+  finish()
+}`),
+          {style: `position: absolute;
+                   right: 75px;
+                   top: 200px;`}),
+    ]),
+
+    slide([
+      h1(`${code('with')} en JavaScript`),
+
+      p("Restreindre la portée des noms"),
+
+      p(img({src: 'img/with-2.svg'})),
+
+      img({src: 'img/with-1.svg',
+           style: `position: absolute;
+                   left: 400px;
+                   top: 250px;`}),
 
     ]),
 
@@ -367,7 +480,10 @@ s.plus.new: Show -> Show -> Show
       h1(`${code('with')} à la rescousse`),
 
       content(pre(code(`with(show({num, plus})) {
-plus.new(num.new(1), num.new(2)).show() }`))),
+  plus.new(num.new(1), num.new(2)).show()
+}`))),
+
+      vspace(50),
 
       p(img({src: 'img/foal-5.svg'})),
 
@@ -460,7 +576,7 @@ with (state({num, plus})) {
                      right: 80px;`})),
     ]),
 
-    sec("Étendre Narcissus par manipulation de portée"),
+    sec("Détourner Narcissus"),
 
     slide([
       h1("Le motif module dans Narcissus"),
