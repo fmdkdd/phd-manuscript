@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-10-21 ven. 14:53 -->
+<!-- 2016-11-02 mer. 12:47 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -2117,7 +2117,7 @@ factorisées.
 <p>
 L&rsquo;intérêt de cette seconde représentation factorisée est qu&rsquo;elle préserve la
 séparation des préoccupations: l&rsquo;interpréteur d&rsquo;origine est conservé, et
-toujours présent dans le code source.  Le delta est séparé, et non plus mêlée
+toujours présent dans le code source.  Le delta est séparé, et non plus mêlé
 dans le code de l&rsquo;interpréteur.  Et cette factorisation passe plus facilement à
 l&rsquo;échelle.  Si l&rsquo;on veut appliquer non plus une mais quatre analyses sur
 Narcissus, on n&rsquo;a pas à dupliquer le code de l&rsquo;interpréteur quatre fois, mais
@@ -2145,7 +2145,7 @@ Id est la fonction identité
 </p>
 
 <p>
-Au lieu d&rsquo;avoir quatre interpréteurs différents, on peut juste conserver les
+Au lieu d&rsquo;avoir quatre interpréteurs différents, on peut juste conserver 
 l&rsquo;interpréteur de base et les quatre deltas.  C&rsquo;est une factorisation qui
 élimine la redondance de \(I_1\).
 </p>
@@ -2325,7 +2325,7 @@ d&rsquo;exécution fournit un objet global qui contient les objets de base comme
 expose ces objets aux programmes qu&rsquo;il interprète en réutilisant ceux qui lui
 sont exposés par son environnement hôte.  Certains de ces objets sont
 directement exposés, et d&rsquo;autres sont exposés via des mandataires (<i>proxies</i>).
-L&rsquo;objet global exposé par Narcissus est aussi enrichit par de nouvelles
+L&rsquo;objet global exposé par Narcissus est aussi enrichi par de nouvelles
 propriétés; la fonction <code>print</code> par exemple qui permet d&rsquo;écrire sur la sortie
 standard.
 </p>
@@ -2411,7 +2411,7 @@ On sait qu&rsquo;il y a une infinité de programmes différents qui donnent le m
 résultat, mais ils ne sont pas tous aussi faciles à modifier.  Suivant les choix
 faits par le concepteur, certaines modifications seront faciles à appliquer
 (s&rsquo;il y a une interface adéquate), tandis que d&rsquo;autres nécessiteront de réécrire
-une grande partie du code source.  Au cours de la vie du programme, la nature
+une grande partie du code source.  Au cours de la vie du programme, la nature des
 modifications effectuées peut changer; les modifications anticipées à la
 conception ne sont plus représentatives des modifications présentes.  Pour
 simplifier le travail de maintenance, on peut alors changer la structure du
@@ -2704,7 +2704,7 @@ programme.
 <p>
 Et c&rsquo;est là que <code>GOTO</code> pose problème.  En utilisant un <code>GOTO</code>, le processus peut
 continuer l&rsquo;exécution vers n&rsquo;importe quelle ligne du programme: même au beau
-milieu d&rsquo;une procédure, ou d&rsquo;une boucle.  Le système de coordonnée n&rsquo;est plus
+milieu d&rsquo;une procédure, ou d&rsquo;une boucle.  Le système de coordonnées n&rsquo;est plus
 suffisant pour connaître avec certitude l&rsquo;état du processus, les valeurs des
 variables.  Il faudrait également connaître à tout moment le chemin exact
 emprunté par le processus.  Mais ce n&rsquo;est plus un système de coordonnées: on ne
@@ -3373,7 +3373,7 @@ useful structure?
 
 <p>
 Ce qui se traduit, en Smalltalk, par le principe du &laquo;&nbsp;tout objet&nbsp;&raquo;.  Un nombre
-entier est un objet.  Une chaîne de caractère est un objet.  Une liste chaînée
+entier est un objet.  Une chaîne de caractères est un objet.  Une liste chaînée
 est un objet.  Un fichier est un objet.  Une image est un objet.  Et un objet,
 bien entendu, est un objet.
 </p>
@@ -3382,7 +3382,7 @@ bien entendu, est un objet.
 Les objets ont leur propre mémoire: ils sont les seuls maîtres des données
 qu&rsquo;ils manipulent.  L&rsquo;objet liste chaînée contient les références vers ses
 objets cellules; l&rsquo;objet fichier contient la référence vers le descripteur
-fournit par le système d&rsquo;exploitation.  On dit que les objets encapsulent ces
+fourni par le système d&rsquo;exploitation.  On dit que les objets encapsulent ces
 données: c&rsquo;est une forme de type de donnée abstrait.
 </p>
 
@@ -14020,7 +14020,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-10-21 ven. 14:53 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
+<p class="created">Crée: 2016-11-02 mer. 12:47 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
 </div>
 </body>
 </html>
