@@ -1630,7 +1630,7 @@ factorisées.
 
 L'intérêt de cette seconde représentation factorisée est qu'elle préserve la
 séparation des préoccupations: l'interpréteur d'origine est conservé, et
-toujours présent dans le code source.  Le delta est séparé, et non plus mêlée
+toujours présent dans le code source.  Le delta est séparé, et non plus mêlé
 dans le code de l'interpréteur.  Et cette factorisation passe plus facilement à
 l'échelle.  Si l'on veut appliquer non plus une mais quatre analyses sur
 Narcissus, on n'a pas à dupliquer le code de l'interpréteur quatre fois, mais
@@ -1651,7 +1651,7 @@ Id est la fonction identité
 (I_1, I_2, I_3, I_4) = (Id I_1, \delta_2 I_2, \delta_3 I_3, \delta_4 I_4) = (Id, \delta_2, \delta_3, \delta_4) I_1
 \]
 
-Au lieu d'avoir quatre interpréteurs différents, on peut juste conserver les
+Au lieu d'avoir quatre interpréteurs différents, on peut juste conserver 
 l'interpréteur de base et les quatre deltas.  C'est une factorisation qui
 élimine la redondance de $I_1$.
 
@@ -1794,7 +1794,7 @@ d'exécution fournit un objet global qui contient les objets de base comme
 expose ces objets aux programmes qu'il interprète en réutilisant ceux qui lui
 sont exposés par son environnement hôte.  Certains de ces objets sont
 directement exposés, et d'autres sont exposés via des mandataires (/proxies/).
-L'objet global exposé par Narcissus est aussi enrichit par de nouvelles
+L'objet global exposé par Narcissus est aussi enrichi par de nouvelles
 propriétés; la fonction ~print~ par exemple qui permet d'écrire sur la sortie
 standard.
 
@@ -1876,7 +1876,7 @@ On sait qu'il y a une infinité de programmes différents qui donnent le même
 résultat, mais ils ne sont pas tous aussi faciles à modifier.  Suivant les choix
 faits par le concepteur, certaines modifications seront faciles à appliquer
 (s'il y a une interface adéquate), tandis que d'autres nécessiteront de réécrire
-une grande partie du code source.  Au cours de la vie du programme, la nature
+une grande partie du code source.  Au cours de la vie du programme, la nature des
 modifications effectuées peut changer; les modifications anticipées à la
 conception ne sont plus représentatives des modifications présentes.  Pour
 simplifier le travail de maintenance, on peut alors changer la structure du
@@ -2108,7 +2108,7 @@ programme.
 
 Et c'est là que ~GOTO~ pose problème.  En utilisant un ~GOTO~, le processus peut
 continuer l'exécution vers n'importe quelle ligne du programme: même au beau
-milieu d'une procédure, ou d'une boucle.  Le système de coordonnée n'est plus
+milieu d'une procédure, ou d'une boucle.  Le système de coordonnées n'est plus
 suffisant pour connaître avec certitude l'état du processus, les valeurs des
 variables.  Il faudrait également connaître à tout moment le chemin exact
 emprunté par le processus.  Mais ce n'est plus un système de coordonnées: on ne
@@ -2666,14 +2666,14 @@ useful structure?
 #+END_QUOTE
 
 Ce qui se traduit, en Smalltalk, par le principe du "tout objet".  Un nombre
-entier est un objet.  Une chaîne de caractère est un objet.  Une liste chaînée
+entier est un objet.  Une chaîne de caractères est un objet.  Une liste chaînée
 est un objet.  Un fichier est un objet.  Une image est un objet.  Et un objet,
 bien entendu, est un objet.
 
 Les objets ont leur propre mémoire: ils sont les seuls maîtres des données
 qu'ils manipulent.  L'objet liste chaînée contient les références vers ses
 objets cellules; l'objet fichier contient la référence vers le descripteur
-fournit par le système d'exploitation.  On dit que les objets encapsulent ces
+fourni par le système d'exploitation.  On dit que les objets encapsulent ces
 données: c'est une forme de type de donnée abstrait.
 
 Pour communiquer entre eux, les objets s'envoient des /messages/.  Il n'y a pas
