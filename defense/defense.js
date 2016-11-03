@@ -136,7 +136,7 @@ console.log(
                      float: left;
                      margin-right: 20px;`})),
 
-      p("Interpréteur JavaScript meta-circulaire par Mozilla"),
+      p("Interpréteur JavaScript métacirculaire par Mozilla"),
 
       p("Idéal pour prototyper des extensions au langage"),
 
@@ -239,8 +239,36 @@ les changements de code`),
       note("clarity: matching code with intent")
     ]),
 
+    section([
+      h1("Construire un interpréteur par modules"),
 
-    sec("Construire un interpréteur par modules"),
+      img({src: 'img/foal-blocks.svg',
+           style: `display: block;
+                   margin: 50px auto;`}),
+
+    ], {class: 'titleslide slide level1'}),
+
+    slide([
+      h1(`Un module JavaScript est un objet`),
+
+      content(pre(code(`var m = {
+  parse(file) { ... },
+  exec(ast) { ... },
+}`))),
+
+      p("Souvent retourné par une fonction:"),
+
+      content(pre(code(`var m = (function(){
+  function parse(file) { ... }
+  function exec(ast) { ... }
+  function doExec(node) { ... }
+
+  return {
+    parse: parse,
+    exec: exec,
+  }
+}())`))),
+    ]),
 
     slide([
       h1("Un langage d'expressions arithmétiques"),
@@ -274,8 +302,6 @@ show : Term -> String
                    bottom: 50px;`}),
 
     ]),
-
-    // TODO: minimap of terms in corner
 
     slide([
       h1(`Le terme ${code('num')}`),
@@ -336,7 +362,9 @@ e2.eval() //: 3`))),
 
       vspace(10),
 
-      p(img({src: 'img/foal-2.svg'}))
+      p(img({src: 'img/foal-2.svg'})),
+
+      note("Explain diagram language"),
 
     ]),
 
@@ -490,35 +518,101 @@ canvas.finish()`),
     ]),
 
     slide([
-      h1("Modifier l'interpréteur"),
+      h1("Modifier des opérations existantes"),
 
-      p(img({src: 'img/foal-ext-language.svg'})),
+      img({src: 'img/foal-lang-5.svg',
+           style: `position: absolute;
+                   width: 250px;
+                   left: 50px;
+                   top: 200px;`}),
+
+      img({src: 'img/foal-lang-7.svg',
+           style: `position: absolute;
+                   width: 300px;
+                   right: 50px;
+                   top: 200px;`}),
     ]),
 
     slide([
-      h1("Modifier des opérations"),
+      h1("Doubler les constantes"),
 
-      content(pre(code(`var double = base => {
-  var num = {__proto__: base.num,
+      img({src: 'img/foal-lang-5.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      pre(code(`var double = function(base) {
+  var num = {
+    __proto__: base.num,
     eval() { return base.num.eval.call(this) * 2 }}
+  return {__proto__: base, num}}`),
+          {style: `margin-left: 50px`}),
+    ]),
 
+    slide([
+      h1("Doubler les constantes"),
+
+      img({src: 'img/foal-lang-5.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      pre(code(`var double = function(base) {
+  var num = {
+    __proto__: base.num,
+    eval() { return base.num.eval.call(this) * 2 }}
+  return {__proto__: base, num}}
+
+<em>with (double({num})) {</em>
+  plus.new(num.new(1), num.new(2)).eval() //: 6
+<em>}</em>`),
+          {style: `margin-left: 50px`}),
+
+      p(img({src: 'img/foal-6a.svg'})),
+
+    ]),
+
+    slide([
+      h1("Doubler les constantes"),
+
+      img({src: 'img/foal-lang-5.svg',
+           style: `position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      pre(code(`var double = function(base) {
+  var num = {
+    __proto__: base.num,
+    eval() { return <em>base.num.eval.call(this)</em> * 2 }}
   return {__proto__: base, num}}
 
 with (double({num})) {
-  plus.new(num.new(1), num.new(2)).eval() //: 6
-}
-plus.new(num.new(1), num.new(2)).eval() //: 3`))),
+  plus.new(<em>num</em>.new(1), <em>num</em>.new(2)).<em>eval</em>() //: 6
+}`),
+          {style: `margin-left: 50px`}),
 
-      p(img({src: 'img/foal-6.svg'})),
+      p(img({src: 'img/foal-6b.svg'})),
 
     ]),
+
 
     slide([
       h1("Combiner les modifications"),
 
-      content(pre(code(`with(double({num})) {
-  with (double({num})) {
-    with (double({num})) {
+      img({src: 'img/foal-lang-8.svg',
+           style: `position: absolute;
+                   width: 185px;
+                   right: 50px;
+                   top: 50px;`}),
+
+      vspace(50),
+
+      content(pre(code(`with (<em class="orange">double</em>({num})) {
+  with (<em class="orange">double</em>({num})) {
+    with (<em class="orange">double</em>({num})) {
       plus.new(num.new(1), num.new(2)).eval() //: 24`))),
 
     ]),
@@ -526,30 +620,63 @@ plus.new(num.new(1), num.new(2)).eval() //: 3`))),
     slide([
       h1("Ajouter de l'état"),
 
-      content(pre(code(`var state = (base, count = 0) => {
+      img({src: 'img/foal-lang-7.svg',
+           style: `position: absolute;
+                   width: 185px;
+                   right: 30px;
+                   top: 50px;`}),
+
+      content(pre(code(`var state = function(base, <em>count = 0</em>) {
 var num = {__proto__: base.num,
            eval() {
-             count++;
+             <em>count++</em>;
              return base.num.eval.call(this) }},
-
 var plus = {...}
-var getCount = () => count
+var <em>getCount</em> = function() { return <em>count</em> }
+
+return {__proto__: base, num, plus, getCount}}`))),
+    ]),
+
+    slide([
+      h1("Ajouter de l'état"),
+
+      img({src: 'img/foal-lang-7.svg',
+           style: `position: absolute;
+                   width: 185px;
+                   right: 30px;
+                   top: 50px;`}),
+
+      content(pre(code(`var state = function(base, <em>count = 0</em>) {
+var num = {__proto__: base.num,
+           eval() {
+             <em>count++</em>;
+             return base.num.eval.call(this) }},
+var plus = {...}
+var <em>getCount</em> = function() { return <em>count</em> }
 
 return {__proto__: base, num, plus, getCount}}
 
 with (state({num, plus})) {
-  getCount() //: 0
+  <em>getCount() //: 0</em>
   plus.new(num.new(1), num.new(2)).eval() //: 3
-  getCount() //: 3
+  <em>getCount() //: 3</em>
 }`))),
     ]),
 
     slide([
       h1("All together now"),
 
-      content(pre(code(`with (state({num, plus})) {
-  with (double({num})) {
-    with (show({num, plus})) {
+      img({src: 'img/foal-lang-6.svg',
+           style: `position: absolute;
+                   width: 200px;
+                   right: 30px;
+                   top: 50px;`}),
+
+      vspace(20),
+
+      content(pre(code(`with (<em class="green">state</em>({<em class="beige">num</em>, <em class="beige">plus</em>})) {
+  with (<em class="orange">double</em>({num})) {
+    with (<em class="blue">show</em>({num, plus})) {
       getCount() //: 0
       var n = plus.new(num.new(1), num.new(2))
       n.eval() //: 6
@@ -559,29 +686,36 @@ with (state({num, plus})) {
     ]),
 
     slide([
-      h1("Un interpréteur modulaire"),
+      h1("Contribution: un intepréteur modulaire"),
 
-      p("Ingrédients:"),
-      ul([
-        li("Objets dictionnaires"),
-        li("Délégations par prototypes"),
-        li("Fermetures"),
-        li(`Portée dynamique (${code('with')})`)
-      ]),
+      p("Un schéma de composition original pour des interpréteurs modulaire"),
 
-      p(img({src: 'img/foal-full-language.svg',
-             style: `width: 350px;
-                     position: absolute;
-                     top: 150px;
-                     right: 80px;`})),
+      vspace(20),
+
+      p(img({src: 'img/foal-lang-6.svg',
+             style: `width: 340px`})),
+
+      div([
+        p("Ingrédients:"),
+        ul([
+          li("Objets dictionnaires"),
+          li("Délégation par prototypes"),
+          li("Fermetures"),
+          li(`Portée dynamique (${code('with')})`)
+        ])],
+          {style: `position: absolute;
+                   top: 180px;
+                   left: 400px;`}),
+
+      vspace(20),
+      p(`Approche <b>bottom-up</b>: construire un interpréteur extensible`),
+
     ]),
 
     sec("Détourner Narcissus"),
 
     slide([
-      h1("Le motif module dans Narcissus"),
-
-      p("Verrouille l'extension"),
+      h1("Narcissus est un module"),
 
       content(pre(code(`var Narcissus = (function(){
   var globalBase = { ... }
@@ -600,7 +734,7 @@ with (state({num, plus})) {
     ]),
 
     slide([
-      h1("La portée dans le motif module"),
+      h1("Narcissus est un module verrouillé"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -615,25 +749,23 @@ m.g(0) //: 1`))),
     ]),
 
     slide([
-      h1("Ouvrir le motif module"),
+      h1("Ouvrir le module"),
 
       content(pre(code(`var m = (function(){
   var a = 1
-  function f(x) {
-    return x + a }
-  function g(x) {
-    return f(x) }
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
   return {g: g}
 }())
 
 m.g(0) //: 1
-m.E.a = 2
-m.g(0) //: 2`))),
+<em>m.E.a = 2</em>
+<em>m.g(0) //: 2</em>`))),
 
       p(img({src: 'img/dls4.svg',
              style: `position: absolute;
                      width: 350px;
-                     top: 180px;
+                     top: 250px;
                      right: 80px;`}))
     ]),
 
@@ -728,6 +860,18 @@ m.g(0) //: -1`))),
     ]),
 
     slide(figure(img({src: 'img/narcissus-diff-after.svg'}))),
+
+    slide([
+      h1("Changements nécessaires"),
+
+      content(pre(code(`
++  var repl_prompt = "njs-base> ";
+-      putstr("njs> ");
++      putstr(repl_prompt);`))),
+
+      p("resetEnvironment, populateEnvironment delayed"),
+
+    ]),
 
     slide([
       h1("Évaluation"),
