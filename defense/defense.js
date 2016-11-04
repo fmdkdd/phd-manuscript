@@ -736,6 +736,25 @@ with (state({num, plus})) {
     slide([
       h1("Narcissus est un module verrouillé"),
 
+      content(pre(code(`var m = <em>(function(){</em>
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
+  return {g: g}
+<em>}())</em>
+
+m.g(0) //: 1`))),
+
+      p(img({src: 'img/dls0.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;`})),
+    ]),
+
+    slide([
+      h1("Narcissus est un module verrouillé"),
+
       content(pre(code(`var m = (function(){
   var a = 1
   function f(x) { return x + a }
@@ -743,9 +762,32 @@ with (state({num, plus})) {
   return {g: g}
 }())
 
+<em>m.g(0)</em> //: 1`))),
+
+      p(img({src: 'img/dls0a.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;`})),
+    ]),
+
+    slide([
+      h1("Narcissus est un module verrouillé"),
+
+      content(pre(code(`var m = (function(){
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return <em>f(x)</em> }
+  return {g: g}
+}())
+
 m.g(0) //: 1`))),
 
-      p(img({src: 'img/dls0.svg'}))
+      p(img({src: 'img/dls0b.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;`})),
     ]),
 
     slide([
