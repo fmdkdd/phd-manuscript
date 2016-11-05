@@ -43,6 +43,9 @@ var b       = content_tag.bind(null, 'b')
 var em      = content_tag.bind(null, 'em')
 var figure  = content_tag.bind(null, 'figure')
 var script  = content_tag.bind(null, 'script')
+var table   = content_tag.bind(null, 'table')
+var tr      = content_tag.bind(null, 'tr')
+var td      = content_tag.bind(null, 'td')
 
 // I don't put any children in these, but they still need to be closed
 var video   = content_tag.bind(null, 'video', null)
@@ -65,6 +68,7 @@ var title = (text, author, date) =>
 var overlay = (c) => div(c, {class: 'incremental overlay'})
 var content = (c) => div(c, {class: 'content'})
 var vspace = (px) => div('', {style: `height: ${px}px`})
+var tbl = (array) => table(array.map(row => tr(row.map(cell => td(cell)))))
 
 // And here's the actual content
 console.log(
@@ -734,7 +738,7 @@ with (state({num, plus})) {
     ]),
 
     slide([
-      h1("Narcissus est un module verrouillé"),
+      h1("Problème: Narcissus est un module verrouillé"),
 
       content(pre(code(`var m = <em>(function(){</em>
   var a = 1
@@ -753,7 +757,7 @@ m.g(0) //: 1`))),
     ]),
 
     slide([
-      h1("Narcissus est un module verrouillé"),
+      h1("Problème: Narcissus est un module verrouillé"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -772,7 +776,7 @@ m.g(0) //: 1`))),
     ]),
 
     slide([
-      h1("Narcissus est un module verrouillé"),
+      h1("Problème: Narcissus est un module verrouillé"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -791,7 +795,9 @@ m.g(0) //: 1`))),
     ]),
 
     slide([
-      h1("Ouvrir le module"),
+      h1("Solution: ouvrir le module"),
+
+      p("<b>Supposition</b>: on dispose d'une référence <code><em>E</em></code>"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -802,9 +808,53 @@ m.g(0) //: 1`))),
 
 m.g(0) //: 1
 <em>m.E.a = 2</em>
+m.g(0) //: 2`))),
+
+      p(img({src: 'img/dls4a.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 280px;
+                     right: 80px;`}))
+    ]),
+
+    slide([
+      h1("Solution: ouvrir le module"),
+
+      p("<b>Supposition</b>: on dispose d'une référence <code><em>E</em></code>"),
+
+      content(pre(code(`var m = (function(){
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
+  return {g: g}
+}())
+
+m.g(0) //: 1
+m.E.a = 2
 <em>m.g(0) //: 2</em>`))),
 
-      p(img({src: 'img/dls4.svg',
+      p(img({src: 'img/dls4b.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 280px;
+                     right: 80px;`}))
+    ]),
+
+    slide([
+      h1("Problème: modifications réversibles"),
+
+      content(pre(code(`var m = (function(){
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
+  return {g: g}
+}())
+
+m.E.a = 2
+<em>delete m.E.a</em>
+m.g(0) <em>//: NaN</em>`))),
+
+      p(img({src: 'img/dls4c.svg',
              style: `position: absolute;
                      width: 350px;
                      top: 250px;
@@ -812,45 +862,156 @@ m.g(0) //: 1
     ]),
 
     slide([
-      h1("Ajouter un environnement frontal"),
+      h1("Solution: ajouter un environnement frontal"),
 
-      content(pre(code(`var m = (function(){ ... }())
+      content(pre(code(`var m = (function(){
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
+  return {g: g}
+}())
 
-m.g(0) //: 1
-m.E.a = 2
-m.g(0) //: 2
-delete m.E.a
 m.g(0) //: 1`))),
 
-      p(img({src: 'img/dls7.svg'}))
+      p(img({src: 'img/dls7a.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;`})),
     ]),
 
     slide([
-      h1(`Ouvrir le motif module avec ${code('with')}`),
+      h1("Solution: ajouter un environnement frontal"),
 
       content(pre(code(`var m = (function(){
-  var E = Object.create(null)
-  with (E) {
-    var a = 1
-    function f(x) {
-      return x + a }
-    function g(x) {
-      return f(x) }
-    return {
-      g: g,
-      E: E }
-  }
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
+  return {g: g}
+}())
+
+m.g(0) //: 1
+<em>m.E.a = 2
+m.g(0) //: 2</em>
+delete m.E.a
+m.g(0) //: 1`))),
+
+    p(img({src: 'img/dls7b.svg',
+           style: `position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;`})),
+  ]),
+
+    slide([
+      h1("Solution: ajouter un environnement frontal"),
+
+      content(pre(code(`var m = (function(){
+  var a = 1
+  function f(x) { return x + a }
+  function g(x) { return f(x) }
+  return {g: g}
 }())
 
 m.g(0) //: 1
 m.E.a = 2
-m.g(0) //: 2`))),
+m.g(0) //: 2
+<em>delete m.E.a
+m.g(0) //: 1</em>`))),
 
-      p(img({src: 'img/dls11.svg',
+      p(img({src: 'img/dls7c.svg',
              style: `position: absolute;
                      width: 350px;
-                     top: 230px;
+                     top: 250px;
+                     right: 80px;`})),
+    ]),
+
+    slide([
+      h1("Combiner les extensions"),
+
+      content(pre(code(`var m = (function(){ ... }())
+
+m.g(0) //: 1
+
+var e1 = <em>{ a: 2, f(x) {
+  return x + 2 * m.E.a }}</em>
+pushEnv(e1, m.E)
+m.g(0) //: 4`))),
+
+      p(img({src: 'img/dls8a.svg',
+             style: `position: absolute;
+                     width: 300px;
+                     top: 180px;
                      right: 80px;`}))
+
+    ]),
+
+    slide([
+      h1("Combiner les extensions"),
+
+      content(pre(code(`var m = (function(){ ... }())
+
+m.g(0) //: 1
+
+var e1 = { a: 2, f(x) {
+  return x + 2 * m.E.a }}
+<em>pushEnv(e1, m.E)</em>
+m.g(0) //: 4`))),
+
+      p(img({src: 'img/dls8b.svg',
+             style: `position: absolute;
+                     width: 300px;
+                     top: 180px;
+                     right: 80px;`}))
+
+    ]),
+
+    slide([
+      h1("Combiner les extensions"),
+
+      content(pre(code(`var m = (function(){ ... }())
+
+m.g(0) //: 1
+
+var e1 = { a: 2, f(x) {
+  return x + 2 * m.E.a }}
+pushEnv(e1, m.E)
+<em>m.g(0) //: 4</em>`))),
+
+      p(img({src: 'img/dls8c.svg',
+             style: `position: absolute;
+                     width: 300px;
+                     top: 180px;
+                     right: 80px;`}))
+
+    ]),
+
+    slide([
+      h1("Combiner les extensions"),
+
+      content(pre(code(`var m = (function(){ ... }())
+
+m.g(0) //: 1
+
+var e1 = { a: 2, f(x) {
+  return x + 2 * m.E.a }}
+pushEnv(e1, m.E)
+m.g(0) //: 4
+
+<em>var e2 = { f(x) {
+  return -m.E.a }}
+pushEnv(e2, m.E)</em>
+m.g(0) //: -2
+
+removeEnv(e1, m.E)
+m.g(0) //: -1`))),
+
+      p(img({src: 'img/dls8d.svg',
+             style: `position: absolute;
+                     width: 300px;
+                     top: 180px;
+                     right: 80px;`}))
+
     ]),
 
     slide([
@@ -870,10 +1031,10 @@ var e2 = { f(x) {
 pushEnv(e2, m.E)
 m.g(0) //: -2
 
-removeEnv(e1, m.E)
+<em>removeEnv(e1, m.E)</em>
 m.g(0) //: -1`))),
 
-      p(img({src: 'img/dls8.svg',
+      p(img({src: 'img/dls8e.svg',
              style: `position: absolute;
                      width: 300px;
                      top: 180px;
@@ -882,48 +1043,105 @@ m.g(0) //: -1`))),
     ]),
 
     slide([
-      h1("Appliquer sur Narcissus"),
+      h1(`Ouvrir le module avec ${code('with')}`),
+
+      content(pre(code(`var m = (function(){
+  <em>var E = Object.create(null)</em>
+  <em>with (E) {</em>
+    var a = 1
+    function f(x) { return x + a }
+    function g(x) { return f(x) }
+    return { g: g, <em>E: E</em> }
+  <em>}</em>
+}())
+
+m.g(0) //: 1
+m.E.a = 2
+m.g(0) //: 2`))),
+
+      p(img({src: 'img/dls11.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 310px;
+                     right: 80px;`}))
+    ]),
+
+    slide([
+      h1("Ouvrir Narcissus"),
 
       content(pre(code(`Narcissus.interpreter = (function(){
-+  var _env = Object.create(null)
-+  with (_env) {
+<em>+  var _env = Object.create(null)</em>
+<em>+  with (_env) {</em>
 
    ... /* 1500 lignes de code */ ...
 
-+  var _parent = { ... }
-+  Object.setPrototypeOf(_env, _parent);
+<em>+  var _parent = { ... }</em>
+<em>+  Object.setPrototypeOf(_env, _parent);</em>
    return {
      evaluate: evaluate,
      ...
-+    _env: _env
+<em>+    _env: _env</em>
    };
-+  }
+<em>+  }</em>
 }())`)))
     ]),
 
-    slide(figure(img({src: 'img/narcissus-diff-after.svg'}))),
+    slide(figure(img({src: 'img/narcissus-diff-after-1.svg'}))),
+
+    slide(img({src: 'img/narcissus-diff-after-2.svg',
+               style: `width: 750px;
+                       display: block;
+                       margin: 75px auto;`})),
+
+    slide(img({src: 'img/narcissus-diff-after-2b.svg',
+               style: `width: 750px;
+                       display: block;
+                       margin: 75px auto;`})),
 
     slide([
-      h1("Changements nécessaires"),
+      h1("Modifications supplémentaires"),
 
-      content(pre(code(`
-+  var repl_prompt = "njs-base> ";
--      putstr("njs> ");
-+      putstr(repl_prompt);`))),
+      p("Nommer une variable:"),
 
-      p("resetEnvironment, populateEnvironment delayed"),
+      content(pre(code(`-  putstr(<em>"njs> "</em>)
+
++  var repl_prompt = "njs-base> "
++  putstr(repl_prompt)`))),
+
+      vspace(15),
+
+      p("Retarder la finalisation:"),
+
+      pre(code(`(function(){
+  reflectArray()
+  reflectFunction()
+  ...
+}())`), {style: `margin-left: 50px; vertical-align: top;`}),
+
+      pre(code(`(function(){
+  <em>function populateEnv() { ... }</em>
+}())
+
+load("facets-analysis.js")
+<em>Narcissus.populateEnv()</em>`),
+          {style: `margin-left: 75px;`}),
 
     ]),
 
     slide([
-      h1("Évaluation"),
+      h1("Conformité et performances"),
 
-      ul([
-        li("4 analyses ajoutées"),
-        li("51 lignes de Narcissus modifiées"),
-        li("résultats identiques sur test262"),
-        li("7% d'overhead sur l'analyse multi-facettes")
-      ])
+      p("Suite de conformité test262: résultats identiques"),
+
+      tbl([
+        ['Interpréteur', 'Temps', 'Lignes modifiées'],
+        ['Narcissus', '1040 sec', '0'],
+        ['Narcissus (with)', '1218 sec (+17%)', '19'],
+        ['Narcissus multi-facettes (AF-12)', '1215 sec', '640'],
+        ['Narcissus multi-facettes (with)', '1301 sec (+7%)', '51'],
+      ]),
+
+      note('fix a bug once with diverting'),
     ]),
 
 
@@ -931,6 +1149,20 @@ m.g(0) //: -1`))),
 
     slide([
       h1("Détourner pour étendre et modifier un programme"),
+
+      p("Contributions:"),
+
+      p(["- construire un interpréteur extensible",
+
+         img({src: 'img/foal-lang-6.svg',
+              style: `width: 200px`})
+        ]),
+
+      p(["- modifier un interpréteur pour le rendre extensible",
+
+         img({src: 'img/narcissus-diff-after-2c.svg',
+              style: `width: 200px`})
+        ]),
 
       p(`Plus rapide et moins risqué que la refactorisation.
          Choix pragmatique dans les circonstances adéquates`),
