@@ -64,7 +64,7 @@ $(IMG_OUT)/%.png: $(IMG)/%.png
 
 # and files in the fonts folder
 $(FONTS_OUT)/%: $(FONTS)/%
-	cp $< $@
+	cp --recursive $< $@
 
 # Create build directories
 .PHONY: dirs
