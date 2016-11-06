@@ -55,7 +55,7 @@ var img = childless_tag.bind(null, 'img')
 
 // Semantic tags
 var note = (c) => div(c, {role: 'note'})
-var sec = (text) => section(h1(text), {class: 'titleslide slide level1'})
+var sec = (num, text) => section(h1(`<span>Partie ${num}</span><hr>${text}`), {class: 'titleslide slide level1'})
 var slide = (c) => section(c, {class: 'slide level2'})
 var title = (text, author, date) =>
     section([
@@ -81,18 +81,38 @@ console.log(
     slide([
       h1("Le plan"),
 
-      ol([
-        li("Contexte: sécuriser JavaScript"),
-        li("Problème: étendre des interpréteurs"),
-        li("Contributions: le détournement de programmes"),
-        ol([
-          li("Étendre des interpréteurs par module"),
-          li("Détourner Narcissus"),
-        ]),
-      ])
+      p("1. Problématique: étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript",
+        {style: `width: 500px`}),
+
+      img({src: 'img/narcissus-diff.svg',
+           style: `width: 150px;
+                   position: absolute;
+                   right: 50px;
+                   top: 120px;`}),
+
+      vspace(50),
+
+      p("2. Contribution: construire un interpréteur par modules"),
+
+      img({src: 'img/foal-lang-6.svg',
+           style: `width: 200px;
+                   position: absolute;
+                   right: 25px;
+                   top: 280px`}),
+
+      vspace(90),
+
+      p("3. Contribution: détourner Narcissus"),
+
+      img({src: 'img/narcissus-diff-after-2b.svg',
+           style: `width: 200px;
+                   position: absolute;
+                   right: 25px;
+                   top: 420px;`}),
+
     ]),
 
-    sec('Contexte: sécuriser JavaScript'),
+    sec('1', 'Étendre des interpréteurs pour<br>sécuriser JavaScript'),
 
     slide([
       h1('Étendre des interpréteurs pour sécuriser le nuage'),
@@ -716,7 +736,7 @@ with (state({num, plus})) {
 
     ]),
 
-    sec("Détourner Narcissus"),
+    sec('3', "Détourner Narcissus"),
 
     slide([
       h1("Narcissus est un module"),
@@ -1171,28 +1191,14 @@ load("facets-analysis.js")
     ]),
 
     slide([
-      h1("Indirection -> détournement"),
-
-      p(`N'importe quel mécanisme d'indirection suffit pour le détournement.`),
-
-      p(`${code('with')}, inversion of control, AspectJ, ...`)
-    ]),
-
-    slide([
-      h1("Détournement -> indirection"),
-
-      p(`Détourner c'est laisser un trou béant,
-         c'est casser la membrane du module`),
-
-      p(`L'un ne va pas sans l'autre`)
-    ]),
-
-    slide([
       h1("Perspectives"),
 
       p("Comparaison d'analyses de flot"),
 
       p("Application à V8/SpiderMonkey"),
+
+      p("Généraliser l'approche"),
+
     ]),
 
     sec("Extra credit"),
