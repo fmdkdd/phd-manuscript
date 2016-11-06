@@ -146,6 +146,8 @@ console.log(
     ]),
 
     slide([
+      h1("Des interpréteurs JavaScripts"),
+
       p(img({src: "img/interps.svg",
              style: `width: 700px`})),
 
@@ -182,7 +184,7 @@ console.log(
 
       p(img({src: 'img/facet-1.svg'})),
 
-      p("Flot indirect"),
+      p("Flot indirect:"),
 
       p(img({src: 'img/facet-2.svg'})),
     ]),
@@ -196,7 +198,7 @@ console.log(
 
       ul([
         li("Chaque valeur a deux facettes"),
-        li("Seul l'autorité voit la facette privée"),
+        li("Seule l'autorité voit la facette privée"),
         li(`Le ${b("program counter")} suit les flots indirects`)
       ])
     ]),
@@ -210,20 +212,9 @@ console.log(
              style: 'margin: 40px 0'})),
     ]),
 
-    slide([
-      h1("Modifier l'interpréteur"),
+    slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
 
-      p("Implémenter des analyses en modifiant l'interpréteur:"),
-
-      // TODO: simpler diagrams since the cycle was not presented
-      p(img({src: 'img/problem1b.svg',
-             style: 'margin: 20px 0'}))
-    ]),
-
-    slide(overlay([
-      figure(img({src: 'img/narcissus-diff-raw.png'})),
-      figure(img({src: 'img/narcissus-diff-annotated.png'}))
-    ])),
+    slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-annotated.png'}))]),
 
     slide(figure(img({src: 'img/narcissus-diff.svg'}))),
 
