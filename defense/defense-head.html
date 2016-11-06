@@ -33,14 +33,6 @@
      font-size: 20px;
    }
 
-   .view section:after {
-     counter-increment: slideidx;
-     content: counter(slideidx, decimal-leading-zero);
-     position: absolute; bottom: -80px; right: 100px;
-     color: white;
-     font-size: 60px;
-   }
-
    .view head > title {
      color: white;
      text-align: center;
@@ -264,6 +256,12 @@
      counter-increment: slideidx;
      content: counter(slideidx);
      position: absolute; bottom: 10px; right: 20px;
+   }
+
+   .view section:after {
+     color: white;
+     bottom: -80px !important; right: 100px !important;
+     font-size: 60px;
    }
 
   </style>
