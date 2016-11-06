@@ -55,7 +55,8 @@ var img = childless_tag.bind(null, 'img')
 
 // Semantic tags
 var note = (c) => div(c, {role: 'note'})
-var sec = (num, text) => section(h1(`<span>Partie ${num}</span><hr>${text}`), {class: 'titleslide slide level1'})
+var sec = (text) => section(h1(text), {class: 'titleslide slide level1'})
+var numsec = (num, text, img) => section([h1(`<span>Partie ${num}</span><hr>${text}`), img], {class: 'num titleslide slide level1'})
 var slide = (c) => section(c, {class: 'slide level2'})
 var title = (text, author, date) =>
     section([
@@ -92,19 +93,19 @@ console.log(
 
       vspace(50),
 
-      p("2. Contribution: construire un interpréteur par modules"),
+      p("2. Contribution: construire un interpréteur par<br>&nbsp;&nbsp;&nbsp;&nbsp; modules"),
 
-      img({src: 'img/foal-lang-6.svg',
+      img({src: 'img/foal-blocks.svg',
            style: `width: 200px;
                    position: absolute;
                    right: 25px;
                    top: 280px`}),
 
-      vspace(90),
+      vspace(60),
 
       p("3. Contribution: détourner Narcissus"),
 
-      img({src: 'img/narcissus-diff-after-2b.svg',
+      img({src: 'img/narcissus-diff-after-2c.svg',
            style: `width: 200px;
                    position: absolute;
                    right: 25px;
@@ -112,7 +113,11 @@ console.log(
 
     ]),
 
-    sec('1', 'Étendre des interpréteurs pour<br>sécuriser JavaScript'),
+    numsec('1', 'Étendre des interpréteurs pour<br>sécuriser JavaScript',
+           img({src: 'img/narcissus-diff.svg',
+                style: `width: 300px;
+                        display: block;
+                        margin: 50px auto;`})),
 
     slide([
       h1('Étendre des interpréteurs pour sécuriser le nuage'),
@@ -263,14 +268,10 @@ les changements de code`),
       note("clarity: matching code with intent")
     ]),
 
-    section([
-      h1("Construire un interpréteur par modules"),
-
-      img({src: 'img/foal-blocks.svg',
-           style: `display: block;
-                   margin: 50px auto;`}),
-
-    ], {class: 'titleslide slide level1'}),
+    numsec('2', "Construire un interpréteur par modules",
+           img({src: 'img/foal-blocks.svg',
+                style: `display: block;
+                        margin: 50px auto;`})),
 
     slide([
       h1(`Un module JavaScript est un objet`),
@@ -736,7 +737,11 @@ with (state({num, plus})) {
 
     ]),
 
-    sec('3', "Détourner Narcissus"),
+    numsec('3', "Détourner Narcissus",
+           img({src: 'img/narcissus-diff-after-2c.svg',
+                style: `width: 300px;
+                        display: block;
+                        margin: 50px auto;`})),
 
     slide([
       h1("Narcissus est un module"),
