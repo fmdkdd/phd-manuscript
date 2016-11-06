@@ -335,7 +335,12 @@ show : Term -> String
       p(img({src: 'img/foal-1a.svg',
              style: `position: absolute;
                      left: 75px;
-                      top: 350px;`}))
+                      top: 350px;`})),
+
+      img({src: 'img/foal-legend-1.svg',
+           style: `position: absolute;
+                   right: 50px;
+                   top: 350px;`}),
     ]),
 
     slide([
@@ -357,7 +362,13 @@ e1.eval() //: 3</em>`))),
       p(img({src: 'img/foal-1b.svg',
              style: `position: absolute;
                      left: 75px;
-                      top: 350px;`}))
+                      top: 350px;`})),
+
+      img({src: 'img/foal-legend.svg',
+           style: `position: absolute;
+                   right: 50px;
+                   top: 350px;`}),
+
     ]),
 
     slide([
@@ -509,7 +520,7 @@ canvas.finish()`),
     slide([
       h1(`${code('with')} en JavaScript`),
 
-      p("Restreindre la portée des noms"),
+      p("Pour restreindre la portée des noms"),
 
       p(img({src: 'img/with-2.svg'})),
 
@@ -517,6 +528,9 @@ canvas.finish()`),
            style: `position: absolute;
                    left: 400px;
                    top: 250px;`}),
+
+      vspace(10),
+      p("Simule la portée dynamique"),
 
     ]),
 
