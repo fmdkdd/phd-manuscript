@@ -1171,7 +1171,7 @@ load("facets-analysis.js")
       p("Suite de conformité test262: résultats identiques"),
 
       tbl([
-        ['Interpréteur', 'Temps', 'Lignes modifiées'],
+        ['Interpréteur', 'Benchmark', 'Lignes modifiées'],
         ['Narcissus', '1040 sec', '0'],
         ['Narcissus (with)', '1218 sec (+17%)', '19'],
         ['Narcissus multi-facettes (AF-12)', '1215 sec', '640'],
