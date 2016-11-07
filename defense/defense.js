@@ -1197,36 +1197,53 @@ load("facets-analysis.js")
     sec("Conclusions"),
 
     slide([
-      h1("Détourner pour étendre et modifier un programme"),
+      h1("Conclusion"),
 
+      p("Problème: étendre des interpréteurs pour<br>sécuriser JavaScript"),
+
+      img({src: 'img/slipslop-3.svg',
+           style: `width: 200px;
+                   position: absolute;
+                   top: 120px;
+                   right: 50px;`}),
+
+      vspace(30),
       p("Contributions:"),
 
-      p(["- construire un interpréteur extensible",
+      ul([
+        li(["Construire un interpréteur extensible",
 
-         img({src: 'img/foal-lang-6.svg',
-              style: `width: 200px`})
-        ]),
+            img({src: 'img/foal-lang-6.svg',
+                 style: `width: 200px;
+                         vertical-align: middle;
+                         position: relative;
+                         left: 115px;`})
+           ]),
 
-      p(["- modifier un interpréteur pour le rendre extensible",
+        vspace(60),
+        li(["Détourner Narcissus pour le rendre extensible",
 
-         img({src: 'img/narcissus-diff-after-2c.svg',
-              style: `width: 200px`})
-        ]),
-
-      p(`Plus rapide et moins risqué que la refactorisation.
-         Choix pragmatique dans les circonstances adéquates`),
-
-      p(`Pas une balle en argent: spécifique à chaque scénario`)
+            img({src: 'img/narcissus-diff-after-2c.svg',
+                 style: `width: 200px;
+                         position: absolute;
+                         top: 450px;
+                         right: 50px;`})
+           ]),
+      ]),
     ]),
 
     slide([
       h1("Perspectives"),
 
-      p("Comparaison d'analyses de flot"),
+      ul([
 
-      p("Application à V8/SpiderMonkey"),
+        li("Comparaison d'analyses de flot"),
 
-      p("Généraliser l'approche"),
+        li("Application à V8/SpiderMonkey"),
+
+        li("Généralisation à des programmes quelconques"),
+      ]),
+
 
     ]),
 
