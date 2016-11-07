@@ -236,6 +236,27 @@ console.log(
     ]),
 
     slide([
+      h1("État de l'art"),
+
+      ul([
+        li("Implémentation ouverte (Rao)"),
+        li("Programmation par aspects (TLT10, 500% d'overhead)"),
+        li("Interpréteurs refléxifs (3-Lisp, Friedman)"),
+        li("Patron interpréteur (GOF)"),
+        li("Patron visiteur (Oliveira, Krishnamurthi)"),
+        li("Algèbres d'objets (Cook, Oliveira)"),
+        li("Free monad (Swierstra)"),
+      ]),
+
+      vspace(20),
+      p("Interpréteurs extensibles par <b>construction</b>"),
+
+      note([
+        "existing interpreters/constructed extensible"
+      ])
+    ]),
+
+    slide([
       h1("Détourner l'interpréteur: les objectifs"),
 
       p(img({src: 'img/big-picture.svg',
@@ -245,6 +266,7 @@ console.log(
         li("Rapidité de prototypage"),
         li("Minimiser la duplication de code"),
         li("Séparer les analyses pour pouvoir les auditer"),
+        li("Solution pragmatique"),
       ]),
 
       vspace(20),
@@ -255,16 +277,6 @@ console.log(
       ])
     ]),
 
-    slide([
-      h1("Les approches existantes"),
-
-      p("AOP"),
-      p("Interpréteurs refléxifs"),
-
-      note([
-        "existing interpreters/constructed extensible"
-      ])
-    ]),
 
     numsec('2', "Construire un interpréteur par modules",
            img({src: 'img/foal-blocks.svg',
