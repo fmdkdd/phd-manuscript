@@ -85,7 +85,7 @@ console.log(
       p("1. Problématique: étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript",
         {style: `width: 500px`}),
 
-      img({src: 'img/narcissus-diff.svg',
+      img({src: 'img/diff-tangled.svg',
            style: `width: 150px;
                    position: absolute;
                    right: 50px;
@@ -114,7 +114,7 @@ console.log(
     ]),
 
     numsec('1', 'Étendre des interpréteurs pour<br>sécuriser JavaScript',
-           img({src: 'img/narcissus-diff.svg',
+           img({src: 'img/diff-tangled.svg',
                 style: `width: 300px;
                         display: block;
                         margin: 50px auto;`})),
@@ -199,8 +199,11 @@ console.log(
       ul([
         li("Chaque valeur a deux facettes"),
         li("Seule l'autorité voit la facette privée"),
-        li(`Le ${b("program counter")} suit les flots indirects`)
-      ])
+        li([`Le ${b("program counter")} suit les flots indirects`,
+            img({src: "img/facet-pc.svg",
+                 style: `position: absolute;
+                         right: 200px;`})])
+      ]),
     ]),
 
     slide([
@@ -214,16 +217,37 @@ console.log(
 
     slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
 
-    slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-annotated.png'}))]),
-
-    slide(figure(img({src: 'img/narcissus-diff.svg'}))),
+    slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/diff-tangled.svg'}))]),
 
     slide([
-      h1("Modifier l'interpréteur: les objectifs"),
+      h1("Mêler interpréteurs et analyses"),
 
-      p("Prototyper rapidement les analyses"),
-      p("Minimiser les changements de code"),
-      p("Séparer le code des analyses pour pouvoir les auditer"),
+      img({src: 'img/slipslop-2.svg',
+           style: `margin: 20px 200px;`}),
+    ]),
+
+    slide([
+      h1("Mêler interpréteurs et analyses"),
+
+      img({src: 'img/slipslop-3.svg',
+           style: `margin: 20px 200px;`}),
+
+      p("Inconvénients: <b>duplication</b> de code et <b>mélange</b> des préoccupations"),
+    ]),
+
+    slide([
+      h1("Détourner l'interpréteur: les objectifs"),
+
+      p(img({src: 'img/big-picture.svg',
+             style: `margin-left: 150px`})),
+
+      ul([
+        li("Rapidité de prototypage"),
+        li("Minimiser la duplication de code"),
+        li("Séparer les analyses pour pouvoir les auditer"),
+      ]),
+
+      vspace(20),
 
       note([
         "infinite number of correct programs",
@@ -240,23 +264,6 @@ console.log(
       note([
         "existing interpreters/constructed extensible"
       ])
-    ]),
-
-    slide([
-      h1("Détourner l'interpréteur"),
-
-      p(`Changer le comportement de l'interpréteur en minimisant
-les changements de code`),
-
-      p([
-        img({src: 'img/problem1b.svg',
-             style: `width: 350px;
-                     vertical-align: top`}),
-        img({src: 'img/problem2.svg',
-             style: 'width: 350px'})
-      ]),
-
-      note("clarity: matching code with intent")
     ]),
 
     numsec('2', "Construire un interpréteur par modules",
