@@ -432,8 +432,9 @@ plus.new(num.new(1), num.new(2)).show() //: "1+2"
 e1.show() //: "3"
 e2.show() //: "1+2"`))),
 
-      p(img({src: 'img/foal-3.svg'}))
+      p(img({src: 'img/foal-3.svg'})),
 
+      note('quite natural in JS'),
     ]),
 
     slide([
@@ -1190,7 +1191,7 @@ load("facets-analysis.js")
         ['Narcissus multi-facettes (with)', '1301 sec (+7%)', '51'],
       ]),
 
-      note('fix a bug once with diverting'),
+      note('fix a bug only once with diverting'),
     ]),
 
 
@@ -1247,7 +1248,22 @@ load("facets-analysis.js")
 
     ]),
 
-    sec("Extra credit"),
+    sec("Q & A"),
+
+    slide([
+      h1("<code>with</code> != portée dynamique"),
+
+    ]),
+
+    slide([
+      h1("Portée dynamique: heureux accident"),
+    ]),
+
+    slide([
+      h1("Distinction objet et environnement"),
+
+      p("Pas si élégant"),
+    ]),
 
     slide([
       h1("Contrôler le détournement"),
