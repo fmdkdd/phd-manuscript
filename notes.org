@@ -4854,6 +4854,60 @@ Aiming for a first rehearsal on [2016-10-28 ven.].
 
 - Perspectives: how can we apply that to V8?  To compilers?
 
+** [2016-11-08 mar.]
+*** Second rehearsal with J
+
+- Terms/operations/modules -> modules.  Too confusing.
+
+- 4 creation patterns of modules used in part 2:
+  1. var m = {}
+  2. var m = {m1, m2}
+  3. (function() { return {f, g} }())
+  4. var m = function(base) { return {f, g} }
+
+  Mind the difference, esp. in slide 20 (add show)
+
+- slide 17 -> n = 3 or 1 ?
+
+- njs-base -> njs
+
+- Why JS?  State that JS is important today: popularity charts/numbers in
+  intro.
+
+- "portée dynamique" evokes "danger", and does not appropriately describes what
+  happens with `with`.  Just say that it allows you to push an environment, and
+  it's equivalent to an IIFE, because that's all we use at this point.
+
+- add logos and J and M and ASCOLA on first page
+
+- slide 2: say that project had static and dynamic analyses in mind, we are in
+  dynamic part
+
+- slide 5: dynamic analyses are not on source code
+
+- slide 5: say that indirect flows were thought to be static-only, but AF showed
+  it could be used dynamically, hence the choice of dynamic analyses and this
+  one in particular
+
+- describe dynamic analyses before Narcissus
+
+- slide 7: give better intuition of faceted evaluation; maybe simplify example
+  with only one branch
+
+- slide 11: pourquoi 4 analyses?  Plus!
+
+- slide 12: typo: réfléxif
+
+- slide 12: put AOP at the bottom, and just say overhead + just too complex for
+  our needs
+
+- slide 17: num is a /reference/ to an object
+
+- slide 33: say that it works because we defined them adequately
+
+- backup slides: about interferences of modules (in Narcissus you have to do
+  extra work if you want them to compose)
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
