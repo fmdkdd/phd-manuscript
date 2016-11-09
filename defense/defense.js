@@ -274,7 +274,7 @@ console.log(
       ul([
         li("Implémentation ouverte (Rao)"),
         li("Programmation par aspects (TLT10, 500% d'overhead)"),
-        li("Interpréteurs refléxifs (3-Lisp, Friedman)"),
+        li("Interpréteurs réfléxifs (3-Lisp, Friedman)"),
         li("Patron interpréteur (GOF)"),
         li("Patron visiteur (Oliveira, Krishnamurthi)"),
         li("Algèbres d'objets (Cook, Oliveira)"),
@@ -1188,7 +1188,7 @@ m.g(0) //: 2`))),
 
       content(pre(code(`-  putstr(<em>"njs> "</em>)
 
-+  var repl_prompt = "njs-base> "
++  var repl_prompt = "njs> "
 +  putstr(repl_prompt)`))),
 
       vspace(15),
