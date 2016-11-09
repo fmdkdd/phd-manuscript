@@ -1212,7 +1212,7 @@ load("facets-analysis.js")
     ]),
 
     slide([
-      h1("Conformité et performances"),
+      h1("Évaluation"),
 
       p("Suite de conformité test262: résultats identiques"),
 
@@ -1223,6 +1223,22 @@ load("facets-analysis.js")
         ['Narcissus multi-facettes (AF-12)', '1215 sec', '640'],
         ['Narcissus multi-facettes (with)', '1301 sec (+7%)', '51'],
       ]),
+
+      img({src: 'img/diff-tangled.svg',
+           style: `width: 200px;
+                   position: absolute;
+                   left: 80px;`}),
+
+      img({src: 'img/right-arrow.svg',
+           style: `width: 50px;
+                   position: absolute;
+                   bottom: 70px;
+                   left: 330px;`}),
+
+      img({src: 'img/narcissus-diff-after-2c.svg',
+           style: `width: 300px;
+                   position: absolute;
+                   right: 80px;`}),
 
       note('fix a bug only once with diverting'),
     ]),
