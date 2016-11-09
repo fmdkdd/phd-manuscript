@@ -640,9 +640,9 @@ canvas.finish()`),
     slide([
       h1(`${code('with')} pour activer un module`),
 
-      content(pre(code(`with(show({num, plus})) {
+      content(pre(code(`<em>with(show({num, plus})) {</em>
   plus.new(num.new(1), num.new(2)).show()
-}`))),
+<em>}</em>`))),
 
       vspace(50),
 
@@ -666,6 +666,47 @@ canvas.finish()`),
                    top: 200px;`}),
     ]),
 
+  //   slide([
+  //     h1("Doubler les constantes"),
+
+  //     img({src: 'img/foal-lang-5.svg',
+  //          style: `position: absolute;
+  //                  width: 175px;
+  //                  right: 50px;
+  //                  top: 50px;`}),
+
+  //     pre(code(`var double = function(base) {
+  // var num = {
+  //   __proto__: base.num,
+  //   eval() { return base.num.eval.call(this) * 2 }}
+  // return {__proto__: base, num}}`),
+  //         {style: `margin-left: 50px`}),
+  //   ]),
+
+//     slide([
+//       h1("Doubler les constantes"),
+
+//       img({src: 'img/foal-lang-5.svg',
+//            style: `position: absolute;
+//                    width: 175px;
+//                    right: 50px;
+//                    top: 50px;`}),
+
+//       pre(code(`var double = function(base) {
+//   var num = {
+//     __proto__: base.num,
+//     eval() { return base.num.eval.call(this) * 2 }}
+//   return {__proto__: base, num}}
+
+// <em>with (double({num})) {</em>
+//   plus.new(num.new(1), num.new(2)).eval() //: 6
+// <em>}</em>`),
+//           {style: `margin-left: 50px`}),
+
+//       p(img({src: 'img/foal-6a.svg'})),
+
+//     ]),
+
     slide([
       h1("Doubler les constantes"),
 
@@ -678,52 +719,11 @@ canvas.finish()`),
       pre(code(`var double = function(base) {
   var num = {
     __proto__: base.num,
-    eval() { return base.num.eval.call(this) * 2 }}
-  return {__proto__: base, num}}`),
-          {style: `margin-left: 50px`}),
-    ]),
-
-    slide([
-      h1("Doubler les constantes"),
-
-      img({src: 'img/foal-lang-5.svg',
-           style: `position: absolute;
-                   width: 175px;
-                   right: 50px;
-                   top: 50px;`}),
-
-      pre(code(`var double = function(base) {
-  var num = {
-    __proto__: base.num,
-    eval() { return base.num.eval.call(this) * 2 }}
-  return {__proto__: base, num}}
-
-<em>with (double({num})) {</em>
-  plus.new(num.new(1), num.new(2)).eval() //: 6
-<em>}</em>`),
-          {style: `margin-left: 50px`}),
-
-      p(img({src: 'img/foal-6a.svg'})),
-
-    ]),
-
-    slide([
-      h1("Doubler les constantes"),
-
-      img({src: 'img/foal-lang-5.svg',
-           style: `position: absolute;
-                   width: 175px;
-                   right: 50px;
-                   top: 50px;`}),
-
-      pre(code(`var double = function(base) {
-  var num = {
-    __proto__: base.num,
-    eval() { return <em>base.num.eval.call(this)</em> * 2 }}
+    eval() { return <em>base.num.eval.call(this) * 2</em> }}
   return {__proto__: base, num}}
 
 with (double({num})) {
-  plus.new(<em>num</em>.new(1), <em>num</em>.new(2)).<em>eval</em>() //: 6
+  plus.new(num.new(1), num.new(2)).eval() <em>//: 6</em>
 }`),
           {style: `margin-left: 50px`}),
 
@@ -748,27 +748,29 @@ with (double({num})) {
     with (<em class="orange">double</em>({num})) {
       plus.new(num.new(1), num.new(2)).eval() //: 24`))),
 
+      note(['2*2*2 = 8x']),
+
     ]),
 
-    slide([
-      h1("Ajouter de l'état"),
+//     slide([
+//       h1("Ajouter de l'état"),
 
-      img({src: 'img/foal-lang-7.svg',
-           style: `position: absolute;
-                   width: 185px;
-                   right: 30px;
-                   top: 50px;`}),
+//       img({src: 'img/foal-lang-7.svg',
+//            style: `position: absolute;
+//                    width: 185px;
+//                    right: 30px;
+//                    top: 50px;`}),
 
-      content(pre(code(`var state = function(base, <em>count = 0</em>) {
-var num = {__proto__: base.num,
-           eval() {
-             <em>count++</em>;
-             return base.num.eval.call(this) }},
-var plus = {...}
-var <em>getCount</em> = function() { return <em>count</em> }
+//       content(pre(code(`var state = function(base, <em>count = 0</em>) {
+// var num = {__proto__: base.num,
+//            eval() {
+//              <em>count++</em>;
+//              return base.num.eval.call(this) }},
+// var plus = {...}
+// var <em>getCount</em> = function() { return <em>count</em> }
 
-return {__proto__: base, num, plus, getCount}}`))),
-    ]),
+// return {__proto__: base, num, plus, getCount}}`))),
+//     ]),
 
     slide([
       h1("Ajouter de l'état"),
@@ -834,10 +836,9 @@ with (state({num, plus})) {
       div([
         p("Ingrédients:"),
         ul([
-          li("Objets dictionnaires"),
+          li("Modules"),
           li("Délégation par prototypes"),
-          li("Fermetures"),
-          li(`Portée dynamique (${code('with')})`)
+          li("Fermetures lexicales"),
         ])],
           {style: `position: absolute;
                    top: 180px;
