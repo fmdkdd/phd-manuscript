@@ -263,13 +263,6 @@ console.log(
     slide([
       h1("Mêler interpréteurs et analyses"),
 
-      img({src: 'img/slipslop-2.svg',
-           style: `margin: 20px 200px;`}),
-    ]),
-
-    slide([
-      h1("Mêler interpréteurs et analyses"),
-
       img({src: 'img/slipslop-3.svg',
            style: `margin: 20px 200px;`}),
 
