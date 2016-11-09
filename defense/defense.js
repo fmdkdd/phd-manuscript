@@ -1330,6 +1330,14 @@ load("facets-analysis.js")
     ]),
 
     slide([
+      h1("Interférences entre modules"),
+
+      p("No safeguards"),
+      p("Have to write the modules carefully to allow composition"),
+      p("Same problems with Aspects"),
+    ]),
+
+    slide([
       h1("Contrôler le détournement"),
 
       p(`Possible de retourner un proxy sur l'objet scope qui empêche
