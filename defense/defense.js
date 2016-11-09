@@ -372,7 +372,7 @@ show : Term -> String
     ]),
 
     slide([
-      h1(`Le terme ${code('num')}`),
+      h1(`Le module ${code('num')}`),
 
       img({src: 'img/foal-lang-2.svg',
            style: `position: absolute;
@@ -396,7 +396,7 @@ show : Term -> String
     ]),
 
     slide([
-      h1(`Le terme ${code('num')}`),
+      h1(`Le module ${code('num')}`),
 
       img({src: 'img/foal-lang-2.svg',
            style: `position: absolute;
@@ -424,7 +424,7 @@ e1.eval() //: 3</em>`))),
     ]),
 
     slide([
-      h1(`Ajouter le terme ${code('plus')}`),
+      h1(`Ajouter le module ${code('plus')}`),
 
       img({src: 'img/foal-lang-3.svg',
            style: `position: absolute;
@@ -447,31 +447,31 @@ e2.eval() //: 3`))),
 
     ]),
 
+//     slide([
+//       h1("Ajouter une opération, rétroactivement"),
+
+//       img({src: 'img/foal-lang-4.svg',
+//            style: `position: absolute;
+//                    width: 175px;
+//                    right: 50px;
+//                    top: 50px;`}),
+
+//       content(pre(code(`<em>num.show =</em> function() {
+//   return this.n.toString() }
+// <em>plus.show =</em> function() {
+//   this.l.show() + '+' + this.r.show() }
+
+// plus.new(num.new(1), num.new(2)).show() //: "1+2"
+// e1.show() //: "3"
+// e2.show() //: "1+2"`))),
+
+//       p(img({src: 'img/foal-3.svg'})),
+
+//       note('quite natural in JS'),
+//     ]),
+
     slide([
-      h1("Ajouter une opération, rétroactivement"),
-
-      img({src: 'img/foal-lang-4.svg',
-           style: `position: absolute;
-                   width: 175px;
-                   right: 50px;
-                   top: 50px;`}),
-
-      content(pre(code(`<em>num.show =</em> function() {
-  return this.n.toString() }
-<em>plus.show =</em> function() {
-  this.l.show() + '+' + this.r.show() }
-
-plus.new(num.new(1), num.new(2)).show() //: "1+2"
-e1.show() //: "3"
-e2.show() //: "1+2"`))),
-
-      p(img({src: 'img/foal-3.svg'})),
-
-      note('quite natural in JS'),
-    ]),
-
-    slide([
-      h1("Ajouter une opération comme module"),
+      h1("Ajouter le module <code>show</code>"),
 
       img({src: 'img/foal-lang-4.svg',
            style: `position: absolute;
@@ -494,7 +494,7 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
     ]),
 
     slide([
-      h1("Ajouter une opération comme module"),
+      h1("Ajouter le module <code>show</code>"),
 
       img({src: 'img/foal-lang-4.svg',
            style: `position: absolute;
@@ -601,7 +601,7 @@ canvas.finish()`),
     ]),
 
     slide([
-      h1("Modifier des opérations existantes"),
+      h1("Modifier des modules existants"),
 
       img({src: 'img/foal-lang-5.svg',
            style: `position: absolute;
@@ -683,7 +683,7 @@ with (double({num})) {
 
 
     slide([
-      h1("Combiner les modifications"),
+      h1("Combiner les modules"),
 
       img({src: 'img/foal-lang-8.svg',
            style: `position: absolute;
@@ -766,6 +766,9 @@ with (state({num, plus})) {
       getCount() //: 3
       n.show() //: "1+2"
 }}}`))),
+
+      note(["Works because we defined them adequately",
+            "No safeguards from interferences"]),
     ]),
 
     slide([
