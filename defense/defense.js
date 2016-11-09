@@ -58,13 +58,44 @@ var note = (c) => div(c, {role: 'note'})
 var sec = (text) => section(h1(text), {class: 'titleslide slide level1'})
 var numsec = (num, text, img) => section([h1(`<span>Partie ${num}</span><hr>${text}`), img], {class: 'num titleslide slide level1'})
 var slide = (c) => section(c, {class: 'slide level2'})
-var title = (text, author, date) =>
+var title = (text, author, date, team, supervisor, director) =>
     section([
       h1(text, {class: 'title'}),
-      footer([
+
+      div([
         span(author, {class: 'author'}),
-        span(date, {class: 'date'})
-      ])
+        span(supervisor, {class: 'supervisor'}),
+        span(director, {class: 'director'}),
+      ], {class: 'authors'}),
+
+      span(team, {class: 'team'}),
+
+      span(date, {class: 'date'}),
+
+      // Here comes corporatism
+      img({src: 'img/logo-emn.svg',
+           style: `width: 130px;
+                   position: absolute;
+                   bottom: 0px;
+                   left: 50px;`}),
+
+      img({src: 'img/LINA.svg',
+           style: `width: 90px;
+                   position: absolute;
+                   bottom: 20px;
+                   left: 240px;`}),
+
+      img({src: 'img/logo-inria.png',
+           style: `width: 160px;
+                   position: absolute;
+                   bottom: 13px;
+                   left: 420px;`}),
+
+      img({src: 'img/UBL.png',
+           style: `width: 100px;
+                   position: absolute;
+                   bottom: 20px;
+                   right: 50px;`}),
     ], {class: 'title'})
 var overlay = (c) => div(c, {class: 'incremental overlay'})
 var content = (c) => div(c, {class: 'content'})
@@ -76,8 +107,10 @@ console.log(
   body([
 
     title(`Étendre des interpréteurs par détournement`,
-          'fmdkdd',
-          'Mines Nantes, 18 novembre 2016'),
+          'Florent Marchand de Kerchove',
+          'Mines Nantes, 18 novembre 2016',
+          'ASCOLA',
+          'Jacques Noyé', 'Mario Südholt'),
 
     slide([
       h1("Le plan"),
