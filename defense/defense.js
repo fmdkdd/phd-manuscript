@@ -336,18 +336,21 @@ console.log(
   exec(ast) { ... },
 }`))),
 
-      p("Souvent retourné par une fonction:"),
+      p("Retourné par une fonction immédiatement invoquée:"),
 
       content(pre(code(`var m = (function(){
   function parse(file) { ... }
   function exec(ast) { ... }
-  function doExec(node) { ... }
 
-  return {
-    parse: parse,
-    exec: exec,
-  }
+  return <em>{ parse, exec }</em>
 }())`))),
+
+
+      p("Ou par une fonction avec argument:"),
+
+      content(pre(code(`var M = function(opts) { ... return { parse, exec } }
+var m = M({...})`))),
+
     ]),
 
     slide([
@@ -366,10 +369,9 @@ show : Term -> String
       div([
         p("Ingrédients:"),
         ul([
-          li("Objets dictionnaires"),
+          li("Modules"),
           li("Délégations par prototypes"),
-          li("Fermetures"),
-          li("Portée dynamique")
+          li("Fermetures lexicales"),
         ]),
       ], {style: `position: absolute;
                   top: 125px;
@@ -491,18 +493,18 @@ e2.eval() //: 3`))),
                    right: 50px;
                    top: 50px;`}),
 
-      content(pre(code(`var show = function(base) {
+      content(pre(code(`var show = <em>function(base) {</em>
   var num = {__proto__: base.num,
     show() { return this.n.toString() }}
   var plus = {...}
-  return {num, plus}}
-<em>var s = show({num, plus})</em>
+  return {num, plus}
+<em>}</em>
+var s = show({num, plus})
 e2.show() //: undefined
-
 s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 
-      p(img({src: 'img/foal-4.svg'}))
+      p(img({src: 'img/foal-4a.svg'}))
     ]),
 
     slide([
@@ -518,40 +520,71 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
   var num = {__proto__: base.num,
     show() { return this.n.toString() }}
   var plus = {...}
-  return {num, plus}}
+  return {num, plus}
+}
 <em>var s = show({num, plus})</em>
 e2.show() //: undefined
-
 s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 
       p(img({src: 'img/foal-4.svg'})),
 
-      img({src: 'img/foal-3.svg',
-           style: `position: absolute;
-                   bottom: 5px;
-                   right: 75px;`}),
+      note([
+        "Syntaxic noise of s.plus, s.new...",
+      ]),
     ]),
 
+//     slide([
+//       h1("Ajouter le module <code>show</code>"),
+
+//       img({src: 'img/foal-lang-4.svg',
+//            style: `position: absolute;
+//                    width: 175px;
+//                    right: 50px;
+//                    top: 50px;`}),
+
+//       content(pre(code(`var show = function(base) {
+//   var num = {__proto__: base.num,
+//     show() { return this.n.toString() }}
+//   var plus = {...}
+//   return {num, plus}}
+// <em>var s = show({num, plus})</em>
+// e2.show() //: undefined
+
+// s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
+// s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
+
+//       p(img({src: 'img/foal-4.svg'})),
+
+//       img({src: 'img/foal-3.svg',
+//            style: `position: absolute;
+//                    bottom: 5px;
+//                    right: 75px;`}),
+
+//       note([
+//         "Syntaxic noise of s.plus, s.new...",
+//       ]),
+//     ]),
+
+//     slide([
+//       h1("Problème: mixer les modules"),
+
+//       content(pre(code(`<em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
+
+// //: TypeError: this.l.show is not a function`))),
+
+//       p("Problème de types:"),
+
+//       content(pre(code(`plus.new: Term -> Term -> Term
+// s.plus.new: Show -> Show -> Show
+// `))),
+
+//     ]),
+
     slide([
-      h1("Problème: mixer les modules"),
+      h1(`Réduire le bruit syntaxique`),
 
-      content(pre(code(`<em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
-
-//: TypeError: this.l.show is not a function`))),
-
-      p("Problème de types:"),
-
-      content(pre(code(`plus.new: Term -> Term -> Term
-s.plus.new: Show -> Show -> Show
-`))),
-
-    ]),
-
-    slide([
-      h1(`${code('with')} en JavaScript`),
-
-      p("Intention: réduire le bruit syntaxique"),
+      p("Le but <code>with</code> en JavaScript:"),
 
       pre(code(`canvas.begin()
 canvas.setColor(...)
@@ -583,24 +616,29 @@ canvas.finish()`),
     ]),
 
     slide([
-      h1(`${code('with')} en JavaScript`),
+      h1("<code>with</code> crée un environnement"),
 
-      p("Pour restreindre la portée des noms"),
+      p("Équivalent à un appel de fonction:"),
 
-      p(img({src: 'img/with-2.svg'})),
+      img({src: 'img/with-2.svg',
+           style: `margin: 0 50px;`}),
+      img({src: 'img/with-3.svg',
+           style: `margin: 0 100px;`}),
 
       img({src: 'img/with-1.svg',
            style: `position: absolute;
-                   left: 400px;
-                   top: 250px;`}),
+                   left: 70px;
+                   top: 400px;`}),
 
-      vspace(10),
-      p("Simule la portée dynamique"),
+      img({src: 'img/with-4.svg',
+           style: `position: absolute;
+                   left: 450px;
+                   top: 400px;`}),
 
     ]),
 
     slide([
-      h1(`${code('with')} à la rescousse`),
+      h1(`${code('with')} pour activer un module`),
 
       content(pre(code(`with(show({num, plus})) {
   plus.new(num.new(1), num.new(2)).show()
