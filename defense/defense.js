@@ -281,7 +281,7 @@ console.log(
 
       ul([
         li("Implémentation ouverte (Rao)"),
-        li("Interpréteurs réfléxifs (Smith, Friedman)"),
+        li("Interpréteurs réflexifs (Smith, Friedman)"),
         li("Patron interpréteur (GOF)"),
         li("Patron visiteur (GOF, Oliveira, Krishnamurthi)"),
         li("Algèbres d'objets (Oliveira & Cook)"),
