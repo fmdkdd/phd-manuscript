@@ -159,27 +159,75 @@ console.log(
 
       content([
         img({src: 'img/chrome-logo.svg',
-             style: 'width: 100px'}),
+             style: `width: 100px;`}),
         p('Sécuriser les applications web exécutées dans les navigateurs...',
           {style: `display: inline-block;
                    width: 440px;
-                   margin: 80px 20px;
+                   margin: 50px 20px;
                    position: relative;
-                   top: -20px;`}),
+                   top: -30px;`}),
 
         img({src: 'img/js.png',
-             style: 'width: 100px'}),
+             style: `width: 100px;`}),
         p('...en analysant les programmes JavaScript',
           {style: `display: inline-block;
                    width: 440px;
                    margin: 20px;
                    position: relative;
-                   top: -30px;`})
-      ])
+                   top: -30px;`}),
+      ]),
+
+      p("Analyse statique: analyser le code source"),
+      p("<em>Analyse dynamique</em>: analyser l'exécution du programme"),
+
     ]),
 
     slide([
-      h1("Des interpréteurs JavaScripts"),
+      h1("Analyses dynamiques de programme"),
+
+      p("Analyser le programme pour en déduire le comportement"),
+
+      p(`Ex: analyse de ${em("flot d'information")}:`),
+
+      p(img({src: 'img/facet-1.svg'})),
+
+      p("Flot indirect:"),
+
+      p(img({src: 'img/facet-2.svg'})),
+
+      note(["Indirect flows believed static-only",
+            "AF-12 showed it could be done"]),
+    ]),
+
+    slide([
+      h1("Analyse multi-facettes"),
+
+      p("Analyse dynamique de flot d'information [Austin et Flanagan, 2012]"),
+
+      p(img({src: "img/a-facet.svg"})),
+
+      ul([
+        li("Chaque valeur a deux facettes"),
+        li("Seule l'autorité voit la facette privée"),
+        li([`Le ${b("program counter")} suit les flots indirects`,
+            img({src: "img/facet-pc.svg",
+                 style: `position: absolute;
+                         right: 200px;`})])
+      ]),
+    ]),
+
+    slide([
+      h1('Analyse multi-facettes: exemple'),
+
+      p("Flot indirect (Austin et Flanagan 2012)"),
+
+      p(img({src: 'img/fenton-example.svg',
+             style: 'margin: 40px 0'})),
+    ]),
+
+
+    slide([
+      h1("Des interpréteurs JavaScript"),
 
       p(img({src: "img/interps.svg",
              style: `width: 700px`})),
@@ -204,48 +252,8 @@ console.log(
 
       p("Idéal pour prototyper des extensions au langage"),
 
-      p(`Utilisé par Austin et Flanagan pour implémenter
-         l'${em("analyse multi-facettes")}`)
-    ]),
-
-    slide([
-      h1("Analyses dynamiques de programme"),
-
-      p("Analyser le code source pour en déduire le comportement"),
-
-      p(`Analyse de ${b("flot d'information")}:`),
-
-      p(img({src: 'img/facet-1.svg'})),
-
-      p("Flot indirect:"),
-
-      p(img({src: 'img/facet-2.svg'})),
-    ]),
-
-    slide([
-      h1("Analyse multi-facettes"),
-
-      p("Analyse dynamique de flot d'information (Austin et Flanagan 2012)"),
-
-      p(img({src: "img/a-facet.svg"})),
-
-      ul([
-        li("Chaque valeur a deux facettes"),
-        li("Seule l'autorité voit la facette privée"),
-        li([`Le ${b("program counter")} suit les flots indirects`,
-            img({src: "img/facet-pc.svg",
-                 style: `position: absolute;
-                         right: 200px;`})])
-      ]),
-    ]),
-
-    slide([
-      h1('Analyse multi-facettes: exemple'),
-
-      p("Flot indirect (Austin et Flanagan 2012)"),
-
-      p(img({src: 'img/fenton-example.svg',
-             style: 'margin: 40px 0'})),
+      p(`Utilisé par Austin et Flanagan pour <em>implémenter</em>
+         l'analyse multi-facettes`)
     ]),
 
     slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
