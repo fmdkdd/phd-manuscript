@@ -207,7 +207,7 @@ console.log(
     slide([
       h1("Analyse multi-facettes"),
 
-      p("Analyse dynamique de flot d'information [Austin et Flanagan, 2012]"),
+      p("Analyse dynamique de flot d'information (Austin et Flanagan, 2012)"),
 
       p(img({src: "img/a-facet.svg"})),
 
@@ -224,7 +224,7 @@ console.log(
     slide([
       h1('Analyse multi-facettes: exemple'),
 
-      p("Flot indirect (Austin et Flanagan 2012)"),
+      p("Flot indirect (Austin et Flanagan, 2012)"),
 
       p(img({src: 'img/fenton-example.svg',
              style: 'margin: 40px 0'})),
