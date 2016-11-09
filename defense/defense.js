@@ -1073,7 +1073,15 @@ m.g(0) //: 1
 var e1 = <em>{ a: 2, f(x) {
   return x + 2 * m.E.a }}</em>
 pushEnv(e1, m.E)
-m.g(0) //: 4`))),
+m.g(0) //: 4
+
+var e2 = { f(x) {
+  return -m.E.a }}
+pushEnv(e2, m.E)
+m.g(0) //: -2
+
+removeEnv(e1, m.E)
+m.g(0) //: -1`))),
 
       p(img({src: 'img/dls8a.svg',
              style: `position: absolute;
@@ -1093,7 +1101,15 @@ m.g(0) //: 1
 var e1 = { a: 2, f(x) {
   return x + 2 * m.E.a }}
 <em>pushEnv(e1, m.E)</em>
-m.g(0) //: 4`))),
+m.g(0) //: 4
+
+var e2 = { f(x) {
+  return -m.E.a }}
+pushEnv(e2, m.E)
+m.g(0) //: -2
+
+removeEnv(e1, m.E)
+m.g(0) //: -1`))),
 
       p(img({src: 'img/dls8b.svg',
              style: `position: absolute;
@@ -1113,7 +1129,15 @@ m.g(0) //: 1
 var e1 = { a: 2, f(x) {
   return x + 2 * m.E.a }}
 pushEnv(e1, m.E)
-<em>m.g(0) //: 4</em>`))),
+<em>m.g(0) //: 4</em>
+
+var e2 = { f(x) {
+  return -m.E.a }}
+pushEnv(e2, m.E)
+m.g(0) //: -2
+
+removeEnv(e1, m.E)
+m.g(0) //: -1`))),
 
       p(img({src: 'img/dls8c.svg',
              style: `position: absolute;
@@ -1200,30 +1224,70 @@ m.g(0) //: 2`))),
              style: `position: absolute;
                      width: 350px;
                      top: 310px;
-                     right: 80px;`}))
+                     right: 80px;`})),
+
+      note([
+        "with adds an environment",
+        "but here we want to modify that environment",
+        "not equivalent to a (function())",
+      ]),
+
     ]),
+
 
     slide([
-      h1("Ouvrir Narcissus"),
+      h1("Différence entre objets et environnements"),
 
-      content(pre(code(`Narcissus.interpreter = (function(){
-<em>+  var _env = Object.create(null)</em>
-<em>+  with (_env) {</em>
+      content(pre(code(`var m = (function(){
+  var E = Object.create(null)
+  with (E) {
+    var a = 1
+    function f(x) { return x + a }
+    function g(x) { return f(x) }
+    <em>Object.setPrototypeOf(E, {f, ...})</em>
+    return { g: g, E: E }
+  }
+}())
 
-   ... /* 1500 lignes de code */ ...
+m.g(0) //: 1
+m.E.a = 2
+m.g(0) //: 2`))),
 
-<em>+  var _parent = { ... }</em>
-<em>+  Object.setPrototypeOf(_env, _parent);</em>
-   return {
-     evaluate: evaluate,
-     ...
-<em>+    _env: _env</em>
-   };
-<em>+  }</em>
-}())`)))
+      p(img({src: 'img/dls11a.svg',
+             style: `position: absolute;
+                     width: 350px;
+                     top: 310px;
+                     right: 50px;`})),
+
+      note([
+        'no path to keys in env module from E',
+        'have to add them',
+        "necessary because no access to module env",
+      ]),
+
     ]),
 
-    slide(figure(img({src: 'img/narcissus-diff-after-1.svg'}))),
+//     slide([
+//       h1("Ouvrir Narcissus"),
+
+//       content(pre(code(`Narcissus.interpreter = (function(){
+// <em>+  var _env = Object.create(null)</em>
+// <em>+  with (_env) {</em>
+
+//    ... /* 1500 lignes de code */ ...
+
+// <em>+  var _parent = { ... }</em>
+// <em>+  Object.setPrototypeOf(_env, _parent);</em>
+//    return {
+//      evaluate: evaluate,
+//      ...
+// <em>+    _env: _env</em>
+//    };
+// <em>+  }</em>
+// }())`)))
+//     ]),
+
+    // slide(figure(img({src: 'img/narcissus-diff-after-1.svg'}))),
 
     slide(img({src: 'img/narcissus-diff-after-2.svg',
                style: `width: 750px;
