@@ -180,6 +180,11 @@ console.log(
       p("Analyse statique: analyser le code source"),
       p("<em>Analyse dynamique</em>: analyser l'exécution du programme"),
 
+      note([
+        "JS is the only language natively supported by navigators",
+        "Makes it popular",
+      ]),
+
     ]),
 
     slide([
