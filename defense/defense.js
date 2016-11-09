@@ -272,18 +272,24 @@ console.log(
     slide([
       h1("État de l'art"),
 
+      p("Interpréteurs extensibles <b>par construction</b>:"),
+
       ul([
         li("Implémentation ouverte (Rao)"),
-        li("Programmation par aspects (TLT10, 500% d'overhead)"),
-        li("Interpréteurs réfléxifs (3-Lisp, Friedman)"),
+        li("Interpréteurs réfléxifs (Smith, Friedman)"),
         li("Patron interpréteur (GOF)"),
-        li("Patron visiteur (Oliveira, Krishnamurthi)"),
-        li("Algèbres d'objets (Cook, Oliveira)"),
+        li("Patron visiteur (GOF, Oliveira, Krishnamurthi)"),
+        li("Algèbres d'objets (Oliveira & Cook)"),
         li("Free monad (Swierstra)"),
       ]),
 
       vspace(20),
-      p("Interpréteurs extensibles par <b>construction</b>"),
+
+      p("Programmation par aspects [TLT10]:"),
+      ul([
+        li("Overhead: 500% à 1500%"),
+        li("Solution surdimensionnée"),
+      ]),
 
       note([
         "existing interpreters/constructed extensible"
