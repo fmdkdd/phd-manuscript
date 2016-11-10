@@ -4908,6 +4908,80 @@ Aiming for a first rehearsal on [2016-10-28 ven.].
 - backup slides: about interferences of modules (in Narcissus you have to do
   extra work if you want them to compose)
 
+** [2016-11-10 jeu.]
+*** Third rehearsal with some peeps
+
+- slide 3: remove "analyse the *execution* of the program"
+
+- slide 3: the arrow a -> b indicates a *dependency* from b to a
+
+- slide 3: why do we chose dynamic analyses?  Static analyses are not as well
+  suited to JS since we get many scripts as they arrive; the language is more
+  dynamic so less can be known statically; much easier to use dynamic analyses.
+
+- Why multi-facets?  Need to show that we need to modify the interpreter to
+  implement them.  It's a better motivation; otherwise why present the facets
+  analysis?
+
+- See paper for the details on faceted evaluation; we are interested in how it's
+  implemented on Narcissus.  Remove example and show code in Narcissus instead
+
+- slide 6: say that JS is compiled or interpreted, but interpreters are simpler,
+  and we are trying to understand what's going on here so first interpreters
+
+- Need to clearly state the scope: we are in JS, providing a solution in JS.
+
+- slide 12: especially here: the goal is having that in JS
+
+- slide 12: note, just say that "solution pragmatique" means using the parts
+  given by the language, not adding anything
+
+- Part 2: state contribution more clearly: what's do you bring on top of
+  alternatives?  State at the onset, and after.
+
+- Part 2: have diagrams to show the high-level working of module composition,
+  rather than the low-level working of the mechanisms.
+
+- What do you bring on top of AOP?  Maybe a backup slide that extends on top of
+  that.  Two different things: use AspectScript on programs (can't instrument
+  if); or on Narcissus (there it works, but we are simpler and faster)
+
+- slide 11: state of the art in two parts to prepare the two contributions,
+  construction, and modification in second.  Move Rao in second part
+
+- slide 11: call out AspectScript specifically; AOP is fine, the implementation
+  is not.  Thus, we offer an alternative which is in the spirit of AOP, but
+  simpler.
+
+- slide 13: label the three different forms of modules; and say which are common
+  (number 2).  First one is just an object.  Second one is a module: can control
+  visibility.  The third one is a functor: takes a module, returns a module.
+
+- slide 18: add a wrapping "base" around num and plus.  Otherwise, use a diagram
+  to illustrate the abstract working: show: (m1, m2) -> (show(m1), show(m2))
+
+- remove slide 20
+
+- slide 21: say that the object creates an environment
+
+- slide 28: interpréteurs *modulaires*
+
+- slide 28: say that it's an alternative solution to state of the art,
+  specifically tailored to JS using only the most basic mechanisms
+
+- remove slide 31 32
+
+- slide 48: nommer une *valeur*
+
+- part 3: use higher-level schemas for most of the part
+
+- slide 49: say that Narcissus + multi-facettes is with empty program counter
+
+- perspective: separate persp for the two parts
+
+- perspectives: say that there might be a space left to explore between this
+  minimalist solution and AspectScript
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
