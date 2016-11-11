@@ -365,27 +365,28 @@ console.log(
                         margin: 50px auto;`})),
 
     slide([
-      h1(`Un module JavaScript est un objet`),
+      h1(`Objets, modules et foncteurs en JavaScript`),
+
+      p("Un <b>objet</b> expose une interface:"),
 
       content(pre(code(`var m = {
   parse(file) { ... },
-  exec(ast) { ... },
-}`))),
+  exec(ast) { ... }}`))),
 
-      p("Retourné par une fonction immédiatement invoquée:"),
+      p("Un <b>module</b> contrôle sa visibilité:"),
 
       content(pre(code(`var m = (function(){
   function parse(file) { ... }
   function exec(ast) { ... }
+  <em>function _doExec(node) { ... }</em>
 
   return <em>{ parse, exec }</em>
 }())`))),
 
+      p("Un <b>foncteur</b> transforme des modules:"),
 
-      p("Ou par une fonction avec argument:"),
-
-      content(pre(code(`var M = function(opts) { ... return { parse, exec } }
-var m = M({...})`))),
+      content(pre(code(`var M = function({m1, m2}) { ... return { f1(m1), f2(m2) }}
+var m = M({m1, m2})`))),
 
     ]),
 
@@ -405,7 +406,7 @@ show : Term -> String
       div([
         p("Ingrédients:"),
         ul([
-          li("Modules"),
+          li("Objets, modules et foncteurs"),
           li("Délégations par prototypes"),
           li("Fermetures lexicales"),
         ]),
@@ -874,7 +875,7 @@ with (state({num, plus})) {
       div([
         p("Ingrédients:"),
         ul([
-          li("Modules"),
+          li("Objets, modules et foncteurs"),
           li("Délégation par prototypes"),
           li("Fermetures lexicales"),
         ])],
