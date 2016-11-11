@@ -864,7 +864,7 @@ with (state({num, plus})) {
     slide([
       h1("Contribution: un intepréteur modulaire"),
 
-      p("Un schéma de composition original pour des interpréteurs modulaire"),
+      p("Un schéma de composition original pour des interpréteurs modulaires"),
 
       vspace(20),
 
@@ -1342,7 +1342,7 @@ m.g(0) //: 2`))),
     slide([
       h1("Modifications supplémentaires"),
 
-      p("Nommer une variable:"),
+      p("Nommer une valeur:"),
 
       content(pre(code(`-  putstr(<em>"njs> "</em>)
 
@@ -1422,13 +1422,13 @@ load("facets-analysis.js")
       p("Contributions:"),
 
       ul([
-        li(["Construire un interpréteur extensible",
+        li(["Construire un interpréteur par modules",
 
             img({src: 'img/foal-lang-6.svg',
                  style: `width: 200px;
                          vertical-align: middle;
                          position: relative;
-                         left: 115px;`})
+                         left: 90px;`})
            ]),
 
         vspace(60),
@@ -1446,15 +1446,21 @@ load("facets-analysis.js")
     slide([
       h1("Perspectives"),
 
+      p("Construire un interpréteur par modules:"),
+
       ul([
-
-        li("Comparaison d'analyses de flot"),
-
-        li("Application à V8/SpiderMonkey"),
-
-        li("Généralisation à des programmes quelconques"),
+        li("Application à d'autres langages dynamiques"),
       ]),
 
+      vspace(50),
+      p("Détourner Narcissus:"),
+
+      ul([
+        li("Comparaison d'analyses de flot d'information"),
+        li("Application à V8/SpiderMonkey"),
+        li("Compromis entre <code>with</code> et AspectScript"),
+        li("Généralisation à des programmes quelconques"),
+      ]),
 
     ]),
 
