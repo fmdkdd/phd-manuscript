@@ -671,6 +671,8 @@ canvas.finish()`),
                    left: 450px;
                    top: 400px;`}),
 
+      note('takes an object from which an environment is created'),
+
     ]),
 
     slide([
@@ -882,6 +884,8 @@ with (state({num, plus})) {
 
       vspace(20),
       p(`Approche <b>bottom-up</b>: construire un interpréteur extensible`),
+
+      note('alternative to state of the art tailored to JS'),
 
     ]),
 
@@ -1394,7 +1398,10 @@ load("facets-analysis.js")
                    position: absolute;
                    right: 80px;`}),
 
-      note('fix a bug only once with diverting'),
+      note([
+        'fix a bug only once with diverting',
+        'Narcissus multi-facettes is with empty PC',
+      ]),
     ]),
 
 
