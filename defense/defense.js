@@ -153,7 +153,7 @@ console.log(
                         margin: 50px auto;`})),
 
     slide([
-      h1('Étendre des interpréteurs pour sécuriser le nuage'),
+      h1('SecCloud'),
 
       p(`Projet ${b('SecCloud')} du labex CominLabs (2012-2016)`),
 
@@ -163,7 +163,7 @@ console.log(
         p('Sécuriser les applications web exécutées dans les navigateurs...',
           {style: `display: inline-block;
                    width: 440px;
-                   margin: 50px 20px;
+                   margin: 80px 20px;
                    position: relative;
                    top: -30px;`}),
 
@@ -177,9 +177,6 @@ console.log(
                    top: -30px;`}),
       ]),
 
-      p("Analyse statique: analyser le code source"),
-      p("<em>Analyse dynamique</em>: analyser l'exécution du programme"),
-
       note([
         "JS is the only language natively supported by navigators",
         "Makes it popular",
@@ -188,15 +185,31 @@ console.log(
     ]),
 
     slide([
-      h1("Analyses dynamiques de programme"),
+      h1("Analyser les programmes JavaScript"),
 
-      p("Analyser le programme pour en déduire le comportement"),
+      p("Analyses statiques: analyser le code source"),
 
-      p(`Ex: analyse de ${em("flot d'information")}:`),
+      ul([
+        li("Analyse tous les chemins d'exécution"),
+      ]),
+
+      vspace(50),
+      p("<em>Analyses dynamiques</em>: analyser l'exécution du programme"),
+
+      ul([
+        li("Mieux adaptées au langage JavaScript et aux navigateurs"),
+      ]),
+    ]),
+
+    slide([
+      h1("Analyse de flot d'information"),
+
+      p("Établir les dépendances entre variables:"),
 
       p(img({src: 'img/facet-1.svg'})),
 
-      p("Flot indirect:"),
+      vspace(20),
+      p("Dépendance indirecte:"),
 
       p(img({src: 'img/facet-2.svg'})),
 
@@ -219,31 +232,35 @@ console.log(
                  style: `position: absolute;
                          right: 200px;`})])
       ]),
+
+      p(img({src: 'img/facet-example.svg',
+             style: 'margin: 40px 20px'})),
+
+      note('details in paper; we are interested in implementation'),
     ]),
 
-    slide([
-      h1('Analyse multi-facettes: exemple'),
+    // slide([
+    //   h1('Analyse multi-facettes: exemple'),
 
-      p("Flot indirect (Austin et Flanagan, 2012)"),
+    //   p("Flot indirect (Austin et Flanagan, 2012)"),
 
-      p(img({src: 'img/fenton-example.svg',
-             style: 'margin: 40px 0'})),
-    ]),
+    //   p(img({src: 'img/fenton-example.svg',
+    //          style: 'margin: 40px 0'})),
+    // ]),
 
+    // slide([
+    //   h1("Des interpréteurs JavaScript"),
 
-    slide([
-      h1("Des interpréteurs JavaScript"),
+    //   p(img({src: "img/interps.svg",
+    //          style: `width: 700px`})),
 
-      p(img({src: "img/interps.svg",
-             style: `width: 700px`})),
+    //   p("Autres interpréteurs JavaScript"),
 
-      p("Autres interpréteurs JavaScript"),
-
-      ul([
-        li("Rhino (Java)"),
-        li(`${em('Narcissus')} (JavaScript)`)
-      ])
-    ]),
+    //   ul([
+    //     li("Rhino (Java)"),
+    //     li(`${em('Narcissus')} (JavaScript)`)
+    //   ])
+    // ]),
 
     slide([
       h1("Narcissus"),
@@ -261,6 +278,27 @@ console.log(
          l'analyse multi-facettes`)
     ]),
 
+    slide([
+      h1("Analyse multi-facettes: implémentation"),
+
+      content(pre(code(`case IF:
+<em class="orange">- if (getValue(execute(n.condition, x)))</em>
+<em class="green">+  let cond = getValue(execute(n.condition, x), pc);</em>
+<em class="green">+  if (cond instanceof FacetedValue) {</em>
+<em class="green">+      evaluateEach(cond, function(v, x) {</em>
+<em class="green">+          if (v)</em>
+<em class="green">+              execute(n.thenPart, x);</em>
+<em class="green">+          else if (n.elsePart)</em>
+<em class="green">+              execute(n.elsePart, x);</em>
+<em class="green">+      }, x);</em>
+<em class="green">+  }</em>
+<em class="green">+  else if (cond)</em>
+     execute(n.thenPart, x);
+   else if (n.elsePart)
+     execute(n.elsePart, x);
+   break;`))),
+    ]),
+
     slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
 
     slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/diff-tangled.svg'}))]),
@@ -275,34 +313,7 @@ console.log(
     ]),
 
     slide([
-      h1("État de l'art"),
-
-      p("Interpréteurs extensibles <b>par construction</b>:"),
-
-      ul([
-        li("Implémentation ouverte (Rao)"),
-        li("Interpréteurs réflexifs (Smith, Friedman)"),
-        li("Patron interpréteur (GOF)"),
-        li("Patron visiteur (GOF, Oliveira, Krishnamurthi)"),
-        li("Algèbres d'objets (Oliveira & Cook)"),
-        li("Free monad (Swierstra)"),
-      ]),
-
-      vspace(20),
-
-      p("Programmation par aspects [TLT10]:"),
-      ul([
-        li("Overhead: 500% à 1500%"),
-        li("Solution surdimensionnée"),
-      ]),
-
-      note([
-        "existing interpreters/constructed extensible"
-      ])
-    ]),
-
-    slide([
-      h1("Détourner l'interpréteur: les objectifs"),
+      h1("Détourner un interpréteur JavaScript: les objectifs"),
 
       p(img({src: 'img/big-picture.svg',
              style: `margin-left: 150px`})),
@@ -317,8 +328,33 @@ console.log(
       vspace(20),
 
       note([
-        "infinite number of correct programs",
-        "fewer canonical solutions, like fractions"
+        "pragmatic: use what's already in the language",
+      ])
+    ]),
+
+    slide([
+      h1("État de l'art"),
+
+      p("Interpréteurs extensibles <b>par construction</b>:"),
+
+      ul([
+        li("Interpréteurs réflexifs (Smith, Friedman)"),
+        li("Patron interpréteur (GOF)"),
+        li("Patron visiteur (GOF, Oliveira, Krishnamurthi)"),
+        li("Algèbres d'objets (Oliveira & Cook)"),
+        li("Free monad (Swierstra)"),
+      ]),
+
+      vspace(20),
+
+      p("Étendre un interpréteur <b>existant</b>:"),
+      ul([
+        li("Implémentation ouverte (Rao)"),
+        li("Programmation par aspects [KLM97], AspectScript [TLT10]"),
+      ]),
+
+      note([
+        "existing interpreters/constructed extensible"
       ])
     ]),
 
