@@ -618,39 +618,39 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 
 //     ]),
 
-    slide([
-      h1(`Réduire le bruit syntaxique`),
+//     slide([
+//       h1(`Réduire le bruit syntaxique`),
 
-      p("Le but <code>with</code> en JavaScript:"),
+//       p("Le but <code>with</code> en JavaScript:"),
 
-      pre(code(`canvas.begin()
-canvas.setColor(...)
-canvas.drawRectangle(...)
-canvas.setColor(...)
-canvas.drawCircle(...)
-canvas.finish()`),
-          {style: `position: absolute;
-                   left: 50px;
-                   top: 200px;`}),
+//       pre(code(`canvas.begin()
+// canvas.setColor(...)
+// canvas.drawRectangle(...)
+// canvas.setColor(...)
+// canvas.drawCircle(...)
+// canvas.finish()`),
+//           {style: `position: absolute;
+//                    left: 50px;
+//                    top: 200px;`}),
 
-      img({src: 'img/right-arrow.svg',
-           style: `position: absolute;
-                   height: 100px;
-                   left: 390px;
-                   top: 230px`}),
+//       img({src: 'img/right-arrow.svg',
+//            style: `position: absolute;
+//                    height: 100px;
+//                    left: 390px;
+//                    top: 230px`}),
 
-      pre(code(`with (canvas) {
-  begin()
-  setColor(...)
-  drawRectangle(...)
-  setColor(...)
-  drawCircle(...)
-  finish()
-}`),
-          {style: `position: absolute;
-                   right: 75px;
-                   top: 200px;`}),
-    ]),
+//       pre(code(`with (canvas) {
+//   begin()
+//   setColor(...)
+//   drawRectangle(...)
+//   setColor(...)
+//   drawCircle(...)
+//   finish()
+// }`),
+//           {style: `position: absolute;
+//                    right: 75px;
+//                    top: 200px;`}),
+//     ]),
 
     slide([
       h1("<code>with</code> crée un environnement"),
@@ -934,43 +934,43 @@ m.g(0) //: 1`))),
                      right: 80px;`})),
     ]),
 
-    slide([
-      h1("Problème: Narcissus est un module verrouillé"),
+//     slide([
+//       h1("Problème: Narcissus est un module verrouillé"),
 
-      content(pre(code(`var m = (function(){
-  var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
-  return {g: g}
-}())
+//       content(pre(code(`var m = (function(){
+//   var a = 1
+//   function f(x) { return x + a }
+//   function g(x) { return f(x) }
+//   return {g: g}
+// }())
 
-<em>m.g(0)</em> //: 1`))),
+// <em>m.g(0)</em> //: 1`))),
 
-      p(img({src: 'img/dls0a.svg',
-             style: `position: absolute;
-                     width: 350px;
-                     top: 250px;
-                     right: 80px;`})),
-    ]),
+//       p(img({src: 'img/dls0a.svg',
+//              style: `position: absolute;
+//                      width: 350px;
+//                      top: 250px;
+//                      right: 80px;`})),
+//     ]),
 
-    slide([
-      h1("Problème: Narcissus est un module verrouillé"),
+//     slide([
+//       h1("Problème: Narcissus est un module verrouillé"),
 
-      content(pre(code(`var m = (function(){
-  var a = 1
-  function f(x) { return x + a }
-  function g(x) { return <em>f(x)</em> }
-  return {g: g}
-}())
+//       content(pre(code(`var m = (function(){
+//   var a = 1
+//   function f(x) { return x + a }
+//   function g(x) { return <em>f(x)</em> }
+//   return {g: g}
+// }())
 
-m.g(0) //: 1`))),
+// m.g(0) //: 1`))),
 
-      p(img({src: 'img/dls0b.svg',
-             style: `position: absolute;
-                     width: 350px;
-                     top: 250px;
-                     right: 80px;`})),
-    ]),
+//       p(img({src: 'img/dls0b.svg',
+//              style: `position: absolute;
+//                      width: 350px;
+//                      top: 250px;
+//                      right: 80px;`})),
+//     ]),
 
     slide([
       h1("Solution: ouvrir le module"),
@@ -995,28 +995,28 @@ m.g(0) //: 2`))),
                      right: 80px;`}))
     ]),
 
-    slide([
-      h1("Solution: ouvrir le module"),
+//     slide([
+//       h1("Solution: ouvrir le module"),
 
-      p("<b>Supposition</b>: on dispose d'une référence <code><em>E</em></code>"),
+//       p("<b>Supposition</b>: on dispose d'une référence <code><em>E</em></code>"),
 
-      content(pre(code(`var m = (function(){
-  var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
-  return {g: g}
-}())
+//       content(pre(code(`var m = (function(){
+//   var a = 1
+//   function f(x) { return x + a }
+//   function g(x) { return f(x) }
+//   return {g: g}
+// }())
 
-m.g(0) //: 1
-m.E.a = 2
-<em>m.g(0) //: 2</em>`))),
+// m.g(0) //: 1
+// m.E.a = 2
+// <em>m.g(0) //: 2</em>`))),
 
-      p(img({src: 'img/dls4b.svg',
-             style: `position: absolute;
-                     width: 350px;
-                     top: 280px;
-                     right: 80px;`}))
-    ]),
+//       p(img({src: 'img/dls4b.svg',
+//              style: `position: absolute;
+//                      width: 350px;
+//                      top: 280px;
+//                      right: 80px;`}))
+//     ]),
 
     slide([
       h1("Problème: modifications réversibles"),
