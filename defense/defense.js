@@ -322,7 +322,7 @@ console.log(
         li("Rapidité de prototypage"),
         li("Minimiser la duplication de code"),
         li("Séparer les analyses pour pouvoir les auditer"),
-        li("Solution pragmatique"),
+        li("Solution pragmatique pour JavaScript"),
       ]),
 
       vspace(20),
@@ -897,7 +897,7 @@ with (state({num, plus})) {
     slide([
       h1("Contribution: un intepréteur modulaire"),
 
-      p("Un schéma de composition original pour des interpréteurs modulaires"),
+      p("Un schéma de composition original pour des<br>interpréteurs modulaires en JavaScript"),
 
       vspace(20),
 
