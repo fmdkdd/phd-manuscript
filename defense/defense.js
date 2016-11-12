@@ -1509,12 +1509,6 @@ load("facets-analysis.js")
     ]),
 
     slide([
-      h1("Distinction objet et environnement"),
-
-      p("Pas si élégant"),
-    ]),
-
-    slide([
       h1("Interférences entre modules"),
 
       p("No safeguards"),
