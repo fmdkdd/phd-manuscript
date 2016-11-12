@@ -1156,10 +1156,10 @@ m.g(0) //: -2
 removeEnv(e1, m.E)
 m.g(0) //: -1`))),
 
-      p(img({src: 'img/dls8a.svg',
+      p(img({src: 'img/dls8a-1.svg',
              style: `position: absolute;
-                     width: 300px;
-                     top: 180px;
+                     width: 200px;
+                     top: 130px;
                      right: 80px;`}))
 
     ]),
@@ -1184,41 +1184,41 @@ m.g(0) //: -2
 removeEnv(e1, m.E)
 m.g(0) //: -1`))),
 
-      p(img({src: 'img/dls8b.svg',
+      p(img({src: 'img/dls8b-1.svg',
              style: `position: absolute;
-                     width: 300px;
-                     top: 180px;
+                     width: 200px;
+                     top: 130px;
                      right: 80px;`}))
 
     ]),
 
-    slide([
-      h1("Combiner les extensions"),
+//     slide([
+//       h1("Combiner les extensions"),
 
-      content(pre(code(`var m = (function(){ ... }())
+//       content(pre(code(`var m = (function(){ ... }())
 
-m.g(0) //: 1
+// m.g(0) //: 1
 
-var e1 = { a: 2, f(x) {
-  return x + 2 * m.E.a }}
-pushEnv(e1, m.E)
-<em>m.g(0) //: 4</em>
+// var e1 = { a: 2, f(x) {
+//   return x + 2 * m.E.a }}
+// pushEnv(e1, m.E)
+// <em>m.g(0) //: 4</em>
 
-var e2 = { f(x) {
-  return -m.E.a }}
-pushEnv(e2, m.E)
-m.g(0) //: -2
+// var e2 = { f(x) {
+//   return -m.E.a }}
+// pushEnv(e2, m.E)
+// m.g(0) //: -2
 
-removeEnv(e1, m.E)
-m.g(0) //: -1`))),
+// removeEnv(e1, m.E)
+// m.g(0) //: -1`))),
 
-      p(img({src: 'img/dls8c.svg',
-             style: `position: absolute;
-                     width: 300px;
-                     top: 180px;
-                     right: 80px;`}))
+//       p(img({src: 'img/dls8c.svg',
+//              style: `position: absolute;
+//                      width: 300px;
+//                      top: 180px;
+//                      right: 80px;`}))
 
-    ]),
+//     ]),
 
     slide([
       h1("Combiner les extensions"),
@@ -1240,10 +1240,10 @@ m.g(0) //: -2
 removeEnv(e1, m.E)
 m.g(0) //: -1`))),
 
-      p(img({src: 'img/dls8d.svg',
+      p(img({src: 'img/dls8c-1.svg',
              style: `position: absolute;
-                     width: 300px;
-                     top: 180px;
+                     width: 200px;
+                     top: 130px;
                      right: 80px;`}))
 
     ]),
@@ -1268,10 +1268,10 @@ m.g(0) //: -2
 <em>removeEnv(e1, m.E)</em>
 m.g(0) //: -1`))),
 
-      p(img({src: 'img/dls8e.svg',
+      p(img({src: 'img/dls8d-1.svg',
              style: `position: absolute;
-                     width: 300px;
-                     top: 180px;
+                     width: 200px;
+                     top: 130px;
                      right: 80px;`}))
 
     ]),
