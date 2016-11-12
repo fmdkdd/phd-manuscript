@@ -57,8 +57,13 @@
    }
 
    .titleslide hr {
-     width: 300px;
+     width: 0px;
      margin: 20px auto;
+   }
+
+   .titleslide[aria-selected] hr {
+     width: 300px;
+     transition: width 400ms ease-out 0ms;
    }
 
    .slide.level2 h1 {
