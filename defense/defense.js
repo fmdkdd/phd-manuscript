@@ -365,15 +365,17 @@ console.log(
                         margin: 50px auto;`})),
 
     slide([
-      h1(`Objets, modules et foncteurs en JavaScript`),
+      h1(`Construire des modules en JavaScript`),
 
       p("Un <b>objet</b> expose une interface:"),
 
       content(pre(code(`var m = {
   parse(file) { ... },
-  exec(ast) { ... }}`))),
+  exec(ast) { ... }
+}`))),
 
-      p("Un <b>module</b> contrôle sa visibilité:"),
+      vspace(10),
+      p("Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité:"),
 
       content(pre(code(`var m = (function(){
   function parse(file) { ... }
@@ -383,10 +385,25 @@ console.log(
   return <em>{ parse, exec }</em>
 }())`))),
 
+    ]),
+
+    slide([
+      h1("Construire des modules en JavaScript"),
+
       p("Un <b>foncteur</b> transforme des modules:"),
 
-      content(pre(code(`var M = function({m1, m2}) { ... return { f1(m1), f2(m2) }}
+      content(pre(code(`var M = function(base) {
+  function f1(m) { ... }
+  function f2(m) { ... }
+
+  return { f1(base.m1), f2(base.m2) }
+}
 var m = M({m1, m2})`))),
+
+      img({src: 'img/foal-foncteur.svg',
+           style: `position: absolute;
+                   bottom: 100px;
+                   left: 150px;`}),
 
     ]),
 
@@ -406,7 +423,7 @@ show : Term -> String
       div([
         p("Ingrédients:"),
         ul([
-          li("Objets, modules et foncteurs"),
+          li("Modules et foncteurs"),
           li("Délégations par prototypes"),
           li("Fermetures lexicales"),
         ]),
@@ -522,7 +539,7 @@ e2.eval() //: 3`))),
 //     ]),
 
     slide([
-      h1("Ajouter le module <code>show</code>"),
+      h1("Ajouter le foncteur <code>show</code>"),
 
       img({src: 'img/foal-lang-4.svg',
            style: `position: absolute;
@@ -536,16 +553,19 @@ e2.eval() //: 3`))),
   var plus = {...}
   return {num, plus}
 <em>}</em>
+
 var s = show({num, plus})
-e2.show() //: undefined
 s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 
-      p(img({src: 'img/foal-4a.svg'}))
+      img({src: 'img/foal-show.svg',
+           style: `position: absolute;
+                   bottom: 80px;
+                   left: 100px;`}),
     ]),
 
     slide([
-      h1("Ajouter le module <code>show</code>"),
+      h1("Ajouter le foncteur <code>show</code>"),
 
       img({src: 'img/foal-lang-4.svg',
            style: `position: absolute;
@@ -559,8 +579,8 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
   var plus = {...}
   return {num, plus}
 }
+
 <em>var s = show({num, plus})</em>
-e2.show() //: undefined
 s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
 s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 
@@ -680,12 +700,12 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
       h1(`${code('with')} pour activer un module`),
 
       content(pre(code(`<em>with(show({num, plus})) {</em>
-  plus.new(num.new(1), num.new(2)).show()
+  plus.new(num.new(1), num.new(2)).show() //: "1+2"
 <em>}</em>`))),
 
       vspace(50),
 
-      p(img({src: 'img/foal-5.svg'})),
+      p(img({src: 'img/foal-show-2.svg'})),
 
     ]),
 
@@ -766,7 +786,10 @@ with (double({num})) {
 }`),
           {style: `margin-left: 50px`}),
 
-      p(img({src: 'img/foal-6b.svg'})),
+      img({src: 'img/foal-double.svg',
+           style: `position: absolute;
+                   bottom: 120px;
+                   left: 100px;`}),
 
     ]),
 
@@ -780,12 +803,18 @@ with (double({num})) {
                    right: 50px;
                    top: 50px;`}),
 
-      vspace(50),
+      vspace(20),
 
       content(pre(code(`with (<em class="orange">double</em>({num})) {
   with (<em class="orange">double</em>({num})) {
     with (<em class="orange">double</em>({num})) {
-      plus.new(num.new(1), num.new(2)).eval() //: 24`))),
+      plus.new(num.new(1), num.new(2)).eval() //: 24
+}}}`))),
+
+      img({src: 'img/foal-double3.svg',
+           style: `position: absolute;
+                   bottom: 50px;
+                   left: 100px;`}),
 
       note(['2*2*2 = 8x']),
 
@@ -822,12 +851,10 @@ with (double({num})) {
 
       content(pre(code(`var state = function(base, <em>count = 0</em>) {
 var num = {__proto__: base.num,
-           eval() {
-             <em>count++</em>;
-             return base.num.eval.call(this) }},
+           eval() { <em>count++</em>;
+                    return base.num.eval.call(this) }},
 var plus = {...}
 var <em>getCount</em> = function() { return <em>count</em> }
-
 return {__proto__: base, num, plus, getCount}}
 
 with (state({num, plus})) {
@@ -835,6 +862,11 @@ with (state({num, plus})) {
   plus.new(num.new(1), num.new(2)).eval() //: 3
   <em>getCount() //: 3</em>
 }`))),
+
+      img({src: 'img/foal-state.svg',
+           style: `position: absolute;
+                   bottom: 10px;
+                   left: 200px;`}),
     ]),
 
     slide([
@@ -875,7 +907,7 @@ with (state({num, plus})) {
       div([
         p("Ingrédients:"),
         ul([
-          li("Objets, modules et foncteurs"),
+          li("Modules et foncteurs"),
           li("Délégation par prototypes"),
           li("Fermetures lexicales"),
         ])],
