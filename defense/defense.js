@@ -971,6 +971,21 @@ with (state({num, plus})) {
                         margin: 50px auto;`})),
 
     slide([
+      h1("Détourner un interpréteur JavaScript: les objectifs"),
+
+      p("Solution pragmatique pour JavaScript"),
+
+      p(img({src: 'img/big-picture.svg',
+             style: `margin-left: 150px`})),
+
+      p("État de l'art, AspectScript [TLT10]:"),
+      ul([
+        li("500% à 1500% d'overhead"),
+        li("Solution surdimensionée"),
+      ]),
+    ]),
+
+    slide([
       h1("Narcissus est un module"),
 
       content(pre(code(`var Narcissus = (function(){
