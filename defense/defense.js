@@ -1194,7 +1194,7 @@ m.g() //: 1</em>`))),
     ]),
 
     slide([
-      h1("Combiner les extensions"),
+      h1("Grouper les modifications"),
 
       content(pre(code(`var m = (function(){ ... }())
 
@@ -1221,7 +1221,7 @@ m.g() //: -1`))),
     ]),
 
     slide([
-      h1("Combiner les extensions"),
+      h1("Grouper les modifications"),
 
       content(pre(code(`var m = (function(){ ... }())
 
@@ -1276,7 +1276,7 @@ m.g() //: -1`))),
 //     ]),
 
     slide([
-      h1("Combiner les extensions"),
+      h1("Grouper les modifications"),
 
       content(pre(code(`var m = (function(){ ... }())
 
@@ -1303,7 +1303,7 @@ m.g() //: -1`))),
     ]),
 
     slide([
-      h1("Combiner les extensions"),
+      h1("Grouper les modifications"),
 
       content(pre(code(`var m = (function(){ ... }())
 
