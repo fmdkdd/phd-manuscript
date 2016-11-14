@@ -102,7 +102,9 @@ var content = (c) => div(c, {class: 'content'})
 var vspace = (px) => div('', {style: `height: ${px}px`})
 var tbl = (array) => table(array.map(row => tr(row.map(cell => td(cell)))))
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // And here's the actual content
+
 console.log(
   body([
 
@@ -145,6 +147,10 @@ console.log(
                    top: 420px;`}),
 
     ]),
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Part 1
 
     numsec('1', 'Étendre des interpréteurs pour<br>sécuriser JavaScript',
            img({src: 'img/diff-tangled.svg',
@@ -391,6 +397,9 @@ console.log(
       ])
     ]),
 
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Part 2
 
     numsec('2', "Construire un interpréteur par modules",
            img({src: 'img/foal-blocks.svg',
@@ -950,6 +959,10 @@ with (state({num, plus})) {
       note('alternative to state of the art tailored to JS'),
 
     ]),
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Part 3
 
     numsec('3', "Détourner Narcissus",
            img({src: 'img/narcissus-diff-after-2c.svg',
