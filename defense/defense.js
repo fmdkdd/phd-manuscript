@@ -185,23 +185,6 @@ console.log(
     ]),
 
     slide([
-      h1("Analyser les programmes JavaScript"),
-
-      p("Analyses statiques: analyser le code source"),
-
-      ul([
-        li("Analyse tous les chemins d'exécution"),
-      ]),
-
-      vspace(50),
-      p("<em>Analyses dynamiques</em>: analyser l'exécution du programme"),
-
-      ul([
-        li("Mieux adaptées au langage JavaScript et aux navigateurs"),
-      ]),
-    ]),
-
-    slide([
       h1("Analyse de flot d'information"),
 
       p("Établir les dépendances entre variables:"),
@@ -209,12 +192,44 @@ console.log(
       p(img({src: 'img/facet-1.svg'})),
 
       vspace(20),
-      p("Dépendance indirecte:"),
+      p("Dépendance implicite:"),
 
       p(img({src: 'img/facet-2.svg'})),
 
-      note(["Indirect flows believed static-only",
+      note(["Implicit flows believed static-only",
             "AF-12 showed it could be done"]),
+    ]),
+
+    slide([
+      h1("Deux façons d'analyser les programmes JavaScript"),
+
+      p("Analyses statiques:"),
+
+      ul([
+        li("Analysent le code source"),
+        li("Analysent tous les chemins d'exécution"),
+        li("Plus adaptées à un langage statique"),
+      ]),
+
+      img({src: 'img/static-analysis.svg',
+           style: `width: 120px;
+                   position: absolute;
+                   right: 80px;
+                   top: 120px;`}),
+
+      vspace(50),
+      p("<em>Analyses dynamiques</em>:"),
+
+      ul([
+        li("Analysent l'exécution du programme"),
+        li("Mieux adaptées au langage JavaScript et aux navigateurs"),
+      ]),
+
+      img({src: 'img/static-analysis-2.svg',
+           style: `width: 78px;
+                   position: absolute;
+                   right: 80px;
+                   top: 340px;`}),
     ]),
 
     slide([
@@ -227,16 +242,26 @@ console.log(
       ul([
         li("Chaque valeur a deux facettes"),
         li("Seule l'autorité voit la facette privée"),
-        li([`Le ${b("program counter")} suit les flots indirects`,
+        li([`Le                (program counter) suit les flots indirects`,
             img({src: "img/facet-pc.svg",
                  style: `position: absolute;
-                         right: 200px;`})])
+                         left: 100px;`})])
       ]),
 
       p(img({src: 'img/facet-example.svg',
              style: 'margin: 40px 20px'})),
 
-      note('details in paper; we are interested in implementation'),
+
+      img({src: 'img/static-analysis-3.svg',
+           style: `width: 120px;
+                   position: absolute;
+                   right: 80px;
+                   top: 180px;`}),
+
+      note([
+        'if only A can see priv(X), only A can see priv(Y)',
+        'details in paper; we are interested in implementation',
+      ]),
     ]),
 
     // slide([
@@ -266,33 +291,41 @@ console.log(
       h1("Narcissus"),
 
       p(img({src: "img/narcissus.jpg",
-             style: `width: 40%;
+             style: `width: 280px;
                      float: left;
                      margin-right: 20px;`})),
 
+      img({src: 'img/lt-v8.svg',
+             style: `width: 200px;
+                     position: absolute;
+                     top: 380px;
+                     left: 90px;`}),
+
+      p(`Interpréteur utilisé par Austin et Flanagan pour <em>implémenter</em>
+         l'analyse multi-facettes`),
+
       p("Interpréteur JavaScript métacirculaire par Mozilla"),
 
-      p("Idéal pour prototyper des extensions au langage"),
+      p("Taille idéale pour prototyper des extensions au langage"),
 
-      p(`Utilisé par Austin et Flanagan pour <em>implémenter</em>
-         l'analyse multi-facettes`)
+
     ]),
 
     slide([
       h1("Analyse multi-facettes: implémentation"),
 
       content(pre(code(`case IF:
-<em class="orange">- if (getValue(execute(n.condition, x)))</em>
-<em class="green">+  let cond = getValue(execute(n.condition, x), pc);</em>
-<em class="green">+  if (cond instanceof FacetedValue) {</em>
-<em class="green">+      evaluateEach(cond, function(v, x) {</em>
-<em class="green">+          if (v)</em>
-<em class="green">+              execute(n.thenPart, x);</em>
-<em class="green">+          else if (n.elsePart)</em>
-<em class="green">+              execute(n.elsePart, x);</em>
-<em class="green">+      }, x);</em>
-<em class="green">+  }</em>
-<em class="green">+  else if (cond)</em>
+<em class="orange">-</em> if (getValue(execute(n.condition, x)))
+<em class="green">+</em>  let cond = getValue(execute(n.condition, x)<em>, pc</em>);
+<em class="green">+</em>  if (cond instanceof FacetedValue) {
+<em class="green">+</em>      <em>evaluateEach(cond, function(v, x) {</em>
+<em class="green">+</em>          if (v)
+<em class="green">+</em>              execute(n.thenPart, x);
+<em class="green">+</em>          else if (n.elsePart)
+<em class="green">+</em>              execute(n.elsePart, x);
+<em class="green">+</em>      }, x);
+<em class="green">+</em>  }
+<em class="green">+</em>  else if (cond)
      execute(n.thenPart, x);
    else if (n.elsePart)
      execute(n.elsePart, x);
@@ -388,26 +421,6 @@ console.log(
     ]),
 
     slide([
-      h1("Construire des modules en JavaScript"),
-
-      p("Un <b>foncteur</b> transforme des modules:"),
-
-      content(pre(code(`var M = function(base) {
-  function f1(m) { ... }
-  function f2(m) { ... }
-
-  return { f1(base.m1), f2(base.m2) }
-}
-var m = M({m1, m2})`))),
-
-      img({src: 'img/foal-foncteur.svg',
-           style: `position: absolute;
-                   bottom: 100px;
-                   left: 150px;`}),
-
-    ]),
-
-    slide([
       h1("Un langage d'expressions arithmétiques"),
 
       content(pre(code(html_escape(`
@@ -423,19 +436,19 @@ show : Term -> String
       div([
         p("Ingrédients:"),
         ul([
-          li("Modules et foncteurs"),
+          li("Objets modules"),
           li("Délégations par prototypes"),
           li("Fermetures lexicales"),
         ]),
       ], {style: `position: absolute;
-                  top: 125px;
-                  right: 50px;`}),
+                  left: 25px;
+                  bottom: 50px;`}),
 
       img({src: 'img/foal-lang-1.svg',
            style: `position: absolute;
                    width: 250px;
-                   left: 80px;
-                   bottom: 50px;`}),
+                   top: 145px;
+                   right: 80px;`}),
 
     ]),
 
@@ -539,6 +552,26 @@ e2.eval() //: 3`))),
 //     ]),
 
     slide([
+      h1("Foncteurs en JavaScript"),
+
+      p("Un <b>foncteur</b> transforme des modules:"),
+
+      content(pre(code(`var M = function(base) {
+  function f1(m) { ... }
+  function f2(m) { ... }
+
+  return { f1(base.m1), f2(base.m2) }
+}
+var m = M({m1, m2})`))),
+
+      img({src: 'img/foal-foncteur.svg',
+           style: `position: absolute;
+                   bottom: 100px;
+                   left: 150px;`}),
+
+    ]),
+
+    slide([
       h1("Ajouter le foncteur <code>show</code>"),
 
       img({src: 'img/foal-lang-4.svg',
@@ -552,11 +585,7 @@ e2.eval() //: 3`))),
     show() { return this.n.toString() }}
   var plus = {...}
   return {num, plus}
-<em>}</em>
-
-var s = show({num, plus})
-s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
-s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
+<em>}</em>`))),
 
       img({src: 'img/foal-show.svg',
            style: `position: absolute;
@@ -907,7 +936,7 @@ with (state({num, plus})) {
       div([
         p("Ingrédients:"),
         ul([
-          li("Modules et foncteurs"),
+          li("Objets modules et foncteurs"),
           li("Délégation par prototypes"),
           li("Fermetures lexicales"),
         ])],
