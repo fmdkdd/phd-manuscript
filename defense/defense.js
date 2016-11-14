@@ -54,7 +54,7 @@ var canvas  = content_tag.bind(null, 'canvas', null)
 var img = childless_tag.bind(null, 'img')
 
 // Semantic tags
-var note = (c) => div(c, {role: 'note'})
+var note = (c) => div((Array.isArray(c) ? c : [c]).map(n => p(n)), {role: 'note'})
 var sec = (text) => section(h1(text), {class: 'titleslide slide level1'})
 var numsec = (num, text, img) => section([h1(`<span>Partie ${num}</span><hr>${text}`), img], {class: 'num titleslide slide level1'})
 var slide = (c) => section(c, {class: 'slide level2'})
@@ -392,9 +392,6 @@ console.log(
         li("Programmation par aspects [KLM97], AspectScript [TLT10]"),
       ]),
 
-      note([
-        "existing interpreters/constructed extensible"
-      ])
     ]),
 
 
@@ -532,8 +529,6 @@ e2.eval() //: 3`))),
       vspace(10),
 
       p(img({src: 'img/foal-2.svg'})),
-
-      note("Explain diagram language"),
 
     ]),
 
