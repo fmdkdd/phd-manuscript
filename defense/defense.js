@@ -1550,6 +1550,16 @@ load("facets-analysis.js")
     slide([
       h1("<code>with</code> != portée dynamique"),
 
+      content(pre(code(`function f() { return x }
+f() //: undefined
+
+var x = 1
+f() //: 1
+
+with ({x: 42}) {
+  f() //: 1
+}`))),
+
     ]),
 
     slide([
