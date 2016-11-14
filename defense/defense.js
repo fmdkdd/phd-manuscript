@@ -1333,7 +1333,7 @@ m.g() //: -1`))),
       h1(`Ouvrir le module avec ${code('with')}`),
 
       content(pre(code(`var m = (function(){
-  <em>var E = Object.create(null)</em>
+  <em>var E = Object.create()</em>
   <em>with (E) {</em>
     var a = 1
     function f() { return a }
@@ -1365,7 +1365,7 @@ m.g() //: 2`))),
       h1("Différence entre objets et environnements"),
 
       content(pre(code(`var m = (function(){
-  var E = Object.create(null)
+  var E = Object.create()
   with (E) {
     var a = 1
     function f() { return a }
@@ -1430,9 +1430,9 @@ m.g() //: 2`))),
 
       p("Nommer une valeur:"),
 
-      content(pre(code(`-  putstr(<em>"njs> "</em>)
+      content(pre(code(`-  putstr("njs> ")
 
-+  var repl_prompt = "njs> "
+<em>+  var repl_prompt = "njs> "</em>
 +  putstr(repl_prompt)`))),
 
       vspace(15),
