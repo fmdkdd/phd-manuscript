@@ -270,29 +270,6 @@ console.log(
       ]),
     ]),
 
-    // slide([
-    //   h1('Analyse multi-facettes: exemple'),
-
-    //   p("Flot indirect (Austin et Flanagan, 2012)"),
-
-    //   p(img({src: 'img/fenton-example.svg',
-    //          style: 'margin: 40px 0'})),
-    // ]),
-
-    // slide([
-    //   h1("Des interpréteurs JavaScript"),
-
-    //   p(img({src: "img/interps.svg",
-    //          style: `width: 700px`})),
-
-    //   p("Autres interpréteurs JavaScript"),
-
-    //   ul([
-    //     li("Rhino (Java)"),
-    //     li(`${em('Narcissus')} (JavaScript)`)
-    //   ])
-    // ]),
-
     slide([
       h1("Narcissus"),
 
@@ -654,55 +631,6 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
 //       note([
 //         "Syntaxic noise of s.plus, s.new...",
 //       ]),
-//     ]),
-
-//     slide([
-//       h1("Problème: mixer les modules"),
-
-//       content(pre(code(`<em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
-
-// //: TypeError: this.l.show is not a function`))),
-
-//       p("Problème de types:"),
-
-//       content(pre(code(`plus.new: Term -> Term -> Term
-// s.plus.new: Show -> Show -> Show
-// `))),
-
-//     ]),
-
-//     slide([
-//       h1(`Réduire le bruit syntaxique`),
-
-//       p("Le but <code>with</code> en JavaScript:"),
-
-//       pre(code(`canvas.begin()
-// canvas.setColor(...)
-// canvas.drawRectangle(...)
-// canvas.setColor(...)
-// canvas.drawCircle(...)
-// canvas.finish()`),
-//           {style: `position: absolute;
-//                    left: 50px;
-//                    top: 200px;`}),
-
-//       img({src: 'img/right-arrow.svg',
-//            style: `position: absolute;
-//                    height: 100px;
-//                    left: 390px;
-//                    top: 230px`}),
-
-//       pre(code(`with (canvas) {
-//   begin()
-//   setColor(...)
-//   drawRectangle(...)
-//   setColor(...)
-//   drawCircle(...)
-//   finish()
-// }`),
-//           {style: `position: absolute;
-//                    right: 75px;
-//                    top: 200px;`}),
 //     ]),
 
     slide([
@@ -1581,7 +1509,80 @@ with ({x: 42}) {
          de modifier n'importe quelle référence, en utilisant une whitelist`),
 
       p("Ou bien le symbole spécial `unscopables`")
-    ])
+    ]),
+
+
+    slide([
+      h1('Analyse multi-facettes: exemple'),
+
+      p("Flot indirect (Austin et Flanagan, 2012)"),
+
+      p(img({src: 'img/fenton-example.svg',
+             style: 'margin: 40px 0'})),
+    ]),
+
+    slide([
+      h1("Des interpréteurs JavaScript"),
+
+      p(img({src: "img/interps.svg",
+             style: `width: 700px`})),
+
+      p("Autres interpréteurs JavaScript"),
+
+      ul([
+        li("Rhino (Java)"),
+        li(`${em('Narcissus')} (JavaScript)`)
+      ])
+    ]),
+
+    slide([
+      h1("Problème: mixer les modules"),
+
+      content(pre(code(`<em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
+
+//: TypeError: this.l.show is not a function`))),
+
+      p("Problème de types:"),
+
+      content(pre(code(`plus.new: Term -> Term -> Term
+s.plus.new: Show -> Show -> Show
+`))),
+
+    ]),
+
+    slide([
+      h1(`Réduire le bruit syntaxique`),
+
+      p("Le but <code>with</code> en JavaScript:"),
+
+      pre(code(`canvas.begin()
+canvas.setColor(...)
+canvas.drawRectangle(...)
+canvas.setColor(...)
+canvas.drawCircle(...)
+canvas.finish()`),
+          {style: `position: absolute;
+                   left: 50px;
+                   top: 200px;`}),
+
+      img({src: 'img/right-arrow.svg',
+           style: `position: absolute;
+                   height: 100px;
+                   left: 390px;
+                   top: 230px`}),
+
+      pre(code(`with (canvas) {
+  begin()
+  setColor(...)
+  drawRectangle(...)
+  setColor(...)
+  drawCircle(...)
+  finish()
+}`),
+          {style: `position: absolute;
+                   right: 75px;
+                   top: 200px;`}),
+    ]),
 
   ])
 )
