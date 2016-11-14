@@ -981,12 +981,12 @@ with (state({num, plus})) {
 
       content(pre(code(`var m = <em>(function(){</em>
   var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
+  function f() { return a }
+  function g() { return f() }
   return {g: g}
 <em>}())</em>
 
-m.g(0) //: 1`))),
+m.g() //: 1`))),
 
       p(img({src: 'img/dls0.svg',
              style: `position: absolute;
@@ -1040,14 +1040,14 @@ m.g(0) //: 1`))),
 
       content(pre(code(`var m = (function(){
   var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
+  function f() { return a }
+  function g() { return f() }
   return {g: g}
 }())
 
-m.g(0) //: 1
+m.g() //: 1
 <em>m.E.a = 2</em>
-m.g(0) //: 2`))),
+m.g() //: 2`))),
 
       p(img({src: 'img/dls4a.svg',
              style: `position: absolute;
@@ -1084,14 +1084,14 @@ m.g(0) //: 2`))),
 
       content(pre(code(`var m = (function(){
   var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
+  function f() { return a }
+  function g() { return f() }
   return {g: g}
 }())
 
 m.E.a = 2
 <em>delete m.E.a</em>
-m.g(0) <em>//: NaN</em>`))),
+m.g() <em>//: NaN</em>`))),
 
       p(img({src: 'img/dls4c.svg',
              style: `position: absolute;
@@ -1105,12 +1105,12 @@ m.g(0) <em>//: NaN</em>`))),
 
       content(pre(code(`var m = (function(){
   var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
+  function f() { return a }
+  function g() { return f() }
   return {g: g}
 }())
 
-m.g(0) //: 1`))),
+m.g() //: 1`))),
 
       p(img({src: 'img/dls7a.svg',
              style: `position: absolute;
@@ -1124,16 +1124,16 @@ m.g(0) //: 1`))),
 
       content(pre(code(`var m = (function(){
   var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
+  function f() { return a }
+  function g() { return f() }
   return {g: g}
 }())
 
-m.g(0) //: 1
+m.g() //: 1
 <em>m.E.a = 2
-m.g(0) //: 2</em>
+m.g() //: 2</em>
 delete m.E.a
-m.g(0) //: 1`))),
+m.g() //: 1`))),
 
     p(img({src: 'img/dls7b.svg',
            style: `position: absolute;
@@ -1147,16 +1147,16 @@ m.g(0) //: 1`))),
 
       content(pre(code(`var m = (function(){
   var a = 1
-  function f(x) { return x + a }
-  function g(x) { return f(x) }
+  function f() { return a }
+  function g() { return f() }
   return {g: g}
 }())
 
-m.g(0) //: 1
+m.g() //: 1
 m.E.a = 2
-m.g(0) //: 2
+m.g() //: 2
 <em>delete m.E.a
-m.g(0) //: 1</em>`))),
+m.g() //: 1</em>`))),
 
       p(img({src: 'img/dls7c.svg',
              style: `position: absolute;
@@ -1170,20 +1170,19 @@ m.g(0) //: 1</em>`))),
 
       content(pre(code(`var m = (function(){ ... }())
 
-m.g(0) //: 1
+m.g() //: 1
 
-var e1 = <em>{ a: 2, f(x) {
-  return x + 2 * m.E.a }}</em>
+var e1 = <em>{ a: 2,</em>
+           <em>f() { return 2 * m.E.a }}</em>
 pushEnv(e1, m.E)
-m.g(0) //: 4
+m.g() //: 4
 
-var e2 = { f(x) {
-  return -m.E.a }}
+var e2 = { f() { return -m.E.a }}
 pushEnv(e2, m.E)
-m.g(0) //: -2
+m.g() //: -2
 
 removeEnv(e1, m.E)
-m.g(0) //: -1`))),
+m.g() //: -1`))),
 
       p(img({src: 'img/dls8a-1.svg',
              style: `position: absolute;
@@ -1198,20 +1197,19 @@ m.g(0) //: -1`))),
 
       content(pre(code(`var m = (function(){ ... }())
 
-m.g(0) //: 1
+m.g() //: 1
 
-var e1 = { a: 2, f(x) {
-  return x + 2 * m.E.a }}
+var e1 = { a: 2,
+           f() { return 2 * m.E.a }}
 <em>pushEnv(e1, m.E)</em>
-m.g(0) //: 4
+m.g() //: 4
 
-var e2 = { f(x) {
-  return -m.E.a }}
+var e2 = { f() { return -m.E.a }}
 pushEnv(e2, m.E)
-m.g(0) //: -2
+m.g() //: -2
 
 removeEnv(e1, m.E)
-m.g(0) //: -1`))),
+m.g() //: -1`))),
 
       p(img({src: 'img/dls8b-1.svg',
              style: `position: absolute;
@@ -1254,20 +1252,19 @@ m.g(0) //: -1`))),
 
       content(pre(code(`var m = (function(){ ... }())
 
-m.g(0) //: 1
+m.g() //: 1
 
-var e1 = { a: 2, f(x) {
-  return x + 2 * m.E.a }}
+var e1 = { a: 2,
+           f() { return 2 * m.E.a }}
 pushEnv(e1, m.E)
-m.g(0) //: 4
+m.g() //: 4
 
-<em>var e2 = { f(x) {
-  return -m.E.a }}
+<em>var e2 = { f() { return -m.E.a }}
 pushEnv(e2, m.E)</em>
-m.g(0) //: -2
+m.g() //: -2
 
 removeEnv(e1, m.E)
-m.g(0) //: -1`))),
+m.g() //: -1`))),
 
       p(img({src: 'img/dls8c-1.svg',
              style: `position: absolute;
@@ -1282,20 +1279,19 @@ m.g(0) //: -1`))),
 
       content(pre(code(`var m = (function(){ ... }())
 
-m.g(0) //: 1
+m.g() //: 1
 
-var e1 = { a: 2, f(x) {
-  return x + 2 * m.E.a }}
+var e1 = { a: 2,
+           f() { return 2 * m.E.a }}
 pushEnv(e1, m.E)
-m.g(0) //: 4
+m.g() //: 4
 
-var e2 = { f(x) {
-  return -m.E.a }}
+var e2 = { f() { return -m.E.a }}
 pushEnv(e2, m.E)
-m.g(0) //: -2
+m.g() //: -2
 
 <em>removeEnv(e1, m.E)</em>
-m.g(0) //: -1`))),
+m.g() //: -1`))),
 
       p(img({src: 'img/dls8d-1.svg',
              style: `position: absolute;
@@ -1312,15 +1308,15 @@ m.g(0) //: -1`))),
   <em>var E = Object.create(null)</em>
   <em>with (E) {</em>
     var a = 1
-    function f(x) { return x + a }
-    function g(x) { return f(x) }
+    function f() { return a }
+    function g() { return f() }
     return { g: g, <em>E: E</em> }
   <em>}</em>
 }())
 
-m.g(0) //: 1
+m.g() //: 1
 m.E.a = 2
-m.g(0) //: 2`))),
+m.g() //: 2`))),
 
       p(img({src: 'img/dls11.svg',
              style: `position: absolute;
@@ -1344,16 +1340,16 @@ m.g(0) //: 2`))),
   var E = Object.create(null)
   with (E) {
     var a = 1
-    function f(x) { return x + a }
-    function g(x) { return f(x) }
+    function f() { return a }
+    function g() { return f() }
     <em>Object.setPrototypeOf(E, {f, ...})</em>
     return { g: g, E: E }
   }
 }())
 
-m.g(0) //: 1
+m.g() //: 1
 m.E.a = 2
-m.g(0) //: 2`))),
+m.g() //: 2`))),
 
       p(img({src: 'img/dls11a.svg',
              style: `position: absolute;
