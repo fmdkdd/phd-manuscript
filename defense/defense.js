@@ -1377,23 +1377,21 @@ m.g() //: 2`))),
 <em>+  var repl_prompt = "njs> "</em>
 +  putstr(repl_prompt)`))),
 
-      vspace(15),
+      vspace(5),
 
       p("Retarder la finalisation:"),
 
-      pre(code(`(function(){
-  reflectArray()
-  reflectFunction()
-  ...
-}())`), {style: `margin-left: 50px; vertical-align: top;`}),
+      img({src: 'img/purple-seq.svg',
+           style: `width: 180px;
+                   position: absolute;
+                   left: 100px;
+                   bottom: 10px;`}),
 
-      pre(code(`(function(){
-  <em>function populateEnv() { ... }</em>
-}())
-
-load("facets-analysis.js")
-<em>Narcissus.populateEnv()</em>`),
-          {style: `margin-left: 75px;`}),
+      img({src: 'img/purple-seq2.svg',
+           style: `width: 180px;
+                   position: absolute;
+                   left: 400px;
+                   bottom: 10px;`}),
 
     ]),
 
@@ -1601,6 +1599,29 @@ canvas.finish()`),
           {style: `position: absolute;
                    right: 75px;
                    top: 200px;`}),
+    ]),
+
+    slide([
+      h1("Retarder la finalisation dans Narcissus"),
+
+
+      pre(code(`(function(){
+  reflectArray()
+  reflectFunction()
+  ...
+}())`), {style: `margin-left: 50px; vertical-align: top;`}),
+
+      pre(code(`(function(){
+<em>  function populateEnv() {
+  reflectArray()
+  reflectFunction()
+}</em>
+}())
+
+load("facets-analysis.js")
+<em>Narcissus.populateEnv()</em>`),
+          {style: `margin-left: 75px;`}),
+
     ]),
 
   ])
