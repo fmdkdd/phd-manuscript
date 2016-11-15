@@ -1375,33 +1375,52 @@ m.g() //: 2`))),
     ]),
 
     slide([
-      h1("Évaluation"),
+      h1("Évaluation: duplication de code"),
 
-      p("Suite de conformité test262: résultats identiques"),
-
-      tbl([
-        ['Interpréteur', 'Lignes modifiées', 'Benchmark'],
-        ['Narcissus', '0', '1040 sec'],
-        ['Narcissus (with)', '19', '1218 sec (+17%)'],
-        ['Narcissus multi-facettes (AF-12)', '640', '1215 sec'],
-        ['Narcissus multi-facettes (with)', '62', '1301 sec (+7%)'],
-      ]),
 
       img({src: 'img/diff-tangled.svg',
            style: `width: 200px;
                    position: absolute;
+                   bottom: 245px;
                    left: 80px;`}),
 
       img({src: 'img/right-arrow.svg',
            style: `width: 50px;
                    position: absolute;
-                   bottom: 70px;
+                   bottom: 300px;
                    left: 330px;`}),
 
       img({src: 'img/narcissus-diff-after-2c.svg',
            style: `width: 300px;
                    position: absolute;
+                   bottom: 250px;
                    right: 80px;`}),
+
+      p("1 interpréteur<br>1 analyse<br>640 lignes modifiées",
+        {style: `position: absolute;
+                 left: 30px;
+                 bottom: 120px;`}),
+
+      p("1 interpréteur<br>4 analyses<br>62 lignes modifiées",
+        {style: `position: absolute;
+                 left: 375px;
+                 bottom: 120px;`}),
+    ]),
+
+    slide([
+      h1("Évaluation: correction et performance"),
+
+      p("Résultats identiques sur test262 (tests ECMAScript)"),
+
+      tbl([
+        ['Interpréteur', "Temps d'exécution de 2500 tests"],
+        ['Narcissus', '1040 sec'],
+        ['Narcissus (with)', '1218 sec (+17%)'],
+        ['Narcissus multi-facettes (AF-12)', '1215 sec'],
+        ['Narcissus multi-facettes (with)', '1301 sec (+7%)'],
+      ]),
+
+      p("AspectScript [TLT-10]: 500% à 1500% d'overhead"),
 
       note([
         'fix a bug only once with diverting',
