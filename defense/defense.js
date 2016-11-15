@@ -248,7 +248,7 @@ console.log(
       ul([
         li("Chaque valeur a deux facettes"),
         li("Seule l'autorité voit la facette privée"),
-        li([`Le                (program counter) suit les flots indirects`,
+        li([`Le                (program counter) suit les flots implicites`,
             img({src: "img/facet-pc.svg",
                  style: `position: absolute;
                          left: 100px;`})])
@@ -317,7 +317,18 @@ console.log(
 
     slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
 
-    slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/diff-tangled.svg'}))]),
+    slide([
+      h1('Analyse multi-facettes: implémentation',
+         {style: `text-shadow: 1px 1px 0px white;`}),
+
+      p("640 lignes modifiées sur 1500",
+        {style: `text-shadow: 1px 1px 0px white;
+                 position: absolute;
+                 left: 95px;`}),
+
+      figure(img({src: 'img/diff-tangled.svg'})),
+
+    ]),
 
     slide([
       h1("Mêler interpréteurs et analyses"),
@@ -354,7 +365,7 @@ console.log(
       p("Interpréteurs extensibles <b>par construction</b>:"),
 
       ul([
-        li("Interpréteurs réflexifs (Smith, Friedman)"),
+        li("Interpréteurs réflexifs et MOPs (Smith, Friedman, Kiczales)"),
         li("Patron interpréteur (GOF)"),
         li("Patron visiteur (GOF, Oliveira, Krishnamurthi)"),
         li("Algèbres d'objets (Oliveira & Cook)"),
@@ -457,6 +468,11 @@ show : Term -> String
            style: `position: absolute;
                    right: 50px;
                    top: 350px;`}),
+
+      note([
+        'explain objects',
+        'explain prototype delegation',
+      ]),
     ]),
 
     slide([
@@ -752,6 +768,7 @@ with (double({num})) {
                    bottom: 120px;
                    left: 100px;`}),
 
+      note('like proceed'),
     ]),
 
 
@@ -856,7 +873,7 @@ with (state({num, plus})) {
     ]),
 
     slide([
-      h1("Contribution: un intepréteur modulaire"),
+      h1("Contribution: un interpréteur modulaire"),
 
       p("Un schéma de composition original pour des<br>interpréteurs modulaires en JavaScript"),
 
@@ -877,7 +894,7 @@ with (state({num, plus})) {
                    left: 400px;`}),
 
       vspace(20),
-      p(`Approche <b>bottom-up</b>: construire un interpréteur extensible`),
+      p(`Approche <b>ascendante</b>: construire un interpréteur extensible`),
 
       note('alternative to state of the art tailored to JS'),
 
@@ -906,6 +923,8 @@ with (state({num, plus})) {
         li("500% à 1500% d'overhead"),
         li("Solution surdimensionée"),
       ]),
+
+      note(['AspectScript: suffisant mais instatisfaisant']),
     ]),
 
     slide([
@@ -1388,7 +1407,7 @@ load("facets-analysis.js")
         ['Narcissus', '1040 sec', '0'],
         ['Narcissus (with)', '1218 sec (+17%)', '19'],
         ['Narcissus multi-facettes (AF-12)', '1215 sec', '640'],
-        ['Narcissus multi-facettes (with)', '1301 sec (+7%)', '51'],
+        ['Narcissus multi-facettes (with)', '1301 sec (+7%)', '62'],
       ]),
 
       img({src: 'img/diff-tangled.svg',
@@ -1515,7 +1534,7 @@ with ({x: 42}) {
     slide([
       h1('Analyse multi-facettes: exemple'),
 
-      p("Flot indirect (Austin et Flanagan, 2012)"),
+      p("Flot implicite (Austin et Flanagan, 2012)"),
 
       p(img({src: 'img/fenton-example.svg',
              style: 'margin: 40px 0'})),
