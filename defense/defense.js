@@ -1456,14 +1456,14 @@ m.g() //: 2`))),
                          right: 55px;`})
            ]),
 
-        vspace(60),
+        vspace(80),
         li([`Détourner Narcissus pour le rendre extensible<br>
              (environnement frontal, <code>with</code>)`,
 
             img({src: 'img/narcissus-diff-after-2c.svg',
                  style: `width: 200px;
                          position: absolute;
-                         top: 450px;
+                         top: 430px;
                          right: 50px;`})
            ]),
       ]),
