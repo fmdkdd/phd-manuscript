@@ -863,12 +863,13 @@ with (state({num, plus})) {
       div([
         p("Ingrédients:"),
         ul([
-          li("Objets modules et foncteurs"),
-          li("Délégation par prototypes"),
-          li("Fermetures lexicales"),
+          li("Objets modules"),
+          li("Foncteurs"),
+          li("<code>with</code> pour activer les modules"),
+          li("Réutilisation par délégation"),
         ])],
           {style: `position: absolute;
-                   top: 180px;
+                   top: 200px;
                    left: 400px;`}),
 
       vspace(20),
@@ -1379,11 +1380,11 @@ m.g() //: 2`))),
       p("Suite de conformité test262: résultats identiques"),
 
       tbl([
-        ['Interpréteur', 'Benchmark', 'Lignes modifiées'],
-        ['Narcissus', '1040 sec', '0'],
-        ['Narcissus (with)', '1218 sec (+17%)', '19'],
-        ['Narcissus multi-facettes (AF-12)', '1215 sec', '640'],
-        ['Narcissus multi-facettes (with)', '1301 sec (+7%)', '62'],
+        ['Interpréteur', 'Lignes modifiées', 'Benchmark'],
+        ['Narcissus', '0', '1040 sec'],
+        ['Narcissus (with)', '19', '1218 sec (+17%)'],
+        ['Narcissus multi-facettes (AF-12)', '640', '1215 sec'],
+        ['Narcissus multi-facettes (with)', '62', '1301 sec (+7%)'],
       ]),
 
       img({src: 'img/diff-tangled.svg',
@@ -1426,17 +1427,19 @@ m.g() //: 2`))),
       p("Contributions:"),
 
       ul([
-        li(["Construire un interpréteur par modules",
+        li([`Construire un interpréteur par modules<br>
+             (foncteurs, <code>with</code>)`,
 
             img({src: 'img/foal-lang-6.svg',
                  style: `width: 200px;
-                         vertical-align: middle;
-                         position: relative;
-                         left: 90px;`})
+                         position: absolute;
+                         top: 270px;
+                         right: 55px;`})
            ]),
 
         vspace(60),
-        li(["Détourner Narcissus pour le rendre extensible",
+        li([`Détourner Narcissus pour le rendre extensible<br>
+             (environnement frontal, <code>with</code>)`,
 
             img({src: 'img/narcissus-diff-after-2c.svg',
                  style: `width: 200px;
