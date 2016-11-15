@@ -202,40 +202,21 @@ console.log(
 
       p(img({src: 'img/facet-2.svg'})),
 
-      note(["Implicit flows believed static-only",
-            "AF-12 showed it could be done"]),
+      vspace(20),
+      p("Permettent d'assurer la confidentialité et l'intégrité des données"),
     ]),
 
     slide([
-      h1("Deux façons d'analyser les programmes JavaScript"),
+      h1("Comment implémenter les analyses ?"),
 
-      p("Analyses statiques:"),
+      img({src: 'img/our-problem.svg',
+           style: `position: absolute;
+                   width: 500px;
+                   top: 200px;
+                   left: 150px;`}),
 
-      ul([
-        li("Analysent le code source"),
-        li("Analysent tous les chemins d'exécution"),
-        li("Plus adaptées à un langage statique"),
-      ]),
-
-      img({src: 'img/static-analysis.svg',
-           style: `width: 120px;
-                   position: absolute;
-                   right: 80px;
-                   top: 120px;`}),
-
-      vspace(50),
-      p("<em>Analyses dynamiques</em>:"),
-
-      ul([
-        li("Analysent l'exécution du programme"),
-        li("Mieux adaptées au langage JavaScript et aux navigateurs"),
-      ]),
-
-      img({src: 'img/static-analysis-2.svg',
-           style: `width: 78px;
-                   position: absolute;
-                   right: 80px;
-                   top: 340px;`}),
+      vspace(300),
+      p("Simplifier l'implémentation   🡆   favoriser l'utilisation d'analyses"),
     ]),
 
     slide([
@@ -258,11 +239,11 @@ console.log(
              style: 'margin: 40px 20px'})),
 
 
-      img({src: 'img/static-analysis-3.svg',
-           style: `width: 120px;
-                   position: absolute;
-                   right: 80px;
-                   top: 180px;`}),
+      // img({src: 'img/static-analysis-3.svg',
+      //      style: `width: 120px;
+      //              position: absolute;
+      //              right: 80px;
+      //              top: 180px;`}),
 
       note([
         'if only A can see priv(X), only A can see priv(Y)',
@@ -271,26 +252,23 @@ console.log(
     ]),
 
     slide([
-      h1("Narcissus"),
+      h1("L'interpréteur Narcissus"),
 
       p(img({src: "img/narcissus.jpg",
-             style: `width: 280px;
-                     float: left;
-                     margin-right: 20px;`})),
+             style: `width: 280px;`})),
 
       img({src: 'img/lt-v8.svg',
-             style: `width: 200px;
+             style: `width: 250px;
                      position: absolute;
-                     top: 380px;
-                     left: 90px;`}),
+                     top: 190px;
+                     left: 370px;`}),
 
-      p(`Interpréteur utilisé par Austin et Flanagan pour <em>implémenter</em>
+      ul([
+        li("Interpréteur JavaScript métacirculaire par Mozilla"),
+        li("Taille idéale pour prototyper des extensions au langage"),
+        li(`Utilisé par Austin et Flanagan pour <em>implémenter</em>
          l'analyse multi-facettes`),
-
-      p("Interpréteur JavaScript métacirculaire par Mozilla"),
-
-      p("Taille idéale pour prototyper des extensions au langage"),
-
+      ]),
 
     ]),
 
@@ -1509,6 +1487,38 @@ with ({x: 42}) {
 
     slide([
       h1("Portée dynamique: heureux accident"),
+    ]),
+
+    slide([
+      h1("Deux façons d'analyser les programmes JavaScript"),
+
+      p("Analyses statiques:"),
+
+      ul([
+        li("Analysent le code source"),
+        li("Analysent tous les chemins d'exécution"),
+        li("Plus adaptées à un langage statique"),
+      ]),
+
+      img({src: 'img/static-analysis.svg',
+           style: `width: 120px;
+                   position: absolute;
+                   right: 80px;
+                   top: 120px;`}),
+
+      vspace(50),
+      p("<em>Analyses dynamiques</em>:"),
+
+      ul([
+        li("Analysent l'exécution du programme"),
+        li("Mieux adaptées au langage JavaScript et aux navigateurs"),
+      ]),
+
+      img({src: 'img/static-analysis-2.svg',
+           style: `width: 78px;
+                   position: absolute;
+                   right: 80px;
+                   top: 340px;`}),
     ]),
 
     slide([
