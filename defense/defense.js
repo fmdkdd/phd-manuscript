@@ -343,6 +343,7 @@ console.log(
       p("Interpréteurs extensibles <b>par construction</b>:"),
 
       ul([
+        li("Implémentation ouverte (Rao)"),
         li("Interpréteurs réflexifs et MOPs (Smith, Friedman, Kiczales)"),
         li("Patron interpréteur (GOF)"),
         li("Patron visiteur (GOF, Oliveira, Krishnamurthi)"),
@@ -354,7 +355,6 @@ console.log(
 
       p("Étendre un interpréteur <b>existant</b>:"),
       ul([
-        li("Implémentation ouverte (Rao)"),
         li("Programmation par aspects [KLM97], AspectScript [TLT10]"),
       ]),
 
