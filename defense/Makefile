@@ -40,7 +40,7 @@ clean:
              $(IMG_OUT)/*.svg \
              $(IMG_OUT)/*.jpg \
              $(IMG_OUT)/*.png \
-             $(FONTS_OUT)/*
+	rm --recursive --force $(FONTS_OUT)/*
 
 # Extract individual SVG from SVG containing multiple diagrams with Inkscape.
 $(IMG_OUT)/%.multi.svg: $(IMG)/%.multi.svg ../bin/svgsplit
