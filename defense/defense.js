@@ -117,7 +117,7 @@ console.log(
     slide([
       h1("Le plan"),
 
-      p("1. Problématique: étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript",
+      p("1. Problématique : étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript",
         {style: `width: 500px`}),
 
       img({src: 'img/diff-tangled.svg',
@@ -128,7 +128,7 @@ console.log(
 
       vspace(50),
 
-      p("2. Contribution: construire un interpréteur par<br>&nbsp;&nbsp;&nbsp;&nbsp; modules"),
+      p("2. Contribution : construire un interpréteur par<br>&nbsp;&nbsp;&nbsp;&nbsp; modules"),
 
       img({src: 'img/foal-blocks.svg',
            style: `width: 200px;
@@ -138,7 +138,7 @@ console.log(
 
       vspace(60),
 
-      p("3. Contribution: détourner Narcissus"),
+      p("3. Contribution : détourner Narcissus"),
 
       img({src: 'img/narcissus-diff-after-2c.svg',
            style: `width: 200px;
@@ -193,16 +193,15 @@ console.log(
     slide([
       h1("Analyse de flot d'information"),
 
-      p("Établir les dépendances entre variables:"),
+      p("Établir les dépendances entre variables :"),
 
       p(img({src: 'img/facet-1.svg'})),
 
-      vspace(20),
-      p("Dépendance implicite:"),
+      p("Dépendance implicite :"),
 
       p(img({src: 'img/facet-2.svg'})),
 
-      vspace(20),
+      vspace(5),
       p("Permettent d'assurer la confidentialité et l'intégrité des données"),
     ]),
 
@@ -273,7 +272,7 @@ console.log(
     ]),
 
     slide([
-      h1("Analyse multi-facettes: implémentation"),
+      h1("Analyse multi-facettes : implémentation"),
 
       content(pre(code(`case IF:
 <em class="orange">-</em> if (getValue(execute(n.condition, x)))
@@ -293,10 +292,10 @@ console.log(
    break;`))),
     ]),
 
-    slide([h1('Analyse multi-facettes: implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
+    slide([h1('Analyse multi-facettes : implémentation'), figure(img({src: 'img/narcissus-diff-raw.png'}))]),
 
     slide([
-      h1('Analyse multi-facettes: implémentation',
+      h1('Analyse multi-facettes : implémentation',
          {style: `text-shadow: 1px 1px 0px white;`}),
 
       p("640 lignes modifiées sur 1500",
@@ -314,11 +313,11 @@ console.log(
       img({src: 'img/slipslop-3.svg',
            style: `margin: 20px 200px;`}),
 
-      p("Inconvénients: <b>duplication</b> de code et <b>mélange</b> des préoccupations"),
+      p("Inconvénients : <b>duplication</b> de code et <b>mélange</b> des préoccupations"),
     ]),
 
     slide([
-      h1("Détourner un interpréteur JavaScript: les objectifs"),
+      h1("Détourner un interpréteur JavaScript : les objectifs"),
 
       p(img({src: 'img/big-picture.svg',
              style: `margin-left: 150px`})),
@@ -340,7 +339,7 @@ console.log(
     slide([
       h1("État de l'art"),
 
-      p("Interpréteurs extensibles <b>par construction</b>:"),
+      p("Interpréteurs extensibles <b>par construction</b> :"),
 
       ul([
         li("Implémentation ouverte (Rao)"),
@@ -353,7 +352,7 @@ console.log(
 
       vspace(20),
 
-      p("Étendre un interpréteur <b>existant</b>:"),
+      p("Étendre un interpréteur <b>existant</b> :"),
       ul([
         li("Programmation par aspects [KLM97], AspectScript [TLT10]"),
       ]),
@@ -372,7 +371,7 @@ console.log(
     slide([
       h1(`Construire des modules en JavaScript`),
 
-      p("Un <b>objet</b> expose une interface:"),
+      p("Un <b>objet</b> expose une interface :"),
 
       content(pre(code(`var m = {
   parse(file) { ... },
@@ -380,7 +379,7 @@ console.log(
 }`))),
 
       vspace(10),
-      p("Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité:"),
+      p("Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité :"),
 
       content(pre(code(`var m = (function(){
   function parse(file) { ... }
@@ -406,7 +405,7 @@ show : Term -> String
 `)))),
 
       div([
-        p("Ingrédients:"),
+        p("Ingrédients :"),
         ul([
           li("Objets modules"),
           li("Délégations par prototypes"),
@@ -529,7 +528,7 @@ e2.eval() //: 3`))),
     slide([
       h1("Foncteurs en JavaScript"),
 
-      p("Un <b>foncteur</b> transforme des modules:"),
+      p("Un <b>foncteur</b> transforme des modules :"),
 
       content(pre(code(`var M = function(base) {
   function f1(m) { ... }
@@ -630,7 +629,7 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3`))),
     slide([
       h1("<code>with</code> crée un environnement"),
 
-      p("Équivalent à un appel de fonction:"),
+      p("Équivalent à un appel de fonction :"),
 
       img({src: 'img/with-2.svg',
            style: `margin: 0 50px;`}),
@@ -851,7 +850,7 @@ with (state({num, plus})) {
     ]),
 
     slide([
-      h1("Contribution: un interpréteur modulaire"),
+      h1("Contribution : un interpréteur modulaire"),
 
       p("Un schéma de composition original pour des<br>interpréteurs modulaires en JavaScript"),
 
@@ -861,7 +860,7 @@ with (state({num, plus})) {
              style: `width: 340px`})),
 
       div([
-        p("Ingrédients:"),
+        p("Concepts:"),
         ul([
           li("Objets modules"),
           li("Foncteurs"),
@@ -873,7 +872,7 @@ with (state({num, plus})) {
                    left: 400px;`}),
 
       vspace(20),
-      p(`Approche <b>ascendante</b>: construire un interpréteur extensible`),
+      p(`Approche <b>ascendante</b> : construire un interpréteur extensible`),
 
       note('alternative to state of the art tailored to JS'),
 
@@ -890,14 +889,14 @@ with (state({num, plus})) {
                         margin: 50px auto;`})),
 
     slide([
-      h1("Détourner un interpréteur JavaScript: les objectifs"),
+      h1("Détourner un interpréteur JavaScript : les objectifs"),
 
       p("Solution pragmatique pour JavaScript"),
 
       p(img({src: 'img/big-picture.svg',
              style: `margin-left: 150px`})),
 
-      p("État de l'art, AspectScript [TLT10]:"),
+      p("État de l'art, AspectScript [TLT10] :"),
       ul([
         li("500% à 1500% d'overhead"),
         li("Solution surdimensionée"),
@@ -926,7 +925,7 @@ with (state({num, plus})) {
     ]),
 
     slide([
-      h1("Problème: Narcissus est un module verrouillé"),
+      h1("Problème : Narcissus est un module verrouillé"),
 
       content(pre(code(`var m = <em>(function(){</em>
   var a = 1
@@ -983,9 +982,9 @@ m.g() //: 1`))),
 //     ]),
 
     slide([
-      h1("Solution: ouvrir le module"),
+      h1("Solution : ouvrir le module"),
 
-      p("<b>Supposition</b>: on dispose d'une référence <code><em>E</em></code>"),
+      p("<b>Supposition</b> : on dispose d'une référence <code><em>E</em></code>"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -1029,7 +1028,7 @@ m.g() //: 2`))),
 //     ]),
 
     slide([
-      h1("Problème: modifications réversibles"),
+      h1("Problème : modifications réversibles"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -1050,7 +1049,7 @@ m.g() <em>//: NaN</em>`))),
     ]),
 
     slide([
-      h1("Solution: ajouter un environnement frontal"),
+      h1("Solution : ajouter un environnement frontal"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -1069,7 +1068,7 @@ m.g() //: 1`))),
     ]),
 
     slide([
-      h1("Solution: ajouter un environnement frontal"),
+      h1("Solution : ajouter un environnement frontal"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -1092,7 +1091,7 @@ m.g() //: 1`))),
   ]),
 
     slide([
-      h1("Solution: ajouter un environnement frontal"),
+      h1("Solution : ajouter un environnement frontal"),
 
       content(pre(code(`var m = (function(){
   var a = 1
@@ -1349,7 +1348,7 @@ m.g() //: 2`))),
     slide([
       h1("Modifications supplémentaires"),
 
-      p("Nommer une valeur:"),
+      p("Nommer une valeur :"),
 
       content(pre(code(`-  putstr("njs> ")
 
@@ -1358,7 +1357,7 @@ m.g() //: 2`))),
 
       vspace(5),
 
-      p("Retarder la finalisation:"),
+      p("Retarder la finalisation :"),
 
       img({src: 'img/purple-seq.svg',
            style: `width: 500px;
@@ -1369,7 +1368,7 @@ m.g() //: 2`))),
     ]),
 
     slide([
-      h1("Évaluation: duplication de code"),
+      h1("Évaluation : duplication de code"),
 
 
       img({src: 'img/diff-tangled.svg',
@@ -1402,7 +1401,7 @@ m.g() //: 2`))),
     ]),
 
     slide([
-      h1("Évaluation: correction et performance"),
+      h1("Évaluation : correction et performance"),
 
       p("Résultats identiques sur test262 (tests ECMAScript)"),
 
@@ -1414,7 +1413,7 @@ m.g() //: 2`))),
         ['Narcissus multi-facettes (with)', '1301 sec (+7%)'],
       ]),
 
-      p("AspectScript [TLT-10]: 500% à 1500% d'overhead"),
+      p("AspectScript [TLT-10] : 500% à 1500% d'overhead"),
 
       note([
         'fix a bug only once with diverting',
@@ -1437,7 +1436,7 @@ m.g() //: 2`))),
                    right: 50px;`}),
 
       vspace(30),
-      p("Contributions:"),
+      p("Contributions :"),
 
       ul([
         li([`Construire un interpréteur par modules<br>
@@ -1466,14 +1465,14 @@ m.g() //: 2`))),
     slide([
       h1("Perspectives"),
 
-      p("Construire un interpréteur par modules:"),
+      p("Construire un interpréteur par modules :"),
 
       ul([
         li("Application à d'autres langages dynamiques"),
       ]),
 
       vspace(50),
-      p("Détourner Narcissus:"),
+      p("Détourner Narcissus :"),
 
       ul([
         li("Comparaison d'analyses de flot d'information"),
@@ -1502,13 +1501,13 @@ with ({x: 42}) {
     ]),
 
     slide([
-      h1("Portée dynamique: heureux accident"),
+      h1("Portée dynamique : heureux accident"),
     ]),
 
     slide([
       h1("Deux façons d'analyser les programmes JavaScript"),
 
-      p("Analyses statiques:"),
+      p("Analyses statiques :"),
 
       ul([
         li("Analysent le code source"),
@@ -1523,7 +1522,7 @@ with ({x: 42}) {
                    top: 120px;`}),
 
       vspace(50),
-      p("<em>Analyses dynamiques</em>:"),
+      p("<em>Analyses dynamiques</em> :"),
 
       ul([
         li("Analysent l'exécution du programme"),
@@ -1556,7 +1555,7 @@ with ({x: 42}) {
 
 
     slide([
-      h1('Analyse multi-facettes: exemple'),
+      h1('Analyse multi-facettes : exemple'),
 
       p("Flot implicite (Austin et Flanagan, 2012)"),
 
@@ -1579,13 +1578,13 @@ with ({x: 42}) {
     ]),
 
     slide([
-      h1("Problème: mixer les modules"),
+      h1("Problème : mixer les modules"),
 
       content(pre(code(`<em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
 
 //: TypeError: this.l.show is not a function`))),
 
-      p("Problème de types:"),
+      p("Problème de types :"),
 
       content(pre(code(`plus.new: Term -> Term -> Term
 s.plus.new: Show -> Show -> Show
@@ -1596,7 +1595,7 @@ s.plus.new: Show -> Show -> Show
     slide([
       h1(`Réduire le bruit syntaxique`),
 
-      p("Le but <code>with</code> en JavaScript:"),
+      p("Le but de <code>with</code> en JavaScript :"),
 
       pre(code(`canvas.begin()
 canvas.setColor(...)
