@@ -317,19 +317,19 @@
                    bottom: 20px;
                    right: 50px;"/></section>
 <section class="slide level2"><h1>Le plan</h1>
-<p style="width: 500px">1. Problématique: étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript</p>
+<p style="width: 500px">1. Problématique : étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript</p>
 <img src="img/diff-tangled.svg" style="width: 150px;
                    position: absolute;
                    right: 50px;
                    top: 120px;"/>
 <div style="height: 50px"></div>
-<p>2. Contribution: construire un interpréteur par<br>&nbsp;&nbsp;&nbsp;&nbsp; modules</p>
+<p>2. Contribution : construire un interpréteur par<br>&nbsp;&nbsp;&nbsp;&nbsp; modules</p>
 <img src="img/foal-blocks.svg" style="width: 200px;
                    position: absolute;
                    right: 25px;
                    top: 280px"/>
 <div style="height: 60px"></div>
-<p>3. Contribution: détourner Narcissus</p>
+<p>3. Contribution : détourner Narcissus</p>
 <img src="img/narcissus-diff-after-2c.svg" style="width: 200px;
                    position: absolute;
                    right: 25px;
@@ -355,20 +355,21 @@
 <div role="note"><p>JS is the only language natively supported by navigators</p>
 <p>Makes it popular</p></div></section>
 <section class="slide level2"><h1>Analyse de flot d'information</h1>
-<p>Établir les dépendances entre variables:</p>
+<p>Établir les dépendances entre variables :</p>
 <p><img src="img/facet-1.svg"/></p>
-<div style="height: 20px"></div>
-<p>Dépendance implicite:</p>
+<p>Dépendance implicite :</p>
 <p><img src="img/facet-2.svg"/></p>
-<div style="height: 20px"></div>
+<div style="height: 5px"></div>
 <p>Permettent d'assurer la confidentialité et l'intégrité des données</p></section>
 <section class="slide level2"><h1>Comment implémenter les analyses ?</h1>
 <img src="img/our-problem.svg" style="position: absolute;
                    width: 500px;
-                   top: 200px;
+                   top: 180px;
                    left: 150px;"/>
-<div style="height: 300px"></div>
-<p>Simplifier l'implémentation   🡆   favoriser l'utilisation d'analyses</p></section>
+<div style="height: 230px"></div>
+<p>Buts :</p>
+<ul><li>Simplifier l'implémentation pour favoriser l'utilisation d'analyses</li>
+<li>Récolter les <b>concepts de modularisation</b> JavaScript</li></ul></section>
 <section class="slide level2"><h1>Analyse multi-facettes</h1>
 <p>Analyse dynamique de flot d'information (Austin et Flanagan, 2012)</p>
 <p><img src="img/a-facet.svg"/></p>
@@ -390,7 +391,7 @@
 <li>Taille idéale pour prototyper des extensions au langage</li>
 <li>Utilisé par Austin et Flanagan pour <em>implémenter</em>
          l'analyse multi-facettes</li></ul></section>
-<section class="slide level2"><h1>Analyse multi-facettes: implémentation</h1>
+<section class="slide level2"><h1>Analyse multi-facettes : implémentation</h1>
 <div class="content"><pre><code>case IF:
 <em class="orange">-</em> if (getValue(execute(n.condition, x)))
 <em class="green">+</em>  let cond = getValue(execute(n.condition, x)<em>, pc</em>);
@@ -407,17 +408,17 @@
    else if (n.elsePart)
      execute(n.elsePart, x);
    break;</code></pre></div></section>
-<section class="slide level2"><h1>Analyse multi-facettes: implémentation</h1>
+<section class="slide level2"><h1>Analyse multi-facettes : implémentation</h1>
 <figure><img src="img/narcissus-diff-raw.png"/></figure></section>
-<section class="slide level2"><h1 style="text-shadow: 1px 1px 0px white;">Analyse multi-facettes: implémentation</h1>
+<section class="slide level2"><h1 style="text-shadow: 1px 1px 0px white;">Analyse multi-facettes : implémentation</h1>
 <p style="text-shadow: 1px 1px 0px white;
                  position: absolute;
                  left: 95px;">640 lignes modifiées sur 1500</p>
 <figure><img src="img/diff-tangled.svg"/></figure></section>
 <section class="slide level2"><h1>Mêler interpréteurs et analyses</h1>
 <img src="img/slipslop-3.svg" style="margin: 20px 200px;"/>
-<p>Inconvénients: <b>duplication</b> de code et <b>mélange</b> des préoccupations</p></section>
-<section class="slide level2"><h1>Détourner un interpréteur JavaScript: les objectifs</h1>
+<p>Inconvénients : <b>duplication</b> de code et <b>mélange</b> des préoccupations</p></section>
+<section class="slide level2"><h1>Détourner un interpréteur JavaScript : les objectifs</h1>
 <p><img src="img/big-picture.svg" style="margin-left: 150px"/></p>
 <ul><li>Rapidité de prototypage</li>
 <li>Minimiser la duplication de code</li>
@@ -426,7 +427,7 @@
 <div style="height: 20px"></div>
 <div role="note"><p>pragmatic: use what's already in the language</p></div></section>
 <section class="slide level2"><h1>État de l'art</h1>
-<p>Interpréteurs extensibles <b>par construction</b>:</p>
+<p>Interpréteurs extensibles <b>par construction</b> :</p>
 <ul><li>Implémentation ouverte (Rao)</li>
 <li>Interpréteurs réflexifs et MOPs (Smith, Friedman, Kiczales)</li>
 <li>Patron interpréteur (GOF)</li>
@@ -434,19 +435,19 @@
 <li>Algèbres d'objets (Oliveira & Cook)</li>
 <li>Free monad (Swierstra)</li></ul>
 <div style="height: 20px"></div>
-<p>Étendre un interpréteur <b>existant</b>:</p>
+<p>Étendre un interpréteur <b>existant</b> :</p>
 <ul><li>Programmation par aspects [KLM97], AspectScript [TLT10]</li></ul></section>
 <section class="num titleslide slide level1"><h1><span>Partie 2</span><hr>Construire un interpréteur par modules</h1>
 <img src="img/foal-blocks.svg" style="display: block;
                         margin: 50px auto;"/></section>
 <section class="slide level2"><h1>Construire des modules en JavaScript</h1>
-<p>Un <b>objet</b> expose une interface:</p>
+<p>Un <b>objet</b> expose une interface :</p>
 <div class="content"><pre><code>var m = {
   parse(file) { ... },
   exec(ast) { ... }
 }</code></pre></div>
 <div style="height: 10px"></div>
-<p>Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité:</p>
+<p>Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité :</p>
 <div class="content"><pre><code>var m = (function(){
   function parse(file) { ... }
   function exec(ast) { ... }
@@ -466,7 +467,7 @@ show : Term -&gt; String
 </code></pre></div>
 <div style="position: absolute;
                   left: 25px;
-                  bottom: 50px;"><p>Ingrédients:</p>
+                  bottom: 50px;"><p>Ingrédients :</p>
 <ul><li>Objets modules</li>
 <li>Délégations par prototypes</li>
 <li>Fermetures lexicales</li></ul></div>
@@ -521,7 +522,7 @@ e2.eval() //: 3</code></pre></div>
 <div style="height: 10px"></div>
 <p><img src="img/foal-2.svg"/></p></section>
 <section class="slide level2"><h1>Foncteurs en JavaScript</h1>
-<p>Un <b>foncteur</b> transforme des modules:</p>
+<p>Un <b>foncteur</b> transforme des modules :</p>
 <div class="content"><pre><code>var M = function(base) {
   function f1(m) { ... }
   function f2(m) { ... }
@@ -564,7 +565,7 @@ s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3</code></pre></div>
 <p><img src="img/foal-4.svg"/></p>
 <div role="note"><p>Syntaxic noise of s.plus, s.new...</p></div></section>
 <section class="slide level2"><h1><code>with</code> crée un environnement</h1>
-<p>Équivalent à un appel de fonction:</p>
+<p>Équivalent à un appel de fonction :</p>
 <img src="img/with-2.svg" style="margin: 0 50px;"/>
 <img src="img/with-3.svg" style="margin: 0 100px;"/>
 <img src="img/with-1.svg" style="position: absolute;
@@ -660,28 +661,28 @@ with (state({num, plus})) {
 }}}</code></pre></div>
 <div role="note"><p>Works because we defined them adequately</p>
 <p>No safeguards from interferences</p></div></section>
-<section class="slide level2"><h1>Contribution: un interpréteur modulaire</h1>
+<section class="slide level2"><h1>Contribution : un interpréteur modulaire</h1>
 <p>Un schéma de composition original pour des<br>interpréteurs modulaires en JavaScript</p>
 <div style="height: 20px"></div>
 <p><img src="img/foal-lang-6.svg" style="width: 340px"/></p>
 <div style="position: absolute;
                    top: 200px;
-                   left: 400px;"><p>Ingrédients:</p>
+                   left: 400px;"><p>Concepts de modularisation :</p>
 <ul><li>Objets modules</li>
 <li>Foncteurs</li>
 <li><code>with</code> pour activer les modules</li>
 <li>Réutilisation par délégation</li></ul></div>
 <div style="height: 20px"></div>
-<p>Approche <b>ascendante</b>: construire un interpréteur extensible</p>
+<p>Approche <b>ascendante</b> : construire un interpréteur extensible</p>
 <div role="note"><p>alternative to state of the art tailored to JS</p></div></section>
 <section class="num titleslide slide level1"><h1><span>Partie 3</span><hr>Détourner Narcissus</h1>
 <img src="img/narcissus-diff-after-2c.svg" style="width: 300px;
                         display: block;
                         margin: 50px auto;"/></section>
-<section class="slide level2"><h1>Détourner un interpréteur JavaScript: les objectifs</h1>
+<section class="slide level2"><h1>Détourner un interpréteur JavaScript : les objectifs</h1>
 <p>Solution pragmatique pour JavaScript</p>
 <p><img src="img/big-picture.svg" style="margin-left: 150px"/></p>
-<p>État de l'art, AspectScript [TLT10]:</p>
+<p>État de l'art, AspectScript [TLT10] :</p>
 <ul><li>500% à 1500% d'overhead</li>
 <li>Solution surdimensionée</li></ul>
 <div role="note"><p>AspectScript: suffisant mais instatisfaisant</p></div></section>
@@ -700,7 +701,7 @@ with (state({num, plus})) {
     ...
   }
 }())</code></pre></div></section>
-<section class="slide level2"><h1>Problème: Narcissus est un module verrouillé</h1>
+<section class="slide level2"><h1>Problème : Narcissus est un module verrouillé</h1>
 <div class="content"><pre><code>var m = <em>(function(){</em>
   var a = 1
   function f() { return a }
@@ -713,8 +714,8 @@ m.g() //: 1</code></pre></div>
                      width: 350px;
                      top: 250px;
                      right: 80px;"/></p></section>
-<section class="slide level2"><h1>Solution: ouvrir le module</h1>
-<p><b>Supposition</b>: on dispose d'une référence <code><em>E</em></code></p>
+<section class="slide level2"><h1>Solution : ouvrir le module</h1>
+<p><b>Supposition</b> : on dispose d'une référence <code><em>E</em></code></p>
 <div class="content"><pre><code>var m = (function(){
   var a = 1
   function f() { return a }
@@ -729,7 +730,7 @@ m.g() //: 2</code></pre></div>
                      width: 350px;
                      top: 280px;
                      right: 80px;"/></p></section>
-<section class="slide level2"><h1>Problème: modifications réversibles</h1>
+<section class="slide level2"><h1>Problème : modifications réversibles</h1>
 <div class="content"><pre><code>var m = (function(){
   var a = 1
   function f() { return a }
@@ -744,7 +745,7 @@ m.g() <em>//: NaN</em></code></pre></div>
                      width: 350px;
                      top: 250px;
                      right: 80px;"/></p></section>
-<section class="slide level2"><h1>Solution: ajouter un environnement frontal</h1>
+<section class="slide level2"><h1>Solution : ajouter un environnement frontal</h1>
 <div class="content"><pre><code>var m = (function(){
   var a = 1
   function f() { return a }
@@ -757,7 +758,7 @@ m.g() //: 1</code></pre></div>
                      width: 350px;
                      top: 250px;
                      right: 80px;"/></p></section>
-<section class="slide level2"><h1>Solution: ajouter un environnement frontal</h1>
+<section class="slide level2"><h1>Solution : ajouter un environnement frontal</h1>
 <div class="content"><pre><code>var m = (function(){
   var a = 1
   function f() { return a }
@@ -774,7 +775,7 @@ m.g() //: 1</code></pre></div>
                      width: 350px;
                      top: 250px;
                      right: 80px;"/></p></section>
-<section class="slide level2"><h1>Solution: ajouter un environnement frontal</h1>
+<section class="slide level2"><h1>Solution : ajouter un environnement frontal</h1>
 <div class="content"><pre><code>var m = (function(){
   var a = 1
   function f() { return a }
@@ -921,18 +922,18 @@ m.g() //: 2</code></pre></div>
                        display: block;
                        margin: 75px auto;"/></section>
 <section class="slide level2"><h1>Modifications supplémentaires</h1>
-<p>Nommer une valeur:</p>
+<p>Nommer une valeur :</p>
 <div class="content"><pre><code>-  putstr("njs> ")
 
 <em>+  var repl_prompt = "njs> "</em>
 +  putstr(repl_prompt)</code></pre></div>
 <div style="height: 5px"></div>
-<p>Retarder la finalisation:</p>
+<p>Retarder la finalisation :</p>
 <img src="img/purple-seq.svg" style="width: 500px;
                    position: absolute;
                    left: 100px;
                    bottom: 10px;"/></section>
-<section class="slide level2"><h1>Évaluation: duplication de code</h1>
+<section class="slide level2"><h1>Évaluation : duplication de code</h1>
 <img src="img/diff-tangled.svg" style="width: 200px;
                    position: absolute;
                    bottom: 245px;
@@ -951,7 +952,7 @@ m.g() //: 2</code></pre></div>
 <p style="position: absolute;
                  left: 375px;
                  bottom: 120px;">1 interpréteur<br>4 analyses<br>62 lignes modifiées</p></section>
-<section class="slide level2"><h1>Évaluation: correction et performance</h1>
+<section class="slide level2"><h1>Évaluation : correction et performance</h1>
 <p>Résultats identiques sur test262 (tests ECMAScript)</p>
 <table><tr><td>Interpréteur</td>
 <td>Temps d'exécution de 2500 tests</td></tr>
@@ -963,7 +964,7 @@ m.g() //: 2</code></pre></div>
 <td>1215 sec</td></tr>
 <tr><td>Narcissus multi-facettes (with)</td>
 <td>1301 sec (+7%)</td></tr></table>
-<p>AspectScript [TLT-10]: 500% à 1500% d'overhead</p>
+<p>AspectScript [TLT-10] : 500% à 1500% d'overhead</p>
 <div role="note"><p>fix a bug only once with diverting</p>
 <p>Narcissus multi-facettes is with empty PC</p></div></section>
 <section class="titleslide slide level1"><h1>Conclusions</h1></section>
@@ -974,29 +975,29 @@ m.g() //: 2</code></pre></div>
                    top: 120px;
                    right: 50px;"/>
 <div style="height: 30px"></div>
-<p>Contributions:</p>
-<ul><li>Construire un interpréteur par modules<br>
-             (foncteurs, <code>with</code>)
+<p>Contributions :</p>
+<ul><li>Construire un interpréteur par modules<br><br>
+             Concepts : module, foncteurs, <code>with</code>, délégation
 <img src="img/foal-lang-6.svg" style="width: 200px;
                          position: absolute;
                          top: 270px;
                          right: 55px;"/></li>
-<div style="height: 80px"></div>
-<li>Détourner Narcissus pour le rendre extensible<br>
-             (environnement frontal, <code>with</code>)
+<div style="height: 50px"></div>
+<li>Détourner Narcissus pour le rendre extensible<br><br>
+             Concepts : environnement frontal, <code>with</code>
 <img src="img/narcissus-diff-after-2c.svg" style="width: 200px;
                          position: absolute;
                          top: 430px;
                          right: 50px;"/></li></ul></section>
 <section class="slide level2"><h1>Perspectives</h1>
-<p>Construire un interpréteur par modules:</p>
-<ul><li>Application à d'autres langages dynamiques</li></ul>
+<p>Construire un interpréteur par modules :</p>
+<ul><li>Application des concepts à d'autres langages dynamiques</li></ul>
 <div style="height: 50px"></div>
-<p>Détourner Narcissus:</p>
+<p>Détourner Narcissus :</p>
 <ul><li>Comparaison d'analyses de flot d'information</li>
 <li>Application à V8/SpiderMonkey</li>
 <li>Compromis entre <code>with</code> et AspectScript</li>
-<li>Généralisation à des programmes quelconques</li></ul></section>
+<li>Généralisation des concepts à des programmes quelconques</li></ul></section>
 <section class="titleslide slide level1"><h1>Q & A</h1></section>
 <section class="slide level2"><h1><code>with</code> != portée dynamique</h1>
 <div class="content"><pre><code>function f() { return x }
@@ -1008,9 +1009,9 @@ f() //: 1
 with ({x: 42}) {
   f() //: 1
 }</code></pre></div></section>
-<section class="slide level2"><h1>Portée dynamique: heureux accident</h1></section>
+<section class="slide level2"><h1>Portée dynamique : heureux accident</h1></section>
 <section class="slide level2"><h1>Deux façons d'analyser les programmes JavaScript</h1>
-<p>Analyses statiques:</p>
+<p>Analyses statiques :</p>
 <ul><li>Analysent le code source</li>
 <li>Analysent tous les chemins d'exécution</li>
 <li>Plus adaptées à un langage statique</li></ul>
@@ -1019,7 +1020,7 @@ with ({x: 42}) {
                    right: 80px;
                    top: 120px;"/>
 <div style="height: 50px"></div>
-<p><em>Analyses dynamiques</em>:</p>
+<p><em>Analyses dynamiques</em> :</p>
 <ul><li>Analysent l'exécution du programme</li>
 <li>Mieux adaptées au langage JavaScript et aux navigateurs</li></ul>
 <img src="img/static-analysis-2.svg" style="width: 78px;
@@ -1034,7 +1035,7 @@ with ({x: 42}) {
 <p>Possible de retourner un proxy sur l'objet scope qui empêche
          de modifier n'importe quelle référence, en utilisant une whitelist</p>
 <p>Ou bien le symbole spécial `unscopables`</p></section>
-<section class="slide level2"><h1>Analyse multi-facettes: exemple</h1>
+<section class="slide level2"><h1>Analyse multi-facettes : exemple</h1>
 <p>Flot implicite (Austin et Flanagan, 2012)</p>
 <p><img src="img/fenton-example.svg" style="margin: 40px 0"/></p></section>
 <section class="slide level2"><h1>Des interpréteurs JavaScript</h1>
@@ -1042,16 +1043,16 @@ with ({x: 42}) {
 <p>Autres interpréteurs JavaScript</p>
 <ul><li>Rhino (Java)</li>
 <li><em>Narcissus</em> (JavaScript)</li></ul></section>
-<section class="slide level2"><h1>Problème: mixer les modules</h1>
+<section class="slide level2"><h1>Problème : mixer les modules</h1>
 <div class="content"><pre><code><em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
 
 //: TypeError: this.l.show is not a function</code></pre></div>
-<p>Problème de types:</p>
+<p>Problème de types :</p>
 <div class="content"><pre><code>plus.new: Term -> Term -> Term
 s.plus.new: Show -> Show -> Show
 </code></pre></div></section>
 <section class="slide level2"><h1>Réduire le bruit syntaxique</h1>
-<p>Le but <code>with</code> en JavaScript:</p>
+<p>Le but de <code>with</code> en JavaScript :</p>
 <pre style="position: absolute;
                    left: 50px;
                    top: 200px;"><code>canvas.begin()
