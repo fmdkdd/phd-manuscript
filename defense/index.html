@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="fmdkdd">
+  <title>Étendre des interpréteurs par détournement</title>
+  <style>
+   html, .view body { background-color: black; counter-reset: slideidx; }
+   body, .view section { background-color: white; border-radius: 12px }
+   /* A section is a slide. It's size is 800x600, and this will never change */
+   @font-face {
+     font-family: "Noto Serif";
+     src: url("fonts/noto/NotoSerif-Regular.ttf");
+     font-weight: normal;
+     font-style: normal;
+   }
+
+   @font-face {
+     font-family: "Noto Serif";
+     src: url("fonts/noto/NotoSerif-Bold.ttf");
+     font-weight: bold;
+     font-style: normal;
+   }
+
+   @font-face {
+     font-family: "Quando";
+     src: url("fonts/Quando-Regular.ttf");
+     font-weight: normal;
+     font-style: normal;
+   }
+
+   section, .view head > title {
+     font-family: 'Noto Serif', serif;
+     font-size: 20px;
+   }
+
+   .view head > title {
+     color: white;
+     text-align: center;
+     margin: 1em 0 1em 0;
+   }
+
+   h1 {
+     font-family: 'Quando', serif;
+     margin-top: 250px;
+     text-align: center;
+     font-size: 30px;
+   }
+
+   .num h1 {
+     margin-top: 200px;
+   }
+
+   .title h1 {
+     margin-top: 150px;
+     margin-right: 100px;
+     margin-left: 100px;
+   }
+
+   .titleslide hr {
+     width: 0px;
+     margin: 20px auto;
+   }
+
+   .titleslide[aria-selected] hr {
+     width: 300px;
+     transition: width 400ms ease-out 0ms;
+   }
+
+   .slide.level2 h1 {
+     font-size: 26px;
+     text-align: left;
+     margin: 50px 0 40px 50px;
+   }
+
+   h3 {
+     margin: 100px 0 50px 100px;
+   }
+
+   ul {
+     list-style: "•  ";
+     margin: 0 10px 10px 70px;
+   }
+
+   ol {
+     margin: 0 10px 10px 50px;
+   }
+
+   li + li { margin-top: 10px; }
+
+   li > ul {
+     margin: 15px 50px;
+   }
+
+   p {
+     margin: 20px 25px 20px 50px;
+     font-size: 20px;
+   }
+
+   em {
+     font-style: normal;
+     font-weight: bold;
+     color: #d35400;
+   }
+
+   .orange { background: #e49865; }
+   .green { background: #7ccea7; }
+   .blue { background: #a9c5e2; }
+   .beige { background: #f2d5a7; }
+
+   .content {
+     margin: 20px 75px 20px 75px;
+   }
+
+   table {
+     margin: 60px;
+     border-collapse: collapse;
+   }
+
+   tr + tr {
+     border-top: 1px solid #bbb;
+   }
+
+   td {
+     padding: 5px 0;
+   }
+
+   td + td {
+     padding-left: 60px;
+   }
+
+   canvas {
+     image-rendering: -moz-crisp-edges;
+   }
+
+   .if {
+     color: #aaa;
+   }
+
+   .if.active {
+    color: black;
+  }
+
+   blockquote {
+     height: 100%;
+     background-color: black;
+     color: white;
+     font-size: 60px;
+     padding: 50px;
+   }
+   blockquote:before {
+     content: open-quote;
+   }
+   blockquote:after {
+     content: close-quote;
+   }
+
+   pre {
+     display: inline-block;
+   }
+
+   code {
+     white-space: pre;
+     font-family: 'Fira Mono', monospace;
+   }
+
+   code em {
+     font-weight: normal;
+     /* color: #27c2b8; */
+     background: #97e2dc;
+     color: black;
+     /* color: #4ecdc4; */
+   }
+
+   /* Figures are displayed full-page, with the caption
+      on top of the image/video */
+   figure {
+     /* background-color: black; */
+     width: 100%;
+     height: 100%;
+   }
+   figure > * {
+     position: absolute;
+     top: 0;
+     z-index: -1;
+   }
+   figure > img, figure > video {
+     width: 100%; height: 100%;
+   }
+   figcaption {
+     margin: 70px;
+     font-size: 50px;
+   }
+
+   .center {
+     display: block;
+     margin: auto;
+   }
+
+   .authors {
+     margin-top: 50px;
+     text-align: center;
+   }
+
+   .author {
+     display: block;
+    }
+
+   .date {
+     margin-top: 25px;
+     display: block;
+     text-align: center;
+   }
+
+   .team {
+     margin-top: 25px;
+     display: block;
+     text-align: center;
+   }
+
+   .director {
+     margin-left: 50px;
+   }
+
+   /* Transition effect */
+   /* Feel free to change the transition effect for original
+      animations. See here:
+      https://developer.mozilla.org/en/CSS/CSS_transitions
+      How to use CSS3 Transitions: */
+   /* section { */
+   /* -moz-transition: left 400ms linear 0s; */
+   /* -webkit-transition: left 400ms linear 0s; */
+   /* -ms-transition: left 400ms linear 0s; */
+   /* transition: left 400ms linear 0s; */
+   /* } */
+   /* .view section { */
+   /* -moz-transition: none; */
+   /* -webkit-transition: none; */
+   /* -ms-transition: none; */
+   /* transition: none; */
+   /* } */
+
+   .view section[aria-selected] {
+     border: 5px red solid;
+   }
+
+   /* Before */
+   section { left: -150%; }
+   /* Now */
+   section[aria-selected] { left: 0; }
+   /* After */
+   section[aria-selected] ~ section { left: +150%; }
+
+   /* Incremental elements */
+
+   /* By default, visible */
+   .incremental > * { opacity: 1; }
+
+   /* The current item */
+   .incremental > *[aria-selected] { opacity: 1; }
+
+   /* The items to-be-selected */
+   .incremental > *[aria-selected] ~ * { opacity: 0; }
+
+   .incremental.overlay > *[aria-selected] { display: block }
+   .incremental.overlay > * { display: none }
+
+   /* The progressbar, at the bottom of the slides, show the global
+      progress of the presentation. */
+   #progress-bar {
+     display: none;
+     height: 2px;
+     background: #AAA;
+   }
+
+   /* Slide number */
+   section.slide:not(.titleslide):after {
+     counter-increment: slideidx;
+     content: counter(slideidx);
+     position: absolute; bottom: 10px; right: 20px;
+   }
+
+   .view section:after {
+     color: white;
+     bottom: -80px !important; right: 100px !important;
+     font-size: 60px;
+   }
+
+  </style>
+</head>
+<body><section class="title"><h1 class="title">Étendre des interpréteurs par détournement</h1>
+<div class="authors"><span class="author">Florent Marchand de Kerchove</span>
+<span class="supervisor">Jacques Noyé</span>
+<span class="director">Mario Südholt</span></div>
+<span class="team">ASCOLA</span>
+<span class="date">Mines Nantes, 18 novembre 2016</span>
+<img src="img/logo-emn.svg" style="width: 130px;
+                   position: absolute;
+                   bottom: 0px;
+                   left: 50px;"/>
+<img src="img/LINA.svg" style="width: 90px;
+                   position: absolute;
+                   bottom: 20px;
+                   left: 240px;"/>
+<img src="img/logo-inria.png" style="width: 160px;
+                   position: absolute;
+                   bottom: 13px;
+                   left: 420px;"/>
+<img src="img/UBL.png" style="width: 100px;
+                   position: absolute;
+                   bottom: 20px;
+                   right: 50px;"/></section>
+<section class="slide level2"><h1>Le plan</h1>
+<p style="width: 500px">1. Problématique: étendre des interpréteurs pour &nbsp;&nbsp;&nbsp;&nbsp;sécuriser JavaScript</p>
+<img src="img/diff-tangled.svg" style="width: 150px;
+                   position: absolute;
+                   right: 50px;
+                   top: 120px;"/>
+<div style="height: 50px"></div>
+<p>2. Contribution: construire un interpréteur par<br>&nbsp;&nbsp;&nbsp;&nbsp; modules</p>
+<img src="img/foal-blocks.svg" style="width: 200px;
+                   position: absolute;
+                   right: 25px;
+                   top: 280px"/>
+<div style="height: 60px"></div>
+<p>3. Contribution: détourner Narcissus</p>
+<img src="img/narcissus-diff-after-2c.svg" style="width: 200px;
+                   position: absolute;
+                   right: 25px;
+                   top: 420px;"/></section>
+<section class="num titleslide slide level1"><h1><span>Partie 1</span><hr>Étendre des interpréteurs pour<br>sécuriser JavaScript</h1>
+<img src="img/diff-tangled.svg" style="width: 300px;
+                        display: block;
+                        margin: 50px auto;"/></section>
+<section class="slide level2"><h1>SecCloud</h1>
+<p>Projet <b>SecCloud</b> du labex CominLabs (2012-2016)</p>
+<div class="content"><img src="img/chrome-logo.svg" style="width: 100px;"/>
+<p style="display: inline-block;
+                   width: 440px;
+                   margin: 80px 20px;
+                   position: relative;
+                   top: -30px;">Sécuriser les applications web exécutées dans les navigateurs...</p>
+<img src="img/js.png" style="width: 100px;"/>
+<p style="display: inline-block;
+                   width: 440px;
+                   margin: 20px;
+                   position: relative;
+                   top: -30px;">...en analysant les programmes JavaScript</p></div>
+<div role="note"><p>JS is the only language natively supported by navigators</p>
+<p>Makes it popular</p></div></section>
+<section class="slide level2"><h1>Analyse de flot d'information</h1>
+<p>Établir les dépendances entre variables:</p>
+<p><img src="img/facet-1.svg"/></p>
+<div style="height: 20px"></div>
+<p>Dépendance implicite:</p>
+<p><img src="img/facet-2.svg"/></p>
+<div style="height: 20px"></div>
+<p>Permettent d'assurer la confidentialité et l'intégrité des données</p></section>
+<section class="slide level2"><h1>Comment implémenter les analyses ?</h1>
+<img src="img/our-problem.svg" style="position: absolute;
+                   width: 500px;
+                   top: 200px;
+                   left: 150px;"/>
+<div style="height: 300px"></div>
+<p>Simplifier l'implémentation   🡆   favoriser l'utilisation d'analyses</p></section>
+<section class="slide level2"><h1>Analyse multi-facettes</h1>
+<p>Analyse dynamique de flot d'information (Austin et Flanagan, 2012)</p>
+<p><img src="img/a-facet.svg"/></p>
+<ul><li>Chaque valeur a deux facettes</li>
+<li>Seule l'autorité voit la facette privée</li>
+<li>Le                (program counter) suit les flots implicites
+<img src="img/facet-pc.svg" style="position: absolute;
+                         left: 100px;"/></li></ul>
+<p><img src="img/facet-example.svg" style="margin: 40px 20px"/></p>
+<div role="note"><p>if only A can see priv(X), only A can see priv(Y)</p>
+<p>details in paper; we are interested in implementation</p></div></section>
+<section class="slide level2"><h1>L'interpréteur Narcissus</h1>
+<p><img src="img/narcissus.jpg" style="width: 280px;"/></p>
+<img src="img/lt-v8.svg" style="width: 250px;
+                     position: absolute;
+                     top: 190px;
+                     left: 370px;"/>
+<ul><li>Interpréteur JavaScript métacirculaire par Mozilla</li>
+<li>Taille idéale pour prototyper des extensions au langage</li>
+<li>Utilisé par Austin et Flanagan pour <em>implémenter</em>
+         l'analyse multi-facettes</li></ul></section>
+<section class="slide level2"><h1>Analyse multi-facettes: implémentation</h1>
+<div class="content"><pre><code>case IF:
+<em class="orange">-</em> if (getValue(execute(n.condition, x)))
+<em class="green">+</em>  let cond = getValue(execute(n.condition, x)<em>, pc</em>);
+<em class="green">+</em>  if (cond instanceof FacetedValue) {
+<em class="green">+</em>      <em>evaluateEach(cond, function(v, x) {</em>
+<em class="green">+</em>          if (v)
+<em class="green">+</em>              execute(n.thenPart, x);
+<em class="green">+</em>          else if (n.elsePart)
+<em class="green">+</em>              execute(n.elsePart, x);
+<em class="green">+</em>      }, x);
+<em class="green">+</em>  }
+<em class="green">+</em>  else if (cond)
+     execute(n.thenPart, x);
+   else if (n.elsePart)
+     execute(n.elsePart, x);
+   break;</code></pre></div></section>
+<section class="slide level2"><h1>Analyse multi-facettes: implémentation</h1>
+<figure><img src="img/narcissus-diff-raw.png"/></figure></section>
+<section class="slide level2"><h1 style="text-shadow: 1px 1px 0px white;">Analyse multi-facettes: implémentation</h1>
+<p style="text-shadow: 1px 1px 0px white;
+                 position: absolute;
+                 left: 95px;">640 lignes modifiées sur 1500</p>
+<figure><img src="img/diff-tangled.svg"/></figure></section>
+<section class="slide level2"><h1>Mêler interpréteurs et analyses</h1>
+<img src="img/slipslop-3.svg" style="margin: 20px 200px;"/>
+<p>Inconvénients: <b>duplication</b> de code et <b>mélange</b> des préoccupations</p></section>
+<section class="slide level2"><h1>Détourner un interpréteur JavaScript: les objectifs</h1>
+<p><img src="img/big-picture.svg" style="margin-left: 150px"/></p>
+<ul><li>Rapidité de prototypage</li>
+<li>Minimiser la duplication de code</li>
+<li>Séparer les analyses pour pouvoir les auditer</li>
+<li>Solution pragmatique pour JavaScript</li></ul>
+<div style="height: 20px"></div>
+<div role="note"><p>pragmatic: use what's already in the language</p></div></section>
+<section class="slide level2"><h1>État de l'art</h1>
+<p>Interpréteurs extensibles <b>par construction</b>:</p>
+<ul><li>Implémentation ouverte (Rao)</li>
+<li>Interpréteurs réflexifs et MOPs (Smith, Friedman, Kiczales)</li>
+<li>Patron interpréteur (GOF)</li>
+<li>Patron visiteur (GOF, Oliveira, Krishnamurthi)</li>
+<li>Algèbres d'objets (Oliveira & Cook)</li>
+<li>Free monad (Swierstra)</li></ul>
+<div style="height: 20px"></div>
+<p>Étendre un interpréteur <b>existant</b>:</p>
+<ul><li>Programmation par aspects [KLM97], AspectScript [TLT10]</li></ul></section>
+<section class="num titleslide slide level1"><h1><span>Partie 2</span><hr>Construire un interpréteur par modules</h1>
+<img src="img/foal-blocks.svg" style="display: block;
+                        margin: 50px auto;"/></section>
+<section class="slide level2"><h1>Construire des modules en JavaScript</h1>
+<p>Un <b>objet</b> expose une interface:</p>
+<div class="content"><pre><code>var m = {
+  parse(file) { ... },
+  exec(ast) { ... }
+}</code></pre></div>
+<div style="height: 10px"></div>
+<p>Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité:</p>
+<div class="content"><pre><code>var m = (function(){
+  function parse(file) { ... }
+  function exec(ast) { ... }
+  <em>function _doExec(node) { ... }</em>
+
+  return <em>{ parse, exec }</em>
+}())</code></pre></div></section>
+<section class="slide level2"><h1>Un langage d'expressions arithmétiques</h1>
+<div class="content"><pre><code>
+&lt;term&gt; ::= &lt;num&gt;
+         | &lt;term&gt; + &lt;term&gt;
+&lt;num&gt;  ::= 0 | 1 | 2 | ...
+
+eval : Term -&gt; Integer
+
+show : Term -&gt; String
+</code></pre></div>
+<div style="position: absolute;
+                  left: 25px;
+                  bottom: 50px;"><p>Ingrédients:</p>
+<ul><li>Objets modules</li>
+<li>Délégations par prototypes</li>
+<li>Fermetures lexicales</li></ul></div>
+<img src="img/foal-lang-1.svg" style="position: absolute;
+                   width: 250px;
+                   top: 145px;
+                   right: 80px;"/></section>
+<section class="slide level2"><h1>Le module <code>num</code></h1>
+<img src="img/foal-lang-2.svg" style="position: absolute;
+                   width: 100px;
+                   right: 50px;
+                   top: 50px;"/>
+<div class="content"><pre><code>var num = {
+  new(n) { return {__proto__: this, n } },
+  eval() { return this.n }}</code></pre></div>
+<p><img src="img/foal-1a.svg" style="position: absolute;
+                     left: 75px;
+                      top: 350px;"/></p>
+<img src="img/foal-legend-1.svg" style="position: absolute;
+                   right: 50px;
+                   top: 350px;"/>
+<div role="note"><p>explain objects</p>
+<p>explain prototype delegation</p></div></section>
+<section class="slide level2"><h1>Le module <code>num</code></h1>
+<img src="img/foal-lang-2.svg" style="position: absolute;
+                   width: 100px;
+                   right: 50px;
+                   top: 50px;"/>
+<div class="content"><pre><code>var num = {
+  new(n) { return {__proto__: this, n } },
+  eval() { return this.n }}
+
+<em>var e1 = num.new(3)
+e1.eval() //: 3</em></code></pre></div>
+<p><img src="img/foal-1b.svg" style="position: absolute;
+                     left: 75px;
+                      top: 350px;"/></p>
+<img src="img/foal-legend.svg" style="position: absolute;
+                   right: 50px;
+                   top: 350px;"/></section>
+<section class="slide level2"><h1>Ajouter le module <code>plus</code></h1>
+<img src="img/foal-lang-3.svg" style="position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;"/>
+<div class="content"><pre><code>var plus = {
+  new(l, r) { return {__proto__: this, l, r } },
+  eval() { return this.l.eval() + this.r.eval() }}
+
+var e2 = plus.new(num.new(1), num.new(2))
+e2.eval() //: 3</code></pre></div>
+<div style="height: 10px"></div>
+<p><img src="img/foal-2.svg"/></p></section>
+<section class="slide level2"><h1>Foncteurs en JavaScript</h1>
+<p>Un <b>foncteur</b> transforme des modules:</p>
+<div class="content"><pre><code>var M = function(base) {
+  function f1(m) { ... }
+  function f2(m) { ... }
+
+  return { f1(base.m1), f2(base.m2) }
+}
+var m = M({m1, m2})</code></pre></div>
+<img src="img/foal-foncteur.svg" style="position: absolute;
+                   bottom: 100px;
+                   left: 150px;"/></section>
+<section class="slide level2"><h1>Ajouter le foncteur <code>show</code></h1>
+<img src="img/foal-lang-4.svg" style="position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;"/>
+<div class="content"><pre><code>var show = <em>function(base) {</em>
+  var num = {__proto__: base.num,
+    show() { return this.n.toString() }}
+  var plus = {...}
+  return {num, plus}
+<em>}</em></code></pre></div>
+<img src="img/foal-show.svg" style="position: absolute;
+                   bottom: 80px;
+                   left: 100px;"/></section>
+<section class="slide level2"><h1>Ajouter le foncteur <code>show</code></h1>
+<img src="img/foal-lang-4.svg" style="position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;"/>
+<div class="content"><pre><code>var show = function(base) {
+  var num = {__proto__: base.num,
+    show() { return this.n.toString() }}
+  var plus = {...}
+  return {num, plus}
+}
+
+<em>var s = show({num, plus})</em>
+s.plus.new(s.num.new(1), s.num.new(2)).show() //: "1+2"
+s.plus.new(s.num.new(1), s.num.new(2)).eval() //: 3</code></pre></div>
+<p><img src="img/foal-4.svg"/></p>
+<div role="note"><p>Syntaxic noise of s.plus, s.new...</p></div></section>
+<section class="slide level2"><h1><code>with</code> crée un environnement</h1>
+<p>Équivalent à un appel de fonction:</p>
+<img src="img/with-2.svg" style="margin: 0 50px;"/>
+<img src="img/with-3.svg" style="margin: 0 100px;"/>
+<img src="img/with-1.svg" style="position: absolute;
+                   left: 70px;
+                   top: 400px;"/>
+<img src="img/with-4.svg" style="position: absolute;
+                   left: 450px;
+                   top: 400px;"/>
+<div role="note"><p>takes an object from which an environment is created</p></div></section>
+<section class="slide level2"><h1><code>with</code> pour activer un module</h1>
+<div class="content"><pre><code><em>with(show({num, plus})) {</em>
+  plus.new(num.new(1), num.new(2)).show() //: "1+2"
+<em>}</em></code></pre></div>
+<div style="height: 50px"></div>
+<p><img src="img/foal-show-2.svg"/></p></section>
+<section class="slide level2"><h1>Modifier des modules existants</h1>
+<img src="img/foal-lang-5.svg" style="position: absolute;
+                   width: 250px;
+                   left: 50px;
+                   top: 200px;"/>
+<img src="img/foal-lang-7.svg" style="position: absolute;
+                   width: 300px;
+                   right: 50px;
+                   top: 200px;"/></section>
+<section class="slide level2"><h1>Doubler les constantes</h1>
+<img src="img/foal-lang-5.svg" style="position: absolute;
+                   width: 175px;
+                   right: 50px;
+                   top: 50px;"/>
+<pre style="margin-left: 50px"><code>var double = function(base) {
+  var num = {
+    __proto__: base.num,
+    eval() { return <em>base.num.eval.call(this) * 2</em> }}
+  return {__proto__: base, num}}
+
+with (double({num})) {
+  plus.new(num.new(1), num.new(2)).eval() <em>//: 6</em>
+}</code></pre>
+<img src="img/foal-double.svg" style="position: absolute;
+                   bottom: 120px;
+                   left: 100px;"/>
+<div role="note"><p>like proceed</p></div></section>
+<section class="slide level2"><h1>Combiner les modules</h1>
+<img src="img/foal-lang-8.svg" style="position: absolute;
+                   width: 185px;
+                   right: 50px;
+                   top: 50px;"/>
+<div style="height: 20px"></div>
+<div class="content"><pre><code>with (<em class="orange">double</em>({num})) {
+  with (<em class="orange">double</em>({num})) {
+    with (<em class="orange">double</em>({num})) {
+      plus.new(num.new(1), num.new(2)).eval() //: 24
+}}}</code></pre></div>
+<img src="img/foal-double3.svg" style="position: absolute;
+                   bottom: 50px;
+                   left: 100px;"/>
+<div role="note"><p>2*2*2 = 8x</p></div></section>
+<section class="slide level2"><h1>Ajouter de l'état</h1>
+<img src="img/foal-lang-7.svg" style="position: absolute;
+                   width: 185px;
+                   right: 30px;
+                   top: 50px;"/>
+<div class="content"><pre><code>var state = function(base, <em>count = 0</em>) {
+var num = {__proto__: base.num,
+           eval() { <em>count++</em>;
+                    return base.num.eval.call(this) }},
+var plus = {...}
+var <em>getCount</em> = function() { return <em>count</em> }
+return {__proto__: base, num, plus, getCount}}
+
+with (state({num, plus})) {
+  <em>getCount() //: 0</em>
+  plus.new(num.new(1), num.new(2)).eval() //: 3
+  <em>getCount() //: 3</em>
+}</code></pre></div>
+<img src="img/foal-state.svg" style="position: absolute;
+                   bottom: 10px;
+                   left: 200px;"/></section>
+<section class="slide level2"><h1>All together now</h1>
+<img src="img/foal-lang-6.svg" style="position: absolute;
+                   width: 200px;
+                   right: 30px;
+                   top: 50px;"/>
+<div style="height: 20px"></div>
+<div class="content"><pre><code>with (<em class="green">state</em>({<em class="beige">num</em>, <em class="beige">plus</em>})) {
+  with (<em class="orange">double</em>({num})) {
+    with (<em class="blue">show</em>({num, plus})) {
+      getCount() //: 0
+      var n = plus.new(num.new(1), num.new(2))
+      n.eval() //: 6
+      getCount() //: 3
+      n.show() //: "1+2"
+}}}</code></pre></div>
+<div role="note"><p>Works because we defined them adequately</p>
+<p>No safeguards from interferences</p></div></section>
+<section class="slide level2"><h1>Contribution: un interpréteur modulaire</h1>
+<p>Un schéma de composition original pour des<br>interpréteurs modulaires en JavaScript</p>
+<div style="height: 20px"></div>
+<p><img src="img/foal-lang-6.svg" style="width: 340px"/></p>
+<div style="position: absolute;
+                   top: 200px;
+                   left: 400px;"><p>Ingrédients:</p>
+<ul><li>Objets modules</li>
+<li>Foncteurs</li>
+<li><code>with</code> pour activer les modules</li>
+<li>Réutilisation par délégation</li></ul></div>
+<div style="height: 20px"></div>
+<p>Approche <b>ascendante</b>: construire un interpréteur extensible</p>
+<div role="note"><p>alternative to state of the art tailored to JS</p></div></section>
+<section class="num titleslide slide level1"><h1><span>Partie 3</span><hr>Détourner Narcissus</h1>
+<img src="img/narcissus-diff-after-2c.svg" style="width: 300px;
+                        display: block;
+                        margin: 50px auto;"/></section>
+<section class="slide level2"><h1>Détourner un interpréteur JavaScript: les objectifs</h1>
+<p>Solution pragmatique pour JavaScript</p>
+<p><img src="img/big-picture.svg" style="margin-left: 150px"/></p>
+<p>État de l'art, AspectScript [TLT10]:</p>
+<ul><li>500% à 1500% d'overhead</li>
+<li>Solution surdimensionée</li></ul>
+<div role="note"><p>AspectScript: suffisant mais instatisfaisant</p></div></section>
+<section class="slide level2"><h1>Narcissus est un module</h1>
+<div class="content"><pre><code>var Narcissus = (function(){
+  var globalBase = { ... }
+
+  function ExecutionContext(type, version) { ... }
+  function getValue(v) { ... }
+  function putValue(v, w) { ... }
+  function evaluate(code) { ... }
+
+  return {
+    globalBase: globalBase,
+    evaluate: evaluate,
+    ...
+  }
+}())</code></pre></div></section>
+<section class="slide level2"><h1>Problème: Narcissus est un module verrouillé</h1>
+<div class="content"><pre><code>var m = <em>(function(){</em>
+  var a = 1
+  function f() { return a }
+  function g() { return f() }
+  return {g: g}
+<em>}())</em>
+
+m.g() //: 1</code></pre></div>
+<p><img src="img/dls0.svg" style="position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Solution: ouvrir le module</h1>
+<p><b>Supposition</b>: on dispose d'une référence <code><em>E</em></code></p>
+<div class="content"><pre><code>var m = (function(){
+  var a = 1
+  function f() { return a }
+  function g() { return f() }
+  return {g: g}
+}())
+
+m.g() //: 1
+<em>m.E.a = 2</em>
+m.g() //: 2</code></pre></div>
+<p><img src="img/dls4a.svg" style="position: absolute;
+                     width: 350px;
+                     top: 280px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Problème: modifications réversibles</h1>
+<div class="content"><pre><code>var m = (function(){
+  var a = 1
+  function f() { return a }
+  function g() { return f() }
+  return {g: g}
+}())
+
+m.E.a = 2
+<em>delete m.E.a</em>
+m.g() <em>//: NaN</em></code></pre></div>
+<p><img src="img/dls4c.svg" style="position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Solution: ajouter un environnement frontal</h1>
+<div class="content"><pre><code>var m = (function(){
+  var a = 1
+  function f() { return a }
+  function g() { return f() }
+  return {g: g}
+}())
+
+m.g() //: 1</code></pre></div>
+<p><img src="img/dls7a.svg" style="position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Solution: ajouter un environnement frontal</h1>
+<div class="content"><pre><code>var m = (function(){
+  var a = 1
+  function f() { return a }
+  function g() { return f() }
+  return {g: g}
+}())
+
+m.g() //: 1
+<em>m.E.a = 2
+m.g() //: 2</em>
+delete m.E.a
+m.g() //: 1</code></pre></div>
+<p><img src="img/dls7b.svg" style="position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Solution: ajouter un environnement frontal</h1>
+<div class="content"><pre><code>var m = (function(){
+  var a = 1
+  function f() { return a }
+  function g() { return f() }
+  return {g: g}
+}())
+
+m.g() //: 1
+m.E.a = 2
+m.g() //: 2
+<em>delete m.E.a
+m.g() //: 1</em></code></pre></div>
+<p><img src="img/dls7c.svg" style="position: absolute;
+                     width: 350px;
+                     top: 250px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Grouper les modifications</h1>
+<div class="content"><pre><code>var m = (function(){ ... }())
+
+m.g() //: 1
+
+var e1 = <em>{ a: 2,</em>
+           <em>f() { return 2 * m.E.a }}</em>
+pushEnv(e1, m.E)
+m.g() //: 4
+
+var e2 = { f() { return -m.E.a }}
+pushEnv(e2, m.E)
+m.g() //: -2
+
+removeEnv(e1, m.E)
+m.g() //: -1</code></pre></div>
+<p><img src="img/dls8a-1.svg" style="position: absolute;
+                     width: 200px;
+                     top: 130px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Grouper les modifications</h1>
+<div class="content"><pre><code>var m = (function(){ ... }())
+
+m.g() //: 1
+
+var e1 = { a: 2,
+           f() { return 2 * m.E.a }}
+<em>pushEnv(e1, m.E)</em>
+m.g() //: 4
+
+var e2 = { f() { return -m.E.a }}
+pushEnv(e2, m.E)
+m.g() //: -2
+
+removeEnv(e1, m.E)
+m.g() //: -1</code></pre></div>
+<p><img src="img/dls8b-1.svg" style="position: absolute;
+                     width: 200px;
+                     top: 130px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Grouper les modifications</h1>
+<div class="content"><pre><code>var m = (function(){ ... }())
+
+m.g() //: 1
+
+var e1 = { a: 2,
+           f() { return 2 * m.E.a }}
+pushEnv(e1, m.E)
+m.g() //: 4
+
+<em>var e2 = { f() { return -m.E.a }}
+pushEnv(e2, m.E)</em>
+m.g() //: -2
+
+removeEnv(e1, m.E)
+m.g() //: -1</code></pre></div>
+<p><img src="img/dls8c-1.svg" style="position: absolute;
+                     width: 200px;
+                     top: 130px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Grouper les modifications</h1>
+<div class="content"><pre><code>var m = (function(){ ... }())
+
+m.g() //: 1
+
+var e1 = { a: 2,
+           f() { return 2 * m.E.a }}
+pushEnv(e1, m.E)
+m.g() //: 4
+
+var e2 = { f() { return -m.E.a }}
+pushEnv(e2, m.E)
+m.g() //: -2
+
+<em>removeEnv(e1, m.E)</em>
+m.g() //: -1</code></pre></div>
+<p><img src="img/dls8d-1.svg" style="position: absolute;
+                     width: 200px;
+                     top: 130px;
+                     right: 80px;"/></p></section>
+<section class="slide level2"><h1>Ouvrir le module avec <code>with</code></h1>
+<div class="content"><pre><code>var m = (function(){
+  <em>var E = Object.create()</em>
+  <em>with (E) {</em>
+    var a = 1
+    function f() { return a }
+    function g() { return f() }
+    return { g: g, <em>E: E</em> }
+  <em>}</em>
+}())
+
+m.g() //: 1
+m.E.a = 2
+m.g() //: 2</code></pre></div>
+<p><img src="img/dls11.svg" style="position: absolute;
+                     width: 350px;
+                     top: 310px;
+                     right: 80px;"/></p>
+<div role="note"><p>with adds an environment</p>
+<p>but here we want to modify that environment</p>
+<p>not equivalent to a (function())</p></div></section>
+<section class="slide level2"><h1>Différence entre objets et environnements</h1>
+<div class="content"><pre><code>var m = (function(){
+  var E = Object.create()
+  with (E) {
+    var a = 1
+    function f() { return a }
+    function g() { return f() }
+    <em>Object.setPrototypeOf(E, {f, ...})</em>
+    return { g: g, E: E }
+  }
+}())
+
+m.g() //: 1
+m.E.a = 2
+m.g() //: 2</code></pre></div>
+<p><img src="img/dls11a.svg" style="position: absolute;
+                     width: 350px;
+                     top: 310px;
+                     right: 50px;"/></p>
+<div role="note"><p>no path to keys in env module from E</p>
+<p>have to add them</p>
+<p>necessary because no access to module env</p></div></section>
+<section class="slide level2"><img src="img/narcissus-diff-after-2.svg" style="width: 750px;
+                       display: block;
+                       margin: 75px auto;"/></section>
+<section class="slide level2"><img src="img/narcissus-diff-after-2b.svg" style="width: 750px;
+                       display: block;
+                       margin: 75px auto;"/></section>
+<section class="slide level2"><h1>Modifications supplémentaires</h1>
+<p>Nommer une valeur:</p>
+<div class="content"><pre><code>-  putstr("njs> ")
+
+<em>+  var repl_prompt = "njs> "</em>
++  putstr(repl_prompt)</code></pre></div>
+<div style="height: 5px"></div>
+<p>Retarder la finalisation:</p>
+<img src="img/purple-seq.svg" style="width: 180px;
+                   position: absolute;
+                   left: 100px;
+                   bottom: 10px;"/>
+<img src="img/purple-seq2.svg" style="width: 180px;
+                   position: absolute;
+                   left: 400px;
+                   bottom: 10px;"/></section>
+<section class="slide level2"><h1>Évaluation: duplication de code</h1>
+<img src="img/diff-tangled.svg" style="width: 200px;
+                   position: absolute;
+                   bottom: 245px;
+                   left: 80px;"/>
+<img src="img/right-arrow.svg" style="width: 50px;
+                   position: absolute;
+                   bottom: 300px;
+                   left: 330px;"/>
+<img src="img/narcissus-diff-after-2c.svg" style="width: 300px;
+                   position: absolute;
+                   bottom: 250px;
+                   right: 80px;"/>
+<p style="position: absolute;
+                 left: 30px;
+                 bottom: 120px;">1 interpréteur<br>1 analyse<br>640 lignes modifiées</p>
+<p style="position: absolute;
+                 left: 375px;
+                 bottom: 120px;">1 interpréteur<br>4 analyses<br>62 lignes modifiées</p></section>
+<section class="slide level2"><h1>Évaluation: correction et performance</h1>
+<p>Résultats identiques sur test262 (tests ECMAScript)</p>
+<table><tr><td>Interpréteur</td>
+<td>Temps d'exécution de 2500 tests</td></tr>
+<tr><td>Narcissus</td>
+<td>1040 sec</td></tr>
+<tr><td>Narcissus (with)</td>
+<td>1218 sec (+17%)</td></tr>
+<tr><td>Narcissus multi-facettes (AF-12)</td>
+<td>1215 sec</td></tr>
+<tr><td>Narcissus multi-facettes (with)</td>
+<td>1301 sec (+7%)</td></tr></table>
+<p>AspectScript [TLT-10]: 500% à 1500% d'overhead</p>
+<div role="note"><p>fix a bug only once with diverting</p>
+<p>Narcissus multi-facettes is with empty PC</p></div></section>
+<section class="titleslide slide level1"><h1>Conclusions</h1></section>
+<section class="slide level2"><h1>Conclusion</h1>
+<p>Problème: étendre des interpréteurs pour<br>sécuriser JavaScript</p>
+<img src="img/slipslop-3.svg" style="width: 200px;
+                   position: absolute;
+                   top: 120px;
+                   right: 50px;"/>
+<div style="height: 30px"></div>
+<p>Contributions:</p>
+<ul><li>Construire un interpréteur par modules<br>
+             (foncteurs, <code>with</code>)
+<img src="img/foal-lang-6.svg" style="width: 200px;
+                         position: absolute;
+                         top: 270px;
+                         right: 55px;"/></li>
+<div style="height: 80px"></div>
+<li>Détourner Narcissus pour le rendre extensible<br>
+             (environnement frontal, <code>with</code>)
+<img src="img/narcissus-diff-after-2c.svg" style="width: 200px;
+                         position: absolute;
+                         top: 430px;
+                         right: 50px;"/></li></ul></section>
+<section class="slide level2"><h1>Perspectives</h1>
+<p>Construire un interpréteur par modules:</p>
+<ul><li>Application à d'autres langages dynamiques</li></ul>
+<div style="height: 50px"></div>
+<p>Détourner Narcissus:</p>
+<ul><li>Comparaison d'analyses de flot d'information</li>
+<li>Application à V8/SpiderMonkey</li>
+<li>Compromis entre <code>with</code> et AspectScript</li>
+<li>Généralisation à des programmes quelconques</li></ul></section>
+<section class="titleslide slide level1"><h1>Q & A</h1></section>
+<section class="slide level2"><h1><code>with</code> != portée dynamique</h1>
+<div class="content"><pre><code>function f() { return x }
+f() //: undefined
+
+var x = 1
+f() //: 1
+
+with ({x: 42}) {
+  f() //: 1
+}</code></pre></div></section>
+<section class="slide level2"><h1>Portée dynamique: heureux accident</h1></section>
+<section class="slide level2"><h1>Deux façons d'analyser les programmes JavaScript</h1>
+<p>Analyses statiques:</p>
+<ul><li>Analysent le code source</li>
+<li>Analysent tous les chemins d'exécution</li>
+<li>Plus adaptées à un langage statique</li></ul>
+<img src="img/static-analysis.svg" style="width: 120px;
+                   position: absolute;
+                   right: 80px;
+                   top: 120px;"/>
+<div style="height: 50px"></div>
+<p><em>Analyses dynamiques</em>:</p>
+<ul><li>Analysent l'exécution du programme</li>
+<li>Mieux adaptées au langage JavaScript et aux navigateurs</li></ul>
+<img src="img/static-analysis-2.svg" style="width: 78px;
+                   position: absolute;
+                   right: 80px;
+                   top: 340px;"/></section>
+<section class="slide level2"><h1>Interférences entre modules</h1>
+<p>No safeguards</p>
+<p>Have to write the modules carefully to allow composition</p>
+<p>Same problems with Aspects</p></section>
+<section class="slide level2"><h1>Contrôler le détournement</h1>
+<p>Possible de retourner un proxy sur l'objet scope qui empêche
+         de modifier n'importe quelle référence, en utilisant une whitelist</p>
+<p>Ou bien le symbole spécial `unscopables`</p></section>
+<section class="slide level2"><h1>Analyse multi-facettes: exemple</h1>
+<p>Flot implicite (Austin et Flanagan, 2012)</p>
+<p><img src="img/fenton-example.svg" style="margin: 40px 0"/></p></section>
+<section class="slide level2"><h1>Des interpréteurs JavaScript</h1>
+<p><img src="img/interps.svg" style="width: 700px"/></p>
+<p>Autres interpréteurs JavaScript</p>
+<ul><li>Rhino (Java)</li>
+<li><em>Narcissus</em> (JavaScript)</li></ul></section>
+<section class="slide level2"><h1>Problème: mixer les modules</h1>
+<div class="content"><pre><code><em>s</em>.plus.new(num.new(1), <em>s</em>.num.new(2)).show()
+
+//: TypeError: this.l.show is not a function</code></pre></div>
+<p>Problème de types:</p>
+<div class="content"><pre><code>plus.new: Term -> Term -> Term
+s.plus.new: Show -> Show -> Show
+</code></pre></div></section>
+<section class="slide level2"><h1>Réduire le bruit syntaxique</h1>
+<p>Le but <code>with</code> en JavaScript:</p>
+<pre style="position: absolute;
+                   left: 50px;
+                   top: 200px;"><code>canvas.begin()
+canvas.setColor(...)
+canvas.drawRectangle(...)
+canvas.setColor(...)
+canvas.drawCircle(...)
+canvas.finish()</code></pre>
+<img src="img/right-arrow.svg" style="position: absolute;
+                   height: 100px;
+                   left: 390px;
+                   top: 230px"/>
+<pre style="position: absolute;
+                   right: 75px;
+                   top: 200px;"><code>with (canvas) {
+  begin()
+  setColor(...)
+  drawRectangle(...)
+  setColor(...)
+  drawCircle(...)
+  finish()
+}</code></pre></section>
+<section class="slide level2"><h1>Retarder la finalisation dans Narcissus</h1>
+<pre style="margin-left: 50px; vertical-align: top;"><code>(function(){
+  reflectArray()
+  reflectFunction()
+  ...
+}())</code></pre>
+<pre style="margin-left: 75px;"><code>(function(){
+<em>  function populateEnv() {
+  reflectArray()
+  reflectFunction()
+}</em>
+}())
+
+load("facets-analysis.js")
+<em>Narcissus.populateEnv()</em></code></pre></section></body>
+<!-- {{{{ dzslides core
+#
+#
+#     __  __  __       .  __   ___  __
+#    |  \  / /__` |    | |  \ |__  /__`
+#    |__/ /_ .__/ |___ | |__/ |___ .__/ core :€
+#
+#
+# The following block of code is not supposed to be edited.
+# But if you want to change the behavior of these slides,
+# feel free to hack it!
+#
+-->
+
+<div id="progress-bar"></div>
+
+<!-- Default Style -->
+<style>
+  * { margin: 0; padding: 0; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+  [role="note"] { display: none; }
+  body {
+    width: 800px; height: 600px;
+    margin-left: -400px; margin-top: -300px;
+    position: absolute; top: 50%; left: 50%;
+    overflow: hidden;
+    display: none;
+  }
+  .view body {
+    position: static;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    display: inline-block;
+    overflow: visible; overflow-x: hidden;
+    /* undo Dz.onresize */
+    transform: none !important;
+    -moz-transform: none !important;
+    -webkit-transform: none !important;
+    -o-transform: none !important;
+    -ms-transform: none !important;
+  }
+  .view head, .view head > title { display: block }
+  section {
+    position: absolute;
+    pointer-events: none;
+    width: 100%; height: 100%;
+  }
+  .view section {
+    pointer-events: auto;
+    position: static;
+    width: 800px; height: 600px;
+    margin: -150px -200px;
+    float: left;
+
+    transform: scale(.4);
+    -moz-transform: scale(.4);
+    -webkit-transform: scale(.4);
+    -o-transform: scale(.4);
+    -ms-transform: scale(.4);
+  }
+  .view section > * { pointer-events: none; }
+  section[aria-selected] { pointer-events: auto; }
+  html { overflow: hidden; }
+  html.view { overflow: visible; }
+  body.loaded { display: block; }
+  .incremental {visibility: hidden; }
+  .incremental[active] {visibility: visible; }
+  #progress-bar{
+    bottom: 0;
+    position: absolute;
+    -moz-transition: width 400ms linear 0s;
+    -webkit-transition: width 400ms linear 0s;
+    -ms-transition: width 400ms linear 0s;
+    transition: width 400ms linear 0s;
+  }
+  .view #progress-bar {
+    display: none;
+  }
+</style>
+
+<script>
+  var Dz = {
+    remoteWindows: [],
+    idx: -1,
+    step: 0,
+    html: null,
+    slides: null,
+    progressBar : null,
+    params: {
+      autoplay: "1"
+    }
+  };
+
+  Dz.init = function() {
+    document.body.className = "loaded";
+    this.slides = Array.prototype.slice.call($$("body > section"));
+    this.progressBar = $("#progress-bar");
+    this.html = document.body.parentNode;
+    this.setupParams();
+    this.onhashchange();
+    this.setupTouchEvents();
+    this.onresize();
+    this.setupView();
+  }
+
+  Dz.setupParams = function() {
+    var p = window.location.search.substr(1).split('&');
+    p.forEach(function(e, i, a) {
+      var keyVal = e.split('=');
+      Dz.params[keyVal[0]] = decodeURIComponent(keyVal[1]);
+    });
+  // Specific params handling
+    if (!+this.params.autoplay)
+      $$.forEach($$("video"), function(v){ v.controls = true });
+  }
+
+  Dz.onkeydown = function(aEvent) {
+    // Don't intercept keyboard shortcuts
+    if (aEvent.altKey
+      || aEvent.ctrlKey
+      || aEvent.metaKey
+      || aEvent.shiftKey) {
+      return;
+    }
+    if ( aEvent.keyCode == 37 // left arrow
+      || aEvent.keyCode == 38 // up arrow
+      || aEvent.keyCode == 33 // page up
+    ) {
+      aEvent.preventDefault();
+      this.back();
+    }
+    if ( aEvent.keyCode == 39 // right arrow
+      || aEvent.keyCode == 40 // down arrow
+      || aEvent.keyCode == 34 // page down
+    ) {
+      aEvent.preventDefault();
+      this.forward();
+    }
+    if (aEvent.keyCode == 35) { // end
+      aEvent.preventDefault();
+      this.goEnd();
+    }
+    if (aEvent.keyCode == 36) { // home
+      aEvent.preventDefault();
+      this.goStart();
+    }
+    if (aEvent.keyCode == 32) { // space
+      aEvent.preventDefault();
+      this.toggleContent();
+    }
+    if (aEvent.keyCode == 70) { // f
+      aEvent.preventDefault();
+      this.goFullscreen();
+    }
+    if (aEvent.keyCode == 79) { // o
+      aEvent.preventDefault();
+      this.toggleView();
+    }
+  }
+
+  /* Touch Events */
+
+  Dz.setupTouchEvents = function() {
+    var orgX, newX;
+    var tracking = false;
+
+    var db = document.body;
+    db.addEventListener("touchstart", start.bind(this), false);
+    db.addEventListener("touchmove", move.bind(this), false);
+
+    function start(aEvent) {
+      aEvent.preventDefault();
+      tracking = true;
+      orgX = aEvent.changedTouches[0].pageX;
+    }
+
+    function move(aEvent) {
+      if (!tracking) return;
+      newX = aEvent.changedTouches[0].pageX;
+      if (orgX - newX > 100) {
+        tracking = false;
+        this.forward();
+      } else {
+        if (orgX - newX < -100) {
+          tracking = false;
+          this.back();
+        }
+      }
+    }
+  }
+
+  Dz.setupView = function() {
+    document.body.addEventListener("click", function ( e ) {
+      if (!Dz.html.classList.contains("view")) return;
+      if (!e.target || e.target.nodeName != "SECTION") return;
+
+      Dz.html.classList.remove("view");
+      Dz.setCursor(Dz.slides.indexOf(e.target) + 1);
+    }, false);
+  }
+
+  /* Adapt the size of the slides to the window */
+
+  Dz.onresize = function() {
+    var db = document.body;
+    var sx = db.clientWidth / window.innerWidth;
+    var sy = db.clientHeight / window.innerHeight;
+    var transform = "scale(" + (1/Math.max(sx, sy)) + ")";
+
+    db.style.MozTransform = transform;
+    db.style.WebkitTransform = transform;
+    db.style.OTransform = transform;
+    db.style.msTransform = transform;
+    db.style.transform = transform;
+  }
+
+
+  Dz.getNotes = function(aIdx) {
+    var s = $("section:nth-of-type(" + aIdx + ")");
+    var d = s.$("[role='note']");
+    return d ? d.innerHTML : "";
+  }
+
+  Dz.onmessage = function(aEvent) {
+    var argv = aEvent.data.split(" "), argc = argv.length;
+    argv.forEach(function(e, i, a) { a[i] = decodeURIComponent(e) });
+    var win = aEvent.source;
+    if (argv[0] === "REGISTER" && argc === 1) {
+      this.remoteWindows.push(win);
+      this.postMsg(win, "REGISTERED", document.title, this.slides.length);
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+      return;
+    }
+    if (argv[0] === "BACK" && argc === 1)
+      this.back();
+    if (argv[0] === "FORWARD" && argc === 1)
+      this.forward();
+    if (argv[0] === "START" && argc === 1)
+      this.goStart();
+    if (argv[0] === "END" && argc === 1)
+      this.goEnd();
+    if (argv[0] === "TOGGLE_CONTENT" && argc === 1)
+      this.toggleContent();
+    if (argv[0] === "SET_CURSOR" && argc === 2)
+      window.location.hash = "#" + argv[1];
+    if (argv[0] === "GET_CURSOR" && argc === 1)
+      this.postMsg(win, "CURSOR", this.idx + "." + this.step);
+    if (argv[0] === "GET_NOTES" && argc === 1)
+      this.postMsg(win, "NOTES", this.getNotes(this.idx));
+  }
+
+  Dz.toggleContent = function() {
+    // If a Video is present in this new slide, play it.
+    // If a Video is present in the previous slide, stop it.
+    var s = $("section[aria-selected]");
+    if (s) {
+      var video = s.$("video");
+      if (video) {
+        if (video.ended || video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      }
+    }
+  }
+
+  Dz.setCursor = function(aIdx, aStep) {
+    // If the user change the slide number in the URL bar, jump
+    // to this slide.
+    aStep = (aStep != 0 && typeof aStep !== "undefined") ? "." + aStep : ".0";
+    window.location.hash = "#" + aIdx + aStep;
+  }
+
+  Dz.onhashchange = function() {
+    var cursor = window.location.hash.split("#"),
+        newidx = 1,
+        newstep = 0;
+    if (cursor.length == 2) {
+      newidx = ~~cursor[1].split(".")[0];
+      newstep = ~~cursor[1].split(".")[1];
+      if (newstep > Dz.slides[newidx - 1].$$('.incremental > *').length) {
+        newstep = 0;
+        newidx++;
+      }
+    }
+    this.setProgress(newidx, newstep);
+    if (newidx != this.idx) {
+      this.setSlide(newidx);
+    }
+    if (newstep != this.step) {
+      this.setIncremental(newstep);
+    }
+    for (var i = 0; i < this.remoteWindows.length; i++) {
+      this.postMsg(this.remoteWindows[i], "CURSOR", this.idx + "." + this.step);
+    }
+
+    if (window.afterHashChange)
+      window.afterHashChange()
+  }
+
+
+  Dz.back = function() {
+    if (this.idx == 1 && this.step == 0) {
+      return;
+    }
+    if (this.step == 0) {
+      this.setCursor(this.idx - 1,
+                     this.slides[this.idx - 2].$$('.incremental > *').length);
+    } else {
+      this.setCursor(this.idx, this.step - 1);
+    }
+  }
+
+  Dz.forward = function() {
+    if (this.idx >= this.slides.length &&
+        this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+        return;
+    }
+    if (this.step >= this.slides[this.idx - 1].$$('.incremental > *').length) {
+      this.setCursor(this.idx + 1, 0);
+    } else {
+      this.setCursor(this.idx, this.step + 1);
+    }
+  }
+
+  Dz.goStart = function() {
+    this.setCursor(1, 0);
+  }
+
+  Dz.goEnd = function() {
+    var lastIdx = this.slides.length;
+    var lastStep = this.slides[lastIdx - 1].$$('.incremental > *').length;
+    this.setCursor(lastIdx, lastStep);
+  }
+
+  Dz.toggleView = function() {
+    this.html.classList.toggle("view");
+
+    if (this.html.classList.contains("view")) {
+      $("section[aria-selected]").scrollIntoView(true);
+    }
+  }
+
+  Dz.setSlide = function(aIdx) {
+    this.idx = aIdx;
+    var old = $("section[aria-selected]");
+    var next = $("section:nth-of-type("+ this.idx +")");
+    if (old) {
+      old.removeAttribute("aria-selected");
+      var video = old.$("video");
+      if (video) {
+        video.pause();
+      }
+    }
+    if (next) {
+      next.setAttribute("aria-selected", "true");
+      if (this.html.classList.contains("view")) {
+        next.scrollIntoView();
+      }
+      var video = next.$("video");
+      if (video && !!+this.params.autoplay) {
+        video.play();
+      }
+    } else {
+      // That should not happen
+      this.idx = -1;
+      // console.warn("Slide doesn't exist.");
+    }
+  }
+
+  Dz.setIncremental = function(aStep) {
+    this.step = aStep;
+    var old = this.slides[this.idx - 1].$('.incremental > *[aria-selected]');
+    if (old) {
+      old.removeAttribute('aria-selected');
+    }
+    var incrementals = $$('.incremental');
+    if (this.step <= 0) {
+      $$.forEach(incrementals, function(aNode) {
+        aNode.removeAttribute('active');
+      });
+      return;
+    }
+    var next = this.slides[this.idx - 1].$$('.incremental > *')[this.step - 1];
+    if (next) {
+      next.setAttribute('aria-selected', true);
+      next.parentNode.setAttribute('active', true);
+      var found = false;
+      $$.forEach(incrementals, function(aNode) {
+        if (aNode != next.parentNode)
+          if (found)
+            aNode.removeAttribute('active');
+          else
+            aNode.setAttribute('active', true);
+        else
+          found = true;
+      });
+    } else {
+      setCursor(this.idx, 0);
+    }
+    return next;
+  }
+
+  Dz.goFullscreen = function() {
+    var html = $('html'),
+        requestFullscreen = html.requestFullscreen || html.requestFullScreen || html.mozRequestFullScreen || html.webkitRequestFullScreen;
+    if (requestFullscreen) {
+      requestFullscreen.apply(html);
+    }
+  }
+
+  Dz.setProgress = function(aIdx, aStep) {
+    var slide = $("section:nth-of-type("+ aIdx +")");
+    if (!slide)
+      return;
+    var steps = slide.$$('.incremental > *').length + 1,
+        slideSize = 100 / (this.slides.length - 1),
+        stepSize = slideSize / steps;
+    this.progressBar.style.width = ((aIdx - 1) * slideSize + aStep * stepSize) + '%';
+  }
+
+  Dz.postMsg = function(aWin, aMsg) { // [arg0, [arg1...]]
+    aMsg = [aMsg];
+    for (var i = 2; i < arguments.length; i++)
+      aMsg.push(encodeURIComponent(arguments[i]));
+    aWin.postMessage(aMsg.join(" "), "*");
+  }
+
+  function init() {
+    Dz.init();
+    window.onkeydown = Dz.onkeydown.bind(Dz);
+    window.onresize = Dz.onresize.bind(Dz);
+    window.onhashchange = Dz.onhashchange.bind(Dz);
+    window.onmessage = Dz.onmessage.bind(Dz);
+  }
+
+  window.onload = init;
+</script>
+
+
+<script> // Helpers
+  if (!Function.prototype.bind) {
+    Function.prototype.bind = function (oThis) {
+
+      // closest thing possible to the ECMAScript 5 internal IsCallable
+      // function
+      if (typeof this !== "function")
+      throw new TypeError(
+        "Function.prototype.bind - what is trying to be fBound is not callable"
+      );
+
+      var aArgs = Array.prototype.slice.call(arguments, 1),
+          fToBind = this,
+          fNOP = function () {},
+          fBound = function () {
+            return fToBind.apply( this instanceof fNOP ? this : oThis || window,
+                   aArgs.concat(Array.prototype.slice.call(arguments)));
+          };
+
+      fNOP.prototype = this.prototype;
+      fBound.prototype = new fNOP();
+
+      return fBound;
+    };
+  }
+
+  var $ = (HTMLElement.prototype.$ = function(aQuery) {
+    return this.querySelector(aQuery);
+  }).bind(document);
+
+  var $$ = (HTMLElement.prototype.$$ = function(aQuery) {
+    return this.querySelectorAll(aQuery);
+  }).bind(document);
+
+  $$.forEach = function(nodeList, fun) {
+    Array.prototype.forEach.call(nodeList, fun);
+  }
+
+</script>
+<!-- vim: set fdm=marker: }}} -->
+</body>
+</html>
