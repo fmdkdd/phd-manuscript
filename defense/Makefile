@@ -1,7 +1,7 @@
 IMG := img
 FONTS := fonts
 
-OUT := build
+OUT := ../build/html/defense
 IMG_OUT := $(OUT)/img
 FONTS_OUT := $(OUT)/fonts
 
