@@ -214,13 +214,13 @@ console.log(
                    top: 180px;
                    left: 150px;`}),
 
-      vspace(230),
+      vspace(220),
 
       p("Buts :"),
       ul([
         li("Simplifier l'implémentation pour favoriser l'utilisation d'analyses"),
-        li("Récolter les <b>concepts de modularisation</b> JavaScript"),
-      ]),
+        li("Recenser les <b>concepts de modularisation</b> JavaScript"),
+      ])
     ]),
 
     slide([
@@ -331,7 +331,7 @@ console.log(
         li("Rapidité de prototypage"),
         li("Minimiser la duplication de code"),
         li("Séparer les analyses pour pouvoir les auditer"),
-        li("Solution pragmatique pour JavaScript"),
+        li("Recenser les concepts de modularisation"),
       ]),
 
       vspace(20),
