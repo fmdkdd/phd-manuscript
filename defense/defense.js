@@ -211,11 +211,16 @@ console.log(
       img({src: 'img/our-problem.svg',
            style: `position: absolute;
                    width: 500px;
-                   top: 200px;
+                   top: 180px;
                    left: 150px;`}),
 
-      vspace(300),
-      p("Simplifier l'implémentation   🡆   favoriser l'utilisation d'analyses"),
+      vspace(230),
+
+      p("Buts :"),
+      ul([
+        li("Simplifier l'implémentation pour favoriser l'utilisation d'analyses"),
+        li("Récolter les <b>concepts de modularisation</b> JavaScript"),
+      ]),
     ]),
 
     slide([
@@ -860,7 +865,7 @@ with (state({num, plus})) {
              style: `width: 340px`})),
 
       div([
-        p("Concepts:"),
+        p("Concepts de modularisation :"),
         ul([
           li("Objets modules"),
           li("Foncteurs"),
@@ -1439,8 +1444,8 @@ m.g() //: 2`))),
       p("Contributions :"),
 
       ul([
-        li([`Construire un interpréteur par modules<br>
-             (foncteurs, <code>with</code>)`,
+        li([`Construire un interpréteur par modules<br><br>
+             Concepts : module, foncteurs, <code>with</code>, délégation`,
 
             img({src: 'img/foal-lang-6.svg',
                  style: `width: 200px;
@@ -1449,9 +1454,9 @@ m.g() //: 2`))),
                          right: 55px;`})
            ]),
 
-        vspace(80),
-        li([`Détourner Narcissus pour le rendre extensible<br>
-             (environnement frontal, <code>with</code>)`,
+        vspace(50),
+        li([`Détourner Narcissus pour le rendre extensible<br><br>
+             Concepts : environnement frontal, <code>with</code>`,
 
             img({src: 'img/narcissus-diff-after-2c.svg',
                  style: `width: 200px;
@@ -1468,7 +1473,7 @@ m.g() //: 2`))),
       p("Construire un interpréteur par modules :"),
 
       ul([
-        li("Application à d'autres langages dynamiques"),
+        li("Application des concepts à d'autres langages dynamiques"),
       ]),
 
       vspace(50),
@@ -1478,7 +1483,7 @@ m.g() //: 2`))),
         li("Comparaison d'analyses de flot d'information"),
         li("Application à V8/SpiderMonkey"),
         li("Compromis entre <code>with</code> et AspectScript"),
-        li("Généralisation à des programmes quelconques"),
+        li("Généralisation des concepts à des programmes quelconques"),
       ]),
 
     ]),
