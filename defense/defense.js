@@ -1361,15 +1361,9 @@ m.g() //: 2`))),
       p("Retarder la finalisation:"),
 
       img({src: 'img/purple-seq.svg',
-           style: `width: 180px;
+           style: `width: 500px;
                    position: absolute;
                    left: 100px;
-                   bottom: 10px;`}),
-
-      img({src: 'img/purple-seq2.svg',
-           style: `width: 180px;
-                   position: absolute;
-                   left: 400px;
                    bottom: 10px;`}),
 
     ]),
