@@ -369,7 +369,7 @@
 <div style="height: 220px"></div>
 <p>Motivations :</p>
 <ul><li>Simplifier l'implémentation pour favoriser l'utilisation d'analyses</li>
-<li>Recenser les <b>concepts de modularisation</b> JavaScript</li></ul></section>
+<li>Proposer des <b>mécanismes d'extension modulaire</b> pour JavaScript</li></ul></section>
 <section class="slide level2"><h1>Analyse multi-facettes</h1>
 <p>Analyse dynamique de flot d'information (Austin et Flanagan, 2012)</p>
 <p><img src="img/a-facet.svg"/></p>
@@ -423,7 +423,7 @@
 <ul><li>Rapidité de prototypage</li>
 <li>Minimiser la duplication de code</li>
 <li>Séparer les analyses pour pouvoir les auditer</li>
-<li>Recenser les concepts de modularisation</li></ul>
+<li>Proposer des mécanismes d'extension modulaire pour JavaScript</li></ul>
 <div style="height: 20px"></div>
 <div role="note"><p>pragmatic: use what's already in the language</p></div></section>
 <section class="slide level2"><h1>État de l'art</h1>
@@ -667,7 +667,7 @@ with (state({num, plus})) {
 <p><img src="img/foal-lang-6.svg" style="width: 340px"/></p>
 <div style="position: absolute;
                    top: 200px;
-                   left: 400px;"><p>Concepts de modularisation :</p>
+                   left: 400px;"><p>Mécanismes d'extension :</p>
 <ul><li>Objets modules</li>
 <li>Foncteurs</li>
 <li><code>with</code> pour activer les modules</li>
@@ -985,27 +985,27 @@ m.E.f //: function</code></pre></div>
 <div style="height: 30px"></div>
 <p>Contributions :</p>
 <ul><li>Construire un interpréteur par modules<br><br>
-             Concepts : module, foncteurs, <code>with</code>, délégation
+             Mécanismes : module, foncteurs, <code>with</code>, délégation
 <img src="img/foal-lang-6.svg" style="width: 200px;
                          position: absolute;
                          top: 270px;
-                         right: 55px;"/></li>
+                         right: 35px;"/></li>
 <div style="height: 50px"></div>
 <li>Détourner Narcissus pour le rendre extensible<br><br>
-             Concepts : environnement frontal, <code>with</code>
+             Mécanismes : environnement frontal, <code>with</code>
 <img src="img/narcissus-diff-after-2c.svg" style="width: 200px;
                          position: absolute;
                          top: 430px;
                          right: 50px;"/></li></ul></section>
 <section class="slide level2"><h1>Perspectives</h1>
 <p>Construire un interpréteur par modules :</p>
-<ul><li>Application des concepts à d'autres langages dynamiques</li></ul>
+<ul><li>Application des mécanismes à d'autres langages dynamiques</li></ul>
 <div style="height: 50px"></div>
 <p>Détourner Narcissus :</p>
 <ul><li>Comparaison d'analyses de flot d'information</li>
 <li>Application à V8/SpiderMonkey</li>
 <li>Compromis entre <code>with</code> et AspectScript</li>
-<li>Généralisation des concepts à des programmes quelconques</li></ul></section>
+<li>Généralisation des mécanismes à des programmes quelconques</li></ul></section>
 <section class="titleslide slide level1"><h1>Q & A</h1></section>
 <section class="slide level2"><h1><code>with</code> != portée dynamique</h1>
 <div class="content"><pre><code>function f() { return x }
