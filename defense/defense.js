@@ -1506,10 +1506,6 @@ with ({x: 42}) {
     ]),
 
     slide([
-      h1("Portée dynamique : heureux accident"),
-    ]),
-
-    slide([
       h1("Deux façons d'analyser les programmes JavaScript"),
 
       p("Analyses statiques :"),
