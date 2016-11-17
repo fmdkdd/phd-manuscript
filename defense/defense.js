@@ -216,7 +216,7 @@ console.log(
 
       vspace(220),
 
-      p("Buts :"),
+      p("Motivations :"),
       ul([
         li("Simplifier l'implémentation pour favoriser l'utilisation d'analyses"),
         li("Recenser les <b>concepts de modularisation</b> JavaScript"),
@@ -231,9 +231,9 @@ console.log(
       p(img({src: "img/a-facet.svg"})),
 
       ul([
-        li("Chaque valeur a deux facettes"),
+        li("Chaque valeur protégée a deux facettes"),
         li("Seule l'autorité voit la facette privée"),
-        li([`Le                (program counter) suit les flots implicites`,
+        li([`Le                (program counter) suit les dépendances implicites`,
             img({src: "img/facet-pc.svg",
                  style: `position: absolute;
                          left: 100px;`})])
@@ -384,7 +384,7 @@ console.log(
 }`))),
 
       vspace(10),
-      p("Une <b>fonction immédiatement appelée (FIA)</b> contrôle la visibilité :"),
+      p("Une <b>fonction immédiatement appelée</b> contrôle la visibilité :"),
 
       content(pre(code(`var m = (function(){
   function parse(file) { ... }
@@ -1141,7 +1141,11 @@ m.g() //: -1`))),
              style: `position: absolute;
                      width: 200px;
                      top: 130px;
-                     right: 80px;`}))
+                     right: 80px;`})),
+
+      note([
+        "push to add, remove to delete modifications dynamically",
+      ]),
 
     ]),
 
@@ -1168,7 +1172,11 @@ m.g() //: -1`))),
              style: `position: absolute;
                      width: 200px;
                      top: 130px;
-                     right: 80px;`}))
+                     right: 80px;`})),
+
+      note([
+        "push to add, remove to delete modifications dynamically",
+      ]),
 
     ]),
 
@@ -1223,7 +1231,11 @@ m.g() //: -1`))),
              style: `position: absolute;
                      width: 200px;
                      top: 130px;
-                     right: 80px;`}))
+                     right: 80px;`})),
+
+      note([
+        "push to add, remove to delete modifications dynamically",
+      ]),
 
     ]),
 
@@ -1250,8 +1262,11 @@ m.g() //: -1`))),
              style: `position: absolute;
                      width: 200px;
                      top: 130px;
-                     right: 80px;`}))
+                     right: 80px;`})),
 
+      note([
+        "push to add, remove to delete modifications dynamically",
+      ]),
     ]),
 
     slide([
@@ -1271,7 +1286,7 @@ m.g() //: 1
 m.E.a = 2
 m.g() //: 2`))),
 
-      p(img({src: 'img/dls11.svg',
+      p(img({src: 'img/dls11-5.svg',
              style: `position: absolute;
                      width: 350px;
                      top: 310px;
@@ -1285,6 +1300,21 @@ m.g() //: 2`))),
 
     ]),
 
+    slide([
+      h1("Différence entre objets et environnements"),
+
+      p("L'objet <code>E</code> n'a pas l'environnement interne comme parent"),
+
+      vspace(80),
+      content(pre(code(`E.f //: undefined`))),
+
+      img({src: 'img/dls11b.svg',
+           style: `position: absolute;
+                   width: 350px;
+                   top: 180px;
+                   right: 80px;`}),
+
+    ]),
 
     slide([
       h1("Différence entre objets et environnements"),
@@ -1292,22 +1322,18 @@ m.g() //: 2`))),
       content(pre(code(`var m = (function(){
   var E = Object.create()
   with (E) {
-    var a = 1
-    function f() { return a }
-    function g() { return f() }
+    ...
     <em>Object.setPrototypeOf(E, {f, ...})</em>
     return { g: g, E: E }
   }
 }())
 
-m.g() //: 1
-m.E.a = 2
-m.g() //: 2`))),
+m.E.f //: function`))),
 
       p(img({src: 'img/dls11a.svg',
              style: `position: absolute;
                      width: 350px;
-                     top: 310px;
+                     top: 280px;
                      right: 50px;`})),
 
       note([
