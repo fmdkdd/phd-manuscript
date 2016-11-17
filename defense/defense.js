@@ -219,7 +219,7 @@ console.log(
       p("Motivations :"),
       ul([
         li("Simplifier l'implémentation pour favoriser l'utilisation d'analyses"),
-        li("Recenser les <b>concepts de modularisation</b> JavaScript"),
+        li("Proposer des <b>mécanismes d'extension modulaire</b> pour JavaScript"),
       ])
     ]),
 
@@ -331,7 +331,7 @@ console.log(
         li("Rapidité de prototypage"),
         li("Minimiser la duplication de code"),
         li("Séparer les analyses pour pouvoir les auditer"),
-        li("Recenser les concepts de modularisation"),
+        li("Proposer des mécanismes d'extension modulaire pour JavaScript"),
       ]),
 
       vspace(20),
@@ -865,7 +865,7 @@ with (state({num, plus})) {
              style: `width: 340px`})),
 
       div([
-        p("Concepts de modularisation :"),
+        p("Mécanismes d'extension :"),
         ul([
           li("Objets modules"),
           li("Foncteurs"),
@@ -1471,18 +1471,18 @@ m.E.f //: function`))),
 
       ul([
         li([`Construire un interpréteur par modules<br><br>
-             Concepts : module, foncteurs, <code>with</code>, délégation`,
+             Mécanismes : module, foncteurs, <code>with</code>, délégation`,
 
             img({src: 'img/foal-lang-6.svg',
                  style: `width: 200px;
                          position: absolute;
                          top: 270px;
-                         right: 55px;`})
+                         right: 35px;`})
            ]),
 
         vspace(50),
         li([`Détourner Narcissus pour le rendre extensible<br><br>
-             Concepts : environnement frontal, <code>with</code>`,
+             Mécanismes : environnement frontal, <code>with</code>`,
 
             img({src: 'img/narcissus-diff-after-2c.svg',
                  style: `width: 200px;
@@ -1499,7 +1499,7 @@ m.E.f //: function`))),
       p("Construire un interpréteur par modules :"),
 
       ul([
-        li("Application des concepts à d'autres langages dynamiques"),
+        li("Application des mécanismes à d'autres langages dynamiques"),
       ]),
 
       vspace(50),
@@ -1509,7 +1509,7 @@ m.E.f //: function`))),
         li("Comparaison d'analyses de flot d'information"),
         li("Application à V8/SpiderMonkey"),
         li("Compromis entre <code>with</code> et AspectScript"),
-        li("Généralisation des concepts à des programmes quelconques"),
+        li("Généralisation des mécanismes à des programmes quelconques"),
       ]),
 
     ]),
