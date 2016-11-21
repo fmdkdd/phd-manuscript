@@ -830,7 +830,7 @@ Un organigramme.  Une façon courante de concevoir des programmes de 1950 à 197
 
 Le second design est aussi plus facile à développer et plus facile à comprendre.
 Les modules du premier design correspondent aux étapes de traitement du système:
-Parnas nous dit qu'il suffit de dessiner le organigramme pour obtenir les 5
+Parnas nous dit qu'il suffit de dessiner l'organigramme pour obtenir les 5
 modules.  Le résultat c'est que tous ces modules ont de nombreuses dépendances
 entre eux, ce qui pousse les programmeurs à avoir une compréhension globale du
 système pour pouvoir le développer.  En revanche, il a élaboré le second design
@@ -4051,8 +4051,8 @@ car il est souvent plus facile d'ajouter du code que de modifier du code
 existant.
 
 On peut caractériser la complexité d'un changement de l'interpréteur comme la
-complexité d'un algorithme.  L'opération ~pp~ comporte autant de ligne qu'il y a
-de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes,
+complexité d'un algorithme.  L'opération ~pp~ comporte autant de lignes qu'il y
+a de variantes de ~Term~, plus une pour sa signature.  S'il y a /v/ variantes,
 ajouter une opération aura une complexité de l'ordre de /v/ lignes de code
 (O(/v/)).  On note que ces lignes sont des additions par un '+': +O(/v/).
 
@@ -4452,7 +4452,7 @@ interface VisitorForMult<T> extends Visitor<T> {
 }
 #+END_SRC
 
-On ne modifie par ~Visitor~; on ajoute seulement une interface pour ~Mult~.
+On ne modifie pas ~Visitor~; on ajoute seulement une interface pour ~Mult~.
 De même, pour étendre l'opération ~Eval~:
 
 #+BEGIN_SRC java
@@ -4568,7 +4568,7 @@ opération sur le langage.  Si on ajoute l'opération d'affichage:
 
 #+BEGIN_aside
 On utilise ici les lambdas de Java 8 pour éliminer le bruit syntaxique.  De
-manière équivalent, on pourrait retourner une instance de l'interface ~PP~ qui
+manière équivalente, on pourrait retourner une instance de l'interface ~PP~ qui
 n'implémenterait qu'une seule méthode, ~pp~.  Les lambdas ne sont pas
 nécessaires pour les algèbres d'objets.
 #+END_aside
@@ -6394,7 +6394,7 @@ qui prend un module de base et retourne un module enrichi avec l'opération
 passé en argument doit contenir les termes du langage: ~base.num~ et
 ~base.plus~, qui sont utilisés comme prototypes des nouveaux objets ~show.num~
 et ~show.plus~ (lignes [[(foal-ex4)]] et [[(foal-ex5)]]).  Ces nouveaux objets
-contiennent juste l'opération ~show~ définies comme précédemment.  Enfin, la
+contiennent juste l'opération ~show~ définie comme précédemment.  Enfin, la
 fonction ~show~ retourne un nouveau module (un objet) qui contient les versions
 enrichies de ~num~ et ~plus~ (ligne [[(foal-ex7)]]).
 
@@ -7214,7 +7214,7 @@ somme les deux valeurs et retourne le résultat.
 
 Le second diagramme sert à illustrer deux points importants sur le motif module:
 
-1. La seul façon que du code extérieur au module a d'accéder aux définitions
+1. La seule façon que du code extérieur au module a d'accéder aux définitions
    faites à l'intérieur du module est de passer par l'objet exporté.  Dans
    l'exemple que l'on a suivi, ~g~ est la seule référence exportée, mais c'est
    un alias.  Remarquons que si on essayait de changer la valeur de ~m.g~ par
