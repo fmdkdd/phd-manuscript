@@ -1652,7 +1652,7 @@ Id est la fonction identité
 (I_1, I_2, I_3, I_4) = (Id I_1, \delta_2 I_2, \delta_3 I_3, \delta_4 I_4) = (Id, \delta_2, \delta_3, \delta_4) I_1
 \]
 
-Au lieu d'avoir quatre interpréteurs différents, on peut juste conserver 
+Au lieu d'avoir quatre interpréteurs différents, on peut juste conserver
 l'interpréteur de base et les quatre deltas.  C'est une factorisation qui
 élimine la redondance de $I_1$.
 
@@ -2261,7 +2261,7 @@ peut remplacer un ~GOTO~:
 #+END_SRC
 
 Dans ces deux programmes, ~GOTO~ et ~COMEFROM~ permettent tous deux de réaliser
-une la boucle infinie.  Mais il y a une différence notable: ~GOTO~ influe sur le
+une boucle infinie.  Mais il y a une différence notable: ~GOTO~ influe sur le
 flot d'exécution qui le suit, tandis que ~COMEFROM~ capture l'exécution qui le
 précède.  En combinant les deux, on pourrait modifier un programme à distance:
 
@@ -3171,7 +3171,7 @@ print(c.m2(3))
 #+RESULTS:
 : 6
 
-Ici on crée, on utilisant la fonction ~type~, une classe ~C~ qui contient une
+Ici on crée, en utilisant la fonction ~type~, une classe ~C~ qui contient une
 méthode ~m2~ comme dans l'exemple précédent.  On peut ensuite instancier cette
 classe (~c~) et appeler la méthode ~m2~ comme sur une classe décrite
 statiquement.
@@ -3246,7 +3246,7 @@ de métaprogrammation.
 *** L'implémentation ouverte
 La réflexion n'est pas restreinte aux implémentations de langages à objets, ni
 aux langages de programmation.  Les membres de Xerox PARC se sont donc
-intéressés à appliquer la réflexion sur à d'autres systèmes, ce qu'ils appellent
+intéressés à appliquer la réflexion à d'autres systèmes, ce qu'ils appellent
 plus généralement "implémentation ouverte" [[cite:Rao-91][Rao-91]] [[cite:Kic-96][Kic-96]] [[cite:MLM+97][MLM+97]] [[cite:KLL+97][KLL+97]].
 
 #+begin_quote
@@ -6033,7 +6033,7 @@ exemple, la construction ~with~ n'est pas supportée.
 
 ** Par portée dynamique
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
-portée dynamique, les variables libres d'une fonction peuvent être redéfinies
+portée dynamique, les variables libres d'une fonction peuvent être définies
 par l'appelant.  Dans le Lisp intégré à Emacs ([[cite:Elisp][Elisp]]), la portée dynamique
 est le comportement par défaut:
 
@@ -6095,8 +6095,8 @@ façon canonique de représenter un arbre syntaxique en Lisp.  La fonction
 peut le voir à la fin de cet extrait.  On a toujours le même langage
 arithmétique minimal construit des termes ~num~ et ~plus~.  L'évaluation de
 chaque terme est déléguée à une lambda associée au type du terme dans la liste
-associative ~eval-rules~.  Cette liste est une variable que l'on va pouvoir
-modifier par portée dynamique:
+associative ~eval-rules~.  Cette liste est stockée dans une variable que l'on va
+pouvoir modifier par portée dynamique:
 
 #+BEGIN_SRC elisp -n -r
 (defun eval-num-double (num)
@@ -6871,7 +6871,7 @@ réutilisation, l'héritage de classes pourrait tout aussi bien convenir.
 Représenter les modules comme des fonctions pourrait se faire par convention
 dans de nombreux langages (en Python, ou en Scheme par exemple).  Les analogues
 de la création d'environnements sont moins évidents, mais on peut y substituer
-des mécanismes qui désambiguïse les noms.
+des mécanismes qui désambiguïsent les noms.
 
 Par exemple, dans le langage Rust [[cite:Rust][Rust]], on pourrait obtenir un résultat
 semblable en utilisant les traits:
@@ -7636,9 +7636,9 @@ Ce qui se passe dans le premier exemple, c'est que lorsque la fonction ~f~ est
 définie dans ~with~ elle capture l'environnement lexical crée par ~with~; ~f~
 suit donc une liaison statique.  Mais l'environnement généré par ~with~ est
 particulier car la résolution de noms dans cet environnement est déléguée à
-l'objet de liaison.  Et l'objet de liaison peut être dynamique: on peut y
+l'objet de liaison.  Et l'objet de liaison peut être mutable: on peut y
 ajouter ou y supprimer des propriétés.  Donc, on dira que la fonction ~f~
-/capture statiquement un environnement dynamique/.  L'environnement ne peut être
+/capture statiquement un environnement mutable/.  L'environnement ne peut être
 capturé qu'à la définition de ~f~, mais cet environnement peut être modifié par
 la suite.  Les deux diagrammes illustrent clairement la différence de
 comportement: dans le premier, ~f.env~ pointe vers l'environnement crée par
