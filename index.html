@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-11-15 mar. 23:48 -->
+<!-- 2016-11-21 lun. 13:59 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -1132,7 +1132,7 @@ Un organigramme.  Une façon courante de concevoir des programmes de 1950 à 197
 <p>
 Le second design est aussi plus facile à développer et plus facile à comprendre.
 Les modules du premier design correspondent aux étapes de traitement du système:
-Parnas nous dit qu&rsquo;il suffit de dessiner le organigramme pour obtenir les 5
+Parnas nous dit qu&rsquo;il suffit de dessiner l&rsquo;organigramme pour obtenir les 5
 modules.  Le résultat c&rsquo;est que tous ces modules ont de nombreuses dépendances
 entre eux, ce qui pousse les programmeurs à avoir une compréhension globale du
 système pour pouvoir le développer.  En revanche, il a élaboré le second design
@@ -2145,7 +2145,7 @@ Id est la fonction identité
 </p>
 
 <p>
-Au lieu d&rsquo;avoir quatre interpréteurs différents, on peut juste conserver 
+Au lieu d&rsquo;avoir quatre interpréteurs différents, on peut juste conserver
 l&rsquo;interpréteur de base et les quatre deltas.  C&rsquo;est une factorisation qui
 élimine la redondance de \(I_1\).
 </p>
@@ -2897,7 +2897,7 @@ peut remplacer un <code>GOTO</code>:
 
 <p>
 Dans ces deux programmes, <code>GOTO</code> et <code>COMEFROM</code> permettent tous deux de réaliser
-une la boucle infinie.  Mais il y a une différence notable: <code>GOTO</code> influe sur le
+une boucle infinie.  Mais il y a une différence notable: <code>GOTO</code> influe sur le
 flot d&rsquo;exécution qui le suit, tandis que <code>COMEFROM</code> capture l&rsquo;exécution qui le
 précède.  En combinant les deux, on pourrait modifier un programme à distance:
 </p>
@@ -4004,7 +4004,7 @@ synthétiser ces objets est possible sans cérémonie:
 </div>
 
 <p>
-Ici on crée, on utilisant la fonction <code>type</code>, une classe <code>C</code> qui contient une
+Ici on crée, en utilisant la fonction <code>type</code>, une classe <code>C</code> qui contient une
 méthode <code>m2</code> comme dans l&rsquo;exemple précédent.  On peut ensuite instancier cette
 classe (<code>c</code>) et appeler la méthode <code>m2</code> comme sur une classe décrite
 statiquement.
@@ -4089,7 +4089,7 @@ de métaprogrammation.
 <p>
 La réflexion n&rsquo;est pas restreinte aux implémentations de langages à objets, ni
 aux langages de programmation.  Les membres de Xerox PARC se sont donc
-intéressés à appliquer la réflexion sur à d&rsquo;autres systèmes, ce qu&rsquo;ils appellent
+intéressés à appliquer la réflexion à d&rsquo;autres systèmes, ce qu&rsquo;ils appellent
 plus généralement &laquo;&nbsp;implémentation ouverte&nbsp;&raquo; [<a href="#Rao-91">Rao91</a>,<a href="#Kic-96">Kic96</a>,<a href="#MLM+97">MLM+97</a>,<a href="#KLL+97">KLL+97</a>].
 </p>
 
@@ -5164,8 +5164,8 @@ existant.
 
 <p>
 On peut caractériser la complexité d&rsquo;un changement de l&rsquo;interpréteur comme la
-complexité d&rsquo;un algorithme.  L&rsquo;opération <code>pp</code> comporte autant de ligne qu&rsquo;il y a
-de variantes de <code>Term</code>, plus une pour sa signature.  S&rsquo;il y a <i>v</i> variantes,
+complexité d&rsquo;un algorithme.  L&rsquo;opération <code>pp</code> comporte autant de lignes qu&rsquo;il y
+a de variantes de <code>Term</code>, plus une pour sa signature.  S&rsquo;il y a <i>v</i> variantes,
 ajouter une opération aura une complexité de l&rsquo;ordre de <i>v</i> lignes de code
 (O(<i>v</i>)).  On note que ces lignes sont des additions par un &rsquo;+&rsquo;: +O(<i>v</i>).
 </p>
@@ -5711,7 +5711,7 @@ Il faut maintenant définir cette nouvelle interface:
 </div>
 
 <p>
-On ne modifie par <code>Visitor</code>; on ajoute seulement une interface pour <code>Mult</code>.
+On ne modifie pas <code>Visitor</code>; on ajoute seulement une interface pour <code>Mult</code>.
 De même, pour étendre l&rsquo;opération <code>Eval</code>:
 </p>
 
@@ -5877,7 +5877,7 @@ opération sur le langage.  Si on ajoute l&rsquo;opération d&rsquo;affichage:
 <aside>
 <p>
 On utilise ici les lambdas de Java 8 pour éliminer le bruit syntaxique.  De
-manière équivalent, on pourrait retourner une instance de l&rsquo;interface <code>PP</code> qui
+manière équivalente, on pourrait retourner une instance de l&rsquo;interface <code>PP</code> qui
 n&rsquo;implémenterait qu&rsquo;une seule méthode, <code>pp</code>.  Les lambdas ne sont pas
 nécessaires pour les algèbres d&rsquo;objets.
 </p>
@@ -7875,7 +7875,7 @@ exemple, la construction <code>with</code> n&rsquo;est pas supportée.
 <div class="outline-text-3" id="text-4-5">
 <p>
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la
-portée dynamique, les variables libres d&rsquo;une fonction peuvent être redéfinies
+portée dynamique, les variables libres d&rsquo;une fonction peuvent être définies
 par l&rsquo;appelant.  Dans le Lisp intégré à Emacs ([<a href="#Elisp">Eli</a>]), la portée dynamique
 est le comportement par défaut:
 </p>
@@ -7944,8 +7944,8 @@ façon canonique de représenter un arbre syntaxique en Lisp.  La fonction
 peut le voir à la fin de cet extrait.  On a toujours le même langage
 arithmétique minimal construit des termes <code>num</code> et <code>plus</code>.  L&rsquo;évaluation de
 chaque terme est déléguée à une lambda associée au type du terme dans la liste
-associative <code>eval-rules</code>.  Cette liste est une variable que l&rsquo;on va pouvoir
-modifier par portée dynamique:
+associative <code>eval-rules</code>.  Cette liste est stockée dans une variable que l&rsquo;on va
+pouvoir modifier par portée dynamique:
 </p>
 
 <div class="org-src-container">
@@ -8361,7 +8361,7 @@ qui prend un module de base et retourne un module enrichi avec l&rsquo;opératio
 passé en argument doit contenir les termes du langage: <code>base.num</code> et
 <code>base.plus</code>, qui sont utilisés comme prototypes des nouveaux objets <code>show.num</code>
 et <code>show.plus</code> (lignes <a href="#coderef-foal-ex4"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex4');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex4');">1</a> et <a href="#coderef-foal-ex5"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex5');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex5');">2</a>).  Ces nouveaux objets
-contiennent juste l&rsquo;opération <code>show</code> définies comme précédemment.  Enfin, la
+contiennent juste l&rsquo;opération <code>show</code> définie comme précédemment.  Enfin, la
 fonction <code>show</code> retourne un nouveau module (un objet) qui contient les versions
 enrichies de <code>num</code> et <code>plus</code> (ligne <a href="#coderef-foal-ex7"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-foal-ex7');" onmouseout="CodeHighlightOff(this, 'coderef-foal-ex7');">10</a>).
 </p>
@@ -9019,7 +9019,7 @@ réutilisation, l&rsquo;héritage de classes pourrait tout aussi bien convenir.
 Représenter les modules comme des fonctions pourrait se faire par convention
 dans de nombreux langages (en Python, ou en Scheme par exemple).  Les analogues
 de la création d&rsquo;environnements sont moins évidents, mais on peut y substituer
-des mécanismes qui désambiguïse les noms.
+des mécanismes qui désambiguïsent les noms.
 </p>
 
 <p>
@@ -9472,7 +9472,7 @@ Le second diagramme sert à illustrer deux points importants sur le motif module
 </p>
 
 <ol class="org-ol">
-<li>La seul façon que du code extérieur au module a d&rsquo;accéder aux définitions
+<li>La seule façon que du code extérieur au module a d&rsquo;accéder aux définitions
 faites à l&rsquo;intérieur du module est de passer par l&rsquo;objet exporté.  Dans
 l&rsquo;exemple que l&rsquo;on a suivi, <code>g</code> est la seule référence exportée, mais c&rsquo;est
 un alias.  Remarquons que si on essayait de changer la valeur de <code>m.g</code> par
@@ -10020,9 +10020,9 @@ Ce qui se passe dans le premier exemple, c&rsquo;est que lorsque la fonction <co
 définie dans <code>with</code> elle capture l&rsquo;environnement lexical crée par <code>with</code>; <code>f</code>
 suit donc une liaison statique.  Mais l&rsquo;environnement généré par <code>with</code> est
 particulier car la résolution de noms dans cet environnement est déléguée à
-l&rsquo;objet de liaison.  Et l&rsquo;objet de liaison peut être dynamique: on peut y
+l&rsquo;objet de liaison.  Et l&rsquo;objet de liaison peut être mutable: on peut y
 ajouter ou y supprimer des propriétés.  Donc, on dira que la fonction <code>f</code>
-<i>capture statiquement un environnement dynamique</i>.  L&rsquo;environnement ne peut être
+<i>capture statiquement un environnement mutable</i>.  L&rsquo;environnement ne peut être
 capturé qu&rsquo;à la définition de <code>f</code>, mais cet environnement peut être modifié par
 la suite.  Les deux diagrammes illustrent clairement la différence de
 comportement: dans le premier, <code>f.env</code> pointe vers l&rsquo;environnement crée par
@@ -14020,7 +14020,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-11-15 mar. 23:48 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
+<p class="created">Crée: 2016-11-21 lun. 13:59 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
 </div>
 </body>
 </html>
