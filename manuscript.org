@@ -5514,7 +5514,7 @@ n1.eval() //: 2
 Légende des diagrammes qui accompagnent les exemples en JavaScript.
 #+END_side-figure
 
-Le diagramme à gauche du code illustre les objets manipulés par l'interpréteur
+Le diagramme à côté du code illustre les objets manipulés par l'interpréteur
 JavaScript.  Les objets y sont représentés par des boîtes qui contiennent des
 paires, chaque paire associant une /clé/ à une /valeur/.  Lorsque la valeur est
 une référence, elle est représentée par une puce d'où part un trait vers l'objet
@@ -7280,29 +7280,26 @@ var m = (function(){
 #+END_SRC
 
 #+ATTR_HTML: :style margin-top:-10rem
-#+ATTR_LATEX: :options [-10em]
+#+ATTR_LATEX: :options [-2em]
 #+BEGIN_side-figure
 [[file:img/dls3.svg]]
-#+END_side-figure
 
-#+ATTR_HTML: :style margin-top:7rem
-#+BEGIN_aside
-Dans les diagrammes suivants, on n'illustrera plus les objets d'activation des
+Dans ce diagramme et les suivants, on n'illustre pas les objets d'activation des
 fonctions.  Il suffit de se rappeler que l'environnement utilisé pour rechercher
 les variables libres est celui de la propriété ~env~.
-#+END_aside
+#+END_side-figure
 
 Dans cet exemple, la fonction ~g~ exportée par le module ne capture pas
 l'environnement de la FIA.  À la ligne [[(ex2-return)]] on exporte la valeur de
 retour de la function ~mkG~ sous le nom ~g~.  La fonction ~mkG~ retourne
 exactement la même fonction ~g~ que dans l'exemple précédent, avec une
 différence notable: cette fonction ~g~ capture l'environnement de l'appel à
-~mkG~.  Le diagramme qui l'accompagne illustre cette différence par l'apparition
-d'un nouvel objet d'activation pour ~mkG~ qui est référencé comme environnement
-de ~g~.  On a ~m.g.env~ qui pointe vers l'environnement créé par ~mkG~
-({{{color(c1)}}}), et non l'environnement créé par la FIA ({{{color(c2)}}}).
-On voit alors que la propriété ~env~ d'une fonction n'est pas garantie de
-pointer vers l'environnement dont nous avons besoin.
+~mkG~.  Le diagramme ci-contre illustre cette différence par l'apparition d'un
+nouvel objet d'activation pour ~mkG~ qui est référencé comme environnement de
+~g~.  On a ~m.g.env~ qui pointe vers l'environnement créé par ~mkG~
+({{{color(c1)}}}), et non l'environnement créé par la FIA ({{{color(c2)}}}).  On
+voit alors que la propriété ~env~ d'une fonction n'est pas garantie de pointer
+vers l'environnement dont nous avons besoin.
 
 On va maintenant s'éloigner du comportement standard de JavaScript que nous
 avons suivi jusqu'ici.  Supposons que nous /pouvons/ accéder à l'environnement
@@ -7379,7 +7376,7 @@ on écrit juste ~a~, ce sera une variable libre pour cette fonction.  Mais
 puisqu'on a une référence à l'environnement du module via ~m.E~, on peut accéder
 au ~a~ à travers elle.
 
-Le diagramme illustre clairement le problème: la nouvelle fonction ~f~
+Le diagramme ci-contre illustre clairement le problème: la nouvelle fonction ~f~
 ({{{color(c1)}}}) n'a pas le même environnement que l'ancienne.  Puisqu'elle est
 créée en dehors du module, son environnement est l'objet global (lien
 {{{color(c2)}}}).  Le diagramme nous indique aussi une autre solution: modifier
@@ -7471,7 +7468,7 @@ frontal.
 
 Si l'on reprend exactement le code du module, sans modifications, mais qu'on
 l'exécute avec cette modification sémantique, on obtient la situation de la
-figure suivante.  La redéfinition de ~a~ à ~2~ est enregistrée par
+figure ci-contre.  La redéfinition de ~a~ à ~2~ est enregistrée par
 l'environnement frontal ({{{color(c1)}}}), plutôt que par l'environnement de la
 FIA.  Puisque les deux fonctions ~f~ et ~g~ capturent l'environnement frontal,
 elles utilisent bien la valeur redéfinie de ~a~ quand elles sont appelées.  Le
@@ -7643,7 +7640,6 @@ pile lorsque ~f~ est appelée.  L'appel échoue, car la résolution de noms ne
 trouve aucune occurrence de ~a~.  La fonction ~f~ n'est donc pas dynamiquement
 liée si elle est appelée dans un ~with~.
 
-#+ATTR_LATEX: :options [-7em]
 #+BEGIN_side-figure
 [[file:img/dls10.svg]]
 #+END_side-figure
@@ -7658,11 +7654,11 @@ Ce qui se passe dans le premier exemple, c'est que lorsque la fonction ~f~ est
 définie dans ~with~ elle capture l'environnement lexical crée par ~with~; ~f~
 suit donc une liaison statique.  Mais l'environnement généré par ~with~ est
 particulier car la résolution de noms dans cet environnement est déléguée à
-l'objet de liaison.  Et l'objet de liaison peut être mutable: on peut y
-ajouter ou y supprimer des propriétés.  Donc, on dira que la fonction ~f~
-/capture statiquement un environnement mutable/.  L'environnement ne peut être
-capturé qu'à la définition de ~f~, mais cet environnement peut être modifié par
-la suite.  Les deux diagrammes illustrent clairement la différence de
+l'objet de liaison.  Et l'objet de liaison peut être mutable: on peut y ajouter
+ou y supprimer des propriétés.  Donc, on dira que la fonction ~f~ /capture
+statiquement un environnement mutable/.  L'environnement ne peut être capturé
+qu'à la définition de ~f~, mais cet environnement peut être modifié par la
+suite.  Les deux diagrammes précédents illustrent clairement la différence de
 comportement: dans le premier, ~f.env~ pointe vers l'environnement crée par
 ~with~, et dans le second cas, ~f.env~ pointe vers l'environnement global; cette
 propriété ~f.env~ ne peut pas être changée dynamiquement, donc appeler ~f~ dans
@@ -7720,7 +7716,7 @@ C'est pourquoi la valeur de ~m.E.a~ est trouvée en premier par la résolution d
 nom lors de l'exécution de ~f~.
 
 #+ATTR_HTML: :style margin-top:-14rem
-#+ATTR_LATEX: :options [-12em]
+#+ATTR_LATEX: :options [-2em]
 #+BEGIN_aside
 En fait, le standard ECMAScript 5.1 ne précise pas quel environnement doit
 capturer la fonction dans ce cas; c'est laissé à la discrétion du moteur
@@ -7805,8 +7801,8 @@ chaque déclaration du module, et on assigne cet objet au prototype de ~E~.
 Grâce à cet objet, on peut faire référence à ~a~ à travers ~m.E.a~ lors de la
 redéfinition de ~f~ ligne [[(ex9-f)]].  Puis, lorsqu'on redéfinit ~a~ à travers
 ~m.E.a~, cette nouvelle valeur a priorité sur la valeur initiale du module, et
-est bien capturée par la nouvelle fonction ~f~.  Tout cela est illustré par le
-diagramme.  La propriété ~m.E~ pointe sur l'objet de liaison ({{{color(c1)}}}),
+est bien capturée par la nouvelle fonction ~f~.  Tout cela est illustré
+ci-contre.  La propriété ~m.E~ pointe sur l'objet de liaison ({{{color(c1)}}}),
 qui contient les redéfinitions de ~a~ et ~f~.  Si l'objet de liaison est vide,
 alors on recherche les propriétés sur l'objet parent ({{{color(c2)}}}) avant de
 les chercher dans l'environnement de la FIA.  Ainsi, lorsque l'on supprime les
@@ -8534,6 +8530,7 @@ version.  Pour chaque version, le jeu de test a été lancé dix fois, sur un se
 thread, toujours sur la même machine.  Le tableau donne la moyenne arithmétique
 du temps pour une exécution complète sur ces dix lancers.
 
+#+ATTR_HTML: :style margin-top:-4rem
 #+ATTR_LATEX: :options [-2em]
 #+BEGIN_aside
 Ces tests ont été effectué sur un PC portable contenant un processeur Intel
@@ -8801,6 +8798,17 @@ utiliser des /hooks/, ou le patron Observateur, ou encore accepter un Visiteur;
 les trois méthodes permettent d'appeler du code extérieur au module à un moment
 précis du flot d'exécution.
 
+#+ATTR_LATEX: :options [-10em]
+#+BEGIN_side-figure
+[[file:img/dls15.svg]]
+
+Un /hook/ est une liste de fonctions associée à un moment précis du flot de
+contrôle d'un module.  Le code extérieur au module ajoute des fonctions dans
+cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
+fonctions du /hook/.  C'est une façon courante d'injecter du code dans la
+configuration d'Emacs et de LaTeX.
+#+END_side-figure
+
 Avec des /hooks/, ou un Observateur, il faut rajouter du code à l'intérieur du
 module à tous les endroits où le programmeur d'un module externe voudrait
 injecter du code, pour appeler /explicitement/ soit une liste de fonctions, soit
@@ -8811,18 +8819,6 @@ l'interpréteur pour voir les appels à des /hooks/, ou une levée d'événement
 pour des observateurs.  L'inconvénient est d'avoir à identifier les endroits qui
 peuvent intéresser du code externe, et d'ajouter des /hooks/ explicitement dans
 le code pour chacun d'eux.
-
-#+ATTR_HTML: :style margin-top:-13rem
-#+ATTR_LATEX: :options [-8em]
-#+BEGIN_side-figure
-[[file:img/dls15.svg]]
-
-Un /hook/ est une liste de fonctions associée à un moment précis du flot de
-contrôle d'un module.  Le code extérieur au module ajoute des fonctions dans
-cette liste.  Lorsque le code du module atteint le moment précis, il appelle les
-fonctions du /hook/.  C'est une façon courante d'injecter du code dans la
-configuration d'Emacs et de LaTeX.
-#+END_side-figure
 
 On utilise généralement ces techniques pour appeler du code qui /ne change pas/
 le flot de contrôle du module.  Une fonction appelée par un /hook/ n'effectue
