@@ -5506,14 +5506,15 @@ var n1 = num.new(2)
 n1.eval() //: 2
 #+END_SRC
 
+{{{label(diag-legend)}}}
 #+ATTR_LATEX: :options [1em]
 #+BEGIN_side-figure
 [[file:img/foal-legend.svg]]
 
-Légende des diagrammes qui accompagnent les exemples de code en JavaScript.
+Légende des diagrammes qui accompagnent les exemples en JavaScript.
 #+END_side-figure
 
-Le diagramme ci-contre illustre les objets manipulés par l'interpréteur
+Le diagramme à gauche du code illustre les objets manipulés par l'interpréteur
 JavaScript.  Les objets y sont représentés par des boîtes qui contiennent des
 paires, chaque paire associant une /clé/ à une /valeur/.  Lorsque la valeur est
 une référence, elle est représentée par une puce d'où part un trait vers l'objet
@@ -6267,7 +6268,8 @@ e1.eval() //: 3
 #+BEGIN_side-figure
 [[file:img/foal-1.svg]]
 
-Représentation des objets en mémoire après la création de ~e1~.
+Représentation des objets en mémoire après la création de ~e1~.  Une légende et
+une explication de ces diagrammes apparaissent {{{ref(diag-legend, là)}}}.
 #+END_side-figure
 
 L'objet ~num~ comporte deux fonctions: ~new~, le constructeur qui capture la
@@ -7154,6 +7156,10 @@ Essayons de comprendre exactement les mécanismes du langage en jeu dans ce
 module.  D'abord, on va construire un exemple minimal de module qui a un
 comportement observable:
 
+#+BEGIN_side-figure
+[[file:img/dls0.svg]]
+#+END_side-figure
+
 #+BEGIN_SRC js -n -r
 var m = (function(){
   var a = 1                               (ref:ex1-defs-start)
@@ -7171,42 +7177,34 @@ tour retourne l'addition de son argument et de ~a~, une variable interne au
 module.  Quand on appelle ~m.g(0)~ à l'extérieur du module, on obtient ~1~, qui
 est la valeur de ~a~.
 
-#+ATTR_HTML: :style margin-top:-20rem
-#+BEGIN_side-figure
-[[file:img/dls0.svg]]
-#+END_side-figure
-
-Le diagramme illustre les environnements et les objets créés après l'appel de le
-la FIA et avant l'appel de la ligne ~m.g~ à la ligne [[(ex1-test)]].  Les objets
-JavaScript sont représentés par des boîtes qui contiennent des paires.  Une
-paire est une propriété, avec à gauche le nom de la propriété et à droite sa
-valeur.  Lorsque la valeur de la paire est une référence, la case contient une
-puce d'où part un trait qui finit sur l'objet référencé.  Par exemple, on peut
-voir l'objet exporté à gauche, qui a une propriété ~g~ qui pointe vers la
-fonction ~g~.
-
-On représente les environnements avec des boîtes également, et l'environnement
-parent est relié par le trait qui part de la puce du coin supérieur gauche de
-l'environnement.  Lorsqu'un nom est recherché dans un environnement et que ce
-nom n'est pas présent dans les propriétés de cet environnement, la recherche
-continue dans l'environnement parent, et récursivement jusqu'à ce que soit le
-parent n'existe pas, soit la propriété est trouvée.  L'environnement global est
-en haut à gauche.
+#+BEGIN_aside
+Pour un rappel de la légende des diagrammes, voir {{{ref(diag-legend, là)}}}.
+#+END_aside
 
 On peut expliquer le motif module en regardant le diagramme qui accompagne le
-code.  Avant d'exécuter le code de l'exemple, l'environnement global est vide.
-Lorsque la FIA est appelée, elle crée l'environnement en {{{color(c1)}}}.
-Puisque la FIA est définie à la racine, l'environnement parent est l'objet
-global.  À l'intérieur de la FIA, trois noms sont définis: une variable ~a~ et
-deux fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).
-Lorsqu'une fonction est définie, un objet fonction est créé qui contient son
-code et son environnement lexical.  Cet environnement sera utilisé pour exécuter
-le corps de la fonction lorsqu'elle sera invoquée.  Avant que la FIA ne
-retourne, elle crée l'objet exporté (ligne [[(ex1-return)]]) qui contient la
-propriété ~g~.  Cette propriété réfère la fonction ~g~ définie à l'intérieur du
-module.  Notons qu'il y a /deux/ références à la fonction ~g~ à l'exécution.
-Enfin, la FIA retourne l'objet exporté, qui devient la valeur de la variable
-globale ~m~.
+code.  Dans le diagramme, les environnements, comme les objets, sont représentés
+par des boîtes.  Une puce dans le coin d'un environnement indique le lien vers
+l'environnement parent: par exemple l'environnement qui contient ~a~, ~f~ et ~g~
+a pour parent l'environnement qui contient ~m~.  Lorsqu'un nom est recherché
+dans un environnement et que ce nom n'est pas présent dans les propriétés de cet
+environnement, la recherche continue dans l'environnement parent, et
+récursivement jusqu'à ce que soit la propriété est trouvée, soit il n'y a plus
+d'environnement parent.  Si la propriété est trouvée, elle est retournée, sinon
+il y aura une erreur à l'exécution.  Dans cet exemple, l'environnement global
+est en haut à gauche du diagramme (il contient ~m~).
+
+Avant d'exécuter le code de l'exemple, l'environnement global est vide.  Lorsque
+la FIA est appelée, elle crée l'environnement en {{{color(c1)}}}.  Puisque la
+FIA est définie à la racine, l'environnement parent est l'objet global.  À
+l'intérieur de la FIA, trois noms sont définis: une variable ~a~ et deux
+fonctions ~f~ et ~g~ (lignes [[(ex1-defs-start)]] à [[(ex1-defs-end)]]).  Lorsqu'une
+fonction est définie, un objet fonction est créé qui contient son code et son
+environnement lexical.  Cet environnement sera utilisé pour exécuter le corps de
+la fonction lorsqu'elle sera invoquée.  Avant que la FIA ne retourne, elle crée
+l'objet exporté (ligne [[(ex1-return)]]) qui contient la propriété ~g~.  Cette
+propriété réfère la fonction ~g~ définie à l'intérieur du module.  Notons qu'il
+y a /deux/ références à la fonction ~g~ à l'exécution.  Enfin, la FIA retourne
+l'objet exporté, qui devient la valeur de la variable globale ~m~.
 
 #+BEGIN_side-figure
 [[file:img/dls1.svg]]
@@ -7236,7 +7234,7 @@ corps de ~f~, ~x+a~.  La propriété ~x~ se trouve dans l'objet d'activation de
 ~f~ (0), et la propriété ~a~ dans l'environnement parent (1).  L'interpréteur
 somme les deux valeurs et retourne le résultat.
 
-Le second diagramme sert à illustrer deux points importants sur le motif module:
+Ce dernier diagramme sert à illustrer deux points importants sur le motif module:
 
 1. La seule façon que du code extérieur au module a d'accéder aux définitions
    faites à l'intérieur du module est de passer par l'objet exporté.  Dans
