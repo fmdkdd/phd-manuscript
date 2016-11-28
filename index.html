@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-11-21 lun. 13:59 -->
+<!-- 2016-11-28 lun. 17:27 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -7105,8 +7105,7 @@ le détournement.
 </p>
 
 <p>
-Pour un simple objet qui représente une constante dans le langage, on a
-plusieurs façons de modifier son évaluation après sa définition:
+Prenons un simple objet qui représente une constante dans le langage:
 </p>
 
 <div class="side-figure">
@@ -7131,7 +7130,39 @@ n1.eval() <span class="org-comment-delimiter">//</span><span class="org-comment"
 </div>
 
 <p>
-On peut surcharger la fonction sur l&rsquo;objet lui-même:
+<div id="diag-legend" class="anchor"></div>
+</p>
+<div class="side-figure">
+
+<figure>
+<p><img src="img/foal-legend.svg" alt="foal-legend.svg">
+</p>
+</figure>
+
+<p>
+Légende des diagrammes qui accompagnent les exemples en JavaScript.
+</p>
+
+</div>
+
+<p>
+Le diagramme à côté du code illustre les objets manipulés par l&rsquo;interpréteur
+JavaScript.  Les objets y sont représentés par des boîtes qui contiennent des
+paires, chaque paire associant une <i>clé</i> à une <i>valeur</i>.  Lorsque la valeur est
+une référence, elle est représentée par une puce d&rsquo;où part un trait vers l&rsquo;objet
+référencé (<img src="img/legend1.svg" alt="legend1.svg">).  Par exemple, ici <code>num</code> est une référence vers
+un objet qui contient les clés <code>new</code> et <code>eval</code>.  Habituellement, on désigne un
+objet par la clé qui le réfère: on parlera ici de l&rsquo;objet <code>num</code>, de l&rsquo;objet
+<code>n1</code>, etc.  Une puce qui part du coin d&rsquo;un objet représente le lien de
+délégation vers l&rsquo;objet parent (le prototype).  Par exemple, <code>n1</code> a <code>num</code> pour
+parent (l&rsquo;objet référencé par <code>n1</code> a pour parent l&rsquo;objet référencé par <code>num</code>).
+Les références en pointillés sont omises par concision: ici <code>new</code> est une
+référence vers une fonction qui a peu d&rsquo;importance pour la suite.
+</p>
+
+<p>
+On a plusieurs façons de modifier l&rsquo;évaluation de <code>n1</code> après sa définition.  On
+peut surcharger la fonction sur l&rsquo;objet lui-même:
 </p>
 
 <div class="side-figure">
@@ -7310,6 +7341,12 @@ redéfinir la règle d&rsquo;évaluation des constantes, de la sorte:
 <p><img src="img/variations-6.svg" alt="variations-6.svg">
 </p>
 </figure>
+
+<p>
+<code>interp_double</code> redéfinit la règle <code>num</code> et délègue <code>eval</code> et <code>plus</code> à
+<code>interp</code>.  Le lien de délégation est indiqué par
+<img src="img/variations-legend.svg" alt="variations-legend.svg">.
+</p>
 
 </div>
 
@@ -7849,13 +7886,6 @@ l&rsquo;aspect, on peut modifier la valeur de cette variable lexicale, et donc s
 une portée dynamique.
 </p>
 
-<aside>
-<p>
-Voir <a href="#why-no-aop"> cette section</a> pour davantage de détails sur le
-fonctionnement d&rsquo;AspectScript et ses inconvénients pour détourner Narcissus.
-</p>
-</aside>
-
 <p>
 Mais AspectScript a deux inconvénients majeurs qui sont la performance et la
 compatibilité avec le standard JavaScript.  Pour capturer et redéfinir les
@@ -7866,6 +7896,13 @@ AspectScript réinterprète le programme ciblé, il introduit également des
 variations indésirables avec le comportement d&rsquo;un interpréteur standard.  Par
 exemple, la construction <code>with</code> n&rsquo;est pas supportée.
 </p>
+
+<aside style="margin-top:-5rem">
+<p>
+Voir <a href="#why-no-aop"> cette section</a> pour davantage de détails sur le
+fonctionnement d&rsquo;AspectScript et ses inconvénients pour détourner Narcissus.
+</p>
+</aside>
 </div>
 </div>
 </div>
@@ -8148,7 +8185,8 @@ Rappel: le trigramme <code>//:</code> indique la valeur de l&rsquo;expression qu
 </figure>
 
 <p>
-Représentation des objets en mémoire après la création de <code>e1</code>.
+Représentation des objets en mémoire après la création de <code>e1</code>.  Une légende et
+une explication de ces diagrammes apparaissent <a href="#diag-legend"> là</a>.
 </p>
 
 </div>
@@ -8435,6 +8473,7 @@ de JavaScript.
 </p>
 
 <p>
+<div id="hello-with" class="anchor"></div>
 La construction <code>with</code> en JavaScript a pour but de réduire le bruit syntaxique
 d&rsquo;un code qui fait référence plusieurs fois aux propriétés d&rsquo;un même objet.
 Dans la situation suivante:
@@ -9364,6 +9403,15 @@ module.  D&rsquo;abord, on va construire un exemple minimal de module qui a un
 comportement observable:
 </p>
 
+<div class="side-figure">
+
+<figure>
+<p><img src="img/dls0.svg" alt="dls0.svg">
+</p>
+</figure>
+
+</div>
+
 <div class="org-src-container">
 
 <pre class="src src-js"><span class="linenr">1: </span><span class="org-keyword">var</span> <span class="org-variable-name">m</span> = (<span class="org-keyword">function</span>(){
@@ -9385,51 +9433,39 @@ module.  Quand on appelle <code>m.g(0)</code> à l&rsquo;extérieur du module, o
 est la valeur de <code>a</code>.
 </p>
 
-<div style="margin-top:-20rem" class="side-figure">
-
-<figure>
-<p><img src="img/dls0.svg" alt="dls0.svg">
-</p>
-</figure>
-
-</div>
-
+<aside>
 <p>
-Le diagramme illustre les environnements et les objets créés après l&rsquo;appel de le
-la FIA et avant l&rsquo;appel de la ligne <code>m.g</code> à la ligne <a href="#coderef-ex1-test"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-test');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-test');">8</a>.  Les objets
-JavaScript sont représentés par des boîtes qui contiennent des paires.  Une
-paire est une propriété, avec à gauche le nom de la propriété et à droite sa
-valeur.  Lorsque la valeur de la paire est une référence, la case contient une
-puce d&rsquo;où part un trait qui finit sur l&rsquo;objet référencé.  Par exemple, on peut
-voir l&rsquo;objet exporté à gauche, qui a une propriété <code>g</code> qui pointe vers la
-fonction <code>g</code>.
+Pour un rappel de la légende des diagrammes, voir <a href="#diag-legend"> là</a>.
 </p>
-
-<p>
-On représente les environnements avec des boîtes également, et l&rsquo;environnement
-parent est relié par le trait qui part de la puce du coin supérieur gauche de
-l&rsquo;environnement.  Lorsqu&rsquo;un nom est recherché dans un environnement et que ce
-nom n&rsquo;est pas présent dans les propriétés de cet environnement, la recherche
-continue dans l&rsquo;environnement parent, et récursivement jusqu&rsquo;à ce que soit le
-parent n&rsquo;existe pas, soit la propriété est trouvée.  L&rsquo;environnement global est
-en haut à gauche.
-</p>
+</aside>
 
 <p>
 On peut expliquer le motif module en regardant le diagramme qui accompagne le
-code.  Avant d&rsquo;exécuter le code de l&rsquo;exemple, l&rsquo;environnement global est vide.
-Lorsque la FIA est appelée, elle crée l&rsquo;environnement en <span class="color c1">▬</span> .
-Puisque la FIA est définie à la racine, l&rsquo;environnement parent est l&rsquo;objet
-global.  À l&rsquo;intérieur de la FIA, trois noms sont définis: une variable <code>a</code> et
-deux fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).
-Lorsqu&rsquo;une fonction est définie, un objet fonction est créé qui contient son
-code et son environnement lexical.  Cet environnement sera utilisé pour exécuter
-le corps de la fonction lorsqu&rsquo;elle sera invoquée.  Avant que la FIA ne
-retourne, elle crée l&rsquo;objet exporté (ligne <a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient la
-propriété <code>g</code>.  Cette propriété réfère la fonction <code>g</code> définie à l&rsquo;intérieur du
-module.  Notons qu&rsquo;il y a <i>deux</i> références à la fonction <code>g</code> à l&rsquo;exécution.
-Enfin, la FIA retourne l&rsquo;objet exporté, qui devient la valeur de la variable
-globale <code>m</code>.
+code.  Dans le diagramme, les environnements, comme les objets, sont représentés
+par des boîtes.  Une puce dans le coin d&rsquo;un environnement indique le lien vers
+l&rsquo;environnement parent: par exemple l&rsquo;environnement qui contient <code>a</code>, <code>f</code> et <code>g</code>
+a pour parent l&rsquo;environnement qui contient <code>m</code>.  Lorsqu&rsquo;un nom est recherché
+dans un environnement et que ce nom n&rsquo;est pas présent dans les propriétés de cet
+environnement, la recherche continue dans l&rsquo;environnement parent, et
+récursivement jusqu&rsquo;à ce que soit la propriété est trouvée, soit il n&rsquo;y a plus
+d&rsquo;environnement parent.  Si la propriété est trouvée, elle est retournée, sinon
+il y aura une erreur à l&rsquo;exécution.  Dans cet exemple, l&rsquo;environnement global
+est en haut à gauche du diagramme (il contient <code>m</code>).
+</p>
+
+<p>
+Avant d&rsquo;exécuter le code de l&rsquo;exemple, l&rsquo;environnement global est vide.  Lorsque
+la FIA est appelée, elle crée l&rsquo;environnement en <span class="color c1">▬</span> .  Puisque la
+FIA est définie à la racine, l&rsquo;environnement parent est l&rsquo;objet global.  À
+l&rsquo;intérieur de la FIA, trois noms sont définis: une variable <code>a</code> et deux
+fonctions <code>f</code> et <code>g</code> (lignes <a href="#coderef-ex1-defs-start"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-start');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-start');">2</a> à <a href="#coderef-ex1-defs-end"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-defs-end');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-defs-end');">4</a>).  Lorsqu&rsquo;une
+fonction est définie, un objet fonction est créé qui contient son code et son
+environnement lexical.  Cet environnement sera utilisé pour exécuter le corps de
+la fonction lorsqu&rsquo;elle sera invoquée.  Avant que la FIA ne retourne, elle crée
+l&rsquo;objet exporté (ligne <a href="#coderef-ex1-return"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex1-return');" onmouseout="CodeHighlightOff(this, 'coderef-ex1-return');">5</a>) qui contient la propriété <code>g</code>.  Cette
+propriété réfère la fonction <code>g</code> définie à l&rsquo;intérieur du module.  Notons qu&rsquo;il
+y a <i>deux</i> références à la fonction <code>g</code> à l&rsquo;exécution.  Enfin, la FIA retourne
+l&rsquo;objet exporté, qui devient la valeur de la variable globale <code>m</code>.
 </p>
 
 <div class="side-figure">
@@ -9468,7 +9504,7 @@ somme les deux valeurs et retourne le résultat.
 </p>
 
 <p>
-Le second diagramme sert à illustrer deux points importants sur le motif module:
+Ce dernier diagramme sert à illustrer deux points importants sur le motif module:
 </p>
 
 <ol class="org-ol">
@@ -9533,15 +9569,13 @@ pourrait très bien être différent de celui de la FIA.
 </p>
 </figure>
 
-</div>
-
-<aside style="margin-top:7rem">
 <p>
-Dans les diagrammes suivants, on n&rsquo;illustrera plus les objets d&rsquo;activation des
+Dans ce diagramme et les suivants, on n&rsquo;illustre pas les objets d&rsquo;activation des
 fonctions.  Il suffit de se rappeler que l&rsquo;environnement utilisé pour rechercher
 les variables libres est celui de la propriété <code>env</code>.
 </p>
-</aside>
+
+</div>
 
 <p>
 Dans cet exemple, la fonction <code>g</code> exportée par le module ne capture pas
@@ -9549,12 +9583,12 @@ l&rsquo;environnement de la FIA.  À la ligne <a href="#coderef-ex2-return"class
 retour de la function <code>mkG</code> sous le nom <code>g</code>.  La fonction <code>mkG</code> retourne
 exactement la même fonction <code>g</code> que dans l&rsquo;exemple précédent, avec une
 différence notable: cette fonction <code>g</code> capture l&rsquo;environnement de l&rsquo;appel à
-<code>mkG</code>.  Le diagramme qui l&rsquo;accompagne illustre cette différence par l&rsquo;apparition
-d&rsquo;un nouvel objet d&rsquo;activation pour <code>mkG</code> qui est référencé comme environnement
-de <code>g</code>.  On a <code>m.g.env</code> qui pointe vers l&rsquo;environnement créé par <code>mkG</code>
-(<span class="color c1">▬</span> ), et non l&rsquo;environnement créé par la FIA (<span class="color c2">▬</span> ).
-On voit alors que la propriété <code>env</code> d&rsquo;une fonction n&rsquo;est pas garantie de
-pointer vers l&rsquo;environnement dont nous avons besoin.
+<code>mkG</code>.  Le diagramme ci-contre illustre cette différence par l&rsquo;apparition d&rsquo;un
+nouvel objet d&rsquo;activation pour <code>mkG</code> qui est référencé comme environnement de
+<code>g</code>.  On a <code>m.g.env</code> qui pointe vers l&rsquo;environnement créé par <code>mkG</code>
+(<span class="color c1">▬</span> ), et non l&rsquo;environnement créé par la FIA (<span class="color c2">▬</span> ).  On
+voit alors que la propriété <code>env</code> d&rsquo;une fonction n&rsquo;est pas garantie de pointer
+vers l&rsquo;environnement dont nous avons besoin.
 </p>
 
 <p>
@@ -9652,7 +9686,7 @@ au <code>a</code> à travers elle.
 </p>
 
 <p>
-Le diagramme illustre clairement le problème: la nouvelle fonction <code>f</code>
+Le diagramme ci-contre illustre clairement le problème: la nouvelle fonction <code>f</code>
 (<span class="color c1">▬</span> ) n&rsquo;a pas le même environnement que l&rsquo;ancienne.  Puisqu&rsquo;elle est
 créée en dehors du module, son environnement est l&rsquo;objet global (lien
 <span class="color c2">▬</span> ).  Le diagramme nous indique aussi une autre solution: modifier
@@ -9774,7 +9808,7 @@ frontal.
 <p>
 Si l&rsquo;on reprend exactement le code du module, sans modifications, mais qu&rsquo;on
 l&rsquo;exécute avec cette modification sémantique, on obtient la situation de la
-figure suivante.  La redéfinition de <code>a</code> à <code>2</code> est enregistrée par
+figure ci-contre.  La redéfinition de <code>a</code> à <code>2</code> est enregistrée par
 l&rsquo;environnement frontal (<span class="color c1">▬</span> ), plutôt que par l&rsquo;environnement de la
 FIA.  Puisque les deux fonctions <code>f</code> et <code>g</code> capturent l&rsquo;environnement frontal,
 elles utilisent bien la valeur redéfinie de <code>a</code> quand elles sont appelées.  Le
@@ -9943,6 +9977,12 @@ reproduire les exemples de composition d&rsquo;environnement par couches grâce 
 prototypes.
 </p>
 
+<aside>
+<p>
+Rappel: <code>with</code> a déjà été présentée <a href="#hello-with"> précédemment</a>.
+</p>
+</aside>
+
 <p>
 L&rsquo;expression <code>with</code> est grammaticalement similaire à un <code>if</code>.  Elle prend une
 expression entre parenthèses, qui est évaluée pour constituer son <i>objet de
@@ -9960,7 +10000,8 @@ liaison</i>, et un bloc de code entre accolades.  Voici un exemple d&rsquo;utili
 <p>
 L&rsquo;environnement crée par <code>with</code> entoure l&rsquo;objet de liaison.  Notons que
 l&rsquo;environnement est distinct du l&rsquo;objet de liaison: <code>o</code> pointe vers l&rsquo;objet de
-liaison, tandis que <code>f.env</code> pointe vers l&rsquo;environnement.
+liaison (qui associe <code>a</code> à 42), tandis que <code>f.env</code> pointe vers l&rsquo;environnement
+(la boîte au fond <span class="color c0">▬</span>  autour de l&rsquo;objet de liaison).
 </p>
 
 </div>
@@ -10020,11 +10061,11 @@ Ce qui se passe dans le premier exemple, c&rsquo;est que lorsque la fonction <co
 définie dans <code>with</code> elle capture l&rsquo;environnement lexical crée par <code>with</code>; <code>f</code>
 suit donc une liaison statique.  Mais l&rsquo;environnement généré par <code>with</code> est
 particulier car la résolution de noms dans cet environnement est déléguée à
-l&rsquo;objet de liaison.  Et l&rsquo;objet de liaison peut être mutable: on peut y
-ajouter ou y supprimer des propriétés.  Donc, on dira que la fonction <code>f</code>
-<i>capture statiquement un environnement mutable</i>.  L&rsquo;environnement ne peut être
-capturé qu&rsquo;à la définition de <code>f</code>, mais cet environnement peut être modifié par
-la suite.  Les deux diagrammes illustrent clairement la différence de
+l&rsquo;objet de liaison.  Et l&rsquo;objet de liaison peut être mutable: on peut y ajouter
+ou y supprimer des propriétés.  Donc, on dira que la fonction <code>f</code> <i>capture
+statiquement un environnement mutable</i>.  L&rsquo;environnement ne peut être capturé
+qu&rsquo;à la définition de <code>f</code>, mais cet environnement peut être modifié par la
+suite.  Les deux diagrammes précédents illustrent clairement la différence de
 comportement: dans le premier, <code>f.env</code> pointe vers l&rsquo;environnement crée par
 <code>with</code>, et dans le second cas, <code>f.env</code> pointe vers l&rsquo;environnement global; cette
 propriété <code>f.env</code> ne peut pas être changée dynamiquement, donc appeler <code>f</code> dans
@@ -10121,7 +10162,7 @@ chaîne de résolution de noms.
 <p>
 Une différence cruciale entre le modèle annoncé dans la section précédente et ce
 qu&rsquo;on obtient ici, c&rsquo;est qu&rsquo;ici l&rsquo;environnement créé par <code>with</code> et l&rsquo;objet de
-liaison sont deux objets distincts, alors que dans le modèle il ne sont qu&rsquo;un
+liaison sont deux objets distincts, alors que dans le modèle ils ne sont qu&rsquo;un
 seul et même objet.  En particulier, la propriété <code>m.E</code> pointe vers l&rsquo;objet de
 liaison, tandis que les propriétés <code>env</code> des fonctions <code>f</code> et <code>g</code> pointent vers
 l&rsquo;environnement.  La conséquence de cette distinction est qu&rsquo;on si peut se
@@ -10197,8 +10238,8 @@ chaque déclaration du module, et on assigne cet objet au prototype de <code>E</
 Grâce à cet objet, on peut faire référence à <code>a</code> à travers <code>m.E.a</code> lors de la
 redéfinition de <code>f</code> ligne <a href="#coderef-ex9-f"class="coderef" onmouseover="CodeHighlightOn(this, 'coderef-ex9-f');" onmouseout="CodeHighlightOff(this, 'coderef-ex9-f');">17</a>.  Puis, lorsqu&rsquo;on redéfinit <code>a</code> à travers
 <code>m.E.a</code>, cette nouvelle valeur a priorité sur la valeur initiale du module, et
-est bien capturée par la nouvelle fonction <code>f</code>.  Tout cela est illustré par le
-diagramme.  La propriété <code>m.E</code> pointe sur l&rsquo;objet de liaison (<span class="color c1">▬</span> ),
+est bien capturée par la nouvelle fonction <code>f</code>.  Tout cela est illustré
+ci-contre.  La propriété <code>m.E</code> pointe sur l&rsquo;objet de liaison (<span class="color c1">▬</span> ),
 qui contient les redéfinitions de <code>a</code> et <code>f</code>.  Si l&rsquo;objet de liaison est vide,
 alors on recherche les propriétés sur l&rsquo;objet parent (<span class="color c2">▬</span> ) avant de
 les chercher dans l&rsquo;environnement de la FIA.  Ainsi, lorsque l&rsquo;on supprime les
@@ -11109,7 +11150,7 @@ thread, toujours sur la même machine.  Le tableau donne la moyenne arithmétiqu
 du temps pour une exécution complète sur ces dix lancers.
 </p>
 
-<aside>
+<aside style="margin-top:-4rem">
 <p>
 Ces tests ont été effectué sur un PC portable contenant un processeur Intel
 i5-3320M 2.60GHz et 4Gb de RAM.  Narcissus a été lancé à travers une <a href="https://ftp.mozilla.org/pub/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip">version de
@@ -11486,20 +11527,7 @@ les trois méthodes permettent d&rsquo;appeler du code extérieur au module à u
 précis du flot d&rsquo;exécution.
 </p>
 
-<p>
-Avec des <i>hooks</i>, ou un Observateur, il faut rajouter du code à l&rsquo;intérieur du
-module à tous les endroits où le programmeur d&rsquo;un module externe voudrait
-injecter du code, pour appeler <i>explicitement</i> soit une liste de fonctions, soit
-une liste d&rsquo;observateurs.  Le code externe doit à son tour déclarer quelles
-fonctions ou quel observateur il souhaite ajouter dans l&rsquo;interpréteur.  Le
-transfert de contrôle est explicite: il suffit de suivre le code dans
-l&rsquo;interpréteur pour voir les appels à des <i>hooks</i>, ou une levée d&rsquo;événements
-pour des observateurs.  L&rsquo;inconvénient est d&rsquo;avoir à identifier les endroits qui
-peuvent intéresser du code externe, et d&rsquo;ajouter des <i>hooks</i> explicitement dans
-le code pour chacun d&rsquo;eux.
-</p>
-
-<div style="margin-top:-13rem" class="side-figure">
+<div class="side-figure">
 
 <figure>
 <p><img src="img/dls15.svg" alt="dls15.svg">
@@ -11515,6 +11543,19 @@ configuration d&rsquo;Emacs et de LaTeX.
 </p>
 
 </div>
+
+<p>
+Avec des <i>hooks</i>, ou un Observateur, il faut rajouter du code à l&rsquo;intérieur du
+module à tous les endroits où le programmeur d&rsquo;un module externe voudrait
+injecter du code, pour appeler <i>explicitement</i> soit une liste de fonctions, soit
+une liste d&rsquo;observateurs.  Le code externe doit à son tour déclarer quelles
+fonctions ou quel observateur il souhaite ajouter dans l&rsquo;interpréteur.  Le
+transfert de contrôle est explicite: il suffit de suivre le code dans
+l&rsquo;interpréteur pour voir les appels à des <i>hooks</i>, ou une levée d&rsquo;événements
+pour des observateurs.  L&rsquo;inconvénient est d&rsquo;avoir à identifier les endroits qui
+peuvent intéresser du code externe, et d&rsquo;ajouter des <i>hooks</i> explicitement dans
+le code pour chacun d&rsquo;eux.
+</p>
 
 <p>
 On utilise généralement ces techniques pour appeler du code qui <i>ne change pas</i>
@@ -13814,7 +13855,7 @@ Antero Taivalsaari.
 <td class="bibtexitem">
 &Eacute;ric Tanter.
  Reflection and open implementation.
- Technical Report TR/DCC-20091123-013, University of Chile, jun 2009.
+ Technical Report TR/DCC-20091123-013, University of Chile, June 2009.
 
 </td>
 </tr>
@@ -14020,7 +14061,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-11-21 lun. 13:59 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
+<p class="created">Crée: 2016-11-28 lun. 17:27 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
 </div>
 </body>
 </html>
