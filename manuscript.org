@@ -6472,6 +6472,7 @@ de n'autoriser qu'un seul module de termes à la fois, en masquant les référen
 vers les ~num~ et ~plus~ originaux.  C'est possible avec la construction ~with~
 de JavaScript.
 
+{{{label(hello-with)}}}
 La construction ~with~ en JavaScript a pour but de réduire le bruit syntaxique
 d'un code qui fait référence plusieurs fois aux propriétés d'un même objet.
 Dans la situation suivante:
@@ -7599,6 +7600,10 @@ de deux ingrédients de JavaScript que sont ~with~ et la délégation par
 prototype.  On va utiliser ~with~ pour créer un environnement manipulable, puis
 reproduire les exemples de composition d'environnement par couches grâce aux
 prototypes.
+
+#+BEGIN_aside
+Rappel: ~with~ a déjà été présentée {{{ref(hello-with, précédemment)}}}.
+#+END_aside
 
 L'expression ~with~ est grammaticalement similaire à un ~if~.  Elle prend une
 expression entre parenthèses, qui est évaluée pour constituer son /objet de
