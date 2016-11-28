@@ -5490,8 +5490,7 @@ appliquent.  JavaScript permet cependant de /modifier/ le lien de délégation
 après la création de l'objet, ce qui ouvre des possibilités intéressantes pour
 le détournement.
 
-Pour un simple objet qui représente une constante dans le langage, on a
-plusieurs façons de modifier son évaluation après sa définition:
+Prenons un simple objet qui représente une constante dans le langage:
 
 #+BEGIN_side-figure
 [[file:img/variations-0.svg]]
@@ -5507,7 +5506,28 @@ var n1 = num.new(2)
 n1.eval() //: 2
 #+END_SRC
 
-On peut surcharger la fonction sur l'objet lui-même:
+#+ATTR_LATEX: :options [1em]
+#+BEGIN_side-figure
+[[file:img/foal-legend.svg]]
+
+Légende des diagrammes qui accompagnent les exemples de code en JavaScript.
+#+END_side-figure
+
+Le diagramme ci-contre illustre les objets manipulés par l'interpréteur
+JavaScript.  Les objets y sont représentés par des boîtes qui contiennent des
+paires, chaque paire associant une /clé/ à une /valeur/.  Lorsque la valeur est
+une référence, elle est représentée par une puce d'où part un trait vers l'objet
+référencé ([[file:img/legend1.svg]]).  Par exemple, ici ~num~ est une référence vers
+un objet qui contient les clés ~new~ et ~eval~.  Habituellement, on désigne un
+objet par la clé qui le réfère: on parlera ici de l'objet ~num~, de l'objet
+~n1~, etc.  Une puce qui part du coin d'un objet représente le lien de
+délégation vers l'objet parent (le prototype).  Par exemple, ~n1~ a ~num~ pour
+parent (l'objet référencé par ~n1~ a pour parent l'objet référencé par ~num~).
+Les références en pointillés sont omises par concision: ici ~new~ est une
+référence vers une fonction qui a peu d'importance pour la suite.
+
+On a plusieurs façons de modifier l'évaluation de ~n1~ après sa définition.  On
+peut surcharger la fonction sur l'objet lui-même:
 
 #+BEGIN_side-figure
 [[file:img/variations-1.svg]]
@@ -5541,7 +5561,6 @@ les instances de ~num~ que l'on pourrait créer en appelant ~num.new~.
 Si l'on souhaite éviter de toucher à ~num~, on peut proposer un objet ~num3~ qui
 servira de prototype alternatif pour ~n1~:
 
-#+ATTR_LATEX: :options [-3em]
 #+BEGIN_side-figure
 [[file:img/variations-3.svg]]
 
@@ -5624,6 +5643,10 @@ redéfinir la règle d'évaluation des constantes, de la sorte:
 
 #+BEGIN_side-figure
 [[file:img/variations-6.svg]]
+
+~interp_double~ redéfinit la règle ~num~ et délègue ~eval~ et ~plus~ à
+~interp~.  Le lien de délégation est indiqué par
+[[file:img/variations-legend.svg]].
 #+END_side-figure
 
 #+BEGIN_SRC js
@@ -5680,7 +5703,6 @@ Cette fois on n'utilise pas ~derive~, car plutôt que de changer chaque règle, 
 change directement la fonction d'évaluation ~eval~ pour introduire l'instruction
 ~console.log~.
 
-#+ATTR_LATEX: :options [-4em]
 #+BEGIN_side-figure
 [[file:img/variations-4.svg]]
 #+END_side-figure
@@ -6017,11 +6039,6 @@ l'intérieur du module car c'est une variable capturée lexicalement.  Avec
 l'aspect, on peut modifier la valeur de cette variable lexicale, et donc simuler
 une portée dynamique.
 
-#+BEGIN_aside
-Voir {{{ref(why-no-aop, cette section)}}} pour davantage de détails sur le
-fonctionnement d'AspectScript et ses inconvénients pour détourner Narcissus.
-#+END_aside
-
 Mais AspectScript a deux inconvénients majeurs qui sont la performance et la
 compatibilité avec le standard JavaScript.  Pour capturer et redéfinir les
 évaluations, AspectScript définit son propre analyseur de syntaxe, et réécrit le
@@ -6030,6 +6047,13 @@ AspectScript sa flexibilité, rend le programme 5 à 15 fois plus lent.  Puisque
 AspectScript réinterprète le programme ciblé, il introduit également des
 variations indésirables avec le comportement d'un interpréteur standard.  Par
 exemple, la construction ~with~ n'est pas supportée.
+
+#+ATTR_HTML: :style margin-top:-5rem
+#+ATTR_LATEX: :options [-5em]
+#+BEGIN_aside
+Voir {{{ref(why-no-aop, cette section)}}} pour davantage de détails sur le
+fonctionnement d'AspectScript et ses inconvénients pour détourner Narcissus.
+#+END_aside
 
 ** Par portée dynamique
 La portée dynamique est un autre mécanisme qui permet le détournement.  Avec la

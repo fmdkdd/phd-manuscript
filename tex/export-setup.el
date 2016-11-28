@@ -105,6 +105,12 @@ used as a communication channel."
            ;; ATTR_LATEX line, and also via default variables.
            (width (cond ((plist-get attr :width))
                         ((plist-get attr :height) "")
+                        ;; HACK: I want to set the size of this inline image,
+                        ;; and I don't have a way to do it in the Org.
+                        ((string= path "img/legend1.svg") "14pt")
+                        ;; HACK: I should be able to set this one in Org, but
+                        ;; for some reason I can't.
+                        ((string= path "img/foal-legend.svg") "4cm")
                         (in-aside "\\maxwidth{\\marginparwidth}")
                         (full-figure "\\fullwidth")
                         ((eq float 'wrap) "0.48\\textwidth")
