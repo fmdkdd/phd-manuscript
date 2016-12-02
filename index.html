@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 2016-11-28 lun. 17:27 -->
+<!-- 2016-12-02 ven. 16:26 -->
 <meta  charset="utf-8">
 <meta  name="viewport" content="width=device-width, initial-scale=1">
 <title>Étendre des interpréteurs par détournement, ou comment étendre des interpréteurs sans en modifier le code</title>
@@ -398,16 +398,16 @@ machine sous la seule forme que son processeur est capable de manipuler: le
 binaire, une suite de zéros et de uns.
 </p>
 
-<aside>
+<pre class="example">
+...01101111011100000110010101101110011100110111001101101100001000000010110101100100...
+</pre>
+
+<aside style="margin-top:-4rem">
 <p>
 Un programme (extrait; point de vue d&rsquo;une machine x86).  Un <i>bit</i> correspond à
 une seule valeur binaire: 0 ou 1.
 </p>
 </aside>
-
-<pre class="example">
-...001010110111001010110101011101010111110101...
-</pre>
 
 <p>
 Le programme est alors exécuté instruction par instruction.  La machine lit une
@@ -2483,8 +2483,11 @@ programme:
 </p>
 
 <pre class="example">
-(=&lt;`#9]~6ZY32Vx/4Rs+0No-&amp;Jk)"Fh}|Bcy?`=*z]Kw%oG4UUS0
-/@-ejc(:'8dc
+bCBA@?&gt;=&lt;;:9876543210/.-,+*)('&amp;%$#"!~}|{zyxwvutsrqpon
+mlkjihgfedcba`_^] \[ZYXWVUTSRQPONMLKJIHGFEDCBA@?!=6Z:
+9876543210p.'Kl*)('&amp;%|B"!a}|{zyxwvutsrqponmlkjiha'edc
+b[`_^]\[ZYXWVUTSRQPONMLKJIHGFEDC&lt;`@?&gt;=6;4X276543210/
+(L,+*)('&amp;%$#"!a}v&lt;zsxwvo5"
 </pre>
 
 <p>
@@ -7815,10 +7818,10 @@ correspondent, on exécute l&rsquo;affichage ligne <a href="#coderef-aj-trace"cl
 </p>
 
 <pre class="example">
-eval Trace@7f31245a
-eval Plus@6d6f6e28
-eval Num@135fbaa4
-eval Num@45ee12a7
+eval Trace@54686520
+eval Plus@6b657920
+eval Num@6973204f
+eval Num@41393800
 </pre>
 
 <p>
@@ -9074,22 +9077,22 @@ Le code complet de cet exemple se trouve en <a href="#foal-extra-rust">7.2</a>.
 
 <div class="org-src-container">
 
-<pre class="src src-rust"><span class="org-keyword">enum</span> <span class="org-type">Term</span> {
-  <span class="org-type">Num</span>(<span class="org-type">u64</span>),
-  <span class="org-type">Plus</span>(<span class="org-type">Term</span>, <span class="org-type">Term</span>),
+<pre class="src src-rust">enum Term {
+  Num(u64),
+  Plus(Term, Term),
 }
 
-<span class="org-keyword">fn</span> <span class="org-function-name">num</span>(<span class="org-type">u64</span>) -&gt; <span class="org-type">Term</span> { ... }
-<span class="org-keyword">fn</span> <span class="org-function-name">plus</span>(<span class="org-type">Term</span>, <span class="org-type">Term</span>) -&gt; <span class="org-type">Term</span> { ... }
+fn num(u64) -&gt; Term { ... }
+fn plus(Term, Term) -&gt; Term { ... }
 
-<span class="org-keyword">mod</span> <span class="org-constant">base</span>   { <span class="org-keyword">trait</span> <span class="org-type">Eval</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) }
-             <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) {}}}
-<span class="org-keyword">mod</span> <span class="org-constant">double</span> { <span class="org-keyword">trait</span> <span class="org-type">Eval</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) }
-             <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> { <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(..) {}}}
+mod base   { trait Eval { fn eval(..) }
+	     impl Eval for Term { fn eval(..) {}}}
+mod double { trait Eval { fn eval(..) }
+	     impl Eval for Term { fn eval(..) {}}}
 
-<span class="org-keyword">fn</span> <span class="org-function-name">main</span>() {
-  { <span class="org-keyword">use</span> <span class="org-constant">base</span>::<span class="org-type">Eval</span>;   num(3).eval(); } <span class="org-comment-delimiter">//</span><span class="org-comment">: 3</span>
-  { <span class="org-keyword">use</span> <span class="org-constant">double</span>::<span class="org-type">Eval</span>; num(3).eval(); } <span class="org-comment-delimiter">//</span><span class="org-comment">: 6</span>
+fn main() {
+  { use base::Eval;   num(3).eval(); } //: 3
+  { use double::Eval; num(3).eval(); } //: 6
 }
 </pre>
 </div>
@@ -12349,87 +12352,87 @@ code complet pour ceux qui n&rsquo;étaient pas convaincus par les ellipses.
 
 <div class="org-src-container">
 
-<pre class="src src-rust"><span class="org-preprocessor">#[derive(Clone)]</span>
-<span class="org-keyword">enum</span> <span class="org-type">Term</span> {
-  <span class="org-type">Num</span>(<span class="org-type">u64</span>),
-  <span class="org-type">Plus</span>(<span class="org-type">Box</span>&lt;<span class="org-type">Term</span>&gt;, <span class="org-type">Box</span>&lt;<span class="org-type">Term</span>&gt;),
+<pre class="src src-rust">#[derive(Clone)]
+enum Term {
+  Num(u64),
+  Plus(Box&lt;Term&gt;, Box&lt;Term&gt;),
 }
 
-<span class="org-keyword">fn</span> <span class="org-function-name">num</span>(<span class="org-variable-name">n</span>: <span class="org-type">u64</span>) -&gt; <span class="org-type">Term</span> {
-  <span class="org-type">Term</span>::<span class="org-type">Num</span>(n)
+fn num(n: u64) -&gt; Term {
+  Term::Num(n)
 }
 
-<span class="org-keyword">fn</span> <span class="org-function-name">plus</span>(<span class="org-variable-name">a</span>: <span class="org-type">Term</span>, <span class="org-variable-name">b</span>: <span class="org-type">Term</span>) -&gt; <span class="org-type">Term</span> {
-  <span class="org-type">Term</span>::<span class="org-type">Plus</span>(<span class="org-type">Box</span>::new(a), <span class="org-type">Box</span>::new(b))
+fn plus(a: Term, b: Term) -&gt; Term {
+  Term::Plus(Box::new(a), Box::new(b))
 }
 
-<span class="org-keyword">fn</span> <span class="org-function-name">main</span>() {
+fn main() {
   {
-    <span class="org-keyword">use</span> <span class="org-constant">eval1</span>::<span class="org-type">Eval</span>;
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, num(3).eval());
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, plus(num(1), num(2)).eval());
-  }
-
-  {
-    <span class="org-keyword">use</span> <span class="org-constant">eval2</span>::<span class="org-type">Eval</span>;
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, num(3).eval());
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, plus(num(1), num(2)).eval());
+    use eval1::Eval;
+    println!("{} ", num(3).eval());
+    println!("{} ", plus(num(1), num(2)).eval());
   }
 
   {
-    <span class="org-keyword">use</span> <span class="org-constant">eval3</span>::<span class="org-type">Eval</span>;
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, num(3).eval());
-    <span class="org-preprocessor">println!</span>(<span class="org-string">"{} "</span>, plus(num(1), num(2)).eval());
+    use eval2::Eval;
+    println!("{} ", num(3).eval());
+    println!("{} ", plus(num(1), num(2)).eval());
+  }
+
+  {
+    use eval3::Eval;
+    println!("{} ", num(3).eval());
+    println!("{} ", plus(num(1), num(2)).eval());
   }
 }
 
-<span class="org-keyword">mod</span> <span class="org-constant">eval1</span> {
-  <span class="org-keyword">use</span> <span class="org-type">Term</span>;
+mod eval1 {
+  use Term;
 
-  <span class="org-keyword">pub</span> <span class="org-keyword">trait</span> <span class="org-type">Eval</span> {
-    <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span>;
+  pub trait Eval {
+    fn eval(self) -&gt; u64;
   }
 
-  <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> {
-    <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span> {
-      <span class="org-keyword">match</span> <span class="org-keyword">self</span> {
-        <span class="org-type">Term</span>::<span class="org-type">Num</span>(n) =&gt; n,
-        <span class="org-type">Term</span>::<span class="org-type">Plus</span>(t1, t2) =&gt; t1.eval() + t2.eval(),
+  impl Eval for Term {
+    fn eval(self) -&gt; u64 {
+      match self {
+	Term::Num(n) =&gt; n,
+	Term::Plus(t1, t2) =&gt; t1.eval() + t2.eval(),
       }
     }
   }
 }
 
-<span class="org-keyword">mod</span> <span class="org-constant">eval2</span> {
-  <span class="org-keyword">use</span> <span class="org-type">Term</span>;
+mod eval2 {
+  use Term;
 
-  <span class="org-keyword">pub</span> <span class="org-keyword">trait</span> <span class="org-type">Eval</span> {
-    <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span>;
+  pub trait Eval {
+    fn eval(self) -&gt; u64;
   }
 
-  <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> {
-    <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span> {
-      <span class="org-keyword">match</span> <span class="org-keyword">self</span> {
-        <span class="org-type">Term</span>::<span class="org-type">Num</span>(n) =&gt; n * 2,
-        <span class="org-type">Term</span>::<span class="org-type">Plus</span>(t1, t2) =&gt; t1.eval() + t2.eval(),
+  impl Eval for Term {
+    fn eval(self) -&gt; u64 {
+      match self {
+	Term::Num(n) =&gt; n * 2,
+	Term::Plus(t1, t2) =&gt; t1.eval() + t2.eval(),
       }
     }
   }
 }
 
-<span class="org-keyword">mod</span> <span class="org-constant">eval3</span> {
-  <span class="org-keyword">use</span> <span class="org-constant">eval1</span>;
-  <span class="org-keyword">use</span> <span class="org-type">Term</span>;
+mod eval3 {
+  use eval1;
+  use Term;
 
-  <span class="org-keyword">pub</span> <span class="org-keyword">trait</span> <span class="org-type">Eval</span> {
-    <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span>;
+  pub trait Eval {
+    fn eval(self) -&gt; u64;
   }
 
-  <span class="org-keyword">impl</span> <span class="org-type">Eval</span> <span class="org-keyword">for</span> <span class="org-type">Term</span> {
-    <span class="org-keyword">fn</span> <span class="org-function-name">eval</span>(<span class="org-keyword">self</span>) -&gt; <span class="org-type">u64</span> {
-      <span class="org-keyword">match</span> <span class="org-keyword">self</span> {
-        <span class="org-type">Term</span>::<span class="org-type">Num</span>(_) =&gt; <span class="org-constant">eval1</span>::<span class="org-type">Eval</span>::eval(<span class="org-keyword">self</span>) * 2,
-        <span class="org-type">Term</span>::<span class="org-type">Plus</span>(t1, t2) =&gt; t1.eval() + t2.eval(),
+  impl Eval for Term {
+    fn eval(self) -&gt; u64 {
+      match self {
+	Term::Num(_) =&gt; eval1::Eval::eval(self) * 2,
+	Term::Plus(t1, t2) =&gt; t1.eval() + t2.eval(),
       }
     }
   }
@@ -14061,7 +14064,7 @@ Matthias Zenger and Martin Odersky.
 </div>
 <div id="postamble" class="status">
 <p class="author">Auteur: fmdkdd</p>
-<p class="created">Crée: 2016-11-28 lun. 17:27 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.6))</p>
+<p class="created">Crée: 2016-12-02 ven. 16:26 (<a href="http://www.gnu.org/software/emacs/">Emacs</a> 25.1.1 (<a href="http://orgmode.org">Org</a> mode 8.3.5))</p>
 </div>
 </body>
 </html>
