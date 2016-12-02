@@ -1,6 +1,6 @@
-;; Use org version from .emacs.d/elpa directory for latest goodness and
-;; consistency with manual export from Emacs.
-(package-initialize)
+;; Load a specific version of org, to avoid depending on the user local config
+(add-to-list 'load-path "build/deps/org")
+(add-to-list 'load-path "build/deps/htmlize")
 
 ;; Quell warning from Org export
 (setq python-indent-guess-indent-offset nil)

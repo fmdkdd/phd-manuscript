@@ -28,7 +28,7 @@ JPG_DST := $(patsubst $(IMG)/%.jpg, $(IMG_OUT)/%.jpg, $(JPG_SRC))
 
 html: dirs $(SVG_DST) $(JPG_DST) $(OUT)/style.css $(TARGET)
 
-$(TARGET): $(INPUT) refs.bib $(HTML)/export-setup.el
+$(TARGET): $(INPUT) refs.bib $(HTML)/export-setup.el build/deps/org/org.el build/deps/htmlize/htmlize.el
 	@echo 'Exporting to HTML...'
 	@emacs --quick --batch \
          --load $(HTML)/export-setup.el \
@@ -75,6 +75,28 @@ $(OUT):
 
 $(IMG_OUT):
 	mkdir --parents $(IMG_OUT)
+
+# We need a specific org-plus-contrib version (8.3.5, as 9.0.1 fails to build)
+build/deps/org/org.el: build/deps/org-plus-contrib.tar
+	mkdir --parents build/deps/org
+  # Extract in the given directory, forget the directory name in the archive,
+  # and touch all files to avoid triggering this make target again.
+	tar xf $< --directory build/deps/org --strip-components=1 --touch
+
+build/deps/org-plus-contrib.tar:
+	mkdir --parents build/deps
+	wget http://orgmode.org/elpa/org-plus-contrib-20160905.tar --output-document build/deps/org-plus-contrib.tar
+
+# HTML export requires htmlize
+build/deps/htmlize/htmlize.el: build/deps/htmlize.tgz
+	mkdir --parents build/deps/htmlize
+  # Extract in the given directory, forget the directory name in the archive,
+  # and touch all files to avoid triggering this make target again.
+	tar xf $< --directory build/deps/htmlize --strip-components=1 --touch
+
+build/deps/htmlize.tgz:
+	mkdir --parents build/deps
+	wget https://github.com/dunn/htmlize-mirror/archive/release/1.47.tar.gz --output-document build/deps/htmlize.tgz
 
 clean:
 	rm --force $(TARGET) \

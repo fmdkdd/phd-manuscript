@@ -1,6 +1,5 @@
-;; Use org version from .emacs.d/elpa directory for latest goodness and
-;; consistency with manual export from Emacs.
-(package-initialize)
+;; Load a specific version of org, to avoid depending on the user local config
+(add-to-list 'load-path "build/deps/org")
 
 ;; How to export 'cite' links
 (defun fmdkdd/org-export-cite (path desc format)

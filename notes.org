@@ -5062,6 +5062,63 @@ Aiming for a first rehearsal on [2016-10-28 ven.].
 - slide 45: copy "reflectArray()..." into the body of "populateEnv" OR use
   higher-level diagrams showing the delay
 
+** [2016-12-01 jeu.]
+*** Updated to Org 9.0.1... rollback rollback!
+Of course, now when I try to export, I am greeted with:
+
+: Wrong type argument: stringp, nil
+: make: *** [Makefile:33: build/html/index.html] Error 255
+
+Great.  Not even a clue where Org failed.  Just "you didn't pass a string lol".
+
+Well, okay it's a major version.  But I don't see anything in the release notes
+that should break my build.
+
+I /suppose/ it could be something from export-setup, but that's it, a
+supposition.  The debugger is not very helpful.  It dies in
+~org-babel-exp-src-block~, maybe on line 3076, the Java reflection example.  Not
+sure why.
+
+Let's rollback.  I'm sad there isn't a way to tell Spacemacs (or Emacs) to
+freeze a package version... did they never have an issue with a package?  Do
+they fix the bug upstream when they have an issue?
+
+Either way, at least there are archived versions on the various repositories:
+http://orgmode.org/elpa/.  Let's rollback in October, to be safe.
+
+Can I just rm the org-plus-contrib directory under .emacs.d/elpa and mv the
+previous version there?  Or do I need more?
+
+Well, apparently I can't.  But there's package-install-file.
+
+Hmm, I get weird errors compiling.  Maybe because I have org 9.0.1 loaded into
+this Emacs.  Let's try installing from ~emacs -Q~.
+
+Installing works, but loading Emacs triggers ~(invalid-function
+org-no-warnings)~.  Grmbl.  Could it be a buggy version on elpa?  Let's rollback
+further.
+
+5-sep-2016.  Oh hey, it works!  Goddamit.  That's exactly /why/ you want to
+freeze version, checksums even!  There is no such thing as "small changes".
+
+Well, at least I can build the PDF again.
+
+** [2016-12-02 ven.]
+*** Using Cask to get Emacs dependencies
+I remembered that's what Flycheck uses to run Emacs in batch.  It will solve
+nicely solve my problem, since I can use Org 9.0.1 (and unfreeze the package) in
+my daily Emacs, but still use the right version for building the manuscript.
+
+So let's see.  What do I need?  A Cask file.
+
+Wait a minute... I can only specify a /minimum version/ for a dependency.  So
+apparently, it might be because [[https://github.com/cask/cask/issues/132][ELPA did not support older versions]], and Cask
+followed suit.
+
+A bit unnerving.  But ok!  Let's see if I can concoct a small script to fetch
+a working org-plus-contrib version.
+
+
 * Meta-concerns
 Notes about the process of writing and organizing the manuscript.  Behind the
 drapes stuff that will not be exported.
